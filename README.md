@@ -10,13 +10,37 @@ fEMR is an free electronic medical record system. It is designed to help with th
 
 * [Play Framework](http://www.playframework.com/)
 
-## Installation
+## Installation and Deployment
+
+Add play framework to your PATH environment variable if you haven't done so already.
+
+For more information, visit the official [PlayConsole](http://www.playframework.com/documentation/2.1.x/PlayConsole) page.
+
+### Enter the console
+    play
+
+Always clean and compile the project before a commit. *It wouldn't hurt to do this often, especially when adding/removing classes or views.*
+
+    play clean
+    play compile
+
+### Development
+    play run
+
+### Test
+    play test
+
+### Production
+
+Coming soon.
 
 ## Warnings
+
 * This application is not HIPAA compliant (... yet).
 * This application is not meant to diagnose, treat, cure or prevent disease.
 
 ## License
+
 The MIT License (MIT)
 
 Copyright (c) 2013 Wayne State University

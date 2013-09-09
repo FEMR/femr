@@ -1,8 +1,8 @@
-package controllers;
+package edu.wayne.femr.controllers;
 
+import edu.wayne.femr.views.html.home.index;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.home.index;
 
 public class Home extends Controller {
     public static Result index() {

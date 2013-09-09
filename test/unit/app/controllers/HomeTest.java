@@ -1,3 +1,5 @@
+package unit.app.controllers;
+
 import org.junit.Test;
 import play.mvc.Content;
 
@@ -8,8 +10,8 @@ import static play.test.Helpers.contentType;
 public class HomeTest {
     @Test
     public void renderTemplate() {
-        Content html = views.html.home.index.render("Your new application is ready.");
+        Content html = edu.wayne.femr.views.html.home.index.render("Home");
         assertThat(contentType(html)).isEqualTo("text/html");
-        assertThat(contentAsString(html)).contains("Your new application is ready.");
+        assertThat(contentAsString(html)).contains("Home");
     }
 }

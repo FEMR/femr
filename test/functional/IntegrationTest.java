@@ -1,3 +1,5 @@
+package functional;
+
 import org.junit.Test;
 import play.libs.F.Callback;
 import play.test.TestBrowser;

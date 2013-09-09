@@ -8,7 +8,7 @@ fEMR is an free electronic medical record system. It is designed to help with th
 
 ## Dependencies
 
-* [Play Framework 2.1](http://www.playframework.com/)
+* [Play Framework](http://www.playframework.com/)
 
 ## Installation
 

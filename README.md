@@ -21,18 +21,26 @@ For more information, visit the official [PlayConsole](http://www.playframework.
 
 Always clean and compile the project before a commit. *It wouldn't hurt to do this often, especially when adding/removing classes or views.*
 
-    play clean
-    play compile
+    clean
+    compile
 
 ### Development
-    play run
+
+    run
 
 ### Test
-    play test
+
+    test
 
 ### Production
 
 Coming soon.
+
+### Extras
+
+Adding a ~ before run or test will make it run perpetually. Also, you can run outside the PlayConsole using one line:
+
+    play clean compile run
 
 ## Warnings
 

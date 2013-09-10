@@ -23,7 +23,8 @@ object ApplicationBuild extends Build {
         val ta: Tests.Argument = arg.asInstanceOf[Tests.Argument]
         val newArg = if(ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
       } yield newArg
-    }
+    },
+    sbt.Keys.fork in Test := false
   )
 
 }

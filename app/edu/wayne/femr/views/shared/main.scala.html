@@ -1,25 +1,22 @@
 @(title: String)(content: Html)
 
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <title>@title | fEMR - The free EMR</title>
+<html class="no-js">
+  <head>
+    <title>@title | fEMR - The free EMR</title>
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
 
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/bootstrap.min.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
+    <link rel="stylesheet" href="@routes.Assets.at("css/bootstrap.min.css")">
 
-        <script type="text/javascript" src="@routes.Assets.at("js/modernizr-2.6.2.min.js")"></script>
-    </head>
-    <body>
-        @content
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script type="text/javascript" src="@routes.Assets.at("js/jquery-2.0.3.min.js")"><\/script>')</script>
-    </body>
+    <script type="text/javascript" src="@routes.Assets.at("js/modernizr-2.6.2.min.js")"></script>
+  </head>
+  <body>
+    @content
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script type="text/javascript" src="@routes.Assets.at("js/jquery-2.0.3.min.js")"><\/script>')</script>
+  </body>
 </html>

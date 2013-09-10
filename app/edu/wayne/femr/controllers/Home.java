@@ -5,7 +5,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class Home extends Controller {
-    public static Result index() {
+
+    public Result index() {
         return ok(index.render("fEMR - The free EMR"));
     }
 }

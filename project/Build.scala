@@ -12,7 +12,9 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaEbean,
-    "com.google.inject" % "guice" % "3.0"
+    "com.google.inject" % "guice" % "3.0",
+    "mysql" % "mysql-connector-java" % "5.1.18",
+    "org.mindrot" % "jbcrypt" % "0.3m"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
@@ -20,8 +22,8 @@ object ApplicationBuild extends Build {
     testOptions in Test ~= { args =>
       for {
         arg <- args
-        val ta: Tests.Argument = arg.asInstanceOf[Tests.Argument]
-        val newArg = if(ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
+        ta: Tests.Argument = arg.asInstanceOf[Tests.Argument]
+        newArg = if(ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
       } yield newArg
     },
     sbt.Keys.fork in Test := false

@@ -3,6 +3,8 @@
 # ~~~~
 
 # Home page
+POST    /login                      @edu.wayne.femr.controllers.SessionsController.createPost()
+GET     /login                      @edu.wayne.femr.controllers.SessionsController.createGet()
 GET     /                           @edu.wayne.femr.controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path

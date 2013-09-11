@@ -5,18 +5,18 @@ import play.Play;
 
 public class BCryptPasswordEncryptor implements IPasswordEncryptor {
     @Override
-    public String hashPassword(String password) {
-        return this.hashPassword(password, Play.application().configuration().getInt("bcrypt.workFactor"));
+    public String encryptPassword(String password) {
+        return this.encryptPassword(password, Play.application().configuration().getInt("bcrypt.workFactor"));
     }
 
     @Override
-    public String hashPassword(String password, int workFactor) {
+    public String encryptPassword(String password, int workFactor) {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(workFactor));
         return hashedPassword;
     }
 
     @Override
-    public boolean checkPassword(String password, String hashedPassword) {
+    public boolean verifyPassword(String password, String hashedPassword) {
         return BCrypt.checkpw(password, hashedPassword);
     }
 }

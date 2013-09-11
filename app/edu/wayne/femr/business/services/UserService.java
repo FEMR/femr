@@ -5,19 +5,23 @@ import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import edu.wayne.femr.data.daos.IRepository;
 import edu.wayne.femr.data.models.User;
+import edu.wayne.femr.util.encryption.IPasswordEncryptor;
 
 public class UserService implements IUserService {
 
     private IRepository<User> userRepository;
+    private IPasswordEncryptor passwordEncryptor;
 
     @Inject
-    public UserService(IRepository<User> userRepository) {
+    public UserService(IRepository<User> userRepository, IPasswordEncryptor passwordEncryptor) {
         this.userRepository = userRepository;
+        this.passwordEncryptor = passwordEncryptor;
     }
 
     @Override
     public User createUser(String firstName, String lastName, String email, String password) {
-        User newUser = new User(firstName, lastName, email, password);
+        String encryptedPassword = passwordEncryptor.encryptPassword(password);
+        User newUser = new User(firstName, lastName, email, encryptedPassword);
 
         return userRepository.create(newUser);
     }

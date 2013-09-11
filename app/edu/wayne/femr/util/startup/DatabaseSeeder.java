@@ -27,7 +27,7 @@ public class DatabaseSeeder {
             String defaultAdminPassword = Play.application().configuration().getString("default.admin.password");
 
             IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
-            String encryptedPassword = encryptor.hashPassword(defaultAdminPassword);
+            String encryptedPassword = encryptor.encryptPassword(defaultAdminPassword);
 
             User adminUser = new User("admin", "admin", defaultAdminUsername, encryptedPassword);
 

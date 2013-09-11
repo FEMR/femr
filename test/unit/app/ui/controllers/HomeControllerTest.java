@@ -1,8 +1,7 @@
-package unit.app.controllers;
+package unit.app.ui.controllers;
 
-import edu.wayne.femr.controllers.SessionsController;
-import edu.wayne.femr.views.html.sessions.create;
-import mock.edu.wayne.femr.business.services.MockSessionsService;
+import edu.wayne.femr.ui.controllers.HomeController;
+import edu.wayne.femr.ui.views.html.home.index;
 import org.junit.Before;
 import org.junit.Test;
 import play.api.templates.Html;
@@ -12,36 +11,34 @@ import play.test.Helpers;
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
-public class SessionsControllerTest {
+public class HomeControllerTest {
 
-    public SessionsController sessionsController;
-    public MockSessionsService sessionsService;
+    public HomeController homeController;
 
     @Before
-    public void before() {
-        sessionsService = new MockSessionsService();
-        sessionsController = new SessionsController(sessionsService);
+    public void setup() {
+        homeController = new HomeController();
     }
 
     @Test
-    public void testCreateActionRendersAResult() {
-        Result result = sessionsController.create();
+    public void testIndexActionRendersAResult() {
+        Result result = homeController.index();
         assertThat(result).isNotNull();
     }
 
     @Test
-    public void testCreateActionRendersIndexView() {
-        Html expectedHtml = create.render();
+    public void testIndexActionRendersIndexView() {
+        Html expectedHtml = index.render();
 
-        Result result = sessionsController.create();
+        Result result = homeController.index();
 
         assertThat(result);
         assertThat(contentAsString(result)).isEqualTo(contentAsString(expectedHtml));
     }
 
     @Test
-    public void testCreateActionReturnsStatusCode200() {
-        Result result = sessionsController.create();
+    public void testIndexActionReturnsStatusCode200() {
+        Result result = homeController.index();
 
         int expectedStatus = Helpers.OK;
 
@@ -49,8 +46,8 @@ public class SessionsControllerTest {
     }
 
     @Test
-    public void testCreateActionReturnsProperHeaders() {
-        Result result = sessionsController.create();
+    public void testIndexActionReturnsProperHeaders() {
+        Result result = homeController.index();
 
 
         String expectedCharset = "utf-8";

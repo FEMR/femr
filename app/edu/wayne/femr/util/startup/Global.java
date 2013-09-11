@@ -1,4 +1,4 @@
-package edu.wayne.femr;
+package edu.wayne.femr.util.startup;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

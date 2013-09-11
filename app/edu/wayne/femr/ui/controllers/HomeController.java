@@ -1,6 +1,6 @@
-package edu.wayne.femr.controllers;
+package edu.wayne.femr.ui.controllers;
 
-import edu.wayne.femr.views.html.home.index;
+import edu.wayne.femr.ui.views.html.home.index;
 import play.mvc.Controller;
 import play.mvc.Result;
 

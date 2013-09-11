@@ -1,10 +1,10 @@
-package edu.wayne.femr.controllers;
+package edu.wayne.femr.ui.controllers;
 
 import com.google.inject.Inject;
 import edu.wayne.femr.business.services.ISessionService;
 import edu.wayne.femr.data.models.User;
-import edu.wayne.femr.models.sessions.CreateViewModel;
-import edu.wayne.femr.views.html.sessions.create;
+import edu.wayne.femr.ui.models.sessions.CreateViewModel;
+import edu.wayne.femr.ui.views.html.sessions.create;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;

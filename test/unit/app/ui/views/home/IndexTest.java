@@ -1,4 +1,4 @@
-package unit.app.views.home;
+package unit.app.ui.views.home;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,7 @@ public class IndexTest {
 
     @Before
     public void before() {
-        html = edu.wayne.femr.views.html.home.index.render();
+        html = edu.wayne.femr.ui.views.html.home.index.render();
     }
 
     @Test

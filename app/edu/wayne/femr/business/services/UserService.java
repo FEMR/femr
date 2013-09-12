@@ -32,4 +32,11 @@ public class UserService implements IUserService {
 
         return userRepository.findOne(query);
     }
+
+    @Override
+    public User findById(int id) {
+        ExpressionList<User> query = Ebean.find(User.class).where().eq("id", id);
+
+        return userRepository.findOne(query);
+    }
 }

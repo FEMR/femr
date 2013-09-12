@@ -5,7 +5,7 @@ import com.avaje.ebean.ExpressionList;
 import java.util.List;
 
 public interface IRepository<T> {
-    int count();
+    int count(Class<T> clazz);
     T create(T entity);
     List<T> find(ExpressionList<T> query);
     T findOne(ExpressionList<T> query);

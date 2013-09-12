@@ -2,15 +2,14 @@ package edu.wayne.femr.data.daos;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
-import com.google.inject.TypeLiteral;
 
 import java.util.List;
 
 public class Repository<T> implements IRepository<T> {
 
     @Override
-    public int count() {
-        return Ebean.find(new TypeLiteral<T>() {}.getRawType()).findRowCount();
+    public int count(Class<T> clazz) {
+        return Ebean.find(clazz).findRowCount();
     }
 
     @Override

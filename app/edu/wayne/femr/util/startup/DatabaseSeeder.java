@@ -20,7 +20,7 @@ public class DatabaseSeeder {
     }
 
     private void seedAdminUser() {
-        int userCount = userRepository.count();
+        int userCount = userRepository.count(User.class);
 
         if (userCount == 0) {
             String defaultAdminUsername = Play.application().configuration().getString("default.admin.username");
@@ -29,7 +29,7 @@ public class DatabaseSeeder {
             IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
             String encryptedPassword = encryptor.encryptPassword(defaultAdminPassword);
 
-            User adminUser = new User("admin", "admin", defaultAdminUsername, encryptedPassword);
+            User adminUser = new User("Administrator", "", defaultAdminUsername, encryptedPassword);
 
             userRepository.create(adminUser);
         }

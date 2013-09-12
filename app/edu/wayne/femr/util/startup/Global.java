@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import edu.wayne.femr.util.dependencyinjection.BusinessLayerModule;
 import edu.wayne.femr.util.dependencyinjection.DataLayerModule;
+import edu.wayne.femr.util.dependencyinjection.UtilitiesModule;
 import play.Application;
 import play.GlobalSettings;
 
@@ -13,7 +14,8 @@ public class Global extends GlobalSettings {
 
     @Override
     public void onStart(Application app) {
-//        new DatabaseSeeder().seed();
+        super.onStart(app);
+        new DatabaseSeeder().seed();
     }
 
     @Override
@@ -22,6 +24,6 @@ public class Global extends GlobalSettings {
     }
 
     private static Injector createInjector() {
-        return Guice.createInjector(new BusinessLayerModule(), new DataLayerModule());
+        return Guice.createInjector(new BusinessLayerModule(), new DataLayerModule(), new UtilitiesModule());
     }
 }

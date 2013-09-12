@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET     /logout                     @edu.wayne.femr.ui.controllers.SessionsController.delete()
 POST    /login                      @edu.wayne.femr.ui.controllers.SessionsController.createPost()
 GET     /login                      @edu.wayne.femr.ui.controllers.SessionsController.createGet()
 GET     /                           @edu.wayne.femr.ui.controllers.HomeController.index()

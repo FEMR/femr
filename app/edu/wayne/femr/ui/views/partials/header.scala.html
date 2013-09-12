@@ -1,0 +1,13 @@
+@(currentUser: edu.wayne.femr.data.models.User = null)
+
+@import edu.wayne.femr.ui.views.html.partials
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    @if(currentUser != null) {
+      @partials.authenticated(currentUser)
+    } else {
+      @partials.anonymous()
+    }
+  </div>
+</div>

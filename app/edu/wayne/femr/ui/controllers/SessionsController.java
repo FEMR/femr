@@ -1,6 +1,7 @@
 package edu.wayne.femr.ui.controllers;
 
 import com.google.inject.Inject;
+import edu.wayne.femr.business.models.ServiceResponse;
 import edu.wayne.femr.business.services.ISessionService;
 import edu.wayne.femr.data.models.User;
 import edu.wayne.femr.ui.models.sessions.CreateViewModel;
@@ -8,12 +9,11 @@ import edu.wayne.femr.ui.views.html.sessions.create;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Results;
 
 public class SessionsController extends Controller {
 
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
-    private ISessionService sessionsService;
+    private final ISessionService sessionsService;
 
     @Inject
     public SessionsController(ISessionService sessionsService) {
@@ -21,13 +21,29 @@ public class SessionsController extends Controller {
     }
 
     public Result createGet() {
+        ServiceResponse<User> response = sessionsService.getCurrentUserSession();
+
+        if (response.isValid()) {
+            return redirect(routes.HomeController.index());
+        }
+
         return ok(create.render(createViewModelForm));
     }
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        User user = sessionsService.createSession(viewModel.email, viewModel.password);
+        ServiceResponse<User> user = sessionsService.createSession(viewModel.email, viewModel.password);
 
-        return Results.TODO;
+        if (user.isValid()) {
+            return redirect(routes.HomeController.index());
+        }
+
+        return ok(create.render(createViewModelForm));
+    }
+
+    public Result delete() {
+        sessionsService.invalidateCurrentUserSession();
+
+        return redirect(routes.HomeController.index());
     }
 }

@@ -1,5 +1,7 @@
-@import edu.wayne.femr.ui.views.html.shared.main
+@(currentUser: edu.wayne.femr.data.models.User = null)
 
-@main("Home")(null)(null) {
+@import edu.wayne.femr.ui.views.html.layouts.main
+
+@main("Home", currentUser) {
   <p>fEMR - The free EMR</p>
 }

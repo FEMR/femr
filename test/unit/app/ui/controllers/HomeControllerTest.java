@@ -1,7 +1,7 @@
-package unit.app.controllers;
+package unit.app.ui.controllers;
 
-import edu.wayne.femr.controllers.HomeController;
-import edu.wayne.femr.views.html.home.index;
+import edu.wayne.femr.ui.controllers.HomeController;
+import edu.wayne.femr.ui.views.html.home.index;
 import org.junit.Before;
 import org.junit.Test;
 import play.api.templates.Html;
@@ -16,7 +16,7 @@ public class HomeControllerTest {
     public HomeController homeController;
 
     @Before
-    public void before() {
+    public void setup() {
         homeController = new HomeController();
     }
 

@@ -2,9 +2,9 @@ package femr.util.startup;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import femr.util.dependencyinjection.BusinessLayerModule;
-import femr.util.dependencyinjection.DataLayerModule;
-import femr.util.dependencyinjection.UtilitiesModule;
+import femr.util.dependencyinjection.modules.BusinessLayerModule;
+import femr.util.dependencyinjection.modules.DataLayerModule;
+import femr.util.dependencyinjection.modules.UtilitiesModule;
 import play.Application;
 import play.GlobalSettings;
 

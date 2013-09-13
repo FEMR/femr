@@ -11,7 +11,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class SessionsController extends Controller {
-
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
     private final ISessionService sessionsService;
 

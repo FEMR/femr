@@ -29,7 +29,11 @@ public class DatabaseSeeder {
             IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
             String encryptedPassword = encryptor.encryptPassword(defaultAdminPassword);
 
-            User adminUser = new User("Administrator", "", defaultAdminUsername, encryptedPassword);
+            User adminUser = new User();
+            adminUser.setFirstName("Administrator");
+            adminUser.setLastName("");
+            adminUser.setEmail(defaultAdminUsername);
+            adminUser.setPassword(encryptedPassword);
 
             userRepository.create(adminUser);
         }

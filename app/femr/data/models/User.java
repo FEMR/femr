@@ -8,7 +8,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User implements IUser {
-
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
@@ -20,13 +19,6 @@ public class User implements IUser {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-
-    public User(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
 
     @Override
     public int getId() {
@@ -42,6 +34,7 @@ public class User implements IUser {
         return firstName;
     }
 
+    @Override
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -51,6 +44,7 @@ public class User implements IUser {
         return lastName;
     }
 
+    @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -60,6 +54,7 @@ public class User implements IUser {
         return email;
     }
 
+    @Override
     public void setEmail(String email) {
         this.email = email;
     }
@@ -69,6 +64,7 @@ public class User implements IUser {
         return password;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }

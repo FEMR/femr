@@ -1,4 +1,4 @@
-package femr.util.dependencyinjection;
+package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import femr.business.services.ISessionService;

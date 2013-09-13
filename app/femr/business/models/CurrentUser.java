@@ -5,7 +5,6 @@ public class CurrentUser {
     private String lastName;
     private String email;
 
-
     public CurrentUser(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;

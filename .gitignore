@@ -17,6 +17,7 @@ lib
 log
 logs
 modules
+!app/**/**/**/modules
 precompiled
 project/project
 project/target

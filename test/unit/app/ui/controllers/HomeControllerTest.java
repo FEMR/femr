@@ -2,6 +2,7 @@ package unit.app.ui.controllers;
 
 import edu.wayne.femr.ui.controllers.HomeController;
 import edu.wayne.femr.ui.views.html.home.index;
+import mock.edu.wayne.femr.business.services.MockSessionsService;
 import org.junit.Before;
 import org.junit.Test;
 import play.api.templates.Html;
@@ -14,10 +15,12 @@ import static play.test.Helpers.*;
 public class HomeControllerTest {
 
     public HomeController homeController;
+    public MockSessionsService mockSessionService;
 
     @Before
     public void setup() {
-        homeController = new HomeController();
+        mockSessionService = new MockSessionsService();
+        homeController = new HomeController(mockSessionService);
     }
 
     @Test
@@ -28,7 +31,7 @@ public class HomeControllerTest {
 
     @Test
     public void testIndexActionRendersIndexView() {
-        Html expectedHtml = index.render();
+        Html expectedHtml = index.render(null);
 
         Result result = homeController.index();
 

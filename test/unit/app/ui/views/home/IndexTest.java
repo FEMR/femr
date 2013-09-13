@@ -13,7 +13,7 @@ public class IndexTest {
 
     @Before
     public void before() {
-        html = edu.wayne.femr.ui.views.html.home.index.render();
+        html = edu.wayne.femr.ui.views.html.home.index.render(null);
     }
 
     @Test

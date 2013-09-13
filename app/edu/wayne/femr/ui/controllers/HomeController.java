@@ -1,9 +1,9 @@
 package edu.wayne.femr.ui.controllers;
 
 import com.google.inject.Inject;
+import edu.wayne.femr.business.models.CurrentUser;
 import edu.wayne.femr.business.models.ServiceResponse;
 import edu.wayne.femr.business.services.ISessionService;
-import edu.wayne.femr.data.models.User;
 import edu.wayne.femr.ui.views.html.home.index;
 import edu.wayne.femr.ui.views.html.sessions.create;
 import play.mvc.Controller;
@@ -19,7 +19,7 @@ public class HomeController extends Controller {
     }
 
     public Result index() {
-        ServiceResponse<User> currentUserSession = sessionService.getCurrentUserSession();
+        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
 
         if (currentUserSession.isValid()) {
             return ok(index.render(currentUserSession.getResponseObject()));

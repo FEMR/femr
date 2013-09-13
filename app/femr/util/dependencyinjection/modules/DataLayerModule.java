@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.models.IUser;
+import femr.common.models.IUser;
 import femr.util.dependencyinjection.providers.UserProvider;
 
 public class DataLayerModule extends AbstractModule {

@@ -1,4 +1,4 @@
-package femr.business.models;
+package femr.business.dtos;
 
 import java.util.HashMap;
 import java.util.Map;

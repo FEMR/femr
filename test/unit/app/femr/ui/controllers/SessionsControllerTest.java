@@ -54,7 +54,6 @@ public class SessionsControllerTest {
     public void testGetCreateActionReturnsProperHeaders() {
         Result result = sessionsController.createGet();
 
-
         String expectedCharset = "utf-8";
         String expectedContentType = "text/html";
 

@@ -1,4 +1,4 @@
-package femr.util.encryption;
+package femr.util.encryptions;
 
 import org.mindrot.jbcrypt.BCrypt;
 import play.Play;

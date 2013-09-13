@@ -1,4 +1,4 @@
-package femr.data.models;
+package femr.common.models;
 
 public interface IUser {
 

@@ -52,7 +52,6 @@ public class HomeControllerTest {
     public void testIndexActionReturnsProperHeaders() {
         Result result = homeController.index();
 
-
         String expectedCharset = "utf-8";
         String expectedContentType = "text/html";
 

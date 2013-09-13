@@ -1,4 +1,4 @@
-package femr.business.models;
+package femr.business.dtos;
 
 public class CurrentUser {
     private String firstName;

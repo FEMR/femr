@@ -1,4 +1,4 @@
-package femr.util.encryption;
+package femr.util.encryptions;
 
 public interface IPasswordEncryptor {
     String encryptPassword(String password);

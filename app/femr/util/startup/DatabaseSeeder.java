@@ -3,8 +3,8 @@ package femr.util.startup;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.User;
-import femr.util.encryption.BCryptPasswordEncryptor;
-import femr.util.encryption.IPasswordEncryptor;
+import femr.util.encryptions.BCryptPasswordEncryptor;
+import femr.util.encryptions.IPasswordEncryptor;
 import play.Play;
 
 public class DatabaseSeeder {

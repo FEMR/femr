@@ -1,8 +1,8 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.models.CurrentUser;
-import femr.business.models.ServiceResponse;
+import femr.business.dtos.CurrentUser;
+import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISessionService;
 import femr.ui.views.html.home.index;
 import femr.ui.views.html.sessions.create;

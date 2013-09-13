@@ -1,10 +1,10 @@
 package femr.business.services;
 
 import com.google.inject.Inject;
-import femr.business.models.CurrentUser;
-import femr.business.models.ServiceResponse;
-import femr.data.models.IUser;
-import femr.util.encryption.IPasswordEncryptor;
+import femr.business.dtos.CurrentUser;
+import femr.business.dtos.ServiceResponse;
+import femr.common.models.IUser;
+import femr.util.encryptions.IPasswordEncryptor;
 import play.Logger;
 
 import static play.mvc.Controller.session;

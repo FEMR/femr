@@ -1,9 +1,9 @@
 package femr.business.services;
 
-import femr.data.models.IUser;
+import femr.common.models.IUser;
 
 public interface IUserService {
-    IUser createUser(String firstName, String lastName, String email, String password);
+    IUser createUser(IUser user);
 
     IUser findByEmail(String email);
 

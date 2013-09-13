@@ -8,7 +8,7 @@ import java.util.List;
 public class Repository<T> implements IRepository<T> {
 
     @Override
-    public int count(Class<T> clazz) {
+    public int count(Class<? extends T> clazz) {
         return Ebean.find(clazz).findRowCount();
     }
 
@@ -19,12 +19,12 @@ public class Repository<T> implements IRepository<T> {
     }
 
     @Override
-    public List<T> find(ExpressionList<T> query) {
+    public List<? extends T> find(ExpressionList<? extends T> query) {
         return query.findList();
     }
 
     @Override
-    public T findOne(ExpressionList<T> query) {
+    public T findOne(ExpressionList<? extends T> query) {
         T entity = query.findUnique();
         return entity;
     }

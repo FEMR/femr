@@ -1,8 +1,9 @@
 package edu.wayne.femr.business.services;
 
 import com.google.inject.Inject;
+import edu.wayne.femr.business.models.CurrentUser;
 import edu.wayne.femr.business.models.ServiceResponse;
-import edu.wayne.femr.data.models.User;
+import edu.wayne.femr.data.models.IUser;
 import edu.wayne.femr.util.encryption.IPasswordEncryptor;
 import play.Logger;
 
@@ -20,9 +21,9 @@ public class SessionService implements ISessionService {
     }
 
     @Override
-    public ServiceResponse<User> createSession(String email, String password) {
-        User user = userService.findByEmail(email);
-        ServiceResponse<User> response = new ServiceResponse<User>();
+    public ServiceResponse<CurrentUser> createSession(String email, String password) {
+        IUser user = userService.findByEmail(email);
+        ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
         if (user == null || !passwordEncryptor.verifyPassword(password, user.getPassword())) {
             response.setValid(false);
@@ -32,22 +33,23 @@ public class SessionService implements ISessionService {
 
         session("currentUser", String.valueOf(user.getId()));
 
-        response.setResponseObject(user);
+        response.setResponseObject(createCurrentUser(user));
 
         return response;
     }
 
     @Override
-    public ServiceResponse<User> getCurrentUserSession() {
-        ServiceResponse<User> response = new ServiceResponse<>();
+    public ServiceResponse<CurrentUser> getCurrentUserSession() {
+        ServiceResponse<CurrentUser> response = new ServiceResponse<>();
         String currentUserIdString = session("currentUser");
 
         if (currentUserIdString != null || currentUserIdString == "") {
             try {
                 int currentUserId = Integer.parseInt(currentUserIdString);
-                User currentUser = userService.findById(currentUserId);
+                IUser currentUser = userService.findById(currentUserId);
+
                 if (currentUser != null) {
-                    response.setResponseObject(currentUser);
+                    response.setResponseObject(createCurrentUser(currentUser));
                     return response;
                 }
             } catch (Exception exception) {
@@ -63,5 +65,9 @@ public class SessionService implements ISessionService {
     @Override
     public void invalidateCurrentUserSession() {
         session().remove("currentUser");
+    }
+
+    private CurrentUser createCurrentUser(IUser user) {
+        return new CurrentUser(user.getFirstName(), user.getLastName(), user.getEmail());
     }
 }

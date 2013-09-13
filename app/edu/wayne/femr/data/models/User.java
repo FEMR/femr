@@ -7,12 +7,18 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements IUser {
 
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
     private int id;
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+    @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "password", nullable = false)
     private String password;
 
     public User(String firstName, String lastName, String email, String password) {
@@ -22,8 +28,7 @@ public class User {
         this.password = password;
     }
 
-    @Id
-    @Column(name = "id", unique = true, nullable = false)
+    @Override
     public int getId() {
         return id;
     }
@@ -32,7 +37,7 @@ public class User {
         this.id = id;
     }
 
-    @Column(name = "first_name", nullable = false)
+    @Override
     public String getFirstName() {
         return firstName;
     }
@@ -41,7 +46,7 @@ public class User {
         this.firstName = firstName;
     }
 
-    @Column(name = "last_name", nullable = false)
+    @Override
     public String getLastName() {
         return lastName;
     }
@@ -50,7 +55,7 @@ public class User {
         this.lastName = lastName;
     }
 
-    @Column(name = "email", nullable = false)
+    @Override
     public String getEmail() {
         return email;
     }
@@ -59,7 +64,7 @@ public class User {
         this.email = email;
     }
 
-    @Column(name = "password", nullable = false)
+    @Override
     public String getPassword() {
         return password;
     }

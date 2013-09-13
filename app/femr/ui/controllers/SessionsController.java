@@ -31,7 +31,7 @@ public class SessionsController extends Controller {
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        ServiceResponse<CurrentUser> user = sessionsService.createSession(viewModel.email, viewModel.password);
+        ServiceResponse<CurrentUser> user = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword());
 
         if (user.isValid()) {
             return redirect(routes.HomeController.index());

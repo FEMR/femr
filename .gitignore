@@ -8,6 +8,8 @@
 conf/application.*.conf
 !conf/application.example.conf
 
+femr-dev.sh
+
 # Ignore Play! working directory #
 db
 eclipse

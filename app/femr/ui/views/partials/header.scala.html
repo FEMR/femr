@@ -1,0 +1,13 @@
+@(currentUser: femr.business.models.CurrentUser = null)
+
+@import femr.ui.views.html.partials
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    @if(currentUser != null) {
+      @partials.authenticated(currentUser)
+    } else {
+      @partials.anonymous()
+    }
+  </div>
+</div>

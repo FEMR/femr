@@ -1,0 +1,21 @@
+@(currentUser: femr.business.models.CurrentUser)
+
+@import femr.ui.controllers.routes.HomeController
+@import femr.ui.controllers.routes.SessionsController
+
+<div class="navbar-header">
+  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="navbar-brand" href="@HomeController.index()">fEMR</a>
+</div>
+<div class="navbar-collapse collapse">
+  <p class="navbar-text pull-right">
+    Signed in as @currentUser.getFirstName() @currentUser.getLastName()
+    <a class="navbar-link" href="@SessionsController.delete()">
+      <span class="glyphicon glyphicon-log-out"></span>
+    </a>
+  </p>
+</div>

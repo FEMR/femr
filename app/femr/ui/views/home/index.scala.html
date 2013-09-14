@@ -2,9 +2,13 @@
 
 @import femr.ui.views.html.layouts.main
 
-@main("Home", currentUser) {
-  <div class="jumbotron">
-    <h1>Hello, @currentUser.getFirstName!</h1>
-    <p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>
-  </div>
-}
+  @top = {
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, @currentUser.getFirstName!</h1>
+        <p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>
+      </div>
+    </div>
+  }
+
+@main("Home", currentUser, outsideContainerTop = top) {}

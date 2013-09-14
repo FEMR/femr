@@ -4,6 +4,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
+import femr.business.dtos.ServiceResponse;
 import femr.common.models.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.User;
@@ -21,24 +22,40 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public IUser createUser(IUser user) {
+    public ServiceResponse<IUser> createUser(IUser user) {
+        ServiceResponse<IUser> response = new ServiceResponse<>();
         encryptAndSetUserPassword(user);
 
-        return userRepository.create(user);
+        if (userExistsWithEmail(user.getEmail(), response)) {
+            return response;
+        }
+
+        IUser newUser = userRepository.create(user);
+        response.setResponseObject(newUser);
+
+        return response;
     }
 
     @Override
-    public IUser findByEmail(String email) {
+    public ServiceResponse<IUser> findByEmail(String email) {
+        ServiceResponse<IUser> response = new ServiceResponse<>();
         ExpressionList<User> query = getQuery().where().eq("email", email);
 
-        return userRepository.findOne(query);
+        IUser user = userRepository.findOne(query);
+        response.setResponseObject(user);
+
+        return response;
     }
 
     @Override
-    public IUser findById(int id) {
+    public ServiceResponse<IUser> findById(int id) {
+        ServiceResponse<IUser> response = new ServiceResponse<>();
         ExpressionList<User> query = getQuery().where().eq("id", id);
 
-        return userRepository.findOne(query);
+        IUser user = userRepository.findOne(query);
+        response.setResponseObject(user);
+
+        return response;
     }
 
     private Query<User> getQuery() {
@@ -49,5 +66,16 @@ public class UserService implements IUserService {
         String encryptedPassword = passwordEncryptor.encryptPassword(user.getPassword());
 
         user.setPassword(encryptedPassword);
+    }
+
+    private boolean userExistsWithEmail(String email, ServiceResponse<IUser> response) {
+        ServiceResponse<IUser> existingUserResponse = findByEmail(email);
+
+        if (!existingUserResponse.isNullResponse()) {
+            response.setSuccessful(false);
+            response.addError("global", "User with email exists.");
+            return true;
+        }
+        return false;
     }
 }

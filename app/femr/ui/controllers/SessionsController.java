@@ -22,7 +22,7 @@ public class SessionsController extends Controller {
     public Result createGet() {
         ServiceResponse<CurrentUser> response = sessionsService.getCurrentUserSession();
 
-        if (response.isValid()) {
+        if (response.isSuccessful()) {
             return redirect(routes.HomeController.index());
         }
 
@@ -31,9 +31,9 @@ public class SessionsController extends Controller {
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        ServiceResponse<CurrentUser> user = sessionsService.createSession(viewModel.email, viewModel.password);
+        ServiceResponse<CurrentUser> user = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword());
 
-        if (user.isValid()) {
+        if (user.isSuccessful()) {
             return redirect(routes.HomeController.index());
         }
 

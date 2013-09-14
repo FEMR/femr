@@ -8,10 +8,12 @@
   }
 
 @main("Login", styles = styles) {
+  <div class="container">
   @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
     <h2 class="form-signin-heading">Please sign in</h2>
     <input type="text" id="email" name="email" class="form-control" placeholder="Email Address" autofocus="" />
     <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
   }
+  </div>
 }

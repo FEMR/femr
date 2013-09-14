@@ -21,7 +21,7 @@ public class HomeController extends Controller {
     public Result index() {
         ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
 
-        if (currentUserSession.isValid()) {
+        if (currentUserSession.isSuccessful()) {
             return ok(index.render(currentUserSession.getResponseObject()));
         }
 

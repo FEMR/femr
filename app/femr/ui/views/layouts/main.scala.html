@@ -1,5 +1,6 @@
 @(title: String, currentUser: femr.business.dtos.CurrentUser = null, styles: Html = Html(""), scripts: Html = Html(""))(content: Html)
 
+@import femr.ui.views.html.partials.footer
 @import femr.ui.views.html.partials.header
 
 <!DOCTYPE html>
@@ -14,6 +15,7 @@
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
 
     <link rel="stylesheet" href="@routes.Assets.at("css/bootstrap.min.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("css/femr.css")"/>
     @styles
 
     <script type="text/javascript" src="@routes.Assets.at("js/modernizr-2.6.2.min.js")"></script>
@@ -21,13 +23,15 @@
   <body>
 
     @header(currentUser)
-
     <div class="container">
       @content
+
+      @footer()
     </div>
 
+
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script type="text/javascript" src="@routes.Assets.at("js/jquery-2.0.3.min.js")"><\/script>')</script>
+    <script>window.jQuery || document.write ( '<script type="text/javascript" src="  @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
     <script type="text/javascript" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
     @scripts
   </body>

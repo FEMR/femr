@@ -1,11 +1,12 @@
 package femr.business.services;
 
+import femr.business.dtos.ServiceResponse;
 import femr.common.models.IUser;
 
 public interface IUserService {
-    IUser createUser(IUser user);
+    ServiceResponse<IUser> createUser(IUser user);
 
-    IUser findByEmail(String email);
+    ServiceResponse<IUser> findByEmail(String email);
 
-    IUser findById(int id);
+    ServiceResponse<IUser> findById(int id);
 }

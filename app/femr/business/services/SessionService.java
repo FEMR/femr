@@ -5,6 +5,7 @@ import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IUser;
 import femr.util.encryptions.IPasswordEncryptor;
+import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
 import static play.mvc.Controller.session;
@@ -22,19 +23,27 @@ public class SessionService implements ISessionService {
 
     @Override
     public ServiceResponse<CurrentUser> createSession(String email, String password) {
-        IUser user = userService.findByEmail(email);
+        ServiceResponse<IUser> userWithEmail = userService.findByEmail(email);
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
-        if (user == null || !passwordEncryptor.verifyPassword(password, user.getPassword())) {
-            response.setValid(false);
-            response.addError("", "Invalid email or password.");
-            return response;
+        if (userWithEmail.isNullResponse()) {
+            return invalidCredentials(response);
+        }
+
+        IUser user = userWithEmail.getResponseObject();
+        if (!passwordEncryptor.verifyPassword(password, user.getPassword())) {
+            return invalidCredentials(response);
         }
 
         session("currentUser", String.valueOf(user.getId()));
-
         response.setResponseObject(createCurrentUser(user));
 
+        return response;
+    }
+
+    private ServiceResponse<CurrentUser> invalidCredentials(ServiceResponse<CurrentUser> response) {
+        response.setSuccessful(false);
+        response.addError("global", "Invalid email or password.");
         return response;
     }
 
@@ -43,13 +52,15 @@ public class SessionService implements ISessionService {
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
         String currentUserIdString = session("currentUser");
 
-        if (currentUserIdString != null || currentUserIdString == "") {
+        if (StringUtils.isNotNullOrWhiteSpace(currentUserIdString)) {
             try {
                 int currentUserId = Integer.parseInt(currentUserIdString);
-                IUser currentUser = userService.findById(currentUserId);
+                ServiceResponse<IUser> findByIdResponse = userService.findById(currentUserId);
 
-                if (currentUser != null) {
-                    response.setResponseObject(createCurrentUser(currentUser));
+                if (!findByIdResponse.isNullResponse()) {
+                    IUser user = findByIdResponse.getResponseObject();
+                    response.setResponseObject(createCurrentUser(user));
+
                     return response;
                 }
             } catch (Exception exception) {
@@ -57,7 +68,7 @@ public class SessionService implements ISessionService {
             }
         }
 
-        response.setValid(false);
+        response.setSuccessful(false);
 
         return response;
     }

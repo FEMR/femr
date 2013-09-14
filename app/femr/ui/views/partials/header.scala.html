@@ -7,7 +7,7 @@
     @if(currentUser != null) {
       @partials.authenticated(currentUser)
     } else {
-      @partials.anonymous
+      @partials.anonymous()
     }
   </div>
 </div>

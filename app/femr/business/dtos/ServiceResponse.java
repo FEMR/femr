@@ -4,22 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceResponse<T> {
-    private boolean valid;
+    private boolean successful;
     private T responseObject;
     private Map<String, String> errors;
 
     public ServiceResponse() {
-        this.valid = true;
+        this.successful = true;
         this.responseObject = null;
         this.errors = new HashMap<>();
     }
 
-    public boolean isValid() {
-        return valid;
+    public boolean isSuccessful() {
+        return successful;
     }
 
-    public void setValid(boolean valid) {
-        this.valid = valid;
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
+    }
+
+    public boolean isNullResponse() {
+        return responseObject == null;
     }
 
     public T getResponseObject() {

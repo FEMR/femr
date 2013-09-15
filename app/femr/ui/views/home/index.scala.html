@@ -11,4 +11,10 @@
     </div>
   }
 
-@main("Home", currentUser, outsideContainerTop = top) {}
+@main("Home", currentUser, outsideContainerTop = top) {
+  <ul>
+  @for(role <- currentUser.getRoles) {
+    <li>@role.getName</li>
+  }
+  </ul>
+}

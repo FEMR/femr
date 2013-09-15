@@ -39,7 +39,7 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<IUser> findByEmail(String email) {
         ServiceResponse<IUser> response = new ServiceResponse<>();
-        ExpressionList<User> query = getQuery().where().eq("email", email);
+        ExpressionList<User> query = getQuery().fetch("roles").where().eq("email", email);
 
         IUser user = userRepository.findOne(query);
         response.setResponseObject(user);
@@ -50,7 +50,7 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<IUser> findById(int id) {
         ServiceResponse<IUser> response = new ServiceResponse<>();
-        ExpressionList<User> query = getQuery().where().eq("id", id);
+        ExpressionList<User> query = getQuery().fetch("roles").where().eq("id", id);
 
         IUser user = userRepository.findOne(query);
         response.setResponseObject(user);

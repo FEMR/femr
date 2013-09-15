@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import java.util.List;
+
 public interface IUser {
 
     int getId();
@@ -19,4 +21,10 @@ public interface IUser {
     String getPassword();
 
     void setPassword(String password);
+
+    List<IRole> getRoles();
+
+    void setRoles(List<IRole> roles);
+
+    void addRole(IRole role);
 }

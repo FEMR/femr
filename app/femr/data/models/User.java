@@ -1,11 +1,10 @@
 package femr.data.models;
 
+import femr.common.models.IRole;
 import femr.common.models.IUser;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -21,6 +20,12 @@ public class User implements IUser {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Role.class)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = {@JoinColumn(name = "users_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "roles_id", referencedColumnName = "id")})
+    private List<IRole> roles;
 
     @Override
     public int getId() {
@@ -69,5 +74,20 @@ public class User implements IUser {
     @Override
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public List<IRole> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public void setRoles(List<IRole> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public void addRole(IRole role) {
+        roles.add(role);
     }
 }

@@ -79,6 +79,6 @@ public class SessionService implements ISessionService {
     }
 
     private CurrentUser createCurrentUser(IUser user) {
-        return new CurrentUser(user.getFirstName(), user.getLastName(), user.getEmail());
+        return new CurrentUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles());
     }
 }

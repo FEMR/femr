@@ -1,7 +1,9 @@
 package femr.util.startup;
 
+import com.avaje.ebean.Ebean;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
+import femr.data.models.Role;
 import femr.data.models.User;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
@@ -10,9 +12,11 @@ import play.Play;
 public class DatabaseSeeder {
 
     private final IRepository<User> userRepository;
+    private final Repository<Role> roleRepository;
 
     public DatabaseSeeder() {
         userRepository = new Repository<User>();
+        roleRepository = new Repository<Role>();
     }
 
     public void seed() {
@@ -34,6 +38,8 @@ public class DatabaseSeeder {
             adminUser.setLastName("");
             adminUser.setEmail(defaultAdminUsername);
             adminUser.setPassword(encryptedPassword);
+            Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
+            adminUser.addRole(role);
 
             userRepository.create(adminUser);
         }

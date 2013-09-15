@@ -14,4 +14,6 @@ public interface IRepository<T> {
     T findOne(ExpressionList<? extends T> query);
 
     T update(T entity);
+
+    List<? extends T> findAll(Class<? extends T> clazz);
 }

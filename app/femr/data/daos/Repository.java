@@ -19,6 +19,11 @@ public class Repository<T> implements IRepository<T> {
     }
 
     @Override
+    public List<? extends T> findAll(Class<? extends T> clazz) {
+        return Ebean.find(clazz).findList();
+    }
+
+    @Override
     public List<? extends T> find(ExpressionList<? extends T> query) {
         return query.findList();
     }

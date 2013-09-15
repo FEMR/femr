@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, createForm: Form[femr.ui.models.admin.users.CreateViewModel])
+@(currentUser: femr.business.dtos.CurrentUser, roles: List[_ <: femr.common.models.IRole], createForm: Form[femr.ui.models.admin.users.CreateViewModel])
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.UsersController
@@ -11,6 +11,16 @@
     <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
     <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name"/>
     <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name"/>
+    <div>
+      <p>Groups:</p>
+      <div class="btn-group" data-toggle="buttons">
+      @for(role <- roles) {
+        <label class="btn btn-primary">
+          <input type="checkbox" name="roles" value="@role.getId"> @role.getName
+        </label>
+      }
+      </div>
+    </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
   }
 }

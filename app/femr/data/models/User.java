@@ -20,7 +20,7 @@ public class User implements IUser {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Role.class)
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Role.class, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
             joinColumns = {@JoinColumn(name = "users_id", referencedColumnName = "id")},

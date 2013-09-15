@@ -7,11 +7,17 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISessionService;
 import femr.business.services.IUserService;
 import femr.common.models.IUser;
+import femr.common.models.Roles;
+import femr.ui.helpers.security.AllowedRoles;
+import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.users.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
+@Security.Authenticated(FEMRAuthenticated.class)
+@AllowedRoles({Roles.ADMINISTRATOR})
 public class UsersController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
     private ISessionService sessionService;

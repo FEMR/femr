@@ -5,10 +5,13 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
+import femr.common.models.IRole;
 import femr.common.models.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.User;
 import femr.util.encryptions.IPasswordEncryptor;
+
+import java.util.List;
 
 public class UserService implements IUserService {
 
@@ -56,6 +59,13 @@ public class UserService implements IUserService {
         response.setResponseObject(user);
 
         return response;
+    }
+
+    @Override
+    public List<? extends IRole> findRolesForUser(int id) {
+        ExpressionList<User> query = getQuery().fetch("roles").where().eq("id", id);
+        IUser user = userRepository.findOne(query);
+        return user.getRoles();
     }
 
     private Query<User> getQuery() {

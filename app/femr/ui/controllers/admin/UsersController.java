@@ -60,15 +60,23 @@ public class UsersController extends Controller {
             checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
         }
 
-        List<? extends IRole> roles = roleService.getRolesFromIds(checkValuesAsIntegers);
-        user.setRoles((List<IRole>) roles);
-        ServiceResponse<IUser> response = userService.createUser(user);
+        ServiceResponse<IUser> response = assignRolesToUser(user, checkValuesAsIntegers);
 
         if (response.isSuccessful()) {
             return redirect(femr.ui.controllers.routes.HomeController.index());
         }
 
         return TODO;
+    }
+
+    private ServiceResponse<IUser> assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {
+        List<? extends IRole> roles = roleService.getRolesFromIds(checkValuesAsIntegers);
+        List<IRole> roleList = new ArrayList<IRole>();
+        for (IRole role : roles) {
+            roleList.add(role);
+        }
+        user.setRoles(roleList);
+        return userService.createUser(user);
     }
 
     private IUser createUser(CreateViewModel viewModel) {

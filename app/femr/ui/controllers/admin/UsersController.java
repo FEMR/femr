@@ -13,6 +13,8 @@ import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.users.CreateViewModel;
+import femr.ui.views.html.admin.users.create;
+import femr.ui.views.html.admin.users.index;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -21,6 +23,8 @@ import play.mvc.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static femr.ui.controllers.routes.HomeController;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR})
@@ -40,12 +44,20 @@ public class UsersController extends Controller {
         this.userProvider = userProvider;
     }
 
+    public Result index() {
+        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = currentUserSession.getResponseObject();
+        List<? extends IRole> roles = roleService.getAllRoles();
+
+        return ok(index.render(currentUser, roles));
+    }
+
     public Result createGet() {
         ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
         CurrentUser currentUser = currentUserSession.getResponseObject();
         List<? extends IRole> roles = roleService.getAllRoles();
 
-        return ok(femr.ui.views.html.admin.users.create.render(currentUser, roles, createViewModelForm));
+        return ok(create.render(currentUser, roles, createViewModelForm));
     }
 
     public Result createPost() {
@@ -63,7 +75,7 @@ public class UsersController extends Controller {
         ServiceResponse<IUser> response = assignRolesToUser(user, checkValuesAsIntegers);
 
         if (response.isSuccessful()) {
-            return redirect(femr.ui.controllers.routes.HomeController.index());
+            return redirect(HomeController.index());
         }
 
         return TODO;

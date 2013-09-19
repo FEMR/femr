@@ -1,12 +1,11 @@
 @(currentUser: femr.business.dtos.CurrentUser, roles: List[_ <: femr.common.models.IRole], createForm: Form[femr.ui.models.admin.users.CreateViewModel])
 
-@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.admin.routes.UsersController
 
-@main("Create User", currentUser) {
+@admin("Create User", currentUser) {
 
   @helper.form(action = UsersController.createPost()) {
-    <h2>Create User</h2>
     <input type="text" id="email" name="email" class="form-control" placeholder="Email Address" autofocus="" />
     <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
     <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name"/>

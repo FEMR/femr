@@ -2,7 +2,7 @@
 
 @import femr.ui.views.html.partials
 
-<div class="navbar navbar-inverse navbar-fixed-top">
+<header class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     @if(currentUser != null) {
       @partials.authenticated(currentUser)
@@ -10,4 +10,4 @@
       @partials.anonymous()
     }
   </div>
-</div>
+</header>

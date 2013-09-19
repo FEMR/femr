@@ -1,5 +1,114 @@
 @import femr.ui.views.html.layouts.main
 
-@main("triage",null){
 
+@top = {
+    <div class ="well hide PMH">
+        <div class="container">
+            <div class="medicalHistoryLineDivide"></div>
+            <p>Patient Medical History</p>
+
+            @*<ul class="medicalHistoryList">*@
+                @*<li>Encounter one details. Red if recent encounter.</li>*@
+                @*<li>Encounter two details. Red if recent encounter.</li>*@
+                @*<li>Encounter three details. Red if recent encounter.</li>*@
+            @*</ul>*@
+            <div class="col-sm-4">
+                <h5>Visit Number</h5>
+                <ul class="temp">
+                    <li>1</li>
+                    <li>2</li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <h5>Date</h5>
+                <ul class="temp">
+                    <li>16-Aug-10</li>
+                    <li>16-Jan-10</li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <h5>View Report</h5>
+                <ul class="temp">
+                    <li>link</li>
+                    <li>link</li>
+                </ul>
+            </div>
+
+
+            <div class="medicalHistoryLineDivide"></div>
+        </div>
+    </div>
 }
+
+@main("triage",outsideContainerTop = top){
+    <div class="row">
+        <div class ="well">
+            <div class="row">
+                <div class="btn-group-wrap">
+                    <div class="btn-group btn-group-lg">
+                        <button type="button" class="btn btn-default">New Patient</button>
+                        <button type="button" class="btn btn-default">Save Patient</button>
+                        <button type="button" class="btn btn-default">Reset</button>
+                        <button type="button" class="btn btn-default" onclick="showhistory()">History test</button>
+                    </div>
+                </div>
+            </div>
+        @*</div>*@
+    @*</div>*@
+               <br>
+            <div class="medicalHistoryLineDivide"></div>
+    <div class="row triageInputRow">
+
+         <form>
+            <div class="col-sm-4">
+                <h3>General Info</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <label>First Name:</label><input type="text" name="input_text"/><br><br>
+                <label>Last Name:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+            </div>
+            <div class="col-sm-4">
+                <h3>Vitals</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <label>First Name:</label><input type="text" name="input_text"/><br><br>
+                <label>Last Name:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+            </div>
+            <div class="col-sm-4">
+                <h3>Complaints</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <label>First Name:</label><input type="text" name="input_text"/><br><br>
+                <label>Last Name:</label><input type="text" name="input_text"/><br><br>
+                    <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                    <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                    <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                    <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                    <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+                    <label>More Stuff:</label><input type="text" name="input_text"/><br><br>
+            </div>
+         </form>
+    </div>
+    </div>
+    </div>
+}
+
+    <script>
+        function showhistory(){
+            if ($('.PMH' ).hasClass('hide')){
+                $('.PMH' ).removeClass('hide');
+            }
+            else{
+                $('.PMH' ).addClass('hide');
+            }
+        }
+    </script>

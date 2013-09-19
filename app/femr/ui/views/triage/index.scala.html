@@ -1,0 +1,113 @@
+@import femr.ui.views.html.layouts.main
+
+
+@top = {
+    <div class ="well hide patientMedicalHistory">
+        <div class="container">
+            <div class="medicalHistoryLineDivide"></div>
+            <p>Patient Medical History</p>
+
+            <div class="col-sm-4">
+                <h5 class="text-center">Visit Number</h5>
+                <ul class="list-unstyled text-center">
+                    <li>1</li>
+                    <li>2</li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <h5 class="text-center">Date</h5>
+                <ul class="list-unstyled text-center">
+                    <li>16-Aug-10</li>
+                    <li>16-Jan-10</li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <h5 class="text-center">View Report</h5>
+                <ul class="list-unstyled text-center">
+                    <li>link</li>
+                    <li>link</li>
+                </ul>
+            </div>
+
+
+            <div class="medicalHistoryLineDivide"></div>
+        </div>
+    </div>
+}
+
+@main("triage",outsideContainerTop = top){
+    <div class="row">
+        <div class ="well">
+            <div class="row">
+                <div class="btn-group-wrap">
+                    <div class="btn-group btn-group-lg">
+                        <button type="button" class="btn btn-default">New Patient</button>
+                        <button type="button" class="btn btn-default">Save Patient</button>
+                        <button type="button" class="btn btn-default">Reset</button>
+                        <button type="button" class="btn btn-default" onclick="showhistory()">History test</button>
+                    </div>
+                </div>
+            </div>
+        @*</div>*@
+    @*</div>*@
+               <br>
+            <div class="medicalHistoryLineDivide"></div>
+    <div class="row triageInputRow">
+
+         <form>
+            <div class="col-sm-4 padding-right-zero">
+                <h3 class="text-center">General Info</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <div class="text-center">
+                    <label>Patient ID:</label><input type="text" name="input_text"/><br><br>
+                    <label>First Name:</label><input type="text" name="input_text"/><br><br>
+                    <label>Last Name:</label><input type="text" name="input_text"/><br><br>
+                    <label>Location:</label><input type="text" name="input_text"/><br><br>
+                    <label>Age:</label><input type="text" name="input_text"/><br><br>
+                    <label>Gender:</label>
+                        <button type="button" class="btn btn-default">Male</button>
+                        <button type="button" class="btn btn-default">Female</button><br><br>
+                    <label>Height:</label><input type="text" name="input_text"/><br><br>
+                    <label>Weight:</label><input type="text" name="input_text"/><br><br>
+                </div>
+            </div>
+            <div class="col-sm-4 padding-right-zero">
+                <h3 class="text-center">Vitals</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <div class="text-center">
+                    <label>Blood Pressure:</label><input type="text" name="input_text"/><br><br>
+                    <label>Heart Rate:</label><input type="text" name="input_text"/><br><br>
+                    <label>Temperature:</label><input type="text" name="input_text"/><br><br>
+                    <label>Respirations:</label><input type="text" name="input_text"/><br><br>
+                    <label>Oxygen:</label><input type="text" name="input_text"/><br><br>
+                    <label>Blood Sample:</label><input type="text" name="input_text"/><br><br>
+                </div>
+            </div>
+            <div class="col-sm-4 padding-right-zero">
+                <h3 class="text-center">Complaints</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                    <div class="text-center">
+                        <label>Should:</label><input type="text" name="input_text"/><br><br>
+                        <label>This:</label><input type="text" name="input_text"/><br><br>
+                        <label>Section:</label><input type="text" name="input_text"/><br><br>
+                        <label>Even:</label><input type="text" name="input_text"/><br><br>
+                        <label>Exist:</label><input type="text" name="input_text"/><br><br>
+                        <label>?:</label><input type="text" name="input_text"/><br><br>
+                    </div>
+            </div>
+         </form>
+    </div>
+    </div>
+    </div>
+}
+
+    <script>
+        function showhistory(){
+            if ($('.patientMedicalHistory' ).hasClass('hide')){
+                $('.patientMedicalHistory' ).removeClass('hide');
+            }
+            else{
+                $('.patientMedicalHistory' ).addClass('hide');
+            }
+        }
+    </script>

@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET     /triage                     femr.ui.controllers.TriageController.index()
 POST    /admin/users/create         @femr.ui.controllers.admin.UsersController.createPost()
 GET     /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()
 GET     /logout                     @femr.ui.controllers.SessionsController.delete()

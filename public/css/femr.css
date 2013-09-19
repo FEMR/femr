@@ -1,3 +1,47 @@
 body {
   padding-top: 50px;
 }
+
+/*Triage Page*/
+.medicalHistoryLineDivide{
+    background: #000000;
+    clear: both;
+    float: none;
+    width: 100%;
+    height: 1px;
+    margin: 0 0 1.4em;
+    border: none;
+}
+.btn-group-wrap{
+    text-align: center;
+}
+.triageInputRow{
+    font-size: 12px;
+}
+.patientMedicalHistory{
+    padding-bottom: 4px !important;
+    margin-bottom: 4px; !important;
+}
+.padding-right-zero{
+    padding-right: 0px !important;
+}
+
+
+/*Universal*/
+label{
+    display: inline-block;
+    float: left;
+    clear: left;
+    text-align: right;
+    margin-right: 5px;
+}
+input{
+    border: 1px solid #989898 !important;
+    float: right;
+}
+
+input:focus {
+    outline: none !important;
+    border-color: #0033FF !important;
+    box-shadow: 0 0 5px #9ecaed !important;
+}

@@ -15,12 +15,19 @@ body {
 .btn-group-wrap{
     text-align: center;
 }
-.temp{
-    list-style-type: none;
-}
 .triageInputRow{
     font-size: 12px;
 }
+.patientMedicalHistory{
+    padding-bottom: 4px !important;
+    margin-bottom: 4px; !important;
+}
+.padding-right-zero{
+    padding-right: 0px !important;
+}
+
+
+/*Universal*/
 label{
     display: inline-block;
     float: left;
@@ -30,6 +37,7 @@ label{
 }
 input{
     border: 1px solid #989898 !important;
+    float: right;
 }
 
 input:focus {

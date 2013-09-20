@@ -1,11 +1,22 @@
 package femr.ui.models.triage;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Kevin
- * Date: 9/19/13
- * Time: 8:25 PM
- * To change this template use File | Settings | File Templates.
- */
 public class CreateViewModel {
+    private String firstName;
+    private String lastName;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 }

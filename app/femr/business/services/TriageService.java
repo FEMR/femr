@@ -1,11 +1,22 @@
 package femr.business.services;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Kevin
- * Date: 9/19/13
- * Time: 8:56 PM
- * To change this template use File | Settings | File Templates.
- */
-public class TriageService {
+import com.google.inject.Inject;
+import femr.business.dtos.ServiceResponse;
+import femr.common.models.IPatient;
+import femr.data.daos.IRepository;
+
+public class TriageService implements ITriageService {
+
+    private IRepository<IPatient> patientRepository;
+
+    @Inject
+    public TriageService(IRepository<IPatient> patientRepository){
+        this.patientRepository = patientRepository;
+    }
+
+    @Override
+    public ServiceResponse<IPatient> createPatient(IPatient patient) {
+        patientRepository.create(patient);
+        return null;
+    }
 }

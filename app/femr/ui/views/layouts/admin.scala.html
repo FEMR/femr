@@ -1,13 +1,13 @@
-@(title: String, currentUser: femr.business.dtos.CurrentUser = null,
+@(title: String, currentUser: femr.business.dtos.CurrentUser,
     styles: Html = Html(""), scripts: Html = Html(""),
     outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.UsersController
 
-@main(title) {
+@main(title, currentUser) {
   <div class="row">
-    <div class="col-md-3" style="margin-top: 40px;">
+    <div class="col-md-3 admin-left-panel">
       <div class=well>
         <ul class="nav">
           <li><a href="@UsersController.index()"><span class="glyphicon glyphicon-user"></span> Users</a></li>

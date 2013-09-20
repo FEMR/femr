@@ -3,6 +3,7 @@
 @import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
 @import femr.ui.controllers.routes.HomeController
 @import femr.ui.controllers.routes.SessionsController
+@import femr.ui.controllers.routes.TriageController
 @import femr.ui.controllers.admin.routes.AdminController
 
 <div class="navbar-header">
@@ -15,9 +16,16 @@
 </div>
 <div class="navbar-collapse collapse">
   <ul class="nav navbar-nav">
-  @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles)) {
-    <li><a href="@AdminController.index()">Admin</a></li>
-  }
+    @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
+      <li><a href="@TriageController.index()">Triage</a></li>
+      <li><a href="@TriageController.index()">Medical</a></li>
+    }
+    @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
+      <li><a href="@AdminController.index()">Research</a></li>
+    }
+    @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles)) {
+      <li><a href="@AdminController.index()">Admin</a></li>
+    }
   </ul>
   <p class="navbar-text pull-right">
     Signed in as @currentUser.getFirstName @currentUser.getLastName

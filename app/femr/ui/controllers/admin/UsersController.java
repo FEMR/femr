@@ -72,7 +72,9 @@ public class UsersController extends Controller {
             checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
         }
 
-        ServiceResponse<IUser> response = assignRolesToUser(user, checkValuesAsIntegers);
+        user = assignRolesToUser(user, checkValuesAsIntegers);
+
+        ServiceResponse<IUser> response = userService.createUser(user);
 
         if (response.isSuccessful()) {
             return redirect(HomeController.index());
@@ -81,14 +83,16 @@ public class UsersController extends Controller {
         return TODO;
     }
 
-    private ServiceResponse<IUser> assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {
+    private IUser assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {
         List<? extends IRole> roles = roleService.getRolesFromIds(checkValuesAsIntegers);
         List<IRole> roleList = new ArrayList<IRole>();
+
         for (IRole role : roles) {
             roleList.add(role);
         }
         user.setRoles(roleList);
-        return userService.createUser(user);
+
+        return user;
     }
 
     private IUser createUser(CreateViewModel viewModel) {

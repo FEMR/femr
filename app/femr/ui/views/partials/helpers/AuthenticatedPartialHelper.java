@@ -16,4 +16,24 @@ public class AuthenticatedPartialHelper {
 
         return false;
     }
+
+    public static boolean showMedicalPersonnelMenu(List<IRole> roles) {
+        for (IRole role : roles) {
+            if (role.getId() == Roles.PHARMACIST || role.getId() == Roles.PHYSICIAN) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean showResearcherMenu(List<IRole> roles) {
+        for (IRole role : roles) {
+            if (role.getId() == Roles.RESEARCHER) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

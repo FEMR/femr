@@ -1,0 +1,104 @@
+@import femr.ui.views.html.layouts.main
+
+@main("Pharmacy"){
+
+    <div class="row medicineInput">
+        <div class="row" text align="center">
+            <h3>Pharmacy Record</h3>
+        </div>
+        <form role="form" >
+            <div class="row">
+                <div class="col-sm-4 col-md-4" align="right">
+                    <br><label>First Name:</label><input type="text"name="input_text"/><br><br>
+                </div>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <br><label>Last Name:</label><input type="text"name="input_text"/><br><br>
+                </div>
+                <div class="col-sm-4 col-md-4" align="left">
+                    <br><label>PID:</label><input type="text" name="input_text"/><br><br>
+                </div>
+            </div>
+            <div class="row"  style="margin: 0 0 15px 0">
+                <div class="col-sm-6 col-md-6" text align="center" >
+                    <h4>Medication Given</h4>
+                    <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-md-6" align="left">
+                    <h4>Same as Prescribed?</h4>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication1">Yes
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication1">No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row"  style="margin: 0 0 15px 0">
+                <div class="col-sm-6 col-md-6" align="center">
+                    <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-md-6" align="left">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication2">Yes
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication2">No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row"  style="margin: 0 0 15px 0">
+                <div class="col-sm-6 col-md-6" align="right">
+                    <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-md-6" align="left">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication3">Yes
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication3">No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row"  style="margin: 0 0 15px 0">
+                <div class="col-sm-6 col-md-6" align="right">
+                    <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-md-6" align="left">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication4">Yes
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication4">No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin: 0 0 15px 0">
+                <div class="col-sm-6 col-md-6" align="right">
+                    <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
+                </div>
+                <div class="col-sm-6 col-md-6" align="left">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication5">Yes
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="Medication5">No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="class row" align="right">
+                <button type="button" class="btn btn-primary" onclick="">Submit</button>
+            </div>
+        </form>
+    </div>
+
+}

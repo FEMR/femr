@@ -23,7 +23,6 @@ public class UserService implements IUserService {
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
     }
-
     @Override
     public ServiceResponse<IUser> createUser(IUser user) {
         ServiceResponse<IUser> response = new ServiceResponse<>();

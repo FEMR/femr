@@ -59,7 +59,7 @@
                 <div class="medicalHistoryLineDivide"></div>
 
                 <div class="row triageInputRow">
-                    <div class="col-sm-4 col-xs-4 padding-right-zero">
+                    <div class="col-sm-6 col-xs-6 padding-right-zero">
                         <h3 class="text-center">General Info</h3>
                         <div class="medicalHistoryLineDivide"></div>
                         <div class="text-center">
@@ -76,16 +76,18 @@
                             <label>Age:</label>
                                 <input type="text" class="form-control input-sm" name="age"/>
                             <label>Gender:</label>
-                                @*<input type="button" class="btn btn-default" id="male" value="Male" onclick="genderSelect(this.id)"/>*@
-                                @*<input type="button" class="btn btn-default" id="female" value="Female" onclick="genderSelect(this.id)"/>*@
-                                <button type="button" class="btn btn-default" id="male" value="male" onclick="genderSelect(this.id)">Male</button>
-                                <button type="button" class="btn btn-default" id="female" value="male" onclick="genderSelect(this.id)">Female</button>
+                            @*<input type="button" class="btn btn-default" id="male" value="Male" onclick="genderSelect(this.id)"/>*@
+                            @*<input type="button" class="btn btn-default" id="female" value="Female" onclick="genderSelect(this.id)"/>*@
+                            <button type="button" class="btn btn-default" id="male" value="male" onclick="genderSelect(this.id)">Male</button>
+                            <button type="button" class="btn btn-default" id="female" value="male" onclick="genderSelect(this.id)">Female</button>
                         </div>
                     </div>
-                    <div class="col-sm-4 col-xs-4 padding-right-zero">
+                    <div class="col-sm-6 col-xs-6 padding-right-zero">
                         <h3 class="text-center">Vitals</h3>
                         <div class="medicalHistoryLineDivide"></div>
                         <div class="text-center">
+                            <label>Chief Complaint:</label>
+                                <input type="text" class="form-control input-sm" name="age"/>
                             <label>Blood Pressure:</label>
                                 <input type="text" class="form-control input-sm" name="bloodPressure"/>
                             <label>Heart Rate:</label>
@@ -96,30 +98,10 @@
                                 <input type="text" class="form-control input-sm" name="respirations"/>
                             <label>Oxygen:</label>
                                 <input type="text" class="form-control input-sm" name="oxygen"/>
-                            <label>Blood Sample:</label>
-                                <input type="text" class="form-control input-sm" name="bloodSample"/>
                             <label>Height:</label>
                                 <input type="text" class="form-control input-sm" name="height"/>
                             <label>Weight:</label>
                                 <input type="text" class="form-control input-sm" name="weight"/>
-                        </div>
-                    </div>
-                    <div class="col-sm-4 col-xs-4 padding-right-zero">
-                        <h3 class="text-center">Complaints</h3>
-                        <div class="medicalHistoryLineDivide"></div>
-                        <div class="text-center">
-                            <label>Should:</label>
-                                <input type="text" class="form-control input-sm" name="should"/>
-                            <label>This:</label>
-                                <input type="text" class="form-control input-sm" name="this"/>
-                            <label>Section:</label>
-                                <input type="text" class="form-control input-sm" name="section"/>
-                            <label>Even:</label>
-                                <input type="text" class="form-control input-sm" name="even"/>
-                            <label>Exist:</label>
-                                <input type="text" class="form-control input-sm" name="exist"/>
-                            <label>?:</label>
-                                <input type="text" class="form-control input-sm" name="question"/>
                         </div>
                     </div>
                 </div>

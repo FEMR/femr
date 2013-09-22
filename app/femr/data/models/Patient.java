@@ -17,6 +17,14 @@ public class Patient implements IPatient {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "age", nullable = false)
+    private int age;
+//    @Column(name = "sex", nullable = false)
+//    private String sex;
+    @Column(name = "address", nullable = false)
+    private String address;
+    @Column(name = "city", nullable = false)
+    private String city;
 
     @Override
     public int getId() {
@@ -45,5 +53,45 @@ public class Patient implements IPatient {
     @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+//    @Override
+//    public String getSex() {
+//        return sex;
+//    }
+//
+//    @Override
+//    public void setSex(String sex) {
+//        this.sex = sex;
+//    }
+
+    @Override
+    public String getAddress() {
+        return address;
+    }
+
+    @Override
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String getCity() {
+        return city;
+    }
+
+    @Override
+    public void setCity(String city) {
+        this.city = city;
     }
 }

@@ -11,4 +11,20 @@ public interface IPatient {
     String getLastName();
 
     void setLastName(String lastName);
+
+    int getAge();
+
+    void setAge(int age);
+
+//    String getSex();
+//
+//    void setSex(String sex);
+
+    String getAddress();
+
+    void setAddress(String address);
+
+    String getCity();
+
+    void setCity(String city);
 }

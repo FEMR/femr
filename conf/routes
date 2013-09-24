@@ -7,7 +7,7 @@ POST        /admin/users/create         @femr.ui.controllers.admin.UsersControll
 GET         /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()
 GET         /admin/users                @femr.ui.controllers.admin.UsersController.index()
 GET         /admin                      femr.ui.controllers.admin.AdminController.index()
-GET         /pharmacy                       femr.ui.controllers.PharmaciesController.index()
+GET         /pharmacy                   femr.ui.controllers.PharmaciesController.index()
 POST        /triage                     @femr.ui.controllers.TriageController.createPost()
 GET         /triage                     femr.ui.controllers.TriageController.createGet()
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()

@@ -32,13 +32,13 @@ public class CreateViewModel {
         this.age = age;
     }
 
-//    public String getSex() {
-//        return sex;
-//    }
-//
-//    public void setSex(String sex) {
-//        this.sex = sex;
-//    }
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
     public String getAddress() {
         return address;

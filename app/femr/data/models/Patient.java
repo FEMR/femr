@@ -19,8 +19,8 @@ public class Patient implements IPatient {
     private String lastName;
     @Column(name = "age", nullable = false)
     private int age;
-//    @Column(name = "sex", nullable = false)
-//    private String sex;
+    @Column(name = "sex", nullable = false)
+    private String sex;
     @Column(name = "address", nullable = false)
     private String address;
     @Column(name = "city", nullable = false)
@@ -65,15 +65,15 @@ public class Patient implements IPatient {
         this.age = age;
     }
 
-//    @Override
-//    public String getSex() {
-//        return sex;
-//    }
-//
-//    @Override
-//    public void setSex(String sex) {
-//        this.sex = sex;
-//    }
+    @Override
+    public String getSex() {
+        return sex;
+    }
+
+    @Override
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
     @Override
     public String getAddress() {

@@ -16,9 +16,9 @@ public interface IPatient {
 
     void setAge(int age);
 
-//    String getSex();
-//
-//    void setSex(String sex);
+    String getSex();
+
+    void setSex(String sex);
 
     String getAddress();
 

@@ -50,8 +50,8 @@
                         <div class="btn-group btn-group-lg">
                             <button type="button" class="btn btn-default">New Patient</button>
                             <button type="submit" class="btn btn-default">Save Patient</button>
-                            <button type="button" class="btn btn-default" onclick="resetFields()">Reset</button>
-                            <button type="button" class="btn btn-default" onclick="showhistory()">History</button>
+                            <button type="button" id="resetBtn" class="btn btn-default">Reset</button>
+                            <button type="button" id="historyBtn" class="btn btn-default">History</button>
                         </div>
                     </div>
                 </div><br>
@@ -78,10 +78,11 @@
                             <label>Gender:</label>
                             @*<input type="button" class="btn btn-default" id="male" value="Male" onclick="genderSelect(this.id)"/>*@
                             @*<input type="button" class="btn btn-default" id="female" value="Female" onclick="genderSelect(this.id)"/>*@
-                            <button type="button" class="btn btn-default" id="male" value="male" onclick="genderSelect(this.id)">Male</button>
-                            <button type="button" class="btn btn-default" id="female" value="male" onclick="genderSelect(this.id)">Female</button>
+                            <button type="button" class="btn btn-default" id="maleBtn" value="male" >Male</button>
+                            <button type="button" class="btn btn-default" id="femaleBtn" value="male" >Female</button>
                         </div>
                     </div>
+
                     <div class="col-sm-6 col-xs-6 padding-right-zero">
                         <h3 class="text-center">Vitals</h3>
                         <div class="medicalHistoryLineDivide"></div>
@@ -109,28 +110,3 @@
         </div>
     }
 }
-    <script>
-        function resetFields(){
-            $(':input').val('');
-            $('.active').removeClass('active');
-        }
-
-
-        function showhistory(){
-            if ($('.patientMedicalHistory' ).hasClass('hide')){
-                $('.patientMedicalHistory' ).removeClass('hide');
-            }
-            else{
-                $('.patientMedicalHistory' ).addClass('hide');
-            }
-        }
-
-
-        function genderSelect(gender){
-            if (!$('#' + gender).hasClass('active')){
-                $('#male').removeClass('active');
-                $('#female').removeClass('active');
-                $('#' + gender).addClass('active');
-            }
-        }
-    </script>

@@ -25,18 +25,21 @@
     padding-left: 0px !important;
 }
 
-
-/*Universal*/
-label{
+.inputLabel{
     display: inline-block;
     float: left;
     clear: left;
     text-align: right;
     margin-right: 5px;
 }
+.clear-none{
+    clear: none !important;
+}
 
-input:focus {
-    outline: none !important;
-    border-color: #0033FF !important;
-    box-shadow: 0 0 5px #9ecaed !important;
+#pregnantWrap{
+    display: inline-block;
+    float: left;
+}
+#genderWrap{
+    display: inline-block;
 }

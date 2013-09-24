@@ -47,7 +47,6 @@
     @helper.form(action = TriageController.createPost()){
         <div class="row">
             <div class ="well">
-
                 <div class="row">
                     <div class="btn-group-wrap">
                         <div class="btn-group btn-group-lg">
@@ -57,75 +56,87 @@
                             <button type="button" id="historyBtn" class="btn btn-default">History</button>
                         </div>
                     </div>
-                </div><br>
+                </div>
 
                 <div class="medicalHistoryLineDivide"></div>
 
                 <div class="row triageInputRow">
-                    <div class="col-sm-6 col-xs-6 padding-right-zero">
+                    <div class="col-sm-6 col-xs-6">
                         <h3 class="text-center">General Info</h3>
                         <div class="medicalHistoryLineDivide"></div>
                         <div class="text-center">
-                            <label>Patient ID:</label>
-                                <input type="text" class="form-control input-sm" placeholder="a number"/>
-                            <label>First Name:</label>
+                            <label class="inputLabel">Patient ID:</label>
+                                <input type="text" class="form-control input-sm" readonly/>
+                            <label class="inputLabel">First Name:</label>
                                 <input type="text" class="form-control input-sm" name="firstName"/>
-                            <label>Last Name:</label>
+                            <label class="inputLabel">Last Name:</label>
                                 <input type="text" class="form-control input-sm" name="lastName"/>
-                            <label>Address:</label>
+                            <label class="inputLabel">Address:</label>
                                 <input type="text" class="form-control input-sm" name="address"/>
-                            <label>City:</label>
+                            <label class="inputLabel">City:</label>
                                 <input type="text" class="form-control input-sm" name="city"/>
-                            <label>Age:</label>
+                            <label class="inputLabel">Age:</label>
                                 <input type="text" class="form-control input-sm" name="age"/>
-                            <label>Gender:</label>
-                            @*<input type="button" class="btn btn-default" id="male" value="Male" onclick="genderSelect(this.id)"/>*@
-                            @*<input type="button" class="btn btn-default" id="female" value="Female" onclick="genderSelect(this.id)"/>*@
-                            <button type="button" class="btn btn-default" id="maleBtn" value="male" >Male</button>
-                            <button type="button" class="btn btn-default" id="femaleBtn" value="male" >Female</button>
+
+                            <label class="inputLabel">Gender:</label>
+                                <div class="btn-group pull-left" data-toggle="buttons">
+                                    <label class="btn btn-default">
+                                        <input type="radio" name="sex" id="maleBtn">Male
+                                    </label>
+                                    <label class="btn btn-default">
+                                        <input type="radio" name="sex" id="femaleBtn">Female
+                                    </label>
+                                </div>
+
+                                <div id="pregnantWrap" class="hidden">
+                                    <label class="inputLabel clear-none">Pregnant?</label>
+                                    <div class="btn-group pull-left" data-toggle="buttons">
+                                        <label class="btn btn-default">
+                                            <input type="checkbox" name="pregnant" id="pregnantBtn">Yes
+                                        </label>
+                                    </div>
+                                    <div id="weeksWrap" class="hidden">
+                                        <label class="inputLabel">Weeks:</label>
+                                            <input type="text" class="form-control input-sm" name="pregnancyWeeks">
+                                    </div>
+                                </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-xs-6 padding-right-zero">
+                    <div class="col-sm-6 col-xs-6">
                         <h3 class="text-center">Vitals</h3>
                         <div class="medicalHistoryLineDivide"></div>
 
                         <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
                             <div class="text-center">
-                                <label>Blood Pressure:</label>
-                                <input type="text" class="form-control input-sm" name="bloodPressure"/>
-                                <label>Heart Rate:</label>
-                                <input type="text" class="form-control input-sm" name="heartRate"/>
-                                <label>Temperature:</label>
-                                <input type="text" class="form-control input-sm" name="temperature"/>
-                                <label>BMI:</label>
-                                <input type="text" class="form-control input-sm" name="bodyMassIndex"/>
-
+                                <label class="inputLabel">Blood Pressure:</label>
+                                    <input type="text" class="form-control input-sm" name="bloodPressure"/>
+                                <label class="inputLabel">Heart Rate:</label>
+                                    <input type="text" class="form-control input-sm" name="heartRate"/>
+                                <label class="inputLabel">Temperature:</label>
+                                    <input type="text" class="form-control input-sm" name="temperature"/>
+                                <label class="inputLabel">BMI:</label>
+                                    <input type="text" class="form-control input-sm" name="bodyMassIndex" readonly/>
                             </div>
                         </div>
+
                         <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
                             <div class="text-center">
-
-                                <label>Respirations:</label>
-                                <input type="text" class="form-control input-sm" name="respirations"/>
-                                <label>Oxygen:</label>
-                                <input type="text" class="form-control input-sm" name="oxygen"/>
-                                <label>Height:</label>
-                                <input type="text" class="form-control input-sm" name="height"/>
-                                <label>Weight:</label>
-                                <input type="text" class="form-control input-sm" name="weight"/>
+                                <label class="inputLabel">Respirations:</label>
+                                    <input type="text" class="form-control input-sm" name="respirations"/>
+                                <label class="inputLabel">Oxygen:</label>
+                                    <input type="text" class="form-control input-sm" name="oxygen"/>
+                                <label class="inputLabel">Height:</label>
+                                    <input type="text" class="form-control input-sm" name="height"/>
+                                <label class="inputLabel">Weight:</label>
+                                    <input type="text" class="form-control input-sm" name="weight"/>
                             </div>
                         </div>
 
-                        <label>Chief Complaint:</label>
-                        <textarea type="text" class="form-control input-lg" name="age"></textarea>
-
-
-
-
+                        <label class="inputLabel">Chief Complaint:</label>
+                            <textarea type="text" class="form-control input-lg" name="age" rows="3"></textarea>
                     </div>
                 </div>
-
             </div>
         </div>
     }

@@ -1,11 +1,26 @@
 
 //onClick activators
-$('#maleBtn').click(function(){
-   genderSelect(this.id);
+$('#femaleBtn').change(function(){
+    if ($('#pregnantWrap').hasClass('hidden')){
+        $('#pregnantWrap').removeClass('hidden');
+    }
 });
-$('#femaleBtn').click(function(){
-    genderSelect(this.id);
+$('#maleBtn').change(function(){
+    if (!$('#pregnantWrap').hasClass('hidden')){
+        $('#pregnantWrap').addClass('hidden');
+    }
+    if ($('#pregnantBtn').is(':checked')){
+        $('#pregnantBtn').prop('checked',false);
+        $('#pregnantBtn').parent().removeClass('active');
+    }
+    if (!$('#weeksWrap').hasClass('hidden')){
+        $('#weeksWrap').addClass('hidden');
+    }
 });
+$('#pregnantBtn').change(function(){
+   $('#weeksWrap').removeClass('hidden');
+});
+
 $('#resetBtn').click(function(){
     resetFields();
 });
@@ -26,14 +41,5 @@ function showHistory(){
     }
 else{
     $('.patientMedicalHistory' ).addClass('hide');
-    }
-}
-
-
-function genderSelect(gender){
-    if (!$('#' + gender).hasClass('active')){
-    $('#male').removeClass('active');
-    $('#female').removeClass('active');
-    $('#' + gender).addClass('active');
     }
 }

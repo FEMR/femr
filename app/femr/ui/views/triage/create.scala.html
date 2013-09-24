@@ -4,6 +4,9 @@
 @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
 }
+@additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.at("js/Triage/triage.js")"></script>
+}
 
 
 @top = {
@@ -40,7 +43,7 @@
     </div>
 }
 
-@main("triage",outsideContainerTop = top, styles= additionalStyles){
+@main("triage",outsideContainerTop = top, styles = additionalStyles, scripts = additionalScripts){
     @helper.form(action = TriageController.createPost()){
         <div class="row">
             <div class ="well">
@@ -86,26 +89,43 @@
                     <div class="col-sm-6 col-xs-6 padding-right-zero">
                         <h3 class="text-center">Vitals</h3>
                         <div class="medicalHistoryLineDivide"></div>
-                        <div class="text-center">
-                            <label>Chief Complaint:</label>
-                                <input type="text" class="form-control input-sm" name="age"/>
-                            <label>Blood Pressure:</label>
+
+                        <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
+                            <div class="text-center">
+                                <label>Blood Pressure:</label>
                                 <input type="text" class="form-control input-sm" name="bloodPressure"/>
-                            <label>Heart Rate:</label>
+                                <label>Heart Rate:</label>
                                 <input type="text" class="form-control input-sm" name="heartRate"/>
-                            <label>Temperature:</label>
+                                <label>Temperature:</label>
                                 <input type="text" class="form-control input-sm" name="temperature"/>
-                            <label>Respirations:</label>
-                                <input type="text" class="form-control input-sm" name="respirations"/>
-                            <label>Oxygen:</label>
-                                <input type="text" class="form-control input-sm" name="oxygen"/>
-                            <label>Height:</label>
-                                <input type="text" class="form-control input-sm" name="height"/>
-                            <label>Weight:</label>
-                                <input type="text" class="form-control input-sm" name="weight"/>
+                                <label>BMI:</label>
+                                <input type="text" class="form-control input-sm" name="bodyMassIndex"/>
+
+                            </div>
                         </div>
+                        <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
+                            <div class="text-center">
+
+                                <label>Respirations:</label>
+                                <input type="text" class="form-control input-sm" name="respirations"/>
+                                <label>Oxygen:</label>
+                                <input type="text" class="form-control input-sm" name="oxygen"/>
+                                <label>Height:</label>
+                                <input type="text" class="form-control input-sm" name="height"/>
+                                <label>Weight:</label>
+                                <input type="text" class="form-control input-sm" name="weight"/>
+                            </div>
+                        </div>
+
+                        <label>Chief Complaint:</label>
+                        <textarea type="text" class="form-control input-lg" name="age"></textarea>
+
+
+
+
                     </div>
                 </div>
+
             </div>
         </div>
     }

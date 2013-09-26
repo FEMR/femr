@@ -26,8 +26,7 @@ public class TriageController extends Controller {
     private Provider<IVital> vitalProvider;
 
     @Inject
-    public TriageController(ITriageService triageService,
-                            Provider<IPatient> patientProvider,
+    public TriageController(ITriageService triageService, Provider<IPatient> patientProvider,
                             Provider<IPatientEncounter> patientEncounterProvider,
                             Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                             Provider<IVital> vitalProvider) {
@@ -50,11 +49,13 @@ public class TriageController extends Controller {
         IPatient patient = populatePatient(viewModel);
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
 
-        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel,patientServiceResponse);
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
+        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
+                triageService.createPatientEncounter(patientEncounter);
 
-        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel,patientEncounterServiceResponse);
-        for (int i = 0; i < patientEncounterVitals.size(); i++){
+        List<IPatientEncounterVital> patientEncounterVitals =
+                populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse);
+        for (int i = 0; i < patientEncounterVitals.size(); i++) {
             triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
         }
 
@@ -73,18 +74,18 @@ public class TriageController extends Controller {
         viewModel.setAddress(patient.getAddress());
         viewModel.setCity(patient.getCity());
         viewModel.setAge(patient.getAge());
-        viewModel.setSex(patient.getSex());         //awwww yeahhhh!
+        viewModel.setSex(patient.getSex());
 
-        return ok(femr.ui.views.html.triage.show.render(viewModel,patientEncounters, id));
+        return ok(femr.ui.views.html.triage.show.render(viewModel, patientEncounters, id));
     }
 
-    private IPatient populatePatient(CreateViewModel viewModel){
+    private IPatient populatePatient(CreateViewModel viewModel) {
         IPatient patient = patientProvider.get();
         patient.setUserId(1);
         patient.setFirstName(viewModel.getFirstName());
         patient.setLastName(viewModel.getLastName());
         patient.setAge(viewModel.getAge());
-        patient.setSex(viewModel.getSex()); //gettin' someeee!
+        patient.setSex(viewModel.getSex());
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
 
@@ -92,7 +93,7 @@ public class TriageController extends Controller {
     }
 
     private IPatientEncounter populatePatientEncounter(CreateViewModel viewModel,
-                                                       ServiceResponse<IPatient> patientServiceResponse){
+                                                       ServiceResponse<IPatient> patientServiceResponse) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
         patientEncounter.setUserId(1);
@@ -103,11 +104,11 @@ public class TriageController extends Controller {
     }
 
     private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModel viewModel,
-                                                       ServiceResponse<IPatientEncounter> patientEncounterServiceResponse){
+                                                                        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
-        for (int j=0;j < patientEncounterVital.length; j++){
+        for (int j = 0; j < patientEncounterVital.length; j++) {
             patientEncounterVital[j] = patientEncounterVitalProvider.get();
         }
         patientEncounterVital[0].setDateTaken((triageService.getCurrentDateTime()));
@@ -167,6 +168,5 @@ public class TriageController extends Controller {
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
         return patientEncounterVitals;
     }
-
 
 }

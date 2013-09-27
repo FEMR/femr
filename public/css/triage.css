@@ -14,6 +14,25 @@
 .triageInputRow{
     font-size: 12px;
 }
+.inputLabel{
+    display: inline-block;
+    float: left;
+    clear: left;
+    text-align: right;
+    margin-right: 5px;
+}
+#pregnantWrap{
+    display: inline-block;
+    float: left;
+}
+#genderWrap{
+    display: inline-block;
+}
+
+/*Boot strap overrides*/
+.clear-none{
+    clear: none !important;
+}
 .patientMedicalHistory{
     padding-bottom: 4px !important;
     margin-bottom: 4px; !important;
@@ -23,23 +42,4 @@
 }
 .padding-left-zero{
     padding-left: 0px !important;
-}
-
-.inputLabel{
-    display: inline-block;
-    float: left;
-    clear: left;
-    text-align: right;
-    margin-right: 5px;
-}
-.clear-none{
-    clear: none !important;
-}
-
-#pregnantWrap{
-    display: inline-block;
-    float: left;
-}
-#genderWrap{
-    display: inline-block;
 }

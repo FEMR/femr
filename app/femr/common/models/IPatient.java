@@ -4,6 +4,10 @@ public interface IPatient {
 
     int getId();
 
+    int getUserId();
+
+    void setUserId(int userId);
+
     String getFirstName();
 
     void setFirstName(String firstName);

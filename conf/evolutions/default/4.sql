@@ -13,4 +13,4 @@ DEFAULT CHARACTER SET = utf8;
 
 # --- !Downs
 
-DROP TABLE IF EXISTS 'patients';
+DROP TABLE IF EXISTS `patients`;

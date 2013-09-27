@@ -16,7 +16,16 @@ public class TriageService implements ITriageService {
 
     @Override
     public ServiceResponse<IPatient> createPatient(IPatient patient) {
-        patientRepository.create(patient);
-        return null;
+        IPatient newPatient = patientRepository.create(patient);
+        ServiceResponse<IPatient> response = new ServiceResponse<>();
+
+        if (newPatient != null){
+            response.setResponseObject(newPatient);
+        }
+        else{
+            response.setSuccessful(false);
+        }
+
+        return response;
     }
 }

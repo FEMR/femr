@@ -13,6 +13,8 @@ public class Patient implements IPatient {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
+    @Column(name = "user_id", unique = false, nullable = false)
+    private int userId;
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Column(name = "last_name", nullable = false)
@@ -31,8 +33,14 @@ public class Patient implements IPatient {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public int getUserId() {
+        return userId;
+    }
+
+    @Override
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override

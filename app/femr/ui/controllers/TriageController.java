@@ -35,10 +35,12 @@ public class TriageController extends Controller {
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
 
+
+
         ServiceResponse<IPatient> response = triageService.createPatient(patient);
 
 //        if (response.isSuccessful()) {
-//            //tell the view it was successful
+//
 //        }
         return ok(femr.ui.views.html.triage.create.render());
     }

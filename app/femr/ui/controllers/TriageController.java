@@ -4,7 +4,11 @@ import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
+import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
 import femr.data.models.Patient;
+import femr.data.models.PatientEncounter;
+import femr.data.models.PatientEncounterVital;
 import femr.ui.models.triage.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
@@ -28,13 +32,23 @@ public class TriageController extends Controller {
 
         IPatient patient = new Patient();
 
+        patient.setUserId(1);
         patient.setFirstName(viewModel.getFirstName());
         patient.setLastName(viewModel.getLastName());
         patient.setAge(viewModel.getAge());
         patient.setSex(viewModel.getSex()); //gettin' someeee!
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
-        patient.setUserId(1);
+
+        IPatientEncounter patientEncounter = new PatientEncounter();
+
+
+
+        IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
+
+
+
+
 
 
 

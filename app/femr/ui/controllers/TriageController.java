@@ -34,6 +34,7 @@ public class TriageController extends Controller {
         patient.setSex(viewModel.getSex()); //gettin' someeee!
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
+        patient.setUserId(1);
 
 
 

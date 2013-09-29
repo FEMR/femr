@@ -1,100 +1,155 @@
 @import femr.ui.views.html.layouts.main
+@additionalScripts = {
+    <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
+}
 
-@main("Pharmacy"){
+@main("Pharmacy", scripts = additionalScripts){
 
     <div class="row medicineInput">
         <div class="row" text align="center">
             <h3>Pharmacy Record</h3>
         </div>
         <form role="form" >
-            <div class="row">
+            <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-4 col-md-4" align="right">
-                    <br><label>First Name:</label><input type="text"name="input_text"/><br><br>
+                    <label>First Name:</label><input type="text"name="input_text"/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="center">
-                    <br><label>Last Name:</label><input type="text"name="input_text"/><br><br>
+                    <label>Last Name:</label><input type="text"name="input_text"/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="left">
-                    <br><label>PID:</label><input type="text" name="input_text"/><br><br>
+                    <label>PID:</label><input type="text" name="input_text"/>
                 </div>
             </div>
+            <div class="row" style="margin: 0 0 25px 0">
+                <div class="col-sm-2 col-md-2" align="center">
+                    age:
+                </div>
+                <div class="col-sm-2 col-md-2" align="center">
+                    height:
+                </div>
+                <div class="col-sm-2 col-md-2" align="center">
+                    weight:
+                </div>
+                <div class="col-sm-2 col-md-2" align="center">
+                    pregnancy status:
+                </div>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <a data-toggle="modal" href="#diagnosisModal" class="btn btn-info">List of Diagnoses</a>
+
+                    <div class="modal fade" id="diagnosisModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">List of Diagnoses</h4>
+                                </div>
+                                <div class="modal-body" align="left">
+                                    Stuff and things
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-6 col-md-6" text align="center" >
-                    <h4>Medication Given</h4>
+                <div class="col-sm-4 col-md-4" text align="center" >
+                    <h4>Medication</h4>
                     <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
                 </div>
-                <div class="col-sm-6 col-md-6" align="left">
-                    <h4>Same as Prescribed?</h4>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <h4>Replacement?</h4>
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
+                        <label class="btn btn-default" id="yesReplace1" onclick="yesReplacement(1)">
                             <input type="radio" name="Medication1">Yes
                         </label>
-                        <label class="btn btn-default">
+                        <label class="btn btn-default active" id="noReplace1" onclick="noReplacement(1)">
                             <input type="radio" name="Medication1">No
                         </label>
                     </div>
                 </div>
+                <div class="col-sm-4 col-md-4" align="center" style="margin: 35px 0 0 0">
+
+                    <input type="text" id="replacementMedication1" placeholder="Enter Replacement Medication" class="hidden form-control"/>
+                </div>
             </div>
             <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-6 col-md-6" align="center">
+                <div class="col-sm-4 col-md-4" align="center">
                     <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
                 </div>
-                <div class="col-sm-6 col-md-6" align="left">
+                <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
+                        <label class="btn btn-default" id="yesReplace2" onclick="yesReplacement(2)">
                             <input type="radio" name="Medication2">Yes
                         </label>
-                        <label class="btn btn-default">
+                        <label class="btn btn-default active" id="noReplace2" onclick="noReplacement(2)">
                             <input type="radio" name="Medication2">No
                         </label>
                     </div>
                 </div>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <input type="text" id=replacementMedication2 placeholder="Enter Replacement Medication" class="hidden form-control"/>
+                </div>
             </div>
             <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-6 col-md-6" align="right">
+                <div class="col-sm-4 col-md-4" align="center">
                     <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
                 </div>
-                <div class="col-sm-6 col-md-6" align="left">
+                <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
+                        <label class="btn btn-default" id="yesReplace3" onclick="yesReplacement(3)">
                             <input type="radio" name="Medication3">Yes
                         </label>
-                        <label class="btn btn-default">
+                        <label class="btn btn-default active" id="noReplace3" onclick="noReplacement(3)">
                             <input type="radio" name="Medication3">No
                         </label>
                     </div>
                 </div>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <input type="text" id=replacementMedication3 placeholder="Enter Replacement Medication" class="hidden form-control"/>
+                </div>
             </div>
             <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-6 col-md-6" align="right">
+                <div class="col-sm-4 col-md-4" align="center">
                     <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
                 </div>
-                <div class="col-sm-6 col-md-6" align="left">
+                <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
+                        <label class="btn btn-default" id="yesReplace4" onclick="yesReplacement(4)">
                             <input type="radio" name="Medication4">Yes
                         </label>
-                        <label class="btn btn-default">
+                        <label class="btn btn-default active" id="noReplace4" onclick="noReplacement(4)">
                             <input type="radio" name="Medication4">No
                         </label>
                     </div>
                 </div>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <input type="text" id=replacementMedication4 placeholder="Enter Replacement Medication" class="hidden form-control"/>
+                </div>
             </div>
             <div class="row" style="margin: 0 0 15px 0">
-                <div class="col-sm-6 col-md-6" align="right">
+                <div class="col-sm-4 col-md-4" align="center">
                     <input type="text" name="input_text" placeholder="Medication" class="form-control"/>
                 </div>
-                <div class="col-sm-6 col-md-6" align="left">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
+                <div class="col-sm-4 col-md-4" align="center">
+                    <div class="btn-group" data-toggle="buttons"  >
+                        <label class="btn btn-default" id="yesReplace5" onclick="yesReplacement(5)">
                             <input type="radio" name="Medication5">Yes
                         </label>
-                        <label class="btn btn-default">
+                        <label class="btn btn-default active" id="noReplace5" onclick="noReplacement(5)">
                             <input type="radio" name="Medication5">No
                         </label>
                     </div>
                 </div>
+                <div class="col-sm-4 col-md-4" align="center">
+                    <input type="text" class="hidden form-control" id=replacementMedication5 placeholder="Enter Replacement Medication" />
+                </div>
             </div>
+
             <div class="class row" align="right">
                 <button type="button" class="btn btn-primary" onclick="">Submit</button>
             </div>
@@ -102,3 +157,4 @@
     </div>
 
 }
+

@@ -50,7 +50,6 @@ public class TriageController extends Controller {
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
-
 //        if (response.isSuccessful()) {
 //
 //        }
@@ -58,7 +57,6 @@ public class TriageController extends Controller {
     }
 
     public Result savedPatient(String id){
-
         return ok(femr.ui.views.html.triage.show.render(id));
     }
 

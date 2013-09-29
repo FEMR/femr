@@ -32,9 +32,8 @@ public class TriageController extends Controller {
 
         IPatient patient = new Patient();
         IPatientEncounter patientEncounter = new PatientEncounter();
-        IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
+        //IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
         //Currently using defaults for userID and patientID
-
         patient.setUserId(1);
         patient.setFirstName(viewModel.getFirstName());
         patient.setLastName(viewModel.getLastName());
@@ -48,10 +47,6 @@ public class TriageController extends Controller {
         patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
 
-        //loop through vitals
-
-
-
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
@@ -59,13 +54,12 @@ public class TriageController extends Controller {
 //        if (response.isSuccessful()) {
 //
 //        }
-        //return ok(femr.ui.views.html.triage.create.render());
-        return redirect("/triage/save/" + patientServiceResponse.getResponseObject().getId());
+        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
     }
 
-    public Result savedPatient(Long id){
+    public Result savedPatient(String id){
 
-        return ok(femr.ui.views.html.triage.save.render());
+        return ok(femr.ui.views.html.triage.show.render(id));
     }
 
 

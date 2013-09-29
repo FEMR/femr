@@ -4,6 +4,8 @@ import femr.common.models.IVital;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "vitals")
 public class Vital implements IVital {
     @Id
     @Column(name = "id", unique = true, nullable = false)

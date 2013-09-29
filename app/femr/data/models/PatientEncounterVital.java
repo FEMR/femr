@@ -4,7 +4,8 @@ import femr.common.models.IPatientEncounterVital;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-
+@Entity
+@Table(name = "patient_encounter_vitals")
 public class PatientEncounterVital implements IPatientEncounterVital {
     @Id
     @Column(name = "id", unique = true, nullable = false)

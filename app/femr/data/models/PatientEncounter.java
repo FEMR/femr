@@ -2,8 +2,9 @@ package femr.data.models;
 
 import femr.common.models.IPatientEncounter;
 import javax.persistence.*;
-import java.sql.Timestamp;
 
+@Entity
+@Table(name = "patient_encounters")
 public class PatientEncounter implements IPatientEncounter {
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -13,7 +14,7 @@ public class PatientEncounter implements IPatientEncounter {
     @Column(name = "user_id", nullable = false)
     private int userId;
     @Column(name = "date_of_visit", nullable = false)
-    private Timestamp dateOfVisit;
+    private String dateOfVisit;
     @Column(name = "chief_complaint", nullable = true)
     private String chiefComplaint;
 
@@ -44,12 +45,12 @@ public class PatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public Timestamp getDateOfVisit() {
+    public String getDateOfVisit() {
         return dateOfVisit;
     }
 
     @Override
-    public void setDateOfVisit(Timestamp dateOfVisit) {
+    public void setDateOfVisit(String dateOfVisit) {
         this.dateOfVisit = dateOfVisit;
     }
 

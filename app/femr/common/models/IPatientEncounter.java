@@ -13,9 +13,9 @@ public interface IPatientEncounter {
 
     void setUserId(int userId);
 
-    Timestamp getDateOfVisit();
+    String getDateOfVisit();
 
-    void setDateOfVisit(Timestamp dateOfVisit);
+    void setDateOfVisit(String dateOfVisit);
 
     String getChiefComplaint();
 

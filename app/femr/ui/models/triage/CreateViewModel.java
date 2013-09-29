@@ -9,12 +9,12 @@ public class CreateViewModel {
     private int age;
     private String sex;
     //begin vitals
-    private float bloodPressure;
-    private float heartRate;
-    private float temperature;
-    private float respirations;
-    private float height;
-    private float weight;
+//    private float bloodPressure;
+//    private float heartRate;
+//    private float temperature;
+//    private float respirations;
+//    private float height;
+//    private float weight;
     private String chiefComplaint;
 
     //begin general info
@@ -67,53 +67,53 @@ public class CreateViewModel {
     }
 
     //begin vitals
-    public float getBloodPressure() {
-        return bloodPressure;
-    }
-
-    public void setBloodPressure(float bloodPressure) {
-        this.bloodPressure = bloodPressure;
-    }
-
-    public float getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(float heartRate) {
-        this.heartRate = heartRate;
-    }
-
-    public float getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(float temperature) {
-        this.temperature = temperature;
-    }
-
-    public float getRespirations() {
-        return respirations;
-    }
-
-    public void setRespirations(float respirations) {
-        this.respirations = respirations;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
-    }
-
-    public float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(float weight) {
-        this.weight = weight;
-    }
+//    public float getBloodPressure() {
+//        return bloodPressure;
+//    }
+//
+//    public void setBloodPressure(float bloodPressure) {
+//        this.bloodPressure = bloodPressure;
+//    }
+//
+//    public float getHeartRate() {
+//        return heartRate;
+//    }
+//
+//    public void setHeartRate(float heartRate) {
+//        this.heartRate = heartRate;
+//    }
+//
+//    public float getTemperature() {
+//        return temperature;
+//    }
+//
+//    public void setTemperature(float temperature) {
+//        this.temperature = temperature;
+//    }
+//
+//    public float getRespirations() {
+//        return respirations;
+//    }
+//
+//    public void setRespirations(float respirations) {
+//        this.respirations = respirations;
+//    }
+//
+//    public float getHeight() {
+//        return height;
+//    }
+//
+//    public void setHeight(float height) {
+//        this.height = height;
+//    }
+//
+//    public float getWeight() {
+//        return weight;
+//    }
+//
+//    public void setWeight(float weight) {
+//        this.weight = weight;
+//    }
 
     public String getChiefComplaint() {
         return chiefComplaint;

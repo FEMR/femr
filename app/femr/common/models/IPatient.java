@@ -4,6 +4,10 @@ public interface IPatient {
 
     int getId();
 
+    int getUserId();
+
+    void setUserId(int userId);
+
     String getFirstName();
 
     void setFirstName(String firstName);
@@ -16,9 +20,9 @@ public interface IPatient {
 
     void setAge(int age);
 
-//    String getSex();
-//
-//    void setSex(String sex);
+    String getSex();
+
+    void setSex(String sex);
 
     String getAddress();
 

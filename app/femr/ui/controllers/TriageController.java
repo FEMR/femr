@@ -4,7 +4,11 @@ import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
+import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
 import femr.data.models.Patient;
+import femr.data.models.PatientEncounter;
+import femr.data.models.PatientEncounterVital;
 import femr.ui.models.triage.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
@@ -27,21 +31,35 @@ public class TriageController extends Controller {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         IPatient patient = new Patient();
-
+        IPatientEncounter patientEncounter = new PatientEncounter();
+        //IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
+        //Currently using defaults for userID and patientID
+        patient.setUserId(1);
         patient.setFirstName(viewModel.getFirstName());
         patient.setLastName(viewModel.getLastName());
         patient.setAge(viewModel.getAge());
-        //patient.setSex(viewModel.getSex()); //gettin' someeee!
+        patient.setSex(viewModel.getSex()); //gettin' someeee!
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
 
-        ServiceResponse<IPatient> response = triageService.createPatient(patient);
+        patientEncounter.setPatientId(1);
+        patientEncounter.setUserId(1);
+        patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
+        patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
+
+        ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
 //        if (response.isSuccessful()) {
-//            //tell the view it was successful
+//
 //        }
-        return ok(femr.ui.views.html.triage.create.render());
+        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
     }
+
+    public Result savedPatient(String id){
+        return ok(femr.ui.views.html.triage.show.render(id));
+    }
+
 
 
 }

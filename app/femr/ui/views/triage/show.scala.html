@@ -1,3 +1,5 @@
+@(id: String)
+
 @import femr.ui.views.html.layouts.main
 
 @additionalStyles = {
@@ -6,7 +8,6 @@
 @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
 }
-
 
 @main("triage", styles = additionalStyles, scripts = additionalScripts){
         <div class="row">

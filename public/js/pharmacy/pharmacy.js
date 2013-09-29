@@ -6,9 +6,10 @@
  * To change this template use File | Settings | File Templates.
  */
 function yesReplacement(id){
-    $('#replacementMedication' + id ).removeClass('hidden');
+    $('#replacementMedication' + id).removeClass('hidden');
 }
 
 function noReplacement(id){
-    $('#replacementMedication' + id ).addClass('hidden');
+    $('#replacementMedication' + id).addClass('hidden');
+    $('#replacementMedication' + id).val('');
 }

@@ -5,8 +5,7 @@ CREATE  TABLE `vitals` (
   `name` VARCHAR(255) NOT NULL ,
   `data_type` VARCHAR(255) NULL ,
   `unit_of_measurement` VARCHAR(255) NULL ,
-  PRIMARY KEY (`id`) ,
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) );
+  PRIMARY KEY (`id`)  );
 
   INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
     VALUES ('Respiratory Rate','int','breaths/minute');

@@ -34,6 +34,33 @@ CREATE  TABLE `vitals` (
   INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
     VALUES ('Blood Pressure','int','diastolic');
 
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Respiratory Rate','int','breaths/minute');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Heart Rate','int','beats/minute');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Temperature','float','Fahrenheiht');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Oxygen Saturation','float','percent');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Height','int','feet');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Height','int','inches');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Weight','float','pounds');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Blood Pressure','int','systolic');
+
+  INSERT INTO `vitals` (`name`,`data_type`,`unit_of_measurement`)
+    VALUES ('Blood Pressure','int','diastolic');
+
 # --- !Downs
 
 DROP TABLE IF EXISTS `vitals`

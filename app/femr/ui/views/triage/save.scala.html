@@ -1,0 +1,33 @@
+@import femr.ui.views.html.layouts.main
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
+}
+@additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
+}
+
+
+@main("triage", styles = additionalStyles, scripts = additionalScripts){
+        <div class="row">
+            <div class ="well">
+                <div class="row">
+                    <div class="btn-group-wrap">
+                        <div class="btn-group btn-group-lg">
+                            <button type="button" class="btn btn-default">New Patient</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="medicalHistoryLineDivide"></div>
+
+                <div class="row triageInputRow">
+                    <h3>A new patient with id xxx was saved successfully.</h3>
+                </div>
+            </div>
+        </div>
+}
+
+    <script>
+
+    </script>

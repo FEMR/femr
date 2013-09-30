@@ -24,7 +24,8 @@ public class TriageController extends Controller {
     }
 
     public static Result createGet(){
-        return ok(femr.ui.views.html.triage.create.render(null));
+        boolean isPostBack = false;
+        return ok(femr.ui.views.html.triage.create.render());
     }
 
     public Result createPost(){
@@ -33,7 +34,7 @@ public class TriageController extends Controller {
         IPatient patient = new Patient();
         IPatientEncounter patientEncounter = new PatientEncounter();
         //IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
-        //Currently using defaults for userID and patientID
+        //Currently using defaults for userID
         patient.setUserId(1);
         patient.setFirstName(viewModel.getFirstName());
         patient.setLastName(viewModel.getLastName());
@@ -41,27 +42,24 @@ public class TriageController extends Controller {
         patient.setSex(viewModel.getSex()); //gettin' someeee!
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
+        ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
 
-        patientEncounter.setPatientId(1);
+        patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
         patientEncounter.setUserId(1);
         patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
-
-        ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
 //        if (response.isSuccessful()) {
 //
 //        }
-        //return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
-//        int x = patientServiceResponse.getResponseObject().getId();
-//        String id = Integer.toString(x);
-        IPatient id = patientServiceResponse.getResponseObject();
-        return ok(femr.ui.views.html.triage.create.render(id));
-//        return ok(femr.ui.views.html.triage.create.render(id));
+        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
+        //IPatient id = patientServiceResponse.getResponseObject();
+        //boolean isPostBack = true;
+        //return ok(femr.ui.views.html.triage.create.render(id, isPostBack));
     }
-
     public Result savedPatient(String id){
+        ServiceResponse<IPatient> getSavedPatient = triageService.
         return ok(femr.ui.views.html.triage.show.render(id));
     }
 

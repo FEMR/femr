@@ -40,6 +40,14 @@ public class TriageService implements ITriageService {
     }
 
     @Override
+    public ServiceResponse<IPatient> getPatient(String id){
+        IPatient savedPatient = patientRepository.findOne();//needs to findone
+        ServiceResponse<IPatient> response = new ServiceResponse<>();
+        response.setResponseObject(savedPatient);
+        return response;
+    }
+
+    @Override
     public ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter) {
         IPatientEncounter newPatientEncounter = patientEncounterRepository.create(patientEncounter);
         ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();

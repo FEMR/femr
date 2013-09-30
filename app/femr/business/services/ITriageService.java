@@ -8,9 +8,13 @@ import femr.common.models.IPatientEncounterVital;
 public interface ITriageService {
     ServiceResponse<IPatient> createPatient(IPatient patient);
 
+    ServiceResponse<IPatient> findPatientById(String id);
+
     ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter);
 
     ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
+
+
 
     String getCurrentDateTime();
 

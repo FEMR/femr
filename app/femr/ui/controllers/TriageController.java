@@ -24,7 +24,7 @@ public class TriageController extends Controller {
     }
 
     public static Result createGet(){
-        return ok(femr.ui.views.html.triage.create.render());
+        return ok(femr.ui.views.html.triage.create.render(null));
     }
 
     public Result createPost(){
@@ -53,7 +53,12 @@ public class TriageController extends Controller {
 //        if (response.isSuccessful()) {
 //
 //        }
-        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
+        //return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
+//        int x = patientServiceResponse.getResponseObject().getId();
+//        String id = Integer.toString(x);
+        IPatient id = patientServiceResponse.getResponseObject();
+        return ok(femr.ui.views.html.triage.create.render(id));
+//        return ok(femr.ui.views.html.triage.create.render(id));
     }
 
     public Result savedPatient(String id){

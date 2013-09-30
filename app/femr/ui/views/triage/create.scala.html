@@ -1,3 +1,5 @@
+@(id: femr.common.models.IPatient)
+
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.TriageController
 
@@ -9,6 +11,7 @@
 }
 
 @top = {
+    <span class="hidden test">@id</span>
     <div class ="well hide patientMedicalHistory">
         <div class="container">
             <div class="medicalHistoryLineDivide"></div>

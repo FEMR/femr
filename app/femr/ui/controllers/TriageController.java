@@ -50,17 +50,21 @@ public class TriageController extends Controller {
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
-//        if (response.isSuccessful()) {
-//
-//        }
         return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
-        //IPatient id = patientServiceResponse.getResponseObject();
-        //boolean isPostBack = true;
-        //return ok(femr.ui.views.html.triage.create.render(id, isPostBack));
     }
     public Result savedPatient(String id){
-        ServiceResponse<IPatient> getSavedPatient = triageService.
-        return ok(femr.ui.views.html.triage.show.render(id));
+        IPatient patient = triageService.findPatientById(id).getResponseObject();
+        CreateViewModel viewModel = new CreateViewModel();
+
+
+        viewModel.setFirstName(patient.getFirstName());
+        viewModel.setLastName(patient.getLastName());
+        viewModel.setAddress(patient.getAddress());
+        viewModel.setCity(patient.getCity());
+        viewModel.setAge(patient.getAge());
+        viewModel.setSex(patient.getSex());         //awwww yeahhhh!
+
+        return ok(femr.ui.views.html.triage.show.render(viewModel));
     }
 
 

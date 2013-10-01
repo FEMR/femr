@@ -1,4 +1,4 @@
-@(id: String)
+@(viewModel: femr.ui.models.triage.CreateViewModel)
 
 @import femr.ui.views.html.layouts.main
 
@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="btn-group-wrap">
                         <div class="btn-group btn-group-lg">
-                            <button type="button" class="btn btn-default">New Patient</button>
+                            <button type="button" class="newPatientBtn btn btn-default">New Patient</button>
                         </div>
                     </div>
                 </div>
@@ -23,7 +23,32 @@
                 <div class="medicalHistoryLineDivide"></div>
 
                 <div class="row triageInputRow">
-                    <h3>A patient with id @id was successfully saved :D!!!!!!!! :D :D :D :D</h3>
+                    <div class="col-sm-6 col-xs-6">
+                        <h3 class="text-center">General Info</h3>
+                        <div class="medicalHistoryLineDivide"></div>
+                        <div class="text-center">
+                            <label class="inputLabel">First Name:</label>
+                            <input type="text" class="form-control input-sm" name="firstName" value="@viewModel.getFirstName" readonly/>
+                            <label class="inputLabel">Last Name:</label>
+                            <input type="text" class="form-control input-sm" name="lastName" value="@viewModel.getLastName" readonly/>
+                            <label class="inputLabel">Address:</label>
+                            <input type="text" class="form-control input-sm" name="address" value="@viewModel.getAddress" readonly/>
+                            <label class="inputLabel">City:</label>
+                            <input type="text" class="form-control input-sm" name="city" value="@viewModel.getCity" readonly/>
+                            <label class="inputLabel">Age:</label>
+                            <input type="text" class="form-control input-sm" name="age" value="@viewModel.getAge" readonly/>
+                            @*display gender and pregnancy?*@
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-xs-6">
+                        <h3 class="text-center">Encounter Info</h3>
+                        <div class="medicalHistoryLineDivide"></div>
+                        <div class="text-center">
+                                        @*show blippet of chief complaint*@
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

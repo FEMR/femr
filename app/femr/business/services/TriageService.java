@@ -1,11 +1,16 @@
 package femr.business.services;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.data.daos.IRepository;
+import femr.data.models.Patient;
+
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -40,11 +45,17 @@ public class TriageService implements ITriageService {
     }
 
     @Override
-    public ServiceResponse<IPatient> getPatient(String id){
-        IPatient savedPatient = patientRepository.findOne();//needs to findone
+    public ServiceResponse<IPatient> findPatientById(String id){
+        ExpressionList<Patient> query = getQuery().where().eq("id",id);
+        IPatient savedPatient = patientRepository.findOne(query);
+
         ServiceResponse<IPatient> response = new ServiceResponse<>();
         response.setResponseObject(savedPatient);
         return response;
+    }
+
+    private Query<Patient> getQuery() {
+        return Ebean.find(Patient.class);
     }
 
     @Override

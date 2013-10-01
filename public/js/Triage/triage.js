@@ -1,6 +1,9 @@
 
 
 //onClick activators
+$('.newPatientBtn').click(function(){
+    window.location = "/triage";
+});
 $('#femaleBtn').change(function(){
     if ($('#pregnantWrap').hasClass('hidden')){
         $('#pregnantWrap').removeClass('hidden');

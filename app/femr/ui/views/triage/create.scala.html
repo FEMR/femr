@@ -8,39 +8,7 @@
     <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
 }
 
-@top = {
-    <div class ="well hide patientMedicalHistory">
-        <div class="container">
-            <div class="medicalHistoryLineDivide"></div>
-            <p>Patient Medical History</p>
-
-            <div class="col-sm-4 col-xs-4">
-                <h5 class="text-center">Visit Number</h5>
-                <ul class="list-unstyled text-center">
-                    <li>1</li>
-                    <li>2</li>
-                </ul>
-            </div>
-            <div class="col-sm-4 col-xs-4">
-                <h5 class="text-center">Date</h5>
-                <ul class="list-unstyled text-center">
-                    <li>16-Aug-10</li>
-                    <li>16-Jan-10</li>
-                </ul>
-            </div>
-            <div class="col-sm-4 col-xs-4">
-                <h5 class="text-center">View Report</h5>
-                <ul class="list-unstyled text-center">
-                    <li>link</li>
-                    <li>link</li>
-                </ul>
-            </div>
-            <div class="medicalHistoryLineDivide"></div>
-        </div>
-    </div>
-}
-
-@main("triage",outsideContainerTop = top, styles = additionalStyles, scripts = additionalScripts){
+@main("triage",styles = additionalStyles, scripts = additionalScripts){
     @helper.form(action = TriageController.createPost()){
         <div class="row">
             <div class ="well">
@@ -50,7 +18,6 @@
                             <button type="button" class="newPatientBtn btn btn-default">New Patient</button>
                             <button type="submit" class = "btn btn-default">Save Patient</button>
                             <button type="button" id = "resetBtn" class="btn btn-default">Reset</button>
-                            <button type="button" id = "historyBtn" class="btn btn-default">History</button>
                         </div>
                     </div>
                 </div>

@@ -28,22 +28,9 @@ $('#pregnantBtn').change(function(){
 $('#resetBtn').click(function(){
     resetFields();
 });
-$('#historyBtn').click(function(){
-    showHistory();
-});
 
 
 function resetFields(){
     $(':input').val('');
     $('.active').removeClass('active');
     }
-
-
-function showHistory(){
-    if ($('.patientMedicalHistory' ).hasClass('hide')){
-    $('.patientMedicalHistory' ).removeClass('hide');
-    }
-else{
-    $('.patientMedicalHistory' ).addClass('hide');
-    }
-}

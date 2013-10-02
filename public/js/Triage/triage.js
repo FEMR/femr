@@ -24,13 +24,3 @@ $('#maleBtn').change(function(){
 $('#pregnantBtn').change(function(){
    $('#weeksWrap').removeClass('hidden');
 });
-
-$('#resetBtn').click(function(){
-    resetFields();
-});
-
-
-function resetFields(){
-    $(':input').val('');
-    $('.active').removeClass('active');
-    }

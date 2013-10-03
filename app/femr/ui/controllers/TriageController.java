@@ -14,26 +14,31 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TriageController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
     private ITriageService triageService;
 
     @Inject
-    public TriageController(ITriageService triageService){
+    public TriageController(ITriageService triageService) {
         this.triageService = triageService;
     }
 
-    public static Result createGet(){
+    public static Result createGet() {
         boolean isPostBack = false;
         return ok(femr.ui.views.html.triage.create.render());
     }
 
-    public Result createPost(){
+    public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         IPatient patient = new Patient();
         IPatientEncounter patientEncounter = new PatientEncounter();
-        //IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
+        List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();   //make a PatientEncounterVitalProvider!
+//        IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
+
         //Currently using defaults for userID
         patient.setUserId(1);
         patient.setFirstName(viewModel.getFirstName());
@@ -50,9 +55,11 @@ public class TriageController extends Controller {
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
+
         return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
     }
-    public Result savedPatient(String id){
+
+    public Result savedPatient(String id) {
         IPatient patient = triageService.findPatientById(id).getResponseObject();
         CreateViewModel viewModel = new CreateViewModel();
 
@@ -66,7 +73,6 @@ public class TriageController extends Controller {
 
         return ok(femr.ui.views.html.triage.show.render(viewModel));
     }
-
 
 
 }

@@ -1,14 +1,12 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
-import femr.data.models.Patient;
-import femr.data.models.PatientEncounter;
-import femr.data.models.PatientEncounterVital;
 import femr.ui.models.triage.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
@@ -20,10 +18,14 @@ import java.util.List;
 public class TriageController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
     private ITriageService triageService;
+    private Provider<IPatient> patientProvider;
+    private Provider<IPatientEncounter> patientEncounterProvider;
+    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public TriageController(ITriageService triageService) {
+    public TriageController(ITriageService triageService, Provider<IPatient> patientProvider) {
         this.triageService = triageService;
+        this.patientProvider = patientProvider;
     }
 
     public static Result createGet() {
@@ -34,8 +36,8 @@ public class TriageController extends Controller {
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
-        IPatient patient = new Patient();
-        IPatientEncounter patientEncounter = new PatientEncounter();
+        IPatient patient = patientProvider.get();
+        IPatientEncounter patientEncounter = patientEncounterProvider.get();
         List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();   //make a PatientEncounterVitalProvider!
 //        IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
 

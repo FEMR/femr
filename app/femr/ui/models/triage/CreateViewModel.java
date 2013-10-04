@@ -9,14 +9,14 @@ public class CreateViewModel {
     private int age;
     private String sex;
     //begin vitals
-//    private float bloodPressureSystolic;
-//    private float bloodPressureDiastolic;
-//    private float heartRate;
-//    private float temperature;
-//    private float respirations;
-//    private float heightFeet;
-//    private float heightInches;
-//    private float weight;
+    private float bloodPressureSystolic;
+    private float bloodPressureDiastolic;
+    private float heartRate;
+    private float temperature;
+    private float respirations;
+    private float heightFeet;
+    private float heightInches;
+    private float weight;
     private String chiefComplaint;
 
     //begin general info
@@ -69,69 +69,69 @@ public class CreateViewModel {
     }
 
     //begin vitals
-//    public float getBloodPressureSystolic() {
-//        return bloodPressureSystolic;
-//    }
-//
-//    public void setBloodPressureSystolic(float bloodPressureSystolic) {
-//        this.bloodPressureSystolic = bloodPressureSystolic;
-//    }
-//
-//    public float getBloodPressureDiastolic() {
-//        return bloodPressureSystolic;
-//    }
-//
-//    public void setBloodPressureDiastolic(float bloodPressureDiastolic) {
-//        this.bloodPressureSystolic = bloodPressureDiastolic;
-//    }
-//
-//    public float getHeartRate() {
-//        return heartRate;
-//    }
-//
-//    public void setHeartRate(float heartRate) {
-//        this.heartRate = heartRate;
-//    }
-//
-//    public float getTemperature() {
-//        return temperature;
-//    }
-//
-//    public void setTemperature(float temperature) {
-//        this.temperature = temperature;
-//    }
-//
-//    public float getRespirations() {
-//        return respirations;
-//    }
-//
-//    public void setRespirations(float respirations) {
-//        this.respirations = respirations;
-//    }
-//
-//    public float getHeightFeet() {
-//        return heightFeet;
-//    }
-//
-//    public void setHeightFeet(float heightFeet) {
-//        this.heightFeet = heightFeet;
-//    }
-//
-//    public float getHeightInches() {
-//        return heightFeet;
-//    }
-//
-//    public void setHeightInches(float heightInches) {
-//        this.heightFeet = heightInches;
-//    }
-//
-//    public float getWeight() {
-//        return weight;
-//    }
-//
-//    public void setWeight(float weight) {
-//        this.weight = weight;
-//    }
+    public float getBloodPressureSystolic() {
+        return bloodPressureSystolic;
+    }
+
+    public void setBloodPressureSystolic(float bloodPressureSystolic) {
+        this.bloodPressureSystolic = bloodPressureSystolic;
+    }
+
+    public float getBloodPressureDiastolic() {
+        return bloodPressureSystolic;
+    }
+
+    public void setBloodPressureDiastolic(float bloodPressureDiastolic) {
+        this.bloodPressureSystolic = bloodPressureDiastolic;
+    }
+
+    public float getHeartRate() {
+        return heartRate;
+    }
+
+    public void setHeartRate(float heartRate) {
+        this.heartRate = heartRate;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
+
+    public float getRespirations() {
+        return respirations;
+    }
+
+    public void setRespirations(float respirations) {
+        this.respirations = respirations;
+    }
+
+    public float getHeightFeet() {
+        return heightFeet;
+    }
+
+    public void setHeightFeet(float heightFeet) {
+        this.heightFeet = heightFeet;
+    }
+
+    public float getHeightInches() {
+        return heightFeet;
+    }
+
+    public void setHeightInches(float heightInches) {
+        this.heightFeet = heightInches;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
 
     public String getChiefComplaint() {
         return chiefComplaint;

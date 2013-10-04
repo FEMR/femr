@@ -17,9 +17,9 @@ public interface IPatientEncounterVital {
 
     void setVitalValue(float vitalValue);
 
-    float getDateTaken();
+    String getDateTaken();
 
-    void setDateTaken(float dateTaken);
+    void setDateTaken(String dateTaken);
 
     void setUserId(int userId);
 }

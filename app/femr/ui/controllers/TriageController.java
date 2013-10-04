@@ -38,8 +38,8 @@ public class TriageController extends Controller {
 
         IPatient patient = patientProvider.get();
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
-        List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();   //make a PatientEncounterVitalProvider!
-//        IPatientEncounterVital patientEncounterVital = new PatientEncounterVital();
+        IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
+        List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();
 
         //Currently using defaults for userID
         patient.setUserId(1);
@@ -57,6 +57,11 @@ public class TriageController extends Controller {
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
+        patientEncounterVital.setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
+        patientEncounterVital.setDateTaken(triageService.getCurrentDateTime());
+        patientEncounterVital.setUserId(1);
+        //patientEncounterVital.setVitalId();
+        //patientEncounterVital.setVitalValue();
 
         return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
     }

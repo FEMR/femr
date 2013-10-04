@@ -19,7 +19,7 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     @Column(name = "vital_value", nullable = false)
     private float vitalValue;
     @Column(name = "date_taken", nullable = false)
-    private float dateTaken;
+    private String dateTaken;
 
     @Override
     public int getId() {
@@ -67,12 +67,12 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     }
 
     @Override
-    public float getDateTaken() {
+    public String getDateTaken() {
         return dateTaken;
     }
 
     @Override
-    public void setDateTaken(float dateTaken) {
+    public void setDateTaken(String dateTaken) {
         this.dateTaken = dateTaken;
     }
 }

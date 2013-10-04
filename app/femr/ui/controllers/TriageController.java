@@ -7,6 +7,7 @@ import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
+import femr.common.models.IVital;
 import femr.ui.models.triage.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
@@ -23,13 +24,16 @@ public class TriageController extends Controller {
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public TriageController(ITriageService triageService, Provider<IPatient> patientProvider) {
+    public TriageController(ITriageService triageService, Provider<IPatient> patientProvider,
+                            Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.triageService = triageService;
         this.patientProvider = patientProvider;
+        this.patientEncounterProvider = patientEncounterProvider;
+        this.patientEncounterVitalProvider = patientEncounterVitalProvider;
     }
 
     public static Result createGet() {
-        boolean isPostBack = false;
+
         return ok(femr.ui.views.html.triage.create.render());
     }
 
@@ -38,8 +42,9 @@ public class TriageController extends Controller {
 
         IPatient patient = patientProvider.get();
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
-        IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
-        List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();
+
+        //List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();
+        List<IVital> vitalList = new ArrayList<IVital>();
 
         //Currently using defaults for userID
         patient.setUserId(1);
@@ -56,12 +61,6 @@ public class TriageController extends Controller {
         patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
-
-        patientEncounterVital.setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital.setDateTaken(triageService.getCurrentDateTime());
-        patientEncounterVital.setUserId(1);
-        //patientEncounterVital.setVitalId();
-        //patientEncounterVital.setVitalValue();
 
         return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
     }

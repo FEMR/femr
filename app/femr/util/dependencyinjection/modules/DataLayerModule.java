@@ -2,17 +2,10 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IRole;
-import femr.common.models.IUser;
+import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.util.dependencyinjection.providers.PatientEncounterProvider;
-import femr.util.dependencyinjection.providers.PatientEncounterVitalProvider;
-import femr.util.dependencyinjection.providers.PatientProvider;
-import femr.util.dependencyinjection.providers.UserProvider;
+import femr.util.dependencyinjection.providers.*;
 
 public class DataLayerModule extends AbstractModule {
 
@@ -22,6 +15,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatient.class).toProvider(PatientProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
         bind(IPatientEncounterVital.class).toProvider(PatientEncounterVitalProvider.class);
+        bind(IVital.class).toProvider(VitalProvider.class);
 
         bind(new TypeLiteral<IRepository<IRole>>() {
         }).to(new TypeLiteral<Repository<IRole>>() {});

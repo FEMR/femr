@@ -41,7 +41,6 @@ public class TriageController extends Controller {
         List<? extends IVital> vitals = triageService.findAllVitals();
 
         return ok(femr.ui.views.html.triage.create.render(vitals));
-        //return ok(femr.ui.views.html.triage.create.render());
     }
 
     public Result createPost() {

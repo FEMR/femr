@@ -10,7 +10,7 @@ GET         /admin                      femr.ui.controllers.admin.AdminControlle
 GET         /pharmacy                   femr.ui.controllers.PharmaciesController.index()
 GET         /triage/show/:id            @femr.ui.controllers.TriageController.savedPatient(id: String)
 POST        /triage                     @femr.ui.controllers.TriageController.createPost()
-GET         /triage                     femr.ui.controllers.TriageController.createGet()
+GET         /triage                     @femr.ui.controllers.TriageController.createGet()
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()
 GET         /login                      @femr.ui.controllers.SessionsController.createGet()

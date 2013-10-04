@@ -1,3 +1,5 @@
+@(vitals: List[_ <: femr.common.models.IVital])
+
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.TriageController
 
@@ -10,6 +12,7 @@
 
 @main("triage", styles = additionalStyles, scripts = additionalScripts) {
   @helper.form(action = TriageController.createPost()) {
+
     <div class="row">
       <div class ="well">
         @*<div class="row">*@
@@ -81,12 +84,12 @@
             <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
               <div class="text-center">
                 <label class="inputLabel" for="bloodPressureSystolic">Blood Pressure:</label>
-                <input type="text" class="form-control input-sm" id="bloodPressureSystolic" name="bloodPressureSystolic"/>
-                <input type="text" class="form-control input-sm" id="bloodPressureDiastolic" name="bloodPressureDiastolic"/>
+                <input type="text" class="form-control input-sm" id="bloodPressureSystolic" name="@vitals.get(7).getName"/>
+                <input type="text" class="form-control input-sm" id="bloodPressureDiastolic" name="@vitals.get(8).getName"/>
                 <label class="inputLabel" for="heartRate">Heart Rate:</label>
-                <input type="text" class="form-control input-sm" id="heartRate" name="heartRate"/>
+                <input type="text" class="form-control input-sm" id="heartRate" name="@vitals.get(1).getName"/>
                 <label class="inputLabel" for="temperature">Temperature:</label>
-                <input type="text" class="form-control input-sm" id="temperature" name="temperature"/>
+                <input type="text" class="form-control input-sm" id="temperature" name="@vitals.get(2).getName"/>
                 <label class="inputLabel">BMI:</label>
                 <input type="text" class="form-control input-sm" readonly/>
               </div>
@@ -95,14 +98,14 @@
             <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
               <div class="text-center">
                 <label class="inputLabel" for="respirations">Respirations:</label>
-                <input type="text" class="form-control input-sm" id="respirations" name="respirations"/>
+                <input type="text" class="form-control input-sm" id="respirations" name="@vitals.get(0).getName"/>
                 <label class="inputLabel" for="oxygen">Oxygen:</label>
-                <input type="text" class="form-control input-sm" id="oxygen" name="oxygen"/>
+                <input type="text" class="form-control input-sm" id="oxygen" name="@vitals.get(3).getName"/>
                 <label class="inputLabel" for="heightFeet">Height:</label>
-                <input type="text" class="form-control input-sm" id="heightFeet" name="heightFeet"/>
-                <input type="text" class="form-control input-sm" id="heightInches" name="heightInches"/>
+                <input type="text" class="form-control input-sm" id="heightFeet" name="@vitals.get(4).getName"/>
+                <input type="text" class="form-control input-sm" id="heightInches" name="@vitals.get(5).getName"/>
                 <label class="inputLabel" for="weight">Weight:</label>
-                <input type="text" class="form-control input-sm" id="weight" name="weight"/>
+                <input type="text" class="form-control input-sm" id="weight" name="@vitals.get(6).getName"/>
               </div>
             </div>
 

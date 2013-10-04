@@ -22,19 +22,26 @@ public class TriageController extends Controller {
     private Provider<IPatient> patientProvider;
     private Provider<IPatientEncounter> patientEncounterProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+    private Provider<IVital> vitalProvider;
 
     @Inject
-    public TriageController(ITriageService triageService, Provider<IPatient> patientProvider,
-                            Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public TriageController(ITriageService triageService,
+                            Provider<IPatient> patientProvider,
+                            Provider<IPatientEncounter> patientEncounterProvider,
+                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
+                            Provider<IVital> vitalProvider) {
         this.triageService = triageService;
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
+        this.vitalProvider = vitalProvider;
     }
 
-    public static Result createGet() {
+    public Result createGet() {
+        List<? extends IVital> vitals = triageService.findAllVitals();
 
-        return ok(femr.ui.views.html.triage.create.render());
+        return ok(femr.ui.views.html.triage.create.render(vitals));
+        //return ok(femr.ui.views.html.triage.create.render());
     }
 
     public Result createPost() {
@@ -44,7 +51,7 @@ public class TriageController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
 
         //List<IPatientEncounterVital> patientEncounterVitalList = new ArrayList<IPatientEncounterVital>();
-        List<IVital> vitalList = new ArrayList<IVital>();
+
 
         //Currently using defaults for userID
         patient.setUserId(1);

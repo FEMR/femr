@@ -48,28 +48,68 @@ public class TriageController extends Controller {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         IPatient patient = populatePatient(viewModel);
-
-        IPatientEncounter patientEncounter = patientEncounterProvider.get();
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-
-
-        //Currently using defaults for userID
-
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
 
+        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel,patientServiceResponse);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
+
+        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel,patientEncounterServiceResponse);
+        for (int i = 0; i < patientEncounterVitals.size(); i++){
+            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+        }
+
+        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
+    }
+
+    public Result savedPatient(String id) {
+        IPatient patient = triageService.findPatientById(id).getResponseObject();
+
+        List<? extends IPatientEncounter> patientEncounters = triageService.findAllEncounters();
+
+        CreateViewModel viewModel = new CreateViewModel();
+
+        viewModel.setFirstName(patient.getFirstName());
+        viewModel.setLastName(patient.getLastName());
+        viewModel.setAddress(patient.getAddress());
+        viewModel.setCity(patient.getCity());
+        viewModel.setAge(patient.getAge());
+        viewModel.setSex(patient.getSex());         //awwww yeahhhh!
+
+        return ok(femr.ui.views.html.triage.show.render(viewModel,patientEncounters));
+    }
+
+    private IPatient populatePatient(CreateViewModel viewModel){
+        IPatient patient = patientProvider.get();
+        patient.setUserId(1);
+        patient.setFirstName(viewModel.getFirstName());
+        patient.setLastName(viewModel.getLastName());
+        patient.setAge(viewModel.getAge());
+        patient.setSex(viewModel.getSex()); //gettin' someeee!
+        patient.setAddress(viewModel.getAddress());
+        patient.setCity(viewModel.getCity());
+
+        return patient;
+    }
+
+    private IPatientEncounter populatePatientEncounter(CreateViewModel viewModel,
+                                                       ServiceResponse<IPatient> patientServiceResponse){
+        IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
         patientEncounter.setUserId(1);
         patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
+        return patientEncounter;
+    }
 
+    private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModel viewModel,
+                                                       ServiceResponse<IPatientEncounter> patientEncounterServiceResponse){
 
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
         for (int j=0;j < patientEncounterVital.length; j++){
             patientEncounterVital[j] = patientEncounterVitalProvider.get();
         }
-
         patientEncounterVital[0].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[0].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[0].setUserId(1);
@@ -125,42 +165,7 @@ public class TriageController extends Controller {
         patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic());
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
-        for (int i = 0; i < patientEncounterVitals.size(); i++){
-            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
-        }
-
-        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
-    }
-
-    public Result savedPatient(String id) {
-        IPatient patient = triageService.findPatientById(id).getResponseObject();
-
-        List<? extends IPatientEncounter> patientEncounters = triageService.findAllEncounters();
-
-        CreateViewModel viewModel = new CreateViewModel();
-
-        viewModel.setFirstName(patient.getFirstName());
-        viewModel.setLastName(patient.getLastName());
-        viewModel.setAddress(patient.getAddress());
-        viewModel.setCity(patient.getCity());
-        viewModel.setAge(patient.getAge());
-        viewModel.setSex(patient.getSex());         //awwww yeahhhh!
-
-        return ok(femr.ui.views.html.triage.show.render(viewModel,patientEncounters));
-    }
-
-    private IPatient populatePatient(CreateViewModel viewModel){
-
-        IPatient patient = patientProvider.get();
-        patient.setUserId(1);
-        patient.setFirstName(viewModel.getFirstName());
-        patient.setLastName(viewModel.getLastName());
-        patient.setAge(viewModel.getAge());
-        patient.setSex(viewModel.getSex()); //gettin' someeee!
-        patient.setAddress(viewModel.getAddress());
-        patient.setCity(viewModel.getCity());
-
-        return patient;
+        return patientEncounterVitals;
     }
 
 

@@ -75,7 +75,7 @@ public class TriageController extends Controller {
         viewModel.setAge(patient.getAge());
         viewModel.setSex(patient.getSex());         //awwww yeahhhh!
 
-        return ok(femr.ui.views.html.triage.show.render(viewModel,patientEncounters));
+        return ok(femr.ui.views.html.triage.show.render(viewModel,patientEncounters, id));
     }
 
     private IPatient populatePatient(CreateViewModel viewModel){

@@ -14,6 +14,7 @@ public class CreateViewModel {
     private float heartRate;
     private float temperature;
     private float respirations;
+    private float oxygen;
     private float heightFeet;
     private float heightInches;
     private float weight;
@@ -109,6 +110,14 @@ public class CreateViewModel {
         this.respirations = respirations;
     }
 
+    public float getOxygen() {
+        return oxygen;
+    }
+
+    public void setOxygen(float oxygenSaturation) {
+        this.oxygen = oxygenSaturation;
+    }
+
     public float getHeightFeet() {
         return heightFeet;
     }
@@ -140,4 +149,5 @@ public class CreateViewModel {
     public void setChiefComplaint(String chiefComplaint) {
         this.chiefComplaint = chiefComplaint;
     }
+
 }

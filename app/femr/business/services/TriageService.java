@@ -12,6 +12,7 @@ import femr.common.models.IVital;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 import femr.data.models.Vital;
+import femr.data.models.PatientEncounter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,6 +98,12 @@ public class TriageService implements ITriageService {
     public List<? extends IVital> findAllVitals(){
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
         return vitals;
+    }
+
+    @Override
+    public List<? extends IPatientEncounter> findAllEncounters(){
+        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findAll(PatientEncounter.class);
+        return patientEncounters;
     }
 
     @Override

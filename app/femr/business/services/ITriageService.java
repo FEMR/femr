@@ -19,6 +19,8 @@ public interface ITriageService {
 
     List<? extends IVital> findAllVitals();
 
+    List<? extends IPatientEncounter> findAllEncounters();
+
 
 
     String getCurrentDateTime();

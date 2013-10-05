@@ -1,4 +1,4 @@
-@(viewModel: femr.ui.models.triage.CreateViewModel)
+@(viewModel: femr.ui.models.triage.CreateViewModel,patientEncounters: List[_ <: femr.common.models.IPatientEncounter])
 
 @import femr.ui.views.html.layouts.main
 
@@ -45,7 +45,9 @@
                         <h3 class="text-center">Encounter Info</h3>
                         <div class="medicalHistoryLineDivide"></div>
                         <div class="text-center">
-                                        @*show blippet of chief complaint*@
+                        @for(patientEncounter <- patientEncounters){
+                          <h3>@patientEncounter.getChiefComplaint</h3>
+                        }
                         </div>
                     </div>
 

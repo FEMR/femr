@@ -20,7 +20,7 @@
     @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
       <li><a href="@TriageController.createGet()">Triage</a></li>
       <li><a href="@TriageController.createGet()">Medical</a></li>
-      <li><a href="@TriageController.createGet()">Pharmacy</a></li>
+      <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
     }
     @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
       <li><a href="@AdminController.index()">Research</a></li>

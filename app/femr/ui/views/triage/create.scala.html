@@ -1,4 +1,4 @@
-@(vitalNames: List[_ <: femr.common.models.IVital])
+@(vitalNames: List[_ <: femr.common.models.IVital],currentUser: femr.business.dtos.CurrentUser)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.TriageController
@@ -22,7 +22,7 @@
     </div>
   }
 
-@main("triage", styles = additionalStyles, scripts = additionalScripts, outsideContainerTop = search) {
+@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, outsideContainerTop = search) {
   @helper.form(action = TriageController.createPost()) {
 
     <div class="row">

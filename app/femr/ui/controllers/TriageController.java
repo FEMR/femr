@@ -26,31 +26,28 @@ public class TriageController extends Controller {
     private Provider<IPatient> patientProvider;
     private Provider<IPatientEncounter> patientEncounterProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
-    private Provider<IVital> vitalProvider;
 
     @Inject
     public TriageController(ITriageService triageService,
                             ISessionService sessionService,
                             Provider<IPatient> patientProvider,
                             Provider<IPatientEncounter> patientEncounterProvider,
-                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
-                            Provider<IVital> vitalProvider) {
+                            Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
-        this.vitalProvider = vitalProvider;
     }
 
     public Result createGet() {
         List<? extends IVital> vitalNames = triageService.findAllVitals();
         ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
         if(currentUserSession.isSuccessful()){
-            return ok(femr.ui.views.html.triage.create.render(vitalNames,currentUserSession.getResponseObject()));
+            return ok(femr.ui.views.html.triage.create.render(currentUserSession.getResponseObject(),vitalNames));
         }
         else{
-            return ok(femr.ui.views.html.triage.create.render(vitalNames,null));
+            return ok(femr.ui.views.html.triage.create.render(null,vitalNames));
         }
     }
 

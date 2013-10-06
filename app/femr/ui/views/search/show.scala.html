@@ -1,4 +1,4 @@
-@(viewModel: femr.ui.models.search.CreateViewModel,patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: String)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.search.CreateViewModel,patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: String)
 
 @import femr.ui.views.html.layouts.main
 
@@ -9,7 +9,7 @@
     <script type="text/javascript" src="@routes.Assets.at("/js/Triage/triage.js")"></script>
 }
 
-@main("triage", styles = additionalStyles, scripts = additionalScripts){
+@main("search", currentUser, styles = additionalStyles, scripts = additionalScripts){
         <div class="row">
             <div class ="well">
                 <div class="row">

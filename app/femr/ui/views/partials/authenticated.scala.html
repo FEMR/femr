@@ -4,6 +4,7 @@
 @import femr.ui.controllers.routes.HomeController
 @import femr.ui.controllers.routes.SessionsController
 @import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.controllers.admin.routes.AdminController
 
 <div class="navbar-header">
@@ -19,6 +20,7 @@
     @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
       <li><a href="@TriageController.createGet()">Triage</a></li>
       <li><a href="@TriageController.createGet()">Medical</a></li>
+      <li><a href="@TriageController.createGet()">Pharmacy</a></li>
     }
     @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
       <li><a href="@AdminController.index()">Research</a></li>

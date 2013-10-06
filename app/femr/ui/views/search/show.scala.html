@@ -1,12 +1,12 @@
-@(viewModel: femr.ui.models.triage.CreateViewModel,patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: String)
+@(viewModel: femr.ui.models.search.CreateViewModel,patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: String)
 
 @import femr.ui.views.html.layouts.main
 
 @additionalStyles = {
-    <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
 }
 @additionalScripts = {
-    <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("/js/Triage/triage.js")"></script>
 }
 
 @main("triage", styles = additionalStyles, scripts = additionalScripts){
@@ -40,7 +40,9 @@
                             <input type="text" class="form-control input-sm" name="city" value="@viewModel.getCity" readonly/>
                             <label class="inputLabel">Age:</label>
                             <input type="text" class="form-control input-sm" name="age" value="@viewModel.getAge" readonly/>
-                            @*display gender and pregnancy?*@
+                          <label class="inputLabel">Sex:</label>
+                          <input type="text" class="form-control input-sm" name="age" value="@viewModel.getSex" readonly/>
+                            @*display pregnancy?*@
                         </div>
                     </div>
 

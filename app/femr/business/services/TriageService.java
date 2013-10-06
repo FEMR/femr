@@ -81,29 +81,9 @@ public class TriageService implements ITriageService {
     }
 
     @Override
-    public ServiceResponse<IPatient> findPatientById(String id){
-        ExpressionList<Patient> query = getQuery().where().eq("id",id);
-        IPatient savedPatient = patientRepository.findOne(query);
-
-        ServiceResponse<IPatient> response = new ServiceResponse<>();
-        response.setResponseObject(savedPatient);
-        return response;
-    }
-
-    private Query<Patient> getQuery() {
-        return Ebean.find(Patient.class);
-    }
-
-    @Override
     public List<? extends IVital> findAllVitals(){
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
         return vitals;
-    }
-
-    @Override
-    public List<? extends IPatientEncounter> findAllEncounters(){
-        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findAll(PatientEncounter.class);
-        return patientEncounters;
     }
 
     @Override

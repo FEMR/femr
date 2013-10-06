@@ -39,25 +39,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ServiceResponse<IUser> findByEmail(String email) {
-        ServiceResponse<IUser> response = new ServiceResponse<>();
+    public IUser findByEmail(String email) {
         ExpressionList<User> query = getQuery().fetch("roles").where().eq("email", email);
 
-        IUser user = userRepository.findOne(query);
-        response.setResponseObject(user);
-
-        return response;
+        return userRepository.findOne(query);
     }
 
     @Override
-    public ServiceResponse<IUser> findById(int id) {
-        ServiceResponse<IUser> response = new ServiceResponse<>();
+    public IUser findById(int id) {
         ExpressionList<User> query = getQuery().fetch("roles").where().eq("id", id);
 
-        IUser user = userRepository.findOne(query);
-        response.setResponseObject(user);
-
-        return response;
+        return userRepository.findOne(query);
     }
 
     @Override
@@ -78,11 +70,10 @@ public class UserService implements IUserService {
     }
 
     private boolean userExistsWithEmail(String email, ServiceResponse<IUser> response) {
-        ServiceResponse<IUser> existingUserResponse = findByEmail(email);
+        IUser existingUser = findByEmail(email);
 
-        if (!existingUserResponse.isNullResponse()) {
-            response.setSuccessful(false);
-            response.addError("global", "User with email exists.");
+        if (existingUser != null) {
+            response.addError("", "User with email exists.");
             return true;
         }
         return false;

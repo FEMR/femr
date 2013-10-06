@@ -20,9 +20,9 @@ public class SessionsController extends Controller {
     }
 
     public Result createGet() {
-        ServiceResponse<CurrentUser> response = sessionsService.getCurrentUserSession();
+        CurrentUser currentUser = sessionsService.getCurrentUserSession();
 
-        if (response.isSuccessful()) {
+        if (currentUser != null) {
             return redirect(routes.HomeController.index());
         }
 
@@ -31,13 +31,14 @@ public class SessionsController extends Controller {
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        ServiceResponse<CurrentUser> user = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword());
+        ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword());
 
-        if (user.isSuccessful()) {
-            return redirect(routes.HomeController.index());
+        if (response.hasErrors()) {
+            return ok(create.render(createViewModelForm));
         }
 
-        return ok(create.render(createViewModelForm));
+        return redirect(routes.HomeController.index());
+
     }
 
     public Result delete() {

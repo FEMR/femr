@@ -2,7 +2,6 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISessionService;
 import femr.ui.views.html.home.index;
 import femr.ui.views.html.sessions.create;
@@ -19,10 +18,10 @@ public class HomeController extends Controller {
     }
 
     public Result index() {
-        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        if (currentUserSession.isSuccessful()) {
-            return ok(index.render(currentUserSession.getResponseObject()));
+        if (currentUser != null) {
+            return ok(index.render(currentUser));
         }
 
         return ok(create.render(null));

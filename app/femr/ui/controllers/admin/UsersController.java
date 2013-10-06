@@ -46,16 +46,14 @@ public class UsersController extends Controller {
     }
 
     public Result index() {
-        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
-        CurrentUser currentUser = currentUserSession.getResponseObject();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IRole> roles = roleService.getAllRoles();
 
         return ok(index.render(currentUser, roles));
     }
 
     public Result createGet() {
-        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
-        CurrentUser currentUser = currentUserSession.getResponseObject();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IRole> roles = roleService.getAllRoles();
 
         return ok(create.render(currentUser, roles, createViewModelForm));
@@ -77,7 +75,7 @@ public class UsersController extends Controller {
 
         ServiceResponse<IUser> response = userService.createUser(user);
 
-        if (response.isSuccessful()) {
+        if (!response.hasErrors()) {
             return redirect(HomeController.index());
         }
 

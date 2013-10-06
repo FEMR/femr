@@ -28,5 +28,4 @@ object ApplicationBuild extends Build {
     },
     sbt.Keys.fork in Test := false
   )
-
 }

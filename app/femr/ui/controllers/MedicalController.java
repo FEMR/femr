@@ -5,6 +5,7 @@ import femr.business.dtos.CurrentUser;
 import femr.business.services.ISessionService;
 import play.mvc.Controller;
 import play.mvc.Result;
+import femr.ui.views.html.medical.index;
 
 public class MedicalController extends Controller {
 
@@ -16,7 +17,7 @@ public class MedicalController extends Controller {
     }
 
     public Result index() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession().getResponseObject();
-        return ok(femr.ui.views.html.medical.index.render(currentUserSession));
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        return ok(index.render(currentUserSession));
     }
 }

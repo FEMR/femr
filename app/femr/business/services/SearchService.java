@@ -30,7 +30,28 @@ public class SearchService implements ISearchService{
         IPatient savedPatient = patientRepository.findOne(query);
 
         ServiceResponse<IPatient> response = new ServiceResponse<>();
-        response.setResponseObject(savedPatient);
+        if (savedPatient == null){
+            response.setSuccessful(false);
+        }
+        else{
+            response.setResponseObject(savedPatient);
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<IPatient> findPatientByName(String firstName, String lastName){
+        ExpressionList<Patient> query = getQuery().where().eq("first_name",firstName).eq("last_name",lastName);
+        IPatient savedPatient = patientRepository.findOne(query);
+
+        ServiceResponse<IPatient> response = new ServiceResponse<>();
+        if (savedPatient == null){
+            response.setSuccessful(false);
+        }
+        else{
+            response.setResponseObject(savedPatient);
+        }
+
         return response;
     }
 

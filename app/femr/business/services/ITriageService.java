@@ -15,11 +15,7 @@ public interface ITriageService {
 
     ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
 
-    ServiceResponse<IPatient> findPatientById(String id);
-
     List<? extends IVital> findAllVitals();
-
-    List<? extends IPatientEncounter> findAllEncounters();
 
 
 

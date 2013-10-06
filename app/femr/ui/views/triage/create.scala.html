@@ -1,4 +1,4 @@
-@(vitalNames: List[_ <: femr.common.models.IVital])
+@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital])
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.TriageController
@@ -10,7 +10,7 @@
   <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
 }
 
-@main("triage", styles = additionalStyles, scripts = additionalScripts) {
+@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts) {
   @helper.form(action = TriageController.createPost()) {
 
     <div class="row">
@@ -18,7 +18,7 @@
 
         <div class="row triageInputRow">
           <div class="col-sm-6 col-xs-6">
-            <h3 class="text-center pull-left bold margin-top-zero">General Info</h3>
+            <h3 class="pull-left bold margin-top-zero">General Info</h3>
             <div class="medicalHistoryLineDivide"></div>
             <div class="text-center">
               <label class="inputLabel" for="firstName">First Name:</label>
@@ -60,9 +60,9 @@
           <div class="col-sm-6 col-xs-6">
 
 
-            <h3 class="text-center pull-left bold margin-top-zero">Vitals</h3>
+            <h3 class="pull-left bold margin-top-zero">Vitals</h3>
             @*recycle sign?*@
-            <button type="button" class="newPatientBtn btn btn-default pull-right">New Patient</button>
+            <button type="button" class="newPatientBtn btn btn-default pull-right">Next Patient</button>
             <div class="medicalHistoryLineDivide"></div>
 
             <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
@@ -84,7 +84,7 @@
 
             <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
               <div class="text-center">
-                <label class="inputLabel" for="heightFeet">Height:</label>
+                <label class="inputLabel" for="heightFeet">Height aasdfs:</label>
 
                 <div class="col-sm-6 col-xs-6 padding-left-zero">
                   <input type="text" class="form-control input-sm" id="heightFeet" name="@vitalNames.get(4).getName"/>

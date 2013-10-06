@@ -7,7 +7,7 @@ import femr.common.models.IPatientEncounter;
 import java.util.List;
 
 public interface ISearchService {
-    ServiceResponse<IPatient> findPatientById(String id);
+    ServiceResponse<IPatient> findPatientById(int id);
 
     List<? extends IPatientEncounter> findAllEncounters();
 }

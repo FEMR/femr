@@ -69,24 +69,7 @@ public class TriageController extends Controller {
             triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
         }
 
-        return redirect("/triage/show/" + patientServiceResponse.getResponseObject().getId());
-    }
-
-    public Result savedPatient(String id) {
-        IPatient patient = triageService.findPatientById(id).getResponseObject();
-
-        List<? extends IPatientEncounter> patientEncounters = triageService.findAllEncounters();
-
-        CreateViewModel viewModel = new CreateViewModel();
-
-        viewModel.setFirstName(patient.getFirstName());
-        viewModel.setLastName(patient.getLastName());
-        viewModel.setAddress(patient.getAddress());
-        viewModel.setCity(patient.getCity());
-        viewModel.setAge(patient.getAge());
-        viewModel.setSex(patient.getSex());         //awwww yeahhhh!
-
-        return ok(femr.ui.views.html.triage.show.render(viewModel,patientEncounters, id));
+        return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser){

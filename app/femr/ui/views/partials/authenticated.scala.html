@@ -29,10 +29,31 @@
       <li><a href="@AdminController.index()">Admin</a></li>
     }
   </ul>
+
   <p class="navbar-text pull-right">
     Signed in as @currentUser.getFirstName @currentUser.getLastName
     <a class="navbar-link" href="@SessionsController.delete()">
       <span class="glyphicon glyphicon-log-out"></span>
     </a>
   </p>
+
+
+
+  <div class="input-group">
+    <div class="col-sm-3 col-xs-3">
+      <input type="text" class="form-control" placeholder="Id">
+      </div>
+    <div class="col-sm-3 col-xs-3">
+    <input type="text" class="form-control" placeholder="First Name">
+    </div>
+      <div class="col-sm-3 col-xs-3">
+    <input type="text" class="form-control" placeholder="Last Name">
+      </div>
+    <div class="col-sm-3 col-xs-3">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default btn-sm">Submit</button>
+      </span>
+    </div>
+  </div>
+
 </div>

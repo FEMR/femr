@@ -25,7 +25,7 @@ public class SearchService implements ISearchService{
     }
 
     @Override
-    public ServiceResponse<IPatient> findPatientById(String id){
+    public ServiceResponse<IPatient> findPatientById(int id){
         ExpressionList<Patient> query = getQuery().where().eq("id",id);
         IPatient savedPatient = patientRepository.findOne(query);
 

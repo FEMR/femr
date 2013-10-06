@@ -7,13 +7,16 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.ui.models.search.CreatePostViewModel;
 import femr.ui.models.search.CreateViewModel;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.util.List;
 
 public class SearchController extends Controller {
+    private final Form<femr.ui.models.search.CreatePostViewModel> createPostViewModelForm = Form.form(femr.ui.models.search.CreatePostViewModel.class);
     private ISessionService sessionService;
     private ISearchService searchService;
 
@@ -24,7 +27,7 @@ public class SearchController extends Controller {
         this.searchService = searchService;
     }
 
-    public Result createGet(String id){
+    public Result createGet(int id){
         IPatient patient = searchService.findPatientById(id).getResponseObject();
         ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
         List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncounters();
@@ -43,6 +46,19 @@ public class SearchController extends Controller {
         else{
             return ok(femr.ui.views.html.search.show.render(null,viewModel, patientEncounters, id));
         }
+
+    }
+
+    public Result createPost(){
+
+
+        CreatePostViewModel postViewModel = createPostViewModelForm.bindFromRequest().get();
+        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
+
+        //IPatient patient = searchService.findPatientById(postViewModel.getSearchId()).getResponseObject();
+
+        return redirect("/show/" + postViewModel.getSearchId());
+
 
     }
 }

@@ -45,8 +45,13 @@ public class TriageController extends Controller {
 
     public Result createGet() {
         List<? extends IVital> vitalNames = triageService.findAllVitals();
-
-        return ok(femr.ui.views.html.triage.create.render(vitalNames));
+        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
+        if(currentUserSession.isSuccessful()){
+            return ok(femr.ui.views.html.triage.create.render(vitalNames,currentUserSession.getResponseObject()));
+        }
+        else{
+            return ok(femr.ui.views.html.triage.create.render(vitalNames,null));
+        }
     }
 
     public Result createPost() {

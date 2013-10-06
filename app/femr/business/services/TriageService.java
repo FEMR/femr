@@ -46,7 +46,7 @@ public class TriageService implements ITriageService {
             response.setResponseObject(newPatient);
         }
         else{
-            response.setSuccessful(false);
+            response.addError("patient","patient could not be saved to database");
         }
 
         return response;
@@ -61,7 +61,7 @@ public class TriageService implements ITriageService {
             response.setResponseObject(newPatientEncounter);
         }
         else{
-            response.setSuccessful(false);
+            response.addError("patient encounter","patient encounter could not be saved to database");
         }
         return response;
     }
@@ -75,7 +75,7 @@ public class TriageService implements ITriageService {
             response.setResponseObject(newPatientEncounterVital);
         }
         else{
-            response.setSuccessful(false);
+            response.addError("patient encounter vital","patient encounter vital could not be saved to database");
         }
         return response;
     }

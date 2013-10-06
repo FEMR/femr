@@ -26,12 +26,12 @@ public class SearchController extends Controller {
 
     public Result createGet(int id) {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncounters();
         CreateViewModel viewModel = new CreateViewModel();
 
 
-        if (patientServiceResponse.isSuccessful()) {
+        if (!patientServiceResponse.hasErrors()) {
             IPatient patient = patientServiceResponse.getResponseObject();
             viewModel.setFirstName(patient.getFirstName());
             viewModel.setLastName(patient.getLastName());
@@ -44,10 +44,6 @@ public class SearchController extends Controller {
             //fail?
         }
 
-        if (currentUserSession.isSuccessful()) {
-            return ok(femr.ui.views.html.search.show.render(currentUserSession.getResponseObject(), viewModel, patientEncounters, id));
-        } else {
-            return ok(femr.ui.views.html.search.show.render(null, viewModel, patientEncounters, id));
-        }
+        return ok(femr.ui.views.html.search.show.render(currentUser, viewModel, patientEncounters, id));
     }
 }

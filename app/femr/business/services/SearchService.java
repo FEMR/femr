@@ -31,7 +31,7 @@ public class SearchService implements ISearchService{
 
         ServiceResponse<IPatient> response = new ServiceResponse<>();
         if (savedPatient == null){
-            response.setSuccessful(false);
+            response.addError("id","id does not exist");
         }
         else{
             response.setResponseObject(savedPatient);
@@ -46,7 +46,7 @@ public class SearchService implements ISearchService{
 
         ServiceResponse<IPatient> response = new ServiceResponse<>();
         if (savedPatient == null){
-            response.setSuccessful(false);
+            response.addError("first name/last name","patient could not be found by name");
         }
         else{
             response.setResponseObject(savedPatient);

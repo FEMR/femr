@@ -42,35 +42,30 @@ public class TriageController extends Controller {
 
     public Result createGet() {
         List<? extends IVital> vitalNames = triageService.findAllVitals();
-        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
-        if(currentUserSession.isSuccessful()){
-            return ok(femr.ui.views.html.triage.create.render(currentUserSession.getResponseObject(),vitalNames));
-        }
-        else{
-            return ok(femr.ui.views.html.triage.create.render(null,vitalNames));
-        }
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
     }
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        ServiceResponse<CurrentUser> currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        IPatient patient = populatePatient(viewModel,currentUserSession.getResponseObject());
+        IPatient patient = populatePatient(viewModel, currentUser);
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
-        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel,patientServiceResponse,currentUserSession.getResponseObject());
+        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
                 triageService.createPatientEncounter(patientEncounter);
 
         List<IPatientEncounterVital> patientEncounterVitals =
-                populatePatientEncounterVitals(viewModel,patientEncounterServiceResponse,currentUserSession.getResponseObject());
-        for (int i = 0; i < patientEncounterVitals.size(); i++){
+                populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+        for (int i = 0; i < patientEncounterVitals.size(); i++) {
             triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
         }
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
 
-    private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser){
+    private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModel.getFirstName());
@@ -85,7 +80,7 @@ public class TriageController extends Controller {
 
     private IPatientEncounter populatePatientEncounter(CreateViewModel viewModel,
                                                        ServiceResponse<IPatient> patientServiceResponse,
-                                                       CurrentUser currentUser){
+                                                       CurrentUser currentUser) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
         patientEncounter.setUserId(currentUser.getId());
@@ -96,8 +91,8 @@ public class TriageController extends Controller {
     }
 
     private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModel viewModel,
-                                                       ServiceResponse<IPatientEncounter> patientEncounterServiceResponse,
-                                                       CurrentUser currentUser){
+                                                                        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse,
+                                                                        CurrentUser currentUser) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];

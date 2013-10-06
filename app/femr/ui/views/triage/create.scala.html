@@ -10,7 +10,19 @@
   <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
 }
 
-@main("triage", styles = additionalStyles, scripts = additionalScripts) {
+  @search = {
+    <div class="container">
+    <div class="row">
+    <div class="pull-right">
+      <label class="inputLabel">Id:</label>
+      <input type="text" class="form-control input-sm" id="search" name="search"/>
+      <button type="button" class="btn btn-default">Search</button>
+    </div>
+    </div>
+    </div>
+  }
+
+@main("triage", styles = additionalStyles, scripts = additionalScripts, outsideContainerTop = search) {
   @helper.form(action = TriageController.createPost()) {
 
     <div class="row">

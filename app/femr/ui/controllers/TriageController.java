@@ -118,49 +118,41 @@ public class TriageController extends Controller {
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
         for (int j = 0; j < patientEncounterVital.length; j++) {
             patientEncounterVital[j] = patientEncounterVitalProvider.get();
+            patientEncounterVital[j].setDateTaken((triageService.getCurrentDateTime()));
             patientEncounterVital[j].setUserId(currentUser.getId());
         }
-        patientEncounterVital[0].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[0].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[0].setVitalId(1);
         patientEncounterVital[0].setVitalValue(viewModel.getRespirations());
 
-        patientEncounterVital[1].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[1].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[1].setVitalId(2);
         patientEncounterVital[1].setVitalValue(viewModel.getHeartRate());
 
-        patientEncounterVital[2].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[2].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[2].setVitalId(3);
         patientEncounterVital[2].setVitalValue(viewModel.getTemperature());
 
-        patientEncounterVital[3].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[3].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[3].setVitalId(4);
         patientEncounterVital[3].setVitalValue(viewModel.getOxygen());
 
-        patientEncounterVital[4].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[4].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[4].setVitalId(5);
         patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet());
 
-        patientEncounterVital[5].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[5].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[5].setVitalId(6);
         patientEncounterVital[5].setVitalValue(viewModel.getHeightInches());
 
-        patientEncounterVital[6].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[6].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[6].setVitalId(7);
         patientEncounterVital[6].setVitalValue(viewModel.getWeight());
 
-        patientEncounterVital[7].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[7].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[7].setVitalId(8);
         patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic());
 
-        patientEncounterVital[8].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[8].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[8].setVitalId(9);
         patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic());

@@ -9,5 +9,7 @@ import java.util.List;
 public interface ISearchService {
     ServiceResponse<IPatient> findPatientById(int id);
 
+    ServiceResponse<IPatient> findPatientByName(String firstName, String lastName);
+
     List<? extends IPatientEncounter> findAllEncounters();
 }

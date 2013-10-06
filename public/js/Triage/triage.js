@@ -1,5 +1,9 @@
 
+
 //onClick activators
+$('.newPatientBtn').click(function(){
+    window.location = "/triage";
+});
 $('#femaleBtn').change(function(){
     if ($('#pregnantWrap').hasClass('hidden')){
         $('#pregnantWrap').removeClass('hidden');
@@ -20,26 +24,3 @@ $('#maleBtn').change(function(){
 $('#pregnantBtn').change(function(){
    $('#weeksWrap').removeClass('hidden');
 });
-
-$('#resetBtn').click(function(){
-    resetFields();
-});
-$('#historyBtn').click(function(){
-    showHistory();
-});
-
-
-function resetFields(){
-    $(':input').val('');
-    $('.active').removeClass('active');
-    }
-
-
-function showHistory(){
-    if ($('.patientMedicalHistory' ).hasClass('hide')){
-    $('.patientMedicalHistory' ).removeClass('hide');
-    }
-else{
-    $('.patientMedicalHistory' ).addClass('hide');
-    }
-}

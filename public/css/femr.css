@@ -13,3 +13,7 @@ body {
 .form-group-padding {
   padding-left: 5px;
 }
+
+.margin-top-zero{
+    margin-top: 0px;
+}

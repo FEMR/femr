@@ -87,7 +87,6 @@ public class TriageController extends Controller {
         patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
 
-<<<<<<< HEAD
         return patientEncounter;
     }
 

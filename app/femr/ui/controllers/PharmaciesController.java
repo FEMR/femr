@@ -6,7 +6,6 @@ import femr.ui.models.pharmacy.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import femr.data.models.PatientPrescription;
 
 public class PharmaciesController extends Controller {
 
@@ -16,5 +15,10 @@ public class PharmaciesController extends Controller {
     @Inject
     public PharmaciesController(IPatientPrescription pharmacyService) {
         this.pharmacyService = pharmacyService;
+    }
+
+    public Result index() {
+        return ok(femr.ui.views.html.pharmacies.index.render());
+//        return ok(femr.ui.views.html.pharmacies.index.render());
     }
 }

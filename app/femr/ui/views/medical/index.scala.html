@@ -3,114 +3,123 @@
 @import femr.ui.views.html.layouts.main
 
 @main("Medical", currentUser) {
-  <div class="row well well-sm">
-    <div style="text-align : center ;">
-      <h4>General Information</h4>
+    <div class="row well well-sm">
+        <div style="text-align : center ;">
+            <h4>General Information</h4>
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <label for="Patient Id">Patient Id:</label>
+            <input type="text" name="pID" class="form-control input-sm" value="pID" readonly/>
+            <label for="city">City:</label>
+            <input type="text" name="city" class="form-control input-sm" value="city" readonly/>
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <label for="Patient Id">First Name:</label>
+            <input type="text" name="firstName" class="form-control input-sm" value="firstName" readonly/>
+            <label for="age">age:</label>
+            <input type="text" name="age" class="form-control input-sm" value="age" readonly/>
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <label for="Last Name">Last Name:</label>
+            <input type="text" name="lastName" class="form-control input-sm" value="lastName" readonly/>
+            <label for="sex">sex:</label>
+            <input type="text" name="sex" class="form-control input-sm" value="sex" readonly/>
+        </div>
     </div>
-      <div class="row">
-        <label for="Patient Id">Patient Id:</label>
-        <label for="First Name">First Name:</label>
-        <label for="Last Name">Last Name:</label>
-      </div>
-      <div class="row">
-        <label for="Location">Location:</label>
-        <label for="Age">Age:</label>
-        <label for="Sex">Sex:</label>
-      </div>
-  </div>
-  <div class="row">
-    </div>
-    <div class="col-sm-4 col-md-4 well well-sm">
-      <h2>Vitals</h2>
-      <div>
-        <div class="form-group">
-          <label for="bloodPressure">Blood Pressure</label>
-          <input name="bloodPressure" type="text" class="form-control input-sm" value="120/80"/>
-        </div>
-        <div class="form-group">
-          <label for="heartRate">Heart Rate</label>
-          <input name="heartRate" type="text" class="form-control input-sm" value="someValue"/>
-        </div>
-        <div class="form-group">
-          <label for="temperature">Temperature</label>
-          <input name="temperature" type="text" class="form-control input-sm" value="98.6"/>
-        </div>
-        <div class="form-group">
-          <label for="breathingRate">Breathing Rate</label>
-          <input name="breathingRate" type="text" class="form-control input-sm" value="someValue"/>
-        </div>
-        <div class="form-group">
-          <label for="oxygen">Oxygen</label>
-          <input name="oxygen" type="text" class="form-control input-sm" value="O2"/>
-        </div>
-      </div>
+
+    <div class="row">
     </div>
     <div class="col-sm-4 col-md-4 well well-sm">
-      <h2>HPI</h2>
-      <div class="form-group">
-        <label for="chiefComplaint">Chief Complaint</label>
-        <textarea rows="3" name="chiefComplaint" class="form-control input-sm"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="onset">Onset</label>
-        <input name="onset" type="text" class="form-control input-sm" value="10"/>
-        <select>
-          <option value="hours">Hours</option>
-          <option value="days">Days</option>
-          <option value="weeks">Weeks</option>
-        </select>
-        <span>ago</span>
-      </div>
-      <div class="form-group">
-        <label for="severity">Severity</label>
-        <select>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="Radiation">Radiation</label>
-        <input name="Radiation" type="text" class="form-control input-sm" value=""/>
-      </div>
-      <div class="form-group">
-        <label for="quality">Quality</label>
-        <input name="quality" type="text" class="form-control input-sm" value=""/>
-      </div>
-      <div class="form-group">
-        <label for="provokes">Provokes</label>
-        <input name="provokes" type="text" class="form-control input-sm" value=""/>
-      </div>
-      <div class="form-group">
-        <label for="physical">Physical Examination</label>
-        <textarea rows="3" name="physical" class="form-control input-sm"></textarea>
-      </div>
+        <h2>Vitals</h2>
+        <div>
+            <div class="form-group">
+                <label for="bloodPressure">Blood Pressure</label>
+                <input name="bloodPressure" type="text" class="form-control input-sm" value=""/>
+            </div>
+            <div class="form-group">
+                <label for="heartRate">Heart Rate</label>
+                <input name="heartRate" type="text" class="form-control input-sm" value=""/>
+            </div>
+            <div class="form-group">
+                <label for="temperature">Temperature</label>
+                <input name="temperature" type="text" class="form-control input-sm" value=""/>
+            </div>
+            <div class="form-group">
+                <label for="breathingRate">Breathing Rate</label>
+                <input name="breathingRate" type="text" class="form-control input-sm" value=""/>
+            </div>
+            <div class="form-group">
+                <label for="oxygen">Oxygen</label>
+                <input name="oxygen" type="text" class="form-control input-sm" value=""/>
+            </div>
+        </div>
     </div>
     <div class="col-sm-4 col-md-4 well well-sm">
-      <h2>Treatment</h2>
-      <div class="form-group">
-        <label for="assessment">Assessment</label>
-        <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="problemList">Problem List</label>
-        <input name="problemList" type="text" class="form-control input-sm" value=""/>
-        <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-      </div>
-      <div class="form-group">
-        <label for="prescriptions">Prescriptions</label>
-        <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
-        <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-      </div>
-      <div class="form-group">
-        <label for="treatment">Treatment Given</label>
-        <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="familyHistory">Family History</label>
-        <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
-      </div>
+        <h2>HPI</h2>
+        <div class="form-group">
+            <label for="chiefComplaint">Chief Complaint</label>
+            <textarea rows="3" name="chiefComplaint" class="form-control input-sm"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="onset">Onset</label>
+            <input name="onset" type="text" class="form-control input-sm" value="10"/>
+            <select>
+            <option value="hours">Hours</option>
+            <option value="days">Days</option>
+            <option value="weeks">Weeks</option>
+            </select>
+            <span>ago</span>
+        </div>
+        <div class="form-group">
+            <label for="severity">Severity</label>
+            <select>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="Radiation">Radiation</label>
+            <input name="Radiation" type="text" class="form-control input-sm" value=""/>
+        </div>
+        <div class="form-group">
+            <label for="quality">Quality</label>
+            <input name="quality" type="text" class="form-control input-sm" value=""/>
+        </div>
+        <div class="form-group">
+            <label for="provokes">Provokes</label>
+            <input name="provokes" type="text" class="form-control input-sm" value=""/>
+        </div>
+        <div class="form-group">
+            <label for="physical">Physical Examination</label>
+            <textarea rows="3" name="physical" class="form-control input-sm"></textarea>
+        </div>
     </div>
-  </div>
+
+    <div class="col-sm-4 col-md-4 well well-sm">
+        <h2>Treatment</h2>
+        <div class="form-group">
+            <label for="assessment">Assessment</label>
+            <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="problemList">Problem List</label>
+            <input name="problemList" type="text" class="form-control input-sm" value=""/>
+            <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+        <div class="form-group">
+            <label for="prescriptions">Prescriptions</label>
+            <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
+            <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+        <div class="form-group">
+            <label for="treatment">Treatment Given</label>
+            <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="familyHistory">Family History</label>
+            <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
+        </div>
+    </div>
 
 }

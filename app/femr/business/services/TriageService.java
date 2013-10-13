@@ -13,8 +13,6 @@ import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 import femr.data.models.Vital;
 import femr.data.models.PatientEncounter;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;

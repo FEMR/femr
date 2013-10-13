@@ -81,3 +81,4 @@ WHERE name="Blood_Pressure_Diasolic";
 UPDATE `vitals`
 SET unit_of_measurement="systolic"
 WHERE name="Blood_Pressure_Systolic";
+

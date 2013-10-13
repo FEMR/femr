@@ -51,6 +51,7 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         IPatient patient = populatePatient(viewModel, currentUser);
+
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
         IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
@@ -74,7 +75,6 @@ public class TriageController extends Controller {
         patient.setSex(viewModel.getSex());
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
-
         return patient;
     }
 

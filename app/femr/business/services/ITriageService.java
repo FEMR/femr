@@ -5,7 +5,6 @@ import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
-
 import java.util.List;
 
 public interface ITriageService {
@@ -16,8 +15,6 @@ public interface ITriageService {
     ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
 
     List<? extends IVital> findAllVitals();
-
-
 
     String getCurrentDateTime();
 

@@ -46,7 +46,7 @@ public class TriageService implements ITriageService {
             response.setResponseObject(newPatient);
         }
         else{
-            response.setSuccessful(false);
+            response.addError("patient","patient could not be saved to database");
         }
 
         return response;
@@ -61,7 +61,7 @@ public class TriageService implements ITriageService {
             response.setResponseObject(newPatientEncounter);
         }
         else{
-            response.setSuccessful(false);
+            response.addError("patient encounter","patient encounter could not be saved to database");
         }
         return response;
     }
@@ -75,35 +75,15 @@ public class TriageService implements ITriageService {
             response.setResponseObject(newPatientEncounterVital);
         }
         else{
-            response.setSuccessful(false);
+            response.addError("patient encounter vital","patient encounter vital could not be saved to database");
         }
         return response;
-    }
-
-    @Override
-    public ServiceResponse<IPatient> findPatientById(String id){
-        ExpressionList<Patient> query = getQuery().where().eq("id",id);
-        IPatient savedPatient = patientRepository.findOne(query);
-
-        ServiceResponse<IPatient> response = new ServiceResponse<>();
-        response.setResponseObject(savedPatient);
-        return response;
-    }
-
-    private Query<Patient> getQuery() {
-        return Ebean.find(Patient.class);
     }
 
     @Override
     public List<? extends IVital> findAllVitals(){
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
         return vitals;
-    }
-
-    @Override
-    public List<? extends IPatientEncounter> findAllEncounters(){
-        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findAll(PatientEncounter.class);
-        return patientEncounters;
     }
 
     @Override

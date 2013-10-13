@@ -11,6 +11,7 @@ GET         /pharmacy                   femr.ui.controllers.PharmaciesController
 GET         /show/:id                   @femr.ui.controllers.SearchController.createGet(id: java.lang.Integer)
 POST        /triage                     @femr.ui.controllers.TriageController.createPost()
 GET         /triage                     @femr.ui.controllers.TriageController.createGet()
+GET         /medical/find               @femr.ui.controllers.MedicalController.find()
 GET         /medical                    @femr.ui.controllers.MedicalController.index()
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()

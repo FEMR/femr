@@ -31,6 +31,7 @@ public class MedicalController extends Controller {
     public Result index() {
         String s_patientID = request().getQueryString("searchId");
         int i_patientID = Integer.parseInt(s_patientID);
+
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
         IPatient patient = patientServiceResponse.getResponseObject();
         CreateViewModel viewModel = new CreateViewModel();
@@ -41,6 +42,7 @@ public class MedicalController extends Controller {
         viewModel.setLastName(patient.getLastName());
         viewModel.setpID(patient.getId());
         viewModel.setSex(patient.getSex());
+
 
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();

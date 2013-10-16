@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
+import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
@@ -24,17 +25,21 @@ public class TriageController extends Controller {
     private ITriageService triageService;
     private ISessionService sessionService;
     private Provider<IPatient> patientProvider;
+    private ISearchService searchService;
     private Provider<IPatientEncounter> patientEncounterProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+
 
     @Inject
     public TriageController(ITriageService triageService,
                             ISessionService sessionService,
+                            ISearchService searchService,
                             Provider<IPatient> patientProvider,
                             Provider<IPatientEncounter> patientEncounterProvider,
                             Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.triageService = triageService;
         this.sessionService = sessionService;
+        this.searchService = searchService;
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
@@ -44,6 +49,34 @@ public class TriageController extends Controller {
         List<? extends IVital> vitalNames = triageService.findAllVitals();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
+    }
+
+    public Result createEncounterGet(int id) {
+        List<? extends IVital> vitalNames = triageService.findAllVitals();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
+        IPatient patient = patientServiceResponse.getResponseObject();
+        return ok(femr.ui.views.html.triage.createEncounter.render(currentUser,vitalNames,patient));
+    }
+
+    public Result createEncounterPost(int id) {
+        CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
+        IPatient patient = patientServiceResponse.getResponseObject();
+
+        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
+                triageService.createPatientEncounter(patientEncounter);
+
+        List<IPatientEncounterVital> patientEncounterVitals =
+                populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+        for (int i = 0; i < patientEncounterVitals.size(); i++) {
+            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+        }
+
+        return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
 
     public Result createPost() {
@@ -65,6 +98,8 @@ public class TriageController extends Controller {
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
+
+
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();

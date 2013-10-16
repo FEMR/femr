@@ -10,6 +10,7 @@ import femr.common.models.IPatientEncounter;
 import femr.ui.models.search.CreateViewModel;
 import play.mvc.Controller;
 import play.mvc.Result;
+import femr.ui.views.html.search.show;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class SearchController extends Controller {
     public Result createGet(int id) {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-        List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncounters();
+        List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncountersByPatientId(id);
         CreateViewModel viewModel = new CreateViewModel();
 
 
@@ -44,6 +45,6 @@ public class SearchController extends Controller {
             //fail?
         }
 
-        return ok(femr.ui.views.html.search.show.render(currentUser, viewModel, patientEncounters, id));
+        return ok(show.render(currentUser, viewModel, patientEncounters, id));
     }
 }

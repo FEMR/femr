@@ -26,7 +26,7 @@ public class SearchService implements ISearchService{
 
     @Override
     public ServiceResponse<IPatient> findPatientById(int id){
-        ExpressionList<Patient> query = getQuery().where().eq("id",id);
+        ExpressionList<Patient> query = getPatientQuery().where().eq("id",id);
         IPatient savedPatient = patientRepository.findOne(query);
 
         ServiceResponse<IPatient> response = new ServiceResponse<>();
@@ -41,7 +41,7 @@ public class SearchService implements ISearchService{
 
     @Override
     public ServiceResponse<IPatient> findPatientByName(String firstName, String lastName){
-        ExpressionList<Patient> query = getQuery().where().eq("first_name",firstName).eq("last_name",lastName);
+        ExpressionList<Patient> query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
         IPatient savedPatient = patientRepository.findOne(query);
 
         ServiceResponse<IPatient> response = new ServiceResponse<>();
@@ -55,13 +55,17 @@ public class SearchService implements ISearchService{
         return response;
     }
 
-    private Query<Patient> getQuery() {
+    private Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
+    }
+    private Query<PatientEncounter> getPatientEncounterQuery() {
+        return Ebean.find(PatientEncounter.class);
     }
 
     @Override
-    public List<? extends IPatientEncounter> findAllEncounters(){
-        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findAll(PatientEncounter.class);
+    public List<? extends IPatientEncounter> findAllEncountersByPatientId(int id){
+        ExpressionList<PatientEncounter> query = getPatientEncounterQuery().where().eq("patient_id",id);
+        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
         return patientEncounters;
     }
 }

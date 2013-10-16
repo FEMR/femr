@@ -1,6 +1,7 @@
 @(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: java.lang.Integer)
 
 @import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.TriageController
 
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
@@ -12,9 +13,10 @@
 @main("search", currentUser, styles = additionalStyles, scripts = additionalScripts) {
   <div class="row">
     <div class ="well">
-
-
       <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>
+      @helper.form(action = TriageController.createEncounterGet(id)) {
+        <button type="submit" class="newEncounterBtn btn btn-default pull-right">Create New Encounter</button>
+    }
 
       <div class="medicalHistoryLineDivide"></div>
 
@@ -45,6 +47,7 @@
           <div class="text-center">
           @for(patientEncounter <- patientEncounters) {
             <h5>@patientEncounter.getDateOfVisit</h5>
+            <label>chief complaint:</label><p>@patientEncounter.getChiefComplaint</p>
           }
           </div>
         </div>

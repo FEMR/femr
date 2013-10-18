@@ -46,11 +46,10 @@ public class TriageController extends Controller {
     }
 
     public Result createGet() {
-
         List<? extends IVital> vitalNames = triageService.findAllVitals();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-            return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
+        return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
 
     }
 
@@ -87,7 +86,7 @@ public class TriageController extends Controller {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         IPatient patient = patientServiceResponse.getResponseObject();
 
-        return ok(femr.ui.views.html.triage.createEncounter.render(currentUser,vitalNames,patient));
+        return ok(femr.ui.views.html.triage.createEncounter.render(currentUser, vitalNames, patient));
     }
 
     public Result createNewEncounterPost(int id) {
@@ -109,16 +108,6 @@ public class TriageController extends Controller {
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
-
-
-
-
-
-
-
-
-
-
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();

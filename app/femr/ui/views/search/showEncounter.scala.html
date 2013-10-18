@@ -3,6 +3,13 @@
 @import femr.ui.views.html.layouts.main
 
 @main("search", currentUser) {
-  <h1>@patientEncounter.getChiefComplaint</h1>
-  <h2>@patientEncounter.getDateOfVisit</h2>
+  <p>Chief Complaint: @patientEncounter.getChiefComplaint</p>
+  <p>Date of Visit: @patientEncounter.getDateOfVisit</p>
+  <ul>
+    <li>Vitals</li>
+    <li>Assessment</li>
+    <li>Treatment</li>
+    <li>Family History</li>
+    <li>???</li>
+  </ul>
 }

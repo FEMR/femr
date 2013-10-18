@@ -32,24 +32,13 @@ public class SearchController extends Controller {
         this.searchService = searchService;
     }
 
-
     /*
-    Create POST for going back to triage to create a new encounter
-    Should be done in Triage controller?
+    GET - specific encounter details based on encounter id
      */
-    public Result createNewEncounterPost(int id) {
-        return redirect("/triage/" + id);
-    }
-
-    /*
-    Post from the search page should be finding and displaying an encounter
-     */
-
     public Result viewEncounter(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
         IPatientEncounter patientEncounter= patientEncounterServiceResponse.getResponseObject();
-
 
         return ok(showEncounter.render(currentUser, patientEncounter));
 
@@ -58,7 +47,8 @@ public class SearchController extends Controller {
     /*
     Handles search POST requests from anywhere
     Currently cannot handle more than one person
-    with the same name.
+    with the same name. Redirects to triage when
+    search isn't valid
      */
     public Result createPost() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -99,7 +89,7 @@ public class SearchController extends Controller {
             viewModel.setAddress(patient.getAddress());
             viewModel.setCity(patient.getCity());
             viewModel.setAge(patient.getAge());
-            viewModel.setSex(patient.getSex());         //awwww yeahhhh!
+            viewModel.setSex(patient.getSex());
         } else {
             //fail?
         }

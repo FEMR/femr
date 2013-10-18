@@ -11,5 +11,7 @@ public interface ISearchService {
 
     ServiceResponse<IPatient> findPatientByName(String firstName, String lastName);
 
+    ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
+
     List<? extends IPatientEncounter> findAllEncountersByPatientId(int id);
 }

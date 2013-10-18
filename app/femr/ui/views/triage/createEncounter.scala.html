@@ -11,7 +11,7 @@
   }
 
 @main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-  @helper.form(action = TriageController.createEncounterPost(patient.getId)) {
+  @helper.form(action = TriageController.createNewEncounterPost(patient.getId)) {
 
     <div class="row">
       <div class ="well">

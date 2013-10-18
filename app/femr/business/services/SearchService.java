@@ -40,6 +40,21 @@ public class SearchService implements ISearchService{
     }
 
     @Override
+    public ServiceResponse<IPatientEncounter> findPatientEncounterById(int id){
+        ExpressionList<PatientEncounter> query = getPatientEncounterQuery().where().eq("id",id);
+        IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
+
+        ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();
+        if (patientEncounter == null){
+            response.addError("id","id does not exist");
+        }
+        else{
+            response.setResponseObject(patientEncounter);
+        }
+        return response;
+    }
+
+    @Override
     public ServiceResponse<IPatient> findPatientByName(String firstName, String lastName){
         ExpressionList<Patient> query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
         IPatient savedPatient = patientRepository.findOne(query);

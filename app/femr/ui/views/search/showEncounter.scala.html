@@ -1,7 +1,8 @@
-@(currentUser: femr.business.dtos.CurrentUser)
+@(currentUser: femr.business.dtos.CurrentUser, patientEncounter: femr.common.models.IPatientEncounter)
 
 @import femr.ui.views.html.layouts.main
 
 @main("search", currentUser) {
-  <h1>Display specific encounter information here</h1>
+  <h1>@patientEncounter.getChiefComplaint</h1>
+  <h2>@patientEncounter.getDateOfVisit</h2>
 }

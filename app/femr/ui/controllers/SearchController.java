@@ -7,6 +7,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
 import femr.ui.models.search.CreateViewModel;
 import femr.ui.models.search.CreateViewModelPost;
 import femr.util.dependencyinjection.providers.PatientEncounterProvider;
@@ -16,6 +17,7 @@ import play.mvc.Result;
 import femr.ui.views.html.search.show;
 import femr.ui.views.html.search.showEncounter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchController extends Controller {
@@ -45,11 +47,11 @@ public class SearchController extends Controller {
 
     public Result viewEncounter(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-        //ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
-        //IPatientEncounter patientEncounter= patientEncounterServiceResponse.getResponseObject();
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
+        IPatientEncounter patientEncounter= patientEncounterServiceResponse.getResponseObject();
 
 
-        return ok(showEncounter.render(currentUser));
+        return ok(showEncounter.render(currentUser, patientEncounter));
 
     }
 
@@ -78,7 +80,7 @@ public class SearchController extends Controller {
         } else if (!patientServiceResponseName.hasErrors()) {
             return redirect("show/" + patientServiceResponseName.getResponseObject().getId());
         } else
-            return ok(showEncounter.render(currentUser));
+            return redirect("triage");
     }
 
     public Result createGet(int id) {

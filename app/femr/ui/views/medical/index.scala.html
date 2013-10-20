@@ -8,67 +8,152 @@
             <h4>General Information</h4>
         </div>
         <div class="col-sm-4 col-md-4">
-            <label for="Patient Id">Patient Id:</label>
-            <input type="text" name="pID" class="form-control input-sm" value="@viewModel.getpID" readonly/>
-            <label for="city">City:</label>
-            <input type="text" name="city" class="form-control input-sm" value="@viewModel.getCity" readonly/>
+            <div class="row">
+                <div class="col-sm-5 col-md-5">
+                    <label for="Patient Id">Patient Id:</label>
+                </div>
+                <div class="col-sm-7 col-md-7">
+                    <input type="text" name="pID" class="form-control input-sm" value="@viewModel.getpID" disabled="true"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5 col-md-5">
+                    <label for="city">City:</label>
+                </div>
+                <div class="col-sm-7 col-md-7">
+                    <input type="text" name="city" class="form-control input-sm" value="@viewModel.getCity" disabled="true"/>
+                </div>
+            </div>
         </div>
         <div class="col-sm-4 col-md-4">
-            <label for="Patient Id">First Name:</label>
-            <input type="text" name="firstName" class="form-control input-sm" value="@viewModel.getFirstName" readonly/>
-            <label for="age">age:</label>
-            <input type="text" name="age" class="form-control input-sm" value="@viewModel.getAge" readonly/>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <label for="firstName">First Name:</label>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <input type="text" name="firstName" class="form-control input-sm" value="@viewModel.getFirstName" disabled="true"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <label for="age">age:</label>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <input type="text" name="age" class="form-control input-sm" value="@viewModel.getAge" disabled="true"/>
+                </div>
+            </div>
         </div>
         <div class="col-sm-4 col-md-4">
-            <label for="Last Name">Last Name:</label>
-            <input type="text" name="lastName" class="form-control input-sm" value="@viewModel.getLastName" readonly/>
-            <label for="sex">sex:</label>
-            <input type="text" name="sex" class="form-control input-sm" value="@viewModel.getSex" readonly/>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <label for="lastName">Last Name:</label>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <input type="text" name="lastName" class="form-control input-sm" value="@viewModel.getLastName" disabled="true"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <label for="sex">sex:</label>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <input type="text" name="sex" class="form-control input-sm" value="@viewModel.getSex" disabled="true"/>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="row">
-    </div>
     <div class="col-sm-4 col-md-4 well well-sm">
-        <h2>Vitals</h2>
-        <div>
-            <div class="form-group">
-                <label for="bloodPressure">Blood Pressure</label>
-                <input name="bloodPressure" type="text" class="form-control input-sm" value=""/>
+        <h3>Vitals</h3>
+
+        <div class="form-group">
+            <label for="bloodPressure">Blood Pressure</label>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="bloodPressure" type="text" class="form-control input-sm" value="" disabled="true"/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="heartRate">Heart Rate</label>
-                <input name="heartRate" type="text" class="form-control input-sm" value=""/>
+        </div>
+
+        <div class="form-group">
+            <label for="heartRate">Heart Rate</label>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="heartRate" type="text" class="form-control input-sm" value="" disabled="true"/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="temperature">Temperature</label>
-                <input name="temperature" type="text" class="form-control input-sm" value=""/>
+        </div>
+
+        <div class="form-group">
+            <label for="temperature">Temperature</label>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="temperature" type="text" class="form-control input-sm" value="" disabled="true"/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="breathingRate">Breathing Rate</label>
-                <input name="breathingRate" type="text" class="form-control input-sm" value=""/>
+        </div>
+
+        <div class="form-group">
+            <label for="breathingRate">Breathing Rate</label>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="breathingRate" type="text" class="form-control input-sm" value="" disabled="true"/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="oxygen">Oxygen</label>
-                <input name="oxygen" type="text" class="form-control input-sm" value=""/>
+        </div>
+
+        <div class="form-group">
+            <label class="oxygen">Oxygen</label>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="oxygen" type="text" class="form-control input-sm" value="" disabled="true"/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="col-sm-4 col-md-4 well well-sm">
-        <h2>HPI</h2>
+        <h3>HPI</h3>
         <div class="form-group">
             <label for="chiefComplaint">Chief Complaint</label>
             <textarea rows="3" name="chiefComplaint" class="form-control input-sm"></textarea>
         </div>
         <div class="form-group">
-            <label for="onset">Onset</label>
-            <input name="onset" type="text" class="form-control input-sm" value="10"/>
-            <select>
-            <option value="hours">Hours</option>
-            <option value="days">Days</option>
-            <option value="weeks">Weeks</option>
-            </select>
-            <span>ago</span>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <label for="onset">Onset</label>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <input name="onset" type="text" class="form-control input-sm" value=""/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <select>
+                    <option value="hours">Hours</option>
+                    <option value="days">Days</option>
+                    <option value="weeks">Weeks</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <span>ago</span>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="severity">Severity</label>
@@ -79,8 +164,14 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="Radiation">Radiation</label>
-            <input name="Radiation" type="text" class="form-control input-sm" value=""/>
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <label for="Radiation">Radiation</label>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <input name="Radiation" type="text" class="form-control input-sm" value=""/>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="quality">Quality</label>
@@ -97,20 +188,32 @@
     </div>
 
     <div class="col-sm-4 col-md-4 well well-sm">
-        <h2>Treatment</h2>
+        <h3>Treatment</h3>
         <div class="form-group">
             <label for="assessment">Assessment</label>
             <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
         </div>
         <div class="form-group">
             <label for="problemList">Problem List</label>
-            <input name="problemList" type="text" class="form-control input-sm" value=""/>
-            <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="problemList" type="text" class="form-control input-sm" value=""/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="prescriptions">Prescriptions</label>
-            <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
-            <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
+                </div>
+                <div class="col-sm-3 col-md-3">
+                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="treatment">Treatment Given</label>
@@ -121,5 +224,4 @@
             <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
         </div>
     </div>
-
 }

@@ -5,23 +5,24 @@ import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
+import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
+import femr.common.models.IVital;
 import femr.ui.models.search.CreateViewModel;
-import femr.ui.models.search.CreateViewModelPost;
 import femr.util.dependencyinjection.providers.PatientEncounterProvider;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.search.show;
 import femr.ui.views.html.search.showEncounter;
+import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchController extends Controller {
-    private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private ISessionService sessionService;
     private ISearchService searchService;
 
@@ -44,36 +45,35 @@ public class SearchController extends Controller {
 
     }
 
-    /*
-    Handles search POST requests from anywhere
-    Currently cannot handle more than one person
-    with the same name. Redirects to triage when
-    search isn't valid
-     */
-    public Result createPost() {
+    public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-        CreateViewModelPost createViewModelPost = createViewModelPostForm.bindFromRequest().get();
 
-        ServiceResponse<IPatient> patientServiceResponseId = new ServiceResponse<>();
-        if (createViewModelPost.getSearchId() == null) {
-            patientServiceResponseId.addError("ID","ID not entered");
-        } else {
-            patientServiceResponseId =
-                    searchService.findPatientById(createViewModelPost.getSearchId());
-        }
+        String firstName = request().queryString().get("searchFirstName")[0];
+        String lastName = request().queryString().get("searchLastName")[0];
+        String s_id = request().queryString().get("searchId")[0];
 
-        ServiceResponse<IPatient> patientServiceResponseName =
-                searchService.findPatientByName(createViewModelPost.getSearchFirstName(), createViewModelPost.getSearchLastName());
-
-        if (!patientServiceResponseId.hasErrors()) {
-            return redirect("show/" + patientServiceResponseId.getResponseObject().getId());
-        } else if (!patientServiceResponseName.hasErrors()) {
-            return redirect("show/" + patientServiceResponseName.getResponseObject().getId());
-        } else
+        Integer id = getIdFromSearch(s_id,firstName,lastName);
+        if (id == null)
             return redirect("triage");
+
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
+
+        IPatient patient = patientServiceResponse.getResponseObject();
+
+        List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncountersByPatientId(patient.getId());
+
+        CreateViewModel viewModel = new CreateViewModel();
+        viewModel.setFirstName(patient.getFirstName());
+        viewModel.setLastName(patient.getLastName());
+        viewModel.setAddress(patient.getAddress());
+        viewModel.setCity(patient.getCity());
+        viewModel.setAge(patient.getAge());
+        viewModel.setSex(patient.getSex());
+
+        return ok(show.render(currentUser, viewModel, patientEncounters, patient.getId()));
     }
 
-    public Result createGet(int id) {
+    public Result createGetId(int id) {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -95,6 +95,26 @@ public class SearchController extends Controller {
         }
 
         return ok(show.render(currentUser, viewModel, patientEncounters, id));
+    }
+
+
+
+    private Integer getIdFromSearch(String s_id, String firstName, String lastName){
+        Integer id;
+        if (StringUtils.isNullOrWhiteSpace(s_id)){
+            ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
+            if (patientServiceResponse.hasErrors()){
+                id = null;
+            }
+            else{
+                id = patientServiceResponse.getResponseObject().getId();
+            }
+        }
+        else{
+            id = Integer.parseInt(s_id);
+        }
+
+        return id;
     }
 
 }

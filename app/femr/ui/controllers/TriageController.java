@@ -50,7 +50,6 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
-
     }
 
     public Result createPost() {

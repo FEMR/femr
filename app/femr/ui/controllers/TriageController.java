@@ -29,7 +29,6 @@ public class TriageController extends Controller {
     private Provider<IPatientEncounter> patientEncounterProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
-
     @Inject
     public TriageController(ITriageService triageService,
                             ISessionService sessionService,
@@ -47,6 +46,7 @@ public class TriageController extends Controller {
 
     public Result createGet() {
         List<? extends IVital> vitalNames = triageService.findAllVitals();
+
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
@@ -54,14 +54,13 @@ public class TriageController extends Controller {
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         IPatient patient = populatePatient(viewModel, currentUser);
-
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
 
         IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
-
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
                 triageService.createPatientEncounter(patientEncounter);
 

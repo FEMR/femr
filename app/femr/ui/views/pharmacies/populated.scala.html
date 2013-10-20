@@ -1,4 +1,7 @@
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.CreateViewModel)
+
 @import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.PharmaciesController
 
 @additionalScripts = {
     <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
@@ -11,6 +14,7 @@
             <h3>Pharmacy Record</h3>
         </div>
 
+        @helper.form(PharmaciesController.createGet()){
         <form role="form" >
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-1 col-md-1">
@@ -35,6 +39,7 @@
                     <button type="submit" class="btn btn-primary">search</button>
                 </div>
             </div>
+            }
 
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-1 col-md-1">

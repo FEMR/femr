@@ -25,3 +25,18 @@ $('#maleBtn').change(function(){
 $('#pregnantBtn').change(function(){
    $('#weeksWrap').removeClass('hidden');
 });
+
+//BMI auto- calculator
+window.setInterval(function(){
+    if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()){
+
+        var weight_lbs = parseInt($('#weight').val());
+        var height_in = parseInt($('#heightInches').val());
+        var height_ft = parseInt($('#heightFeet').val());
+
+        height_in = height_in + height_ft * 12;
+
+        $('#bmi').val((weight_lbs / (height_in * height_in)) * 703);
+
+    }
+}, 500);

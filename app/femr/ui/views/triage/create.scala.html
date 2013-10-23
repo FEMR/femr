@@ -91,30 +91,41 @@
           <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
             <div class="text-center">
 
-              <label class="inputLabel" for="bloodPressureSystolic">Blood Pressure:</label>
-              <div class="col-sm-6 col-xs-6 padding-left-zero">
+              <label class="inputLabel" id="bloodPressureInputLabelMargin" for="bloodPressureSystolic">Blood Pressure:</label>
+
+
+              <div class="col-sm-6 col-md-6 col-xs-6">
                 <input type="text" class="form-control input-sm" id="bloodPressureSystolic" name="@vitalNames.get(7).getName"/>
               </div>
-              <div class="col-sm-6 col-xs-6 padding-left-zero">
+              <div class="col-sm-6 col-md-6 col-xs-6">
                 <input type="text" class="form-control input-sm" id="bloodPressureDiastolic" name="@vitalNames.get(8).getName"/>
               </div>
+
+
+
+
               <label class="inputLabel" for="heartRate">Heart Rate:</label>
               <input type="text" class="form-control input-sm" id="heartRate" name="@vitalNames.get(1).getName"/>
               <label class="inputLabel" for="temperature">Temperature:</label>
               <input type="text" class="form-control input-sm" id="temperature" name="@vitalNames.get(2).getName"/>
+
+              <label class="inputLabel" id="heightInputLabelMargin" for="heightFeet">Height:</label>
+
+              <div class="col-sm-6 col-md-6 col-xs-6">
+                <input type="text" class="form-control input-sm" id="heightFeet" name="@vitalNames.get(4).getName"/>
+              </div>
+              <div class="col-sm-6 col-md-6 col-xs-6">
+                <input type="text" class="form-control input-sm" id="heightInches" name="@vitalNames.get(5).getName"/>
+              </div>
+
+
+
             </div>
           </div>
 
           <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
             <div class="text-center">
-              <label class="inputLabel" for="heightFeet">Height aasdfs:</label>
 
-              <div class="col-sm-6 col-xs-6 padding-left-zero">
-                <input type="text" class="form-control input-sm" id="heightFeet" name="@vitalNames.get(4).getName"/>
-              </div>
-              <div class="col-sm-6 col-xs-6 padding-left-zero">
-                <input type="text" class="form-control input-sm" id="heightInches" name="@vitalNames.get(5).getName"/>
-              </div>
 
 
               <label class="inputLabel" for="respirations">Respirations:</label>
@@ -125,6 +136,10 @@
 
               <label class="inputLabel" for="weight">Weight:</label>
               <input type="text" class="form-control input-sm" id="weight" name="@vitalNames.get(6).getName"/>
+
+              <label class="inputLabel">BMI:</label>
+              <input type="text" id="bmi" class="form-control input-sm" disabled="true"/>
+
             </div>
           </div>
 

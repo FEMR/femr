@@ -25,24 +25,22 @@
   </head>
   <body>
 
-    @*<div class="input-group">*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<input type="text" class="form-control" placeholder="Id" name="searchId">*@
-      @*</div>*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<input type="text" class="form-control" placeholder="First Name" name="searchFirstName">*@
-      @*</div>*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<input type="text" class="form-control" placeholder="Last Name" name="searchLastName">*@
-      @*</div>*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<span class="input-group-btn">*@
-          @*<button type="submit" class="btn btn-default btn-sm">Submit</button>*@
-        @*</span>*@
-      @*</div>*@
-    @*</div>*@
-
     @header(currentUser)
+    <div class="container">
+    @helper.form(action = SearchController.performSearch()) {
+      <label for="inputValue">Id</label>
+      <input type="text" id="searchId" name="searchId">
+
+      <label for="searchFirstName">First Name:</label>
+      <input type="text" id="searchFirstName" name="searchFirstName">
+
+
+      <label for="searchLastName">Last Name:</label>
+      <input type="text" id="searchLastName" name="searchLastName">
+
+      <button type="submit" id="searchBtn" class="btn btn-default btn-sm">Search</button>
+    }
+    </div>
 
     @outsideContainerTop
 
@@ -55,7 +53,7 @@
     @outsideContainerBottom
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write ( '<script type="text/javascript" src="  @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
+    <script>window.jQuery || document.write ( '<script type="text/javascript" src="    @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
     <script type="text/javascript" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
     @scripts
   </body>

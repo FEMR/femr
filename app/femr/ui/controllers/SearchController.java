@@ -72,9 +72,9 @@ public class SearchController extends Controller {
     public Result performSearch() {
         String firstName = request().queryString().get("searchFirstName")[0];
         String lastName = request().queryString().get("searchLastName")[0];
-        String s_id = request().queryString().get("searchId")[0];
+        //String s_id = request().queryString().get("searchId")[0];
 
-        Integer id = getIdFromSearch(s_id,firstName,lastName);
+        Integer id = getIdFromSearch(firstName,lastName);
         if (id == null)
             return redirect("/triage");
         else
@@ -84,19 +84,14 @@ public class SearchController extends Controller {
     /*
     Helper for performSearch()
      */
-    private Integer getIdFromSearch(String s_id, String firstName, String lastName){
+    private Integer getIdFromSearch(String firstName, String lastName){
         Integer id;
-        if (StringUtils.isNullOrWhiteSpace(s_id)){
-            ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
-            if (patientServiceResponse.hasErrors()){
-                id = null;
-            }
-            else{
-                id = patientServiceResponse.getResponseObject().getId();
-            }
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
+        if (patientServiceResponse.hasErrors()){
+            id = null;
         }
         else{
-            id = Integer.parseInt(s_id);
+            id = patientServiceResponse.getResponseObject().getId();
         }
         return id;
     }

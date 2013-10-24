@@ -1,5 +1,8 @@
 package femr.ui.models.triage;
 
+//NOTE: the triage view sets the input element names dynamically
+//based on the vital name entry in the database, but this
+//ViewModel does NOT.
 public class CreateViewModel {
     //begin general info
     private String firstName;
@@ -9,16 +12,19 @@ public class CreateViewModel {
     private int age;
     private String sex;
     //begin vitals
-    private float bloodPressureSystolic;
-    private float bloodPressureDiastolic;
-    private float heartRate;
-    private float temperature;
-    private float respirations;
-    private float oxygen;
-    private float heightFeet;
-    private float heightInches;
-    private float weight;
+    private Float bloodPressureSystolic;
+    private Float bloodPressureDiastolic;
+    private Float heartRate;
+    private Float temperature;
+    private Float respiratoryRate;
+    private Float oxygenSaturation;
+    private Float heightFeet;
+    private Float heightInches;
+    private Float weight;
     private String chiefComplaint;
+
+    public CreateViewModel() {
+    }
 
     //begin general info
     public String getFirstName() {
@@ -70,75 +76,59 @@ public class CreateViewModel {
     }
 
     //begin vitals
-    public float getBloodPressureSystolic() {
+    public Float getBloodPressureSystolic() {
         return bloodPressureSystolic;
     }
 
-    public void setBloodPressureSystolic(float bloodPressureSystolic) {
+    public void setBloodPressureSystolic(Float bloodPressureSystolic) {
         this.bloodPressureSystolic = bloodPressureSystolic;
     }
 
-    public float getBloodPressureDiastolic() {
+    public Float getBloodPressureDiastolic() {
         return bloodPressureSystolic;
     }
 
-    public void setBloodPressureDiastolic(float bloodPressureDiastolic) {
+    public void setBloodPressureDiastolic(Float bloodPressureDiastolic) {
         this.bloodPressureSystolic = bloodPressureDiastolic;
     }
 
-    public float getHeartRate() {
+    public Float getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(float heartRate) {
+    public void setHeartRate(Float heartRate) {
         this.heartRate = heartRate;
     }
 
-    public float getTemperature() {
+    public Float getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
+    public void setTemperature(Float temperature) {
         this.temperature = temperature;
     }
 
-    public float getRespirations() {
-        return respirations;
-    }
-
-    public void setRespirations(float respirations) {
-        this.respirations = respirations;
-    }
-
-    public float getOxygen() {
-        return oxygen;
-    }
-
-    public void setOxygen(float oxygenSaturation) {
-        this.oxygen = oxygenSaturation;
-    }
-
-    public float getHeightFeet() {
+    public Float getHeightFeet() {
         return heightFeet;
     }
 
-    public void setHeightFeet(float heightFeet) {
+    public void setHeightFeet(Float heightFeet) {
         this.heightFeet = heightFeet;
     }
 
-    public float getHeightInches() {
+    public Float getHeightInches() {
         return heightFeet;
     }
 
-    public void setHeightInches(float heightInches) {
+    public void setHeightInches(Float heightInches) {
         this.heightFeet = heightInches;
     }
 
-    public float getWeight() {
+    public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(Float weight) {
         this.weight = weight;
     }
 
@@ -150,4 +140,19 @@ public class CreateViewModel {
         this.chiefComplaint = chiefComplaint;
     }
 
+    public Float getRespiratoryRate() {
+        return respiratoryRate;
+    }
+
+    public void setRespiratoryRate(Float respiratoryRate) {
+        this.respiratoryRate = respiratoryRate;
+    }
+
+    public Float getOxygenSaturation() {
+        return oxygenSaturation;
+    }
+
+    public void setOxygenSaturation(Float oxygenSaturation) {
+        this.oxygenSaturation = oxygenSaturation;
+    }
 }

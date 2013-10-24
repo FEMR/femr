@@ -21,9 +21,9 @@ public class Patient implements IPatient {
     private String lastName;
     @Column(name = "age", nullable = false)
     private int age;
-    @Column(name = "sex", nullable = false)
+    @Column(name = "sex", nullable = true)
     private String sex;
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = true)
     private String address;
     @Column(name = "city", nullable = false)
     private String city;

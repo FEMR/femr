@@ -66,8 +66,11 @@ public class TriageController extends Controller {
 
         List<IPatientEncounterVital> patientEncounterVitals =
                 populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            if (patientEncounterVitals.get(i).getVitalValue() > 0){
+                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            }
         }
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
@@ -100,8 +103,11 @@ public class TriageController extends Controller {
 
         List<IPatientEncounterVital> patientEncounterVitals =
                 populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            if (patientEncounterVitals.get(i).getVitalValue() > 0){
+                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            }
         }
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
@@ -143,63 +149,110 @@ public class TriageController extends Controller {
         patientEncounterVital[0].setUserId(currentUser.getId());
         patientEncounterVital[0].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[0].setVitalId(1);
-        patientEncounterVital[0].setVitalValue(viewModel.getRespiratoryRate().floatValue());
+        if (viewModel.getRespiratoryRate() == null){
+            patientEncounterVital[0].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[0].setVitalValue(viewModel.getRespiratoryRate().floatValue());
+        }
+
 
         patientEncounterVital[1] = patientEncounterVitalProvider.get();
         patientEncounterVital[1].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[1].setUserId(currentUser.getId());
         patientEncounterVital[1].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[1].setVitalId(2);
-        patientEncounterVital[1].setVitalValue(viewModel.getHeartRate().floatValue());
+        if (viewModel.getHeartRate() == null){
+            patientEncounterVital[1].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[1].setVitalValue(viewModel.getHeartRate().floatValue());
+        }
+
 
         patientEncounterVital[2] = patientEncounterVitalProvider.get();
         patientEncounterVital[2].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[2].setUserId(currentUser.getId());
         patientEncounterVital[2].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[2].setVitalId(3);
-        patientEncounterVital[2].setVitalValue(viewModel.getTemperature().floatValue());
+        if (viewModel.getTemperature() == null){
+            patientEncounterVital[2].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[2].setVitalValue(viewModel.getTemperature().floatValue());
+        }
 
         patientEncounterVital[3] = patientEncounterVitalProvider.get();
         patientEncounterVital[3].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[3].setUserId(currentUser.getId());
         patientEncounterVital[3].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[3].setVitalId(4);
-        patientEncounterVital[3].setVitalValue(viewModel.getOxygenSaturation().floatValue());
+        if (viewModel.getOxygenSaturation() == null){
+            patientEncounterVital[3].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[3].setVitalValue(viewModel.getOxygenSaturation().floatValue());
+        }
 
         patientEncounterVital[4] = patientEncounterVitalProvider.get();
         patientEncounterVital[4].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[4].setUserId(currentUser.getId());
         patientEncounterVital[4].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[4].setVitalId(5);
-        patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet().floatValue());
+        if (viewModel.getHeightFeet() == null){
+            patientEncounterVital[4].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet().floatValue());
+        }
 
         patientEncounterVital[5] = patientEncounterVitalProvider.get();
         patientEncounterVital[5].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[5].setUserId(currentUser.getId());
         patientEncounterVital[5].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[5].setVitalId(6);
-        patientEncounterVital[5].setVitalValue(viewModel.getHeightInches().floatValue());
+        if (viewModel.getHeightInches() == null){
+            patientEncounterVital[5].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[5].setVitalValue(viewModel.getHeightInches().floatValue());
+        }
 
         patientEncounterVital[6] = patientEncounterVitalProvider.get();
         patientEncounterVital[6].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[6].setUserId(currentUser.getId());
         patientEncounterVital[6].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[6].setVitalId(7);
-        patientEncounterVital[6].setVitalValue(viewModel.getWeight().floatValue());
+        if (viewModel.getWeight() == null){
+            patientEncounterVital[6].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[6].setVitalValue(viewModel.getWeight().floatValue());
+        }
 
         patientEncounterVital[7] = patientEncounterVitalProvider.get();
         patientEncounterVital[7].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[7].setUserId(currentUser.getId());
         patientEncounterVital[7].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[7].setVitalId(8);
-        patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic().floatValue());
+        if (viewModel.getBloodPressureSystolic() == null){
+            patientEncounterVital[7].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic().floatValue());
+        }
 
         patientEncounterVital[8] = patientEncounterVitalProvider.get();
         patientEncounterVital[8].setDateTaken((triageService.getCurrentDateTime()));
         patientEncounterVital[8].setUserId(currentUser.getId());
         patientEncounterVital[8].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
         patientEncounterVital[8].setVitalId(9);
-        patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic().floatValue());
+        if (viewModel.getBloodPressureDiastolic() == null){
+            patientEncounterVital[8].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic().floatValue());
+        }
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
         return patientEncounterVitals;

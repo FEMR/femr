@@ -20,4 +20,8 @@ public interface IPatientEncounter {
     String getChiefComplaint();
 
     void setChiefComplaint(String chiefComplaint);
+
+    int getWeeksPregnant();
+
+    void setWeeksPregnant(int weeksPregnant);
 }

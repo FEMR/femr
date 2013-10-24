@@ -157,4 +157,12 @@ public class CreateViewModel {
     public void setOxygenSaturation(Float oxygenSaturation) {
         this.oxygenSaturation = oxygenSaturation;
     }
+
+    public Integer getWeeksPregnant() {
+        return weeksPregnant;
+    }
+
+    public void setWeeksPregnant(Integer weeksPregnant) {
+        this.weeksPregnant = weeksPregnant;
+    }
 }

@@ -21,7 +21,7 @@ public interface IPatientEncounter {
 
     void setChiefComplaint(String chiefComplaint);
 
-    int getWeeksPregnant();
+    Integer getWeeksPregnant();
 
-    void setWeeksPregnant(int weeksPregnant);
+    void setWeeksPregnant(Integer weeksPregnant);
 }

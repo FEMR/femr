@@ -1,7 +1,5 @@
 $('#triageSubmitBtn').click(function () {
-
     return validate();
-
 });
 
 

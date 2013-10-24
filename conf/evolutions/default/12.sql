@@ -34,4 +34,3 @@ ADD CONSTRAINT `fk_patient_prescriptions_replacement_id_patient_prescriptions_id
 # --- !Downs
 
 DROP TABLE IF EXISTS `patient_prescriptions`
->>>>>>> Modified pharmacy layout and added 10.sql

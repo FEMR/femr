@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
   }
   @additionalScripts = {
-    <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/Triage/triage.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/Triage/triageClientValidation.js")"></script>
+
   }
 
 @main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts) {
@@ -95,10 +97,10 @@
 
 
               <div class="col-sm-6 col-md-6 col-xs-6">
-                <input type="text" class="form-control input-sm" id="bloodPressureSystolic" name="@vitalNames.get(7).getName"/>
+                <input type="text" class="form-control input-sm" id="bloodPressureSystolic" placeholder="Systolic" name="@vitalNames.get(7).getName"/>
               </div>
               <div class="col-sm-6 col-md-6 col-xs-6">
-                <input type="text" class="form-control input-sm" id="bloodPressureDiastolic" name="@vitalNames.get(8).getName"/>
+                <input type="text" class="form-control input-sm" id="bloodPressureDiastolic" placeholder="Diastolic" name="@vitalNames.get(8).getName"/>
               </div>
 
 
@@ -112,10 +114,10 @@
               <label class="inputLabel" id="heightInputLabelMargin" for="heightFeet">Height:</label>
 
               <div class="col-sm-6 col-md-6 col-xs-6">
-                <input type="text" class="form-control input-sm" id="heightFeet" name="@vitalNames.get(4).getName"/>
+                <input type="text" class="form-control input-sm" id="heightFeet" placeholder="Feet" name="@vitalNames.get(4).getName"/>
               </div>
               <div class="col-sm-6 col-md-6 col-xs-6">
-                <input type="text" class="form-control input-sm" id="heightInches" name="@vitalNames.get(5).getName"/>
+                <input type="text" class="form-control input-sm" id="heightInches" placeholder="Inches" name="@vitalNames.get(5).getName"/>
               </div>
 
 
@@ -130,7 +132,7 @@
 
               <label class="inputLabel" for="respirations">Respirations:</label>
               <input type="text" class="form-control input-sm" id="respirations" name="@vitalNames.get(0).getName"/>
-              <label class="inputLabel" for="oxygen">Oxygen:</label>
+              <label class="inputLabel" for="oxygen">Oxygen Saturation:</label>
               <input type="text" class="form-control input-sm" id="oxygen" name="@vitalNames.get(3).getName"/>
 
 
@@ -148,7 +150,7 @@
         </div>
       </div>
       <div class="row">
-        <button type="submit" class = "btn btn-default pull-right">Submit Patient</button>
+        <button type="submit" id="triageSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>
       </div>
 
     </div>

@@ -1,5 +1,3 @@
-
-
 //onClick activators
 $('.newPatientBtn').click(function(){
     window.location = "/triage";
@@ -26,6 +24,8 @@ $('#pregnantBtn').change(function(){
    $('#weeksWrap').removeClass('hidden');
 });
 
+
+
 //BMI auto- calculator
 window.setInterval(function(){
     if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()){
@@ -36,7 +36,7 @@ window.setInterval(function(){
 
         height_in = height_in + height_ft * 12;
 
-        $('#bmi').val((weight_lbs / (height_in * height_in)) * 703);
+        $('#bmi').val(Math.round((weight_lbs / (height_in * height_in)) * 703));
 
     }
 }, 500);

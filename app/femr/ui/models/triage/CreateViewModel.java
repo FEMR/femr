@@ -4,7 +4,7 @@ package femr.ui.models.triage;
 //based on the vital name entry in the database, but this
 //ViewModel does NOT.
 public class CreateViewModel {
-    //begin general info
+    //begin patient
     private String firstName;
     private String lastName;
     private String address;
@@ -21,7 +21,9 @@ public class CreateViewModel {
     private Float heightFeet;
     private Float heightInches;
     private Float weight;
+    //begin encounter
     private String chiefComplaint;
+    private Integer weeksPregnant;
 
     public CreateViewModel() {
     }

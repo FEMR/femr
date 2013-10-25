@@ -10,7 +10,16 @@
     <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
   }
 
-@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+  @searchById = {
+  @helper.form(action = TriageController.createNewEncounterGet()) {
+    <label for="inputValue">Id</label>
+    <input type="text" id="id" name="id">
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+  }
+  }
+
+
+@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = searchById) {
   @helper.form(action = TriageController.createNewEncounterPost(patient.getId)) {
 
     <div class="row">

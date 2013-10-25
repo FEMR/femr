@@ -15,9 +15,18 @@
 
   @searchById = {
   @helper.form(action = TriageController.createNewEncounterGet()) {
-    <label for="inputValue">Id</label>
-    <input type="text" id="id" name="id">
-    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+
+    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
+      <label for="id">Id</label>
+      <input type="text" id="id" class="form-control input-sm" name="id">
+    </div>
+
+
+    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
+      <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+    </div>
+
+
   }
   }
 

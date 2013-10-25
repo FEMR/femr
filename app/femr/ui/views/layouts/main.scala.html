@@ -1,6 +1,7 @@
 @(title: String, currentUser: femr.business.dtos.CurrentUser = null,
     styles: Html = Html(""), scripts: Html = Html(""),
-    outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
+    outsideContainerTop: Html = Html(""), search: Html = Html(""),
+    outsideContainerBottom: Html = Html(""))(content: Html)
 
 @import femr.ui.views.html.partials.footer
 @import femr.ui.views.html.partials.header
@@ -26,18 +27,20 @@
   <body>
 
     @header(currentUser)
+
     <div class="container">
-    @helper.form(action = SearchController.performSearch()) {
+      @*Provide a custom ID search option for each page*@
+      @search
+      @*Provide a uniform first/last name search option for each page*@
+      @helper.form(action = SearchController.performSearch()) {
+        <label for="searchFirstName">First Name:</label>
+        <input type="text" id="searchFirstName" name="searchFirstName">
 
-      <label for="searchFirstName">First Name:</label>
-      <input type="text" id="searchFirstName" name="searchFirstName">
+        <label for="searchLastName">Last Name:</label>
+        <input type="text" id="searchLastName" name="searchLastName">
 
-
-      <label for="searchLastName">Last Name:</label>
-      <input type="text" id="searchLastName" name="searchLastName">
-
-      <button type="submit" id="searchBtn" class="btn btn-default btn-sm">Search</button>
-    }
+        <button type="submit" id="searchBtn" class="btn btn-default btn-sm">Search</button>
+      }
     </div>
 
     @outsideContainerTop
@@ -51,7 +54,7 @@
     @outsideContainerBottom
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write ( '<script type="text/javascript" src="    @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
+    <script>window.jQuery || document.write ( '<script type="text/javascript" src="     @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
     <script type="text/javascript" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
     @scripts
   </body>

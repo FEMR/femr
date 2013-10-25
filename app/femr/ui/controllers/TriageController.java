@@ -85,7 +85,10 @@ public class TriageController extends Controller {
     /*
     Used when user is creating an encounter for an existing patient.
      */
-    public Result createNewEncounterGet(int id) {
+    public Result createNewEncounterGet() {
+        String s_id = request().queryString().get("id")[0];
+        Integer id = Integer.parseInt(s_id);
+
         List<? extends IVital> vitalNames = triageService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();

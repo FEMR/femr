@@ -13,15 +13,18 @@
 
   }
 
-@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+  @searchById = {
+  @helper.form(action = TriageController.createNewEncounterGet()) {
+    <label for="inputValue">Id</label>
+    <input type="text" id="id" name="id">
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+  }
+  }
+
+@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = searchById) {
 
 
   <div class="row">
-
-    <div class="container">
-
-      @*add id search*@
-    </div>
 
     <div class="medicalHistoryLineDivide"></div>
 
@@ -91,8 +94,6 @@
               </div>
 
 
-
-
               <label class="inputLabel" for="heartRate">Heart Rate:</label>
               <input type="text" class="form-control input-sm" id="heartRate" name="@vitalNames.get(1).getName"/>
               <label class="inputLabel" for="temperature">Temperature:</label>
@@ -108,13 +109,11 @@
               </div>
 
 
-
             </div>
           </div>
 
           <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
             <div class="text-center">
-
 
 
               <label class="inputLabel" for="respirations">Respirations:</label>

@@ -10,7 +10,6 @@
   @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.at("js/Triage/triage.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("js/Triage/triageClientValidation.js")"></script>
-
   }
 
   @searchById = {
@@ -25,11 +24,8 @@
     <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
       <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
     </div>
-
-
   }
   }
-
 @main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = searchById) {
 
 

@@ -1,8 +1,7 @@
 @(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean)
 
-@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
-@import femr.ui.controllers.routes.SearchController
 
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
@@ -23,7 +22,8 @@
     <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
   }
   }
-@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = searchById) {
+
+@medicalPersonnel("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById){
 
 
   <div class="row">

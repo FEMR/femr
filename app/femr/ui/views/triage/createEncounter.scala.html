@@ -1,6 +1,6 @@
 @(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], patient: femr.common.models.IPatient)
 
-@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
 
   @additionalStyles = {
@@ -18,8 +18,7 @@
   }
   }
 
-
-@main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = searchById) {
+@medicalPersonnel("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
   @helper.form(action = TriageController.createNewEncounterPost(patient.getId)) {
 
     <div class="row">

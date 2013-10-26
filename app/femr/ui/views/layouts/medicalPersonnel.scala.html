@@ -1,0 +1,42 @@
+@(title: String, currentUser: femr.business.dtos.CurrentUser,
+    styles: Html = Html(""), scripts: Html = Html(""), customSearch: Html = Html(""),
+    outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.SearchController
+
+
+  @searchTemplate = {
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
+          @*Provide a custom ID search option for each page*@
+          @customSearch
+        </div>
+
+
+        <div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
+          @*Provide a uniform first/last name search option for each page*@
+          @helper.form(action = SearchController.performSearch()) {
+            <label for="searchFirstName">First Name:</label>
+            <input type="text" id="searchFirstName" name="searchFirstName">
+
+            <label for="searchLastName">Last Name:</label>
+            <input type="text" id="searchLastName" name="searchLastName">
+
+            <button type="submit" id="searchBtn" class="btn btn-default btn-sm">Search</button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+
+@main("triage", currentUser, styles, scripts, search = searchTemplate) {
+
+
+  @content
+
+}
+
+

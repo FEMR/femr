@@ -70,17 +70,11 @@ public class TriageController extends Controller {
         List<IPatientEncounterVital> patientEncounterVitals =
                 populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
 
-
-
-
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0){
                 triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
             }
         }
-
-
-
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
@@ -126,18 +120,11 @@ public class TriageController extends Controller {
         List<IPatientEncounterVital> patientEncounterVitals =
                 populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
 
-
-
-
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0){
                 triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
             }
         }
-
-
-
-
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }

@@ -15,6 +15,7 @@ import femr.ui.models.triage.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,9 @@ public class TriageController extends Controller {
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
+        boolean error = false;
+
+        return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames, error));
     }
 
     public Result createPost() {
@@ -86,17 +89,27 @@ public class TriageController extends Controller {
     Used when user is creating an encounter for an existing patient.
      */
     public Result createNewEncounterGet() {
+        boolean error = false;
         String s_id = request().queryString().get("id")[0];
-        Integer id = Integer.parseInt(s_id);
-
         List<? extends IVital> vitalNames = triageService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+        if (StringUtils.isNullOrWhiteSpace(s_id)){
+            error = true;
+            return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames, error));
+        }
+        Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-        IPatient patient = patientServiceResponse.getResponseObject();
 
-        return ok(femr.ui.views.html.triage.createEncounter.render(currentUser, vitalNames, patient));
+        if (patientServiceResponse.hasErrors()){
+            error = true;
+            return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames, error));
+        }
+        else{
+            IPatient patient = patientServiceResponse.getResponseObject();
+            return ok(femr.ui.views.html.triage.createEncounter.render(currentUser, vitalNames, patient));
+        }
     }
 
     public Result createNewEncounterPost(int id) {
@@ -128,6 +141,10 @@ public class TriageController extends Controller {
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
+
+
+
+
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();

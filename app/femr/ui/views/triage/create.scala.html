@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital])
+@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.TriageController
@@ -14,16 +14,13 @@
 
   @searchById = {
   @helper.form(action = TriageController.createNewEncounterGet()) {
-
-    <div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
-      <label for="id">Id</label>
-      <input type="text" id="id" class="form-control input-sm" name="id">
-    </div>
-
-
-    <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
-      <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
-    </div>
+    <label for="id">Id</label>
+    @if(searchError ){
+      <input type="text" id="id" name="id" placeholder="Invalid Id">
+    }else{
+      <input type="text" id="id" name="id">
+    }
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
   }
   }
 @main("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = searchById) {

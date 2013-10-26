@@ -27,7 +27,8 @@ public class SearchController extends Controller {
     }
 
     /*
-    GET - specific encounter details based on encounter id
+    GET - specific encounter details based on encounter id.
+    Not yet implemented.
      */
     public Result viewEncounter(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -66,39 +67,20 @@ public class SearchController extends Controller {
     }
 
     /*
-    GET - Acquire URL query parameters and createGet()
-     if valid
+    GET - Acquire URL query parameters for a patient
+      and createGet() if valid
      */
     public Result performSearch() {
         String firstName = request().queryString().get("searchFirstName")[0];
         String lastName = request().queryString().get("searchLastName")[0];
-        String s_id = request().queryString().get("searchId")[0];
 
-        Integer id = getIdFromSearch(s_id,firstName,lastName);
-        if (id == null)
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
+
+        if (patientServiceResponse.hasErrors()){
             return redirect("/triage");
-        else
-            return createGet(id);
-    }
-
-    /*
-    Helper for performSearch()
-     */
-    private Integer getIdFromSearch(String s_id, String firstName, String lastName){
-        Integer id;
-        if (StringUtils.isNullOrWhiteSpace(s_id)){
-            ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
-            if (patientServiceResponse.hasErrors()){
-                id = null;
-            }
-            else{
-                id = patientServiceResponse.getResponseObject().getId();
-            }
         }
         else{
-            id = Integer.parseInt(s_id);
+            return createGet(patientServiceResponse.getResponseObject().getId());
         }
-        return id;
     }
-
 }

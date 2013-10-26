@@ -1,8 +1,8 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModel)
+@(currentUser: femr.business.dtos.CurrentUser)
 
-@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.medicalPersonnel
 
-@main("Medical", currentUser) {
+@medicalPersonnel("Medical", currentUser) {
     <div class="row well well-sm">
         <div style="text-align : center ;">
             <h4>General Information</h4>
@@ -13,7 +13,7 @@
                     <label for="Patient Id">Patient Id:</label>
                 </div>
                 <div class="col-sm-7 col-md-7">
-                    <input type="text" name="pID" class="form-control input-sm" value="@viewModel.getpID" disabled="true"/>
+                    <input type="text" name="pID" class="form-control input-sm"/>
                 </div>
             </div>
             <div class="row">
@@ -21,7 +21,7 @@
                     <label for="city">City:</label>
                 </div>
                 <div class="col-sm-7 col-md-7">
-                    <input type="text" name="city" class="form-control input-sm" value="@viewModel.getCity" disabled="true"/>
+                    <input type="text" name="city" class="form-control input-sm"/>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                     <label for="firstName">First Name:</label>
                 </div>
                 <div class="col-sm-6 col-md-6">
-                    <input type="text" name="firstName" class="form-control input-sm" value="@viewModel.getFirstName" disabled="true"/>
+                    <input type="text" name="firstName" class="form-control input-sm"/>
                 </div>
             </div>
             <div class="row">
@@ -39,7 +39,7 @@
                     <label for="age">age:</label>
                 </div>
                 <div class="col-sm-6 col-md-6">
-                    <input type="text" name="age" class="form-control input-sm" value="@viewModel.getAge" disabled="true"/>
+                    <input type="text" name="age" class="form-control input-sm"/>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                     <label for="lastName">Last Name:</label>
                 </div>
                 <div class="col-sm-6 col-md-6">
-                    <input type="text" name="lastName" class="form-control input-sm" value="@viewModel.getLastName" disabled="true"/>
+                    <input type="text" name="lastName" class="form-control input-sm"/>
                 </div>
             </div>
             <div class="row">
@@ -57,7 +57,7 @@
                     <label for="sex">sex:</label>
                 </div>
                 <div class="col-sm-6 col-md-6">
-                    <input type="text" name="sex" class="form-control input-sm" value="@viewModel.getSex" disabled="true"/>
+                    <input type="text" name="sex" class="form-control input-sm"/>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
             <label for="bloodPressure">Blood Pressure</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="bloodPressure" type="text" class="form-control input-sm" value="" disabled="true"/>
+                    <input name="bloodPressure" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
@@ -82,7 +82,7 @@
             <label for="heartRate">Heart Rate</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="heartRate" type="text" class="form-control input-sm" value="" disabled="true"/>
+                    <input name="heartRate" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
@@ -94,7 +94,7 @@
             <label for="temperature">Temperature</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="temperature" type="text" class="form-control input-sm" value="" disabled="true"/>
+                    <input name="temperature" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
@@ -106,7 +106,7 @@
             <label for="breathingRate">Breathing Rate</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="breathingRate" type="text" class="form-control input-sm" value="" disabled="true"/>
+                    <input name="breathingRate" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
@@ -118,7 +118,7 @@
             <label class="oxygen">Oxygen</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="oxygen" type="text" class="form-control input-sm" value="" disabled="true"/>
+                    <input name="oxygen" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
@@ -139,7 +139,7 @@
                     <label for="onset">Onset</label>
                 </div>
                 <div class="col-sm-6 col-md-6">
-                    <input name="onset" type="text" class="form-control input-sm" value=""/>
+                    <input name="onset" type="text" class="form-control input-sm"/>
                 </div>
             </div>
             <div class="row">
@@ -169,17 +169,17 @@
                     <label for="Radiation">Radiation</label>
                 </div>
                 <div class="col-sm-6 col-md-6">
-                    <input name="Radiation" type="text" class="form-control input-sm" value=""/>
+                    <input name="Radiation" type="text" class="form-control input-sm"/>
                 </div>
             </div>
         </div>
         <div class="form-group">
             <label for="quality">Quality</label>
-            <input name="quality" type="text" class="form-control input-sm" value=""/>
+            <input name="quality" type="text" class="form-control input-sm"/>
         </div>
         <div class="form-group">
             <label for="provokes">Provokes</label>
-            <input name="provokes" type="text" class="form-control input-sm" value=""/>
+            <input name="provokes" type="text" class="form-control input-sm"/>
         </div>
         <div class="form-group">
             <label for="physical">Physical Examination</label>
@@ -197,7 +197,7 @@
             <label for="problemList">Problem List</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="problemList" type="text" class="form-control input-sm" value=""/>
+                    <input name="problemList" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
@@ -208,7 +208,7 @@
             <label for="prescriptions">Prescriptions</label>
             <div class="row">
                 <div class="col-sm-9 col-md-9">
-                    <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
+                    <input name="prescriptions" type="text" class="form-control input-sm"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>

@@ -1,10 +1,9 @@
 @(title: String, currentUser: femr.business.dtos.CurrentUser = null,
-    styles: Html = Html(""), scripts: Html = Html(""),
+    styles: Html = Html(""), scripts: Html = Html(""), search: Html = Html(""),
     outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
 
 @import femr.ui.views.html.partials.footer
 @import femr.ui.views.html.partials.header
-@import femr.ui.controllers.routes.SearchController
 
 <!DOCTYPE html>
 <html class="no-js" xmlns="http://www.w3.org/1999/html">
@@ -25,24 +24,9 @@
   </head>
   <body>
 
-    @*<div class="input-group">*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<input type="text" class="form-control" placeholder="Id" name="searchId">*@
-      @*</div>*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<input type="text" class="form-control" placeholder="First Name" name="searchFirstName">*@
-      @*</div>*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<input type="text" class="form-control" placeholder="Last Name" name="searchLastName">*@
-      @*</div>*@
-      @*<div class="col-sm-3 col-xs-3">*@
-        @*<span class="input-group-btn">*@
-          @*<button type="submit" class="btn btn-default btn-sm">Submit</button>*@
-        @*</span>*@
-      @*</div>*@
-    @*</div>*@
-
     @header(currentUser)
+
+    @search
 
     @outsideContainerTop
 
@@ -55,7 +39,7 @@
     @outsideContainerBottom
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write ( '<script type="text/javascript" src="  @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
+    <script>window.jQuery || document.write ( '<script type="text/javascript" src="      @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
     <script type="text/javascript" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
     @scripts
   </body>

@@ -7,6 +7,8 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
+import femr.ui.views.html.triage.index;
+import femr.ui.views.html.triage.indexPopulated;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
@@ -15,6 +17,7 @@ import femr.ui.models.triage.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +52,9 @@ public class TriageController extends Controller {
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames));
+        boolean error = false;
+
+        return ok(index.render(currentUser, vitalNames, error));
     }
 
     public Result createPost() {
@@ -66,8 +71,11 @@ public class TriageController extends Controller {
 
         List<IPatientEncounterVital> patientEncounterVitals =
                 populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            if (patientEncounterVitals.get(i).getVitalValue() > 0){
+                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            }
         }
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
@@ -76,18 +84,31 @@ public class TriageController extends Controller {
     /*
     Used when user is creating an encounter for an existing patient.
      */
-    public Result createNewEncounterGet(int id) {
+    public Result createPopulatedGet() {
+        boolean error = false;
+        String s_id = request().queryString().get("id")[0];
         List<? extends IVital> vitalNames = triageService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+        if (StringUtils.isNullOrWhiteSpace(s_id)){
+            error = true;
+            return ok(index.render(currentUser, vitalNames, error));
+        }
+        Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-        IPatient patient = patientServiceResponse.getResponseObject();
 
-        return ok(femr.ui.views.html.triage.createEncounter.render(currentUser, vitalNames, patient));
+        if (patientServiceResponse.hasErrors()){
+            error = true;
+            return ok(index.render(currentUser, vitalNames, error));
+        }
+        else{
+            IPatient patient = patientServiceResponse.getResponseObject();
+            return ok(indexPopulated.render(currentUser, vitalNames, patient));
+        }
     }
 
-    public Result createNewEncounterPost(int id) {
+    public Result createPopulatedPost(int id) {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -100,12 +121,19 @@ public class TriageController extends Controller {
 
         List<IPatientEncounterVital> patientEncounterVitals =
                 populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            if (patientEncounterVitals.get(i).getVitalValue() > 0){
+                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            }
         }
 
         return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
     }
+
+
+
+
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();
@@ -127,6 +155,7 @@ public class TriageController extends Controller {
         patientEncounter.setUserId(currentUser.getId());
         patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
+        patientEncounter.setWeeksPregnant(viewModel.getWeeksPregnant());
 
         return patientEncounter;
     }
@@ -137,46 +166,85 @@ public class TriageController extends Controller {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
-        for (int j = 0; j < patientEncounterVital.length; j++) {
-            patientEncounterVital[j] = patientEncounterVitalProvider.get();
-            patientEncounterVital[j].setDateTaken((triageService.getCurrentDateTime()));
-            patientEncounterVital[j].setUserId(currentUser.getId());
+        for (int i = 0; i < 9; i++){
+            patientEncounterVital[i] = patientEncounterVitalProvider.get();
+            patientEncounterVital[i].setDateTaken((triageService.getCurrentDateTime()));
+            patientEncounterVital[i].setUserId(currentUser.getId());
+            patientEncounterVital[i].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
+            patientEncounterVital[i].setVitalId(i+1);
         }
-        patientEncounterVital[0].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[0].setVitalId(1);
-        patientEncounterVital[0].setVitalValue(viewModel.getRespirations());
 
-        patientEncounterVital[1].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[1].setVitalId(2);
-        patientEncounterVital[1].setVitalValue(viewModel.getHeartRate());
+        //Respiratory Rate
+        if (viewModel.getRespiratoryRate() == null){
+            patientEncounterVital[0].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[0].setVitalValue(viewModel.getRespiratoryRate().floatValue());
+        }
 
-        patientEncounterVital[2].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[2].setVitalId(3);
-        patientEncounterVital[2].setVitalValue(viewModel.getTemperature());
+        //Heart Rate
+        if (viewModel.getHeartRate() == null){
+            patientEncounterVital[1].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[1].setVitalValue(viewModel.getHeartRate().floatValue());
+        }
 
-        patientEncounterVital[3].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[3].setVitalId(4);
-        patientEncounterVital[3].setVitalValue(viewModel.getOxygen());
+        //Temperature
+        if (viewModel.getTemperature() == null){
+            patientEncounterVital[2].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[2].setVitalValue(viewModel.getTemperature().floatValue());
+        }
 
-        patientEncounterVital[4].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[4].setVitalId(5);
-        patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet());
+        //Oxygen Saturation
+        if (viewModel.getOxygenSaturation() == null){
+            patientEncounterVital[3].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[3].setVitalValue(viewModel.getOxygenSaturation().floatValue());
+        }
 
-        patientEncounterVital[5].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[5].setVitalId(6);
-        patientEncounterVital[5].setVitalValue(viewModel.getHeightInches());
+        //Height - Feet
+        if (viewModel.getHeightFeet() == null){
+            patientEncounterVital[4].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet().floatValue());
+        }
 
-        patientEncounterVital[6].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[6].setVitalId(7);
-        patientEncounterVital[6].setVitalValue(viewModel.getWeight());
+        //Height - Inches
+        if (viewModel.getHeightInches() == null){
+            patientEncounterVital[5].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[5].setVitalValue(viewModel.getHeightInches().floatValue());
+        }
 
-        patientEncounterVital[7].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[7].setVitalId(8);
-        patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic());
+        //Weight
+        if (viewModel.getWeight() == null){
+            patientEncounterVital[6].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[6].setVitalValue(viewModel.getWeight().floatValue());
+        }
 
-        patientEncounterVital[8].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-        patientEncounterVital[8].setVitalId(9);
-        patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic());
+        //Blood Pressure - Systolic
+        if (viewModel.getBloodPressureSystolic() == null){
+            patientEncounterVital[7].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic().floatValue());
+        }
+
+        //Blood Pressure - Diastolic
+        if (viewModel.getBloodPressureDiastolic() == null){
+            patientEncounterVital[8].setVitalValue(-1);
+        }
+        else{
+            patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic().floatValue());
+        }
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
         return patientEncounterVitals;

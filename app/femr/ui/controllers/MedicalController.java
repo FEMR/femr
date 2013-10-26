@@ -12,7 +12,7 @@ import femr.common.models.IPatientEncounterVital;
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.medical.index;
-import femr.ui.views.html.medical.find;
+import femr.ui.views.html.medical.indexPopulated;
 import femr.ui.models.medical.CreateViewModel;
 
 public class MedicalController extends Controller {
@@ -31,11 +31,16 @@ public class MedicalController extends Controller {
 
     }
 
-    public Result find() {
-        return ok(find.render());
+    public Result createGet() {
+
+
+
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        return ok(index.render(currentUserSession));
     }
 
-    public Result index() {
+    public Result createPopulatedGet(){
+
         String s_patientID = request().getQueryString("searchId");
         int i_patientID = Integer.parseInt(s_patientID);
 
@@ -53,8 +58,7 @@ public class MedicalController extends Controller {
         viewModel.setpID(patient.getId());
         viewModel.setSex(patient.getSex());
 
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(index.render(currentUserSession,viewModel));
+        return ok(indexPopulated.render(currentUserSession,viewModel));
     }
 }

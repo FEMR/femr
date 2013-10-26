@@ -20,7 +20,7 @@
   <ul class="nav navbar-nav">
     @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
       <li><a href="@TriageController.createGet()">Triage</a></li>
-      <li><a href="@MedicalController.index()">Medical</a></li>
+      <li><a href="@MedicalController.createGet()">Medical</a></li>
       <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
     }
     @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {

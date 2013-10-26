@@ -7,6 +7,8 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
+import femr.ui.views.html.triage.index;
+import femr.ui.views.html.triage.indexPopulated;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
@@ -52,7 +54,7 @@ public class TriageController extends Controller {
 
         boolean error = false;
 
-        return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames, error));
+        return ok(index.render(currentUser, vitalNames, error));
     }
 
     public Result createPost() {
@@ -91,18 +93,18 @@ public class TriageController extends Controller {
 
         if (StringUtils.isNullOrWhiteSpace(s_id)){
             error = true;
-            return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames, error));
+            return ok(index.render(currentUser, vitalNames, error));
         }
         Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
         if (patientServiceResponse.hasErrors()){
             error = true;
-            return ok(femr.ui.views.html.triage.create.render(currentUser, vitalNames, error));
+            return ok(index.render(currentUser, vitalNames, error));
         }
         else{
             IPatient patient = patientServiceResponse.getResponseObject();
-            return ok(femr.ui.views.html.triage.createEncounter.render(currentUser, vitalNames, patient));
+            return ok(indexPopulated.render(currentUser, vitalNames, patient));
         }
     }
 

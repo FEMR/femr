@@ -12,7 +12,7 @@
   }
 
   @searchById = {
-  @helper.form(action = TriageController.createNewEncounterGet()) {
+  @helper.form(action = TriageController.createPopulatedGet()) {
     <label for="id">Id</label>
     @if(searchError ){
       <input type="text" id="id" name="id" placeholder="Invalid Id">

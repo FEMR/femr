@@ -11,7 +11,7 @@
   }
 
   @searchById = {
-  @helper.form(action = TriageController.createNewEncounterGet()) {
+  @helper.form(action = TriageController.createPopulatedGet()) {
     <label for="id">Id</label>
     <input type="text" id="id" name="id">
     <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
@@ -19,7 +19,7 @@
   }
 
 @medicalPersonnel("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
-  @helper.form(action = TriageController.createNewEncounterPost(patient.getId)) {
+  @helper.form(action = TriageController.createPopulatedPost(patient.getId)) {
 
     <div class="row">
       <div class ="well">

@@ -84,7 +84,7 @@ public class TriageController extends Controller {
     /*
     Used when user is creating an encounter for an existing patient.
      */
-    public Result createNewEncounterGet() {
+    public Result createPopulatedGet() {
         boolean error = false;
         String s_id = request().queryString().get("id")[0];
         List<? extends IVital> vitalNames = triageService.findAllVitals();
@@ -108,7 +108,7 @@ public class TriageController extends Controller {
         }
     }
 
-    public Result createNewEncounterPost(int id) {
+    public Result createPopulatedPost(int id) {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();

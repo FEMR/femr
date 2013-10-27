@@ -8,6 +8,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
+import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -33,32 +34,36 @@ public class MedicalController extends Controller {
 
     public Result createGet() {
 
-
+        boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(index.render(currentUserSession));
+        return ok(index.render(currentUserSession,error));
     }
 
     public Result createPopulatedGet(){
+        boolean error = false;
 
-        String s_patientID = request().getQueryString("searchId");
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+        String s_patientID = request().getQueryString("id");
         int i_patientID = Integer.parseInt(s_patientID);
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
+        if (patientServiceResponse.hasErrors()){
+            error = true;
+            return ok(index.render(currentUserSession,error));
+        }
+
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
+                searchService.findCurrentEncounterByPatientId(i_patientID);
+        if (patientEncounterServiceResponse.hasErrors()){
+            error = true;
+            return ok(index.render(currentUserSession,error));
+        }
 
         IPatient patient = patientServiceResponse.getResponseObject();
+        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-
-        CreateViewModel viewModel = new CreateViewModel();
-
-        viewModel.setAge(patient.getAge());
-        viewModel.setCity(patient.getCity());
-        viewModel.setFirstName(patient.getFirstName());
-        viewModel.setLastName(patient.getLastName());
-        viewModel.setpID(patient.getId());
-        viewModel.setSex(patient.getSex());
-
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(indexPopulated.render(currentUserSession,viewModel));
+        return ok(indexPopulated.render(currentUserSession,patient,patientEncounter));
     }
 }

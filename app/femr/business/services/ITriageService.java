@@ -14,8 +14,6 @@ public interface ITriageService {
 
     ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
 
-    List<? extends IVital> findAllVitals();
-
     String getCurrentDateTime();
 
 }

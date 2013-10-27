@@ -13,6 +13,7 @@ import play.mvc.Result;
 import femr.ui.views.html.search.show;
 import femr.ui.views.html.search.showEncounter;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.List;
 
 public class SearchController extends Controller {
@@ -33,10 +34,9 @@ public class SearchController extends Controller {
     public Result viewEncounter(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
-        IPatientEncounter patientEncounter= patientEncounterServiceResponse.getResponseObject();
+        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
         return ok(showEncounter.render(currentUser, patientEncounter));
-
     }
 
     /*
@@ -71,15 +71,14 @@ public class SearchController extends Controller {
       and createGet() if valid
      */
     public Result performSearch() {
-        String firstName = request().queryString().get("searchFirstName")[0];
-        String lastName = request().queryString().get("searchLastName")[0];
+        String firstName = request().getQueryString("searchFirstName");
+        String lastName = request().getQueryString("searchLastName");
 
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName, lastName);
 
-        if (patientServiceResponse.hasErrors()){
+        if (patientServiceResponse.hasErrors()) {
             return redirect("/triage");
-        }
-        else{
+        } else {
             return createGet(patientServiceResponse.getResponseObject().getId());
         }
     }

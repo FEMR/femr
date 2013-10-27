@@ -48,7 +48,7 @@ public class TriageController extends Controller {
     }
 
     public Result createGet() {
-        List<? extends IVital> vitalNames = triageService.findAllVitals();
+        List<? extends IVital> vitalNames = searchService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
@@ -86,8 +86,8 @@ public class TriageController extends Controller {
      */
     public Result createPopulatedGet() {
         boolean error = false;
-        String s_id = request().queryString().get("id")[0];
-        List<? extends IVital> vitalNames = triageService.findAllVitals();
+        String s_id = request().getQueryString("id");
+        List<? extends IVital> vitalNames = searchService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 

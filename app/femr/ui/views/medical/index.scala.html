@@ -1,8 +1,22 @@
-@(currentUser: femr.business.dtos.CurrentUser)
+@(currentUser: femr.business.dtos.CurrentUser, searchError: java.lang.Boolean)
 
+@import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 
-@medicalPersonnel("Medical", currentUser) {
+
+  @searchById = {
+  @helper.form(action = MedicalController.createPopulatedGet()) {
+    <label for="id">Id</label>
+    @if(searchError ){
+      <input type="text" id="id" name="id" placeholder="Invalid Id">
+    }else{
+      <input type="text" id="id" name="id">
+    }
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+  }
+  }
+
+@medicalPersonnel("Medical", currentUser, customSearch = searchById) {
     <div class="row well well-sm">
         <div style="text-align : center ;">
             <h4>General Information</h4>

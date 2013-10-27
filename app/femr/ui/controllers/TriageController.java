@@ -86,7 +86,7 @@ public class TriageController extends Controller {
      */
     public Result createPopulatedGet() {
         boolean error = false;
-        String s_id = request().queryString().get("id")[0];
+        String s_id = request().getQueryString("id");
         List<? extends IVital> vitalNames = triageService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();

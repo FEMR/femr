@@ -33,18 +33,26 @@ public class MedicalController extends Controller {
 
     public Result createGet() {
 
-
+        boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(index.render(currentUserSession));
+        return ok(index.render(currentUserSession,error));
     }
 
     public Result createPopulatedGet(){
+        boolean error = false;
 
-        String s_patientID = request().getQueryString("searchId");
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+        String s_patientID = request().getQueryString("id");
         int i_patientID = Integer.parseInt(s_patientID);
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
+
+        if (patientServiceResponse.hasErrors()){
+            error = true;
+            return ok(index.render(currentUserSession,error));
+        }
 
         IPatient patient = patientServiceResponse.getResponseObject();
 
@@ -58,7 +66,7 @@ public class MedicalController extends Controller {
         viewModel.setpID(patient.getId());
         viewModel.setSex(patient.getSex());
 
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
         return ok(indexPopulated.render(currentUserSession,viewModel));
     }
 }

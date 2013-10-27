@@ -71,8 +71,8 @@ public class SearchController extends Controller {
       and createGet() if valid
      */
     public Result performSearch() {
-        String firstName = request().queryString().get("searchFirstName")[0];
-        String lastName = request().queryString().get("searchLastName")[0];
+        String firstName = request().getQueryString("searchFirstName");
+        String lastName = request().getQueryString("searchLastName");
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName,lastName);
 

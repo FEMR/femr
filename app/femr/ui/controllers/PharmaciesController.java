@@ -9,6 +9,7 @@ import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IPatientPrescription;
 import femr.business.services.SessionService;
 import femr.ui.models.pharmacy.CreateViewModel;
@@ -41,7 +42,11 @@ public class PharmaciesController extends Controller {
     }
 
     public Result index() {
-        return ok(index.render());
+
+        boolean error = false;
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+        return ok(index.render(currentUserSession,error));
     }
 
     public Result createGet(){
@@ -49,18 +54,13 @@ public class PharmaciesController extends Controller {
         String s_id = request().getQueryString("id");
         Integer id = Integer.parseInt(s_id);
 
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-
-        CreateViewModel viewModel = new CreateViewModel();
-        IPatient patient = patientServiceResponse.getResponseObject();
-        viewModel.setpID(patient.getId());
-        viewModel.setFirstName(patient.getFirstName());
-        viewModel.setLastName(patient.getLastName());
-        viewModel.setAge(patient.getAge());
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
+        IPatient patient = patientServiceResponse.getResponseObject();
+        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        return ok(populated.render(currentUserSession, viewModel,id));
+        return ok(populated.render(currentUserSession, patient, patientEncounter));
     }
 
 }

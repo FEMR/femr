@@ -1,7 +1,6 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.CreateViewModel)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.CreateViewModel, id: java.lang.Integer)
 
 @import femr.ui.views.html.layouts.main
-@import femr.ui.controllers.routes.PharmaciesController
 
 @additionalScripts = {
     <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
@@ -11,60 +10,58 @@
 
     <div class="row medicineInput">
         <div class="row" text align="center">
-            <h3>Pharmacy Record</h3>
+            <h3>Pharmacy Record test</h3>
         </div>
 
-        @helper.form(PharmaciesController.createGet()){
         <form role="form" >
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-1 col-md-1">
                     <label>Patient ID:</label>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type="text" name="searchId" class="form-control input-sm" value="" />
+                    <input type="text" name="searchId" class="form-control input-sm" value="@id" />
                 </div>
                 <div class="col-sm-1 col-md-1">
                     <label>First Name:</label>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type="text"name="searchFirstName" class="form-control input-sm" value="" />
+                    <input type="text"name="searchFirstName" class="form-control input-sm" value="@viewModel.getFirstName" />
                 </div>
                 <div class="col-sm-1 col-md-1">
                     <label>Last Name:</label>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type="text"name="searchLastName" class="form-control input-sm" value="" />
+                    <input type="text"name="searchLastName" class="form-control input-sm" value="@viewModel.getLastName" />
                 </div>
                 <div class="col-sm-1 col-md-1">
                     <button type="submit" class="btn btn-primary">search</button>
                 </div>
             </div>
-            }
 
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-1 col-md-1">
                     <h5>age:</h5>
                 </div>
                 <div class="col-sm-1 col-md-1">
-                    <input type="text" name="age" class="form-control input-sm" value="" disabled="true"/>
+                    <input type="text" name="age" class="form-control input-sm" value="@viewModel.getAge" disabled="true"/>
                 </div>
                 <div class="col-sm-1 col-md-1   ">
                     <h5>height:</h5>
                 </div>
                 <div class="col-sm-1 col-md-1">
-                    <input type="text" name="height" class="form-control input-sm" value="" disabled="true"/>
+                    <input type="text" name="height" class="form-control input-sm" value="@viewModel.getHeight" disabled="true"/>
                 </div>
                 <div class="col-sm-1 col-md-1">
                     <h5>weight:</h5>
                 </div>
                 <div class="col-sm-1 col-md-1">
-                    <input type="text" name="weight" class="form-control input-sm" value="" disabled="true"/>
+                    <input type="text" name="weight" class="form-control input-sm" value="@viewModel.getWeight" disabled="true"/>
                 </div>
                 <div class="col-sm-3 col-md-3">
                     <h5>pregnancy status:</h5>
                 </div>
                 <div class="col-sm-3 col-md-3">
-                    <input type="text" name="pregnancy" class="form-control input-sm" value="" disabled="true"/>
+                    <input type="text" name="pregnancy" class="form-control input-sm" value="@viewModel.getPregnancyStatus" disabled="true"/>
                 </div>
             </div>
 
@@ -73,7 +70,7 @@
                     <h5>List of Diagnoses:</h5>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type="text" name="diagnosis1" class="form-control input-sm" value="" disabled="true"/>
+                    <input type="text" name="diagnosis1" class="form-control input-sm" value="@viewModel.getDiagnosis" disabled="true"/>
                 </div>
                 <div class="col-sm-2 col-md-2">
                     <input type="text" name="diagnosis2" class="form-control input-sm" value="" disabled="true"/>
@@ -93,7 +90,7 @@
                 <div class="row"  style="margin: 0 0 15px 0">
                     <div class="col-sm-4 col-md-4" text align="center" >
                         <h4>Medication</h4>
-                        <input type="text" name="input_text" placeholder="Medication" class="form-control" value="" disabled="true"/>
+                        <input type="text" name="input_text" placeholder="Medication" class="form-control" value="@viewModel.getMedication1" disabled="true"/>
                     </div>
                     <div class="col-sm-4 col-md-4" align="center">
                         <h4>Replacement?</h4>

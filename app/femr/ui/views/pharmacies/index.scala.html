@@ -1,3 +1,5 @@
+@import femr.ui.controllers.routes.PharmaciesController
+
 @import femr.ui.views.html.layouts.main
 
 @additionalScripts = {
@@ -10,31 +12,19 @@
         <div class="row" text align="center">
             <h3>Pharmacy Record</h3>
         </div>
-
-        <form role="form" >
+        @helper.form(action = PharmaciesController.createGet()){
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-1 col-md-1">
                     <label>Patient ID:</label>
                 </div>
                 <div class="col-sm-2 col-md-2">
-                    <input type="text" name="searchId" class="form-control input-sm" value="" />
-                </div>
-                <div class="col-sm-1 col-md-1">
-                    <label>First Name:</label>
-                </div>
-                <div class="col-sm-2 col-md-2">
-                    <input type="text"name="searchFirstName" class="form-control input-sm" value="" />
-                </div>
-                <div class="col-sm-1 col-md-1">
-                    <label>Last Name:</label>
-                </div>
-                <div class="col-sm-2 col-md-2">
-                    <input type="text"name="searchLastName" class="form-control input-sm" value="" />
+                    <input type="text" name="id" class="form-control input-sm" value="" />
                 </div>
                 <div class="col-sm-1 col-md-1">
                     <button type="submit" class="btn btn-primary">search</button>
                 </div>
             </div>
+            }
 
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-1 col-md-1">
@@ -186,6 +176,6 @@
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
-        </form>
+        @*</form>*@
     </div>
 }

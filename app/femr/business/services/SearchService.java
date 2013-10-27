@@ -55,6 +55,24 @@ public class SearchService implements ISearchService{
     }
 
     @Override
+    public ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id){
+        ExpressionList<PatientEncounter> query =
+                getPatientEncounterQuery().where().eq("patient_id", id);
+        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+
+        ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();
+        if (patientEncounters.size() < 1){
+            response.addError("id","No encounters exist for that id");
+        }
+        else{
+            int size = patientEncounters.size();
+            response.setResponseObject(patientEncounters.get(size-1));
+        }
+
+        return response;
+    }
+
+    @Override
     public ServiceResponse<IPatient> findPatientByName(String firstName, String lastName){
         ExpressionList<Patient> query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
         IPatient savedPatient = patientRepository.findOne(query);

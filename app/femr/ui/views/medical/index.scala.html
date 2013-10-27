@@ -18,64 +18,95 @@
 
 @medicalPersonnel("Medical", currentUser, customSearch = searchById) {
     <div class="row well well-sm">
-        <div style="text-align : center ;">
-            <h4>General Information</h4>
+
+            <h3 class="text-center">Patient Overview</h3>
+
+
+
+        <div class="col-sm-4 col-md-4">
+
+          <div class="row">
+            <div class="col-sm-4 col-md-4">
+              <label>Name:</label>
+            </div>
+            <div class="col-sm-8 col-md-8">
+              <p>Kevin Zurek</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-4 col-md-4">
+              <label for="">Age:</label>
+            </div>
+            <div class="col-sm-8 col-md-8">
+              <p>8</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-4 col-md-4">
+              <label for="">Sex:</label>
+            </div>
+            <div class="col-sm-8 col-md-8">
+              <p>Male</p>
+            </div>
+          </div>
+
+
+
         </div>
+
+
         <div class="col-sm-4 col-md-4">
             <div class="row">
-                <div class="col-sm-5 col-md-5">
-                    <label for="Patient Id">Patient Id:</label>
-                </div>
-                <div class="col-sm-7 col-md-7">
-                    <input type="text" name="pID" class="form-control input-sm"/>
-                </div>
+              <div class="col-sm-6 col-md-6">
+                <label for="">Height:</label>
+              </div>
+              <div class="col-sm-6 col-md-6">
+                <p>6'2"</p>
+              </div>
+
+
             </div>
             <div class="row">
-                <div class="col-sm-5 col-md-5">
-                    <label for="city">City:</label>
+                <div class="col-sm-6 col-md-6">
+                    <label for="">Weight:</label>
                 </div>
-                <div class="col-sm-7 col-md-7">
-                    <input type="text" name="city" class="form-control input-sm"/>
+                <div class="col-sm-6 col-md-6">
+                    <p>225</p>
                 </div>
             </div>
+          <div class="row">
+            <div class="col-sm-6 col-md-6">
+              <label for="">BMI:</label>
+            </div>
+            <div class="col-sm-6 col-md-6">
+              <p>30</p>
+            </div>
+          </div>
         </div>
+
+
         <div class="col-sm-4 col-md-4">
-            <div class="row">
-                <div class="col-sm-6 col-md-6">
-                    <label for="firstName">First Name:</label>
-                </div>
-                <div class="col-sm-6 col-md-6">
-                    <input type="text" name="firstName" class="form-control input-sm"/>
-                </div>
+
+
+          <div class="row">
+            <div class="col-sm-4 col-md-4">
+              <label>Complaint:</label>
             </div>
-            <div class="row">
-                <div class="col-sm-6 col-md-6">
-                    <label for="age">age:</label>
-                </div>
-                <div class="col-sm-6 col-md-6">
-                    <input type="text" name="age" class="form-control input-sm"/>
-                </div>
+            <div class="col-sm-8 col-md-8">
+              <p>I pooped far too hard and it hurts really really really bad</p>
             </div>
+          </div>
+
+
+
+
         </div>
-        <div class="col-sm-4 col-md-4">
-            <div class="row">
-                <div class="col-sm-6 col-md-6">
-                    <label for="lastName">Last Name:</label>
-                </div>
-                <div class="col-sm-6 col-md-6">
-                    <input type="text" name="lastName" class="form-control input-sm"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6 col-md-6">
-                    <label for="sex">sex:</label>
-                </div>
-                <div class="col-sm-6 col-md-6">
-                    <input type="text" name="sex" class="form-control input-sm"/>
-                </div>
-            </div>
-        </div>
+
     </div>
+
+
 
     <div class="col-sm-4 col-md-4 well well-sm">
         <h3>Vitals</h3>
@@ -86,9 +117,9 @@
                 <div class="col-sm-9 col-md-9">
                     <input name="bloodPressure" type="text" class="form-control input-sm"/>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-                </div>
+                @*<div class="col-sm-3 col-md-3">*@
+                    @*<button class="btn"><span class="glyphicon glyphicon-plus"></span></button>*@
+                @*</div>*@
             </div>
         </div>
 
@@ -98,9 +129,9 @@
                 <div class="col-sm-9 col-md-9">
                     <input name="heartRate" type="text" class="form-control input-sm"/>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-                </div>
+                @*<div class="col-sm-3 col-md-3">*@
+                    @*<button class="btn"><span class="glyphicon glyphicon-plus"></span></button>*@
+                @*</div>*@
             </div>
         </div>
 
@@ -110,9 +141,9 @@
                 <div class="col-sm-9 col-md-9">
                     <input name="temperature" type="text" class="form-control input-sm"/>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-                </div>
+                @*<div class="col-sm-3 col-md-3">*@
+                    @*<button class="btn"><span class="glyphicon glyphicon-plus"></span></button>*@
+                @*</div>*@
             </div>
         </div>
 
@@ -122,9 +153,9 @@
                 <div class="col-sm-9 col-md-9">
                     <input name="breathingRate" type="text" class="form-control input-sm"/>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-                </div>
+                @*<div class="col-sm-3 col-md-3">*@
+                    @*<button class="btn"><span class="glyphicon glyphicon-plus"></span></button>*@
+                @*</div>*@
             </div>
         </div>
 
@@ -134,9 +165,9 @@
                 <div class="col-sm-9 col-md-9">
                     <input name="oxygen" type="text" class="form-control input-sm"/>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                    <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-                </div>
+                @*<div class="col-sm-3 col-md-3">*@
+                    @*<button class="btn"><span class="glyphicon glyphicon-plus"></span></button>*@
+                @*</div>*@
             </div>
         </div>
     </div>

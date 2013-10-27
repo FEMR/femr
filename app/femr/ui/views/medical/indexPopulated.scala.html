@@ -1,8 +1,17 @@
 @(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModel)
 
+@import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 
-@medicalPersonnel("Medical", currentUser) {
+  @searchById = {
+  @helper.form(action = MedicalController.createPopulatedGet()) {
+    <label for="id">Id</label>
+    <input type="text" id="id" name="id">
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+  }
+  }
+
+@medicalPersonnel("Medical", currentUser, customSearch = searchById) {
   <div class="row well well-sm">
     <div style="text-align : center ;">
       <h4>General Information</h4>

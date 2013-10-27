@@ -22,4 +22,6 @@ public interface ISearchService {
 
     List<? extends IVital> findAllVitals();
 
+    ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
+
 }

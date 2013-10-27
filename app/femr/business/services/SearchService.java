@@ -7,10 +7,12 @@ import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 import femr.data.models.PatientEncounter;
+import femr.data.models.PatientEncounterVital;
 import femr.data.models.Vital;
 
 import java.util.List;
@@ -18,14 +20,17 @@ import java.util.List;
 public class SearchService implements ISearchService{
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounter> patientEncounterRepository;
+    private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private IRepository<IVital> vitalRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
+                         IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IVital> vitalRepository){
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
+        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
     }
 
@@ -93,11 +98,24 @@ public class SearchService implements ISearchService{
         return response;
     }
 
+    @Override
+    public ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId){
+        ExpressionList<PatientEncounterVital> query = getPatientEncounterVitalQuery().where().eq("vital_id",vitalId).eq("patient_encounter_id",encounterId);
+        IPatientEncounterVital patientEncounterVital = patientEncounterVitalRepository.findOne(query);
+
+        ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
+        return response;
+
+    }
+
     private Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
     }
     private Query<PatientEncounter> getPatientEncounterQuery() {
         return Ebean.find(PatientEncounter.class);
+    }
+    private Query<PatientEncounterVital> getPatientEncounterVitalQuery() {
+        return Ebean.find(PatientEncounterVital.class);
     }
 
     @Override

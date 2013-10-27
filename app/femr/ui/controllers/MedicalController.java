@@ -16,13 +16,13 @@ import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.indexPopulated;
 import femr.ui.models.medical.CreateViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MedicalController extends Controller {
 
     private ISessionService sessionService;
     private ISearchService searchService;
-    private ITriageService triageService;
-    private IPatientEncounterVital patientEncounterVital;
-
 
     @Inject
     public MedicalController(ISessionService sessionService,
@@ -53,6 +53,7 @@ public class MedicalController extends Controller {
             error = true;
             return ok(index.render(currentUserSession,error));
         }
+        IPatient patient = patientServiceResponse.getResponseObject();
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
                 searchService.findCurrentEncounterByPatientId(i_patientID);
@@ -60,9 +61,20 @@ public class MedicalController extends Controller {
             error = true;
             return ok(index.render(currentUserSession,error));
         }
-
-        IPatient patient = patientServiceResponse.getResponseObject();
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+
+//        int vitalValues
+//
+//        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+//        IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
+//
+//
+//        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse =
+//                searchService.findPatientEncounterVitalByVitalIdAndEncounterId(1,patientEncounter.getId());
+
+
+
+
 
         return ok(indexPopulated.render(currentUserSession,patient,patientEncounter));
     }

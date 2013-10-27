@@ -104,6 +104,14 @@ public class SearchService implements ISearchService{
         IPatientEncounterVital patientEncounterVital = patientEncounterVitalRepository.findOne(query);
 
         ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
+
+        if (patientEncounterVital == null){
+            response.addError("patientEncounterVital","could not find vital");
+        }
+        else{
+            response.setResponseObject(patientEncounterVital);
+        }
+
         return response;
 
     }

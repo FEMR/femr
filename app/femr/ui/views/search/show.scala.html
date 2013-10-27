@@ -1,24 +1,20 @@
 @(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: java.lang.Integer)
 
 @import femr.ui.views.html.layouts.main
-@import femr.ui.controllers.routes.SearchController
-@import femr.ui.controllers.routes.TriageController
 
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
   }
   @additionalScripts = {
-    <script type="text/javascript" src="@routes.Assets.at("/js/Triage/triage.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("/js/search/search.js")"></script>
   }
 
 @main("search", currentUser, styles = additionalStyles, scripts = additionalScripts) {
   <div class="row">
     <div class ="well">
       <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>
-      @helper.form(action = TriageController.createPopulatedGet()) {
-        <input type="text" id="id" name="id" value="@id" class="hidden">
-        <button type="submit" class="newEncounterBtn btn btn-default pull-right">Create New Encounter</button>
-    }
+
+      <button type="submit" id="newPatientBtn" class="btn btn-default pull-right">New Patient</button>
 
       <div class="medicalHistoryLineDivide"></div>
 
@@ -49,7 +45,7 @@
 
           @for(patientEncounter <- patientEncounters) {
             <a href="/show/encounter/@patientEncounter.getId">@patientEncounter.getDateOfVisit</a>
-            <label>chief complaint:</label><p>@patientEncounter.getChiefComplaint</p>
+            <label>chief complaint:</label> <p>@patientEncounter.getChiefComplaint</p>
           }
 
         </div>

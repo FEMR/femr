@@ -2,11 +2,15 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
+import femr.business.services.IPharmacyService;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
+import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
+import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientPrescription;
+import femr.business.services.SessionService;
 import femr.ui.models.pharmacy.CreateViewModel;
 import play.data.Form;
 import play.mvc.Controller;
@@ -19,38 +23,44 @@ import java.util.List;
 public class PharmaciesController extends Controller {
     private ISessionService sessionService;
     private ISearchService searchService;
-    private IPatientPrescription pharmacyService;
+    private ITriageService triageService;
+    private IPharmacyService pharmacyService;
+
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
 
 
     @Inject
-    public PharmaciesController(IPatientPrescription pharmacyService,
+    public PharmaciesController(IPharmacyService pharmacyService,
+                                ITriageService triageService,
                                 ISessionService sessionService,
                                 ISearchService searchService) {
         this.pharmacyService = pharmacyService;
+        this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
-    }
-
-    public Result createGet(){
-        String s_patientID = request().getQueryString("searchId");
-        int i_patientID = Integer.parseInt(s_patientID);
-
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
-
-        CreateViewModel viewModel = new CreateViewModel();
-        IPatient patient = patientServiceResponse.getResponseObject();
-
-        viewModel.setFirstName(patient.getFirstName());
-        viewModel.setLastName(patient.getLastName());
-
-
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-
-        return ok(populated.render(currentUserSession, viewModel));
     }
 
     public Result index() {
         return ok(index.render());
     }
+
+    public Result createGet(){
+
+        String s_id = request().getQueryString("id");
+        Integer id = Integer.parseInt(s_id);
+
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
+
+        CreateViewModel viewModel = new CreateViewModel();
+        IPatient patient = patientServiceResponse.getResponseObject();
+        viewModel.setpID(patient.getId());
+        viewModel.setFirstName(patient.getFirstName());
+        viewModel.setLastName(patient.getLastName());
+        viewModel.setAge(patient.getAge());
+
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+        return ok(populated.render(currentUserSession, viewModel,id));
+    }
+
 }

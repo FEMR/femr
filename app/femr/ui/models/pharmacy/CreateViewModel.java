@@ -3,7 +3,7 @@ package femr.ui.models.pharmacy;
 public class CreateViewModel {
     private String firstName;
     private String lastName;
-    private int patientId;
+    private int pID;
     private int age;
     private float weight;
     private int height;
@@ -30,32 +30,52 @@ public class CreateViewModel {
         this.lastName = lastName;
     }
 
-    public int getPatientId() {
-        return patientId;
+    public int getpID() {
+        return pID;
     }
 
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public void setpID(int pID) {
+        this.pID = pID;
     }
 
     public int getAge() {
         return age;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public float getWeight() {
         return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 
     public int getHeight() {
         return height;
     }
 
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public Boolean getPregnancyStatus() {
         return pregnancyStatus;
     }
 
+    public void setPregnancyStatus(Boolean pregnancyStatus) {
+        this.pregnancyStatus = pregnancyStatus;
+    }
+
     public String getDiagnosis() {
         return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
     public String getMedication1() {

@@ -7,21 +7,26 @@ import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IVital;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 import femr.data.models.PatientEncounter;
+import femr.data.models.Vital;
 
 import java.util.List;
 
 public class SearchService implements ISearchService{
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounter> patientEncounterRepository;
+    private IRepository<IVital> vitalRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
-                         IRepository<IPatientEncounter> patientEncounterRepository){
+                         IRepository<IPatientEncounter> patientEncounterRepository,
+                         IRepository<IVital> vitalRepository){
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
+        this.vitalRepository = vitalRepository;
     }
 
     @Override
@@ -62,7 +67,7 @@ public class SearchService implements ISearchService{
 
         ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();
         if (patientEncounters.size() < 1){
-            response.addError("id","No encounters exist for that id");
+            response.addError("id", "No encounters exist for that id");
         }
         else{
             int size = patientEncounters.size();
@@ -100,5 +105,11 @@ public class SearchService implements ISearchService{
         ExpressionList<PatientEncounter> query = getPatientEncounterQuery().where().eq("patient_id",id);
         List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
         return patientEncounters;
+    }
+
+    @Override
+    public List<? extends IVital> findAllVitals(){
+        List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
+        return vitals;
     }
 }

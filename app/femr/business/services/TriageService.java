@@ -79,12 +79,6 @@ public class TriageService implements ITriageService {
     }
 
     @Override
-    public List<? extends IVital> findAllVitals(){
-        List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
-        return vitals;
-    }
-
-    @Override
     public String getCurrentDateTime(){
         Date dt = new Date();
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

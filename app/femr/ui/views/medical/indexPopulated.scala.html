@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, patient: femr.common.models.IPatient, patientEncounter: femr.common.models.IPatientEncounter)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModel)
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
@@ -30,7 +30,7 @@
           <label>Name:</label>
         </div>
         <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@patient.getFirstName @patient.getLastName</p>
+          <p>@viewModel.getFirstName @viewModel.getLastName</p>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
           <label for="">Age:</label>
         </div>
         <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@patient.getAge</p>
+          <p>@viewModel.getAge</p>
         </div>
       </div>
 
@@ -56,7 +56,7 @@
           <label for="">Sex:</label>
         </div>
         <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@patient.getSex</p>
+          <p>@viewModel.getSex</p>
         </div>
       </div>
 
@@ -65,7 +65,7 @@
           <label for="">City:</label>
         </div>
         <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@patient.getCity</p>
+          <p>@viewModel.getCity</p>
         </div>
       </div>
 
@@ -82,7 +82,7 @@
           <label>Complaint:</label>
         </div>
         <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@patientEncounter.getChiefComplaint</p>
+          <p>@viewModel.getChiefComplaint</p>
         </div>
       </div>
 
@@ -100,29 +100,29 @@
       <div class="col-xs-6 col-sm-6 col-md-6">
 
         <label>Blood Pressure</label>
-        <p>56</p>
+        <p>@viewModel.getBloodPressureSystolic / @viewModel.getBloodPressureDiastolic</p>
 
         <label>Heart Rate</label>
-        <p>100</p>
+        <p>@viewModel.getHeartRate</p>
 
         <label>Temperature</label>
-        <p>96.7</p>
+        <p>@viewModel.getTemperature</p>
 
         <label>Respirations</label>
-        <p>fast</p>
+        <p>@viewModel.getRespiratoryRate</p>
 
 
       </div>
       <div class="col-xs-6 col-sm-6 col-md-6">
 
         <label>Oxygen</label>
-        <p>96%</p>
+        <p>@viewModel.getOxygenSaturation</p>
 
         <label>Height</label>
-        <p>56</p>
+        <p>@viewModel.getHeightFeet"@viewModel.getHeightInches'</p>
 
         <label>Weight</label>
-        <p>100</p>
+        <p>@viewModel.getWeight</p>
 
         <label>BMI</label>
         <p>96.7</p>

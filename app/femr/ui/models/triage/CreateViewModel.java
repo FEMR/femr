@@ -12,14 +12,14 @@ public class CreateViewModel {
     private int age;
     private String sex;
     //begin vitals
-    private Float bloodPressureSystolic;
-    private Float bloodPressureDiastolic;
-    private Float heartRate;
+    private Integer bloodPressureSystolic;
+    private Integer bloodPressureDiastolic;
+    private Integer heartRate;
     private Float temperature;
-    private Float respiratoryRate;
+    private Integer respiratoryRate;
     private Float oxygenSaturation;
-    private Float heightFeet;
-    private Float heightInches;
+    private Integer heightFeet;
+    private Integer heightInches;
     private Float weight;
     //begin encounter
     private String chiefComplaint;
@@ -78,27 +78,27 @@ public class CreateViewModel {
     }
 
     //begin vitals
-    public Float getBloodPressureSystolic() {
+    public Integer getBloodPressureSystolic() {
         return bloodPressureSystolic;
     }
 
-    public void setBloodPressureSystolic(Float bloodPressureSystolic) {
+    public void setBloodPressureSystolic(Integer bloodPressureSystolic) {
         this.bloodPressureSystolic = bloodPressureSystolic;
     }
 
-    public Float getBloodPressureDiastolic() {
-        return bloodPressureSystolic;
+    public Integer getBloodPressureDiastolic() {
+        return bloodPressureDiastolic;
     }
 
-    public void setBloodPressureDiastolic(Float bloodPressureDiastolic) {
-        this.bloodPressureSystolic = bloodPressureDiastolic;
+    public void setBloodPressureDiastolic(Integer bloodPressureDiastolic) {
+        this.bloodPressureDiastolic = bloodPressureDiastolic;
     }
 
-    public Float getHeartRate() {
+    public Integer getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(Float heartRate) {
+    public void setHeartRate(Integer heartRate) {
         this.heartRate = heartRate;
     }
 
@@ -110,20 +110,20 @@ public class CreateViewModel {
         this.temperature = temperature;
     }
 
-    public Float getHeightFeet() {
+    public Integer getHeightFeet() {
         return heightFeet;
     }
 
-    public void setHeightFeet(Float heightFeet) {
+    public void setHeightFeet(Integer heightFeet) {
         this.heightFeet = heightFeet;
     }
 
-    public Float getHeightInches() {
-        return heightFeet;
+    public Integer getHeightInches() {
+        return heightInches;
     }
 
-    public void setHeightInches(Float heightInches) {
-        this.heightFeet = heightInches;
+    public void setHeightInches(Integer heightInches) {
+        this.heightInches = heightInches;
     }
 
     public Float getWeight() {
@@ -142,11 +142,11 @@ public class CreateViewModel {
         this.chiefComplaint = chiefComplaint;
     }
 
-    public Float getRespiratoryRate() {
+    public Integer getRespiratoryRate() {
         return respiratoryRate;
     }
 
-    public void setRespiratoryRate(Float respiratoryRate) {
+    public void setRespiratoryRate(Integer respiratoryRate) {
         this.respiratoryRate = respiratoryRate;
     }
 

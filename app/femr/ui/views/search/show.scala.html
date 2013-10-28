@@ -1,6 +1,7 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: java.lang.Integer)
+@(currentUser: femr.business.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: java.lang.Integer)
 
-@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.controllers.routes.SearchController
 
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
@@ -8,8 +9,19 @@
   @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.at("/js/search/search.js")"></script>
   }
+  @searchById = {
+  @helper.form(action = SearchController.createGet()) {
+    <label for="id">Id</label>
+    @if(searchError ){
+      <input type="text" id="id" name="id" placeholder="Invalid Id">
+    }else{
+      <input type="text" id="id" name="id">
+    }
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+  }
+  }
 
-@main("search", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+@medicalPersonnel("search", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
   <div class="row">
     <div class ="well">
       <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>

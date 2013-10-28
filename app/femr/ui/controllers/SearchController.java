@@ -12,6 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.search.show;
 import femr.ui.views.html.search.showEncounter;
+import femr.ui.views.html.search.showError;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.List;
@@ -41,13 +42,38 @@ public class SearchController extends Controller {
 
     /*
     GET - detailed patient information
+        based on ID
      */
-    public Result createGet(int id) {
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-
+    public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+        boolean error=false;
+
+        String firstName = request().getQueryString("searchFirstName");
+        String lastName = request().getQueryString("searchLastName");
+        String s_id = request().getQueryString("id");
+        ServiceResponse<IPatient> patientServiceResponse;
+        Integer id;
+
+        if (!StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
+            patientServiceResponse = searchService.findPatientByName(firstName, lastName);
+            id = patientServiceResponse.getResponseObject().getId();
+        }
+        else if (!StringUtils.isNullOrWhiteSpace(s_id)){
+            id = Integer.parseInt(s_id);
+            patientServiceResponse = searchService.findPatientById(id);
+        }
+        else{
+            return ok(showError.render(currentUser));
+        }
+        if (patientServiceResponse.hasErrors()) {
+            return ok(showError.render(currentUser));
+        }
+
         List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncountersByPatientId(id);
+        if (patientEncounters.size() < 1){
+            return ok(showError.render(currentUser));
+        }
 
         CreateViewModel viewModel = new CreateViewModel();
 
@@ -60,26 +86,9 @@ public class SearchController extends Controller {
             viewModel.setAge(patient.getAge());
             viewModel.setSex(patient.getSex());
         } else {
-            return redirect("/triage");
+            return ok(showError.render(currentUser));
         }
 
-        return ok(show.render(currentUser, viewModel, patientEncounters, id));
-    }
-
-    /*
-    GET - Acquire URL query parameters for a patient
-      and createGet() if valid
-     */
-    public Result performSearch() {
-        String firstName = request().getQueryString("searchFirstName");
-        String lastName = request().getQueryString("searchLastName");
-
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientByName(firstName, lastName);
-
-        if (patientServiceResponse.hasErrors()) {
-            return redirect("/triage");
-        } else {
-            return createGet(patientServiceResponse.getResponseObject().getId());
-        }
+        return ok(show.render(currentUser, error, viewModel, patientEncounters, id));
     }
 }

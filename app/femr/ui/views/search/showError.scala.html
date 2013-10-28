@@ -1,0 +1,26 @@
+@(currentUser: femr.business.dtos.CurrentUser)
+
+@import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.controllers.routes.SearchController
+
+  @additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
+  }
+  @additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.at("/js/search/search.js")"></script>
+  }
+  @searchById = {
+  @helper.form(action = SearchController.createGet()) {
+    <label for="id">Id</label>
+      <input type="text" id="id" name="id">
+    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+  }
+  }
+
+@medicalPersonnel("Error", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
+  <div class="row">
+    <div class ="well">
+      <h1>You have encountered a fatal while searching, please stop breaking things.</h1>
+    </div>
+  </div>
+}

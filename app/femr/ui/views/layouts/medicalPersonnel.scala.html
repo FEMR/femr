@@ -17,7 +17,7 @@
 
         <div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
           @*Provide a uniform first/last name search option for each page*@
-          @helper.form(action = SearchController.performSearch()) {
+          @helper.form(action = SearchController.createGet()) {
             <label for="searchFirstName">First Name:</label>
             <input type="text" id="searchFirstName" name="searchFirstName">
 

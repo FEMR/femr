@@ -78,7 +78,7 @@ public class TriageController extends Controller {
             }
         }
 
-        return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
+        return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
     }
 
     /*
@@ -128,12 +128,8 @@ public class TriageController extends Controller {
             }
         }
 
-        return redirect("/show/" + patientServiceResponse.getResponseObject().getId());
+        return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
     }
-
-
-
-
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();

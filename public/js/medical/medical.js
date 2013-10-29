@@ -13,3 +13,13 @@ $(document).ready(function(){
 
     }
 });
+
+$('#treatmentBtn').click(function(){
+    $('#hpiControl').addClass('hidden');
+    $('#treatmentControl').removeClass('hidden');
+});
+
+$('#hpiBtn').click(function(){
+    $('#hpiControl').removeClass('hidden');
+    $('#treatmentControl').addClass('hidden');
+});

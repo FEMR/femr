@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, patient: femr.common.models.IPatient, patientEncounter: femr.common.models.IPatientEncounter)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.CreateViewModel, searchError: java.lang.Boolean)
 
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.medicalPersonnel
@@ -7,13 +7,17 @@
     <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
 }
 
-@searchById = {
-@helper.form(action = PharmaciesController.createGet()) {
-    <label for="id">Id</label>
-    <input type="text" id="id" name="id">
-    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
-}
-}
+    @searchById = {
+    @helper.form(action = PharmaciesController.createGet()) {
+        <label for="id">Id</label>
+        @if(searchError ){
+            <input type="text" id="id" name="id" placeholder="Invalid Id">
+        }else{
+            <input type="text" id="id" name="id">
+        }
+        <button type="submit" id="pharmacySearch" class="btn btn-default btn-sm">Search</button>
+    }
+    }
 
 @medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById){
 
@@ -27,7 +31,7 @@
                         <label>Name:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p>@patient.getFirstName @patient.getLastName</p>
+                        <p>@viewModel.getFirstName @viewModel.getLastName</p>
                     </div>
                 </div>
                 <div class="row">
@@ -35,7 +39,7 @@
                         <label for="">Age:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p>@patient.getAge</p>
+                        <p>@viewModel.getAge</p>
                     </div>
                 </div>
             </div>
@@ -46,7 +50,7 @@
                         <label for="">Height:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p></p>
+                        <p>@viewModel.getHeightFeet' @viewModel.getHeightinches"</p>
                     </div>
                 </div>
                 <div class="row">
@@ -54,7 +58,7 @@
                         <label for="">Sex:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p>@patient.getSex</p>
+                        <p>@viewModel.getSex</p>
                     </div>
                 </div>
             </div>
@@ -65,7 +69,7 @@
                         <label>Weight:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p></p>
+                        <p>@viewModel.getWeight</p>
                     </div>
                 </div>
                 <div class="row">
@@ -73,7 +77,7 @@
                         <label>Pregnancy:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p></p>
+                        <p>@viewModel.getWeeksPregnant</p>
                     </div>
                 </div>
             </div>

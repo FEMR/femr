@@ -1,112 +1,105 @@
 package femr.ui.models.pharmacy;
 
 public class CreateViewModel {
+    //General Information
     private String firstName;
     private String lastName;
     private int pID;
     private int age;
-    private float weight;
-    private int height;
+    private String sex;
     private Boolean pregnancyStatus;
+    private Integer weeksPregnant;
+    //Vital Information
+    private Float weight;
+    private Float heightFeet;
+    private Float heightinches;
+    //Information from medical
     private String diagnosis;
     private String medication1;
     private int medication1Amount;
+    //Submitting replacement medications/replacement amounts
     private String replacementMedication1;
     private int replacementAmount1;
 
-    public String getFirstName() {
-        return firstName;
-    }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getFirstName() {
+        return firstName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public int getpID() {
-        return pID;
+    public String getLastName() {
+        return lastName;
     }
 
     public void setpID(int pID) {
         this.pID = pID;
     }
 
-    public int getAge() {
-        return age;
+    public int getpID() {
+        return pID;
     }
 
     public void setAge(int age) {
         this.age = age;
     }
 
-    public float getWeight() {
-        return weight;
+    public int getAge() {
+        return age;
     }
 
-    public void setWeight(float weight) {
-        this.weight = weight;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public Boolean getPregnancyStatus() {
-        return pregnancyStatus;
+    public String getSex() {
+        return sex;
     }
 
     public void setPregnancyStatus(Boolean pregnancyStatus) {
         this.pregnancyStatus = pregnancyStatus;
     }
 
-    public String getDiagnosis() {
-        return diagnosis;
+    public Boolean getPregnancyStatus() {
+        return pregnancyStatus;
     }
 
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
+    public void setWeeksPregnant(Integer weeksPregnant) {
+        this.weeksPregnant = weeksPregnant;
     }
 
-    public String getMedication1() {
-        return medication1;
+    public Integer getWeeksPregnant() {
+        return weeksPregnant;
     }
 
-    public void setMedication1(String medication1) {
-        this.medication1 = medication1;
+    public void setWeight(Float weight) {
+        this.weight = weight;
     }
 
-    public int getMedication1Amount() {
-        return medication1Amount;
+    public Float getWeight() {
+        return weight;
     }
 
-    public void setMedication1Amount(int medication1Amount) {
-        this.medication1Amount = medication1Amount;
+    public void setHeightFeet(Float heightFeet) {
+        this.heightFeet = heightFeet;
     }
 
-    public String getReplacementMedication1() {
-        return replacementMedication1;
+    public Float getHeightFeet() {
+        return heightFeet;
     }
 
-    public void setReplacementMedication1(String replacementMedication1) {
-        this.replacementMedication1 = replacementMedication1;
+    public void setHeightinches(Float heightinches) {
+        this.heightinches = heightinches;
     }
 
-    public int getReplacementAmount1() {
-        return replacementAmount1;
+    public Float getHeightinches() {
+        return heightinches;
     }
 
-    public void setReplacementAmount1(int replacementAmount1) {
-        this.replacementAmount1 = replacementAmount1;
-    }
 }

@@ -34,6 +34,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IVital>>() {}).to(new TypeLiteral<Repository<IVital>>() {});
         bind(new TypeLiteral<IRepository<IHpiField>>() {}).to(new TypeLiteral<Repository<IHpiField>>() {});
         bind(new TypeLiteral<IRepository<ITreatmentField>>() {}).to(new TypeLiteral<Repository<ITreatmentField>>() {});
+        bind(new TypeLiteral<IRepository<IPatientEncounterHpiField>>() {}).to(new TypeLiteral<Repository<IPatientEncounterHpiField >>() {});
 
     }
 }

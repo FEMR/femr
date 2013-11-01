@@ -6,6 +6,7 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.HpiField;
+import femr.data.models.PatientEncounterHpiField;
 import femr.data.models.PatientPrescription;
 import femr.data.models.TreatmentField;
 import femr.util.dependencyinjection.providers.*;
@@ -22,6 +23,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientPrescription.class).to(PatientPrescription.class);
         bind(IHpiField.class).to(HpiField.class);
         bind(ITreatmentField.class).to(TreatmentField.class);
+        bind(IPatientEncounterHpiField.class).to(PatientEncounterHpiField.class);
 
         bind(new TypeLiteral<IRepository<IRole>>() {
         }).to(new TypeLiteral<Repository<IRole>>() {});

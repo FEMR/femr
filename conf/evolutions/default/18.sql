@@ -19,3 +19,4 @@ INSERT INTO `hpi_fields` (`name`) VALUES ('physicalExamination');
 # --- !Downs
 
 DROP TABLE IF EXISTS `hpi_fields`
+

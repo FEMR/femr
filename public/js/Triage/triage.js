@@ -24,6 +24,16 @@ $('#pregnantBtn').change(function(){
    $('#weeksWrap').removeClass('hidden');
 });
 
+(function() {
+    $('triageSubmitBtn').bind('click', function() {
+        var textVal = $('txtDate').val();
+        if(isDate(txtVal))
+            alert('Valid Date');
+        else
+            alert('Invalid Date');
+    });
+});
+
 
 
 //BMI auto- calculator
@@ -40,3 +50,12 @@ window.setInterval(function(){
 
     }
 }, 500);
+
+// Datepicker selelct age
+$(document ).ready(function() {
+    $('.datepicker-age' ).datepicker({
+        setDate: new Date(),
+        format: "yyyy/mm/dd",
+        autoclose: true
+    });
+});

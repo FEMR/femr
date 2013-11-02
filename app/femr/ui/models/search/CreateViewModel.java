@@ -1,11 +1,13 @@
 package femr.ui.models.search;
 
+import java.util.Date;
+
 public class CreateViewModel {
     private String firstName;
     private String lastName;
     private String address;
     private String city;
-    private int age;
+    private Date age;
     private String sex;
 
     public String getFirstName() {
@@ -40,11 +42,11 @@ public class CreateViewModel {
         this.city = city;
     }
 
-    public int getAge() {
+    public Date getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Date age) {
         this.age = age;
     }
 

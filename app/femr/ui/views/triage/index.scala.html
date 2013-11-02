@@ -5,10 +5,14 @@
 
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("css/datepicker.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("css/datepicker.less")">
+
   }
   @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-datepicker.js")"></script>
   }
 
   @searchById = {
@@ -48,7 +52,7 @@
             <label class="inputLabel" for="city">City:</label>
             <input type="text" class="form-control input-sm pull-left" id="city" name="city"/>
             <label class="inputLabel" for="age">Age:</label>
-            <input type="text" class="form-control input-sm pull-left" id="age" name="age"/>
+            <input type="text" class="form-control input-sm pull-left datepicker-age" id="age" name="age"/>
 
             <label class="inputLabel">Gender:</label>
             <div class="btn-group pull-left" data-toggle="buttons">

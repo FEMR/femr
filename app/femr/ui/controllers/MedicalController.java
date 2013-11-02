@@ -187,33 +187,43 @@ public class MedicalController extends Controller {
                                                                                           IPatientEncounter patientEncounter,
                                                                                           CurrentUser currentUserSession){
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
-        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[9];
-        for (int i = 0; i < 9; i++){
+        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[13];
+        for (int i = 0; i < 13; i++){
             patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
             patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
             patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
             patientEncounterTreatmentField[i].setUserId(currentUserSession.getId());
-            //if statements take care of the 5 prescriptions which all have
-            //a treatment fieldId of 5
-            if (i < 4){
-                patientEncounterTreatmentField[i].setTreatmentFieldId(i+1);
-            }
-            else if (i > 3){
-
-                patientEncounterTreatmentField[i].setTreatmentFieldId(5);
-            }
-
         }
 
+        patientEncounterTreatmentField[0].setTreatmentFieldId(1);
         patientEncounterTreatmentField[0].setTreatmentFieldValue(viewModelPost.getAssessment());
-        patientEncounterTreatmentField[1].setTreatmentFieldValue(viewModelPost.getProblem());
-        patientEncounterTreatmentField[2].setTreatmentFieldValue(viewModelPost.getTreatment());
-        patientEncounterTreatmentField[3].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
-        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getPrescription1());
-        patientEncounterTreatmentField[5].setTreatmentFieldValue(viewModelPost.getPrescription2());
-        patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getPrescription3());
-        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getPrescription4());
-        patientEncounterTreatmentField[8].setTreatmentFieldValue(viewModelPost.getPrescription5());
+
+        patientEncounterTreatmentField[1].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[1].setTreatmentFieldValue(viewModelPost.getProblem1());
+        patientEncounterTreatmentField[2].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[2].setTreatmentFieldValue(viewModelPost.getProblem2());
+        patientEncounterTreatmentField[3].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[3].setTreatmentFieldValue(viewModelPost.getProblem3());
+        patientEncounterTreatmentField[4].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getProblem4());
+        patientEncounterTreatmentField[5].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[5].setTreatmentFieldValue(viewModelPost.getProblem5());
+
+        patientEncounterTreatmentField[6].setTreatmentFieldId(3);
+        patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getTreatment());
+        patientEncounterTreatmentField[7].setTreatmentFieldId(4);
+        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
+
+        patientEncounterTreatmentField[8].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[8].setTreatmentFieldValue(viewModelPost.getPrescription1());
+        patientEncounterTreatmentField[9].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[9].setTreatmentFieldValue(viewModelPost.getPrescription2());
+        patientEncounterTreatmentField[10].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[10].setTreatmentFieldValue(viewModelPost.getPrescription3());
+        patientEncounterTreatmentField[11].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[11].setTreatmentFieldValue(viewModelPost.getPrescription4());
+        patientEncounterTreatmentField[12].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[12].setTreatmentFieldValue(viewModelPost.getPrescription5());
 
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;

@@ -14,6 +14,8 @@ $(document).ready(function(){
     }
 });
 
+//Unhides a prescription input box everytime
+//the + button is clicked (max of 5)
 $('#addPrescriptionButton').click(function(){
 
     if (typeof $("body").data("script") === "undefined"){
@@ -26,6 +28,25 @@ $('#addPrescriptionButton').click(function(){
         return;
     }
     $("#prescription" + $("body").data("script")).removeClass("hidden");
+    alert($("body").data("script"));
+    return;
+});
+
+//Unhides a problem input box everytime
+//the + button is clicked (max of 5)
+$('#addProblemButton').click(function(){
+
+    if (typeof $("body").data("prob") === "undefined"){
+        $("body").data("prob", 2);
+    }
+    else if ($("body").data("prob") < 5){
+        $("body").data("prob", $("body").data("prob") + 1);
+    }
+    else{
+        return;
+    }
+    $("#problem" + $("body").data("prob")).removeClass("hidden");
+    alert($("body").data("prob"));
     return;
 });
 

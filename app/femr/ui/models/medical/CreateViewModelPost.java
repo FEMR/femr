@@ -5,7 +5,11 @@ public class CreateViewModelPost {
     private int id;
     //treatment fields
     private String assessment;
-    private String problem;
+    private String problem1;
+    private String problem2;
+    private String problem3;
+    private String problem4;
+    private String problem5;
     private String prescription1;
     private String prescription2;
     private String prescription3;
@@ -22,12 +26,44 @@ public class CreateViewModelPost {
         this.assessment = assessment;
     }
 
-    public String getProblem() {
-        return problem;
+    public String getProblem1() {
+        return problem1;
     }
 
-    public void setProblem(String problem) {
-        this.problem = problem;
+    public void setProblem1(String problem1) {
+        this.problem1 = problem1;
+    }
+
+    public String getProblem2() {
+        return problem2;
+    }
+
+    public void setProblem2(String problem2) {
+        this.problem2 = problem2;
+    }
+
+    public String getProblem3() {
+        return problem3;
+    }
+
+    public void setProblem3(String problem3) {
+        this.problem3 = problem3;
+    }
+
+    public String getProblem4() {
+        return problem4;
+    }
+
+    public void setProblem4(String problem4) {
+        this.problem4 = problem4;
+    }
+
+    public String getProblem5() {
+        return problem5;
+    }
+
+    public void setProblem5(String problem5) {
+        this.problem5 = problem5;
     }
 
     public String getPrescription1() {

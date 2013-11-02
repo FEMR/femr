@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import java.util.Date;
+
 public interface IPatient {
 
     int getId();
@@ -16,9 +18,9 @@ public interface IPatient {
 
     void setLastName(String lastName);
 
-    int getAge();
+    Date getAge();
 
-    void setAge(int age);
+    void setAge(Date age);
 
     String getSex();
 

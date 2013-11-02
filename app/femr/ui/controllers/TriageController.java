@@ -7,18 +7,19 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
-import femr.ui.views.html.triage.index;
-import femr.ui.views.html.triage.indexPopulated;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
 import femr.ui.models.triage.CreateViewModel;
+import femr.ui.views.html.triage.index;
+import femr.ui.views.html.triage.indexPopulated;
+import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import femr.util.stringhelpers.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -132,12 +133,12 @@ public class TriageController extends Controller {
     }
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
+        SimpleDateFormat ageformatter = new SimpleDateFormat("YYYY/mm/dd");
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModel.getFirstName());
         patient.setLastName(viewModel.getLastName());
         patient.setAge(viewModel.getAge());
-        patient.setSex(viewModel.getSex());
         patient.setAddress(viewModel.getAddress());
         patient.setCity(viewModel.getCity());
         return patient;

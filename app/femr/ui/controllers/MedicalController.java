@@ -187,20 +187,33 @@ public class MedicalController extends Controller {
                                                                                           IPatientEncounter patientEncounter,
                                                                                           CurrentUser currentUserSession){
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
-        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[5];
-        for (int i = 0; i < 5; i++){
+        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[9];
+        for (int i = 0; i < 9; i++){
             patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
             patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
             patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
             patientEncounterTreatmentField[i].setUserId(currentUserSession.getId());
-            patientEncounterTreatmentField[i].setTreatmentFieldId(i+1);
+            //if statements take care of the 5 prescriptions which all have
+            //a treatment fieldId of 5
+            if (i < 4){
+                patientEncounterTreatmentField[i].setTreatmentFieldId(i+1);
+            }
+            else if (i > 3){
+
+                patientEncounterTreatmentField[i].setTreatmentFieldId(5);
+            }
+
         }
 
         patientEncounterTreatmentField[0].setTreatmentFieldValue(viewModelPost.getAssessment());
         patientEncounterTreatmentField[1].setTreatmentFieldValue(viewModelPost.getProblem());
         patientEncounterTreatmentField[2].setTreatmentFieldValue(viewModelPost.getTreatment());
         patientEncounterTreatmentField[3].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
-        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getPrescription());
+        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getPrescription1());
+        patientEncounterTreatmentField[5].setTreatmentFieldValue(viewModelPost.getPrescription2());
+        patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getPrescription3());
+        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getPrescription4());
+        patientEncounterTreatmentField[8].setTreatmentFieldValue(viewModelPost.getPrescription5());
 
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;

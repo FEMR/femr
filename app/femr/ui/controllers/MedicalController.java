@@ -25,6 +25,7 @@ import java.util.List;
 public class MedicalController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
+    private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
     private IMedicalService medicalService;
@@ -33,11 +34,13 @@ public class MedicalController extends Controller {
     public MedicalController(ISessionService sessionService,
                              ISearchService searchService,
                              IMedicalService medicalService,
-                             Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider) {
+                             Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider,
+                             Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
+        this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
 
     }
 
@@ -75,6 +78,17 @@ public class MedicalController extends Controller {
         }
 
         //HPI Data
+        List<IPatientEncounterHpiField> patientEncounterHpiFields =
+                populatePatientEncounterHpiFields(viewModelPost,patientEncounter,currentUserSession);
+
+        for (int j = 0; j < patientEncounterHpiFields.size(); j++){
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterHpiFields.get(j).getHpiFieldValue())){
+                continue;
+            }
+            else{
+                medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
+            }
+        }
 
         return createGet();
     }
@@ -176,6 +190,32 @@ public class MedicalController extends Controller {
     }
 
     //helper functions
+
+    private List<IPatientEncounterHpiField> populatePatientEncounterHpiFields(CreateViewModelPost viewModelPost,
+                                                                              IPatientEncounter patientEncounter,
+                                                                              CurrentUser currentUserSession){
+        List<IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
+        IPatientEncounterHpiField[] patientEncounterHpiField = new IPatientEncounterHpiField[9];
+        for (int i = 0; i < 9; i++){
+            patientEncounterHpiField[i] = patientEncounterHpiFieldProvider.get();
+            patientEncounterHpiField[i].setDateTaken(medicalService.getCurrentDateTime());
+            patientEncounterHpiField[i].setPatientEncounterId(patientEncounter.getId());
+            patientEncounterHpiField[i].setUserId(currentUserSession.getId());
+            patientEncounterHpiField[i].setHpiFieldId(i+1);
+        }
+        patientEncounterHpiField[0].setHpiFieldValue(viewModelPost.getOnset());
+        patientEncounterHpiField[1].setHpiFieldValue(viewModelPost.getOnsetTime());
+        patientEncounterHpiField[2].setHpiFieldValue(viewModelPost.getSeverity());
+        patientEncounterHpiField[3].setHpiFieldValue(viewModelPost.getRadiation());
+        patientEncounterHpiField[4].setHpiFieldValue(viewModelPost.getQuality());
+        patientEncounterHpiField[5].setHpiFieldValue(viewModelPost.getProvokes());
+        patientEncounterHpiField[6].setHpiFieldValue(viewModelPost.getPalliates());
+        patientEncounterHpiField[7].setHpiFieldValue(viewModelPost.getTimeOfDay());
+        patientEncounterHpiField[8].setHpiFieldValue(viewModelPost.getPhysicalExamination());
+
+        patientEncounterHpiFields.addAll(Arrays.asList(patientEncounterHpiField));
+        return patientEncounterHpiFields;
+    }
 
     private List<IPatientEncounterTreatmentField> populatePatientEncounterTreatmentFields(CreateViewModelPost viewModelPost,
                                                                                           IPatientEncounter patientEncounter,

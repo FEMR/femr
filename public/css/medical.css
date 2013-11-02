@@ -1,0 +1,6 @@
+#myTab{
+    font-size: 25px;
+}
+#myTab:hover{
+    cursor: pointer;
+}

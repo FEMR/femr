@@ -28,7 +28,6 @@ $('#addPrescriptionButton').click(function(){
         return;
     }
     $("#prescription" + $("body").data("script")).removeClass("hidden");
-    alert($("body").data("script"));
     return;
 });
 
@@ -46,7 +45,6 @@ $('#addProblemButton').click(function(){
         return;
     }
     $("#problem" + $("body").data("prob")).removeClass("hidden");
-    alert($("body").data("prob"));
     return;
 });
 

@@ -3,6 +3,10 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+    }
+
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
     }
@@ -15,7 +19,7 @@
     }
     }
 
-@medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts) {
+@medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts, styles = additionalStyles) {
     <div class="row well well-sm">
         <h3 class="text-center">Patient Overview</h3>
         <div class="col-xs-4 col-sm-4 col-md-4">
@@ -127,8 +131,10 @@
 
     @helper.form(action = MedicalController.createPopulatedPost()) {
         <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
-            <button type="button" class="btn btn-default" id="hpiBtn">HPI</button>
-            <button type="button" class="btn btn-default" id="treatmentBtn">Treatment</button>
+            <ul id="myTab" class="nav nav-tabs">
+                <li class="active"><a id="hpiTab">HPI</a></li>
+                <li><a id="treatmentTab">Treatment</a></li>
+            </ul>
 
             <div id="hpiControl" class="">
 

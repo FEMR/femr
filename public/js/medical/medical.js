@@ -14,22 +14,7 @@ $(document).ready(function () {
     }
 });
 
-//bootstrap tabbing
-$('#myTab a').click(function (e) {
-    e.preventDefault()
-    $(this).tab('show')
 
-});
-
-$('#treatmentBtn').click(function () {
-    $('#hpiControl').addClass('hidden');
-    $('#treatmentControl').removeClass('hidden');
-});
-
-$('#hpiBtn').click(function () {
-    $('#hpiControl').removeClass('hidden');
-    $('#treatmentControl').addClass('hidden');
-});
 
 //Unhides a prescription input box everytime
 //the + button is clicked (max of 5)
@@ -64,4 +49,29 @@ $('#addProblemButton').click(function () {
     $("#problem" + $("body").data("prob")).removeClass("hidden");
     return;
 });
+
+//controls the tabbed viewing of HPI and Treatment
+$('#myTab a').click(function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+
+});
+
+$('#myTab a').click(function(){
+    if ($(this).attr('id') === "hpiTab"){
+        showHpi();
+    }
+    else if ($(this).attr('id') === "treatmentTab"){
+        showTreatment();
+    }
+});
+
+function showTreatment(){
+    $('#hpiControl').addClass('hidden');
+    $('#treatmentControl').removeClass('hidden');
+}
+function showHpi(){
+    $('#hpiControl').removeClass('hidden');
+    $('#treatmentControl').addClass('hidden');
+}
 

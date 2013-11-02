@@ -8,6 +8,10 @@
       <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tab.js")"></script>
   }
 
+  @additionalStyles = {
+      <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+  }
+
   @searchById = {
   @helper.form(action = MedicalController.createPopulatedGet()) {
     <label for="id">Id</label>
@@ -20,7 +24,7 @@
   }
   }
 
-@medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts) {
+@medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts, styles = additionalStyles) {
   <div class="row well well-sm">
     <h3 class="text-center">Patient Overview</h3>
     <div class="col-xs-4 col-sm-4 col-md-4">
@@ -129,8 +133,8 @@
             @*<button type="button" class="btn btn-default" id="treatmentBtn">Treatment</button>*@
         @*</div>*@
         <ul id="myTab" class="nav nav-tabs">
-            <li class="active"><a>HPI</a></li>
-            <li><a>Treatment</a></li>
+            <li class="active"><a id="hpiTab">HPI</a></li>
+            <li><a id="treatmentTab">Treatment</a></li>
         </ul>
 
         <div id="hpiControl" class="">

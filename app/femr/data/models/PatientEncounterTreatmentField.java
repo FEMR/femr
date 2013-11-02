@@ -21,8 +21,8 @@ public class PatientEncounterTreatmentField implements IPatientEncounterTreatmen
     private int treatmentFieldId;
     @Column(name = "hpi_field_value", nullable = false)
     private String treatmentFieldValue;
-//    @Column(name = "date_taken", nullable = false)
-//    private String dateTaken;
+    @Column(name = "date_taken", nullable = false)
+    private String dateTaken;
 
     public int getId() {
         return id;
@@ -60,11 +60,11 @@ public class PatientEncounterTreatmentField implements IPatientEncounterTreatmen
         this.treatmentFieldValue = treatmentFieldValue;
     }
 
-//    public String getDateTaken() {
-//        return dateTaken;
-//    }
-//
-//    public void setDateTaken(String dateTaken) {
-//        this.dateTaken = dateTaken;
-//    }
+    public String getDateTaken() {
+        return dateTaken;
+    }
+
+    public void setDateTaken(String dateTaken) {
+        this.dateTaken = dateTaken;
+    }
 }

@@ -19,7 +19,7 @@ public interface IPatientEncounterTreatmentField {
 
     void setTreatmentFieldValue(String treatmentFieldValue);
 
-//    String getDateTaken();
-//
-//    void setDateTaken(String dateTaken);
+    String getDateTaken();
+
+    void setDateTaken(String dateTaken);
 }

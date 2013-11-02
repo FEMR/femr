@@ -17,6 +17,16 @@ public class CreateViewModelPost {
     private String prescription5;
     private String treatment;
     private String familyHistory;
+    //hpi fields
+    private String onset;
+    private String onsetTime;
+    private String severity;
+    private String radiation;
+    private String quality;
+    private String provokes;
+    private String palliates;
+    private String timeOfDay;
+    private String physicalExamination;
 
     public String getAssessment() {
         return assessment;
@@ -127,5 +137,77 @@ public class CreateViewModelPost {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getOnset() {
+        return onset;
+    }
+
+    public void setOnset(String onset) {
+        this.onset = onset;
+    }
+
+    public String getOnsetTime() {
+        return onsetTime;
+    }
+
+    public void setOnsetTime(String onsetTime) {
+        this.onsetTime = onsetTime;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+
+    public String getRadiation() {
+        return radiation;
+    }
+
+    public void setRadiation(String radiation) {
+        this.radiation = radiation;
+    }
+
+    public String getQuality() {
+        return quality;
+    }
+
+    public void setQuality(String quality) {
+        this.quality = quality;
+    }
+
+    public String getProvokes() {
+        return provokes;
+    }
+
+    public void setProvokes(String provokes) {
+        this.provokes = provokes;
+    }
+
+    public String getPalliates() {
+        return palliates;
+    }
+
+    public void setPalliates(String palliates) {
+        this.palliates = palliates;
+    }
+
+    public String getTimeOfDay() {
+        return timeOfDay;
+    }
+
+    public void setTimeOfDay(String timeOfDay) {
+        this.timeOfDay = timeOfDay;
+    }
+
+    public String getPhysicalExamination() {
+        return physicalExamination;
+    }
+
+    public void setPhysicalExamination(String physicalExamination) {
+        this.physicalExamination = physicalExamination;
     }
 }

@@ -120,18 +120,15 @@
                 <label>BMI</label>
                 <p id="bmi"></p>
 
-
             </div>
 
         </div>
     </div>
 
-
     @helper.form(action = MedicalController.createPopulatedPost()) {
         <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
             <button type="button" id="hpiBtn">HPI</button>
             <button type="button" id="treatmentBtn">Treatment</button>
-
 
             <div id="hpiControl" class="">
 
@@ -146,9 +143,10 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6">
-                            <select>
+                            <select name="onsetTime">
                                 <option value="hours">Hours</option>
                                 <option value="days">Days</option>
+                                <option value="days">Years</option>
                                 <option value="weeks">Weeks</option>
                             </select>
                         </div>
@@ -159,7 +157,7 @@
                 </div>
                 <div class="form-group">
                     <label for="severity">Severity</label>
-                    <select>
+                    <select name="severity">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -168,10 +166,10 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6">
-                            <label for="Radiation">Radiation</label>
+                            <label for="radiation">Radiation</label>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6">
-                            <input name="Radiation" type="text" class="form-control input-sm" value=""/>
+                            <input name="radiation" type="text" class="form-control input-sm" value=""/>
                         </div>
                     </div>
                 </div>
@@ -184,8 +182,16 @@
                     <input name="provokes" type="text" class="form-control input-sm" value=""/>
                 </div>
                 <div class="form-group">
-                    <label for="physical">Physical Examination</label>
-                    <textarea rows="3" name="physical" class="form-control input-sm"></textarea>
+                    <label for="palliates">Palliates</label>
+                    <input name="palliates" type="text" class="form-control input-sm" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="timeOfDay">Time of Day</label>
+                    <input name="timeOfDay" type="text" class="form-control input-sm" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="physicalExamination">Physical Examination</label>
+                    <textarea rows="3" name="physicalExamination" class="form-control input-sm"></textarea>
                 </div>
 
             </div>

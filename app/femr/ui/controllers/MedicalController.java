@@ -7,10 +7,7 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.IMedicalService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterTreatmentField;
-import femr.common.models.IPatientEncounterVital;
+import femr.common.models.*;
 import femr.data.models.PatientEncounterTreatmentField;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
@@ -64,6 +61,7 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
+        //Treatment Data
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields =
                 populatePatientEncounterTreatmentFields(viewModelPost,patientEncounter,currentUserSession);
 
@@ -75,6 +73,9 @@ public class MedicalController extends Controller {
                 medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
             }
         }
+
+        //HPI Data
+
         return createGet();
     }
 

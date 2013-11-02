@@ -1,12 +1,9 @@
 package femr.ui.models.medical;
 
-<<<<<<< HEAD:app/femr/ui/models/medical/CreateViewModelGet.java
-public class CreateViewModelGet {
-=======
+
 import java.util.Date;
 
-public class CreateViewModel {
->>>>>>> [feature-triage-dateformat] changing age to Date format:app/femr/ui/models/medical/CreateViewModel.java
+public class CreateViewModelGet {
     //begin patient
     private int pID;
     private String city;

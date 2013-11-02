@@ -4,11 +4,11 @@ ALTER TABLE `patients`
 CHANGE COLUMN `age` `age`
 VARCHAR(255) NOT NULL  ;
 
-UPDATE `femr`.`patients`
+UPDATE `patients`
 SET age = '9999/05/05'
 WHERE age IS NOT NULL;
 
-ALTER TABLE `femr`.`patients`
+ALTER TABLE `patients`
 CHANGE COLUMN `age` `age`
 DATE NOT NULL;
 

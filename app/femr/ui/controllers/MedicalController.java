@@ -58,12 +58,6 @@ public class MedicalController extends Controller {
 
         CreateViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(viewModelPost.getId());
-        if (patientServiceResponse.hasErrors()){
-            return createGet();
-        }
-        IPatient patient = patientServiceResponse.getResponseObject();
-
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(viewModelPost.getId());
         if (patientEncounterServiceResponse.hasErrors()){
             return createGet();
@@ -81,7 +75,6 @@ public class MedicalController extends Controller {
                 medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
             }
         }
-
         return createGet();
     }
 

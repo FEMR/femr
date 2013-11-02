@@ -1,245 +1,255 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModel)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModelGet)
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 
-  @additionalScripts = {
-    <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
-  }
+    @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
+    }
 
-  @searchById = {
-  @helper.form(action = MedicalController.createPopulatedGet()) {
-    <label for="id">Id</label>
-    <input type="text" id="id" name="id">
-    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
-  }
-  }
+    @searchById = {
+    @helper.form(action = MedicalController.createPopulatedGet()) {
+        <label for="id">Id</label>
+        <input type="text" id="id" name="id">
+        <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+    }
+    }
 
 @medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts) {
-  <div class="row well well-sm">
-    <h3 class="text-center">Patient Overview</h3>
-    <div class="col-xs-4 col-sm-4 col-md-4">
-
-      <div class="row">
+    <div class="row well well-sm">
+        <h3 class="text-center">Patient Overview</h3>
         <div class="col-xs-4 col-sm-4 col-md-4">
-          <label>Name:</label>
-        </div>
-        <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@viewModel.getFirstName @viewModel.getLastName</p>
-        </div>
-      </div>
 
-      <div class="row">
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <label>Name:</label>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <p>@viewModel.getFirstName @viewModel.getLastName</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <label for="">Age:</label>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <p>@viewModel.getAge</p>
+                </div>
+            </div>
+        </div>
+
+
         <div class="col-xs-4 col-sm-4 col-md-4">
-          <label for="">Age:</label>
+
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <label for="">Sex:</label>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <p>@viewModel.getSex</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <label for="">City:</label>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <p>@viewModel.getCity</p>
+                </div>
+            </div>
+
+
         </div>
-        <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@viewModel.getAge</p>
-        </div>
-      </div>
-    </div>
 
 
-    <div class="col-xs-4 col-sm-4 col-md-4">
-
-      <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4">
-          <label for="">Sex:</label>
+
+
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <label>Complaint:</label>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <p>@viewModel.getChiefComplaint</p>
+                </div>
+            </div>
+
+
         </div>
-        <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@viewModel.getSex</p>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-4 col-sm-4 col-md-4">
-          <label for="">City:</label>
-        </div>
-        <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@viewModel.getCity</p>
-        </div>
-      </div>
-
-
-
-    </div>
-
-
-    <div class="col-xs-4 col-sm-4 col-md-4">
-
-
-      <div class="row">
-        <div class="col-xs-4 col-sm-4 col-md-4">
-          <label>Complaint:</label>
-        </div>
-        <div class="col-xs-8 col-sm-8 col-md-8">
-          <p>@viewModel.getChiefComplaint</p>
-        </div>
-      </div>
-
-
-    </div>
-
-  </div>
-
-
-
-  <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
-    <h3>Vitals</h3>
-
-    <div class="row">
-      <div class="col-xs-6 col-sm-6 col-md-6">
-
-        <label>Blood Pressure</label>
-        <p>@viewModel.getBloodPressureSystolic / @viewModel.getBloodPressureDiastolic</p>
-
-        <label>Heart Rate</label>
-        <p>@viewModel.getHeartRate</p>
-
-        <label>Temperature</label>
-        <p>@viewModel.getTemperature</p>
-
-        <label>Respirations</label>
-        <p>@viewModel.getRespiratoryRate</p>
-
-
-      </div>
-      <div class="col-xs-6 col-sm-6 col-md-6">
-
-        <label>Oxygen</label>
-        <p>@viewModel.getOxygenSaturation</p>
-
-        <label>Height</label>
-        <p>@viewModel.getHeightFeet"@viewModel.getHeightInches'</p>
-        @*used by bmi calculator*@
-        <p id="heightFeet" class="hidden">@viewModel.getHeightFeet</p>
-        <p id="heightInches" class="hidden">@viewModel.getHeightInches</p>
-
-        <label>Weight</label>
-        <p id="weight">@viewModel.getWeight</p>
-
-        <label>BMI</label>
-        <p id="bmi"></p>
-
-
-      </div>
-
-    </div>
-  </div>
-
-
-
-  <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
-    <button id="hpiBtn">HPI</button>
-    <button id="treatmentBtn">Treatment</button>
-
-
-    <div id="hpiControl" class="">
-
-    <div class="form-group">
-      <label for="chiefComplaint">Chief Complaint</label>
-      <textarea rows="3" name="chiefComplaint" class="form-control input-sm"></textarea>
-    </div>
-    <div class="form-group">
-      <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <label for="onset">Onset</label>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <input name="onset" type="text" class="form-control input-sm" value=""/>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <select>
-            <option value="hours">Hours</option>
-            <option value="days">Days</option>
-            <option value="weeks">Weeks</option>
-          </select>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <span>ago</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="severity">Severity</label>
-      <select>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <label for="Radiation">Radiation</label>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
-          <input name="Radiation" type="text" class="form-control input-sm" value=""/>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="quality">Quality</label>
-      <input name="quality" type="text" class="form-control input-sm" value=""/>
-    </div>
-    <div class="form-group">
-      <label for="provokes">Provokes</label>
-      <input name="provokes" type="text" class="form-control input-sm" value=""/>
-    </div>
-    <div class="form-group">
-      <label for="physical">Physical Examination</label>
-      <textarea rows="3" name="physical" class="form-control input-sm"></textarea>
-    </div>
-
-      </div>
-
-
-
-
-    <div id="treatmentControl" class="hidden">
-
-    <div class="form-group">
-      <label for="assessment">Assessment</label>
-      <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="problemList">Problem List</label>
-      <div class="row">
-        <div class="col-xs-9 col-sm-9 col-md-9">
-          <input name="problemList" type="text" class="form-control input-sm" value=""/>
-        </div>
-        <div class="col-xs-3 col-sm-3 col-md-3">
-          <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="prescriptions">Prescriptions</label>
-      <div class="row">
-        <div class="col-xs-9 col-sm-9 col-md-9">
-          <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
-        </div>
-        <div class="col-xs-3 col-sm-3 col-md-3">
-          <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="treatment">Treatment Given</label>
-      <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="familyHistory">Family History</label>
-      <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
-    </div>
 
     </div>
 
 
 
-  </div>
+    <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
+        <h3>Vitals</h3>
 
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+
+                <label>Blood Pressure</label>
+                <p>@viewModel.getBloodPressureSystolic / @viewModel.getBloodPressureDiastolic</p>
+
+                <label>Heart Rate</label>
+                <p>@viewModel.getHeartRate</p>
+
+                <label>Temperature</label>
+                <p>@viewModel.getTemperature</p>
+
+                <label>Respirations</label>
+                <p>@viewModel.getRespiratoryRate</p>
+
+
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6">
+
+                <label>Oxygen</label>
+                <p>@viewModel.getOxygenSaturation</p>
+
+                <label>Height</label>
+                <p>@viewModel.getHeightFeet"@viewModel.getHeightInches'</p>
+                @*used by bmi calculator*@
+                <p id="heightFeet" class="hidden">@viewModel.getHeightFeet</p>
+                <p id="heightInches" class="hidden">@viewModel.getHeightInches</p>
+
+                <label>Weight</label>
+                <p id="weight">@viewModel.getWeight</p>
+
+                <label>BMI</label>
+                <p id="bmi"></p>
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+    @helper.form(action = MedicalController.createPopulatedPost()) {
+        <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
+            <button type="button" id="hpiBtn">HPI</button>
+            <button type="button" id="treatmentBtn">Treatment</button>
+
+
+            <div id="hpiControl" class="">
+
+                <div class="form-group">
+                    <label for="chiefComplaint">Chief Complaint</label>
+                    <textarea rows="3" name="chiefComplaint" class="form-control input-sm"></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <label for="onset">Onset</label>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <input name="onset" type="text" class="form-control input-sm" value=""/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <select>
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                            </select>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <span>ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="severity">Severity</label>
+                    <select>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <label for="Radiation">Radiation</label>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <input name="Radiation" type="text" class="form-control input-sm" value=""/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="quality">Quality</label>
+                    <input name="quality" type="text" class="form-control input-sm" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="provokes">Provokes</label>
+                    <input name="provokes" type="text" class="form-control input-sm" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="physical">Physical Examination</label>
+                    <textarea rows="3" name="physical" class="form-control input-sm"></textarea>
+                </div>
+
+            </div>
+
+
+            <div id="treatmentControl" class="hidden">
+
+                <div class="form-group">
+                    <label for="assessment">Assessment</label>
+                    <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="problem">Problem List</label>
+                    <div class="row">
+                        <div class="col-xs-9 col-sm-9 col-md-9">
+                            <input id="problem1" name="problem1" type="text" class="form-control input-sm" value=""/>
+                            <input id="problem2" name="problem2" type="text" class="form-control input-sm hidden" value=""/>
+                            <input id="problem3" name="problem3" type="text" class="form-control input-sm hidden" value=""/>
+                            <input id="problem4" name="problem4" type="text" class="form-control input-sm hidden" value=""/>
+                            <input id="problem5" name="problem5" type="text" class="form-control input-sm hidden" value=""/>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3">
+                            <button id="addProblemButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prescription">Prescriptions</label>
+                    <div class="row">
+                        <div class="col-xs-9 col-sm-9 col-md-9">
+                            <input id = "prescription1" name="prescription1" type="text" class="form-control input-sm" value=""/>
+                            <input id = "prescription2" name="prescription2" type="text" class="form-control input-sm hidden" value=""/>
+                            <input id = "prescription3" name="prescription3" type="text" class="form-control input-sm hidden" value=""/>
+                            <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value=""/>
+                            <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value=""/>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3">
+                            <button id="addPrescriptionButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="treatment">Treatment Given</label>
+                    <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="familyHistory">Family History</label>
+                    <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
+                </div>
+
+            </div>
+
+            <input type="text" name="id" class="hidden" value="@viewModel.getpID()"/>
+            <button type="submit" id="medicalSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>
+            }
+
+</div>
 
 }

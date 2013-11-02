@@ -4,40 +4,78 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
+import femr.business.services.IMedicalService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
-import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterTreatmentField;
 import femr.common.models.IPatientEncounterVital;
+import femr.data.models.PatientEncounterTreatmentField;
+import femr.util.stringhelpers.StringUtils;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.indexPopulated;
-import femr.ui.models.medical.CreateViewModel;
+import femr.ui.models.medical.CreateViewModelGet;
+import femr.ui.models.medical.CreateViewModelPost;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MedicalController extends Controller {
-
+    private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
+    private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
+    private IMedicalService medicalService;
 
     @Inject
     public MedicalController(ISessionService sessionService,
-                             ISearchService searchService) {
+                             ISearchService searchService,
+                             IMedicalService medicalService,
+                             Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider) {
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.medicalService = medicalService;
+        this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
 
     }
 
     public Result createGet() {
-
         boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
         return ok(index.render(currentUserSession,error));
+    }
+
+    public Result createPopulatedPost(){
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+
+        CreateViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
+
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(viewModelPost.getId());
+        if (patientEncounterServiceResponse.hasErrors()){
+            return createGet();
+        }
+        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields =
+                populatePatientEncounterTreatmentFields(viewModelPost,patientEncounter,currentUserSession);
+
+        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++){
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())){
+                continue;
+            }
+            else{
+                medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
+            }
+        }
+        return createGet();
     }
 
     public Result createPopulatedGet(){
@@ -45,7 +83,7 @@ public class MedicalController extends Controller {
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        CreateViewModel viewModel = new CreateViewModel();
+        CreateViewModelGet viewModel = new CreateViewModelGet();
 
         String s_patientID = request().getQueryString("id");
         int i_patientID = Integer.parseInt(s_patientID);
@@ -134,5 +172,53 @@ public class MedicalController extends Controller {
             viewModel.setBloodPressureDiastolic(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
         return ok(indexPopulated.render(currentUserSession,viewModel));
+    }
+
+    //helper functions
+
+    private List<IPatientEncounterTreatmentField> populatePatientEncounterTreatmentFields(CreateViewModelPost viewModelPost,
+                                                                                          IPatientEncounter patientEncounter,
+                                                                                          CurrentUser currentUserSession){
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
+        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[13];
+        for (int i = 0; i < 13; i++){
+            patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
+            patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
+            patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
+            patientEncounterTreatmentField[i].setUserId(currentUserSession.getId());
+        }
+
+        patientEncounterTreatmentField[0].setTreatmentFieldId(1);
+        patientEncounterTreatmentField[0].setTreatmentFieldValue(viewModelPost.getAssessment());
+
+        patientEncounterTreatmentField[1].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[1].setTreatmentFieldValue(viewModelPost.getProblem1());
+        patientEncounterTreatmentField[2].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[2].setTreatmentFieldValue(viewModelPost.getProblem2());
+        patientEncounterTreatmentField[3].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[3].setTreatmentFieldValue(viewModelPost.getProblem3());
+        patientEncounterTreatmentField[4].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getProblem4());
+        patientEncounterTreatmentField[5].setTreatmentFieldId(2);
+        patientEncounterTreatmentField[5].setTreatmentFieldValue(viewModelPost.getProblem5());
+
+        patientEncounterTreatmentField[6].setTreatmentFieldId(3);
+        patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getTreatment());
+        patientEncounterTreatmentField[7].setTreatmentFieldId(4);
+        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
+
+        patientEncounterTreatmentField[8].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[8].setTreatmentFieldValue(viewModelPost.getPrescription1());
+        patientEncounterTreatmentField[9].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[9].setTreatmentFieldValue(viewModelPost.getPrescription2());
+        patientEncounterTreatmentField[10].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[10].setTreatmentFieldValue(viewModelPost.getPrescription3());
+        patientEncounterTreatmentField[11].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[11].setTreatmentFieldValue(viewModelPost.getPrescription4());
+        patientEncounterTreatmentField[12].setTreatmentFieldId(5);
+        patientEncounterTreatmentField[12].setTreatmentFieldValue(viewModelPost.getPrescription5());
+
+        patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
+        return patientEncounterTreatmentFields;
     }
 }

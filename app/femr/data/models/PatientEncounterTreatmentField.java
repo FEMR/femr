@@ -17,9 +17,9 @@ public class PatientEncounterTreatmentField implements IPatientEncounterTreatmen
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    @Column(name = "hpi_field_id", nullable = false)
+    @Column(name = "treatment_field_id", nullable = false)
     private int treatmentFieldId;
-    @Column(name = "hpi_field_value", nullable = false)
+    @Column(name = "treatment_field_value", nullable = false)
     private String treatmentFieldValue;
     @Column(name = "date_taken", nullable = false)
     private String dateTaken;

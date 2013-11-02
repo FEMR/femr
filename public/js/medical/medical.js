@@ -14,6 +14,42 @@ $(document).ready(function(){
     }
 });
 
+//Unhides a prescription input box everytime
+//the + button is clicked (max of 5)
+$('#addPrescriptionButton').click(function(){
+
+    if (typeof $("body").data("script") === "undefined"){
+        $("body").data("script", 2);
+    }
+    else if ($("body").data("script") < 5){
+        $("body").data("script", $("body").data("script") + 1);
+    }
+    else{
+        return;
+    }
+    $("#prescription" + $("body").data("script")).removeClass("hidden");
+    alert($("body").data("script"));
+    return;
+});
+
+//Unhides a problem input box everytime
+//the + button is clicked (max of 5)
+$('#addProblemButton').click(function(){
+
+    if (typeof $("body").data("prob") === "undefined"){
+        $("body").data("prob", 2);
+    }
+    else if ($("body").data("prob") < 5){
+        $("body").data("prob", $("body").data("prob") + 1);
+    }
+    else{
+        return;
+    }
+    $("#problem" + $("body").data("prob")).removeClass("hidden");
+    alert($("body").data("prob"));
+    return;
+});
+
 $('#treatmentBtn').click(function(){
     $('#hpiControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');

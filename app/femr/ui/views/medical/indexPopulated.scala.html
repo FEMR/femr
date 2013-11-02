@@ -127,8 +127,8 @@
 
     @helper.form(action = MedicalController.createPopulatedPost()) {
         <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
-            <button type="button" id="hpiBtn">HPI</button>
-            <button type="button" id="treatmentBtn">Treatment</button>
+            <button type="button" class="btn btn-default" id="hpiBtn">HPI</button>
+            <button type="button" class="btn btn-default" id="treatmentBtn">Treatment</button>
 
             <div id="hpiControl" class="">
 
@@ -136,12 +136,8 @@
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6">
                             <label for="onset">Onset</label>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-6">
                             <input name="onset" type="text" class="form-control input-sm" value=""/>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6">
                             <select name="onsetTime">
                                 <option value="hours">Hours</option>
@@ -149,11 +145,10 @@
                                 <option value="days">Years</option>
                                 <option value="weeks">Weeks</option>
                             </select>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-6">
                             <span>ago</span>
                         </div>
                     </div>
+
                 </div>
                 <div class="form-group">
                     <label for="severity">Severity</label>
@@ -164,14 +159,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <label for="radiation">Radiation</label>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <input name="radiation" type="text" class="form-control input-sm" value=""/>
-                        </div>
-                    </div>
+                    <label for="radiation">Radiation</label>
+                    <input name="radiation" type="text" class="form-control input-sm" value=""/>
                 </div>
                 <div class="form-group">
                     <label for="quality">Quality</label>

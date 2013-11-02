@@ -14,6 +14,23 @@ $(document).ready(function () {
     }
 });
 
+//bootstrap tabbing
+$('#myTab a').click(function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+
+});
+
+$('#treatmentBtn').click(function () {
+    $('#hpiControl').addClass('hidden');
+    $('#treatmentControl').removeClass('hidden');
+});
+
+$('#hpiBtn').click(function () {
+    $('#hpiControl').removeClass('hidden');
+    $('#treatmentControl').addClass('hidden');
+});
+
 //Unhides a prescription input box everytime
 //the + button is clicked (max of 5)
 $('#addPrescriptionButton').click(function () {
@@ -48,12 +65,3 @@ $('#addProblemButton').click(function () {
     return;
 });
 
-$('#treatmentBtn').click(function () {
-    $('#hpiControl').addClass('hidden');
-    $('#treatmentControl').removeClass('hidden');
-});
-
-$('#hpiBtn').click(function () {
-    $('#hpiControl').removeClass('hidden');
-    $('#treatmentControl').addClass('hidden');
-});

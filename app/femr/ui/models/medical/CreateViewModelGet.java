@@ -1,12 +1,15 @@
 package femr.ui.models.medical;
 
+
+import java.util.Date;
+
 public class CreateViewModelGet {
     //begin patient
     private int pID;
     private String city;
     private String firstName;
     private String lastName;
-    private int age;
+    private Date age;
     private String sex;
     //begin vitals
     private Float bloodPressureSystolic;
@@ -55,11 +58,11 @@ public class CreateViewModelGet {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public Date getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Date age) {
         this.age = age;
     }
 

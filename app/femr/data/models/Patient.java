@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name = "patients")
@@ -20,7 +21,7 @@ public class Patient implements IPatient {
     @Column(name = "last_name", nullable = false)
     private String lastName;
     @Column(name = "age", nullable = false)
-    private int age;
+    private Date age;
     @Column(name = "sex", nullable = true)
     private String sex;
     @Column(name = "address", nullable = true)
@@ -64,12 +65,12 @@ public class Patient implements IPatient {
     }
 
     @Override
-    public int getAge() {
+    public Date getAge() {
         return age;
     }
 
     @Override
-    public void setAge(int age) {
+    public void setAge(Date age) {
         this.age = age;
     }
 

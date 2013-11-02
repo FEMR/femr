@@ -38,7 +38,7 @@
               <label class="inputLabel" for="city">City:</label>
               <input type="text" class="form-control input-sm pull-left" id="city" name="city" value="@patient.getCity" readonly/>
               <label class="inputLabel" for="age">Age:</label>
-              <input type="text" class="form-control input-sm pull-left" id="age" name="age" value="@patient.getAge" readonly/>
+              <input type="text" class="form-control input-sm pull-left" id="age" name="age" value="@patient.getAge.format("MM/dd/YYYY")" readonly/>
 
               <label class="inputLabel">Gender:</label>
               <input type="text" class="form-control input-sm pull-left" value="@patient.getSex" readonly/>

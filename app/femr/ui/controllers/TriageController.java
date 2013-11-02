@@ -115,7 +115,8 @@ public class TriageController extends Controller {
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
-        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
+        IPatientEncounter patientEncounter =
+                populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
                 triageService.createPatientEncounter(patientEncounter);
 
@@ -130,6 +131,8 @@ public class TriageController extends Controller {
 
         return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
     }
+
+    //helper functions
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();

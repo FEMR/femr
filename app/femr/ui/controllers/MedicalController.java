@@ -12,6 +12,7 @@ import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterTreatmentField;
 import femr.common.models.IPatientEncounterVital;
 import femr.data.models.PatientEncounterTreatmentField;
+import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -19,6 +20,10 @@ import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.indexPopulated;
 import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.medical.CreateViewModelPost;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MedicalController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
@@ -65,42 +70,17 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        IPatientEncounterTreatmentField patientEncounterTreatmentField = patientEncounterTreatmentFieldProvider.get();
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields =
+                populatePatientEncounterTreatmentFields(viewModelPost,patientEncounter,currentUserSession);
 
-        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
-        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
-        patientEncounterTreatmentField.setTreatmentFieldId(1);
-        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getAssessment());
-        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
-        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
-
-        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
-        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
-        patientEncounterTreatmentField.setTreatmentFieldId(2);
-        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getProblem());
-        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
-        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
-
-        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
-        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
-        patientEncounterTreatmentField.setTreatmentFieldId(3);
-        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getTreatment());
-        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
-        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
-
-        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
-        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
-        patientEncounterTreatmentField.setTreatmentFieldId(4);
-        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getFamilyHistory());
-        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
-        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
-
-        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
-        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
-        patientEncounterTreatmentField.setTreatmentFieldId(5);
-        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getPrescription());
-        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
-        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
+        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++){
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())){
+                continue;
+            }
+            else{
+                medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
+            }
+        }
 
         return createGet();
     }
@@ -199,5 +179,30 @@ public class MedicalController extends Controller {
             viewModel.setBloodPressureDiastolic(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
         return ok(indexPopulated.render(currentUserSession,viewModel));
+    }
+
+    //helper functions
+
+    private List<IPatientEncounterTreatmentField> populatePatientEncounterTreatmentFields(CreateViewModelPost viewModelPost,
+                                                                                          IPatientEncounter patientEncounter,
+                                                                                          CurrentUser currentUserSession){
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
+        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[5];
+        for (int i = 0; i < 5; i++){
+            patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
+            patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
+            patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
+            patientEncounterTreatmentField[i].setUserId(currentUserSession.getId());
+            patientEncounterTreatmentField[i].setTreatmentFieldId(i+1);
+        }
+
+        patientEncounterTreatmentField[0].setTreatmentFieldValue(viewModelPost.getAssessment());
+        patientEncounterTreatmentField[1].setTreatmentFieldValue(viewModelPost.getProblem());
+        patientEncounterTreatmentField[2].setTreatmentFieldValue(viewModelPost.getTreatment());
+        patientEncounterTreatmentField[3].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
+        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getPrescription());
+
+        patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
+        return patientEncounterTreatmentFields;
     }
 }

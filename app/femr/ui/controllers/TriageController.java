@@ -19,6 +19,7 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -135,6 +136,7 @@ public class TriageController extends Controller {
     //helper functions
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
+        SimpleDateFormat ageformatter = new SimpleDateFormat("YYYY/mm/dd");
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModel.getFirstName());

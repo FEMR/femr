@@ -4,40 +4,100 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
+import femr.business.services.IMedicalService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
-import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterTreatmentField;
 import femr.common.models.IPatientEncounterVital;
+import femr.data.models.PatientEncounterTreatmentField;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.indexPopulated;
-import femr.ui.models.medical.CreateViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import femr.ui.models.medical.CreateViewModelGet;
+import femr.ui.models.medical.CreateViewModelPost;
 
 public class MedicalController extends Controller {
-
+    private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
+    private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
+    private IMedicalService medicalService;
 
     @Inject
     public MedicalController(ISessionService sessionService,
-                             ISearchService searchService) {
+                             ISearchService searchService,
+                             IMedicalService medicalService,
+                             Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider) {
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.medicalService = medicalService;
+        this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
 
     }
 
     public Result createGet() {
-
         boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
         return ok(index.render(currentUserSession,error));
+    }
+
+    public Result createPopulatedPost(){
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+
+        CreateViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
+
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(viewModelPost.getId());
+        if (patientServiceResponse.hasErrors()){
+            return createGet();
+        }
+        IPatient patient = patientServiceResponse.getResponseObject();
+
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(viewModelPost.getId());
+        if (patientEncounterServiceResponse.hasErrors()){
+            return createGet();
+        }
+        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+
+        IPatientEncounterTreatmentField patientEncounterTreatmentField = patientEncounterTreatmentFieldProvider.get();
+
+        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
+        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
+        patientEncounterTreatmentField.setTreatmentFieldId(1);
+        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getAssessment());
+        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+
+        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
+        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
+        patientEncounterTreatmentField.setTreatmentFieldId(2);
+        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getProblem());
+        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+
+        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
+        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
+        patientEncounterTreatmentField.setTreatmentFieldId(3);
+        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getTreatment());
+        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+
+        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
+        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
+        patientEncounterTreatmentField.setTreatmentFieldId(4);
+        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getFamilyHistory());
+        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+
+        patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
+        patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
+        patientEncounterTreatmentField.setTreatmentFieldId(5);
+        patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getPrescription());
+        patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+
+        return createGet();
     }
 
     public Result createPopulatedGet(){
@@ -45,7 +105,7 @@ public class MedicalController extends Controller {
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        CreateViewModel viewModel = new CreateViewModel();
+        CreateViewModelGet viewModel = new CreateViewModelGet();
 
         String s_patientID = request().getQueryString("id");
         int i_patientID = Integer.parseInt(s_patientID);

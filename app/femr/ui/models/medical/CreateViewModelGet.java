@@ -1,6 +1,6 @@
 package femr.ui.models.medical;
 
-public class CreateViewModel {
+public class CreateViewModelGet {
     //begin patient
     private int pID;
     private String city;

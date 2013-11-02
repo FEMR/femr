@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModel)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.medical.CreateViewModelGet)
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
@@ -128,10 +128,10 @@
   </div>
 
 
-
+  @helper.form(action = MedicalController.createPopulatedPost()){
   <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
-    <button id="hpiBtn">HPI</button>
-    <button id="treatmentBtn">Treatment</button>
+    <button type="button" id="hpiBtn">HPI</button>
+    <button type="button" id="treatmentBtn">Treatment</button>
 
 
     <div id="hpiControl" class="">
@@ -204,32 +204,36 @@
       <label for="assessment">Assessment</label>
       <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
     </div>
+
     <div class="form-group">
-      <label for="problemList">Problem List</label>
+      <label for="problem">Problem List</label>
       <div class="row">
         <div class="col-xs-9 col-sm-9 col-md-9">
-          <input name="problemList" type="text" class="form-control input-sm" value=""/>
+          <input name="problem" type="text" class="form-control input-sm" value=""/>
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
         </div>
       </div>
     </div>
+
     <div class="form-group">
-      <label for="prescriptions">Prescriptions</label>
+      <label for="prescription">Prescriptions</label>
       <div class="row">
         <div class="col-xs-9 col-sm-9 col-md-9">
-          <input name="prescriptions" type="text" class="form-control input-sm" value=""/>
+          <input name="prescription" type="text" class="form-control input-sm" value=""/>
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <button class="btn"><span class="glyphicon glyphicon-plus"></span></button>
         </div>
       </div>
     </div>
+
     <div class="form-group">
       <label for="treatment">Treatment Given</label>
       <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
     </div>
+
     <div class="form-group">
       <label for="familyHistory">Family History</label>
       <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
@@ -237,6 +241,9 @@
 
     </div>
 
+       <input type="text" name="id" class="hidden" value="@viewModel.getpID()"/>
+      <button type="submit" id="medicalSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>
+      }
 
 
   </div>

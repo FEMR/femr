@@ -1,7 +1,7 @@
 //package unit.app.femr.ui.controllers;
 //
 //import femr.ui.controllers.SessionsController;
-//import femr.ui.models.sessions.CreateViewModel;
+//import femr.ui.models.sessions.CreateViewModelGet;
 //import femr.ui.views.html.sessions.index;
 //import mock.femr.business.services.MockSessionsService;
 //import org.junit.Before;
@@ -33,7 +33,7 @@
 //
 //    @Test
 //    public void testGetCreateActionRendersIndexView() {
-//        Html expectedHtml = index.render(Form.form(CreateViewModel.class));
+//        Html expectedHtml = index.render(Form.form(CreateViewModelGet.class));
 //
 //        Result result = sessionsController.createGet();
 //

@@ -14,6 +14,21 @@ $(document).ready(function(){
     }
 });
 
+$('#addPrescriptionButton').click(function(){
+
+    if (typeof $("body").data("script") === "undefined"){
+        $("body").data("script", 2);
+    }
+    else if ($("body").data("script") < 5){
+        $("body").data("script", $("body").data("script") + 1);
+    }
+    else{
+        return;
+    }
+    $("#prescription" + $("body").data("script")).removeClass("hidden");
+    return;
+});
+
 $('#treatmentBtn').click(function(){
     $('#hpiControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');

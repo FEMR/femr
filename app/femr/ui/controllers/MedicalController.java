@@ -72,30 +72,35 @@ public class MedicalController extends Controller {
         patientEncounterTreatmentField.setTreatmentFieldId(1);
         patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getAssessment());
         patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
 
         patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
         patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
         patientEncounterTreatmentField.setTreatmentFieldId(2);
         patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getProblem());
         patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
 
         patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
         patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
         patientEncounterTreatmentField.setTreatmentFieldId(3);
         patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getTreatment());
         patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
 
         patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
         patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
         patientEncounterTreatmentField.setTreatmentFieldId(4);
         patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getFamilyHistory());
         patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
 
         patientEncounterTreatmentField.setDateTaken(medicalService.getCurrentDateTime());
         patientEncounterTreatmentField.setPatientEncounterId(patientEncounter.getId());
         patientEncounterTreatmentField.setTreatmentFieldId(5);
         patientEncounterTreatmentField.setTreatmentFieldValue(viewModelPost.getPrescription());
         patientEncounterTreatmentField.setUserId(currentUserSession.getId());
+        medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentField);
 
         return createGet();
     }

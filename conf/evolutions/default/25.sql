@@ -1,4 +1,4 @@
-# --- !Downs
+# --- !Ups
 
 ALTER TABLE `patients`
 CHANGE COLUMN `age` `age`

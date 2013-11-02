@@ -5,10 +5,7 @@ import com.google.inject.TypeLiteral;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.models.HpiField;
-import femr.data.models.PatientEncounterHpiField;
-import femr.data.models.PatientPrescription;
-import femr.data.models.TreatmentField;
+import femr.data.models.*;
 import femr.util.dependencyinjection.providers.*;
 
 public class DataLayerModule extends AbstractModule {
@@ -24,6 +21,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IHpiField.class).to(HpiField.class);
         bind(ITreatmentField.class).to(TreatmentField.class);
         bind(IPatientEncounterHpiField.class).to(PatientEncounterHpiField.class);
+        bind(IPatientEncounterTreatmentField.class).to(PatientEncounterTreatmentField.class);
 
         bind(new TypeLiteral<IRepository<IRole>>() {
         }).to(new TypeLiteral<Repository<IRole>>() {});
@@ -35,6 +33,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IHpiField>>() {}).to(new TypeLiteral<Repository<IHpiField>>() {});
         bind(new TypeLiteral<IRepository<ITreatmentField>>() {}).to(new TypeLiteral<Repository<ITreatmentField>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterHpiField>>() {}).to(new TypeLiteral<Repository<IPatientEncounterHpiField >>() {});
+        bind(new TypeLiteral<IRepository<IPatientEncounterTreatmentField>>() {}).to(new TypeLiteral<Repository<IPatientEncounterTreatmentField >>() {});
 
     }
 }

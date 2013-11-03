@@ -26,6 +26,7 @@ public class MedicalController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
+    private Provider<IPatientPrescription> patientPrescriptionProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
     private IMedicalService medicalService;
@@ -35,12 +36,14 @@ public class MedicalController extends Controller {
                              ISearchService searchService,
                              IMedicalService medicalService,
                              Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider,
-                             Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider) {
+                             Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider,
+                             Provider<IPatientPrescription> patientPrescriptionProvider) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
+        this.patientPrescriptionProvider = patientPrescriptionProvider;
 
     }
 
@@ -76,6 +79,10 @@ public class MedicalController extends Controller {
                 medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
             }
         }
+
+        //prescriptions
+        List<IPatientPrescription> patientPrescriptions = populatePatientPrescriptions(viewModelPost,patientEncounter,currentUserSession);
+
 
         //HPI Data
         List<IPatientEncounterHpiField> patientEncounterHpiFields =
@@ -261,5 +268,20 @@ public class MedicalController extends Controller {
 
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;
+    }
+
+    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost viewModelPost,
+                                                                                          IPatientEncounter patientEncounter,
+                                                                                          CurrentUser currentUserSession){
+        List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
+        IPatientPrescription[] patientPrescription = new IPatientPrescription[5];
+
+        patientPrescription[0].setEncounterId(patientEncounter.getId());
+        patientPrescription[0].setUserId(currentUserSession.getId());
+        patientPrescription[0].setAmount();
+        patientPrescription[0].setReplaced(false);
+        patientPrescription[0].setReason();
+        patientPrescription[0].setReplacementId();
+
     }
 }

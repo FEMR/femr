@@ -23,13 +23,18 @@ public class PatientPrescription implements IPatientPrescription {
     private int replacementId;
 
     @Override
-    public int getId(){
+    public int getId() {
         return id;
     }
 
     @Override
-    public int getPatientEncounterId() {
+    public int getEncounterId() {
         return encounterId;
+    }
+
+    @Override
+    public void setEncounterId(int encounterId) {
+        this.encounterId = encounterId;
     }
 
     @Override
@@ -38,18 +43,28 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    @Override
     public int getAmount() {
         return amount;
     }
 
     @Override
-    public void SetAmount(int amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
     @Override
-    public Boolean isReplace() {
+    public Boolean getReplaced() {
         return replaced;
+    }
+
+    @Override
+    public void setReplaced(Boolean replaced) {
+        this.replaced = replaced;
     }
 
     @Override
@@ -63,14 +78,12 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public int getReplacement() {
+    public int getReplacementId() {
         return replacementId;
     }
 
     @Override
-    public void SetReplacement(int replacementMedication) {
-        this.replacementId = replacementMedication;
+    public void setReplacementId(int replacementId) {
+        this.replacementId = replacementId;
     }
-
-
 }

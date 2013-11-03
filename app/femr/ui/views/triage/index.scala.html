@@ -1,8 +1,8 @@
-@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean)
+@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean, patient: femr.common.models.IPatient)
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
-
+@import femr.ui.views.html.helpers.triage._
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
     <link rel="stylesheet" href="@routes.Assets.at("css/datepicker.css")">
@@ -14,56 +14,37 @@
     <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-datepicker.js")"></script>
   }
-
   @searchById = {
   @helper.form(action = TriageController.createPopulatedGet()) {
-    <label for="id">Id</label>
-    @if(searchError ){
+    <label for="id">Patient ID</label>
+    @if(searchError) {
       <input type="text" id="id" name="id" placeholder="Invalid Id">
-    }else{
+    } else {
       <input type="text" id="id" name="id">
     }
     <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
   }
   }
-
-@medicalPersonnel("triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById){
-
-
+@medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
   <div class="row">
-
     <div class="medicalHistoryLineDivide"></div>
-
     <div class ="well">
-
-
     @helper.form(action = TriageController.createPost()) {
       <div class="row triageInputRow">
         <div class="col-sm-6 col-xs-6">
           <h3 class="pull-left bold margin-top-zero">General Info</h3>
           <div class="medicalHistoryLineDivide"></div>
           <div class="text-center">
-            <label class="inputLabel" for="firstName">First Name:</label>
-            <input type="text" class="form-control input-sm pull-left" id="firstName" name="firstName"/>
-            <label class="inputLabel" for="lastName">Last Name:</label>
-            <input type="text" class="form-control input-sm pull-left" id="lastName" name="lastName"/>
-            <label class="inputLabel" for="address">Address:</label>
-            <input type="text" class="form-control input-sm pull-left" id="address" name="address"/>
-            <label class="inputLabel" for="city">City:</label>
-            <input type="text" class="form-control input-sm pull-left" id="city" name="city"/>
-            <label class="inputLabel" for="age">Age:</label>
-            <input type="text" class="form-control input-sm pull-left datepicker-age" id="age" name="age"/>
-
+            @inputText("First Name:", "firstName", patient.getFirstName)
+            @inputText("Last Name:", "lastName", patient.getLastName)
+            @inputText("Address:", "address", patient.getAddress)
+            @inputText("City:", "city", patient.getCity)
+            @inputDate("Age:", "age", patient.getAge)
             <label class="inputLabel">Gender:</label>
             <div class="btn-group pull-left" data-toggle="buttons">
-              <label class="btn btn-default">
-                <input type="radio" name="sex" id="maleBtn" value="Male">Male
-              </label>
-              <label class="btn btn-default">
-                <input type="radio" name="sex" id="femaleBtn" value="Female">Female
-              </label>
+              @inputButton("Male", "sex", "maleBtn", patient.getSex == "" || patient.getSex == null, patient.getSex == "Male", "Male")
+              @inputButton("Female", "sex", "femaleBtn", patient.getSex == "" || patient.getSex == null, patient.getSex == "Female", "Female")
             </div>
-
             <div id="pregnantWrap" class="hidden">
               <div class="btn-group pull-left" data-toggle="buttons">
                 <label class="btn btn-default">
@@ -77,66 +58,45 @@
             </div>
           </div>
         </div>
-
         <div class="col-sm-6 col-xs-6">
-
-
           <h3 class="pull-left bold margin-top-zero">Vitals</h3>
           @*recycle sign?*@
           <button type="button" class="newPatientBtn btn btn-default pull-right">Reset Fields</button>
           <div class="medicalHistoryLineDivide"></div>
-
           <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
             <div class="text-center">
-
               <label class="inputLabel" id="bloodPressureInputLabelMargin" for="bloodPressureSystolic">Blood Pressure:</label>
-
-
               <div class="col-sm-6 col-md-6 col-xs-6">
                 <input type="text" class="form-control input-sm pull-left" id="bloodPressureSystolic" placeholder="Systolic" name="@vitalNames.get(7).getName"/>
               </div>
               <div class="col-sm-6 col-md-6 col-xs-6">
                 <input type="text" class="form-control input-sm pull-left" id="bloodPressureDiastolic" placeholder="Diastolic" name="@vitalNames.get(8).getName"/>
               </div>
-
-
               <label class="inputLabel" for="heartRate">Heart Rate:</label>
               <input type="text" class="form-control input-sm pull-left" id="heartRate" name="@vitalNames.get(1).getName"/>
               <label class="inputLabel" for="temperature">Temperature:</label>
               <input type="text" class="form-control input-sm pull-left" id="temperature" name="@vitalNames.get(2).getName"/>
-
               <label class="inputLabel" id="heightInputLabelMargin" for="heightFeet">Height:</label>
-
               <div class="col-sm-6 col-md-6 col-xs-6">
                 <input type="text" class="form-control input-sm pull-left" id="heightFeet" placeholder="Feet" name="@vitalNames.get(4).getName"/>
               </div>
               <div class="col-sm-6 col-md-6 col-xs-6">
                 <input type="text" class="form-control input-sm pull-left" id="heightInches" placeholder="Inches" name="@vitalNames.get(5).getName"/>
               </div>
-
-
             </div>
           </div>
-
           <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
             <div class="text-center">
-
-
               <label class="inputLabel" for="respirations">Respirations:</label>
               <input type="text" class="form-control input-sm pull-left" id="respirations" name="@vitalNames.get(0).getName"/>
               <label class="inputLabel" for="oxygen">Oxygen Saturation:</label>
               <input type="text" class="form-control input-sm pull-left" id="oxygen" name="@vitalNames.get(3).getName"/>
-
-
               <label class="inputLabel" for="weight">Weight:</label>
               <input type="text" class="form-control input-sm pull-left" id="weight" name="@vitalNames.get(6).getName"/>
-
               <label class="inputLabel">BMI:</label>
               <input type="text" id="bmi" class="form-control input-sm pull-left" disabled="true"/>
-
             </div>
           </div>
-
           <label class="inputLabel" for="chiefComplaint">Chief Complaint:</label>
           <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
         </div>
@@ -144,7 +104,6 @@
       <div class="row">
         <button type="submit" id="triageSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>
       </div>
-
     </div>
   </div>
 }

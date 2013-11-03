@@ -13,7 +13,6 @@ import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
 import femr.ui.models.triage.CreateViewModel;
 import femr.ui.views.html.triage.index;
-import femr.ui.views.html.triage.indexPopulated;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -25,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TriageController extends Controller {
+
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
     private ITriageService triageService;
     private ISessionService sessionService;
@@ -34,12 +34,8 @@ public class TriageController extends Controller {
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public TriageController(ITriageService triageService,
-                            ISessionService sessionService,
-                            ISearchService searchService,
-                            Provider<IPatient> patientProvider,
-                            Provider<IPatientEncounter> patientEncounterProvider,
-                            Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
@@ -49,16 +45,18 @@ public class TriageController extends Controller {
     }
 
     public Result createGet() {
+
         List<? extends IVital> vitalNames = searchService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         boolean error = false;
 
-        return ok(index.render(currentUser, vitalNames, error));
+        return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
     }
 
     public Result createPost() {
+
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -67,14 +65,12 @@ public class TriageController extends Controller {
         ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
 
         IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
-                triageService.createPatientEncounter(patientEncounter);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
-        List<IPatientEncounterVital> patientEncounterVitals =
-                populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
 
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > 0){
+            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
                 triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
             }
         }
@@ -86,46 +82,44 @@ public class TriageController extends Controller {
     Used when user is creating an encounter for an existing patient.
      */
     public Result createPopulatedGet() {
+
         boolean error = false;
         String s_id = request().getQueryString("id");
         List<? extends IVital> vitalNames = searchService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        if (StringUtils.isNullOrWhiteSpace(s_id)){
+        if (StringUtils.isNullOrWhiteSpace(s_id)) {
             error = true;
-            return ok(index.render(currentUser, vitalNames, error));
+            return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
         }
         Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
-        if (patientServiceResponse.hasErrors()){
+        if (patientServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUser, vitalNames, error));
-        }
-        else{
+            return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
+        } else {
             IPatient patient = patientServiceResponse.getResponseObject();
-            return ok(indexPopulated.render(currentUser, vitalNames, patient));
+            return ok(index.render(currentUser, vitalNames, false, patient));
         }
     }
 
     public Result createPopulatedPost(int id) {
+
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
-        IPatientEncounter patientEncounter =
-                populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
-                triageService.createPatientEncounter(patientEncounter);
+        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
-        List<IPatientEncounterVital> patientEncounterVitals =
-                populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
 
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > 0){
+            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
                 triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
             }
         }
@@ -136,6 +130,7 @@ public class TriageController extends Controller {
     //helper functions
 
     private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
+
         SimpleDateFormat ageformatter = new SimpleDateFormat("YYYY/mm/dd");
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
@@ -148,9 +143,8 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private IPatientEncounter populatePatientEncounter(CreateViewModel viewModel,
-                                                       ServiceResponse<IPatient> patientServiceResponse,
-                                                       CurrentUser currentUser) {
+    private IPatientEncounter populatePatientEncounter(CreateViewModel viewModel, ServiceResponse<IPatient> patientServiceResponse, CurrentUser currentUser) {
+
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
         patientEncounter.setUserId(currentUser.getId());
@@ -161,94 +155,82 @@ public class TriageController extends Controller {
         return patientEncounter;
     }
 
-    private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModel viewModel,
-                                                                        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse,
-                                                                        CurrentUser currentUser) {
+    private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModel viewModel, ServiceResponse<IPatientEncounter> patientEncounterServiceResponse, CurrentUser currentUser) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
-        for (int i = 0; i < 9; i++){
+        for (int i = 0; i < 9; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();
             patientEncounterVital[i].setDateTaken((triageService.getCurrentDateTime()));
             patientEncounterVital[i].setUserId(currentUser.getId());
             patientEncounterVital[i].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-            patientEncounterVital[i].setVitalId(i+1);
+            patientEncounterVital[i].setVitalId(i + 1);
         }
 
         //Respiratory Rate
-        if (viewModel.getRespiratoryRate() == null){
+        if (viewModel.getRespiratoryRate() == null) {
             patientEncounterVital[0].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[0].setVitalValue(viewModel.getRespiratoryRate().floatValue());
         }
 
         //Heart Rate
-        if (viewModel.getHeartRate() == null){
+        if (viewModel.getHeartRate() == null) {
             patientEncounterVital[1].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[1].setVitalValue(viewModel.getHeartRate().floatValue());
         }
 
         //Temperature
-        if (viewModel.getTemperature() == null){
+        if (viewModel.getTemperature() == null) {
             patientEncounterVital[2].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[2].setVitalValue(viewModel.getTemperature().floatValue());
         }
 
         //Oxygen Saturation
-        if (viewModel.getOxygenSaturation() == null){
+        if (viewModel.getOxygenSaturation() == null) {
             patientEncounterVital[3].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[3].setVitalValue(viewModel.getOxygenSaturation().floatValue());
         }
 
         //Height - Feet
-        if (viewModel.getHeightFeet() == null){
+        if (viewModel.getHeightFeet() == null) {
             patientEncounterVital[4].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet().floatValue());
         }
 
         //Height - Inches
-        if (viewModel.getHeightInches() == null){
+        if (viewModel.getHeightInches() == null) {
             patientEncounterVital[5].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[5].setVitalValue(viewModel.getHeightInches().floatValue());
         }
 
         //Weight
-        if (viewModel.getWeight() == null){
+        if (viewModel.getWeight() == null) {
             patientEncounterVital[6].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[6].setVitalValue(viewModel.getWeight().floatValue());
         }
 
         //Blood Pressure - Systolic
-        if (viewModel.getBloodPressureSystolic() == null){
+        if (viewModel.getBloodPressureSystolic() == null) {
             patientEncounterVital[7].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic().floatValue());
         }
 
         //Blood Pressure - Diastolic
-        if (viewModel.getBloodPressureDiastolic() == null){
+        if (viewModel.getBloodPressureDiastolic() == null) {
             patientEncounterVital[8].setVitalValue(-1);
-        }
-        else{
+        } else {
             patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic().floatValue());
         }
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
         return patientEncounterVitals;
     }
-
 }

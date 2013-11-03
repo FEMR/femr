@@ -2,16 +2,13 @@
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
-
   @additionalScripts = {
-      <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
-      <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tab.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tab.js")"></script>
   }
-
   @additionalStyles = {
-      <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
   }
-
   @searchById = {
   @helper.form(action = MedicalController.createPopulatedGet()) {
     <label for="id">Id</label>
@@ -23,7 +20,6 @@
     <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
   }
   }
-
 @medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts, styles = additionalStyles) {
   <div class="row well well-sm">
     <h3 class="text-center">Patient Overview</h3>
@@ -36,7 +32,6 @@
           <p></p>
         </div>
       </div>
-
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4">
           <label for="">Age:</label>
@@ -46,10 +41,7 @@
         </div>
       </div>
     </div>
-
-
     <div class="col-xs-4 col-sm-4 col-md-4">
-
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4">
           <label for="">Sex:</label>
@@ -58,7 +50,6 @@
           <p></p>
         </div>
       </div>
-
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4">
           <label for="">City:</label>
@@ -77,170 +68,140 @@
           <p></p>
         </div>
       </div>
-
-
     </div>
-
   </div>
-
-
-
   <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
     <h3>Vitals</h3>
-
     <div class="row">
       <div class="col-xs-6 col-sm-6 col-md-6">
-
         <label>Blood Pressure</label>
         <p></p>
-
         <label>Heart Rate</label>
         <p></p>
-
         <label>Temperature</label>
         <p></p>
-
         <label>Respirations</label>
         <p></p>
-
-
       </div>
       <div class="col-xs-6 col-sm-6 col-md-6">
-
         <label>Oxygen</label>
         <p></p>
-
         <label>Height</label>
         <p></p>
-
         <label>Weight</label>
         <p></p>
-
         <label>BMI</label>
         <p></p>
-
-
       </div>
-
     </div>
   </div>
 
 
-    <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
+  <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
+    @*<div class="medicalTabs">*@
+    @*<button type="button" class="btn btn-default" id="hpiBtn">HPI</button>*@
+    @*<button type="button" class="btn btn-default" id="treatmentBtn">Treatment</button>*@
+    @*</div>*@
+    <ul id="myTab" class="nav nav-tabs">
+      <li class="active"><a id="hpiTab">HPI</a></li>
+      <li><a id="treatmentTab">Treatment</a></li>
+    </ul>
 
-        @*<div class="medicalTabs">*@
-            @*<button type="button" class="btn btn-default" id="hpiBtn">HPI</button>*@
-            @*<button type="button" class="btn btn-default" id="treatmentBtn">Treatment</button>*@
-        @*</div>*@
-        <ul id="myTab" class="nav nav-tabs">
-            <li class="active"><a id="hpiTab">HPI</a></li>
-            <li><a id="treatmentTab">Treatment</a></li>
-        </ul>
-
-        <div id="hpiControl" class="">
-
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <label for="onset">Onset</label>
-                        <input name="onset" type="text" class="form-control input-sm" value=""/>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <select name="onsetTime">
-                            <option value="hours">Hours</option>
-                            <option value="days">Days</option>
-                            <option value="days">Years</option>
-                            <option value="weeks">Weeks</option>
-                        </select>
-                        <span>ago</span>
-                    </div>
-                </div>
-
-            </div>
-            <div class="form-group">
-                <label for="severity">Severity</label>
-                <select name="severity">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="radiation">Radiation</label>
-                <input name="radiation" type="text" class="form-control input-sm" value=""/>
-            </div>
-            <div class="form-group">
-                <label for="quality">Quality</label>
-                <input name="quality" type="text" class="form-control input-sm" value=""/>
-            </div>
-            <div class="form-group">
-                <label for="provokes">Provokes</label>
-                <input name="provokes" type="text" class="form-control input-sm" value=""/>
-            </div>
-            <div class="form-group">
-                <label for="palliates">Palliates</label>
-                <input name="palliates" type="text" class="form-control input-sm" value=""/>
-            </div>
-            <div class="form-group">
-                <label for="timeOfDay">Time of Day</label>
-                <input name="timeOfDay" type="text" class="form-control input-sm" value=""/>
-            </div>
-            <div class="form-group">
-                <label for="physicalExamination">Physical Examination</label>
-                <textarea rows="3" name="physicalExamination" class="form-control input-sm"></textarea>
-            </div>
-
+    <div id="hpiControl" class="">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <label for="onset">Onset</label>
+            <input name="onset" type="text" class="form-control input-sm" value=""/>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <select name="onsetTime">
+              <option value="hours">Hours</option>
+              <option value="days">Days</option>
+              <option value="days">Years</option>
+              <option value="weeks">Weeks</option>
+            </select>
+            <span>ago</span>
+          </div>
         </div>
+      </div>
+      <div class="form-group">
+        <label for="severity">Severity</label>
+        <select name="severity">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="radiation">Radiation</label>
+        <input name="radiation" type="text" class="form-control input-sm" value=""/>
+      </div>
+      <div class="form-group">
+        <label for="quality">Quality</label>
+        <input name="quality" type="text" class="form-control input-sm" value=""/>
+      </div>
+      <div class="form-group">
+        <label for="provokes">Provokes</label>
+        <input name="provokes" type="text" class="form-control input-sm" value=""/>
+      </div>
+      <div class="form-group">
+        <label for="palliates">Palliates</label>
+        <input name="palliates" type="text" class="form-control input-sm" value=""/>
+      </div>
+      <div class="form-group">
+        <label for="timeOfDay">Time of Day</label>
+        <input name="timeOfDay" type="text" class="form-control input-sm" value=""/>
+      </div>
+      <div class="form-group">
+        <label for="physicalExamination">Physical Examination</label>
+        <textarea rows="3" name="physicalExamination" class="form-control input-sm"></textarea>
+      </div>
+    </div>
 
-
-        <div id="treatmentControl" class="hidden">
-
-            <div class="form-group">
-                <label for="assessment">Assessment</label>
-                <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="problem">Problem List</label>
-                <div class="row">
-                    <div class="col-xs-9 col-sm-9 col-md-9">
-                        <input id="problem1" name="problem1" type="text" class="form-control input-sm" value=""/>
-                        <input id="problem2" name="problem2" type="text" class="form-control input-sm hidden" value=""/>
-                        <input id="problem3" name="problem3" type="text" class="form-control input-sm hidden" value=""/>
-                        <input id="problem4" name="problem4" type="text" class="form-control input-sm hidden" value=""/>
-                        <input id="problem5" name="problem5" type="text" class="form-control input-sm hidden" value=""/>
-                    </div>
-                    <div class="col-xs-3 col-sm-3 col-md-3">
-                        <button id="addProblemButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="prescription">Prescriptions</label>
-                <div class="row">
-                    <div class="col-xs-9 col-sm-9 col-md-9">
-                        <input id = "prescription1" name="prescription1" type="text" class="form-control input-sm" value=""/>
-                        <input id = "prescription2" name="prescription2" type="text" class="form-control input-sm hidden" value=""/>
-                        <input id = "prescription3" name="prescription3" type="text" class="form-control input-sm hidden" value=""/>
-                        <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value=""/>
-                        <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value=""/>
-                    </div>
-                    <div class="col-xs-3 col-sm-3 col-md-3">
-                        <button id="addPrescriptionButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="treatment">Treatment Given</label>
-                <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="familyHistory">Family History</label>
-                <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
-            </div>
-
+    <div id="treatmentControl" class="hidden">
+      <div class="form-group">
+        <label for="assessment">Assessment</label>
+        <textarea rows="3" name="assessment" class="form-control input-sm"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="problem">Problem List</label>
+        <div class="row">
+          <div class="col-xs-9 col-sm-9 col-md-9">
+            <input id="problem1" name="problem1" type="text" class="form-control input-sm" value=""/>
+            <input id="problem2" name="problem2" type="text" class="form-control input-sm hidden" value=""/>
+            <input id="problem3" name="problem3" type="text" class="form-control input-sm hidden" value=""/>
+            <input id="problem4" name="problem4" type="text" class="form-control input-sm hidden" value=""/>
+            <input id="problem5" name="problem5" type="text" class="form-control input-sm hidden" value=""/>
+          </div>
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <button id="addProblemButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+          </div>
         </div>
+      </div>
+      <div class="form-group">
+        <label for="prescription">Prescriptions</label>
+        <div class="row">
+          <div class="col-xs-9 col-sm-9 col-md-9">
+            <input id = "prescription1" name="prescription1" type="text" class="form-control input-sm" value=""/>
+            <input id = "prescription2" name="prescription2" type="text" class="form-control input-sm hidden" value=""/>
+            <input id = "prescription3" name="prescription3" type="text" class="form-control input-sm hidden" value=""/>
+            <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value=""/>
+            <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value=""/>
+          </div>
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <button id="addPrescriptionButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="treatment">Treatment Given</label>
+        <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="familyHistory">Family History</label>
+        <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
+      </div>
+    </div>
+  </div>
 }

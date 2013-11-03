@@ -2,11 +2,9 @@
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SessionsController
-
   @styles = {
     <link rel="stylesheet" href="@routes.Assets.at("css/login.css")">
   }
-
 @main("Login", styles = styles) {
   <div class="container">
   @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {

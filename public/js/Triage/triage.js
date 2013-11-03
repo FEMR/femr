@@ -51,7 +51,7 @@ window.setInterval(function(){
     }
 }, 500);
 
-// Datepicker selelct age
+// Datepicker select age
 $(document ).ready(function() {
     $('.datepicker-age' ).datepicker({
         setDate: new Date(),

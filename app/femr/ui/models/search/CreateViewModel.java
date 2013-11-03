@@ -1,5 +1,7 @@
 package femr.ui.models.search;
 
+import femr.util.calculations.ageUtils;
+
 import java.util.Date;
 
 public class CreateViewModel {
@@ -56,5 +58,9 @@ public class CreateViewModel {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public int getYears() {
+        return ageUtils.calculateYears(age);
     }
 }

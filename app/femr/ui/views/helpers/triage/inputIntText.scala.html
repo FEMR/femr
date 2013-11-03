@@ -1,0 +1,13 @@
+@(name: String, forInput: String, value: String)
+
+  @inputBlock = {
+    <label for="@forInput" class="inputLabel">@name</label>
+
+    @if(value.equals(0)) {
+      <input type="text" class="form-control input-sm pull-left datepicker-age" id="@forInput" name="@forInput">
+    } else {
+      <input type="text" class="form-control input-sm pull-left datepicker-age" id="@forInput" name="@forInput" value="@value" readonly/>
+    }
+  }
+
+@inputBlock

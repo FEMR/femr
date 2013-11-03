@@ -1,0 +1,24 @@
+@(name: String, forInput: String, id: String, checked: Boolean, active: Boolean, value: String)
+
+  @inputBlock = {
+  @if(!Boolean2boolean(checked) && Boolean2boolean(active)) {
+    <label class="btn btn-primary active disabled">
+      <input type="radio" name="@forInput" id="@id" value="@value">
+      @name
+    </label>
+  } else {
+    @if(!Boolean2boolean(checked)) {
+      <label class="btn btn-default disabled">
+        <input type="radio" name="@forInput" id="@id" value="@value">
+        @name
+      </label>
+    } else {
+      <label class="btn btn-default">
+        <input type="radio" name="@forInput" id="@id" value="@value">
+        @name
+      </label>
+    }
+  }
+  }
+
+  @inputBlock

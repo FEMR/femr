@@ -2,7 +2,6 @@
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.SearchController
-
   @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
   }
@@ -12,24 +11,20 @@
   @searchById = {
   @helper.form(action = SearchController.createGet()) {
     <label for="id">Id</label>
-    @if(searchError ){
+    @if(searchError) {
       <input type="text" id="id" name="id" placeholder="Invalid Id">
-    }else{
+    } else {
       <input type="text" id="id" name="id">
     }
     <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
   }
   }
-
 @medicalPersonnel("search", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
   <div class="row">
     <div class ="well">
       <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>
-
       <button type="submit" id="newPatientBtn" class="btn btn-default pull-right">New Patient</button>
-
       <div class="medicalHistoryLineDivide"></div>
-
       <div class="row triageInputRow">
         <div class="col-sm-6 col-xs-6">
           <h3 class="pull-left bold margin-top-zero">General Info</h3>
@@ -50,18 +45,14 @@
             @*display pregnancy?*@
           </div>
         </div>
-
         <div class="col-sm-6 col-xs-6">
           <h3 class="pull-left bold margin-top-zero">Previous Encounters</h3>
           <div class="medicalHistoryLineDivide"></div>
-
           @for(patientEncounter <- patientEncounters) {
             <a href="/show/encounter/@patientEncounter.getId">@patientEncounter.getDateOfVisit</a>
             <label>chief complaint:</label> <p>@patientEncounter.getChiefComplaint</p>
           }
-
         </div>
-
       </div>
     </div>
   </div>

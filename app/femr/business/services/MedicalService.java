@@ -19,7 +19,6 @@ public class MedicalService implements IMedicalService{
                           IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository){
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
-
     }
 
     @Override

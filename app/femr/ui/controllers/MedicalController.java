@@ -283,5 +283,33 @@ public class MedicalController extends Controller {
         patientPrescription[0].setReason();
         patientPrescription[0].setReplacementId();
 
+        patientPrescription[1].setEncounterId(patientEncounter.getId());
+        patientPrescription[1].setUserId(currentUserSession.getId());
+        patientPrescription[1].setAmount();
+        patientPrescription[1].setReplaced(false);
+        patientPrescription[1].setReason();
+        patientPrescription[1].setReplacementId();
+
+        patientPrescription[2].setEncounterId(patientEncounter.getId());
+        patientPrescription[2].setUserId(currentUserSession.getId());
+        patientPrescription[2].setAmount();
+        patientPrescription[2].setReplaced(false);
+        patientPrescription[2].setReason();
+        patientPrescription[2].setReplacementId();
+
+        patientPrescription[3].setEncounterId(patientEncounter.getId());
+        patientPrescription[3].setUserId(currentUserSession.getId());
+        patientPrescription[3].setAmount();
+        patientPrescription[3].setReplaced(false);
+        patientPrescription[3].setReason();
+        patientPrescription[3].setReplacementId();
+
+        patientPrescription[4].setEncounterId(patientEncounter.getId());
+        patientPrescription[4].setUserId(currentUserSession.getId());
+        patientPrescription[4].setAmount();
+        patientPrescription[4].setReplaced(false);
+        patientPrescription[4].setReason();
+        patientPrescription[4].setReplacementId();
+
     }
 }

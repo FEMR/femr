@@ -9,13 +9,11 @@ public class PatientPrescription implements IPatientPrescription {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "encounter_id", unique = true, nullable = false)
+    @Column(name = "encounter_id", nullable = false)
     private int encounterId;
-    @Column(name = "medication_id", nullable = false)
-    private int medicationId;
     @Column(name = "user_id", nullable = false)
     private int userId;
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount", nullable = true)
     private  int amount;
     @Column(name = "replaced", nullable = false)
     private Boolean replaced;
@@ -32,11 +30,6 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public int getPatientEncounterId() {
         return encounterId;
-    }
-
-    @Override
-    public int getMedicationId() {
-        return medicationId;
     }
 
     @Override

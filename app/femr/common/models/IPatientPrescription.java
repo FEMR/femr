@@ -5,8 +5,6 @@ public interface IPatientPrescription {
 
     int getPatientEncounterId();
 
-    int getMedicationId();
-
     int getUserId();
 
     int getAmount();

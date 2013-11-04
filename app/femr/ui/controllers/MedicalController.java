@@ -81,7 +81,16 @@ public class MedicalController extends Controller {
         }
 
         //prescriptions
-        List<IPatientPrescription> patientPrescriptions = populatePatientPrescriptions(viewModelPost,patientEncounter,currentUserSession);
+        List<IPatientPrescription> patientPrescriptions =
+                populatePatientPrescriptions(viewModelPost,patientEncounter,currentUserSession);
+        for (int k = 0; k < patientPrescriptions.size(); k++){
+            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())){
+                continue;
+            }
+            else{
+                medicalService.createPatientPrescription(patientPrescriptions.get(k));
+            }
+        }
 
 
         //HPI Data
@@ -255,17 +264,6 @@ public class MedicalController extends Controller {
         patientEncounterTreatmentField[7].setTreatmentFieldId(4);
         patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
 
-        //patientEncounterTreatmentField[8].setTreatmentFieldId(5);
-//        patientEncounterTreatmentField[8].setTreatmentFieldValue(viewModelPost.getPrescription1());
-//        patientEncounterTreatmentField[9].setTreatmentFieldId(5);
-//        patientEncounterTreatmentField[9].setTreatmentFieldValue(viewModelPost.getPrescription2());
-//        patientEncounterTreatmentField[10].setTreatmentFieldId(5);
-//        patientEncounterTreatmentField[10].setTreatmentFieldValue(viewModelPost.getPrescription3());
-//        patientEncounterTreatmentField[11].setTreatmentFieldId(5);
-//        patientEncounterTreatmentField[11].setTreatmentFieldValue(viewModelPost.getPrescription4());
-//        patientEncounterTreatmentField[12].setTreatmentFieldId(5);
-//        patientEncounterTreatmentField[12].setTreatmentFieldValue(viewModelPost.getPrescription5());
-
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;
     }
@@ -273,43 +271,24 @@ public class MedicalController extends Controller {
     private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost viewModelPost,
                                                                                           IPatientEncounter patientEncounter,
                                                                                           CurrentUser currentUserSession){
+        int SIZE = 5;
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
-        IPatientPrescription[] patientPrescription = new IPatientPrescription[5];
+        IPatientPrescription[] patientPrescription = new IPatientPrescription[SIZE];
+        for (int i = 0; i < SIZE; i++){
+            patientPrescription[i] = patientPrescriptionProvider.get();
+            patientPrescription[i].setEncounterId(patientEncounter.getId());
+            patientPrescription[i].setUserId(currentUserSession.getId());
+            patientPrescription[i].setReplaced(false);
+            patientPrescription[i].setReplacementId(null);
+        }
 
-        patientPrescription[0].setEncounterId(patientEncounter.getId());
-        patientPrescription[0].setUserId(currentUserSession.getId());
-        patientPrescription[0].setAmount();
-        patientPrescription[0].setReplaced(false);
-        patientPrescription[0].setReason();
-        patientPrescription[0].setReplacementId();
+        patientPrescription[0].setMedicationName(viewModelPost.getPrescription1());
+        patientPrescription[1].setMedicationName(viewModelPost.getPrescription2());
+        patientPrescription[2].setMedicationName(viewModelPost.getPrescription3());
+        patientPrescription[3].setMedicationName(viewModelPost.getPrescription4());
+        patientPrescription[4].setMedicationName(viewModelPost.getPrescription5());
 
-        patientPrescription[1].setEncounterId(patientEncounter.getId());
-        patientPrescription[1].setUserId(currentUserSession.getId());
-        patientPrescription[1].setAmount();
-        patientPrescription[1].setReplaced(false);
-        patientPrescription[1].setReason();
-        patientPrescription[1].setReplacementId();
-
-        patientPrescription[2].setEncounterId(patientEncounter.getId());
-        patientPrescription[2].setUserId(currentUserSession.getId());
-        patientPrescription[2].setAmount();
-        patientPrescription[2].setReplaced(false);
-        patientPrescription[2].setReason();
-        patientPrescription[2].setReplacementId();
-
-        patientPrescription[3].setEncounterId(patientEncounter.getId());
-        patientPrescription[3].setUserId(currentUserSession.getId());
-        patientPrescription[3].setAmount();
-        patientPrescription[3].setReplaced(false);
-        patientPrescription[3].setReason();
-        patientPrescription[3].setReplacementId();
-
-        patientPrescription[4].setEncounterId(patientEncounter.getId());
-        patientPrescription[4].setUserId(currentUserSession.getId());
-        patientPrescription[4].setAmount();
-        patientPrescription[4].setReplaced(false);
-        patientPrescription[4].setReason();
-        patientPrescription[4].setReplacementId();
-
+        patientPrescriptions.addAll(Arrays.asList(patientPrescription));
+        return patientPrescriptions;
     }
 }

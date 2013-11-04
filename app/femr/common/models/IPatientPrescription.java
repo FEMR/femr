@@ -24,7 +24,11 @@ public interface IPatientPrescription {
 
     void setReason(String reason);
 
-    int getReplacementId();
+    Integer getReplacementId();
 
-    void setReplacementId(int replacementId);
+    void setReplacementId(Integer replacementId);
+
+    String getMedicationName();
+
+    void setMedicationName(String medicationName);
 }

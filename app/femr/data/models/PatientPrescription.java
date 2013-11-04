@@ -20,7 +20,9 @@ public class PatientPrescription implements IPatientPrescription {
     @Column(name = "reason", nullable = true)
     private String reason;
     @Column(name = "replacement_id", nullable = true)
-    private int replacementId;
+    private Integer replacementId;
+    @Column(name = "medication_name", nullable = false)
+    private String medicationName;
 
     @Override
     public int getId() {
@@ -78,12 +80,22 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public int getReplacementId() {
+    public Integer getReplacementId() {
         return replacementId;
     }
 
     @Override
-    public void setReplacementId(int replacementId) {
+    public void setReplacementId(Integer replacementId) {
         this.replacementId = replacementId;
+    }
+
+    @Override
+    public String getMedicationName() {
+        return medicationName;
+    }
+
+    @Override
+    public void setMedicationName(String medicationName) {
+        this.medicationName = medicationName;
     }
 }

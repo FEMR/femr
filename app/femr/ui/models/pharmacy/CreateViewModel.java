@@ -15,7 +15,12 @@ public class CreateViewModel {
     private Float heightinches;
     //Information from medical
     private String diagnosis;
-    private String medication1;
+
+
+
+    private String[] medications;
+
+
     private int medication1Amount;
     //Submitting replacement medications/replacement amounts
     private String replacementMedication1;
@@ -100,5 +105,17 @@ public class CreateViewModel {
 
     public Float getHeightinches() {
         return heightinches;
+    }
+
+    public String[] getMedications() {
+        return medications;
+    }
+
+    public String getMedication(int i){
+        return medications[i];
+    }
+
+    public void setMedications(String[] medications) {
+        this.medications = medications;
     }
 }

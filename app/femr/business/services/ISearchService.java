@@ -1,10 +1,7 @@
 package femr.business.services;
 
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.common.models.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +18,8 @@ public interface ISearchService {
     ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
 
     List<? extends IVital> findAllVitals();
+
+    List<? extends IPatientPrescription> findPrescriptionsByEncounterId(int id);
 
     ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
 

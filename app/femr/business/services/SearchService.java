@@ -5,15 +5,9 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.common.models.*;
 import femr.data.daos.IRepository;
-import femr.data.models.Patient;
-import femr.data.models.PatientEncounter;
-import femr.data.models.PatientEncounterVital;
-import femr.data.models.Vital;
+import femr.data.models.*;
 
 import java.util.List;
 
@@ -22,16 +16,19 @@ public class SearchService implements ISearchService{
     private IRepository<IPatientEncounter> patientEncounterRepository;
     private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private IRepository<IVital> vitalRepository;
+    private IRepository<IPatientPrescription> patientPrescriptionRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
-                         IRepository<IVital> vitalRepository){
+                         IRepository<IVital> vitalRepository,
+                         IRepository<IPatientPrescription> patientPrescriptionRepository){
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
+        this.patientPrescriptionRepository = patientPrescriptionRepository;
     }
 
     @Override
@@ -125,12 +122,22 @@ public class SearchService implements ISearchService{
     private Query<PatientEncounterVital> getPatientEncounterVitalQuery() {
         return Ebean.find(PatientEncounterVital.class);
     }
+    private Query<PatientPrescription> getPatientPrescriptionQuery(){
+        return Ebean.find(PatientPrescription.class);
+    }
 
     @Override
     public List<? extends IPatientEncounter> findAllEncountersByPatientId(int id){
         ExpressionList<PatientEncounter> query = getPatientEncounterQuery().where().eq("patient_id",id);
         List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
         return patientEncounters;
+    }
+
+    @Override
+    public List<? extends IPatientPrescription> findPrescriptionsByEncounterId(int id){
+        ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("encounter_id",id);
+        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+        return patientPrescriptions;
     }
 
     @Override

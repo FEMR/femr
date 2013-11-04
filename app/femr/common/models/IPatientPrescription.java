@@ -1,25 +1,34 @@
 package femr.common.models;
 
 public interface IPatientPrescription {
+
     int getId();
 
-    int getPatientEncounterId();
+    int getEncounterId();
 
-    int getMedicationId();
+    void setEncounterId(int encounterId);
 
     int getUserId();
 
+    void setUserId(int userId);
+
     int getAmount();
 
-    void SetAmount(int amount);
+    void setAmount(int amount);
 
-    Boolean isReplace();
+    Boolean getReplaced();
+
+    void setReplaced(Boolean replaced);
 
     String getReason();
 
     void setReason(String reason);
 
-    int getReplacement();
+    Integer getReplacementId();
 
-    void SetReplacement(int replacementMedication);
+    void setReplacementId(Integer replacementId);
+
+    String getMedicationName();
+
+    void setMedicationName(String medicationName);
 }

@@ -9,34 +9,34 @@ public class PatientPrescription implements IPatientPrescription {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "encounter_id", unique = true, nullable = false)
+    @Column(name = "encounter_id", nullable = false)
     private int encounterId;
-    @Column(name = "medication_id", nullable = false)
-    private int medicationId;
     @Column(name = "user_id", nullable = false)
     private int userId;
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount", nullable = true)
     private  int amount;
     @Column(name = "replaced", nullable = false)
     private Boolean replaced;
     @Column(name = "reason", nullable = true)
     private String reason;
     @Column(name = "replacement_id", nullable = true)
-    private int replacementId;
+    private Integer replacementId;
+    @Column(name = "medication_name", nullable = false)
+    private String medicationName;
 
     @Override
-    public int getId(){
+    public int getId() {
         return id;
     }
 
     @Override
-    public int getPatientEncounterId() {
+    public int getEncounterId() {
         return encounterId;
     }
 
     @Override
-    public int getMedicationId() {
-        return medicationId;
+    public void setEncounterId(int encounterId) {
+        this.encounterId = encounterId;
     }
 
     @Override
@@ -45,18 +45,28 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    @Override
     public int getAmount() {
         return amount;
     }
 
     @Override
-    public void SetAmount(int amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
     @Override
-    public Boolean isReplace() {
+    public Boolean getReplaced() {
         return replaced;
+    }
+
+    @Override
+    public void setReplaced(Boolean replaced) {
+        this.replaced = replaced;
     }
 
     @Override
@@ -70,14 +80,22 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public int getReplacement() {
+    public Integer getReplacementId() {
         return replacementId;
     }
 
     @Override
-    public void SetReplacement(int replacementMedication) {
-        this.replacementId = replacementMedication;
+    public void setReplacementId(Integer replacementId) {
+        this.replacementId = replacementId;
     }
 
+    @Override
+    public String getMedicationName() {
+        return medicationName;
+    }
 
+    @Override
+    public void setMedicationName(String medicationName) {
+        this.medicationName = medicationName;
+    }
 }

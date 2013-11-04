@@ -26,6 +26,7 @@ public class MedicalController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
+    private Provider<IPatientPrescription> patientPrescriptionProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
     private IMedicalService medicalService;
@@ -35,12 +36,14 @@ public class MedicalController extends Controller {
                              ISearchService searchService,
                              IMedicalService medicalService,
                              Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider,
-                             Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider) {
+                             Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider,
+                             Provider<IPatientPrescription> patientPrescriptionProvider) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
+        this.patientPrescriptionProvider = patientPrescriptionProvider;
 
     }
 
@@ -76,6 +79,19 @@ public class MedicalController extends Controller {
                 medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
             }
         }
+
+        //prescriptions
+        List<IPatientPrescription> patientPrescriptions =
+                populatePatientPrescriptions(viewModelPost,patientEncounter,currentUserSession);
+        for (int k = 0; k < patientPrescriptions.size(); k++){
+            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())){
+                continue;
+            }
+            else{
+                medicalService.createPatientPrescription(patientPrescriptions.get(k));
+            }
+        }
+
 
         //HPI Data
         List<IPatientEncounterHpiField> patientEncounterHpiFields =
@@ -221,8 +237,8 @@ public class MedicalController extends Controller {
                                                                                           IPatientEncounter patientEncounter,
                                                                                           CurrentUser currentUserSession){
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
-        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[13];
-        for (int i = 0; i < 13; i++){
+        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[8];
+        for (int i = 0; i < 8; i++){
             patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
             patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
             patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
@@ -248,18 +264,31 @@ public class MedicalController extends Controller {
         patientEncounterTreatmentField[7].setTreatmentFieldId(4);
         patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
 
-        patientEncounterTreatmentField[8].setTreatmentFieldId(5);
-        patientEncounterTreatmentField[8].setTreatmentFieldValue(viewModelPost.getPrescription1());
-        patientEncounterTreatmentField[9].setTreatmentFieldId(5);
-        patientEncounterTreatmentField[9].setTreatmentFieldValue(viewModelPost.getPrescription2());
-        patientEncounterTreatmentField[10].setTreatmentFieldId(5);
-        patientEncounterTreatmentField[10].setTreatmentFieldValue(viewModelPost.getPrescription3());
-        patientEncounterTreatmentField[11].setTreatmentFieldId(5);
-        patientEncounterTreatmentField[11].setTreatmentFieldValue(viewModelPost.getPrescription4());
-        patientEncounterTreatmentField[12].setTreatmentFieldId(5);
-        patientEncounterTreatmentField[12].setTreatmentFieldValue(viewModelPost.getPrescription5());
-
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;
+    }
+
+    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost viewModelPost,
+                                                                                          IPatientEncounter patientEncounter,
+                                                                                          CurrentUser currentUserSession){
+        int SIZE = 5;
+        List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
+        IPatientPrescription[] patientPrescription = new IPatientPrescription[SIZE];
+        for (int i = 0; i < SIZE; i++){
+            patientPrescription[i] = patientPrescriptionProvider.get();
+            patientPrescription[i].setEncounterId(patientEncounter.getId());
+            patientPrescription[i].setUserId(currentUserSession.getId());
+            patientPrescription[i].setReplaced(false);
+            patientPrescription[i].setReplacementId(null);
+        }
+
+        patientPrescription[0].setMedicationName(viewModelPost.getPrescription1());
+        patientPrescription[1].setMedicationName(viewModelPost.getPrescription2());
+        patientPrescription[2].setMedicationName(viewModelPost.getPrescription3());
+        patientPrescription[3].setMedicationName(viewModelPost.getPrescription4());
+        patientPrescription[4].setMedicationName(viewModelPost.getPrescription5());
+
+        patientPrescriptions.addAll(Arrays.asList(patientPrescription));
+        return patientPrescriptions;
     }
 }

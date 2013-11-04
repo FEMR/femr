@@ -39,8 +39,8 @@
             @inputText("Last Name:", "lastName", patient.getLastName)
             @inputText("Address:", "address", patient.getAddress)
             @inputText("City:", "city", patient.getCity)
-            @inputDate("Age:", "age", patient.getAge)
-            @inputText("Years:", "years", patient.getAge);
+            @inputDate("Birth Date:", "age", patient.getAge)
+            @inputText("Age:", "years", patient.getAge);
             <label class="inputLabel">Gender:</label>
             <div class="btn-group pull-left" data-toggle="buttons">
               @inputButton("Male", "sex", "maleBtn", patient.getSex == "" || patient.getSex == null, patient.getSex == "Male", "Male")

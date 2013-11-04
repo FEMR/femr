@@ -22,6 +22,5 @@ public class dateUtils {
         String dt = localDateTime.toString();
         return dt;
     }
-
 }
 

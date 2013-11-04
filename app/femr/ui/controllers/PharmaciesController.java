@@ -82,16 +82,16 @@ public class PharmaciesController extends Controller {
 
         List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
 
-        //has to work dynamically based on size of patientPrescriptions array
-        //perhaps use an array in the viewmodel?
-        String[] array = new String[5];
-        for (int i = 0; i < patientPrescriptions.size(); i++){
-            array[i] = patientPrescriptions.get(i).getMedicationName();
+        int numberOfPossiblePrescriptions = 5;
+        int numberOfFilledPrescriptions = patientPrescriptions.size();
+        String[] viewMedications = new String[numberOfPossiblePrescriptions];
+        for (int filledPrescription = 0; filledPrescription < numberOfFilledPrescriptions; filledPrescription++){
+            viewMedications[filledPrescription] = patientPrescriptions.get(filledPrescription).getMedicationName();
         }
-        for (int j = patientPrescriptions.size(); j < 5; j++){
-            array[j] = "";
+        for (int unfilledPrescription = numberOfFilledPrescriptions; unfilledPrescription < numberOfPossiblePrescriptions; unfilledPrescription++){
+            viewMedications[unfilledPrescription] = null;
         }
-        viewModel.setMedications(array);
+        viewModel.setMedications(viewMedications);
 
 
 

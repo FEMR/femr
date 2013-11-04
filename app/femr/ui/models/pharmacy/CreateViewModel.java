@@ -15,17 +15,11 @@ public class CreateViewModel {
     private Float heightinches;
     //Information from medical
     private String diagnosis;
-
-
-
     private String[] medications;
-
-
     private int medication1Amount;
     //Submitting replacement medications/replacement amounts
     private String replacementMedication1;
     private int replacementAmount1;
-
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;

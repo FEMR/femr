@@ -93,8 +93,6 @@ public class PharmaciesController extends Controller {
         }
         viewModel.setMedications(viewMedications);
 
-
-
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
         //getting the patient vital information needed to display
         patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(5,patientEncounter.getId());
@@ -116,7 +114,6 @@ public class PharmaciesController extends Controller {
             viewModel.setWeight(null);
         else
             viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
-
 
             return ok(populated.render(currentUserSession, viewModel, error));
 

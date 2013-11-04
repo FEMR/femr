@@ -11,21 +11,21 @@ import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
-import femr.ui.models.triage.CreateViewModel;
+import femr.ui.models.triage.CreateViewModelPost;
 import femr.ui.views.html.triage.index;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TriageController extends Controller {
 
-    private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
+    private final Form<CreateViewModelPost> createViewModelForm = Form.form(CreateViewModelPost.class);
     private ITriageService triageService;
     private ISessionService sessionService;
     private Provider<IPatient> patientProvider;
@@ -57,7 +57,7 @@ public class TriageController extends Controller {
 
     public Result createPost() {
 
-        CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
@@ -107,7 +107,7 @@ public class TriageController extends Controller {
 
     public Result createPopulatedPost(int id) {
 
-        CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
@@ -129,9 +129,8 @@ public class TriageController extends Controller {
 
     //helper functions
 
-    private IPatient populatePatient(CreateViewModel viewModel, CurrentUser currentUser) {
 
-        SimpleDateFormat ageformatter = new SimpleDateFormat("YYYY/mm/dd");
+    private IPatient populatePatient(CreateViewModelPost viewModel, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModel.getFirstName());
@@ -143,25 +142,27 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private IPatientEncounter populatePatientEncounter(CreateViewModel viewModel, ServiceResponse<IPatient> patientServiceResponse, CurrentUser currentUser) {
-
+    private IPatientEncounter populatePatientEncounter(CreateViewModelPost viewModel, ServiceResponse<IPatient> patientServiceResponse, CurrentUser currentUser) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
         patientEncounter.setUserId(currentUser.getId());
-        patientEncounter.setDateOfVisit(triageService.getCurrentDateTime());
+        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
         patientEncounter.setWeeksPregnant(viewModel.getWeeksPregnant());
 
         return patientEncounter;
     }
 
-    private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModel viewModel, ServiceResponse<IPatientEncounter> patientEncounterServiceResponse, CurrentUser currentUser) {
+
+    private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModelPost viewModel,
+                                                                        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse,
+                                                                        CurrentUser currentUser) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
         for (int i = 0; i < 9; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();
-            patientEncounterVital[i].setDateTaken((triageService.getCurrentDateTime()));
+            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTime()));
             patientEncounterVital[i].setUserId(currentUser.getId());
             patientEncounterVital[i].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
             patientEncounterVital[i].setVitalId(i + 1);

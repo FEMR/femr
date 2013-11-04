@@ -1,13 +1,11 @@
 package femr.ui.models.pharmacy;
 
-import java.util.Date;
-
 public class CreateViewModel {
     //General Information
     private String firstName;
     private String lastName;
     private int pID;
-    private Date age;
+    private int age;
     private String sex;
     private Boolean pregnancyStatus;
     private Integer weeksPregnant;
@@ -48,11 +46,11 @@ public class CreateViewModel {
         return pID;
     }
 
-    public void setAge(Date age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public Date getAge() {
+    public int getAge() {
         return age;
     }
 
@@ -103,5 +101,4 @@ public class CreateViewModel {
     public Float getHeightinches() {
         return heightinches;
     }
-
 }

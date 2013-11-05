@@ -9,6 +9,7 @@ GET         /admin/users                @femr.ui.controllers.admin.UsersControll
 GET         /admin                      femr.ui.controllers.admin.AdminController.index()
 GET         /pharmacy                   @femr.ui.controllers.PharmaciesController.index()
 GET         /pharmacy/find              @femr.ui.controllers.PharmaciesController.createGet()
+POST        /pharmacy/find              @femr.ui.controllers.PharmaciesController.createPost()
 GET         /show/encounter/:id         @femr.ui.controllers.SearchController.viewEncounter(id: java.lang.Integer)
 GET         /show                       @femr.ui.controllers.SearchController.createGet()
 GET         /triage/find                @femr.ui.controllers.TriageController.createPopulatedGet()

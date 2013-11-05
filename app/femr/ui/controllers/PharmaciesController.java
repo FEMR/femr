@@ -15,11 +15,14 @@ import femr.ui.views.html.pharmacies.populated;
 import femr.util.calculations.dateUtils;
 import femr.common.models.IPatientPrescription;
 import femr.ui.models.pharmacy.CreateViewModelGet;
+import femr.ui.models.pharmacy.CreateViewModelPost;
+import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class PharmaciesController extends Controller {
+    private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private ISessionService sessionService;
     private ISearchService searchService;
     private ITriageService triageService;
@@ -120,4 +123,26 @@ public class PharmaciesController extends Controller {
 
     }
 
+    public Result createPost(int id){
+        CreateViewModelPost createViewModelPost = createViewModelPostForm.bindFromRequest().get();
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
+        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+
+        List<? extends IPatientPrescription> patientPrescriptions =  searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        int numberOfFilledPrescriptions = patientPrescriptions.size();
+        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())){
+
+        }
+
+        //List<IPatientPrescription> patientPrescriptions = populatePatientPrescriptions(createViewModelPost);
+
+        return createGet();
+
+    }
+
 }
+
+//    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost createViewModelPost){
+//
+//
+//    }

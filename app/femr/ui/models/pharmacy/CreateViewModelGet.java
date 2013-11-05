@@ -1,6 +1,8 @@
 package femr.ui.models.pharmacy;
 
-public class CreateViewModel {
+import java.util.Date;
+
+public class CreateViewModelGet {
     //General Information
     private String firstName;
     private String lastName;

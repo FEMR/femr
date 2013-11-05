@@ -10,10 +10,11 @@ import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
-import femr.ui.models.pharmacy.CreateViewModel;
 import femr.ui.views.html.pharmacies.index;
 import femr.ui.views.html.pharmacies.populated;
 import femr.util.calculations.dateUtils;
+import femr.common.models.IPatientPrescription;
+import femr.ui.models.pharmacy.CreateViewModelGet;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,7 +25,7 @@ public class PharmaciesController extends Controller {
     private ITriageService triageService;
     private IPharmacyService pharmacyService;
 
-    private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
+    private final Form<CreateViewModelGet> createViewModelForm = Form.form(CreateViewModelGet.class);
 
 
     @Inject
@@ -53,7 +54,7 @@ public class PharmaciesController extends Controller {
 
         Boolean error = false;
 
-        CreateViewModel viewModel = new CreateViewModel();
+        CreateViewModelGet viewModel = new CreateViewModelGet();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);

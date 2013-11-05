@@ -97,11 +97,11 @@ function checkNumbers(){
         pass = false;
     }
     //Age (Vital)
-//    if ($.isNumeric($('#age').val()) == false){
-//        $('#age').val("");
-//        $('#age').attr("placeholder","Enter a Number");
-//        pass = false;
-//    }
+    if ($.isDate($('#age').val()) == false){
+        $('#age').val("");
+        $('#age').attr("placeholder","Enter a Number");
+        pass = false;
+    }
 
     return pass;
 }

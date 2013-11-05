@@ -8,6 +8,7 @@ import femr.business.services.ISessionService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.ui.models.search.CreateViewModel;
+import femr.util.calculations.dateUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.search.show;
@@ -83,7 +84,7 @@ public class SearchController extends Controller {
             viewModel.setLastName(patient.getLastName());
             viewModel.setAddress(patient.getAddress());
             viewModel.setCity(patient.getCity());
-            viewModel.setAge(patient.getAge());
+            viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
             viewModel.setSex(patient.getSex());
         } else {
             return ok(showError.render(currentUser));

@@ -4,8 +4,6 @@ import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
-import java.util.List;
 
 public interface ITriageService {
     ServiceResponse<IPatient> createPatient(IPatient patient);
@@ -14,6 +12,5 @@ public interface ITriageService {
 
     ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
 
-    String getCurrentDateTime();
 
 }

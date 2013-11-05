@@ -2,24 +2,21 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
-import femr.business.services.IPharmacyService;
 import femr.business.dtos.ServiceResponse;
+import femr.business.services.IPharmacyService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IPatientPrescription;
-import femr.business.services.SessionService;
 import femr.ui.models.pharmacy.CreateViewModel;
+import femr.ui.views.html.pharmacies.index;
+import femr.ui.views.html.pharmacies.populated;
+import femr.util.calculations.dateUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import femr.ui.views.html.pharmacies.index;
-import femr.ui.views.html.pharmacies.populated;
-
-import java.util.List;
 
 public class PharmaciesController extends Controller {
     private ISessionService sessionService;
@@ -69,7 +66,7 @@ public class PharmaciesController extends Controller {
         viewModel.setpID(patient.getId());
         viewModel.setFirstName(patient.getFirstName());
         viewModel.setLastName(patient.getLastName());
-        viewModel.setAge(patient.getAge());
+        viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModel.setSex(patient.getSex());
 
 

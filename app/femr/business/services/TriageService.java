@@ -77,12 +77,4 @@ public class TriageService implements ITriageService {
         }
         return response;
     }
-
-    @Override
-    public String getCurrentDateTime(){
-        Date dt = new Date();
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTime = dateTimeFormat.format(dt);
-        return currentTime;
-    }
 }

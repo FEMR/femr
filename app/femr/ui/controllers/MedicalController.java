@@ -8,15 +8,15 @@ import femr.business.services.IMedicalService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.common.models.*;
-import femr.data.models.PatientEncounterTreatmentField;
+import femr.ui.models.medical.CreateViewModelGet;
+import femr.ui.models.medical.CreateViewModelPost;
+import femr.ui.views.html.medical.index;
+import femr.ui.views.html.medical.indexPopulated;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import femr.ui.views.html.medical.index;
-import femr.ui.views.html.medical.indexPopulated;
-import femr.ui.models.medical.CreateViewModelGet;
-import femr.ui.models.medical.CreateViewModelPost;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,7 +129,7 @@ public class MedicalController extends Controller {
         viewModel.setCity(patient.getCity());
         viewModel.setFirstName(patient.getFirstName());
         viewModel.setLastName(patient.getLastName());
-        viewModel.setAge(patient.getAge());
+        viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModel.setSex(patient.getSex());
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =

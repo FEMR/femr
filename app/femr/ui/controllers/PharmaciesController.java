@@ -21,6 +21,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.List;
+
 public class PharmaciesController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private Provider<IPatientPrescription> patientPrescriptionProvider;
@@ -129,9 +131,7 @@ public class PharmaciesController extends Controller {
                 numberOfFilledPrescriptions++;
             }
         }
-//        for (int unfilledPrescription = numberOfFilledPrescriptions; unfilledPrescription < POSSIBLE_PRESCRIPTIONS; unfilledPrescription++){
-//            viewMedications[unfilledPrescription] = null;
-//        }
+
         viewModel.setMedications(viewMedications);
 
         return ok(populated.render(currentUserSession, viewModel, error));
@@ -156,7 +156,75 @@ public class PharmaciesController extends Controller {
             newPatientPrescription.setMedicationName(createViewModelPost.getReplacementMedication1());
             ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
 
-            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse = pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription1());
+            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse =
+                    pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription1());
+            IPatientPrescription oldPatientPrescription = oldPatientPrescriptionServiceResponse.getResponseObject();
+            oldPatientPrescription.setReplaced(true);
+            oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());
+            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication2())){
+            IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
+            newPatientPrescription.setEncounterId(patientEncounter.getId());
+            newPatientPrescription.setUserId(currentUserSession.getId());
+            newPatientPrescription.setReplaced(false);
+            newPatientPrescription.setReplacementId(null);
+            newPatientPrescription.setMedicationName(createViewModelPost.getReplacementMedication2());
+            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
+
+            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse =
+                    pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription2());
+            IPatientPrescription oldPatientPrescription = oldPatientPrescriptionServiceResponse.getResponseObject();
+            oldPatientPrescription.setReplaced(true);
+            oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());
+            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+        }
+
+        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication3())){
+            IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
+            newPatientPrescription.setEncounterId(patientEncounter.getId());
+            newPatientPrescription.setUserId(currentUserSession.getId());
+            newPatientPrescription.setReplaced(false);
+            newPatientPrescription.setReplacementId(null);
+            newPatientPrescription.setMedicationName(createViewModelPost.getReplacementMedication3());
+            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
+
+            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse =
+                    pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription3());
+            IPatientPrescription oldPatientPrescription = oldPatientPrescriptionServiceResponse.getResponseObject();
+            oldPatientPrescription.setReplaced(true);
+            oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());
+            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+        }
+
+        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication4())){
+            IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
+            newPatientPrescription.setEncounterId(patientEncounter.getId());
+            newPatientPrescription.setUserId(currentUserSession.getId());
+            newPatientPrescription.setReplaced(false);
+            newPatientPrescription.setReplacementId(null);
+            newPatientPrescription.setMedicationName(createViewModelPost.getReplacementMedication4());
+            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
+
+            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse =
+                    pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription4());
+            IPatientPrescription oldPatientPrescription = oldPatientPrescriptionServiceResponse.getResponseObject();
+            oldPatientPrescription.setReplaced(true);
+            oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());
+            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+        }
+
+        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication5())){
+            IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
+            newPatientPrescription.setEncounterId(patientEncounter.getId());
+            newPatientPrescription.setUserId(currentUserSession.getId());
+            newPatientPrescription.setReplaced(false);
+            newPatientPrescription.setReplacementId(null);
+            newPatientPrescription.setMedicationName(createViewModelPost.getReplacementMedication5());
+            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
+
+            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse =
+                    pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription5());
             IPatientPrescription oldPatientPrescription = oldPatientPrescriptionServiceResponse.getResponseObject();
             oldPatientPrescription.setReplaced(true);
             oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());

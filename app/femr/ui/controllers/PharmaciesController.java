@@ -145,7 +145,6 @@ public class PharmaciesController extends Controller {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
 
-        //add ability to replace prescriptions 2-5
 
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())){
             IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();

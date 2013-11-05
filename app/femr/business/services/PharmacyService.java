@@ -35,6 +35,19 @@ public class PharmacyService implements IPharmacyService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<IPatientPrescription> updatePatientPrescription(IPatientPrescription patientPrescription){
+        IPatientPrescription updatedPatientPrescription = patientPrescriptionRepository.update(patientPrescription);
+        ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
+        if (updatedPatientPrescription == null){
+            response.addError("update","update failed");
+        }
+        else{
+            response.setResponseObject(updatedPatientPrescription);
+        }
+        return response;
+    }
+
 
     private Query<PatientPrescription> getPatientPrescriptionQuery() {
         return Ebean.find(PatientPrescription.class);

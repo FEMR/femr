@@ -1,12 +1,11 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
-import femr.business.services.IPharmacyService;
-import femr.business.services.ISearchService;
-import femr.business.services.ISessionService;
-import femr.business.services.ITriageService;
+import femr.business.services.*;
+import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
@@ -16,6 +15,7 @@ import femr.util.calculations.dateUtils;
 import femr.common.models.IPatientPrescription;
 import femr.ui.models.pharmacy.CreateViewModelGet;
 import femr.ui.models.pharmacy.CreateViewModelPost;
+import femr.util.dependencyinjection.providers.PatientPrescriptionProvider;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -23,10 +23,12 @@ import play.mvc.Result;
 
 public class PharmaciesController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
+    private Provider<IPatientPrescription> patientPrescriptionProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
     private ITriageService triageService;
     private IPharmacyService pharmacyService;
+    private IMedicalService medicalService;
 
     private final Form<CreateViewModelGet> createViewModelForm = Form.form(CreateViewModelGet.class);
 
@@ -35,11 +37,15 @@ public class PharmaciesController extends Controller {
     public PharmaciesController(IPharmacyService pharmacyService,
                                 ITriageService triageService,
                                 ISessionService sessionService,
-                                ISearchService searchService) {
+                                ISearchService searchService,
+                                IMedicalService medicalService,
+                                Provider<IPatientPrescription> patientPrescriptionProvider) {
         this.pharmacyService = pharmacyService;
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.medicalService = medicalService;
+        this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 
     public Result index() {
@@ -127,14 +133,30 @@ public class PharmaciesController extends Controller {
         CreateViewModelPost createViewModelPost = createViewModelPostForm.bindFromRequest().get();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        List<? extends IPatientPrescription> patientPrescriptions =  searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
-        int numberOfFilledPrescriptions = patientPrescriptions.size();
+
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())){
+
+
+            IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
+            newPatientPrescription.setEncounterId(patientEncounter.getId());
+            newPatientPrescription.setUserId(currentUserSession.getId());
+            newPatientPrescription.setReplaced(false);
+            newPatientPrescription.setReplacementId(null);
+            newPatientPrescription.setMedicationName(createViewModelPost.getReplacementMedication1());
+            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
+
+            ServiceResponse<IPatientPrescription> oldPatientPrescriptionServiceResponse = pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(patientEncounter.getId(),createViewModelPost.getPrescription1());
+            IPatientPrescription oldPatientPrescription = oldPatientPrescriptionServiceResponse.getResponseObject();
+            oldPatientPrescription.setReplaced(true);
+            oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());
+            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+
+
 
         }
 
-        //List<IPatientPrescription> patientPrescriptions = populatePatientPrescriptions(createViewModelPost);
 
         return createGet();
 

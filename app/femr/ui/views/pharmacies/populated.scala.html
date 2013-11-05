@@ -104,11 +104,12 @@
 
 
 
+        @helper.form(action = PharmaciesController.createPost(viewModel.getpID())) {
         <div class ="row well well-sm">
             <div class="row"  style="margin: 0 0 15px 0">
                 <div class="col-sm-4 col-md-4" text align="center" >
                     <h4>Medication</h4>
-                    <input type="text" name="medication1" value="@viewModel.getMedication(0)" placeholder="Medication" class="form-control" disabled="true"/>
+                    <input type="text" name="prescription1" value="@viewModel.getMedication(0)" placeholder="Medication" class="form-control" readonly/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="center">
                     <h4>Replacement?</h4>
@@ -131,7 +132,7 @@
 
             <div class="row"  style="margin: 0 0 15px 0">
                 <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="medication2" value="@viewModel.getMedication(1)" placeholder="Medication" class="form-control" disabled="true"/>
+                    <input type="text" name="prescription2" value="@viewModel.getMedication(1)" placeholder="Medication" class="form-control" readonly/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons">
@@ -152,7 +153,7 @@
 
             <div class="row"  style="margin: 0 0 15px 0">
                 <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="medication3" value="@viewModel.getMedication(2)" placeholder="Medication" class="form-control" disabled="true"/>
+                    <input type="text" name="prescription3" value="@viewModel.getMedication(2)" placeholder="Medication" class="form-control" readonly/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons">
@@ -173,7 +174,7 @@
 
             <div class="row"  style="margin: 0 0 15px 0">
                 <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="medication4" value="@viewModel.getMedication(3)" placeholder="Medication" class="form-control" disabled="true"/>
+                    <input type="text" name="prescription14" value="@viewModel.getMedication(3)" placeholder="Medication" class="form-control" readonly/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons">
@@ -194,7 +195,7 @@
 
             <div class="row" style="margin: 0 0 15px 0">
                 <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="medication5" value="@viewModel.getMedication(4)" placeholder="Medication" class="form-control" disabled="true"/>
+                    <input type="text" name="prescription5" value="@viewModel.getMedication(4)" placeholder="Medication" class="form-control" readonly/>
                 </div>
                 <div class="col-sm-4 col-md-4" align="center">
                     <div class="btn-group" data-toggle="buttons"  >
@@ -214,6 +215,10 @@
             <div class="class row" align="right">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
+
+            }
+
+
         </div>
     </div>
 }

@@ -57,66 +57,49 @@ public class PharmaciesController extends Controller {
     }
 
     public Result createGet(){
-
+        //get from query parameters
         String s_id = request().getQueryString("id");
         Integer id = Integer.parseInt(s_id);
-
-        Boolean error = false;
-
         CreateViewModelGet viewModel = new CreateViewModelGet();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        Boolean error = false;
 
+        //return to index if error finding a patient
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         if (patientServiceResponse.hasErrors()){
             error = true;
             return ok(index.render(currentUserSession,error));
         }
+
         IPatient patient = patientServiceResponse.getResponseObject();
-        //getting the general patient information needed to display
         viewModel.setpID(patient.getId());
         viewModel.setFirstName(patient.getFirstName());
         viewModel.setLastName(patient.getLastName());
         viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModel.setSex(patient.getSex());
 
-
+        //return to index if error finding a patient encounter
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
         if (patientEncounterServiceResponse.hasErrors()){
             error = true;
             return ok(index.render(currentUserSession,error));
         }
+
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
-        //getting the patient encounter information needed to display
         viewModel.setWeeksPregnant(patientEncounter.getWeeksPregnant());
 
-
-        List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
-
-        int numberOfPossiblePrescriptions = 5;
-        int numberOfFilledPrescriptions = patientPrescriptions.size();
-        String[] viewMedications = new String[numberOfPossiblePrescriptions];
-        for (int filledPrescription = 0; filledPrescription < numberOfFilledPrescriptions; filledPrescription++){
-            viewMedications[filledPrescription] = patientPrescriptions.get(filledPrescription).getMedicationName();
-        }
-        for (int unfilledPrescription = numberOfFilledPrescriptions; unfilledPrescription < numberOfPossiblePrescriptions; unfilledPrescription++){
-            viewMedications[unfilledPrescription] = null;
-        }
-        viewModel.setMedications(viewMedications);
-
+        //set viewModel field to null if patient vital does not exist
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        //getting the patient vital information needed to display
         patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(5,patientEncounter.getId());
         if (patientEncounterVitalServiceResponse.hasErrors())
             viewModel.setHeightFeet(null);
         else
-            //height in feet
             viewModel.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
         patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(6,patientEncounter.getId());
         if (patientEncounterVitalServiceResponse.hasErrors())
             viewModel.setHeightinches(null);
         else
-            //height for inches
             viewModel.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
         patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(7,patientEncounter.getId());
@@ -125,7 +108,33 @@ public class PharmaciesController extends Controller {
         else
             viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
-            return ok(populated.render(currentUserSession, viewModel, error));
+
+        //find patient prescriptions
+        List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+
+
+
+
+
+        int numberOfPrescriptions = patientPrescriptions.size();
+        int POSSIBLE_PRESCRIPTIONS = 5;
+        String[] viewMedications = new String[POSSIBLE_PRESCRIPTIONS];
+        int numberOfFilledPrescriptions = 0;
+
+
+
+        for (int filledPrescription = 0; filledPrescription < numberOfPrescriptions; filledPrescription++){
+            if (patientPrescriptions.get(filledPrescription).getReplaced() != true){
+                viewMedications[numberOfFilledPrescriptions] = patientPrescriptions.get(filledPrescription).getMedicationName();
+                numberOfFilledPrescriptions++;
+            }
+        }
+//        for (int unfilledPrescription = numberOfFilledPrescriptions; unfilledPrescription < POSSIBLE_PRESCRIPTIONS; unfilledPrescription++){
+//            viewMedications[unfilledPrescription] = null;
+//        }
+        viewModel.setMedications(viewMedications);
+
+        return ok(populated.render(currentUserSession, viewModel, error));
 
     }
 
@@ -137,8 +146,6 @@ public class PharmaciesController extends Controller {
 
 
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())){
-
-
             IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
             newPatientPrescription.setEncounterId(patientEncounter.getId());
             newPatientPrescription.setUserId(currentUserSession.getId());
@@ -152,10 +159,9 @@ public class PharmaciesController extends Controller {
             oldPatientPrescription.setReplaced(true);
             oldPatientPrescription.setReplacementId(newPatientPrescriptionServiceResponse.getResponseObject().getId());
             ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
-
-
-
         }
+
+
 
 
         return createGet();
@@ -163,8 +169,3 @@ public class PharmaciesController extends Controller {
     }
 
 }
-
-//    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost createViewModelPost){
-//
-//
-//    }

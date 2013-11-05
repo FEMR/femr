@@ -59,31 +59,34 @@ $(document).ready(function () {
     });
 });
 
-$('#years').change(function () {
-    if (!$('#years').val()) {
-        $('#age').val('');
-        $('#age').removeAttr('disabled');
+$('#age').change(function () {
+    if (!$('#age').val()) {
+        $('#years').removeAttr('disabled');
     }
-    else {
+    else if ($('#age').val()) {
+      $('#years').attr('disabled', 'disabled');
+    }
+});
+
+$('#years').change(function () {
+    if ($('#years').val()) {
+
         $('#age').attr('disabled', 'disabled');
+
         var years = $('#years').val();
         var now = new Date();
         now.setFullYear(now.getFullYear() - years);
+        var datestring = now.toDateString();
         var day = ("0" + now.getDate()).slice(-2);
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
-        var birthday = now.getFullYear() + "/" + (month) + "/" + (day);
+        var birthday = now.getFullYear() + "-" + (month) + "-" + (day);
         $('#age').val(birthday);
+        //console.log($('#age').val());
     }
-
-});
-
-$('#age').change(function () {
-    if ($('#age').val()) {
-        $('#years').attr('disabled', 'disabled');
-    }
-    else {
-        $('#years').removeAttr('disabled');
-    }
+    else if (!$('#years').val()){
+        $('#age').val('');
+        $('#age').removeAttr('disabled');
+}
 
 });
 

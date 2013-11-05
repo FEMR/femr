@@ -40,7 +40,8 @@
             @inputText("Address:", "address", patient.getAddress)
             @inputText("City:", "city", patient.getCity)
             @inputDate("Birth Date:", "age", patient.getAge)
-            @inputText("Age:", "years", patient.getAge);
+            <label class="inputLabel">Age:</label>
+            <input type="text" class="form-control input-sm pull-left" id="years" name="ageyears">
             <label class="inputLabel">Gender:</label>
             <div class="btn-group pull-left" data-toggle="buttons">
               @inputButton("Male", "sex", "maleBtn", patient.getSex == "" || patient.getSex == null, patient.getSex == "Male", "Male")

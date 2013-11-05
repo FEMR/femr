@@ -53,30 +53,35 @@ window.setInterval(function () {
 //Datepicker select age
 $(document).ready(function () {
     $('.datepicker-age').datepicker({
-        setDate: new Date(),
-        format: "yyyy/mm/dd",
+        format: "yyyy-mm-dd",
         autoclose: true
     });
 });
 
 $('#age').change(function () {
     if (!$('#age').val()) {
+        $('#years').val('');
         $('#years').removeAttr('disabled');
     }
     else if ($('#age').val()) {
+        var birthString = $('#age').val();
+        var birthDate = new Date(birthString);
+        var today = new Date();
+        var currYear = today.getFullYear();
+        var birthYear = birthDate.getFullYear();
+        var ageInYears = currYear - birthYear;
+        console.log(ageInYears.valueOf());
+        $('#years').val(ageInYears.valueOf());
         $('#years').attr('disabled', 'disabled');
     }
 });
 
 $('#years').change(function () {
     if ($('#years').val()) {
-
-        //$('#age').attr('disabled', 'disabled');
-
         var years = $('#years').val();
-        var now = new Date();
-        now.setFullYear(now.getFullYear() - years);
-        var str = now.toYMD();
+        var currDate = new Date();
+        currDate.setFullYear(currDate.getFullYear() - years);
+        var str = currDate.toYMD();
         $('#age').val(str);
         //console.log($('#age').val());
     }
@@ -91,7 +96,7 @@ $('#years').change(function () {
     function Date_toYMD() {
         var year, month, day;
         year = String(this.getFullYear());
-        month = String(this.getMonth());
+        month = String(this.getMonth()+1);
         if (month.length == 1) {
             month = "0" + month;
         }

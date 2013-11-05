@@ -12,5 +12,7 @@ public interface IMedicalService {
 
     ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
 
+    boolean hasPatientBeenCheckedIn(int encounterId);
+
     String getCurrentDateTime();
 }

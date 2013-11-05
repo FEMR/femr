@@ -202,7 +202,16 @@ public class MedicalController extends Controller {
         else
             viewModel.setBloodPressureDiastolic(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
-        return ok(indexPopulated.render(currentUserSession,viewModel));
+
+        //check to make sure a patient hasn't been checked in before
+        //if they have, don't goto the populated page
+        boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
+        if (hasPatientBeenCheckedIn == true){
+            return ok(index.render(currentUserSession,true));
+        }
+        else{
+            return ok(indexPopulated.render(currentUserSession,viewModel));
+        }
     }
 
     //helper functions

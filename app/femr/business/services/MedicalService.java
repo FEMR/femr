@@ -1,14 +1,21 @@
 package femr.business.services;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatientEncounterHpiField;
 import femr.common.models.IPatientEncounterTreatmentField;
 import femr.common.models.IPatientPrescription;
 import femr.data.daos.IRepository;
+import femr.data.models.PatientEncounterHpiField;
+import femr.data.models.PatientEncounterTreatmentField;
+import femr.data.models.PatientPrescription;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class MedicalService implements IMedicalService{
 
@@ -69,6 +76,36 @@ public class MedicalService implements IMedicalService{
             response.addError("patientEncounterHpiField","Failed to save");
         }
         return response;
+    }
+
+    @Override
+    public boolean hasPatientBeenCheckedIn(int encounterId){
+        ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiField().where().eq("patient_encounter_id",encounterId);
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+
+        ExpressionList<PatientEncounterTreatmentField> query2 = getPatientEncounterTreatmentField().where().eq("patient_encounter_id",encounterId);
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query2);
+
+        ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id",encounterId);
+        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
+
+        if (patientEncounterHpiFields.size() > 0)
+            return true;
+        if (patientEncounterTreatmentFields.size() > 0)
+            return true;
+        if (patientPrescriptions.size() > 0)
+            return true;
+        return false;
+    }
+
+    private Query<PatientEncounterHpiField> getPatientEncounterHpiField(){
+        return Ebean.find(PatientEncounterHpiField.class);
+    }
+    private Query<PatientEncounterTreatmentField> getPatientEncounterTreatmentField(){
+        return Ebean.find(PatientEncounterTreatmentField.class);
+    }
+    private Query<PatientPrescription> getPatientPrescription(){
+        return Ebean.find(PatientPrescription.class);
     }
 
     @Override

@@ -33,4 +33,6 @@ public interface IPatient {
     String getCity();
 
     void setCity(String city);
+
+    void setId(int id);
 }

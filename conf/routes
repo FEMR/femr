@@ -14,7 +14,7 @@ GET         /show                       @femr.ui.controllers.SearchController.cr
 GET         /triage/find                @femr.ui.controllers.TriageController.createPopulatedGet()
 POST        /triage/find                @femr.ui.controllers.TriageController.createPopulatedPost(id: java.lang.Integer)
 GET         /triage                     @femr.ui.controllers.TriageController.createGet()
-POST        /triage                     @femr.ui.controllers.TriageController.createPost()
+POST        /triage                     @femr.ui.controllers.TriageController.createPost(id: java.lang.Integer)
 GET         /medical/find               @femr.ui.controllers.MedicalController.createPopulatedGet()
 POST        /medical                    @femr.ui.controllers.MedicalController.createPopulatedPost()
 GET         /medical                    @femr.ui.controllers.MedicalController.createGet()

@@ -52,17 +52,26 @@ public class TriageController extends Controller {
 
         boolean error = false;
 
-        return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
+        IPatient patient = patientProvider.get();
+        patient.setId(0);
+        return ok(index.render(currentUser, vitalNames, error, patient));
     }
 
-    public Result createPost() {
+    public Result createPost(int id) {
 
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         IPatient patient = populatePatient(viewModel, currentUser);
-        ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
+        ServiceResponse<IPatient> patientServiceResponse;
+        if (id == 0){
+            patientServiceResponse = triageService.createPatient(patient);
+        }
+        else{
+            patientServiceResponse = searchService.findPatientById(id);
+        }
+
 
         IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);

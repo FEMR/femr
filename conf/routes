@@ -12,7 +12,6 @@ GET         /pharmacy/find              @femr.ui.controllers.PharmaciesControlle
 GET         /show/encounter/:id         @femr.ui.controllers.SearchController.viewEncounter(id: java.lang.Integer)
 GET         /show                       @femr.ui.controllers.SearchController.createGet()
 GET         /triage/find                @femr.ui.controllers.TriageController.createPopulatedGet()
-POST        /triage/find                @femr.ui.controllers.TriageController.createPopulatedPost(id: java.lang.Integer)
 GET         /triage                     @femr.ui.controllers.TriageController.createGet()
 POST        /triage                     @femr.ui.controllers.TriageController.createPost(id: java.lang.Integer)
 GET         /medical/find               @femr.ui.controllers.MedicalController.createPopulatedGet()

@@ -57,6 +57,10 @@ public class TriageController extends Controller {
         return ok(index.render(currentUser, vitalNames, error, patient));
     }
 
+    /*
+    *if id is 0 then it is a new patient
+    * if id is > 0 then it is a new encounter
+     */
     public Result createPost(int id) {
 
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
@@ -114,27 +118,6 @@ public class TriageController extends Controller {
         }
     }
 
-    public Result createPopulatedPost(int id) {
-
-        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
-
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-
-        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
-
-        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
-
-        for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
-                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
-            }
-        }
-
-        return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
-    }
 
     //helper functions
 

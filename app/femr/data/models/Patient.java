@@ -103,4 +103,9 @@ public class Patient implements IPatient {
     public void setCity(String city) {
         this.city = city;
     }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 }

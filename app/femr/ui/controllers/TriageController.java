@@ -52,17 +52,30 @@ public class TriageController extends Controller {
 
         boolean error = false;
 
-        return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
+        IPatient patient = patientProvider.get();
+        patient.setId(0);
+        return ok(index.render(currentUser, vitalNames, error, patient));
     }
 
-    public Result createPost() {
+    /*
+    *if id is 0 then it is a new patient
+    * if id is > 0 then it is a new encounter
+     */
+    public Result createPost(int id) {
 
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        IPatient patient = populatePatient(viewModel, currentUser);
-        ServiceResponse<IPatient> patientServiceResponse = triageService.createPatient(patient);
+        ServiceResponse<IPatient> patientServiceResponse;
+        if (id == 0){
+            IPatient patient = populatePatient(viewModel, currentUser);
+            patientServiceResponse = triageService.createPatient(patient);
+        }
+        else{
+            patientServiceResponse = searchService.findPatientById(id);
+        }
+
 
         IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
@@ -105,27 +118,6 @@ public class TriageController extends Controller {
         }
     }
 
-    public Result createPopulatedPost(int id) {
-
-        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
-
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-
-        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
-
-        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
-
-        for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
-                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
-            }
-        }
-
-        return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
-    }
 
     //helper functions
 

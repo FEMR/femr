@@ -67,9 +67,9 @@ public class TriageController extends Controller {
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        IPatient patient = populatePatient(viewModel, currentUser);
         ServiceResponse<IPatient> patientServiceResponse;
         if (id == 0){
+            IPatient patient = populatePatient(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
         }
         else{

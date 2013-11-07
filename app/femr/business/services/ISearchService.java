@@ -21,6 +21,8 @@ public interface ISearchService {
 
     List<? extends IPatientPrescription> findPrescriptionsByEncounterId(int id);
 
+    List<? extends IPatientEncounterTreatmentField> findProblemsByEncounterId(int id);
+
     ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
 
 }

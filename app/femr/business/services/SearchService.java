@@ -17,18 +17,21 @@ public class SearchService implements ISearchService{
     private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private IRepository<IVital> vitalRepository;
     private IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IVital> vitalRepository,
-                         IRepository<IPatientPrescription> patientPrescriptionRepository){
+                         IRepository<IPatientPrescription> patientPrescriptionRepository,
+                         IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository){
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
+        this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
     }
 
     @Override
@@ -125,6 +128,9 @@ public class SearchService implements ISearchService{
     private Query<PatientPrescription> getPatientPrescriptionQuery(){
         return Ebean.find(PatientPrescription.class);
     }
+    private Query<PatientEncounterTreatmentField> getPatientEncounterTreatmentFieldQuery(){
+        return Ebean.find(PatientEncounterTreatmentField.class);
+    }
 
     @Override
     public List<? extends IPatientEncounter> findAllEncountersByPatientId(int id){
@@ -138,6 +144,13 @@ public class SearchService implements ISearchService{
         ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("encounter_id",id);
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
         return patientPrescriptions;
+    }
+
+    @Override
+    public List<? extends IPatientEncounterTreatmentField> findProblemsByEncounterId(int id){
+        ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id",id).eq("treatment_field_id",2);
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
+        return patientEncounterTreatmentFields;
     }
 
     @Override

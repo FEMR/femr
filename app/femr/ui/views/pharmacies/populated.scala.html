@@ -105,119 +105,55 @@
 
         @helper.form(action = PharmaciesController.createPost(viewModel.getpID())) {
         <div class ="row well well-sm">
-            <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-4 col-md-4" text align="center" >
-                    <h4>Medication</h4>
-                    <input type="text" name="prescription1" value="@viewModel.getMedication(0)" placeholder="Medication" class="form-control" readonly/>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <h4>Replacement?</h4>
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default" id="yesReplace1" onclick="yesReplacement(1)">
-                            <input type="radio" name="Medication1">Yes
-                        </label>
-                        <label class="btn btn-default active" id="noReplace1" onclick="noReplacement(1)">
-                            <input type="radio" name="Medication1">No
-                        </label>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            @for(x<-1 to 5){
+                <div class="row" style="margin: 0 0 15px 0">
+                    <div class="col-sm-4 col-md-4" text align="center">
+                        <h4>Medication</h4>
+                        <input type="text" name="prescription@x" value="@viewModel.getMedication(x-1)" placeholder="Medication" class="form-control" readonly/>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center" style="margin: 35px 0 0 0">
-                    <input type="text" name="replacementMedication1" id="replacementMedication1" placeholder="Replacement" class="hidden form-control"/>
-                </div>
-            </div>
+                    <div class="col-sm-4 col-md-4" align="center">
+                        <h4>Replacement?</h4>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-default toggleReplacement" id="yesReplace@x">
+                                <input type="radio" name="Medication@x">Yes
+                            </label>
+                            <label class="btn btn-default active toggleReplacement" id="noReplace@x">
+                                <input type="radio" name="Medication@x">No
+                            </label>
+                        </div>
 
-
-
-
-            <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="prescription2" value="@viewModel.getMedication(1)" placeholder="Medication" class="form-control" readonly/>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default" id="yesReplace2" onclick="yesReplacement(2)">
-                            <input type="radio" name="Medication2">Yes
-                        </label>
-                        <label class="btn btn-default active" id="noReplace2" onclick="noReplacement(2)">
-                            <input type="radio" name="Medication2">No
-                        </label>
                     </div>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="replacementMedication2" id=replacementMedication2 placeholder="Replacement" class="hidden form-control"/>
-                </div>
-            </div>
-
-
-
-            <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="prescription3" value="@viewModel.getMedication(2)" placeholder="Medication" class="form-control" readonly/>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default" id="yesReplace3" onclick="yesReplacement(3)">
-                            <input type="radio" name="Medication3">Yes
-                        </label>
-                        <label class="btn btn-default active" id="noReplace3" onclick="noReplacement(3)">
-                            <input type="radio" name="Medication3">No
-                        </label>
+                    <div class="col-sm-4 col-md-4" align="center" style="margin: 35px 0 0 0">
+                        <input type="text" class="hidden form-control" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
                     </div>
+
                 </div>
-                <div class="col-sm-4 col-md-4">
-                    <input type="text" name="replacementMedication3" id=replacementMedication3 placeholder="Replacement" class="hidden form-control"/>
-                </div>
-            </div>
+            }
 
 
-
-            <div class="row"  style="margin: 0 0 15px 0">
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="prescription4" value="@viewModel.getMedication(3)" placeholder="Medication" class="form-control" readonly/>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default" id="yesReplace4" onclick="yesReplacement(4)">
-                            <input type="radio" name="Medication4">Yes
-                        </label>
-                        <label class="btn btn-default active" id="noReplace4" onclick="noReplacement(4)">
-                            <input type="radio" name="Medication4">No
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="replacementMedication4" id=replacementMedication4 placeholder="Replacement" class="hidden form-control"/>
-                </div>
-            </div>
-
-
-
-            <div class="row" style="margin: 0 0 15px 0">
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="prescription5" value="@viewModel.getMedication(4)" placeholder="Medication" class="form-control" readonly/>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <div class="btn-group" data-toggle="buttons"  >
-                        <label class="btn btn-default" id="yesReplace5" onclick="yesReplacement(5)">
-                            <input type="radio" name="Medication5">Yes
-                        </label>
-                        <label class="btn btn-default active" id="noReplace5" onclick="noReplacement(5)">
-                            <input type="radio" name="Medication5">No
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-md-4" align="center">
-                    <input type="text" name="replacementMedication5" class="hidden form-control" id=replacementMedication5 placeholder="Replacement" />
-                </div>
-            </div>
 
             <div class="class row" align="right">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
 
-            }
-
 
         </div>
     </div>
+}
 }

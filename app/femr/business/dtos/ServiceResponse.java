@@ -30,15 +30,7 @@ public class ServiceResponse<T> {
         errors.put(field, error);
     }
 
-    public int getSizeSearchResult (){
-        return resultSize;
-    }
-
-    public void setSizeSearchResult (int size){
-         this.resultSize = size;
-    }
-
-    public Map<String, String> getErrors() {
+       public Map<String, String> getErrors() {
         return errors;
     }
 }

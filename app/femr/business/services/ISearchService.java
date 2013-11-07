@@ -9,7 +9,7 @@ import java.util.Map;
 public interface ISearchService {
     ServiceResponse<IPatient> findPatientById(int id);
 
-    ServiceResponse<IPatient> findPatientByName(String firstName, String lastName);
+    public  ServiceResponse  <List<? extends IPatient>> findPatientByName(String firstName, String lastName);
 
     ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
 

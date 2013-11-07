@@ -82,10 +82,7 @@ public class SearchController extends Controller {
 
         CreateViewModel viewModel = new CreateViewModel();
 
-        if(patientServiceResponse.getSizeSearchResult() > 1){
-            IPatient patient = patientServiceResponse.getResponseObject();
 
-        }
 
         if (!patientServiceResponse.hasErrors()) {
             IPatient patient = patientServiceResponse.getResponseObject();

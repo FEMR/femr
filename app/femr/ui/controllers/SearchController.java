@@ -72,14 +72,20 @@ public class SearchController extends Controller {
             return ok(showError.render(currentUser));
         }
 
+
         ServiceResponse<List<? extends IPatientEncounter>> patientEncountersServiceResponse = searchService.findAllEncountersByPatientId(id);
-        if (patientEncountersServiceResponse.hasErrors()) {
+       if (patientEncountersServiceResponse.hasErrors()) {
             return ok(showError.render(currentUser));
         }
 
         List<? extends IPatientEncounter> patientEncounters = patientEncountersServiceResponse.getResponseObject();
 
         CreateViewModel viewModel = new CreateViewModel();
+
+        if(patientServiceResponse.getSizeSearchResult() > 1){
+            IPatient patient = patientServiceResponse.getResponseObject();
+
+        }
 
         if (!patientServiceResponse.hasErrors()) {
             IPatient patient = patientServiceResponse.getResponseObject();

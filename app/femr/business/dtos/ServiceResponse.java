@@ -6,10 +6,12 @@ import java.util.Map;
 public class ServiceResponse<T> {
     private T responseObject;
     private Map<String, String> errors;
+    private int resultSize;
 
     public ServiceResponse() {
         this.responseObject = null;
         this.errors = new HashMap<>();
+        this.resultSize = 0;
     }
 
     public boolean hasErrors() {
@@ -26,6 +28,14 @@ public class ServiceResponse<T> {
 
     public void addError(String field, String error) {
         errors.put(field, error);
+    }
+
+    public int getSizeSearchResult (){
+        return resultSize;
+    }
+
+    public void setSizeSearchResult (int size){
+         this.resultSize = size;
     }
 
     public Map<String, String> getErrors() {

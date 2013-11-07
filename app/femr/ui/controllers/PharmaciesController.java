@@ -47,7 +47,6 @@ public class PharmaciesController extends Controller {
     public Result index() {
         boolean error = false;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-
         return ok(index.render(currentUserSession, error));
     }
 
@@ -121,18 +120,15 @@ public class PharmaciesController extends Controller {
 
         //find patient problems
         List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = searchService.findProblemsByEncounterId(patientEncounter.getId());
-
         int POSSIBLE_PROBLEMS = 5;
         String[] viewProblems = new String[POSSIBLE_PROBLEMS];
-        if (patientEncounterProblems.size() > 0){
-            for (int problem = 0; problem < patientEncounterProblems.size(); problem++){
+
+        if (patientEncounterProblems.size() > 0) {
+            for (int problem = 0; problem < patientEncounterProblems.size(); problem++) {
                 viewProblems[problem] = patientEncounterProblems.get(problem).getTreatmentFieldValue();
             }
         }
         viewModel.setProblems(viewProblems);
-
-
-
 
         return ok(populated.render(currentUserSession, viewModel, error));
     }

@@ -1,5 +1,11 @@
 # --- !Ups
 
+DELETE FROM `patient_encounter_treatment_fields`
+WHERE `treatment_field_id` = '5';
+
+DELETE FROM `treatment_fields`
+WHERE `id`='5';
+
 ALTER TABLE `patient_prescriptions`
 DROP FOREIGN KEY `fk_patient_prescriptions_medication_id_medications_id` ;
 
@@ -13,6 +19,9 @@ ADD COLUMN `medication_name` VARCHAR(255) NOT NULL
 AFTER `replacement_id` ;
 
 # --- !Downs
+
+INSERT INTO `treatment_fields` (`name`)
+  VALUES ('prescription');
 
 ALTER TABLE `patient_prescriptions`
 ADD COLUMN `medication_id` INT(11) NOT NULL

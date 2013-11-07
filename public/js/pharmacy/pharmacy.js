@@ -1,9 +1,12 @@
 
 $(document).ready(function(){
     $('.toggleReplacement').click(function(){
-        alert($(this).attr('id'));
-
-        //call yesReplacement or noReplacement based on id
+        if ($(this).attr('id').substr(0,1) == "y"){
+            yesReplacement($(this).attr('id').substr(1,2));
+        }
+        else{
+            noReplacement($(this).attr('id').substr(1,2));
+        }
     });
 
 });

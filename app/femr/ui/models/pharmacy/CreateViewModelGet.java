@@ -104,7 +104,7 @@ public class CreateViewModelGet {
         return medications;
     }
 
-    public String getMedication(int i){
+    public String getMedication(int i) {
         return medications[i];
     }
 

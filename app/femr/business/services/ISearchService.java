@@ -13,16 +13,17 @@ public interface ISearchService {
 
     ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
 
-    List<? extends IPatientEncounter> findAllEncountersByPatientId(int id);
-
     ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
+
+    ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
+
+    //Lists should be changed to a ServiceResponse for validation purposes
+
+    List<? extends IPatientEncounter> findAllEncountersByPatientId(int id);
 
     List<? extends IVital> findAllVitals();
 
     List<? extends IPatientPrescription> findPrescriptionsByEncounterId(int id);
 
     List<? extends IPatientEncounterTreatmentField> findProblemsByEncounterId(int id);
-
-    ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
-
 }

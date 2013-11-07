@@ -18,6 +18,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PharmaciesController extends Controller {
@@ -105,17 +107,25 @@ public class PharmaciesController extends Controller {
         //find patient prescriptions
         List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
 
+
+
         int numberOfPrescriptions = patientPrescriptions.size();
         int POSSIBLE_PRESCRIPTIONS = 5;
-        String[] viewMedications = new String[POSSIBLE_PRESCRIPTIONS];
-        int numberOfFilledPrescriptions = 0;
+
+
+
+        List<String> dynamicViewMedications = new ArrayList<String>();
 
         for (int filledPrescription = 0; filledPrescription < numberOfPrescriptions; filledPrescription++) {
             if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
-                viewMedications[numberOfFilledPrescriptions] = patientPrescriptions.get(filledPrescription).getMedicationName();
-                numberOfFilledPrescriptions++;
+                dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
             }
         }
+
+        //this should probably be left as a List or ArrayList
+        String[] viewMedications = new String[dynamicViewMedications.size()];
+        viewMedications = dynamicViewMedications.toArray(viewMedications);
+
         viewModel.setMedications(viewMedications);
 
         //find patient problems

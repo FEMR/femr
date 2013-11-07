@@ -3,29 +3,32 @@
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.medicalPersonnel
 
-@additionalScripts = {
-    <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
-}
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
+    }
 
     @searchById = {
     @helper.form(action = PharmaciesController.createGet()) {
         <label for="id">Id</label>
-        @if(searchError ){
+        @if(searchError) {
             <input type="text" id="id" name="id" placeholder="Invalid Id">
-        }else{
+        } else {
             <input type="text" id="id" name="id">
         }
         <button type="submit" id="pharmacySearch" class="btn btn-default btn-sm">Search</button>
     }
     }
 
-@medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById){
+@medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById, styles = additionalStyles) {
 
     <div class="row medicineInput">
         <div class="row well well-sm">
             <h3 class="text-center">Patient Overview</h3>
 
-            <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="row">
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <label>Name:</label>
@@ -44,7 +47,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="row">
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <label for="">Height:</label>
@@ -63,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="col-xs-4 col-sm-4 col-md-4">
                 <div class="row">
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <label>Weight:</label>
@@ -81,79 +84,67 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-xs-3 col-sm-3 col-md-3">
-                <div class="row">
-                    <label>List of Diagnoses</label>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <p>@viewModel.getProblems(0)</p>
-                        <p>@viewModel.getProblems(1)</p>
-                        <p>@viewModel.getProblems(2)</p>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <p>@viewModel.getProblems(3)</p>
-                        <p>@viewModel.getProblems(4)</p>
-                    </div>
-                </div>
-            </div>
         </div>
-
-
 
 
         @helper.form(action = PharmaciesController.createPost(viewModel.getpID())) {
-        <div class ="row well well-sm">
+            <div class ="row well well-sm">
+                <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
+                    <div class="container text-center">
+
+                        <div class="row">
+
+                            <ol class="problems">
+                                <label class="title">List of Diagnoses</label>
+                            <li>@viewModel.getProblems(0)</li>
+                            <li>@viewModel.getProblems(1)</li>
+                            <li>@viewModel.getProblems(2)</li>
+                            <li>@viewModel.getProblems(3)</li>
+                            <li>@viewModel.getProblems(4)</li>
+                            </ol>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            @for(x<-1 to 5){
-                <div class="row" style="margin: 0 0 15px 0">
-                    <div class="col-sm-4 col-md-4" text align="center">
-                        <h4>Medication</h4>
-                        <input type="text" name="prescription@x" value="@viewModel.getMedication(x-1)" placeholder="Medication" class="form-control" readonly/>
-                    </div>
-                    <div class="col-sm-4 col-md-4" align="center">
-                        <h4>Replacement?</h4>
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-default toggleReplacement" id="y@x">
-                                <input type="radio" name="Medication@x">Yes
-                            </label>
-                            <label class="btn btn-default active toggleReplacement" id="n@x">
-                                <input type="radio" name="Medication@x">No
-                            </label>
                         </div>
+                    </div>
 
-                    </div>
-                    <div class="col-sm-4 col-md-4" align="center" style="margin: 35px 0 0 0">
-                        <input type="text" class="hidden form-control" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
-                    </div>
 
                 </div>
-            }
-
-
-
-            <div class="class row" align="right">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="col-sm-9 col-md-9 col-xs-9 col-lg-9">
+                    <div class="container medicationContainer">
+                        <div class="row">
+                            <div class="col-sm-5 col-md-5 col-xs-5 col-lg-5">
+                                <label class="title">Medication</label>
+                            </div>
+                            <div class="col-sm-2 col-md-2 col-xs-2 col-lg-2">
+                                <label class="title">Replace?</label>
+                            </div>
+                        </div>
+                        @for(x <- 1 to viewModel.getMedications.size) {
+                            <div class="row add-margin">
+                                <div class="col-sm-5 col-md-5 col-xs-5 col-lg-5">
+                                    <input type="text" name="prescription@x" value="@viewModel.getMedication(x - 1)" placeholder="Medication" class="form-control" readonly/>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-xs-2 col-lg-2">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-default toggleReplacement" id="y@x">
+                                            <input type="radio" name="Medication@x">Yes
+                                        </label>
+                                        <label class="btn btn-default active toggleReplacement" id="n@x">
+                                            <input type="radio" name="Medication@x">No
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5 col-md-5 col-xs-5 col-lg-5">
+                                    <input type="text" class="hidden form-control" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
+                                </div>
+                            </div>
+                        }
+                        <div class="class row" align="right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-
         </div>
-    </div>
 }
 }

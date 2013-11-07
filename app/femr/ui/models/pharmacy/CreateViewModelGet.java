@@ -17,6 +17,8 @@ public class CreateViewModelGet {
     private Float heightinches;
     //Prescriptions
     private String[] medications;
+    //Problems
+    private String[] problems;
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -102,11 +104,19 @@ public class CreateViewModelGet {
         return medications;
     }
 
-    public String getMedication(int i){
+    public String getMedication(int i) {
         return medications[i];
     }
 
     public void setMedications(String[] medications) {
         this.medications = medications;
+    }
+
+    public String getProblems(int i) {
+        return problems[i];
+    }
+
+    public void setProblems(String[] problems) {
+        this.problems = problems;
     }
 }

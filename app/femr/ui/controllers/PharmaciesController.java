@@ -6,13 +6,10 @@ import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.*;
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
+import femr.common.models.*;
 import femr.ui.views.html.pharmacies.index;
 import femr.ui.views.html.pharmacies.populated;
 import femr.util.calculations.dateUtils;
-import femr.common.models.IPatientPrescription;
 import femr.ui.models.pharmacy.CreateViewModelGet;
 import femr.ui.models.pharmacy.CreateViewModelPost;
 import femr.util.dependencyinjection.providers.PatientPrescriptionProvider;
@@ -21,6 +18,8 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PharmaciesController extends Controller {
@@ -31,9 +30,6 @@ public class PharmaciesController extends Controller {
     private ITriageService triageService;
     private IPharmacyService pharmacyService;
     private IMedicalService medicalService;
-
-    private final Form<CreateViewModelGet> createViewModelForm = Form.form(CreateViewModelGet.class);
-
 
     @Inject
     public PharmaciesController(IPharmacyService pharmacyService,
@@ -53,7 +49,6 @@ public class PharmaciesController extends Controller {
     public Result index() {
         boolean error = false;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-
         return ok(index.render(currentUserSession, error));
     }
 
@@ -111,20 +106,29 @@ public class PharmaciesController extends Controller {
 
         //find patient prescriptions
         List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        List<String> dynamicViewMedications = new ArrayList<>();
 
-        int numberOfPrescriptions = patientPrescriptions.size();
-        int POSSIBLE_PRESCRIPTIONS = 5;
-        String[] viewMedications = new String[POSSIBLE_PRESCRIPTIONS];
-        int numberOfFilledPrescriptions = 0;
-
-        for (int filledPrescription = 0; filledPrescription < numberOfPrescriptions; filledPrescription++) {
+        for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
             if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
-                viewMedications[numberOfFilledPrescriptions] = patientPrescriptions.get(filledPrescription).getMedicationName();
-                numberOfFilledPrescriptions++;
+                dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
             }
         }
-
+        //this should probably be left as a List or ArrayList
+        String[] viewMedications = new String[dynamicViewMedications.size()];
+        viewMedications = dynamicViewMedications.toArray(viewMedications);
         viewModel.setMedications(viewMedications);
+
+        //find patient problems
+        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = searchService.findProblemsByEncounterId(patientEncounter.getId());
+        int POSSIBLE_PROBLEMS = 5;
+        String[] viewProblems = new String[POSSIBLE_PROBLEMS];
+
+        if (patientEncounterProblems.size() > 0) {
+            for (int problem = 0; problem < patientEncounterProblems.size(); problem++) {
+                viewProblems[problem] = patientEncounterProblems.get(problem).getTreatmentFieldValue();
+            }
+        }
+        viewModel.setProblems(viewProblems);
 
         return ok(populated.render(currentUserSession, viewModel, error));
     }

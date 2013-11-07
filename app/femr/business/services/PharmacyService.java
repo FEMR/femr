@@ -6,52 +6,51 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
+import femr.data.models.PatientPrescription;
 
 public class PharmacyService implements IPharmacyService {
-
-    private IRepository<IPatient> patientRepository;
-    private IRepository<IPatientEncounter> patientEncounterRepository;
-    private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private IRepository<IVital> vitalRepository;
-
+    private IRepository<IPatientPrescription> patientPrescriptionRepository;
 
     @Inject
-    public PharmacyService(){
+    public PharmacyService(IRepository<IPatientPrescription> patientPrescriptionRepository){
+        this.patientPrescriptionRepository = patientPrescriptionRepository;
 
     }
-    @Override
-    public ServiceResponse<IPatient> findPatientById(int id) {
-        ExpressionList<Patient> query = getPatientQuery().where().eq("id",id);
-        IPatient savedPatient = patientRepository.findOne(query);
 
-        ServiceResponse<IPatient> response = new ServiceResponse<>();
-        if (savedPatient == null){
-            response.addError("id","id does not exist");
+    @Override
+    public ServiceResponse<IPatientPrescription> findPatientPrescriptionByEncounterIdAndPrescriptionName(int id, String name){
+
+        ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("encounter_id",id).eq("medication_name",name);
+        IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(query);
+        ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
+        if (patientPrescription == null){
+            response.addError("patientPrescription","could not find a prescription");
         }
         else{
-            response.setResponseObject(savedPatient);
+            response.setResponseObject(patientPrescription);
         }
         return response;
     }
 
     @Override
-    public ServiceResponse<IPatient> findPatientByName(String firstName, String lastName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public ServiceResponse<IPatientPrescription> updatePatientPrescription(IPatientPrescription patientPrescription){
+        IPatientPrescription updatedPatientPrescription = patientPrescriptionRepository.update(patientPrescription);
+        ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
+        if (updatedPatientPrescription == null){
+            response.addError("update","update failed");
+        }
+        else{
+            response.setResponseObject(updatedPatientPrescription);
+        }
+        return response;
     }
 
-    @Override
-    public ServiceResponse<IPatientEncounter> findPatientEncounterById(int id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
-    private Query<Patient> getPatientQuery() {
-        return Ebean.find(Patient.class);
+    private Query<PatientPrescription> getPatientPrescriptionQuery() {
+        return Ebean.find(PatientPrescription.class);
     }
 }
 

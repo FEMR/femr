@@ -3,14 +3,13 @@ package femr.business.services;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientPrescription;
 
 import java.util.List;
 
 public interface IPharmacyService {
 
-    ServiceResponse<IPatient> findPatientById(int id);
+    ServiceResponse<IPatientPrescription> findPatientPrescriptionByEncounterIdAndPrescriptionName(int id, String name);
 
-    ServiceResponse<IPatient> findPatientByName(String firstName, String lastName);
-
-    ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
+    ServiceResponse<IPatientPrescription> updatePatientPrescription(IPatientPrescription patientPrescription);
 }

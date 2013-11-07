@@ -1,6 +1,8 @@
 package femr.ui.models.pharmacy;
 
-public class CreateViewModel {
+import java.util.Date;
+
+public class CreateViewModelGet {
     //General Information
     private String firstName;
     private String lastName;
@@ -13,14 +15,8 @@ public class CreateViewModel {
     private Float weight;
     private Float heightFeet;
     private Float heightinches;
-    //Information from medical
-    private String diagnosis;
-    private String medication1;
-    private int medication1Amount;
-    //Submitting replacement medications/replacement amounts
-    private String replacementMedication1;
-    private int replacementAmount1;
-
+    //Prescriptions
+    private String[] medications;
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -100,5 +96,17 @@ public class CreateViewModel {
 
     public Float getHeightinches() {
         return heightinches;
+    }
+
+    public String[] getMedications() {
+        return medications;
+    }
+
+    public String getMedication(int i){
+        return medications[i];
+    }
+
+    public void setMedications(String[] medications) {
+        this.medications = medications;
     }
 }

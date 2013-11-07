@@ -106,26 +106,16 @@ public class PharmaciesController extends Controller {
 
         //find patient prescriptions
         List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        List<String> dynamicViewMedications = new ArrayList<>();
 
-
-
-        int numberOfPrescriptions = patientPrescriptions.size();
-        int POSSIBLE_PRESCRIPTIONS = 5;
-
-
-
-        List<String> dynamicViewMedications = new ArrayList<String>();
-
-        for (int filledPrescription = 0; filledPrescription < numberOfPrescriptions; filledPrescription++) {
+        for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
             if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
                 dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
             }
         }
-
         //this should probably be left as a List or ArrayList
         String[] viewMedications = new String[dynamicViewMedications.size()];
         viewMedications = dynamicViewMedications.toArray(viewMedications);
-
         viewModel.setMedications(viewMedications);
 
         //find patient problems

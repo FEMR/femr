@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
     $('.toggleReplacement').click(function(){
         if ($(this).attr('id').substr(0,1) == "y"){

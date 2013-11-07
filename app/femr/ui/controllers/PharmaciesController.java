@@ -51,7 +51,6 @@ public class PharmaciesController extends Controller {
     }
 
     public Result index() {
-
         boolean error = false;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
@@ -110,7 +109,6 @@ public class PharmaciesController extends Controller {
         else
             viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
-
         //find patient prescriptions
         List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
 
@@ -129,7 +127,6 @@ public class PharmaciesController extends Controller {
         viewModel.setMedications(viewMedications);
 
         return ok(populated.render(currentUserSession, viewModel, error));
-
     }
 
     public Result createPost(int id) {
@@ -178,7 +175,7 @@ public class PharmaciesController extends Controller {
             IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription5());
             ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
         }
-        return createGet();
+        return index();
     }
 
     private IPatientPrescription initializeNewPrescription(CurrentUser currentUserSession, IPatientEncounter patientEncounter, String medicationName) {

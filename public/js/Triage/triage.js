@@ -66,6 +66,10 @@ $('#age').change(function () {
         if (!nan) {
             $('#years').val(ageInYears);
         }
+        else {
+            $('#age').css('border-color','red');
+            $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd')
+        }
     }
 });
 
@@ -81,7 +85,12 @@ $('#years').change(function () {
         if (!nan) {
             $('#age').val(birthString);
         }
-       // console.log(birthString);
+        else {
+            $('#years').css('border-color','red');
+            $('#years').attr('placeholder','Enter correct age in Years');
+
+
+        }
     }
     // age in years erased, clear birthdate field
     else if (!$('#years').val()) {

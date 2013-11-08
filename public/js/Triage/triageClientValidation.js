@@ -165,23 +165,23 @@ function isDate(dtStr){
     day=parseInt(strDay);
     year=parseInt(strYr);
     if (pos1==-1 || pos2==-1){
-        alert("The date format should be : mm-dd-yyyy");
+        //alert("The date format should be : mm-dd-yyyy");
         return false;
     }
     if (strMonth.length<1 || month<1 || month>12){
-        alert("Please enter a valid month");
+        //alert("Please enter a valid month");
         return false;
     }
     if (strDay.length<1 || day<1 || day>31 || (month==2 && day>daysInFebruary(year)) || day > daysInMonth[month]){
-        alert("Please enter a valid day");
+        //alert("Please enter a valid day");
         return false;
     }
     if (strYear.length != 4 || year==0 || year<minYear || year>maxYear){
-        alert("Please enter a valid 4 digit year between "+minYear+" and "+maxYear);
+        //alert("Please enter a valid 4 digit year between "+minYear+" and "+maxYear);
         return false;
     }
     if (dtStr.indexOf(dtCh,pos2+1)!=-1 || isInteger(stripCharsInBag(dtStr, dtCh))==false){
-        alert("Please enter a valid date");
+        //alert("Please enter a valid date");
         return false;
     }
     return true;
@@ -192,6 +192,8 @@ function validateDate(){
     if (isDate(dt.toString())==false){
         $('#age').val("");
         $('#years').val("");
+        $('#age').css('border-color','red');
+        $('#age').attr('placeholder','Enter correct date format: yyyy-mm-dd');
         return false;
     }
     return true;

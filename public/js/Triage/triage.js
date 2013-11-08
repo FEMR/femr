@@ -48,10 +48,12 @@ $(document).ready(function () {
 });
 
 $('#age').change(function () {
+    $('#age').css('border', '');
     // birthdate erased, clear years field
     if (!$('#age').val()) {
         $('#years').val('');
     }
+
     // birthdate not null calculate age in years
     else if ($('#age').val()) {
         var birthString = $('#age').val();
@@ -74,22 +76,23 @@ $('#age').change(function () {
 });
 
 $('#years').change(function () {
+    $('#years').css('border', '');
+    var yrs = $('#years').val();
     // years in age not null calculate birthdate
-    if ($('#years').val()) {
-        var years = $('#years').val();
+    if (yrs) {
         var birthDate = new Date();
-        birthDate.setFullYear(birthDate.getFullYear() - years);
+        birthDate.setFullYear(birthDate.getFullYear() - yrs);
         var birthString = birthDate.toYMD();
         var nan = randomString(birthDate);
 
         if (!nan) {
             $('#age').val(birthString);
         }
-        else {
+        if (nan || !(yrs  > -1)) {
+            $('#years').val('');
+            $('#age').val('');
             $('#years').css('border-color','red');
             $('#years').attr('placeholder','Enter correct age in Years');
-
-
         }
     }
     // age in years erased, clear birthdate field

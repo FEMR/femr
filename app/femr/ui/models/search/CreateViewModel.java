@@ -1,5 +1,7 @@
 package femr.ui.models.search;
 
+import java.util.List;
+
 public class CreateViewModel {
     private String firstName;
     private String lastName;
@@ -7,6 +9,7 @@ public class CreateViewModel {
     private String city;
     private int age;
     private String sex;
+    private List patientNameResult;
 
     public String getFirstName() {
         return firstName;
@@ -54,5 +57,13 @@ public class CreateViewModel {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public List getPatientNameResult() {
+        return patientNameResult;
+    }
+
+    public void setPatientNameResult(List patientNameResult) {
+        this.patientNameResult = patientNameResult;
     }
 }

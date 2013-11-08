@@ -53,9 +53,8 @@ public class SearchController extends Controller {
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
         String s_id = request().getQueryString("id");
-        ServiceResponse  <List<? extends IPatient>>   patientServiceResponse= null;
+        ServiceResponse  <List<? extends IPatient>> patientServiceResponse= null;
         ServiceResponse<IPatient> patientServiceResponseid= null;
-        //ServiceResponse<IPatient> patientServiceResponse;
         Integer id;
 
         if (!StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
@@ -93,7 +92,9 @@ public class SearchController extends Controller {
 
         if(patientServiceResponse != null){
             if (!patientServiceResponse.hasErrors()) {
-                IPatient patient = patientServiceResponse.getResponseObject().get(0);//get 1st index
+                IPatient patient = patientServiceResponse.getResponseObject().get(0);
+                viewModel.setPatientNameResult(patientServiceResponse.getResponseObject());
+
                 viewModel.setFirstName(patient.getFirstName());
                 viewModel.setLastName(patient.getLastName());
                 viewModel.setAddress(patient.getAddress());
@@ -107,7 +108,7 @@ public class SearchController extends Controller {
         }
         else{
             if (!patientServiceResponseid.hasErrors()) {
-                IPatient patient = patientServiceResponseid.getResponseObject();//get 1st index
+                IPatient patient = patientServiceResponseid.getResponseObject();
                 viewModel.setFirstName(patient.getFirstName());
                 viewModel.setLastName(patient.getLastName());
                 viewModel.setAddress(patient.getAddress());

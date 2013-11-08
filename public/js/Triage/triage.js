@@ -24,17 +24,6 @@ $('#pregnantBtn').change(function () {
     $('#weeksWrap').removeClass('hidden');
 });
 
-(function () {
-    $('triageSubmitBtn').bind('click', function () {
-        var textVal = $('txtDate').val();
-        if (isDate(txtVal))
-            alert('Valid Date');
-        else
-            alert('Invalid Date');
-    });
-});
-
-
 //BMI auto- calculator
 window.setInterval(function () {
     if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()) {
@@ -61,7 +50,6 @@ $(document).ready(function () {
 $('#age').change(function () {
     if (!$('#age').val()) {
         $('#years').val('');
-        $('#years').removeAttr('disabled');
     }
     else if ($('#age').val()) {
         var birthString = $('#age').val();
@@ -70,24 +58,22 @@ $('#age').change(function () {
         var currYear = today.getFullYear();
         var birthYear = birthDate.getFullYear();
         var ageInYears = currYear - birthYear;
-        console.log(ageInYears.valueOf());
-        $('#years').val(ageInYears.valueOf());
-        $('#years').attr('disabled', 'disabled');
+        //console.log(ageInYears.valueOf());
+        $('#years').val(ageInYears);
     }
 });
 
 $('#years').change(function () {
     if ($('#years').val()) {
         var years = $('#years').val();
-        var currDate = new Date();
-        currDate.setFullYear(currDate.getFullYear() - years);
-        var str = currDate.toYMD();
-        $('#age').val(str);
-        //console.log($('#age').val());
+        var birthDate = new Date();
+        birthDate.setFullYear(birthDate.getFullYear() - years);
+        var birthString = birthDate.toYMD();
+        $('#age').val(birthString);
+       // console.log(birthString);
     }
     else if (!$('#years').val()) {
         $('#age').val('');
-        $('#age').removeAttr('disabled');
     }
 });
 

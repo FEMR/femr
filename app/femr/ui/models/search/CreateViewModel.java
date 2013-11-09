@@ -73,8 +73,7 @@ public class CreateViewModel {
         setAddress(patient.getAddress());
         setAge(dateUtils.calculateYears(patient.getAge()));
     }
-     //method that sets each attribute so the html can call getname and get the right stuff
-    //set based on index. take in index as attribute
+
     public void setPatientNameResult(List patientNameResult) {
         this.patientNameResult = patientNameResult;
     }

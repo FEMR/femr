@@ -121,27 +121,28 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public List<? extends IPatientEncounterTreatmentField> findProblemsByEncounterId(int id) {
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id) {
         ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", 2);
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
-        return patientEncounterTreatmentFields;
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
+        if (patientEncounterTreatmentFields.size() > 0){
+            response.setResponseObject(patientEncounterTreatmentFields);
+        }
+        else{
+            response.addError("problems","could not find any problems");
+        }
+        return response;
     }
-
-//    @Override
-//    public List<? extends IVital> findAllVitals() {
-//        List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
-//        return vitals;
-//    }
 
     @Override
     public ServiceResponse<List<? extends IVital>> findAllVitals(){
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
         ServiceResponse<List<? extends IVital>> response = new ServiceResponse<>();
-        if (vitals.size() < 1){
-            response.addError("vitals","no vitals available");
+        if (vitals.size() > 0){
+            response.setResponseObject(vitals);
         }
         else{
-            response.setResponseObject(vitals);
+            response.addError("vitals","no vitals available");
         }
         return response;
     }

@@ -119,7 +119,13 @@ public class PharmaciesController extends Controller {
         viewModel.setMedications(viewMedications);
 
         //find patient problems
-        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = searchService.findProblemsByEncounterId(patientEncounter.getId());
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
+        if (patientEncounterProblemsServiceResponse.hasErrors()){
+            error = true;
+        }
+        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
+
+
         int POSSIBLE_PROBLEMS = 5;
         String[] viewProblems = new String[POSSIBLE_PROBLEMS];
 

@@ -1,5 +1,8 @@
 package femr.ui.models.search;
 
+import femr.common.models.IPatient;
+import femr.util.calculations.dateUtils;
+
 import java.util.List;
 
 public class CreateViewModel {
@@ -9,7 +12,7 @@ public class CreateViewModel {
     private String city;
     private int age;
     private String sex;
-    private List patientNameResult;
+    private List<IPatient> patientNameResult;
 
     public String getFirstName() {
         return firstName;
@@ -63,6 +66,15 @@ public class CreateViewModel {
         return patientNameResult;
     }
 
+    public void setDupList(int index){
+        IPatient patient = patientNameResult.get(index);
+        setFirstName(patient.getFirstName());
+        setLastName(patient.getLastName());
+        setAddress(patient.getAddress());
+        setAge(dateUtils.calculateYears(patient.getAge()));
+    }
+     //method that sets each attribute so the html can call getname and get the right stuff
+    //set based on index. take in index as attribute
     public void setPatientNameResult(List patientNameResult) {
         this.patientNameResult = patientNameResult;
     }

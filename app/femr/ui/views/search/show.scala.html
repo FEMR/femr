@@ -21,20 +21,22 @@
     }
     }
 @medicalPersonnel("search", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
+    @if(viewModel.getPatientNameResult.size()>1){
     <div class="row searchResult">
         <div class="row well well-sm">
             <h4 class="text-center">Duplicate Patient Search Results</h4>
+
             @for( a <- 0 to 1){
             <div class="col-xs-3 col-sm-3 col-md-3">
 
-
+               @viewModel.setDupList(a)
                 <div class="row">
 
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <label>Name:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 col-md-8">
-                        <p>@viewModel.getPatientNameResult.get(a) @viewModel.getLastName</p>
+                        <p>@viewModel.getFirstName @viewModel.getLastName</p>
                     </div>
                 </div>
 
@@ -74,11 +76,10 @@
                 </div>
 
             </div>
-
             }
             </div>
         </div>
-
+    }
 
             <div class="row">
                 <div class ="well">

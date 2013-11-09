@@ -53,6 +53,8 @@ public class SearchController extends Controller {
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
         String s_id = request().getQueryString("id");
+        firstName = firstName.trim();
+        lastName = lastName.trim();
         ServiceResponse<IPatient> patientServiceResponse;
         Integer id;
 
@@ -61,6 +63,7 @@ public class SearchController extends Controller {
             id = patientServiceResponse.getResponseObject().getId();
         }
         else if (!StringUtils.isNullOrWhiteSpace(s_id)){
+            s_id = s_id.trim();
             id = Integer.parseInt(s_id);
             patientServiceResponse = searchService.findPatientById(id);
         }

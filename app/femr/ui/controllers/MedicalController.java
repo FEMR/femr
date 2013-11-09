@@ -117,6 +117,7 @@ public class MedicalController extends Controller {
         CreateViewModelGet viewModel = new CreateViewModelGet();
 
         String s_patientID = request().getQueryString("id");
+        s_patientID = s_patientID.trim();
         int i_patientID = Integer.parseInt(s_patientID);
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);

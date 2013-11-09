@@ -98,7 +98,7 @@ public class TriageController extends Controller {
 
         boolean error = false;
         String s_id = request().getQueryString("id");
-        s_id = s_id.trim();
+
         List<? extends IVital> vitalNames = searchService.findAllVitals();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -107,6 +107,7 @@ public class TriageController extends Controller {
             error = true;
             return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
         }
+        s_id = s_id.trim();
         Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 

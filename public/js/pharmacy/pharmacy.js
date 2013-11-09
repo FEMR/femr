@@ -20,3 +20,31 @@ function noReplacement(id){
     $('#replacementAmount' + id).addClass('hidden');
     $('#replacementMedication' + id).val('');
 }
+
+// too much duplicate code. Needs refactoring
+$('#id').change(function() {
+    var idString = $('#id').val();
+    var intRegex = /^\d+$/;
+    if (intRegex.test(idString)) {
+        $('#id').css('border', '');
+    }
+    else {
+        $('#id').val('');
+        $('#id').css('border-color','red');
+        $('#id').attr('placeholder','Invalid Id');
+    }
+});
+
+$('#pharmacySearch').click(function(event) {
+    var idString = $('#id').val();
+    var intRegex = /^\d+$/;
+    if (intRegex.test(idString)) {
+        $('#id').css('border', '');
+    }
+    else {
+        $('#id').val('');
+        $('#id').css('border-color','red');
+        $('#id').attr('placeholder','Invalid Id');
+        return false;
+    }
+});

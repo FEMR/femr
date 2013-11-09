@@ -24,17 +24,6 @@ $('#pregnantBtn').change(function () {
     $('#weeksWrap').removeClass('hidden');
 });
 
-(function () {
-    $('triageSubmitBtn').bind('click', function () {
-        var textVal = $('txtDate').val();
-        if (isDate(txtVal))
-            alert('Valid Date');
-        else
-            alert('Invalid Date');
-    });
-});
-
-
 //BMI auto- calculator
 window.setInterval(function () {
     if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()) {
@@ -59,10 +48,13 @@ $(document).ready(function () {
 });
 
 $('#age').change(function () {
+    $('#age').css('border', '');
+    // birthdate erased, clear years field
     if (!$('#age').val()) {
         $('#years').val('');
-        $('#years').removeAttr('disabled');
     }
+
+    // birthdate not null calculate age in years
     else if ($('#age').val()) {
         var birthString = $('#age').val();
         var birthDate = new Date(birthString);
@@ -70,28 +62,47 @@ $('#age').change(function () {
         var currYear = today.getFullYear();
         var birthYear = birthDate.getFullYear();
         var ageInYears = currYear - birthYear;
-        console.log(ageInYears.valueOf());
-        $('#years').val(ageInYears.valueOf());
-        $('#years').attr('disabled', 'disabled');
+        //console.log(ageInYears.valueOf());
+        // birthdate is not a date clear fields
+        var nan = randomString(ageInYears);
+        if (!nan) {
+            $('#years').val(ageInYears);
+        }
+        else {
+            $('#age').css('border-color','red');
+            $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd')
+        }
     }
 });
 
 $('#years').change(function () {
-    if ($('#years').val()) {
-        var years = $('#years').val();
-        var currDate = new Date();
-        currDate.setFullYear(currDate.getFullYear() - years);
-        var str = currDate.toYMD();
-        $('#age').val(str);
-        //console.log($('#age').val());
+    $('#years').css('border', '');
+    var yrs = $('#years').val();
+    // years in age not null calculate birthdate
+    if (yrs) {
+        var birthDate = new Date();
+        birthDate.setFullYear(birthDate.getFullYear() - yrs);
+        var birthString = birthDate.toYMD();
+        var nan = randomString(birthDate);
+
+        if (!nan) {
+            $('#age').val(birthString);
+        }
+        if (nan || !(yrs  > -1)) {
+            $('#years').val('');
+            $('#age').val('');
+            $('#years').css('border-color','red');
+            $('#years').attr('placeholder','Enter correct age in Years');
+        }
     }
+    // age in years erased, clear birthdate field
     else if (!$('#years').val()) {
         $('#age').val('');
-        $('#age').removeAttr('disabled');
     }
 });
 
 (function() {
+    // Format date object as yyyy-MM-dd
     Date.prototype.toYMD = Date_toYMD;
     function Date_toYMD() {
         var year, month, day;
@@ -107,5 +118,14 @@ $('#years').change(function () {
         return year + "-" + month + "-" + day;
     }
 })();
+
+function randomString(strVal) {
+    if (isNaN(strVal)) {
+        $('#age').val('');
+        $('#years').val('');
+        return true;
+    }
+    return false;
+}
 
 

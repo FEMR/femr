@@ -1,0 +1,13 @@
+@(name: String, forInput: String, value: Object)
+
+  @inputBlock = {
+    <label for="@forInput" class="inputLabel">@name</label>
+
+    @if(value == "") {
+      <input type="number" class="form-control input-sm pull-left" id="@forInput" name="@forInput">
+    } else {
+      <input type="number" class="form-control input-sm pull-left" id="@forInput" name="@forInput" value="@value" readonly/>
+    }
+  }
+
+@inputBlock

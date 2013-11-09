@@ -50,9 +50,11 @@ public class PharmaciesController extends Controller {
     }
 
     public Result createGet() {
-        //get from query parameters
         String s_id = request().getQueryString("id");
+
+        //needs to validate an id was received from the query string
         s_id = s_id.trim();
+
         Integer id = Integer.parseInt(s_id);
         CreateViewModelGet viewModel = new CreateViewModelGet();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();

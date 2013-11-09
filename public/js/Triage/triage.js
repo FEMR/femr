@@ -128,4 +128,36 @@ function randomString(strVal) {
     return false;
 }
 
+/*
+ * checks input for non negative decimal numbers
+ */
+
+// too much duplicate code. Needs refactoring
+$('#id').change(function() {
+    var idString = $('#id').val();
+    var intRegex = /^\d+$/;
+    if (intRegex.test(idString)) {
+        $('#id').css('border', '');
+    }
+    else {
+        $('#id').val('');
+        $('#id').css('border-color','red');
+        $('#id').attr('placeholder','Invalid Id');
+    }
+});
+
+$('#triageSearch').click(function(event) {
+    var idString = $('#id').val();
+    var intRegex = /^\d+$/;
+    if (intRegex.test(idString)) {
+        $('#id').css('border', '');
+    }
+    else {
+        //event.preventDefault();
+        $('#id').val('');
+        $('#id').css('border-color','red');
+        $('#id').attr('placeholder','Invalid Id');
+        return false;
+    }
+});
 

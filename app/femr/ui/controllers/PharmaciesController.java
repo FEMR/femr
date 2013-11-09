@@ -5,21 +5,18 @@ import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.*;
-import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.ui.models.pharmacy.CreateViewModelGet;
+import femr.ui.models.pharmacy.CreateViewModelPost;
 import femr.ui.views.html.pharmacies.index;
 import femr.ui.views.html.pharmacies.populated;
 import femr.util.calculations.dateUtils;
-import femr.ui.models.pharmacy.CreateViewModelGet;
-import femr.ui.models.pharmacy.CreateViewModelPost;
-import femr.util.dependencyinjection.providers.PatientPrescriptionProvider;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PharmaciesController extends Controller {
@@ -55,6 +52,7 @@ public class PharmaciesController extends Controller {
     public Result createGet() {
         //get from query parameters
         String s_id = request().getQueryString("id");
+        s_id = s_id.trim();
         Integer id = Integer.parseInt(s_id);
         CreateViewModelGet viewModel = new CreateViewModelGet();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();

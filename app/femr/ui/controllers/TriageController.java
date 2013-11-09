@@ -45,12 +45,14 @@ public class TriageController extends Controller {
     }
 
     public Result createGet() {
-
-        List<? extends IVital> vitalNames = searchService.findAllVitals();
+        boolean error = false;
+        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        if (vitalServiceResponse.hasErrors()){
+            error = true;
+        }
+        List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        boolean error = false;
 
         IPatient patient = patientProvider.get();
         patient.setId(0);
@@ -99,7 +101,11 @@ public class TriageController extends Controller {
         boolean error = false;
         String s_id = request().getQueryString("id");
 
-        List<? extends IVital> vitalNames = searchService.findAllVitals();
+        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        if (vitalServiceResponse.hasErrors()){
+            error = true;
+        }
+        List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 

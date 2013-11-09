@@ -127,10 +127,23 @@ public class SearchService implements ISearchService {
         return patientEncounterTreatmentFields;
     }
 
+//    @Override
+//    public List<? extends IVital> findAllVitals() {
+//        List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
+//        return vitals;
+//    }
+
     @Override
-    public List<? extends IVital> findAllVitals() {
+    public ServiceResponse<List<? extends IVital>> findAllVitals(){
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
-        return vitals;
+        ServiceResponse<List<? extends IVital>> response = new ServiceResponse<>();
+        if (vitals.size() < 1){
+            response.addError("vitals","no vitals available");
+        }
+        else{
+            response.setResponseObject(vitals);
+        }
+        return response;
     }
 
     private Query<Patient> getPatientQuery() {

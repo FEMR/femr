@@ -4,6 +4,6 @@ $('#newPatientBtn').click(function(){
 
 function setSearchResults(idx){
     document.getElementById("id").value = idx;
-    document.getElementById("triageSearch").click();
+    document.getElementById("idSearch").click();
 }
 

@@ -81,8 +81,8 @@ public class SearchController extends Controller {
                 return ok(showError.render(currentUser));
             }
         }
-        List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncountersByPatientId(id);
-        if (patientEncounters.size() < 1){
+        ServiceResponse<List<? extends IPatientEncounter>> patientEncountersServiceResponse = searchService.findAllEncountersByPatientId(id);
+        if (patientEncountersServiceResponse.hasErrors()) {
 
             return ok(showError.render(currentUser));
         }

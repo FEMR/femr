@@ -1,6 +1,21 @@
-#myTab{
+#myTab {
     font-size: 25px;
 }
-#myTab:hover{
+
+.active>a {
+    background-color: #F0EAD6;
+}
+
+#treatmentTab, #hpiTab {
+    background-color: #F0EAD6;
+}
+
+#treatmentTab:hover, #hpiTab:hover {
     cursor: pointer;
+}
+
+.active {
+    border-top: 1px solid #d8d2c0;
+    border-left: 1px solid #d8d2c0;
+    border-right: 1px solid #d8d2c0;
 }

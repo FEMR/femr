@@ -5,16 +5,17 @@
   @top = {
     <div class="jumbotron">
     <div class="container">
-        <h1>Hello, @currentUser.getFirstName!</h1>
-        <p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>
+        <h2>Welcome to fEMR, @currentUser.getFirstName!</h2>
+        @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
+        <p>Please select a tab at the top to get started!</p>
       </div>
     </div>
   }
 
 @main("Home", currentUser, outsideContainerTop = top) {
-  <ul>
+  @*<ul>
   @for(role <- currentUser.getRoles) {
     <li>@role.getName</li>
   }
-  </ul>
+  </ul> *@
 }

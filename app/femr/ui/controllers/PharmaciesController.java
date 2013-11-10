@@ -64,7 +64,7 @@ public class PharmaciesController extends Controller {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         if (patientServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUserSession, error, "An error has occured"));
+            return ok(index.render(currentUserSession, error, "That patient can not be found."));
         }
 
         IPatient patient = patientServiceResponse.getResponseObject();

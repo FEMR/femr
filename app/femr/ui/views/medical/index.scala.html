@@ -3,6 +3,7 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.main
     @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tab.js")"></script>
     }
@@ -18,7 +19,7 @@
                 <label for="id" class="sr-only">Patient ID</label>
                 <input type="text" class="form-control" id="id" name="id" placeholder="Patient ID">
             </div>
-            <button type="submit" id="medicalSearch" class="btn btn-primary btn-lg">Search</button>
+            <button type="submit" class="idSearch btn btn-primary btn-lg">Search</button>
         </div>
         <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
             <h1>@message</h1>

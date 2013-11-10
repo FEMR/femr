@@ -10,6 +10,7 @@ public class ServiceResponse<T> {
     public ServiceResponse() {
         this.responseObject = null;
         this.errors = new HashMap<>();
+
     }
 
     public boolean hasErrors() {
@@ -28,7 +29,7 @@ public class ServiceResponse<T> {
         errors.put(field, error);
     }
 
-    public Map<String, String> getErrors() {
+       public Map<String, String> getErrors() {
         return errors;
     }
 }

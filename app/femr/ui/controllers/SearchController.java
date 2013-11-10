@@ -53,27 +53,37 @@ public class SearchController extends Controller {
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
         String s_id = request().getQueryString("id");
-        ServiceResponse<IPatient> patientServiceResponse;
+        ServiceResponse  <List<? extends IPatient>> patientServiceResponse= null;
+        ServiceResponse<IPatient> patientServiceResponseid= null;
         Integer id;
 
         if (!StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
             firstName = firstName.trim();
             lastName = lastName.trim();
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);
-            id = patientServiceResponse.getResponseObject().getId();
-        } else if (!StringUtils.isNullOrWhiteSpace(s_id)) {
+
+
+            id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
+
+
+        }
+        else if (!StringUtils.isNullOrWhiteSpace(s_id)){
             s_id = s_id.trim();
             id = Integer.parseInt(s_id);
-            patientServiceResponse = searchService.findPatientById(id);
-        } else {
-            return ok(showError.render(currentUser));
+            patientServiceResponseid = searchService.findPatientById(id);
         }
-        if (patientServiceResponse.hasErrors()) {
-            return ok(showError.render(currentUser));
-        }
+        else{
 
+            return ok(showError.render(currentUser));
+        }
+        if(patientServiceResponseid != null){
+            if (patientServiceResponseid.hasErrors()) {
+                return ok(showError.render(currentUser));
+            }
+        }
         ServiceResponse<List<? extends IPatientEncounter>> patientEncountersServiceResponse = searchService.findAllEncountersByPatientId(id);
         if (patientEncountersServiceResponse.hasErrors()) {
+
             return ok(showError.render(currentUser));
         }
 
@@ -81,16 +91,36 @@ public class SearchController extends Controller {
 
         CreateViewModel viewModel = new CreateViewModel();
 
-        if (!patientServiceResponse.hasErrors()) {
-            IPatient patient = patientServiceResponse.getResponseObject();
-            viewModel.setFirstName(patient.getFirstName());
-            viewModel.setLastName(patient.getLastName());
-            viewModel.setAddress(patient.getAddress());
-            viewModel.setCity(patient.getCity());
-            viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
-            viewModel.setSex(patient.getSex());
-        } else {
-            return ok(showError.render(currentUser));
+
+        if(patientServiceResponse != null){
+            if (!patientServiceResponse.hasErrors()) {
+                IPatient patient = patientServiceResponse.getResponseObject().get(0);
+                viewModel.setPatientNameResult(patientServiceResponse.getResponseObject());
+
+                viewModel.setFirstName(patient.getFirstName());
+                viewModel.setLastName(patient.getLastName());
+                viewModel.setAddress(patient.getAddress());
+                viewModel.setCity(patient.getCity());
+                viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
+                viewModel.setSex(patient.getSex());
+            } else {
+                return ok(showError.render(currentUser));
+            }
+
+        }
+        else{
+            if (!patientServiceResponseid.hasErrors()) {
+                IPatient patient = patientServiceResponseid.getResponseObject();
+                viewModel.setFirstName(patient.getFirstName());
+                viewModel.setLastName(patient.getLastName());
+                viewModel.setAddress(patient.getAddress());
+                viewModel.setCity(patient.getCity());
+                viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
+                viewModel.setSex(patient.getSex());
+                viewModel.setUserID(patient.getId());
+            } else {
+                return ok(showError.render(currentUser));
+            }
         }
 
         return ok(show.render(currentUser, error, viewModel, patientEncounters, id));

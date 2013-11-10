@@ -14,11 +14,10 @@ function validate(){
     if (checkRequiredInput() === false) {
         pass = false;
     }
-    else if (checkNumbers() === false){
+    if (checkNumbers() === false){
         pass = false;
     }
-
-    else if (validateDate() == false) {
+    if (validateDate() == false) {
         pass = false;
     }
 

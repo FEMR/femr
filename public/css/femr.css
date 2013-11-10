@@ -15,6 +15,23 @@ hr{
     border: 1px solid #c0bbab;
 }
 
+.nameSearchForm{
+    width: 100%;
+    margin-top: 10px;
+}
+.idSearchForm{
+    margin-top: 10px;
+    width: 100%;
+}
+.searchLabel{
+    padding: 5px;
+    font-size: 25px;
+}
+.buttonSearchForm{
+    margin-top: 10px;
+    height: 34px;
+}
+
 .admin-left-panel {
   margin-top: 40px;
 }
@@ -29,4 +46,8 @@ hr{
 
 .margin-top-zero{
     margin-top: 0px;
+}
+
+.remove-padding{
+    padding: 0px !important;
 }

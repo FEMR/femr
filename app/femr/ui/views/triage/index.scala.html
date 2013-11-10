@@ -17,13 +17,20 @@
     }
     @searchById = {
     @helper.form(action = TriageController.createPopulatedGet()) {
-        <label for="id">Patient ID</label>
-        @if(searchError) {
-            <input type="text" id="id" name="id" placeholder="Invalid Id">
-        } else {
-            <input type="text" id="id" name="id">
-        }
-        <button type="submit" class="idSearch btn btn-default btn-sm">Search</button>
+
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
+
+            @*<label for="id">Patient ID:</label>*@
+            @if(searchError) {
+                <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
+            } else {
+                <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Id">
+                }
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
+
+            <button type="submit" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
+        </div>
     }
     }
 @medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {

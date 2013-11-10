@@ -7,6 +7,7 @@
     }
 
     @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
     }
 
@@ -14,7 +15,7 @@
     @helper.form(action = MedicalController.createPopulatedGet()) {
         <label for="id">Id</label>
         <input type="text" id="id" name="id">
-        <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
+        <button type="submit" class="idSearch btn btn-default btn-sm">Search</button>
     }
     }
 

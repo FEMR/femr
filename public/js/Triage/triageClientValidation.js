@@ -108,8 +108,11 @@ function checkNumbers(){
     return pass;
 }
 
-// check if age is a date
-// adopted from the webs!!!
+/*
+* check if age is a date
+* adopted from the webs!!!
+*/
+
 
 function isInteger(s){
     var i;

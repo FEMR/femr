@@ -69,7 +69,7 @@ $('#age').change(function () {
             $('#years').val(ageInYears);
         }
         else {
-            $('#age').css('border-color','red');
+            $('#age').css('border-color', 'red');
             $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd')
         }
     }
@@ -88,11 +88,11 @@ $('#years').change(function () {
         if (!nan) {
             $('#age').val(birthString);
         }
-        if (nan || !(yrs  > -1)) {
+        if (nan || !(yrs > -1)) {
             $('#years').val('');
             $('#age').val('');
-            $('#years').css('border-color','red');
-            $('#years').attr('placeholder','Enter correct age in Years');
+            $('#years').css('border-color', 'red');
+            $('#years').attr('placeholder', 'Enter correct age in Years');
         }
     }
     // age in years erased, clear birthdate field
@@ -101,13 +101,13 @@ $('#years').change(function () {
     }
 });
 
-(function() {
+(function () {
     // Format date object as yyyy-MM-dd
     Date.prototype.toYMD = Date_toYMD;
     function Date_toYMD() {
         var year, month, day;
         year = String(this.getFullYear());
-        month = String(this.getMonth()+1);
+        month = String(this.getMonth() + 1);
         if (month.length == 1) {
             month = "0" + month;
         }
@@ -127,5 +127,3 @@ function randomString(strVal) {
     }
     return false;
 }
-
-

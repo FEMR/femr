@@ -17,13 +17,16 @@
     }
     @searchById = {
     @helper.form(action = TriageController.createPopulatedGet()) {
-        <label for="id">Patient ID</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
         @if(searchError) {
-            <input type="text" id="id" name="id" placeholder="Invalid Id">
+            <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
         } else {
-            <input type="text" id="id" name="id">
-        }
-        <button type="submit" class="idSearch btn btn-default btn-sm">Search</button>
+            <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Id">
+            }
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
+            <button type="submit" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
+        </div>
     }
     }
 @medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
@@ -63,7 +66,7 @@
                 <div class="col-sm-6 col-xs-6">
                     <h3 class="pull-left bold margin-top-zero">Vitals</h3>
                     @*recycle sign?*@
-                    <button type="button" class="newPatientBtn btn btn-default pull-right">Reset Fields</button>
+
                     <div class="medicalHistoryLineDivide"></div>
                     <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
                         <div class="text-center">
@@ -106,6 +109,7 @@
             </div>
             <div class="row">
                 <button type="submit" id="triageSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>
+                <button type="button" class="newPatientBtn btn btn-default pull-right">Reset Fields</button>
             </div>
         </div>
     </div>

@@ -123,7 +123,7 @@ public class MedicalController extends Controller {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
         if (patientServiceResponse.hasErrors()){
             error = true;
-            return ok(index.render(currentUserSession,error,"That patient could not be found."));
+            return ok(index.render(currentUserSession,error,"That patient can not be found."));
         }
         IPatient patient = patientServiceResponse.getResponseObject();
         viewModel.setpID(patient.getId());

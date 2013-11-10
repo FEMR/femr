@@ -2,23 +2,26 @@
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.SearchController
-  @additionalStyles = {
-    <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
-  }
-  @additionalScripts = {
-    <script type="text/javascript" src="@routes.Assets.at("/js/search/search.js")"></script>
-  }
-  @searchById = {
-  @helper.form(action = SearchController.createGet()) {
-    <label for="id">Id</label>
-    <input type="text" id="id" name="id">
-    <button type="submit" id="triageSearch" class="btn btn-default btn-sm">Search</button>
-  }
-  }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
+    }
+    @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("/js/search/search.js")"></script>
+    }
+    @searchById = {
+    @helper.form(action = SearchController.createGet()) {
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
+            <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Id">
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
+            <button type="submit" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
+        </div>
+    }
+    }
 @medicalPersonnel("Error", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
-  <div class="row">
-    <div class ="well">
-      <h1>You have encountered a fatal while searching, please stop breaking things.</h1>
+    <div class="row">
+        <div class ="well">
+            <h1>You have encountered a fatal while searching, please stop breaking things.</h1>
+        </div>
     </div>
-  </div>
 }

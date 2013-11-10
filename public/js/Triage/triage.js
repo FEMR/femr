@@ -1,28 +1,97 @@
-//onClick activators
-$('.newPatientBtn').click(function () {
-    window.location = "/triage";
+$(document).ready(function () {
+    $('.newPatientBtn').click(function () {
+        if (confirm("Are you sure you want to reset the fields?")){
+            window.location = "/triage";
+        }
+        else{
+            return;
+        }
+
+    });
+
+    $('#femaleBtn').change(function () {
+        if ($('#pregnantWrap').hasClass('hidden')) {
+            $('#pregnantWrap').removeClass('hidden');
+        }
+    });
+    $('#maleBtn').change(function () {
+        if (!$('#pregnantWrap').hasClass('hidden')) {
+            $('#pregnantWrap').addClass('hidden');
+        }
+        if ($('#pregnantBtn').is(':checked')) {
+            $('#pregnantBtn').prop('checked', false);
+            $('#pregnantBtn').parent().removeClass('active');
+        }
+        if (!$('#weeksWrap').hasClass('hidden')) {
+            $('#weeksWrap').addClass('hidden');
+        }
+    });
+    $('#pregnantBtn').change(function () {
+        $('#weeksWrap').removeClass('hidden');
+    });
+
+
+    $('.datepicker-age').datepicker({
+        format: "yyyy-mm-dd",
+        autoclose: true
+    });
+
+
+    $('#age').change(function () {
+        $('#age').css('border', '');
+        // birthdate erased, clear years field
+        if (!$('#age').val()) {
+            $('#years').val('');
+        }
+
+        // birthdate not null calculate age in years
+        else if ($('#age').val()) {
+            var birthString = $('#age').val();
+            var birthDate = new Date(birthString);
+            var today = new Date();
+            var currYear = today.getFullYear();
+            var birthYear = birthDate.getFullYear();
+            var ageInYears = currYear - birthYear;
+            //console.log(ageInYears.valueOf());
+            // birthdate is not a date clear fields
+            var nan = randomString(ageInYears);
+            if (!nan) {
+                $('#years').val(ageInYears);
+            }
+            else {
+                $('#age').css('border-color', 'red');
+                $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd')
+            }
+        }
+    });
+
+    $('#years').change(function () {
+        $('#years').css('border', '');
+        var yrs = $('#years').val();
+        // years in age not null calculate birthdate
+        if (yrs) {
+            var birthDate = new Date();
+            birthDate.setFullYear(birthDate.getFullYear() - yrs);
+            var birthString = birthDate.toYMD();
+            var nan = randomString(birthDate);
+
+            if (!nan) {
+                $('#age').val(birthString);
+            }
+            if (nan || !(yrs > -1)) {
+                $('#years').val('');
+                $('#age').val('');
+                $('#years').css('border-color', 'red');
+                $('#years').attr('placeholder', 'Enter correct age in Years');
+            }
+        }
+        // age in years erased, clear birthdate field
+        else if (!$('#years').val()) {
+            $('#age').val('');
+        }
+    });
 });
 
-$('#femaleBtn').change(function () {
-    if ($('#pregnantWrap').hasClass('hidden')) {
-        $('#pregnantWrap').removeClass('hidden');
-    }
-});
-$('#maleBtn').change(function () {
-    if (!$('#pregnantWrap').hasClass('hidden')) {
-        $('#pregnantWrap').addClass('hidden');
-    }
-    if ($('#pregnantBtn').is(':checked')) {
-        $('#pregnantBtn').prop('checked', false);
-        $('#pregnantBtn').parent().removeClass('active');
-    }
-    if (!$('#weeksWrap').hasClass('hidden')) {
-        $('#weeksWrap').addClass('hidden');
-    }
-});
-$('#pregnantBtn').change(function () {
-    $('#weeksWrap').removeClass('hidden');
-});
 
 //BMI auto- calculator
 window.setInterval(function () {
@@ -40,66 +109,7 @@ window.setInterval(function () {
 }, 500);
 
 //Datepicker select age
-$(document).ready(function () {
-    $('.datepicker-age').datepicker({
-        format: "yyyy-mm-dd",
-        autoclose: true
-    });
-});
 
-$('#age').change(function () {
-    $('#age').css('border', '');
-    // birthdate erased, clear years field
-    if (!$('#age').val()) {
-        $('#years').val('');
-    }
-
-    // birthdate not null calculate age in years
-    else if ($('#age').val()) {
-        var birthString = $('#age').val();
-        var birthDate = new Date(birthString);
-        var today = new Date();
-        var currYear = today.getFullYear();
-        var birthYear = birthDate.getFullYear();
-        var ageInYears = currYear - birthYear;
-        //console.log(ageInYears.valueOf());
-        // birthdate is not a date clear fields
-        var nan = randomString(ageInYears);
-        if (!nan) {
-            $('#years').val(ageInYears);
-        }
-        else {
-            $('#age').css('border-color', 'red');
-            $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd')
-        }
-    }
-});
-
-$('#years').change(function () {
-    $('#years').css('border', '');
-    var yrs = $('#years').val();
-    // years in age not null calculate birthdate
-    if (yrs) {
-        var birthDate = new Date();
-        birthDate.setFullYear(birthDate.getFullYear() - yrs);
-        var birthString = birthDate.toYMD();
-        var nan = randomString(birthDate);
-
-        if (!nan) {
-            $('#age').val(birthString);
-        }
-        if (nan || !(yrs > -1)) {
-            $('#years').val('');
-            $('#age').val('');
-            $('#years').css('border-color', 'red');
-            $('#years').attr('placeholder', 'Enter correct age in Years');
-        }
-    }
-    // age in years erased, clear birthdate field
-    else if (!$('#years').val()) {
-        $('#age').val('');
-    }
-});
 
 (function () {
     // Format date object as yyyy-MM-dd

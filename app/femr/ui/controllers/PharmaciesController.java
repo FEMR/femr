@@ -46,7 +46,7 @@ public class PharmaciesController extends Controller {
     public Result index() {
         boolean error = false;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(index.render(currentUserSession, error));
+        return ok(index.render(currentUserSession, error, null));
     }
 
     public Result createGet() {
@@ -64,7 +64,7 @@ public class PharmaciesController extends Controller {
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         if (patientServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUserSession, error));
+            return ok(index.render(currentUserSession, error, "That patient can not be found."));
         }
 
         IPatient patient = patientServiceResponse.getResponseObject();
@@ -78,7 +78,7 @@ public class PharmaciesController extends Controller {
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
         if (patientEncounterServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUserSession, error));
+            return ok(index.render(currentUserSession, error, "An error has occured"));
         }
 
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
@@ -105,9 +105,10 @@ public class PharmaciesController extends Controller {
             viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
         //find patient prescriptions
-        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse  = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
-        if (patientPrescriptionsServiceResponse.hasErrors()){
+        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        if (patientPrescriptionsServiceResponse.hasErrors()) {
             error = true;
+            return ok(index.render(currentUserSession, error, "No prescriptions exist for that patient"));
         }
 
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
@@ -123,12 +124,14 @@ public class PharmaciesController extends Controller {
         viewMedications = dynamicViewMedications.toArray(viewMedications);
         viewModel.setMedications(viewMedications);
 
-        //find patient problems
+        //find patient problems, they don't have to exist.
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
-        if (patientEncounterProblemsServiceResponse.hasErrors()){
-            error = true;
+        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
+        if (patientEncounterProblemsServiceResponse.hasErrors()) {
+            //error = true;
+        } else {
+            patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
         }
-        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
 
 
         int POSSIBLE_PROBLEMS = 5;

@@ -1,5 +1,36 @@
-body {
-  padding-top: 50px;
+html,body{
+
+    background-color: #d8d2c0;
+}
+body{
+    padding-top: 50px;
+}
+
+hr{
+    border-top: 1px solid black;
+}
+
+.well{
+    background-color: #F0EAD6;
+    border: 1px solid #c0bbab;
+}
+
+.nameSearchForm{
+    width: 100%;
+    margin-top: 10px;
+}
+.idSearchForm{
+    margin-top: 10px;
+    width: 100%;
+}
+.searchLabel{
+    padding: 5px;
+    margin-top: 6px;
+    font-size: 25px;
+}
+.buttonSearchForm{
+    margin-top: 10px;
+    height: 34px;
 }
 
 .admin-left-panel {
@@ -16,4 +47,8 @@ body {
 
 .margin-top-zero{
     margin-top: 0px;
+}
+
+.remove-padding{
+    padding: 0px !important;
 }

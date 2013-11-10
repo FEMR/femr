@@ -48,7 +48,7 @@ public class SearchController extends Controller {
     public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        boolean error=false;
+        boolean error = false;
 
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
@@ -61,23 +61,23 @@ public class SearchController extends Controller {
             lastName = lastName.trim();
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);
             id = patientServiceResponse.getResponseObject().getId();
-        }
-        else if (!StringUtils.isNullOrWhiteSpace(s_id)){
+        } else if (!StringUtils.isNullOrWhiteSpace(s_id)) {
             s_id = s_id.trim();
             id = Integer.parseInt(s_id);
             patientServiceResponse = searchService.findPatientById(id);
-        }
-        else{
+        } else {
             return ok(showError.render(currentUser));
         }
         if (patientServiceResponse.hasErrors()) {
             return ok(showError.render(currentUser));
         }
 
-        List<? extends IPatientEncounter> patientEncounters = searchService.findAllEncountersByPatientId(id);
-        if (patientEncounters.size() < 1){
+        ServiceResponse<List<? extends IPatientEncounter>> patientEncountersServiceResponse = searchService.findAllEncountersByPatientId(id);
+        if (patientEncountersServiceResponse.hasErrors()) {
             return ok(showError.render(currentUser));
         }
+
+        List<? extends IPatientEncounter> patientEncounters = patientEncountersServiceResponse.getResponseObject();
 
         CreateViewModel viewModel = new CreateViewModel();
 

@@ -128,7 +128,7 @@ public class PharmaciesController extends Controller {
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
         List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
         if (patientEncounterProblemsServiceResponse.hasErrors()) {
-            error = true;
+            //error = true;
         } else {
             patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
         }

@@ -3,7 +3,7 @@ $('#newPatientBtn').click(function(){
 });
 
 function setSearchResults(idx){
-    document.getElementById("id").value = idx + 1;
+    document.getElementById("id").value = idx;
     document.getElementById("triageSearch").click();
 }
 

@@ -93,6 +93,18 @@ $(document).ready(function () {
 });
 
 
+$('#firstName').change(function () {
+    $('#firstName').css('border', '');
+});
+
+$('#lastName').change(function () {
+    $('#lastName').css('border', '');
+});
+
+$('#city').change(function () {
+    $('#city').css('border', '');
+});
+
 //BMI auto- calculator
 window.setInterval(function () {
     if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()) {

@@ -2,6 +2,7 @@
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.SearchController
+@import femr.ui.controllers.routes.TriageController
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
     }
@@ -90,6 +91,12 @@
                 <div class ="well">
                     <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>
                     <button type="submit" id="newPatientBtn" class="btn btn-default pull-right">New Patient</button>
+
+                    @helper.form(action = TriageController.createPopulatedGet()) {
+                        <input type="text" class="hidden" value="@id" name="id">
+                        <button type="submit" class="btn btn-default pull-right">New Encounter</button>
+                    }
+
                     <div class="medicalHistoryLineDivide"></div>
                     <div class="row triageInputRow">
                         <div class="col-sm-6 col-xs-6">

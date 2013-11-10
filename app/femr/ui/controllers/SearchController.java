@@ -62,7 +62,9 @@ public class SearchController extends Controller {
             lastName = lastName.trim();
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);
 
+
             id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
+
 
         }
         else if (!StringUtils.isNullOrWhiteSpace(s_id)){
@@ -115,6 +117,7 @@ public class SearchController extends Controller {
                 viewModel.setCity(patient.getCity());
                 viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
                 viewModel.setSex(patient.getSex());
+                viewModel.setUserID(patient.getId());
             } else {
                 return ok(showError.render(currentUser));
             }

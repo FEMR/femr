@@ -1,6 +1,17 @@
-body {
-  padding-top: 50px;
+html,body{
+
+    background-color: #d8d2c0;
 }
+body{
+    padding-top: 50px;
+}
+
+.well{
+    background-color: #F0EAD6;
+    border: 1px solid #c0bbab;
+}
+
+
 
 .admin-left-panel {
   margin-top: 40px;

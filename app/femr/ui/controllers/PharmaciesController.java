@@ -105,7 +105,12 @@ public class PharmaciesController extends Controller {
             viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
         //find patient prescriptions
-        List<? extends IPatientPrescription> patientPrescriptions = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse  = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        if (patientPrescriptionsServiceResponse.hasErrors()){
+            error = true;
+        }
+
+        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         List<String> dynamicViewMedications = new ArrayList<>();
 
         for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
@@ -119,7 +124,13 @@ public class PharmaciesController extends Controller {
         viewModel.setMedications(viewMedications);
 
         //find patient problems
-        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = searchService.findProblemsByEncounterId(patientEncounter.getId());
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
+        if (patientEncounterProblemsServiceResponse.hasErrors()){
+            error = true;
+        }
+        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
+
+
         int POSSIBLE_PROBLEMS = 5;
         String[] viewProblems = new String[POSSIBLE_PROBLEMS];
 

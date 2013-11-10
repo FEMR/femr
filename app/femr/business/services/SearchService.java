@@ -107,30 +107,54 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public List<? extends IPatientEncounter> findAllEncountersByPatientId(int id) {
+    public ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id) {
         ExpressionList<PatientEncounter> query = getPatientEncounterQuery().where().eq("patient_id", id);
         List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
-        return patientEncounters;
+        ServiceResponse<List<? extends IPatientEncounter>> response = new ServiceResponse<>();
+        if (patientEncounters.size() > 0) {
+            response.setResponseObject(patientEncounters);
+        } else {
+            response.addError("encounters", "could not find any encounters");
+        }
+        return response;
     }
 
     @Override
-    public List<? extends IPatientPrescription> findPrescriptionsByEncounterId(int id) {
+    public ServiceResponse<List<? extends IPatientPrescription>> findPrescriptionsByEncounterId(int id) {
         ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("encounter_id", id);
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-        return patientPrescriptions;
+        ServiceResponse<List<? extends IPatientPrescription>> response = new ServiceResponse<>();
+        if (patientPrescriptions.size() > 0) {
+            response.setResponseObject(patientPrescriptions);
+        } else {
+            response.addError("prescriptions", "No prescriptions found");
+        }
+        return response;
     }
 
     @Override
-    public List<? extends IPatientEncounterTreatmentField> findProblemsByEncounterId(int id) {
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id) {
         ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", 2);
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
-        return patientEncounterTreatmentFields;
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
+        if (patientEncounterTreatmentFields.size() > 0) {
+            response.setResponseObject(patientEncounterTreatmentFields);
+        } else {
+            response.addError("problems", "could not find any problems");
+        }
+        return response;
     }
 
     @Override
-    public List<? extends IVital> findAllVitals() {
+    public ServiceResponse<List<? extends IVital>> findAllVitals() {
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
-        return vitals;
+        ServiceResponse<List<? extends IVital>> response = new ServiceResponse<>();
+        if (vitals.size() > 0) {
+            response.setResponseObject(vitals);
+        } else {
+            response.addError("vitals", "no vitals available");
+        }
+        return response;
     }
 
     private Query<Patient> getPatientQuery() {

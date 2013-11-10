@@ -19,13 +19,13 @@
     float: left;
     clear: left;
     text-align: right;
-    margin-right: 5px;
+
 }
 #heightInputLabelMargin{
     margin-right: 200px !important;
 }
 #bloodPressureInputLabelMargin{
-    margin-right: 75px !important;
+    margin-right: 50px !important;
 }
 #pregnantWrap{
     display: inline-block;

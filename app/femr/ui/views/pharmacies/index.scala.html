@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, searchError: java.lang.Boolean)
+@(currentUser: femr.business.dtos.CurrentUser, searchError: java.lang.Boolean, message: java.lang.String)
 
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
@@ -16,6 +16,9 @@
                 <input type="text" class="form-control" id="id" name="id" placeholder="Patient ID">
             </div>
             <button type="submit" class="idSearch btn btn-primary btn-lg">Search</button>
+        </div>
+        <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
+            <h1>@message</h1>
         </div>
     }
     </div>

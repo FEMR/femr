@@ -29,18 +29,22 @@ function checkRequiredInput() {
 
     if (!$('#firstName').val()) {
         $('#firstName').attr("placeholder", "Required Input");
+        $('#firstName').css('border-color','red');
         pass = false;
     }
     if (!$('#lastName').val()) {
         $('#lastName').attr("placeholder", "Required Input");
+        $('#lastName').css('border-color','red');
         pass = false;
     }
     if (!$('#age').val()) {
         $('#age').attr("placeholder", "Required Input");
+        $('#age').css('border-color','red');
         pass = false;
     }
     if (!$('#city').val()) {
         $('#city').attr("placeholder", "Required Input");
+        $('#city').css('border-color','red');
         pass = false;
     }
 

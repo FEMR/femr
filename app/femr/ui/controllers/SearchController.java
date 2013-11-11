@@ -63,7 +63,12 @@ public class SearchController extends Controller {
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);
 
 
-            id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
+            if(patientServiceResponse.getResponseObject() != null){
+                id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
+            }
+            else{
+                id = 2;
+            }
 
 
         }

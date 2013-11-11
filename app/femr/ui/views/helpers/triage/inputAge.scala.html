@@ -1,9 +1,9 @@
-@(name: String, forInput: String, value: Object)
+@(name: String, forInput: String, value: Integer)
 
   @inputBlock = {
     <label for="@forInput" class="inputLabel">@name</label>
 
-    @if(value == "") {
+    @if(value == null) {
       <input type="number" class="form-control input-sm pull-left" id="@forInput" name="@forInput">
     } else {
       <input type="number" class="form-control input-sm pull-left" id="@forInput" name="@forInput" value="@value" readonly/>

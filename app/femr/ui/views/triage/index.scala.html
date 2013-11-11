@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean, patient: femr.common.models.IPatient)
+@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean, patient: femr.common.models.IPatient, viewModel: femr.ui.models.triage.CreateViewModelGet)
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
@@ -39,16 +39,16 @@
                     <h3 class="pull-left bold margin-top-zero">General Info</h3>
                     <div class="medicalHistoryLineDivide"></div>
                     <div class="text-center">
-                        @inputText("First Name:", "firstName", patient.getFirstName)
-                        @inputText("Last Name:", "lastName", patient.getLastName)
-                        @inputText("Address:", "address", patient.getAddress)
-                        @inputText("City:", "city", patient.getCity)
-                        @inputDate("Birth Date:", "age", patient.getAge)
-                        @inputAge("Age:", "years", "")
+                        @inputText("First Name:", "firstName",if (viewModel != null) viewModel.getFirstName else null)
+                        @inputText("Last Name:", "lastName", if (viewModel != null) viewModel.getLastName else null)
+                        @inputText("Address:", "address", if (viewModel != null) viewModel.getAddress else null)
+                        @inputText("City:", "city", if (viewModel != null) viewModel.getCity else null)
+                        @inputDate("Birth Date:", "age", if (viewModel != null) viewModel.getBirth else null)
+                        @inputAge("Age:", "years", if (viewModel != null) viewModel.getAge else null)
                         <label class="inputLabel">Gender:</label>
                         <div class="btn-group pull-left" data-toggle="buttons">
-                            @inputButton("Male", "sex", "maleBtn", patient.getSex == "" || patient.getSex == null, patient.getSex == "Male", "Male")
-                            @inputButton("Female", "sex", "femaleBtn", patient.getSex == "" || patient.getSex == null, patient.getSex == "Female", "Female")
+                            @inputButton("Male", "sex", "maleBtn", if (viewModel !=null) viewModel.getSex == "" || viewModel.getSex == null else false, if (viewModel != null) viewModel.getSex == "Male" else false, "Male")
+                            @inputButton("Female", "sex", "femaleBtn", if (viewModel !=null) viewModel.getSex == "" || viewModel.getSex == null else false, if (viewModel != null) viewModel.getSex == "Female" else false, "Female")
                         </div>
                         <div id="pregnantWrap" class="hidden">
                             <div class="btn-group pull-left" data-toggle="buttons">

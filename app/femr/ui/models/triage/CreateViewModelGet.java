@@ -1,5 +1,7 @@
 package femr.ui.models.triage;
 
+import java.util.Date;
+
 //NOTE: the triage view sets the input element names dynamically
 //based on the vital name entry in the database, but this
 //ViewModel does NOT.
@@ -10,6 +12,7 @@ public class CreateViewModelGet {
     private String address;
     private String city;
     private int age;
+    private Date birth;
     private String sex;
     //begin vitals
     private Integer bloodPressureSystolic;
@@ -67,6 +70,14 @@ public class CreateViewModelGet {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
     }
 
     public String getSex() {

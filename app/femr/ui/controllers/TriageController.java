@@ -11,6 +11,7 @@ import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
+import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
 import femr.ui.views.html.triage.index;
 import femr.util.calculations.dateUtils;
@@ -56,7 +57,7 @@ public class TriageController extends Controller {
 
         IPatient patient = patientProvider.get();
         patient.setId(0);
-        return ok(index.render(currentUser, vitalNames, error, patient));
+        return ok(index.render(currentUser, vitalNames, error, patient, null));
     }
 
     /*
@@ -101,6 +102,8 @@ public class TriageController extends Controller {
         boolean error = false;
         String s_id = request().getQueryString("id");
 
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()){
             error = true;
@@ -111,7 +114,7 @@ public class TriageController extends Controller {
 
         if (StringUtils.isNullOrWhiteSpace(s_id)) {
             error = true;
-            return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
+            return ok(index.render(currentUser, vitalNames, error, patientProvider.get(), null));
         }
         s_id = s_id.trim();
         Integer id = Integer.parseInt(s_id);
@@ -119,10 +122,18 @@ public class TriageController extends Controller {
 
         if (patientServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUser, vitalNames, error, patientProvider.get()));
+            return ok(index.render(currentUser, vitalNames, error, patientProvider.get(), null));
         } else {
             IPatient patient = patientServiceResponse.getResponseObject();
-            return ok(index.render(currentUser, vitalNames, false, patient));
+            // populate viewmodelget
+            viewModelGet.setFirstName(patient.getFirstName());
+            viewModelGet.setLastName(patient.getLastName());
+            viewModelGet.setBirth(patient.getAge());
+            viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+            viewModelGet.setSex(patient.getSex());
+            viewModelGet.setAddress(patient.getAddress());
+            viewModelGet.setCity(patient.getCity());
+            return ok(index.render(currentUser, vitalNames, false,patient,  viewModelGet));
         }
     }
 

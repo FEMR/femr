@@ -160,6 +160,7 @@ public class TriageController extends Controller {
         patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTime());
         patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
         patientEncounter.setWeeksPregnant(viewModel.getWeeksPregnant());
+        patientEncounter.setIsPregnant(viewModel.getIsPregnant());
 
         return patientEncounter;
     }

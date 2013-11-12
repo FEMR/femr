@@ -67,7 +67,7 @@ public class SearchController extends Controller {
                 id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
             }
             else{
-                id = 2;
+                id = 1;
             }
 
 

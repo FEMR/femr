@@ -84,7 +84,6 @@ public class SearchService implements ISearchService {
     public  ServiceResponse  <List<? extends IPatient>> findPatientByName(String firstName, String lastName){
         ExpressionList<Patient> query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
         List<? extends IPatient> savedPatients =  patientRepository.find(query);
-        //IPatient savedPatient = patientRepository.findOne(query);
         ServiceResponse  <List<? extends IPatient>> response = new ServiceResponse<>();
         if (savedPatients == null || savedPatients.size() == 0){
             response.addError("first name/last name","patient could not be found by name");

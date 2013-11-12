@@ -33,10 +33,8 @@
 
             @for( a <- 0 to viewModel.getPatientNameResult.size()-1){
             <div class="col-xs-3 col-sm-3 col-md-3">
-
                @viewModel.setDupList(a)
                 <div class="row">
-
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <label>Name:</label>
                     </div>
@@ -44,8 +42,6 @@
                         <p>@viewModel.getFirstName @viewModel.getLastName</p>
                     </div>
                 </div>
-
-
             </div>
 
             <div class="col-xs-3 col-sm-3 col-md-3">
@@ -57,7 +53,6 @@
                         <p>@viewModel.getAge</p>
                     </div>
                 </div>
-
             </div>
 
             <div class="col-xs-3 col-sm-3 col-md-3">
@@ -69,7 +64,6 @@
                         <p>@viewModel.getAddress</p>
                     </div>
                 </div>
-
             </div>
 
             <div class="col-xs-3 col-sm-3 col-md-3">
@@ -77,16 +71,13 @@
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <button type="submit" onclick="setSearchResults(@viewModel.getUserID)"  id="selectPageFromRow" class="btn btn-default pull-right">Select</button>
                     </div>
-
                 </div>
-
             </div>
             }
             </div>
         </div>
     }
     }
-
             <div class="row">
                 <div class ="well">
                     <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>

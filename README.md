@@ -51,7 +51,7 @@ Adding a ~ before run or test will make it run perpetually. Also, you can run ou
 
 The MIT License (MIT)
 
-Copyright (c) 2013 Stephen Cavaliere, David Palombo, David Weisberg, Kevin Zurek
+Copyright (c) 2013 Stephen Cavaliere, David Palombo, David Weisberg, Kevin Zurek , Evan Michaux, Priyesh Pandya, Jerell Robinson, Nick Rushak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

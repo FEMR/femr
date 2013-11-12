@@ -58,54 +58,63 @@ function checkNumbers(){
     if ($.trim($('#respirations').val().length) > 0 && $.isNumeric($('#respirations').val()) == false){
         $('#respirations').val("");
         $('#respirations').attr("placeholder","Enter a Number");
+        $('#respirations').css('border-color','red');
         pass = false;
     }
     //Blood Pressure - Diasolic
     if ($.trim($('#bloodPressureSystolic').val().length) > 0 && $.isNumeric($('#bloodPressureSystolic').val()) == false){
         $('#bloodPressureSystolic').val("");
         $('#bloodPressureSystolic').attr("placeholder","Enter a Number");
+        $('#bloodPressureSystolic').css('border-color','red');
         pass = false;
     }
     //Respirations
     if ($.trim($('#bloodPressureDiastolic').val().length) > 0 && $.isNumeric($('#bloodPressureDiastolic').val()) == false){
         $('#bloodPressureDiastolic').val("");
         $('#bloodPressureDiastolic').attr("placeholder","Enter a Number");
+        $('#bloodPressureDiastolic').css('border-color','red');
         pass = false;
     }
     //Heart Rate
     if ($.trim($('#heartRate').val().length) > 0 && $.isNumeric($('#heartRate').val()) == false){
         $('#heartRate').val("");
         $('#heartRate').attr("placeholder","Enter a Number");
+        $('#heartRate').css('border-color','red');
         pass = false;
     }
     //Oxygen
     if ($.trim($('#oxygen').val().length) > 0 && $.isNumeric($('#oxygen').val()) == false){
         $('#oxygen').val("");
         $('#oxygen').attr("placeholder","Enter a Number");
+        $('#oxygen').css('border-color','red');
         pass = false;
     }
     //Temperature
     if ($.trim($('#temperature').val().length) > 0 && $.isNumeric($('#temperature').val()) == false){
         $('#temperature').val("");
         $('#temperature').attr("placeholder","Enter a Number");
+        $('#temperature').css('border-color','red');
         pass = false;
     }
     //Weight
     if ($.trim($('#weight').val().length) > 0 && $.isNumeric($('#weight').val()) == false){
         $('#weight').val("");
         $('#weight').attr("placeholder","Enter a Number");
+        $('#weight').css('border-color','red');
         pass = false;
     }
     //Height - Feet
     if ($.trim($('#heightFeet').val().length) > 0 && $.isNumeric($('#heightFeet').val()) == false){
         $('#heightFeet').val("");
         $('#heightFeet').attr("placeholder","Enter a Number");
+        $('#heightFeet').css('border-color','red');
         pass = false;
     }
     //Height - Inches
     if ($.trim($('#heightInches').val().length) > 0 && $.isNumeric($('#heightInches').val()) == false){
         $('#heightInches').val("");
         $('#heightInches').attr("placeholder","Enter a Number");
+        $('#heightInches').css('border-color','red');
         pass = false;
     }
     return pass;

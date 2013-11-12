@@ -105,6 +105,42 @@ $('#city').change(function () {
     $('#city').css('border', '');
 });
 
+$('#respirations').change(function () {
+    $('#respirations').css('border', '');
+});
+
+$('#bloodPressureSystolic').change(function () {
+    $('#bloodPressureSystolic').css('border', '');
+});
+
+$('#bloodPressureDiastolic').change(function () {
+    $('#bloodPressureDiastolic').css('border', '');
+});
+
+$('#heartRate').change(function () {
+    $('#heartRate').css('border', '');
+});
+
+$('#oxygen').change(function () {
+    $('#oxygen').css('border', '');
+});
+
+$('#temperature').change(function () {
+    $('#temperature').css('border', '');
+});
+
+$('#weight').change(function () {
+    $('#weight').css('border', '');
+});
+
+$('#heightFeet').change(function () {
+    $('#heightFeet').css('border', '');
+});
+
+$('#heightInches').change(function () {
+    $('#heightInches').css('border', '');
+});
+
 //BMI auto- calculator
 window.setInterval(function () {
     if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()) {

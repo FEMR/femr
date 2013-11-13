@@ -24,4 +24,8 @@ public interface IPatientEncounter {
     Integer getWeeksPregnant();
 
     void setWeeksPregnant(Integer weeksPregnant);
+
+    Boolean getIsPregnant();
+
+    void setIsPregnant(Boolean isPregnant);
 }

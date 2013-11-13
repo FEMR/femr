@@ -27,6 +27,7 @@ public class CreateViewModelGet {
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
+    private Boolean isPregnant;
 
     public CreateViewModelGet() {
     }
@@ -175,5 +176,13 @@ public class CreateViewModelGet {
 
     public void setWeeksPregnant(Integer weeksPregnant) {
         this.weeksPregnant = weeksPregnant;
+    }
+
+    public Boolean getIsPregnant() {
+        return isPregnant;
+    }
+
+    public void setIsPregnant(Boolean isPregnant) {
+        this.isPregnant = isPregnant;
     }
 }

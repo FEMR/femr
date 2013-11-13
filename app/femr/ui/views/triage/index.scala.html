@@ -50,17 +50,28 @@
                             @inputButton("Male", "sex", "maleBtn", if (viewModel !=null) viewModel.getSex == "" || viewModel.getSex == null else true, if (viewModel != null) viewModel.getSex == "Male" else false, "Male")
                             @inputButton("Female", "sex", "femaleBtn", if (viewModel !=null) viewModel.getSex == "" || viewModel.getSex == null else true, if (viewModel != null) viewModel.getSex == "Female" else false, "Female")
                         </div>
+
+
                         <div id="pregnantWrap" class="hidden">
+                            <input type="text" class="hidden" id="boolPregnant" name="isPregnant">
                             <div class="btn-group pull-left" data-toggle="buttons">
-                                <label class="btn btn-default">
-                                    <input type="checkbox" name="pregnant" id="pregnantBtn">Pregnant?
-                                </label>
+                                <label class="inputLabel">Pregnant?</label>
+                                <div class="btn-group pull-left" data-toggle="buttons">
+                                    <label class="btn btn-default">
+                                        <input type="radio" id="yesPregnantBtn">Yes
+                                    </label>
+                                    <label class="btn btn-default">
+                                        <input type="radio" id="noPregnantBtn">No
+                                    </label>
+                                </div>
                             </div>
                             <div id="weeksWrap" class="hidden">
                                 <label class="inputLabel">Weeks:</label>
                                 <input type="text" class="form-control input-sm pull-left" name="weeksPregnant">
                             </div>
                         </div>
+
+
                     </div>
                 </div>
                 <div class="col-sm-6 col-xs-6">

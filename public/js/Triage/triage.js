@@ -18,18 +18,24 @@ $(document).ready(function () {
         if (!$('#pregnantWrap').hasClass('hidden')) {
             $('#pregnantWrap').addClass('hidden');
         }
-        if ($('#pregnantBtn').is(':checked')) {
-            $('#pregnantBtn').prop('checked', false);
-            $('#pregnantBtn').parent().removeClass('active');
+        if ($('#yesPregnantBtn').is(':checked')) {
+            $('#yesPregnantBtn').prop('checked', false);
+            $('#yesPregnantBtn').parent().removeClass('active');
         }
         if (!$('#weeksWrap').hasClass('hidden')) {
             $('#weeksWrap').addClass('hidden');
         }
     });
-    $('#pregnantBtn').change(function () {
+
+    $('#yesPregnantBtn').change(function(){
         $('#weeksWrap').removeClass('hidden');
+        $('#boolPregnant').val(true);
     });
 
+    $('#noPregnantBtn').change(function(){
+        $('#weeksWrap').addClass('hidden');
+        $('#boolPregnant').val(false);
+    });
 
     $('.datepicker-age').datepicker({
         format: "yyyy-mm-dd",

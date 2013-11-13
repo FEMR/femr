@@ -54,7 +54,12 @@ public class SearchController extends Controller {
         ServiceResponse<IPatient> patientServiceResponseid= null;
         Integer id;
 
-        if (!StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
+        if (!StringUtils.isNullOrWhiteSpace(s_id)){
+            s_id = s_id.trim();
+            id = Integer.parseInt(s_id);
+            patientServiceResponseid = searchService.findPatientById(id);
+        }
+       else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName)) {
             firstName = firstName.trim();
             lastName = lastName.trim();
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);
@@ -65,11 +70,7 @@ public class SearchController extends Controller {
                 id = 0;
             }
         }
-        else if (!StringUtils.isNullOrWhiteSpace(s_id)){
-            s_id = s_id.trim();
-            id = Integer.parseInt(s_id);
-            patientServiceResponseid = searchService.findPatientById(id);
-        }
+
         else{
 
             return ok(showError.render(currentUser));

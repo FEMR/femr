@@ -79,8 +79,6 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-
-
     public  ServiceResponse  <List<? extends IPatient>> findPatientByName(String firstName, String lastName){
         ExpressionList<Patient> query;
         if(!firstName.isEmpty() && lastName.isEmpty()){

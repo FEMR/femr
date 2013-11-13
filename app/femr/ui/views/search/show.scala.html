@@ -4,7 +4,7 @@
 @import femr.ui.controllers.routes.SearchController
 @import femr.ui.controllers.routes.TriageController
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("/css/search.css")">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
@@ -89,8 +89,8 @@
                     }
 
                     <div class="medicalHistoryLineDivide"></div>
-                    <div class="row triageInputRow">
-                        <div class="col-sm-6 col-xs-6">
+                    <div class="row inputRow">
+                        <div class="col-sm-6 col-xs-6 col-md-6">
                             <h3 class="pull-left bold margin-top-zero">General Info</h3>
                             <div class="medicalHistoryLineDivide"></div>
                             <div class="text-center">
@@ -109,15 +109,19 @@
                                 @*display pregnancy?*@
                             </div>
                         </div>
-                        <div class="col-sm-6 col-xs-6">
+                        <div class="col-sm-6 col-xs-6 col-md-6">
                             <h3 class="pull-left bold margin-top-zero">Previous Encounters</h3>
                             <div class="medicalHistoryLineDivide"></div>
-                            @for(patientEncounter <- patientEncounters) {
-                                <a href="/show/encounter/@patientEncounter.getId">@patientEncounter.getDateOfVisit</a>
-                                <label>chief complaint:</label> <p>@patientEncounter.getChiefComplaint</p>
-                            }
+                            <ol id="test">
+                                @for(patientEncounter <- patientEncounters) {
+                                    <li><a href="/show/encounter/@patientEncounter.getId" class="btn btn-default btn-xs btn-block"
+                                    role="button" type="button"><p class="date" id="date">@patientEncounter.getDateOfVisit</p><p><label>chief complaint: </label>
+                                        @patientEncounter.getChiefComplaint</p></a></li>
+                                    <div class="medicalHistoryLineDivide"></div>
+                                }
+                            </ol>
                         </div>
                     </div>
-    </div>
-    </div>
-}
+                </div>
+            </div>
+    }

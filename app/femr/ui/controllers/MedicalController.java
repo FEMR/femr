@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MedicalController extends Controller {
-    private int HPI_FIELDS = 8;
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
@@ -223,7 +222,7 @@ public class MedicalController extends Controller {
                                                                               CurrentUser currentUserSession){
         List<IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
         IPatientEncounterHpiField[] patientEncounterHpiField = new IPatientEncounterHpiField[9];
-        for (int i = 0; i < HPI_FIELDS; i++){
+        for (int i = 0; i < 9; i++){
             patientEncounterHpiField[i] = patientEncounterHpiFieldProvider.get();
             patientEncounterHpiField[i].setDateTaken(medicalService.getCurrentDateTime());
             patientEncounterHpiField[i].setPatientEncounterId(patientEncounter.getId());
@@ -231,13 +230,14 @@ public class MedicalController extends Controller {
             patientEncounterHpiField[i].setHpiFieldId(i+1);
         }
         patientEncounterHpiField[0].setHpiFieldValue(viewModelPost.getOnset());
-        patientEncounterHpiField[1].setHpiFieldValue(viewModelPost.getSeverity());
-        patientEncounterHpiField[2].setHpiFieldValue(viewModelPost.getRadiation());
-        patientEncounterHpiField[3].setHpiFieldValue(viewModelPost.getQuality());
-        patientEncounterHpiField[4].setHpiFieldValue(viewModelPost.getProvokes());
-        patientEncounterHpiField[5].setHpiFieldValue(viewModelPost.getPalliates());
-        patientEncounterHpiField[6].setHpiFieldValue(viewModelPost.getTimeOfDay());
-        patientEncounterHpiField[7].setHpiFieldValue(viewModelPost.getPhysicalExamination());
+        patientEncounterHpiField[1].setHpiFieldValue(viewModelPost.getOnsetTime());
+        patientEncounterHpiField[2].setHpiFieldValue(viewModelPost.getSeverity());
+        patientEncounterHpiField[3].setHpiFieldValue(viewModelPost.getRadiation());
+        patientEncounterHpiField[4].setHpiFieldValue(viewModelPost.getQuality());
+        patientEncounterHpiField[5].setHpiFieldValue(viewModelPost.getProvokes());
+        patientEncounterHpiField[6].setHpiFieldValue(viewModelPost.getPalliates());
+        patientEncounterHpiField[7].setHpiFieldValue(viewModelPost.getTimeOfDay());
+        patientEncounterHpiField[8].setHpiFieldValue(viewModelPost.getPhysicalExamination());
 
         patientEncounterHpiFields.addAll(Arrays.asList(patientEncounterHpiField));
         return patientEncounterHpiFields;

@@ -116,6 +116,10 @@ public class CreateViewModelGet {
         return problems[i];
     }
 
+    public String[] getProblems() {
+        return problems;
+    }
+
     public void setProblems(String[] problems) {
         this.problems = problems;
     }

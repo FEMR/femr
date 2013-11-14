@@ -93,11 +93,9 @@
                         <div class="row">
                             <ol class="problems">
                                 <label class="title">List of Diagnoses</label>
-                                <li>@viewModel.getProblems(0)</li>
-                                <li>@viewModel.getProblems(1)</li>
-                                <li>@viewModel.getProblems(2)</li>
-                                <li>@viewModel.getProblems(3)</li>
-                                <li>@viewModel.getProblems(4)</li>
+                                @for(y <- 1 to viewModel.getProblems.size) {
+                                    <li>@viewModel.getProblems(y-1)</li>
+                                }
                             </ol>
                         </div>
                     </div>

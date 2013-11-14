@@ -18,6 +18,7 @@ POST        /triage                     @femr.ui.controllers.TriageController.cr
 GET         /medical/find               @femr.ui.controllers.MedicalController.createPopulatedGet()
 POST        /medical                    @femr.ui.controllers.MedicalController.createPopulatedPost()
 GET         /medical                    @femr.ui.controllers.MedicalController.createGet()
+POST        /medical/updateVitals/:id   @femr.ui.controllers.MedicalController.updateVitalsPost(id: java.lang.Integer)
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()
 GET         /login                      @femr.ui.controllers.SessionsController.createGet()

@@ -2,6 +2,7 @@ package femr.data.daos;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 
 import java.util.List;
 
@@ -25,6 +26,11 @@ public class Repository<T> implements IRepository<T> {
 
     @Override
     public List<? extends T> find(ExpressionList<? extends T> query) {
+        return query.findList();
+    }
+
+    @Override
+    public List<? extends T> find(Query<? extends T> query) {
         return query.findList();
     }
 

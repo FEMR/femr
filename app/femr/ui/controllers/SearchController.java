@@ -59,7 +59,7 @@ public class SearchController extends Controller {
             id = Integer.parseInt(s_id);
             patientServiceResponseid = searchService.findPatientById(id);
         }
-       else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName)) {
+       else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName) ||!StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
             firstName = firstName.trim();
             lastName = lastName.trim();
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);

@@ -3,10 +3,10 @@
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.SearchController
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("/css/triage.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("../../../../../public/css/triage.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("/js/search/search.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
     }
     @searchById = {
     @helper.form(action = SearchController.createGet()) {

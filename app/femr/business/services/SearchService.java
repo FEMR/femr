@@ -79,10 +79,18 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-
-
     public  ServiceResponse  <List<? extends IPatient>> findPatientByName(String firstName, String lastName){
-        ExpressionList<Patient> query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
+        ExpressionList<Patient> query;
+        if(!firstName.isEmpty() && lastName.isEmpty()){
+            query = getPatientQuery().where().eq("first_name",firstName);
+        }
+         else if (firstName.isEmpty() && !lastName.isEmpty()){
+            query = getPatientQuery().where().eq("last_name",lastName);
+        }
+        else{
+            query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
+        }
+
         List<? extends IPatient> savedPatients =  patientRepository.find(query);
         ServiceResponse  <List<? extends IPatient>> response = new ServiceResponse<>();
         if (savedPatients == null || savedPatients.size() == 0){

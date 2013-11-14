@@ -128,6 +128,7 @@ public class PharmaciesController extends Controller {
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
         List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
         List<String> dynamicViewProblems = new ArrayList<>();
+
         if (patientEncounterProblemsServiceResponse.hasErrors()) {
             //error = true;
         } else {
@@ -139,6 +140,7 @@ public class PharmaciesController extends Controller {
                 dynamicViewProblems.add(patientEncounterProblems.get(problem).getTreatmentFieldValue());
             }
         }
+
         String[] viewProblems = new String[dynamicViewProblems.size()];
         viewProblems = dynamicViewProblems.toArray(viewProblems);
         viewModel.setProblems(viewProblems);

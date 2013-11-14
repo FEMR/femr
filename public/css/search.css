@@ -18,11 +18,11 @@
     clear: left;
     text-align: right;
 }
-.btn{
+.encbtns{
     background: transparent;
     border: none !important;
 }
-.btn:hover{
+.encbtns:hover{
     background-color: #E1DDCF;
 }
 /*Boot strap overrides*/

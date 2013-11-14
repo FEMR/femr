@@ -114,7 +114,7 @@
                             <div class="medicalHistoryLineDivide"></div>
                             <ol id="test">
                                 @for(patientEncounter <- patientEncounters) {
-                                    <li><a href="/show/encounter/@patientEncounter.getId" class="btn btn-default btn-xs btn-block"
+                                    <li><a href="/show/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block"
                                     role="button" type="button"><p class="date" id="date">@patientEncounter.getDateOfVisit</p><p><label>chief complaint: </label>
                                         @patientEncounter.getChiefComplaint</p></a></li>
                                     <div class="medicalHistoryLineDivide"></div>

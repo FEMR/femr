@@ -127,21 +127,22 @@ public class PharmaciesController extends Controller {
         //find patient problems, they don't have to exist.
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
         List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
+        List<String> dynamicViewProblems = new ArrayList<>();
+
         if (patientEncounterProblemsServiceResponse.hasErrors()) {
             //error = true;
         } else {
             patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
         }
 
-
-        int POSSIBLE_PROBLEMS = 5;
-        String[] viewProblems = new String[POSSIBLE_PROBLEMS];
-
         if (patientEncounterProblems.size() > 0) {
             for (int problem = 0; problem < patientEncounterProblems.size(); problem++) {
-                viewProblems[problem] = patientEncounterProblems.get(problem).getTreatmentFieldValue();
+                dynamicViewProblems.add(patientEncounterProblems.get(problem).getTreatmentFieldValue());
             }
         }
+
+        String[] viewProblems = new String[dynamicViewProblems.size()];
+        viewProblems = dynamicViewProblems.toArray(viewProblems);
         viewModel.setProblems(viewProblems);
 
         return ok(populated.render(currentUserSession, viewModel, error));

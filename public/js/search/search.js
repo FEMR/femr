@@ -5,10 +5,10 @@ $(document).ready(function ()
         $(this).attr('id', "date" + (i + 1));
     });
 
-});
+    $('#newPatientBtn').click(function(){
+        window.location= "/triage";
+    });
 
-$('#newPatientBtn').click(function(){
-    window.location= "/triage";
 });
 
 function setSearchResults(idx){

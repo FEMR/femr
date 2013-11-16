@@ -1,7 +1,6 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
@@ -15,7 +14,6 @@ import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
 import femr.ui.helpers.controller.TriageHelper;
 import femr.ui.views.html.triage.index;
-import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -47,25 +45,64 @@ public class TriageController extends Controller {
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             //error
-            //goto 404?
+            //goto 404
         }
 
         CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, vitalServiceResponse.getResponseObject(), false);
-
 
         return ok(index.render(currentUser, viewModelGet));
     }
 
     /*
-    *if id is 0 then it is a new patient
-    * if id is > 0 then it is a new encounter
+    Used when user has searched for an existing patient
+    and wants to create a new encounter
      */
+    public Result createPopulatedGet() {
+        boolean searchError = false;
+
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        IPatient patient = null;
+
+        //retrieve patient id from query string
+        String s_id = request().getQueryString("id");
+        if (StringUtils.isNullOrWhiteSpace(s_id)) {
+            searchError = true;
+        } else {
+            s_id = s_id.trim();
+            Integer id = Integer.parseInt(s_id);
+            ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
+            if (patientServiceResponse.hasErrors()) {
+                searchError = true;
+            } else {
+                patient = patientServiceResponse.getResponseObject();
+            }
+        }
+
+        //retrieve vitals names for dynamic html element naming
+        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        if (vitalServiceResponse.hasErrors()) {
+            //error
+            //should goto 404
+        }
+
+        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, vitalServiceResponse.getResponseObject(), searchError);
+
+        return ok(index.render(currentUser, viewModelGet));
+    }
+
+    /*
+   *if id is 0 then it is a new patient and a new encounter
+   * if id is > 0 then it is only a new encounter
+    */
     public Result createPost(int id) {
 
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+        //save new patient if new form
+        //else find the patient to create a new encounter for
         ServiceResponse<IPatient> patientServiceResponse;
         if (id == 0) {
             IPatient patient = triageHelper.createPatient(viewModel, currentUser);
@@ -79,6 +116,7 @@ public class TriageController extends Controller {
             //goto 404 page
         }
 
+        //create and save a new encounter
         IPatientEncounter patientEncounter = triageHelper.createPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
         if (patientEncounterServiceResponse.hasErrors()) {
@@ -86,51 +124,19 @@ public class TriageController extends Controller {
             //goto 404 page
         }
 
+        //create and save vitals in new encounter
         List<IPatientEncounterVital> patientEncounterVitals = triageHelper.createVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
-
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = new ServiceResponse<>();
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {
-                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+                patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+                if (patientEncounterVitalServiceResponse.hasErrors()) {
+                    //error
+                    //goto 404 page
+                }
             }
         }
 
         return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
-    }
-
-    /*
-    Used when user is creating an encounter for an existing patient.
-     */
-    public Result createPopulatedGet() {
-        boolean searchError = false;
-
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        IPatient patient = null;
-
-        String s_id = request().getQueryString("id");
-        if (StringUtils.isNullOrWhiteSpace(s_id)) {
-            searchError = true;
-        }
-        else{
-            s_id = s_id.trim();
-            Integer id = Integer.parseInt(s_id);
-            ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-
-            if (patientServiceResponse.hasErrors()) {
-                searchError = true;
-            } else {
-                patient = patientServiceResponse.getResponseObject();
-            }
-        }
-
-        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
-        if (vitalServiceResponse.hasErrors()) {
-            //error
-            //should goto 404
-        }
-
-        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, vitalServiceResponse.getResponseObject(), searchError);
-
-        return ok(index.render(currentUser, viewModelGet));
     }
 }

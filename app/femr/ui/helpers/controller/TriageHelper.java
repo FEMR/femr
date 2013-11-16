@@ -6,6 +6,7 @@ import femr.business.dtos.CurrentUser;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
+import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
 import femr.util.calculations.dateUtils;
 
@@ -23,6 +24,18 @@ public class TriageHelper {
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
+    }
+
+    public CreateViewModelGet populateViewModelGet(IPatient patient){
+        CreateViewModelGet createViewModelGet = new CreateViewModelGet();
+        createViewModelGet.setFirstName(patient.getFirstName());
+        createViewModelGet.setLastName(patient.getLastName());
+        createViewModelGet.setAddress(patient.getAddress());
+        createViewModelGet.setCity(patient.getCity());
+        createViewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+        createViewModelGet.setBirth(patient.getAge());
+        createViewModelGet.setSex(patient.getSex());
+        return createViewModelGet;
     }
 
     public IPatient createPatient(CreateViewModelPost viewModelPost, CurrentUser currentUser){

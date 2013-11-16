@@ -55,8 +55,6 @@ public class TriageController extends Controller {
         }
         List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
 
-
-
         IPatient patient = patientProvider.get();
         patient.setId(0);
         return ok(index.render(currentUser, vitalNames, patient, viewModelGet));
@@ -82,14 +80,14 @@ public class TriageController extends Controller {
 
         if (patientServiceResponse.hasErrors()) {
             //error
-            //goto 404 page?
+            //goto 404 page
         }
 
         IPatientEncounter patientEncounter = triageHelper.createPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
         if (patientEncounterServiceResponse.hasErrors()){
             //error
-            //goto 404 page?
+            //goto 404 page
         }
 
         List<IPatientEncounterVital> patientEncounterVitals = triageHelper.createVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
@@ -136,16 +134,7 @@ public class TriageController extends Controller {
             return ok(index.render(currentUser, vitalNames, patientProvider.get(), viewModelGet));
         } else {
             IPatient patient = patientServiceResponse.getResponseObject();
-            // populate viewmodelget
-            viewModelGet.setFirstName(patient.getFirstName());
-            viewModelGet.setLastName(patient.getLastName());
-            viewModelGet.setAddress(patient.getAddress());
-            viewModelGet.setCity(patient.getCity());
-            viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
-            viewModelGet.setBirth(patient.getAge());
-            viewModelGet.setSex(patient.getSex());
-
-
+            viewModelGet = triageHelper.populateViewModelGet(patientServiceResponse.getResponseObject());
 
             return ok(index.render(currentUser, vitalNames, patient, viewModelGet));
         }

@@ -9,6 +9,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.*;
+import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.UpdateVitalsModel;
@@ -36,9 +37,10 @@ public class MedicalController extends Controller {
     private ISearchService searchService;
     private ITriageService triageService;
     private IMedicalService medicalService;
+    private MedicalHelper medicalHelper;
 
     @Inject
-    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService, Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService, Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider, MedicalHelper medicalHelper) {
 
         this.sessionService = sessionService;
         this.searchService = searchService;
@@ -48,6 +50,7 @@ public class MedicalController extends Controller {
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
+        this.medicalHelper = medicalHelper;
     }
 
     public Result createGet() {

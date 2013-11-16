@@ -81,8 +81,12 @@ public class TriageController extends Controller {
             patientServiceResponse = searchService.findPatientById(id);
         }
 
+        if (patientServiceResponse.hasErrors()){
+            //error
+        }
 
-        IPatientEncounter patientEncounter = populatePatientEncounter(viewModel, patientServiceResponse, currentUser);
+
+        IPatientEncounter patientEncounter = triageHelper.createPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
 
         List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
@@ -141,18 +145,6 @@ public class TriageController extends Controller {
 
 
     //helper functions
-
-    private IPatientEncounter populatePatientEncounter(CreateViewModelPost viewModel, ServiceResponse<IPatient> patientServiceResponse, CurrentUser currentUser) {
-        IPatientEncounter patientEncounter = patientEncounterProvider.get();
-        patientEncounter.setPatientId(patientServiceResponse.getResponseObject().getId());
-        patientEncounter.setUserId(currentUser.getId());
-        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTime());
-        patientEncounter.setChiefComplaint(viewModel.getChiefComplaint());
-        patientEncounter.setWeeksPregnant(viewModel.getWeeksPregnant());
-        patientEncounter.setIsPregnant(viewModel.getIsPregnant());
-
-        return patientEncounter;
-    }
 
 
     private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModelPost viewModel,

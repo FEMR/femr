@@ -62,7 +62,7 @@ public class MedicalController extends Controller {
         return ok(index.render(currentUserSession, error, null));
     }
 
-    public Result createPopulatedPost() {
+    public Result createPost() {
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
@@ -76,7 +76,6 @@ public class MedicalController extends Controller {
 
         //Treatment Data
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = medicalHelper.populateTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
-
         for (int i = 0; i < patientEncounterTreatmentFields.size(); i++) {
             if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())) {
                 continue;

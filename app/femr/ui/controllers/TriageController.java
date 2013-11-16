@@ -13,6 +13,7 @@ import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IVital;
 import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
+import femr.ui.helpers.controller.TriageHelper;
 import femr.ui.views.html.triage.index;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -33,6 +34,7 @@ public class TriageController extends Controller {
     private ISearchService searchService;
     private Provider<IPatientEncounter> patientEncounterProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+    private TriageHelper triageHelper;
 
     @Inject
     public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
@@ -72,7 +74,7 @@ public class TriageController extends Controller {
 
         ServiceResponse<IPatient> patientServiceResponse;
         if (id == 0){
-            IPatient patient = populatePatient(viewModel, currentUser);
+            IPatient patient = triageHelper.createPatient(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
         }
         else{
@@ -139,19 +141,6 @@ public class TriageController extends Controller {
 
 
     //helper functions
-
-
-    private IPatient populatePatient(CreateViewModelPost viewModel, CurrentUser currentUser) {
-        IPatient patient = patientProvider.get();
-        patient.setUserId(currentUser.getId());
-        patient.setFirstName(viewModel.getFirstName());
-        patient.setLastName(viewModel.getLastName());
-        patient.setAge(viewModel.getAge());
-        patient.setSex(viewModel.getSex());
-        patient.setAddress(viewModel.getAddress());
-        patient.setCity(viewModel.getCity());
-        return patient;
-    }
 
     private IPatientEncounter populatePatientEncounter(CreateViewModelPost viewModel, ServiceResponse<IPatient> patientServiceResponse, CurrentUser currentUser) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();

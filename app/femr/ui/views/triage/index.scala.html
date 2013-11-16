@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, vitalNames: List[_ <: femr.common.models.IVital], searchError: java.lang.Boolean, patient: femr.common.models.IPatient, viewModel: femr.ui.models.triage.CreateViewModelGet)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.triage.CreateViewModelGet)
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
@@ -16,7 +16,7 @@
     @searchById = {
     @helper.form(action = TriageController.createPopulatedGet()) {
         <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
-        @if(searchError) {
+        @if(viewModel.isSearchError) {
             <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
         } else {
             <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Id">
@@ -31,7 +31,7 @@
     <div class="row">
         <div class="medicalHistoryLineDivide"></div>
         <div class ="well">
-        @helper.form(action = TriageController.createPost(patient.getId)) {
+        @helper.form(action = TriageController.createPost(viewModel.getId)) {
             <div class="row triageInputRow">
                 <div class="col-sm-6 col-xs-6">
                     <h3 class="pull-left bold margin-top-zero">General Info</h3>
@@ -82,32 +82,32 @@
                             <label class="inputLabel" id="bloodPressureInputLabelMargin" for="bloodPressureSystolic">
                                 Blood Pressure:</label>
                             <div class="col-sm-6 col-md-6 col-xs-6">
-                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="bloodPressureSystolic" placeholder="Systolic" name="@vitalNames.get(7).getName"/>
+                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
                             </div>
                             <div class="col-sm-6 col-md-6 col-xs-6">
-                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="bloodPressureDiastolic" placeholder="Diastolic" name="@vitalNames.get(8).getName"/>
+                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
                             </div>
                             <label class="inputLabel" for="heartRate">Heart Rate (bpm):</label>
-                            <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heartRate" name="@vitalNames.get(1).getName"/>
+                            <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heartRate" name="@viewModel.getVitalNames.get(1).getName"/>
                             <label class="inputLabel" for="temperature">Temperature (F):</label>
-                            <input type="number" step="any" min="0" class="form-control input-sm pull-left" id="temperature" name="@vitalNames.get(2).getName"/>
+                            <input type="number" step="any" min="0" class="form-control input-sm pull-left" id="temperature" name="@viewModel.getVitalNames.get(2).getName"/>
                             <label class="inputLabel" id="heightInputLabelMargin" for="heightFeet">Height:</label>
                             <div class="col-sm-6 col-md-6 col-xs-6">
-                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heightFeet" placeholder="Feet" name="@vitalNames.get(4).getName"/>
+                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
                             </div>
                             <div class="col-sm-6 col-md-6 col-xs-6">
-                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heightInches" placeholder="Inches" name="@vitalNames.get(5).getName"/>
+                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6 col-xs-6 padding-right-zero padding-left-zero">
                         <div class="text-center">
                             <label class="inputLabel" for="respirations">Respirations (bpm):</label>
-                            <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="respirations" name="@vitalNames.get(0).getName"/>
+                            <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="respirations" name="@viewModel.getVitalNames.get(0).getName"/>
                             <label class="inputLabel" for="oxygen">Oxygen Saturation (%):</label>
-                            <input type="number" step="any" min="0" class="form-control input-sm pull-left" id="oxygen" name="@vitalNames.get(3).getName"/>
+                            <input type="number" step="any" min="0" class="form-control input-sm pull-left" id="oxygen" name="@viewModel.getVitalNames.get(3).getName"/>
                             <label class="inputLabel" for="weight">Weight (lbs):</label>
-                            <input type="number" step="any" min="0" class="form-control input-sm pull-left" id="weight" name="@vitalNames.get(6).getName"/>
+                            <input type="number" step="any" min="0" class="form-control input-sm pull-left" id="weight" name="@viewModel.getVitalNames.get(6).getName"/>
                             <label class="inputLabel">BMI:</label>
                             <input type="text" id="bmi" class="form-control input-sm pull-left" disabled="true"/>
                         </div>

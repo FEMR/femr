@@ -105,7 +105,7 @@ public class TriageController extends Controller {
         //else find the patient to create a new encounter for
         ServiceResponse<IPatient> patientServiceResponse;
         if (id == 0) {
-            IPatient patient = triageHelper.createPatient(viewModel, currentUser);
+            IPatient patient = triageHelper.populatePatient(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
         } else {
             patientServiceResponse = searchService.findPatientById(id);
@@ -117,7 +117,7 @@ public class TriageController extends Controller {
         }
 
         //create and save a new encounter
-        IPatientEncounter patientEncounter = triageHelper.createPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
+        IPatientEncounter patientEncounter = triageHelper.populatePatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
         if (patientEncounterServiceResponse.hasErrors()) {
             //error
@@ -125,7 +125,7 @@ public class TriageController extends Controller {
         }
 
         //create and save vitals in new encounter
-        List<IPatientEncounterVital> patientEncounterVitals = triageHelper.createVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
+        List<IPatientEncounterVital> patientEncounterVitals = triageHelper.populateVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = new ServiceResponse<>();
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {

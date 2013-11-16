@@ -45,7 +45,7 @@ public class TriageController extends Controller {
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             //error
-            //goto 404
+            //goto 500
         }
 
         CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, vitalServiceResponse.getResponseObject(), false);
@@ -83,7 +83,7 @@ public class TriageController extends Controller {
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             //error
-            //should goto 404
+            //should goto 500
         }
 
         CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, vitalServiceResponse.getResponseObject(), searchError);
@@ -113,7 +113,7 @@ public class TriageController extends Controller {
 
         if (patientServiceResponse.hasErrors()) {
             //error
-            //goto 404 page
+            //goto 500 page
         }
 
         //create and save a new encounter
@@ -121,7 +121,7 @@ public class TriageController extends Controller {
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
         if (patientEncounterServiceResponse.hasErrors()) {
             //error
-            //goto 404 page
+            //goto 500 page
         }
 
         //create and save vitals in new encounter
@@ -132,7 +132,7 @@ public class TriageController extends Controller {
                 patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
                 if (patientEncounterVitalServiceResponse.hasErrors()) {
                     //error
-                    //goto 404 page
+                    //goto 500 page
                 }
             }
         }

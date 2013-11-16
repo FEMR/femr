@@ -75,7 +75,7 @@ public class MedicalController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
         //Treatment Data
-        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = populatePatientEncounterTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = medicalHelper.populateTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
 
         for (int i = 0; i < patientEncounterTreatmentFields.size(); i++) {
             if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())) {
@@ -86,7 +86,7 @@ public class MedicalController extends Controller {
         }
 
         //prescriptions
-        List<IPatientPrescription> patientPrescriptions = populatePatientPrescriptions(viewModelPost, patientEncounter, currentUserSession);
+        List<IPatientPrescription> patientPrescriptions = medicalHelper.populatePatientPrescriptions(viewModelPost, patientEncounter, currentUserSession);
         for (int k = 0; k < patientPrescriptions.size(); k++) {
             if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())) {
                 continue;
@@ -96,8 +96,7 @@ public class MedicalController extends Controller {
         }
 
         //HPI Data
-        List<IPatientEncounterHpiField> patientEncounterHpiFields = populatePatientEncounterHpiFields(viewModelPost, patientEncounter, currentUserSession);
-
+        List<IPatientEncounterHpiField> patientEncounterHpiFields = medicalHelper.populateHpiFields(viewModelPost, patientEncounter, currentUserSession);
         for (int j = 0; j < patientEncounterHpiFields.size(); j++) {
             if (StringUtils.isNullOrWhiteSpace(patientEncounterHpiFields.get(j).getHpiFieldValue())) {
                 continue;
@@ -266,87 +265,5 @@ public class MedicalController extends Controller {
         }
     }
 
-    //helper functions
 
-    private List<IPatientEncounterHpiField> populatePatientEncounterHpiFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
-
-        List<IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
-        IPatientEncounterHpiField[] patientEncounterHpiField = new IPatientEncounterHpiField[9];
-        for (int i = 0; i < 9; i++) {
-            patientEncounterHpiField[i] = patientEncounterHpiFieldProvider.get();
-            patientEncounterHpiField[i].setDateTaken(medicalService.getCurrentDateTime());
-            patientEncounterHpiField[i].setPatientEncounterId(patientEncounter.getId());
-            patientEncounterHpiField[i].setUserId(currentUserSession.getId());
-            patientEncounterHpiField[i].setHpiFieldId(i + 1);
-        }
-        patientEncounterHpiField[0].setHpiFieldValue(viewModelPost.getOnset());
-        patientEncounterHpiField[1].setHpiFieldValue(viewModelPost.getOnsetTime());
-        patientEncounterHpiField[2].setHpiFieldValue(viewModelPost.getSeverity());
-        patientEncounterHpiField[3].setHpiFieldValue(viewModelPost.getRadiation());
-        patientEncounterHpiField[4].setHpiFieldValue(viewModelPost.getQuality());
-        patientEncounterHpiField[5].setHpiFieldValue(viewModelPost.getProvokes());
-        patientEncounterHpiField[6].setHpiFieldValue(viewModelPost.getPalliates());
-        patientEncounterHpiField[7].setHpiFieldValue(viewModelPost.getTimeOfDay());
-        patientEncounterHpiField[8].setHpiFieldValue(viewModelPost.getPhysicalExamination());
-
-        patientEncounterHpiFields.addAll(Arrays.asList(patientEncounterHpiField));
-        return patientEncounterHpiFields;
-    }
-
-    private List<IPatientEncounterTreatmentField> populatePatientEncounterTreatmentFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
-
-        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
-        IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[8];
-        for (int i = 0; i < 8; i++) {
-            patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
-            patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
-            patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
-            patientEncounterTreatmentField[i].setUserId(currentUserSession.getId());
-        }
-
-        patientEncounterTreatmentField[0].setTreatmentFieldId(1);
-        patientEncounterTreatmentField[0].setTreatmentFieldValue(viewModelPost.getAssessment());
-
-        patientEncounterTreatmentField[1].setTreatmentFieldId(2);
-        patientEncounterTreatmentField[1].setTreatmentFieldValue(viewModelPost.getProblem1());
-        patientEncounterTreatmentField[2].setTreatmentFieldId(2);
-        patientEncounterTreatmentField[2].setTreatmentFieldValue(viewModelPost.getProblem2());
-        patientEncounterTreatmentField[3].setTreatmentFieldId(2);
-        patientEncounterTreatmentField[3].setTreatmentFieldValue(viewModelPost.getProblem3());
-        patientEncounterTreatmentField[4].setTreatmentFieldId(2);
-        patientEncounterTreatmentField[4].setTreatmentFieldValue(viewModelPost.getProblem4());
-        patientEncounterTreatmentField[5].setTreatmentFieldId(2);
-        patientEncounterTreatmentField[5].setTreatmentFieldValue(viewModelPost.getProblem5());
-
-        patientEncounterTreatmentField[6].setTreatmentFieldId(3);
-        patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getTreatment());
-        patientEncounterTreatmentField[7].setTreatmentFieldId(4);
-        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
-
-        patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
-        return patientEncounterTreatmentFields;
-    }
-
-    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
-
-        int SIZE = 5;
-        List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
-        IPatientPrescription[] patientPrescription = new IPatientPrescription[SIZE];
-        for (int i = 0; i < SIZE; i++) {
-            patientPrescription[i] = patientPrescriptionProvider.get();
-            patientPrescription[i].setEncounterId(patientEncounter.getId());
-            patientPrescription[i].setUserId(currentUserSession.getId());
-            patientPrescription[i].setReplaced(false);
-            patientPrescription[i].setReplacementId(null);
-        }
-
-        patientPrescription[0].setMedicationName(viewModelPost.getPrescription1());
-        patientPrescription[1].setMedicationName(viewModelPost.getPrescription2());
-        patientPrescription[2].setMedicationName(viewModelPost.getPrescription3());
-        patientPrescription[3].setMedicationName(viewModelPost.getPrescription4());
-        patientPrescription[4].setMedicationName(viewModelPost.getPrescription5());
-
-        patientPrescriptions.addAll(Arrays.asList(patientPrescription));
-        return patientPrescriptions;
-    }
 }

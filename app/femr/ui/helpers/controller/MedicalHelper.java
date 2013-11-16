@@ -19,11 +19,11 @@ public class MedicalHelper {
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public MedicalHelper(Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider){
+    public MedicalHelper(Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
-        this.patientPrescriptionProvider =patientPrescriptionProvider;
+        this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 
 
@@ -108,8 +108,7 @@ public class MedicalHelper {
         return patientPrescriptions;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals){
-
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //patient
         viewModelGet.setpID(patient.getId());
@@ -133,15 +132,13 @@ public class MedicalHelper {
         viewModelGet.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
         viewModelGet.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
 
-
-
         return viewModelGet;
     }
-    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital){
+
+    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital) {
         if (patientEncounterVital == null)
             return null;
         else
             return patientEncounterVital.getVitalValue();
     }
-
 }

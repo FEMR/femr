@@ -29,9 +29,6 @@ public class MedicalController extends Controller {
 
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
-    private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
-    private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
-    private Provider<IPatientPrescription> patientPrescriptionProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
@@ -40,15 +37,12 @@ public class MedicalController extends Controller {
     private MedicalHelper medicalHelper;
 
     @Inject
-    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService, Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider, MedicalHelper medicalHelper) {
+    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService,Provider<IPatientEncounterVital> patientEncounterVitalProvider, MedicalHelper medicalHelper) {
 
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.triageService = triageService;
         this.medicalService = medicalService;
-        this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
-        this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
-        this.patientPrescriptionProvider = patientPrescriptionProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.medicalHelper = medicalHelper;
     }

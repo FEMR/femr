@@ -5,6 +5,7 @@ import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.common.models.*;
 import femr.ui.models.medical.CreateViewModelPost;
+import femr.ui.models.medical.CreateViewModelGet;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
@@ -107,5 +108,40 @@ public class MedicalHelper {
         return patientPrescriptions;
     }
 
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals){
+
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+        //patient
+        viewModelGet.setpID(patient.getId());
+        viewModelGet.setCity(patient.getCity());
+        viewModelGet.setFirstName(patient.getFirstName());
+        viewModelGet.setLastName(patient.getLastName());
+        viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+        viewModelGet.setSex(patient.getSex());
+        //patient encounter
+        viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
+        viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
+        //patient encounter vitals
+
+        viewModelGet.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)));
+        viewModelGet.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)));
+        viewModelGet.setTemperature(getVitalOrNull(patientEncounterVitals.get(2)));
+        viewModelGet.setOxygenSaturation(getVitalOrNull(patientEncounterVitals.get(3)));
+        viewModelGet.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)));
+        viewModelGet.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)));
+        viewModelGet.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
+        viewModelGet.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
+        viewModelGet.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
+
+
+
+        return viewModelGet;
+    }
+    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital){
+        if (patientEncounterVital == null)
+            return null;
+        else
+            return patientEncounterVital.getVitalValue();
+    }
 
 }

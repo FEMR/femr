@@ -54,7 +54,6 @@ public class MedicalController extends Controller {
     }
 
     public Result createGet() {
-
         boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
@@ -63,44 +62,57 @@ public class MedicalController extends Controller {
     }
 
     public Result createPost() {
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         CreateViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(viewModelPost.getId());
         if (patientEncounterServiceResponse.hasErrors()) {
-            return createGet();
+            //error
+            //goto 500 page
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        //Treatment Data
-        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = medicalHelper.populateTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
-        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++) {
-            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())) {
-                continue;
-            } else {
-                medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
-            }
-        }
-
-        //prescriptions
-        List<IPatientPrescription> patientPrescriptions = medicalHelper.populatePatientPrescriptions(viewModelPost, patientEncounter, currentUserSession);
-        for (int k = 0; k < patientPrescriptions.size(); k++) {
-            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())) {
-                continue;
-            } else {
-                medicalService.createPatientPrescription(patientPrescriptions.get(k));
-            }
-        }
-
         //HPI Data
         List<IPatientEncounterHpiField> patientEncounterHpiFields = medicalHelper.populateHpiFields(viewModelPost, patientEncounter, currentUserSession);
+        ServiceResponse<IPatientEncounterHpiField> patientEncounterHpiFieldServiceResponse;
         for (int j = 0; j < patientEncounterHpiFields.size(); j++) {
             if (StringUtils.isNullOrWhiteSpace(patientEncounterHpiFields.get(j).getHpiFieldValue())) {
                 continue;
             } else {
-                medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
+                patientEncounterHpiFieldServiceResponse = medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
+                if (patientEncounterHpiFieldServiceResponse.hasErrors()) {
+                    //error
+                    //goto 500 page
+                }
+            }
+        }
+        //Treatment Data
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = medicalHelper.populateTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
+        ServiceResponse<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldServiceResponse;
+        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++) {
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())) {
+                continue;
+            } else {
+                patientEncounterTreatmentFieldServiceResponse = medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
+                if (patientEncounterTreatmentFieldServiceResponse.hasErrors()) {
+                    //error
+                    //goto 500 page
+                }
+            }
+        }
+        //prescriptions
+        List<IPatientPrescription> patientPrescriptions = medicalHelper.populatePatientPrescriptions(viewModelPost, patientEncounter, currentUserSession);
+        ServiceResponse<IPatientPrescription> patientPrescriptionServiceResponse;
+        for (int k = 0; k < patientPrescriptions.size(); k++) {
+            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())) {
+                continue;
+            } else {
+                patientPrescriptionServiceResponse = medicalService.createPatientPrescription(patientPrescriptions.get(k));
+                if (patientPrescriptionServiceResponse.hasErrors()) {
+                    //error
+                    //goto 500 page
+                }
             }
         }
 

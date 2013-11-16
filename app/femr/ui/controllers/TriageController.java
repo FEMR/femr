@@ -126,7 +126,7 @@ public class TriageController extends Controller {
 
         //create and save vitals in new encounter
         List<IPatientEncounterVital> patientEncounterVitals = triageHelper.populateVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = new ServiceResponse<>();
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {
                 patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));

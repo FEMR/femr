@@ -20,9 +20,6 @@ import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TriageController extends Controller {
@@ -32,20 +29,16 @@ public class TriageController extends Controller {
     private ISessionService sessionService;
     private Provider<IPatient> patientProvider;
     private ISearchService searchService;
-    private Provider<IPatientEncounter> patientEncounterProvider;
-    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private TriageHelper triageHelper;
 
 
     @Inject
-    public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider, TriageHelper triageHelper) {
+    public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, Provider<IPatient> patientProvider, TriageHelper triageHelper) {
 
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.patientProvider = patientProvider;
-        this.patientEncounterProvider = patientEncounterProvider;
-        this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.triageHelper = triageHelper;
     }
 

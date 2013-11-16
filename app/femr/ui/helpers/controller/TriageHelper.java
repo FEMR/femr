@@ -44,6 +44,8 @@ public class TriageHelper {
         }
         else{
             createViewModelGet.setId(0);
+            //required to keep textbox clear
+            createViewModelGet.setAge(null);
         }
         return createViewModelGet;
     }

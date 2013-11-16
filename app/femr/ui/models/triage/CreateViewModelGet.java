@@ -6,7 +6,7 @@ import java.util.Date;
 //based on the vital name entry in the database, but this
 //ViewModel does NOT.
 public class CreateViewModelGet {
-    //begin patient
+    //patient info
     private String firstName;
     private String lastName;
     private String address;
@@ -14,20 +14,8 @@ public class CreateViewModelGet {
     private int age;
     private Date birth;
     private String sex;
-    //begin vitals
-    private Integer bloodPressureSystolic;
-    private Integer bloodPressureDiastolic;
-    private Integer heartRate;
-    private Float temperature;
-    private Integer respiratoryRate;
-    private Float oxygenSaturation;
-    private Integer heightFeet;
-    private Integer heightInches;
-    private Float weight;
-    //begin encounter
-    private String chiefComplaint;
-    private Integer weeksPregnant;
-    private Boolean isPregnant;
+    //search info
+    private boolean searchError = false;
 
     public CreateViewModelGet() {
     }
@@ -89,100 +77,11 @@ public class CreateViewModelGet {
         this.sex = sex;
     }
 
-    //begin vitals
-    public Integer getBloodPressureSystolic() {
-        return bloodPressureSystolic;
+    public boolean isSearchError() {
+        return searchError;
     }
 
-    public void setBloodPressureSystolic(Integer bloodPressureSystolic) {
-        this.bloodPressureSystolic = bloodPressureSystolic;
-    }
-
-    public Integer getBloodPressureDiastolic() {
-        return bloodPressureDiastolic;
-    }
-
-    public void setBloodPressureDiastolic(Integer bloodPressureDiastolic) {
-        this.bloodPressureDiastolic = bloodPressureDiastolic;
-    }
-
-    public Integer getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(Integer heartRate) {
-        this.heartRate = heartRate;
-    }
-
-    public Float getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Float temperature) {
-        this.temperature = temperature;
-    }
-
-    public Integer getHeightFeet() {
-        return heightFeet;
-    }
-
-    public void setHeightFeet(Integer heightFeet) {
-        this.heightFeet = heightFeet;
-    }
-
-    public Integer getHeightInches() {
-        return heightInches;
-    }
-
-    public void setHeightInches(Integer heightInches) {
-        this.heightInches = heightInches;
-    }
-
-    public Float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Float weight) {
-        this.weight = weight;
-    }
-
-    public String getChiefComplaint() {
-        return chiefComplaint;
-    }
-
-    public void setChiefComplaint(String chiefComplaint) {
-        this.chiefComplaint = chiefComplaint;
-    }
-
-    public Integer getRespiratoryRate() {
-        return respiratoryRate;
-    }
-
-    public void setRespiratoryRate(Integer respiratoryRate) {
-        this.respiratoryRate = respiratoryRate;
-    }
-
-    public Float getOxygenSaturation() {
-        return oxygenSaturation;
-    }
-
-    public void setOxygenSaturation(Float oxygenSaturation) {
-        this.oxygenSaturation = oxygenSaturation;
-    }
-
-    public Integer getWeeksPregnant() {
-        return weeksPregnant;
-    }
-
-    public void setWeeksPregnant(Integer weeksPregnant) {
-        this.weeksPregnant = weeksPregnant;
-    }
-
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
+    public void setSearchError(boolean searchError) {
+        this.searchError = searchError;
     }
 }

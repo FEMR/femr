@@ -43,18 +43,23 @@ public class TriageController extends Controller {
     }
 
     public Result createGet() {
-        boolean error = false;
-        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
-        if (vitalServiceResponse.hasErrors()) {
-            error = true;
-        }
-        List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+
+        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        if (vitalServiceResponse.hasErrors()) {
+            //error
+            //goto 404?
+        }
+        List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
+
+
+
         IPatient patient = patientProvider.get();
         patient.setId(0);
-        return ok(index.render(currentUser, vitalNames, error, patient, null));
+        return ok(index.render(currentUser, vitalNames, patient, viewModelGet));
     }
 
     /*
@@ -103,41 +108,46 @@ public class TriageController extends Controller {
      */
     public Result createPopulatedGet() {
 
-        boolean error = false;
         String s_id = request().getQueryString("id");
 
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
 
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
-            error = true;
+            //error
+            //should goto 404
         }
         List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
 
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
 
         if (StringUtils.isNullOrWhiteSpace(s_id)) {
-            error = true;
-            return ok(index.render(currentUser, vitalNames, error, patientProvider.get(), null));
+            viewModelGet.setSearchError(true);
+            return ok(index.render(currentUser, vitalNames, patientProvider.get(), viewModelGet));
         }
         s_id = s_id.trim();
         Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
         if (patientServiceResponse.hasErrors()) {
-            error = true;
-            return ok(index.render(currentUser, vitalNames, error, patientProvider.get(), null));
+            viewModelGet.setSearchError(true);
+            return ok(index.render(currentUser, vitalNames, patientProvider.get(), viewModelGet));
         } else {
             IPatient patient = patientServiceResponse.getResponseObject();
             // populate viewmodelget
             viewModelGet.setFirstName(patient.getFirstName());
             viewModelGet.setLastName(patient.getLastName());
-            viewModelGet.setBirth(patient.getAge());
-            viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
-            viewModelGet.setSex(patient.getSex());
             viewModelGet.setAddress(patient.getAddress());
             viewModelGet.setCity(patient.getCity());
-            return ok(index.render(currentUser, vitalNames, false, patient, viewModelGet));
+            viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+            viewModelGet.setBirth(patient.getAge());
+            viewModelGet.setSex(patient.getSex());
+
+
+
+            return ok(index.render(currentUser, vitalNames, patient, viewModelGet));
         }
     }
 

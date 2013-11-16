@@ -46,18 +46,17 @@ public class TriageController extends Controller {
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        CreateViewModelGet viewModelGet = new CreateViewModelGet();
-
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             //error
             //goto 404?
         }
-        List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
+
+        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, vitalServiceResponse.getResponseObject(), false);
 
         IPatient patient = patientProvider.get();
         patient.setId(0);
-        return ok(index.render(currentUser, vitalNames, patient, viewModelGet));
+        return ok(index.render(currentUser, patient, viewModelGet));
     }
 
     /*
@@ -108,36 +107,35 @@ public class TriageController extends Controller {
 
         String s_id = request().getQueryString("id");
 
-        CreateViewModelGet viewModelGet = new CreateViewModelGet();
-
         CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        IPatient patient = patientProvider.get();
+
+        boolean searchError = false;
 
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             //error
             //should goto 404
         }
-        List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
-
-
 
         if (StringUtils.isNullOrWhiteSpace(s_id)) {
-            viewModelGet.setSearchError(true);
-            return ok(index.render(currentUser, vitalNames, patientProvider.get(), viewModelGet));
+            searchError = true;
         }
         s_id = s_id.trim();
         Integer id = Integer.parseInt(s_id);
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
 
         if (patientServiceResponse.hasErrors()) {
-            viewModelGet.setSearchError(true);
-            return ok(index.render(currentUser, vitalNames, patientProvider.get(), viewModelGet));
+            searchError = true;
         } else {
-            IPatient patient = patientServiceResponse.getResponseObject();
-            viewModelGet = triageHelper.populateViewModelGet(patientServiceResponse.getResponseObject());
-
-            return ok(index.render(currentUser, vitalNames, patient, viewModelGet));
+            patient = patientServiceResponse.getResponseObject();
         }
+
+        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patientServiceResponse.getResponseObject(),vitalServiceResponse.getResponseObject(), searchError);
+
+        return ok(index.render(currentUser, patient, viewModelGet));
+
     }
 
 }

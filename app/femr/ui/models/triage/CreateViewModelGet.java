@@ -1,6 +1,9 @@
 package femr.ui.models.triage;
 
+import femr.common.models.IVital;
+
 import java.util.Date;
+import java.util.List;
 
 //NOTE: the triage view sets the input element names dynamically
 //based on the vital name entry in the database, but this
@@ -16,6 +19,8 @@ public class CreateViewModelGet {
     private String sex;
     //search info
     private boolean searchError = false;
+    //vital names
+    List<? extends IVital> vitalNames;
 
     public CreateViewModelGet() {
     }
@@ -83,5 +88,12 @@ public class CreateViewModelGet {
 
     public void setSearchError(boolean searchError) {
         this.searchError = searchError;
+    }
+
+    public List<? extends IVital> getVitalNames(){
+        return vitalNames;
+    }
+    public void setVitalNames(List<? extends IVital> vitalNames){
+        this.vitalNames = vitalNames;
     }
 }

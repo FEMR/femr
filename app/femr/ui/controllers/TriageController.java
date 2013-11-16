@@ -36,8 +36,9 @@ public class TriageController extends Controller {
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private TriageHelper triageHelper;
 
+
     @Inject
-    public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider, TriageHelper triageHelper) {
 
         this.triageService = triageService;
         this.sessionService = sessionService;
@@ -45,12 +46,13 @@ public class TriageController extends Controller {
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
+        this.triageHelper = triageHelper;
     }
 
     public Result createGet() {
         boolean error = false;
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
-        if (vitalServiceResponse.hasErrors()){
+        if (vitalServiceResponse.hasErrors()) {
             error = true;
         }
         List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
@@ -73,18 +75,17 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         ServiceResponse<IPatient> patientServiceResponse;
-        if (id == 0){
+        if (id == 0) {
             IPatient patient = triageHelper.createPatient(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
-        }
-        else{
+        } else {
             patientServiceResponse = searchService.findPatientById(id);
         }
 
-        if (patientServiceResponse.hasErrors()){
+        if (patientServiceResponse.hasErrors()) {
             //error
+            //goto 404 page?
         }
-
 
         IPatientEncounter patientEncounter = triageHelper.createPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
@@ -111,7 +112,7 @@ public class TriageController extends Controller {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
 
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
-        if (vitalServiceResponse.hasErrors()){
+        if (vitalServiceResponse.hasErrors()) {
             error = true;
         }
         List<? extends IVital> vitalNames = vitalServiceResponse.getResponseObject();
@@ -139,7 +140,7 @@ public class TriageController extends Controller {
             viewModelGet.setSex(patient.getSex());
             viewModelGet.setAddress(patient.getAddress());
             viewModelGet.setCity(patient.getCity());
-            return ok(index.render(currentUser, vitalNames, false,patient,  viewModelGet));
+            return ok(index.render(currentUser, vitalNames, false, patient, viewModelGet));
         }
     }
 

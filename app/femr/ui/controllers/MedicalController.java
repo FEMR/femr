@@ -165,7 +165,7 @@ public class MedicalController extends Controller {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         String s_id = request().getQueryString("id");
-        if (StringUtils.isNullOrWhiteSpace(s_id)){
+        if (StringUtils.isNullOrWhiteSpace(s_id)) {
             return ok(index.render(currentUserSession, "That patient can not be found."));
         }
         s_id = s_id.trim();
@@ -186,22 +186,19 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-
         //current vitals for view model
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-
         int TOTAL_VITALS = 9;
-        for (int vital = 1; vital <= TOTAL_VITALS; vital++){
+        for (int vital = 1; vital <= TOTAL_VITALS; vital++) {
             patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, patientEncounter.getId());
-            if (patientEncounterVitalServiceResponse.hasErrors()){
+            if (patientEncounterVitalServiceResponse.hasErrors()) {
                 patientEncounterVitals.add(null);
             }
             patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
         }
 
-
-        CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient,patientEncounter, patientEncounterVitals);
+        CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
 
         //check to make sure a patient hasn't been checked in before
         //if they have, don't goto the populated page
@@ -212,6 +209,4 @@ public class MedicalController extends Controller {
             return ok(indexPopulated.render(currentUserSession, viewModel));
         }
     }
-
-
 }

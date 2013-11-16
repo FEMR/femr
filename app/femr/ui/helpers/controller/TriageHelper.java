@@ -33,6 +33,7 @@ public class TriageHelper {
         createViewModelGet.setSearchError(searchError);
 
         if (patient != null){
+            createViewModelGet.setId(patient.getId());
             createViewModelGet.setFirstName(patient.getFirstName());
             createViewModelGet.setLastName(patient.getLastName());
             createViewModelGet.setAddress(patient.getAddress());
@@ -40,6 +41,9 @@ public class TriageHelper {
             createViewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
             createViewModelGet.setBirth(patient.getAge());
             createViewModelGet.setSex(patient.getSex());
+        }
+        else{
+            createViewModelGet.setId(0);
         }
         return createViewModelGet;
     }

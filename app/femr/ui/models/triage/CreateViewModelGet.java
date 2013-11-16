@@ -10,6 +10,7 @@ import java.util.List;
 //ViewModel does NOT.
 public class CreateViewModelGet {
     //patient info
+    private int Id;
     private String firstName;
     private String lastName;
     private String address;
@@ -95,5 +96,13 @@ public class CreateViewModelGet {
     }
     public void setVitalNames(List<? extends IVital> vitalNames){
         this.vitalNames = vitalNames;
+    }
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
     }
 }

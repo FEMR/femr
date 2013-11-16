@@ -54,11 +54,9 @@ public class MedicalController extends Controller {
     }
 
     public Result createGet() {
-        boolean error = false;
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        return ok(index.render(currentUserSession, error, null));
+        return ok(index.render(currentUserSession, null));
     }
 
     public Result createPost() {
@@ -164,9 +162,6 @@ public class MedicalController extends Controller {
     }
 
     public Result createPopulatedGet() {
-
-        boolean error = false;
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         CreateViewModelGet viewModel = new CreateViewModelGet();
@@ -177,8 +172,7 @@ public class MedicalController extends Controller {
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
         if (patientServiceResponse.hasErrors()) {
-            error = true;
-            return ok(index.render(currentUserSession, error, "That patient can not be found."));
+            return ok(index.render(currentUserSession, "That patient can not be found."));
         }
         IPatient patient = patientServiceResponse.getResponseObject();
         viewModel.setpID(patient.getId());
@@ -190,8 +184,7 @@ public class MedicalController extends Controller {
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(i_patientID);
         if (patientEncounterServiceResponse.hasErrors()) {
-            error = true;
-            return ok(index.render(currentUserSession, error, "An error occurred"));
+            return ok(index.render(currentUserSession, "An error occurred"));
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
         viewModel.setChiefComplaint(patientEncounter.getChiefComplaint());
@@ -270,7 +263,7 @@ public class MedicalController extends Controller {
         //if they have, don't goto the populated page
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
         if (hasPatientBeenCheckedIn == true) {
-            return ok(index.render(currentUserSession, true, "That patient has already been seen"));
+            return ok(index.render(currentUserSession, "That patient has already been seen"));
         } else {
             return ok(indexPopulated.render(currentUserSession, viewModel));
         }

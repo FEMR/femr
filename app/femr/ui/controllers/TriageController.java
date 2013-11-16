@@ -89,8 +89,12 @@ public class TriageController extends Controller {
 
         IPatientEncounter patientEncounter = triageHelper.createPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
+        if (patientEncounterServiceResponse.hasErrors()){
+            //error
+            //goto 404 page?
+        }
 
-        List<IPatientEncounterVital> patientEncounterVitals = populatePatientEncounterVitals(viewModel, patientEncounterServiceResponse, currentUser);
+        List<IPatientEncounterVital> patientEncounterVitals = triageHelper.createVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
 
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {
@@ -144,88 +148,4 @@ public class TriageController extends Controller {
         }
     }
 
-
-    //helper functions
-
-
-    private List<IPatientEncounterVital> populatePatientEncounterVitals(CreateViewModelPost viewModel,
-                                                                        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse,
-                                                                        CurrentUser currentUser) {
-
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
-        for (int i = 0; i < 9; i++) {
-            patientEncounterVital[i] = patientEncounterVitalProvider.get();
-            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTime()));
-            patientEncounterVital[i].setUserId(currentUser.getId());
-            patientEncounterVital[i].setPatientEncounterId(patientEncounterServiceResponse.getResponseObject().getId());
-            patientEncounterVital[i].setVitalId(i + 1);
-        }
-
-        //Respiratory Rate
-        if (viewModel.getRespiratoryRate() == null) {
-            patientEncounterVital[0].setVitalValue(-1);
-        } else {
-            patientEncounterVital[0].setVitalValue(viewModel.getRespiratoryRate().floatValue());
-        }
-
-        //Heart Rate
-        if (viewModel.getHeartRate() == null) {
-            patientEncounterVital[1].setVitalValue(-1);
-        } else {
-            patientEncounterVital[1].setVitalValue(viewModel.getHeartRate().floatValue());
-        }
-
-        //Temperature
-        if (viewModel.getTemperature() == null) {
-            patientEncounterVital[2].setVitalValue(-1);
-        } else {
-            patientEncounterVital[2].setVitalValue(viewModel.getTemperature().floatValue());
-        }
-
-        //Oxygen Saturation
-        if (viewModel.getOxygenSaturation() == null) {
-            patientEncounterVital[3].setVitalValue(-1);
-        } else {
-            patientEncounterVital[3].setVitalValue(viewModel.getOxygenSaturation().floatValue());
-        }
-
-        //Height - Feet
-        if (viewModel.getHeightFeet() == null) {
-            patientEncounterVital[4].setVitalValue(-1);
-        } else {
-            patientEncounterVital[4].setVitalValue(viewModel.getHeightFeet().floatValue());
-        }
-
-        //Height - Inches
-        if (viewModel.getHeightInches() == null) {
-            patientEncounterVital[5].setVitalValue(-1);
-        } else {
-            patientEncounterVital[5].setVitalValue(viewModel.getHeightInches().floatValue());
-        }
-
-        //Weight
-        if (viewModel.getWeight() == null) {
-            patientEncounterVital[6].setVitalValue(-1);
-        } else {
-            patientEncounterVital[6].setVitalValue(viewModel.getWeight().floatValue());
-        }
-
-        //Blood Pressure - Systolic
-        if (viewModel.getBloodPressureSystolic() == null) {
-            patientEncounterVital[7].setVitalValue(-1);
-        } else {
-            patientEncounterVital[7].setVitalValue(viewModel.getBloodPressureSystolic().floatValue());
-        }
-
-        //Blood Pressure - Diastolic
-        if (viewModel.getBloodPressureDiastolic() == null) {
-            patientEncounterVital[8].setVitalValue(-1);
-        } else {
-            patientEncounterVital[8].setVitalValue(viewModel.getBloodPressureDiastolic().floatValue());
-        }
-
-        patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
-        return patientEncounterVitals;
-    }
 }

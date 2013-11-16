@@ -10,21 +10,23 @@ import femr.ui.models.triage.CreateViewModelPost;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TriageHelper {
     private Provider<IPatient> patientProvider;
     private Provider<IPatientEncounter> patientEncounterProvider;
+    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public TriageHelper(Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider){
+    public TriageHelper(Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider){
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
+        this.patientEncounterVitalProvider = patientEncounterVitalProvider;
     }
 
     public IPatient createPatient(CreateViewModelPost viewModelPost, CurrentUser currentUser){
         IPatient patient = patientProvider.get();
-//        IPatient patient = new Patient();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModelPost.getFirstName());
         patient.setLastName(viewModelPost.getLastName());
@@ -37,7 +39,6 @@ public class TriageHelper {
 
     public IPatientEncounter createPatientEncounter(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatient patient){
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
-//        IPatientEncounter patientEncounter = new PatientEncounter();
         patientEncounter.setPatientId(patient.getId());
         patientEncounter.setUserId(currentUser.getId());
         patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTime());
@@ -48,9 +49,82 @@ public class TriageHelper {
         return patientEncounter;
     }
 
-//    public List<IPatientEncounterVital> createVitals(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatientEncounter patientEncounter){
-//
-//        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-//
-//    }
+    public List<IPatientEncounterVital> createVitals(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatientEncounter patientEncounter){
+
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+        IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
+        for (int i = 0; i < 9; i++) {
+            patientEncounterVital[i] = patientEncounterVitalProvider.get();
+            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTime()));
+            patientEncounterVital[i].setUserId(currentUser.getId());
+            patientEncounterVital[i].setPatientEncounterId(patientEncounter.getId());
+            patientEncounterVital[i].setVitalId(i + 1);
+        }
+
+        //Respiratory Rate
+        if (viewModelPost.getRespiratoryRate() == null) {
+            patientEncounterVital[0].setVitalValue(-1);
+        } else {
+            patientEncounterVital[0].setVitalValue(viewModelPost.getRespiratoryRate().floatValue());
+        }
+
+        //Heart Rate
+        if (viewModelPost.getHeartRate() == null) {
+            patientEncounterVital[1].setVitalValue(-1);
+        } else {
+            patientEncounterVital[1].setVitalValue(viewModelPost.getHeartRate().floatValue());
+        }
+
+        //Temperature
+        if (viewModelPost.getTemperature() == null) {
+            patientEncounterVital[2].setVitalValue(-1);
+        } else {
+            patientEncounterVital[2].setVitalValue(viewModelPost.getTemperature().floatValue());
+        }
+
+        //Oxygen Saturation
+        if (viewModelPost.getOxygenSaturation() == null) {
+            patientEncounterVital[3].setVitalValue(-1);
+        } else {
+            patientEncounterVital[3].setVitalValue(viewModelPost.getOxygenSaturation().floatValue());
+        }
+
+        //Height - Feet
+        if (viewModelPost.getHeightFeet() == null) {
+            patientEncounterVital[4].setVitalValue(-1);
+        } else {
+            patientEncounterVital[4].setVitalValue(viewModelPost.getHeightFeet().floatValue());
+        }
+
+        //Height - Inches
+        if (viewModelPost.getHeightInches() == null) {
+            patientEncounterVital[5].setVitalValue(-1);
+        } else {
+            patientEncounterVital[5].setVitalValue(viewModelPost.getHeightInches().floatValue());
+        }
+
+        //Weight
+        if (viewModelPost.getWeight() == null) {
+            patientEncounterVital[6].setVitalValue(-1);
+        } else {
+            patientEncounterVital[6].setVitalValue(viewModelPost.getWeight().floatValue());
+        }
+
+        //Blood Pressure - Systolic
+        if (viewModelPost.getBloodPressureSystolic() == null) {
+            patientEncounterVital[7].setVitalValue(-1);
+        } else {
+            patientEncounterVital[7].setVitalValue(viewModelPost.getBloodPressureSystolic().floatValue());
+        }
+
+        //Blood Pressure - Diastolic
+        if (viewModelPost.getBloodPressureDiastolic() == null) {
+            patientEncounterVital[8].setVitalValue(-1);
+        } else {
+            patientEncounterVital[8].setVitalValue(viewModelPost.getBloodPressureDiastolic().floatValue());
+        }
+
+        patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
+        return patientEncounterVitals;
+    }
 }

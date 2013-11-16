@@ -7,9 +7,11 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.IMedicalService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
+import femr.business.services.ITriageService;
 import femr.common.models.*;
 import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.medical.CreateViewModelPost;
+import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.indexPopulated;
 import femr.util.calculations.dateUtils;
@@ -23,85 +25,80 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MedicalController extends Controller {
+
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
+    private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
+    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
+    private ITriageService triageService;
     private IMedicalService medicalService;
 
     @Inject
-    public MedicalController(ISessionService sessionService,
-                             ISearchService searchService,
-                             IMedicalService medicalService,
-                             Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider,
-                             Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider,
-                             Provider<IPatientPrescription> patientPrescriptionProvider) {
+    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService, Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.triageService = triageService;
         this.medicalService = medicalService;
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
-
+        this.patientEncounterVitalProvider = patientEncounterVitalProvider;
     }
 
     public Result createGet() {
+
         boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        return ok(index.render(currentUserSession,error,null));
+        return ok(index.render(currentUserSession, error, null));
     }
 
-    public Result createPopulatedPost(){
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+    public Result createPopulatedPost() {
 
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         CreateViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(viewModelPost.getId());
-        if (patientEncounterServiceResponse.hasErrors()){
+        if (patientEncounterServiceResponse.hasErrors()) {
             return createGet();
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
         //Treatment Data
-        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields =
-                populatePatientEncounterTreatmentFields(viewModelPost,patientEncounter,currentUserSession);
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = populatePatientEncounterTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
 
-        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++){
-            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())){
+        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++) {
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())) {
                 continue;
-            }
-            else{
+            } else {
                 medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
             }
         }
 
         //prescriptions
-        List<IPatientPrescription> patientPrescriptions =
-                populatePatientPrescriptions(viewModelPost,patientEncounter,currentUserSession);
-        for (int k = 0; k < patientPrescriptions.size(); k++){
-            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())){
+        List<IPatientPrescription> patientPrescriptions = populatePatientPrescriptions(viewModelPost, patientEncounter, currentUserSession);
+        for (int k = 0; k < patientPrescriptions.size(); k++) {
+            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())) {
                 continue;
-            }
-            else{
+            } else {
                 medicalService.createPatientPrescription(patientPrescriptions.get(k));
             }
         }
 
-
         //HPI Data
-        List<IPatientEncounterHpiField> patientEncounterHpiFields =
-                populatePatientEncounterHpiFields(viewModelPost,patientEncounter,currentUserSession);
+        List<IPatientEncounterHpiField> patientEncounterHpiFields = populatePatientEncounterHpiFields(viewModelPost, patientEncounter, currentUserSession);
 
-        for (int j = 0; j < patientEncounterHpiFields.size(); j++){
-            if (StringUtils.isNullOrWhiteSpace(patientEncounterHpiFields.get(j).getHpiFieldValue())){
+        for (int j = 0; j < patientEncounterHpiFields.size(); j++) {
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterHpiFields.get(j).getHpiFieldValue())) {
                 continue;
-            }
-            else{
+            } else {
                 medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
             }
         }
@@ -109,7 +106,52 @@ public class MedicalController extends Controller {
         return createGet();
     }
 
-    public Result createPopulatedGet(){
+    public Result updateVitalsPost(int id) {
+
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        ServiceResponse<IPatientEncounter> currentEncounterByPatientId = searchService.findCurrentEncounterByPatientId(id);
+
+        UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
+        updatePatientVitals(updateVitalsModel, currentUser.getId(), currentEncounterByPatientId.getResponseObject().getId());
+
+        return ok("true");
+    }
+
+    private void updatePatientVitals(UpdateVitalsModel updateVitalsModel, int currentUserId, int patientEncounterId) {
+
+        List<Double> vitals = new ArrayList<>();
+        vitals.add(updateVitalsModel.getRespRate());
+        vitals.add(updateVitalsModel.getHeartRate());
+        vitals.add(updateVitalsModel.getTemperature());
+        vitals.add(updateVitalsModel.getOxygen());
+        vitals.add(updateVitalsModel.getHeightFt());
+        vitals.add(updateVitalsModel.getHeightIn());
+        vitals.add(updateVitalsModel.getWeight());
+        vitals.add(updateVitalsModel.getBpSystolic());
+        vitals.add(updateVitalsModel.getBpDiastolic());
+
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+
+        for (int i = 0; i < 9; i++) {
+            IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
+            patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTime()));
+            patientEncounterVital.setUserId(currentUserId);
+            patientEncounterVital.setPatientEncounterId(patientEncounterId);
+            patientEncounterVital.setVitalId(i + 1);
+            patientEncounterVital.setVitalValue(vitals.get(i).floatValue());
+            patientEncounterVitals.add(patientEncounterVital);
+        }
+
+        for (int i = 0; i < patientEncounterVitals.size(); i++) {
+            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
+                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+            }
+        }
+    }
+
+    public Result createPopulatedGet() {
+
         boolean error = false;
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
@@ -121,9 +163,9 @@ public class MedicalController extends Controller {
         int i_patientID = Integer.parseInt(s_patientID);
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(i_patientID);
-        if (patientServiceResponse.hasErrors()){
+        if (patientServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUserSession,error,"That patient can not be found."));
+            return ok(index.render(currentUserSession, error, "That patient can not be found."));
         }
         IPatient patient = patientServiceResponse.getResponseObject();
         viewModel.setpID(patient.getId());
@@ -133,11 +175,10 @@ public class MedicalController extends Controller {
         viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModel.setSex(patient.getSex());
 
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse =
-                searchService.findCurrentEncounterByPatientId(i_patientID);
-        if (patientEncounterServiceResponse.hasErrors()){
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(i_patientID);
+        if (patientEncounterServiceResponse.hasErrors()) {
             error = true;
-            return ok(index.render(currentUserSession,error,"An error occured"));
+            return ok(index.render(currentUserSession, error, "An error occurred"));
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
         viewModel.setChiefComplaint(patientEncounter.getChiefComplaint());
@@ -149,85 +190,91 @@ public class MedicalController extends Controller {
 
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(1,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(1, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setRespiratoryRate(null);
-        else
+        } else {
             viewModel.setRespiratoryRate(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(2,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(2, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setHeartRate(null);
-        else
+        } else {
             viewModel.setHeartRate(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(3,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(3, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setTemperature(null);
-        else
+        } else {
             viewModel.setTemperature(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(4,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(4, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setOxygenSaturation(null);
-        else
+        } else {
             viewModel.setOxygenSaturation(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(5,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(5, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setHeightFeet(null);
-        else
+        } else {
             viewModel.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(6,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(6, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setHeightInches(null);
-        else
+        } else {
             viewModel.setHeightInches(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(7,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(7, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setWeight(null);
-        else
+        } else {
             viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(8,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(8, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setBloodPressureSystolic(null);
-        else
+        } else {
             viewModel.setBloodPressureSystolic(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        }
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(9,patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(9, patientEncounter.getId());
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
             viewModel.setBloodPressureDiastolic(null);
-        else
+        } else {
             viewModel.setBloodPressureDiastolic(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
-
+        }
 
         //check to make sure a patient hasn't been checked in before
         //if they have, don't goto the populated page
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
-        if (hasPatientBeenCheckedIn == true){
-            return ok(index.render(currentUserSession,true,"That patient has already been seen"));
-        }
-        else{
-            return ok(indexPopulated.render(currentUserSession,viewModel));
+        if (hasPatientBeenCheckedIn == true) {
+            return ok(index.render(currentUserSession, true, "That patient has already been seen"));
+        } else {
+            return ok(indexPopulated.render(currentUserSession, viewModel));
         }
     }
 
     //helper functions
 
-    private List<IPatientEncounterHpiField> populatePatientEncounterHpiFields(CreateViewModelPost viewModelPost,
-                                                                              IPatientEncounter patientEncounter,
-                                                                              CurrentUser currentUserSession){
+    private List<IPatientEncounterHpiField> populatePatientEncounterHpiFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
+
         List<IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
         IPatientEncounterHpiField[] patientEncounterHpiField = new IPatientEncounterHpiField[9];
-        for (int i = 0; i < 9; i++){
+        for (int i = 0; i < 9; i++) {
             patientEncounterHpiField[i] = patientEncounterHpiFieldProvider.get();
             patientEncounterHpiField[i].setDateTaken(medicalService.getCurrentDateTime());
             patientEncounterHpiField[i].setPatientEncounterId(patientEncounter.getId());
             patientEncounterHpiField[i].setUserId(currentUserSession.getId());
-            patientEncounterHpiField[i].setHpiFieldId(i+1);
+            patientEncounterHpiField[i].setHpiFieldId(i + 1);
         }
         patientEncounterHpiField[0].setHpiFieldValue(viewModelPost.getOnset());
         patientEncounterHpiField[1].setHpiFieldValue(viewModelPost.getOnsetTime());
@@ -243,12 +290,11 @@ public class MedicalController extends Controller {
         return patientEncounterHpiFields;
     }
 
-    private List<IPatientEncounterTreatmentField> populatePatientEncounterTreatmentFields(CreateViewModelPost viewModelPost,
-                                                                                          IPatientEncounter patientEncounter,
-                                                                                          CurrentUser currentUserSession){
+    private List<IPatientEncounterTreatmentField> populatePatientEncounterTreatmentFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
+
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
         IPatientEncounterTreatmentField[] patientEncounterTreatmentField = new IPatientEncounterTreatmentField[8];
-        for (int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             patientEncounterTreatmentField[i] = patientEncounterTreatmentFieldProvider.get();
             patientEncounterTreatmentField[i].setDateTaken(medicalService.getCurrentDateTime());
             patientEncounterTreatmentField[i].setPatientEncounterId(patientEncounter.getId());
@@ -278,13 +324,12 @@ public class MedicalController extends Controller {
         return patientEncounterTreatmentFields;
     }
 
-    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost viewModelPost,
-                                                                                          IPatientEncounter patientEncounter,
-                                                                                          CurrentUser currentUserSession){
+    private List<IPatientPrescription> populatePatientPrescriptions(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
+
         int SIZE = 5;
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         IPatientPrescription[] patientPrescription = new IPatientPrescription[SIZE];
-        for (int i = 0; i < SIZE; i++){
+        for (int i = 0; i < SIZE; i++) {
             patientPrescription[i] = patientPrescriptionProvider.get();
             patientPrescription[i].setEncounterId(patientEncounter.getId());
             patientPrescription[i].setUserId(currentUserSession.getId());

@@ -6,6 +6,7 @@ import femr.business.dtos.CurrentUser;
 import femr.common.models.*;
 import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.CreateViewModelGet;
+import femr.ui.models.medical.UpdateVitalsModel;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
@@ -106,6 +107,32 @@ public class MedicalHelper {
 
         patientPrescriptions.addAll(Arrays.asList(patientPrescription));
         return patientPrescriptions;
+    }
+
+    public List<IPatientEncounterVital> populatePatientVitals(UpdateVitalsModel updateVitalsModel, int currentUserId, int patientEncounterId) {
+        List<Double> vitals = new ArrayList<>();
+        vitals.add(updateVitalsModel.getRespRate());
+        vitals.add(updateVitalsModel.getHeartRate());
+        vitals.add(updateVitalsModel.getTemperature());
+        vitals.add(updateVitalsModel.getOxygen());
+        vitals.add(updateVitalsModel.getHeightFt());
+        vitals.add(updateVitalsModel.getHeightIn());
+        vitals.add(updateVitalsModel.getWeight());
+        vitals.add(updateVitalsModel.getBpSystolic());
+        vitals.add(updateVitalsModel.getBpDiastolic());
+
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+
+        for (int i = 0; i < 9; i++) {
+            IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
+            patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTime()));
+            patientEncounterVital.setUserId(currentUserId);
+            patientEncounterVital.setPatientEncounterId(patientEncounterId);
+            patientEncounterVital.setVitalId(i + 1);
+            patientEncounterVital.setVitalValue(vitals.get(i).floatValue());
+            patientEncounterVitals.add(patientEncounterVital);
+        }
+        return patientEncounterVitals;
     }
 
     public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals) {

@@ -29,7 +29,6 @@ public class MedicalController extends Controller {
 
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
-    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
     private ITriageService triageService;
@@ -37,13 +36,12 @@ public class MedicalController extends Controller {
     private MedicalHelper medicalHelper;
 
     @Inject
-    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService,Provider<IPatientEncounterVital> patientEncounterVitalProvider, MedicalHelper medicalHelper) {
+    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService, MedicalHelper medicalHelper) {
 
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.triageService = triageService;
         this.medicalService = medicalService;
-        this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.medicalHelper = medicalHelper;
     }
 
@@ -107,52 +105,28 @@ public class MedicalController extends Controller {
                 }
             }
         }
-
         return createGet();
     }
 
     public Result updateVitalsPost(int id) {
-
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         ServiceResponse<IPatientEncounter> currentEncounterByPatientId = searchService.findCurrentEncounterByPatientId(id);
 
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
-        updatePatientVitals(updateVitalsModel, currentUser.getId(), currentEncounterByPatientId.getResponseObject().getId());
 
-        return ok("true");
-    }
-
-    private void updatePatientVitals(UpdateVitalsModel updateVitalsModel, int currentUserId, int patientEncounterId) {
-
-        List<Double> vitals = new ArrayList<>();
-        vitals.add(updateVitalsModel.getRespRate());
-        vitals.add(updateVitalsModel.getHeartRate());
-        vitals.add(updateVitalsModel.getTemperature());
-        vitals.add(updateVitalsModel.getOxygen());
-        vitals.add(updateVitalsModel.getHeightFt());
-        vitals.add(updateVitalsModel.getHeightIn());
-        vitals.add(updateVitalsModel.getWeight());
-        vitals.add(updateVitalsModel.getBpSystolic());
-        vitals.add(updateVitalsModel.getBpDiastolic());
-
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-
-        for (int i = 0; i < 9; i++) {
-            IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
-            patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTime()));
-            patientEncounterVital.setUserId(currentUserId);
-            patientEncounterVital.setPatientEncounterId(patientEncounterId);
-            patientEncounterVital.setVitalId(i + 1);
-            patientEncounterVital.setVitalValue(vitals.get(i).floatValue());
-            patientEncounterVitals.add(patientEncounterVital);
-        }
-
+        List<? extends IPatientEncounterVital> patientEncounterVitals = medicalHelper.populatePatientVitals(updateVitalsModel, currentUser.getId(), currentEncounterByPatientId.getResponseObject().getId());
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {
-                triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+                patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
+                if (patientEncounterVitalServiceResponse.hasErrors()) {
+                    //error
+                    //goto 500 page
+                }
             }
         }
+        return ok("true");
     }
 
     public Result createPopulatedGet() {

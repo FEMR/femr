@@ -13,6 +13,7 @@ public class DataLayerModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(IHpiField.class).to(HpiField.class);
+        bind(IMedication.class).to(Medication.class);
         bind(IPatient.class).toProvider(PatientProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
         bind(IPatientEncounterHpiField.class).to(PatientEncounterHpiField.class);
@@ -24,6 +25,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IVital.class).toProvider(VitalProvider.class);
 
         bind(new TypeLiteral<IRepository<IHpiField>>() {}).to(new TypeLiteral<Repository<IHpiField>>() {});
+        bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterHpiField>>() {}).to(new TypeLiteral<Repository<IPatientEncounterHpiField >>() {});

@@ -7,17 +7,25 @@ $(document).ready(function () {
             noReplacement($(this).attr('id').substr(1, 2));
         }
     });
-
 });
 
 function yesReplacement(id) {
     $('#replacementMedication' + id).removeClass('hidden');
     $('#replacementAmount' + id).removeClass('hidden');
+
+    //initalize typeahead
+    $('#replacementMedication' + id).typeahead({
+        name: 'medication',
+        local: ['free','foo','flee','fly','bar']
+    });
 }
 
 function noReplacement(id) {
     $('#replacementMedication' + id).addClass('hidden');
     $('#replacementAmount' + id).addClass('hidden');
     $('#replacementMedication' + id).val('');
+
+    //remove typeahead while no button is clicked
+    $('#replacementMedication' + id).typeahead('destroy');
 }
 

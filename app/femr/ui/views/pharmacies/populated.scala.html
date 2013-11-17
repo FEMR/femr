@@ -5,6 +5,7 @@
 
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/typeahead.min.js")"></script>
     }
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
@@ -94,7 +95,7 @@
                             <ol class="problems">
                                 <label class="title">List of Diagnoses</label>
                                 @for(y <- 1 to viewModel.getProblems.size) {
-                                    <li>@viewModel.getProblems(y-1)</li>
+                                    <li>@viewModel.getProblems(y - 1)</li>
                                 }
                             </ol>
                         </div>
@@ -126,7 +127,9 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-5 col-md-5 col-xs-5 col-lg-5">
+
                                     <input type="text" class="hidden form-control" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
+
                                 </div>
                             </div>
                         }

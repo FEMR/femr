@@ -8,9 +8,7 @@ $(document).ready(function () {
         }
     });
 
-    $.getJSON("/pharmacy/typeahead", function(data){
-        console.log(data);
-    });
+
 
 
 
@@ -20,11 +18,18 @@ function yesReplacement(id) {
     $('#replacementMedication' + id).removeClass('hidden');
     $('#replacementAmount' + id).removeClass('hidden');
 
-    //initalize typeahead
-    $('#replacementMedication' + id).typeahead({
-        name: 'medication',
-        local: ['free','foo','flee','fly','bar']
+
+    $.getJSON("/pharmacy/typeahead", function(data){
+        $('#replacementMedication' + id).typeahead({
+            name: 'medication',
+            local: data
+        });
+
+
+        //console.log(data);
     });
+    //initalize typeahead
+
 
 }
 

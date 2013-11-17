@@ -53,7 +53,17 @@ public class PharmaciesController extends Controller {
 
     public Result typeaheadJSONGet(){
         ObjectNode result = Json.newObject();
-        result.put("message","Helloasdfsd World");
+
+        ServiceResponse<List<? extends IMedication>> medicationServiceResponse = searchService.findAllMedications();
+        if (medicationServiceResponse.hasErrors()){
+            return ok(result);
+        }
+        List<? extends IMedication> medications = medicationServiceResponse.getResponseObject();
+
+        for (int medication = 0; medication < medications.size(); medication++){
+            result.put("medicine" + medication,medications.get(medication).getName());
+        }
+
         return ok(result);
     }
 

@@ -117,6 +117,27 @@ function checkNumbers(){
         $('#heightInches').css('border-color','red');
         pass = false;
     }
+    //Height - Inches less than 12
+    if ($.trim($('#heightInches').val()) >= 12){
+        $('#heightInches').val("");
+        $('#heightInches').attr("placeholder","Max value: 11");
+        $('#heightInches').css('border-color','red');
+        pass = false;
+    }
+    //Pregnant - Weeks
+    if ($.trim($('#weeksPregnant').val().length) > 0 && $.isNumeric($('#weeksPregnant').val()) == false){
+        $('#weeksPregnant').val("");
+        $('#weeksPregnant').attr("placeholder","Enter a Number");
+        $('#weeksPregnant').css('border-color','red');
+        pass = false;
+    }
+    //Pregnant - Weeks zero or greater
+    if ($.trim($('#weeksPregnant').val()) < 0){
+        $('#weeksPregnant').val("");
+        $('#weeksPregnant').attr("placeholder","Min value: 0");
+        $('#weeksPregnant').css('border-color','red');
+        pass = false;
+    }
     return pass;
 }
 

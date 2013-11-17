@@ -98,7 +98,6 @@ $(document).ready(function () {
     });
 });
 
-
 $('#firstName').change(function () {
     $('#firstName').css('border', '');
 });
@@ -147,13 +146,22 @@ $('#heightInches').change(function () {
     $('#heightInches').css('border', '');
 });
 
+$('#weeksPregnant').change(function () {
+    $('#weeksPregnant').css('border', '');
+});
+
 //BMI auto- calculator
 window.setInterval(function () {
-    if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()) {
+    if ($('#heightFeet').val() && $('#weight').val()) {
 
         var weight_lbs = parseInt($('#weight').val());
         var height_in = parseInt($('#heightInches').val());
         var height_ft = parseInt($('#heightFeet').val());
+
+        if (!$('#heightInches').val())
+        {
+            height_in = 0;
+        }
 
         height_in = height_in + height_ft * 12;
 

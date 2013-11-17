@@ -65,7 +65,7 @@
                             </div>
                             <div id="weeksWrap" class="hidden">
                                 <label class="inputLabel">Weeks:</label>
-                                <input type="text" class="form-control input-sm pull-left" name="weeksPregnant">
+                                <input type="text" id="weeksPregnant" class="form-control input-sm pull-left" name="weeksPregnant">
                             </div>
                         </div>
 
@@ -96,7 +96,7 @@
                                 <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
                             </div>
                             <div class="col-sm-6 col-md-6 col-xs-6">
-                                <input type="number" step="number" min="0" class="form-control input-sm pull-left" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                                <input type="number" step="number" min="0" max="11" class="form-control input-sm pull-left" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,13 @@ $(document).ready(function () {
             noReplacement($(this).attr('id').substr(1, 2));
         }
     });
+
+    $.getJSON("/pharmacy/typeahead", function(data){
+        console.log(data);
+    });
+
+
+
 });
 
 function yesReplacement(id) {
@@ -18,6 +25,7 @@ function yesReplacement(id) {
         name: 'medication',
         local: ['free','foo','flee','fly','bar']
     });
+
 }
 
 function noReplacement(id) {

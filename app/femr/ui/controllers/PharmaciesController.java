@@ -12,7 +12,9 @@ import femr.ui.views.html.pharmacies.index;
 import femr.ui.views.html.pharmacies.populated;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.codehaus.jackson.node.ObjectNode;
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -47,6 +49,22 @@ public class PharmaciesController extends Controller {
         boolean error = false;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
         return ok(index.render(currentUserSession, error, null));
+    }
+
+    public Result typeaheadJSONGet(){
+        ObjectNode result = Json.newObject();
+
+        ServiceResponse<List<? extends IMedication>> medicationServiceResponse = searchService.findAllMedications();
+        if (medicationServiceResponse.hasErrors()){
+            return ok(result);
+        }
+        List<? extends IMedication> medications = medicationServiceResponse.getResponseObject();
+
+        for (int medication = 0; medication < medications.size(); medication++){
+            result.put("medicine" + medication,medications.get(medication).getName());
+        }
+
+        return ok(result);
     }
 
     public Result createGet() {

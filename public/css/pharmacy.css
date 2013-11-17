@@ -21,7 +21,12 @@
     margin-bottom: 15px;
 }
 
+
+
 /*typeahead*/
+.replacementMeds{
+    width: inherit !important;
+}
 
 .twitter-typeahead .tt-hint
 {
@@ -32,6 +37,7 @@
     line-height: 1.428571429;
     border: 1px solid transparent;
     border-radius:4px;
+    color: #7e7e7e;
 }
 
 .twitter-typeahead .hint-small
@@ -51,19 +57,13 @@
     border-radius: 6px;
     line-height: 1.33;
 }
-
-
-
-
-
-
-
 .twitter-typeahead .tt-query,
 .twitter-typeahead .tt-hint {
     margin-bottom: 0;
 }
 
 .tt-dropdown-menu {
+    font-size: 16px;
     min-width: 160px;
     margin-top: 2px;
     padding: 5px 0;
@@ -95,7 +95,7 @@
     background-image: -o-linear-gradient(top, #0088cc, #0077b3);
     background-image: linear-gradient(to bottom, #0088cc, #0077b3);
     background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)*/
 }
 
 .tt-suggestion.tt-is-under-cursor a {

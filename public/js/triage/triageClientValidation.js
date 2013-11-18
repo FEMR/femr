@@ -154,7 +154,6 @@ function checkNumbers(){
 * adopted from the webs!!!
 */
 
-
 function isInteger(s){
     var i;
     for (i = 0; i < s.length; i++){
@@ -243,23 +242,4 @@ function validateDate(){
     return true;
 }
 
-/*
- * must be in one of the following formats,  excludes 1.
- * 111.11
- * 1
- * 111111.11
- * 0.1
- * 1.1
- */
-function wonkyDecimalCheck(wonkyDeci) {
-    var regexDecimal =  /^\d+(\.\d{1,2})?$/;
-    return regexDecimal.test(wonkyDeci);
-}
-/*
- * positive integer numbers
- * excludes 1.
- */
-function wonkyIntegerCheck(wonkyInt) {
-    var regexInt =  /^\d+$/;
-    return regexInt.test(wonkyInt);
-}
+

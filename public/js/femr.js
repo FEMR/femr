@@ -27,3 +27,34 @@ $(document).ready(function () {
         }
     });
 });
+
+/*
+ * must be in one of the following formats,  excludes 1.
+ * 111.11
+ * 1
+ * 0.1
+ * 1.1
+ */
+function wonkyDecimalCheck(wonkyDeci) {
+    var regexDecimal =  /^\d+(\.\d{1,2})?$/;
+    return regexDecimal.test(wonkyDeci);
+}
+/*
+ * positive integer numbers
+ * excludes 1.
+ */
+function wonkyIntegerCheck(wonkyInt) {
+    var regexInt =  /^\d+$/;
+    return regexInt.test(wonkyInt);
+}
+
+/*
+ * Checks if value of input is equal to NaN
+ */
+function randomString(strVal) {
+    if (isNaN(strVal)) {
+        return true;
+    }
+    return false;
+}
+

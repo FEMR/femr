@@ -35,7 +35,7 @@ $(document).ready(function () {
  * 0.1
  * 1.1
  */
-function wonkyDecimalCheck(wonkyDeci) {
+function decimalCheck(wonkyDeci) {
     var regexDecimal =  /^\d+(\.\d{1,2})?$/;
     return regexDecimal.test(wonkyDeci);
 }
@@ -43,7 +43,7 @@ function wonkyDecimalCheck(wonkyDeci) {
  * positive integer numbers
  * excludes 1.
  */
-function wonkyIntegerCheck(wonkyInt) {
+function integerCheck(wonkyInt) {
     var regexInt =  /^\d+$/;
     return regexInt.test(wonkyInt);
 }

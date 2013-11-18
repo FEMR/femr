@@ -1,9 +1,9 @@
 $(document).ready(function () {
     $('.newPatientBtn').click(function () {
-        if (confirm("Are you sure you want to reset the fields?")){
+        if (confirm("Are you sure you want to reset the fields?")) {
             window.location = "/triage";
         }
-        else{
+        else {
             return;
         }
 
@@ -27,23 +27,25 @@ $(document).ready(function () {
         }
     });
 
-    $('#yesPregnantBtn').change(function(){
+    $('#yesPregnantBtn').change(function () {
         $('#weeksWrap').removeClass('hidden');
         $('#boolPregnant').val(true);
     });
 
-    $('#noPregnantBtn').change(function(){
+    $('#noPregnantBtn').change(function () {
         $('#weeksWrap').addClass('hidden');
         $('#boolPregnant').val(false);
     });
 
-    $('.datepicker-age').datepicker({
-        format: "yyyy-mm-dd",
-        autoclose: true
+    $(document).ready(function () {
+        $('.datepicker-age').datepicker({
+            format: "yyyy-mm-dd",
+            autoclose: true
+        });
     });
 
 
-    $('#age').change(function () {
+    $('#age').change(function (){
         $('#age').css('border', '');
         // birthdate erased, clear years field
 
@@ -51,17 +53,17 @@ $(document).ready(function () {
         if ($('#age').val()) {
             var birthString = $('#age').val();
             var birthDate = new Date(birthString);
-            var today = new Date();
-            var currYear = today.getFullYear();
-            var birthYear = birthDate.getFullYear();
-            var ageInYears = currYear - birthYear;
-
+            //var today = Date.now();
+            //var currYear = today.getFullYear();
+            //var birthYear = birthDate.getFullYear();
+            var ageInYears = ~~((Date.now() - birthDate)/(31557600000));
+            console.log(ageInYears);
             // birthdate is not a date clear fields
             var nan = randomString(ageInYears);
-            if (nan==false) {
-                $('#years').val(ageInYears);
+            if (nan == false) {
+                $('#years').val(Math.floor(ageInYears));
             }
-            if (nan == true || birthDate > today){
+            if (nan == true || birthDate > Date.now()) {
                 $('#age').val("");
                 $('#years').val("");
                 $('#age').css('border-color', 'red');
@@ -78,18 +80,18 @@ $(document).ready(function () {
         console.log(yrs);
         $('#years').css('border', '');
         // years in age not null calculate birthdate
-        if ($('#years').val() && wonkyIntegerCheck(yrs) == true ) {
+        if ($('#years').val() && integerCheck(yrs) == true) {
             var birthDate = new Date();
             birthDate.setFullYear(birthDate.getFullYear() - yrs);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             var checkDate = new Date();
-            if (nan==false) {
+            if (nan == false) {
                 $('#age').val(birthString);
                 return;
             }
         }
-        if (regexInt.test(yrs) == false) {
+        if (integerCheck(yrs) == false) {
             $('#years').val('');
             $('#age').val('');
             $('#years').css('border-color', 'red');
@@ -136,7 +138,7 @@ window.setInterval(function () {
     }
 })();
 
- // reset border colors on input change
+// reset border colors on input change
 $('#firstName').change(function () {
     $('#firstName').css('border', '');
 });
@@ -197,8 +199,7 @@ window.setInterval(function () {
         var height_in = parseInt($('#heightInches').val());
         var height_ft = parseInt($('#heightFeet').val());
 
-        if (!$('#heightInches').val())
-        {
+        if (!$('#heightInches').val()) {
             height_in = 0;
         }
 

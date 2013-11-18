@@ -54,64 +54,65 @@ function checkRequiredInput() {
 function checkNumbers(){
     var pass = new Boolean(true);
 
-    //Blood Pressure - Systolic
-    if ($.trim($('#respirations').val().length) > 0 && $.isNumeric($('#respirations').val()) == false){
+
+    //Respirations
+    if ($.trim($('#respirations').val().length) > 0 && integerCheck($('#respirations').val()) == false){
         $('#respirations').val("");
         $('#respirations').attr("placeholder","Enter a Number");
         $('#respirations').css('border-color','red');
         pass = false;
     }
-    //Blood Pressure - Diasolic
-    if ($.trim($('#bloodPressureSystolic').val().length) > 0 && $.isNumeric($('#bloodPressureSystolic').val()) == false){
+    //Blood Pressure - Systolic
+    if ($.trim($('#bloodPressureSystolic').val().length) > 0 && integerCheck($('#bloodPressureSystolic').val()) == false){
         $('#bloodPressureSystolic').val("");
         $('#bloodPressureSystolic').attr("placeholder","Enter a Number");
         $('#bloodPressureSystolic').css('border-color','red');
         pass = false;
     }
-    //Respirations
-    if ($.trim($('#bloodPressureDiastolic').val().length) > 0 && $.isNumeric($('#bloodPressureDiastolic').val()) == false){
+    //Blood Pressure - Diastolic
+    if ($.trim($('#bloodPressureDiastolic').val().length) > 0 && integerCheck($('#bloodPressureDiastolic').val()) == false){
         $('#bloodPressureDiastolic').val("");
         $('#bloodPressureDiastolic').attr("placeholder","Enter a Number");
         $('#bloodPressureDiastolic').css('border-color','red');
         pass = false;
     }
     //Heart Rate
-    if ($.trim($('#heartRate').val().length) > 0 && $.isNumeric($('#heartRate').val()) == false){
+    if ($.trim($('#heartRate').val().length) > 0 && integerCheck($('#heartRate').val()) == false){
         $('#heartRate').val("");
         $('#heartRate').attr("placeholder","Enter a Number");
         $('#heartRate').css('border-color','red');
         pass = false;
     }
     //Oxygen
-    if ($.trim($('#oxygen').val().length) > 0 && $.isNumeric($('#oxygen').val()) == false){
+    if ($.trim($('#oxygen').val().length) > 0 && decimalCheck($('#oxygen').val()) == false){
         $('#oxygen').val("");
         $('#oxygen').attr("placeholder","Enter a Number");
         $('#oxygen').css('border-color','red');
         pass = false;
     }
     //Temperature
-    if ($.trim($('#temperature').val().length) > 0 && $.isNumeric($('#temperature').val()) == false){
+    if ($.trim($('#temperature').val().length) > 0 && decimalCheck($('#temperature').val()) == false){
         $('#temperature').val("");
         $('#temperature').attr("placeholder","Enter a Number");
         $('#temperature').css('border-color','red');
         pass = false;
     }
     //Weight
-    if ($.trim($('#weight').val().length) > 0 && $.isNumeric($('#weight').val()) == false){
+    if ($.trim($('#weight').val().length) > 0 && decimalCheck($('#weight').val()) == false){
         $('#weight').val("");
         $('#weight').attr("placeholder","Enter a Number");
         $('#weight').css('border-color','red');
         pass = false;
     }
     //Height - Feet
-    if ($.trim($('#heightFeet').val().length) > 0 && $.isNumeric($('#heightFeet').val()) == false){
+    if ($.trim($('#heightFeet').val().length) > 0 && integerCheck($('#heightFeet').val()) == false){
         $('#heightFeet').val("");
         $('#heightFeet').attr("placeholder","Enter a Number");
         $('#heightFeet').css('border-color','red');
         pass = false;
     }
     //Height - Inches
-    if ($.trim($('#heightInches').val().length) > 0 && $.isNumeric($('#heightInches').val()) == false){
+    if ($.trim($('#heightInches').val().length) > 0 && integerCheck($('#heightInches').val()) == false){
         $('#heightInches').val("");
         $('#heightInches').attr("placeholder","Enter a Number");
         $('#heightInches').css('border-color','red');
@@ -125,7 +126,7 @@ function checkNumbers(){
         pass = false;
     }
     //Pregnant - Weeks
-    if ($.trim($('#weeksPregnant').val().length) > 0 && $.isNumeric($('#weeksPregnant').val()) == false){
+    if ($.trim($('#weeksPregnant').val().length) > 0 && integerCheck($('#weeksPregnant').val()) == false){
         $('#weeksPregnant').val("");
         $('#weeksPregnant').attr("placeholder","Enter a Number");
         $('#weeksPregnant').css('border-color','red');
@@ -138,6 +139,13 @@ function checkNumbers(){
         $('#weeksPregnant').css('border-color','red');
         pass = false;
     }
+    //Age - Years
+    if ($.trim($('#years').val().length) > 0 && integerCheck($('#years').val()) == false){
+        $('#years').val("");
+        $('#years').attr("placeholder","Enter Correct Number of Years");
+        $('#years').css('border-color','red');
+        pass = false;
+    }
     return pass;
 }
 
@@ -145,16 +153,6 @@ function checkNumbers(){
 * check if age is a date
 * adopted from the webs!!!
 */
-
-
-function isInteger(s){
-    var i;
-    for (i = 0; i < s.length; i++){
-        var c = s.charAt(i);
-        if (((c < "0") || (c > "9"))) return false;
-    }
-    return true;
-}
 
 function stripCharsInBag(s, bag){
     var i;
@@ -216,7 +214,7 @@ function isDate(dtStr){
         //alert("Please enter a valid 4 digit year between "+minYear+" and "+maxYear);
         return false;
     }
-    if (dtStr.indexOf(dtCh,pos2+1)!=-1 || isInteger(stripCharsInBag(dtStr, dtCh))==false){
+    if (dtStr.indexOf(dtCh,pos2+1)!=-1 || integerCheck(stripCharsInBag(dtStr, dtCh))==false){
         //alert("Please enter a valid date");
         return false;
     }

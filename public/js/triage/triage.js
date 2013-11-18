@@ -83,8 +83,6 @@ $(document).ready(function () {
         var checkyears = parseInt($('#years').val());
         // years in age not null calculate birthdate
         if ($('#years').val() && integerCheck(checkyears) == true) {
-          //  var yrs = $('#years).val();
-            //console.log(yrs);
             var birthDate = new Date();
             birthDate.setFullYear(birthDate.getFullYear() - checkyears);
             var birthString = birthDate.toYMD();

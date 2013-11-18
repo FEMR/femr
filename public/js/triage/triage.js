@@ -229,12 +229,3 @@ window.setInterval(function () {
         return year + "-" + month + "-" + day;
     }
 })();
-
-function randomString(strVal) {
-    if (isNaN(strVal)) {
-        $('#age').val('');
-        $('#years').val('');
-        return true;
-    }
-    return false;
-}

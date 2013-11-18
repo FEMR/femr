@@ -47,58 +47,61 @@ $(document).ready(function () {
 
     $('#age').change(function (){
         $('#age').css('border', '');
-        // birthdate erased, clear years field
 
         // birthdate not null calculate age in years
-        if ($('#age').val()) {
+        if ($('#age').val() && isDate($('#age').val()) == true) {
             var birthString = $('#age').val();
             var birthDate = new Date(birthString);
-            //var today = Date.now();
-            //var currYear = today.getFullYear();
-            //var birthYear = birthDate.getFullYear();
             var ageInYears = ~~((Date.now() - birthDate)/(31557600000));
             console.log(ageInYears);
             // birthdate is not a date clear fields
             var nan = randomString(ageInYears);
-            if (nan == false) {
+            if (birthDate <= Date.now()) {
                 $('#years').val(Math.floor(ageInYears));
             }
-            if (nan == true || birthDate > Date.now()) {
-                $('#age').val("");
-                $('#years').val("");
-                $('#age').css('border-color', 'red');
-                $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd')
-            }
-            if (!$('#age').val()) {
+            else{
+                $('#age').val('');
                 $('#years').val('');
+                $('#age').css('border-color', 'red');
+                $('#age').attr('placeholder', 'Future dates are not allowed.');
             }
+
+        }
+        else if (isDate($('#age').val()) == false) {
+            $('#age').val("");
+            $('#years').val("");
+            $('#age').css('border-color', 'red');
+            $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd');
+        }
+        else if (!$('#age').val()) {
+            $('#years').val('');
         }
     });
 
     $('#years').change(function () {
-        var yrs = parseInt($('#years').val());
-        console.log(yrs);
         $('#years').css('border', '');
+        var checkyears = parseInt($('#years').val());
         // years in age not null calculate birthdate
-        if ($('#years').val() && integerCheck(yrs) == true) {
+        if ($('#years').val() && integerCheck(checkyears) == true) {
+          //  var yrs = $('#years).val();
+            //console.log(yrs);
             var birthDate = new Date();
-            birthDate.setFullYear(birthDate.getFullYear() - yrs);
+            birthDate.setFullYear(birthDate.getFullYear() - checkyears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             var checkDate = new Date();
             if (nan == false) {
                 $('#age').val(birthString);
-                return;
             }
         }
-        if (integerCheck(yrs) == false) {
+        else if ($('#years').val() && integerCheck(checkyears) == false) {
             $('#years').val('');
             $('#age').val('');
             $('#years').css('border-color', 'red');
             $('#years').attr('placeholder', 'Enter correct age in Years');
         }
         // age in years erased, clear birthdate field
-        if (!$('#years').val()) {
+        else if (!$('#years').val()) {
             $('#age').val('');
         }
     });
@@ -119,9 +122,8 @@ window.setInterval(function () {
     }
 }, 500);
 
-//Datepicker select age
+// Format date object as yyyy-MM-dd
 (function () {
-    // Format date object as yyyy-MM-dd
     Date.prototype.toYMD = Date_toYMD;
     function Date_toYMD() {
         var year, month, day;
@@ -210,23 +212,3 @@ window.setInterval(function () {
     }
 }, 500);
 
-//Datepicker select age
-
-
-(function () {
-    // Format date object as yyyy-MM-dd
-    Date.prototype.toYMD = Date_toYMD;
-    function Date_toYMD() {
-        var year, month, day;
-        year = String(this.getFullYear());
-        month = String(this.getMonth() + 1);
-        if (month.length == 1) {
-            month = "0" + month;
-        }
-        day = String(this.getDate());
-        if (day.length == 1) {
-            day = "0" + day;
-        }
-        return year + "-" + month + "-" + day;
-    }
-})();

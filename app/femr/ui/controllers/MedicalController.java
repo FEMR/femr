@@ -163,7 +163,9 @@ public class MedicalController extends Controller {
             if (patientEncounterVitalServiceResponse.hasErrors()) {
                 patientEncounterVitals.add(null);
             }
-            patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
+            else{
+                patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
+            }
         }
 
         CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);

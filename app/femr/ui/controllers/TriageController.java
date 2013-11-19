@@ -6,10 +6,9 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.common.models.*;
+import femr.ui.helpers.security.AllowedRoles;
+import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
 import femr.ui.helpers.controller.TriageHelper;
@@ -18,9 +17,12 @@ import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import java.util.List;
 
+@Security.Authenticated(FEMRAuthenticated.class)
+@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class TriageController extends Controller {
 
     private final Form<CreateViewModelPost> createViewModelForm = Form.form(CreateViewModelPost.class);

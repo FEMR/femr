@@ -6,6 +6,8 @@ import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.*;
 import femr.common.models.*;
+import femr.ui.helpers.security.AllowedRoles;
+import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.pharmacy.CreateViewModelGet;
 import femr.ui.models.pharmacy.CreateViewModelPost;
 import femr.ui.views.html.pharmacies.index;
@@ -17,10 +19,14 @@ import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Security.Authenticated(FEMRAuthenticated.class)
+@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PharmaciesController extends Controller {
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private Provider<IPatientPrescription> patientPrescriptionProvider;

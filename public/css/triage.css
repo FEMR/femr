@@ -1,54 +1,47 @@
 /*Triage Page*/
-.medicalHistoryLineDivide{
-    background: #000000;
-    clear: both;
-    float: none;
-    width: 100%;
-    height: 1px;
-    margin: 0 0 2px;
-    border: none;
+.stackedInput {
+  margin-top: 15px!important;
 }
-.btn-group-wrap{
-    text-align: center;
+.textAreaLabel {
+  margin-top: 25px!important;
 }
-.triageInputRow{
-    font-size: 12px;
+.floatButtonOffset {
+  margin-left: 10px;
 }
-.inputLabel{
-    display: inline-block;
-    float: left;
-    clear: left;
-    text-align: right;
+.medicalHistoryLineDivide {
+  background: #000000;
+  clear: both;
+  float: none;
+  width: 100%;
+  height: 1px;
+  margin: 0 0 2px;
+  border: none;
+}
 
-}
-#heightInputLabelMargin{
-    margin-right: 200px !important;
-}
-#bloodPressureInputLabelMargin{
-    margin-right: 50px !important;
-}
-#pregnantWrap{
-    display: inline-block;
-    float: left;
-}
-#genderWrap{
-    display: inline-block;
+#pregnantWrap {
+  display: inline-block;
+  float: left;
 }
 
 /*Boot strap overrides*/
-.clear-none{
-    clear: none !important;
+.clear-none {
+  clear: none !important;
 }
-.patientMedicalHistory{
-    padding-bottom: 4px !important;
-    margin-bottom: 4px; !important;
+
+.patientMedicalHistory {
+  padding-bottom: 4px !important;
+  margin-bottom: 4px;
+!important;
 }
-.padding-right-zero{
-    padding-right: 0px !important;
+
+.padding-right-zero {
+  padding-right: 0 !important;
 }
-.padding-left-zero{
-    padding-left: 0px !important;
+
+.padding-left-zero {
+  padding-left: 0 !important;
 }
-.bold{
-    font-weight: bold;
+
+.bold {
+  font-weight: bold;
 }

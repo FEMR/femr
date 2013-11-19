@@ -1,0 +1,20 @@
+@(viewModel: femr.ui.models.triage.CreateViewModelGet)
+@import femr.ui.views.html.helpers.triage.inputButton
+  @inputBlock = {
+    <div class="form-group">
+      <label class="col-sm-3 col-xs-3 control-label">Gender</label>
+      <div class="col-sm-7 col-xs-7">
+        <div class="btn-group pull-left" data-toggle="buttons">
+          @inputButton("Male", "sex", "maleBtn",
+            if(viewModel != null) viewModel.getSex == "" || viewModel.getSex == null else true,
+            if(viewModel != null) viewModel.getSex == "Male" else false,
+            "Male")
+          @inputButton("Female", "sex", "femaleBtn",
+            if(viewModel != null) viewModel.getSex == "" || viewModel.getSex == null else true,
+            if(viewModel != null) viewModel.getSex == "Female" else false,
+            "Female")
+        </div>
+      </div>
+    </div>
+  }
+@inputBlock

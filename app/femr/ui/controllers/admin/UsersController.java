@@ -51,8 +51,7 @@ public class UsersController extends Controller {
         List<? extends IRole> roles = roleService.getAllRoles();
         ServiceResponse<List<? extends IUser>> userServiceResponse = userService.findAllUsers();
         if (userServiceResponse.hasErrors()){
-            //error
-            //goto 500 page
+            return internalServerError();
         }
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         viewModelGet.setUsers(userServiceResponse.getResponseObject());

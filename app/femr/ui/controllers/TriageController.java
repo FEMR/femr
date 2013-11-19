@@ -46,8 +46,7 @@ public class TriageController extends Controller {
 
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
-            //error
-            //goto 500
+            return internalServerError();
         }
 
         CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, vitalServiceResponse.getResponseObject(), false);
@@ -84,8 +83,7 @@ public class TriageController extends Controller {
         //retrieve vitals names for dynamic html element naming
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
-            //error
-            //should goto 500
+            return internalServerError();
         }
 
         CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, vitalServiceResponse.getResponseObject(), searchError);
@@ -114,16 +112,14 @@ public class TriageController extends Controller {
         }
 
         if (patientServiceResponse.hasErrors()) {
-            //error
-            //goto 500 page
+            return internalServerError();
         }
 
         //create and save a new encounter
         IPatientEncounter patientEncounter = triageHelper.populatePatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
         if (patientEncounterServiceResponse.hasErrors()) {
-            //error
-            //goto 500 page
+            return internalServerError();
         }
 
         //create and save vitals in new encounter
@@ -133,8 +129,7 @@ public class TriageController extends Controller {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {
                 patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
                 if (patientEncounterVitalServiceResponse.hasErrors()) {
-                    //error
-                    //goto 500 page
+                    return internalServerError();
                 }
             }
         }

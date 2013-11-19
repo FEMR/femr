@@ -1,33 +1,27 @@
 package femr.ui.models.triage;
 
+import femr.common.models.IVital;
+
 import java.util.Date;
+import java.util.List;
 
 //NOTE: the triage view sets the input element names dynamically
 //based on the vital name entry in the database, but this
 //ViewModel does NOT.
 public class CreateViewModelGet {
-    //begin patient
+    //patient info
+    private int Id;
     private String firstName;
     private String lastName;
     private String address;
     private String city;
-    private int age;
+    private Integer age;
     private Date birth;
     private String sex;
-    //begin vitals
-    private Integer bloodPressureSystolic;
-    private Integer bloodPressureDiastolic;
-    private Integer heartRate;
-    private Float temperature;
-    private Integer respiratoryRate;
-    private Float oxygenSaturation;
-    private Integer heightFeet;
-    private Integer heightInches;
-    private Float weight;
-    //begin encounter
-    private String chiefComplaint;
-    private Integer weeksPregnant;
-    private Boolean isPregnant;
+    //search info
+    private boolean searchError = false;
+    //vital names
+    List<? extends IVital> vitalNames;
 
     public CreateViewModelGet() {
     }
@@ -65,11 +59,11 @@ public class CreateViewModelGet {
         this.city = city;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
@@ -89,100 +83,26 @@ public class CreateViewModelGet {
         this.sex = sex;
     }
 
-    //begin vitals
-    public Integer getBloodPressureSystolic() {
-        return bloodPressureSystolic;
+    public boolean isSearchError() {
+        return searchError;
     }
 
-    public void setBloodPressureSystolic(Integer bloodPressureSystolic) {
-        this.bloodPressureSystolic = bloodPressureSystolic;
+    public void setSearchError(boolean searchError) {
+        this.searchError = searchError;
     }
 
-    public Integer getBloodPressureDiastolic() {
-        return bloodPressureDiastolic;
+    public List<? extends IVital> getVitalNames(){
+        return vitalNames;
+    }
+    public void setVitalNames(List<? extends IVital> vitalNames){
+        this.vitalNames = vitalNames;
     }
 
-    public void setBloodPressureDiastolic(Integer bloodPressureDiastolic) {
-        this.bloodPressureDiastolic = bloodPressureDiastolic;
+    public int getId() {
+        return Id;
     }
 
-    public Integer getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(Integer heartRate) {
-        this.heartRate = heartRate;
-    }
-
-    public Float getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Float temperature) {
-        this.temperature = temperature;
-    }
-
-    public Integer getHeightFeet() {
-        return heightFeet;
-    }
-
-    public void setHeightFeet(Integer heightFeet) {
-        this.heightFeet = heightFeet;
-    }
-
-    public Integer getHeightInches() {
-        return heightInches;
-    }
-
-    public void setHeightInches(Integer heightInches) {
-        this.heightInches = heightInches;
-    }
-
-    public Float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Float weight) {
-        this.weight = weight;
-    }
-
-    public String getChiefComplaint() {
-        return chiefComplaint;
-    }
-
-    public void setChiefComplaint(String chiefComplaint) {
-        this.chiefComplaint = chiefComplaint;
-    }
-
-    public Integer getRespiratoryRate() {
-        return respiratoryRate;
-    }
-
-    public void setRespiratoryRate(Integer respiratoryRate) {
-        this.respiratoryRate = respiratoryRate;
-    }
-
-    public Float getOxygenSaturation() {
-        return oxygenSaturation;
-    }
-
-    public void setOxygenSaturation(Float oxygenSaturation) {
-        this.oxygenSaturation = oxygenSaturation;
-    }
-
-    public Integer getWeeksPregnant() {
-        return weeksPregnant;
-    }
-
-    public void setWeeksPregnant(Integer weeksPregnant) {
-        this.weeksPregnant = weeksPregnant;
-    }
-
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
+    public void setId(int id) {
+        Id = id;
     }
 }

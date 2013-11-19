@@ -1,6 +1,7 @@
 package femr.data.daos;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface IRepository<T> {
     T update(T entity);
 
     List<? extends T> findAll(Class<? extends T> clazz);
+
+    List<? extends T> find(Query<? extends T> query);
 }

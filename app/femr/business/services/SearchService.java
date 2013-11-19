@@ -12,12 +12,13 @@ import femr.data.models.*;
 import java.util.List;
 
 public class SearchService implements ISearchService {
+    private IRepository<IMedication> medicationRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounter> patientEncounterRepository;
-    private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private IRepository<IVital> vitalRepository;
-    private IRepository<IPatientPrescription> patientPrescriptionRepository;
     private IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository;
+    private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
+    private IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private IRepository<IVital> vitalRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
@@ -25,13 +26,15 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IVital> vitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
-                         IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository) {
+                         IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
+                         IRepository<IMedication> medicationRepository) {
+        this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
-        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
-        this.vitalRepository = vitalRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
+        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
+        this.patientPrescriptionRepository = patientPrescriptionRepository;
+        this.vitalRepository = vitalRepository;
     }
 
     @Override
@@ -79,24 +82,21 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public  ServiceResponse  <List<? extends IPatient>> findPatientByName(String firstName, String lastName){
+    public ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName) {
         ExpressionList<Patient> query;
-        if(!firstName.isEmpty() && lastName.isEmpty()){
-            query = getPatientQuery().where().eq("first_name",firstName);
-        }
-         else if (firstName.isEmpty() && !lastName.isEmpty()){
-            query = getPatientQuery().where().eq("last_name",lastName);
-        }
-        else{
-            query = getPatientQuery().where().eq("first_name",firstName).eq("last_name",lastName);
+        if (!firstName.isEmpty() && lastName.isEmpty()) {
+            query = getPatientQuery().where().eq("first_name", firstName);
+        } else if (firstName.isEmpty() && !lastName.isEmpty()) {
+            query = getPatientQuery().where().eq("last_name", lastName);
+        } else {
+            query = getPatientQuery().where().eq("first_name", firstName).eq("last_name", lastName);
         }
 
-        List<? extends IPatient> savedPatients =  patientRepository.find(query);
-        ServiceResponse  <List<? extends IPatient>> response = new ServiceResponse<>();
-        if (savedPatients == null || savedPatients.size() == 0){
-            response.addError("first name/last name","patient could not be found by name");
-        }
-        else{
+        List<? extends IPatient> savedPatients = patientRepository.find(query);
+        ServiceResponse<List<? extends IPatient>> response = new ServiceResponse<>();
+        if (savedPatients == null || savedPatients.size() == 0) {
+            response.addError("first name/last name", "patient could not be found by name");
+        } else {
             response.setResponseObject(savedPatients);
         }
         return response;
@@ -104,8 +104,13 @@ public class SearchService implements ISearchService {
 
     @Override
     public ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId) {
-        ExpressionList<PatientEncounterVital> query = getPatientEncounterVitalQuery().where().eq("vital_id", vitalId).eq("patient_encounter_id", encounterId);
-        IPatientEncounterVital patientEncounterVital = patientEncounterVitalRepository.findOne(query);
+        Query<PatientEncounterVital> query = getPatientEncounterVitalQuery().where().eq("vital_id", vitalId).eq("patient_encounter_id", encounterId).order().desc("date_taken").setMaxRows(1);
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+        IPatientEncounterVital patientEncounterVital = null;
+
+        if (patientEncounterVitals.size() == 1) {
+            patientEncounterVital = patientEncounterVitals.get(0);
+        }
 
         ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
         if (patientEncounterVital == null) {
@@ -163,6 +168,18 @@ public class SearchService implements ISearchService {
             response.setResponseObject(vitals);
         } else {
             response.addError("vitals", "no vitals available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IMedication>> findAllMedications() {
+        List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
+        ServiceResponse<List<? extends IMedication>> response = new ServiceResponse<>();
+        if (medications.size() > 0) {
+            response.setResponseObject(medications);
+        } else {
+            response.addError("medications", "no medications available");
         }
         return response;
     }

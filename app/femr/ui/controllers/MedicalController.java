@@ -1,7 +1,6 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.IMedicalService;
@@ -10,21 +9,25 @@ import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.*;
 import femr.ui.helpers.controller.MedicalHelper;
+import femr.ui.helpers.security.AllowedRoles;
+import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.indexPopulated;
-import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+
+@Security.Authenticated(FEMRAuthenticated.class)
+@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class MedicalController extends Controller {
 
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);

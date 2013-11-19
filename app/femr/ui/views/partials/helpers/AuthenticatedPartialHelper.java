@@ -19,7 +19,7 @@ public class AuthenticatedPartialHelper {
 
     public static boolean showMedicalPersonnelMenu(List<IRole> roles) {
         for (IRole role : roles) {
-            if (role.getId() == Roles.PHARMACIST || role.getId() == Roles.PHYSICIAN) {
+            if (role.getId() == Roles.PHARMACIST || role.getId() == Roles.PHYSICIAN || role.getId() == Roles.NURSE) {
                 return true;
             }
         }

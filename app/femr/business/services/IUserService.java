@@ -14,4 +14,6 @@ public interface IUserService {
     IUser findById(int id);
 
     List<? extends IRole> findRolesForUser(int id);
+
+    ServiceResponse<List<? extends IUser>> findAllUsers();
 }

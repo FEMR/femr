@@ -1,11 +1,15 @@
-@(currentUser: femr.business.dtos.CurrentUser, roles: List[_ <: femr.common.models.IRole])
+@(currentUser: femr.business.dtos.CurrentUser, roles: List[_ <: femr.common.models.IRole], viewModelGet: femr.ui.models.admin.users.CreateViewModelGet)
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.views.html.layouts.admin
 
 @admin("Users", null) {
-  <div class="row">
-    <div class="col-md-12">
-        <p>potential list of users</p>
+    <div class="row">
+        <div class="col-md-12">
+            <ul>
+            @for(y <- 1 to viewModelGet.getUsers.size) {
+                <li>@viewModelGet.getUser(y - 1).getEmail</li>
+            }
+            </ul>
+        </div>
     </div>
-  </div>
 }

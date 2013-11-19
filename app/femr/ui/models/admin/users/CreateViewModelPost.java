@@ -1,6 +1,6 @@
 package femr.ui.models.admin.users;
 
-public class CreateViewModel {
+public class CreateViewModelPost {
     private String firstName;
     private String lastName;
     private String email;

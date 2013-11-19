@@ -38,8 +38,7 @@ public class MockUserService implements IUserService {
 
     @Override
     public ServiceResponse<List<? extends IUser>> findAllUsers(){
-        ServiceResponse<List<? extends IUser>> response = new ServiceResponse<>();
-        return response;
+        return new ServiceResponse<>();
     }
 
     @Override

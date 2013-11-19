@@ -61,8 +61,7 @@ public class MedicalController extends Controller {
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(viewModelPost.getId());
         if (patientEncounterServiceResponse.hasErrors()) {
-            //error
-            //goto 500 page
+            return internalServerError();
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
@@ -75,8 +74,7 @@ public class MedicalController extends Controller {
             } else {
                 patientEncounterHpiFieldServiceResponse = medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
                 if (patientEncounterHpiFieldServiceResponse.hasErrors()) {
-                    //error
-                    //goto 500 page
+                    return internalServerError();
                 }
             }
         }
@@ -89,8 +87,7 @@ public class MedicalController extends Controller {
             } else {
                 patientEncounterTreatmentFieldServiceResponse = medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
                 if (patientEncounterTreatmentFieldServiceResponse.hasErrors()) {
-                    //error
-                    //goto 500 page
+                    return internalServerError();
                 }
             }
         }
@@ -103,8 +100,7 @@ public class MedicalController extends Controller {
             } else {
                 patientPrescriptionServiceResponse = medicalService.createPatientPrescription(patientPrescriptions.get(k));
                 if (patientPrescriptionServiceResponse.hasErrors()) {
-                    //error
-                    //goto 500 page
+                    return internalServerError();
                 }
             }
         }
@@ -124,8 +120,7 @@ public class MedicalController extends Controller {
             if (patientEncounterVitals.get(i).getVitalValue() > 0) {
                 patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
                 if (patientEncounterVitalServiceResponse.hasErrors()) {
-                    //error
-                    //goto 500 page
+                    return internalServerError();
                 }
             }
         }
@@ -152,8 +147,7 @@ public class MedicalController extends Controller {
         //current Encounter info for view model
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(i_patientID);
         if (patientEncounterServiceResponse.hasErrors()) {
-            //error
-            //should goto 500
+            return internalServerError();
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 

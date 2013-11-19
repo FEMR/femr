@@ -4,6 +4,7 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.IUserService;
 import femr.common.models.IRole;
 import femr.common.models.IUser;
+import femr.util.dependencyinjection.providers.UserProvider;
 
 import java.util.List;
 
@@ -33,6 +34,11 @@ public class MockUserService implements IUserService {
         findByIdWasCalled = true;
         idPassedIn = id;
         return findByIdReturnObject;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IUser>> findAllUsers(){
+        return new ServiceResponse<>();
     }
 
     @Override

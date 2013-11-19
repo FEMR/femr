@@ -13,7 +13,8 @@ import femr.common.models.IUser;
 import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.users.CreateViewModel;
+import femr.ui.models.admin.users.CreateViewModelPost;
+import femr.ui.models.admin.users.CreateViewModelGet;
 import femr.ui.views.html.admin.users.create;
 import femr.ui.views.html.admin.users.index;
 import play.data.Form;
@@ -30,7 +31,7 @@ import static femr.ui.controllers.routes.HomeController;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR})
 public class UsersController extends Controller {
-    private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
+    private final Form<CreateViewModelPost> createViewModelForm = Form.form(CreateViewModelPost.class);
     private ISessionService sessionService;
     private IUserService userService;
     private IRoleService roleService;
@@ -48,8 +49,15 @@ public class UsersController extends Controller {
     public Result index() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IRole> roles = roleService.getAllRoles();
+        ServiceResponse<List<? extends IUser>> userServiceResponse = userService.findAllUsers();
+        if (userServiceResponse.hasErrors()){
+            //error
+            //goto 500 page
+        }
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+        viewModelGet.setUsers(userServiceResponse.getResponseObject());
 
-        return ok(index.render(currentUser, roles));
+        return ok(index.render(currentUser, roles, viewModelGet));
     }
 
     public Result createGet() {
@@ -60,7 +68,7 @@ public class UsersController extends Controller {
     }
 
     public Result createPost() {
-        CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
 
         IUser user = createUser(viewModel);
 
@@ -94,7 +102,7 @@ public class UsersController extends Controller {
         return user;
     }
 
-    private IUser createUser(CreateViewModel viewModel) {
+    private IUser createUser(CreateViewModelPost viewModel) {
         IUser user = userProvider.get();
         user.setFirstName(viewModel.getFirstName());
         user.setLastName(viewModel.getLastName());

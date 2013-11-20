@@ -1,58 +1,38 @@
 @(title: String, currentUser: femr.business.dtos.CurrentUser,
-        styles: Html = Html(""), scripts: Html = Html(""), customSearch: Html = Html(""),
-        outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
+  styles: Html = Html(""), scripts: Html = Html(""), customSearch: Html = Html(""),
+  outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""), showSearchBtn: Boolean = false)(content: Html)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SearchController
-
-
-    @searchTemplate = {
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
-                    <p class="searchLabel">Search:</p>
-                </div>
-                <div class="col-lg-4 col-sm-4 col-md-4 col-xs-4">
-                    @*Provide a custom ID search option for each page*@
-                    @customSearch
-                </div>
-
-                <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
-                    @*Provide a uniform first/last name search option for each page*@
-                    @helper.form(action = SearchController.createGet()) {
-
-
-                        <div class="col-lg-5 col-sm-5 col-md-5 col-xs-5 remove-padding">
-                            @*<label for="searchFirstName" class="pull-left">First Name:</label>*@
-                            <input type="text" id="searchFirstName" class="form-control nameSearchForm" name="searchFirstName" placeholder="First Name">
-                        </div>
-
-
-                        <div class="col-lg-5 col-sm-5 col-md-5 col-xs-5 remove-padding">
-                            @*<label for="searchLastName">Last Name:</label>*@
-                            <input type="text" id="searchLastName" class="form-control nameSearchForm" name="searchLastName" placeholder="Last Name">
-
-                        </div>
-
-
-                        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
-                            <button type="submit" id="searchBtn" class="buttonSearchForm btn btn-default btn-sm">
-                                Search</button>
-                        </div>
-
-
-                    }
-                </div>
-            </div>
+  @searchTemplate = {
+    <div id="searchContainer" style="display:none;">
+      <div class="row">
+        <div class="col-sm-4 col-xs-4">
+          @*Provide a custom ID search option for each page*@
+          @customSearch
         </div>
-    }
-
-
-@main(title, currentUser, styles, scripts, search = searchTemplate) {
-
-
-    @content
-
+        <div class="col-sm-6 col-xs-6">
+          @*Provide a uniform first/last name search option for each page*@
+          @helper.form(action = SearchController.createGet()) {
+            <div class="col-lg-5 col-sm-5 col-md-5 col-xs-5 remove-padding">
+              @*<label for="searchFirstName" class="pull-left">First Name:</label>*@
+              <input type="text" id="searchFirstName" class="form-control nameSearchForm" name="searchFirstName" placeholder="First Name">
+            </div>
+            <div class="col-lg-5 col-sm-5 col-md-5 col-xs-5 remove-padding">
+              @*<label for="searchLastName">Last Name:</label>*@
+              <input type="text" id="searchLastName" class="form-control nameSearchForm" name="searchLastName" placeholder="Last Name">
+            </div>
+            <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
+              <button type="submit" id="searchBtn" class="buttonSearchForm btn btn-default btn-sm">
+                Search</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+@main(title, currentUser, styles, scripts, search = searchTemplate, showSearchButton = showSearchBtn) {
+  @content
 }
 
 

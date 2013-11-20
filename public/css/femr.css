@@ -1,36 +1,31 @@
-html,body{
-
-    background-color: #d8d2c0;
-}
-body{
-    padding-top: 50px;
+body {
+  padding-top: 50px;
+  background: url("../img/paper_3.png") repeat;
 }
 
-hr{
-    border-top: 1px solid black;
+hr {
+  border-top: 1px solid black;
 }
 
-.well{
-    background-color: #F0EAD6;
-    border: 1px solid #c0bbab;
+.nameSearchForm {
+  width: 100%;
+  margin-top: 10px;
 }
 
-.nameSearchForm{
-    width: 100%;
-    margin-top: 10px;
+.idSearchForm {
+  margin-top: 10px;
+  width: 100%;
 }
-.idSearchForm{
-    margin-top: 10px;
-    width: 100%;
+
+.searchLabel {
+  padding: 5px;
+  margin-top: 6px;
+  font-size: 25px;
 }
-.searchLabel{
-    padding: 5px;
-    margin-top: 6px;
-    font-size: 25px;
-}
-.buttonSearchForm{
-    margin-top: 10px;
-    height: 34px;
+
+.buttonSearchForm {
+  margin-top: 10px;
+  height: 34px;
 }
 
 .admin-left-panel {
@@ -45,10 +40,10 @@ hr{
   padding-left: 5px;
 }
 
-.margin-top-zero{
-    margin-top: 0px;
+.margin-top-zero {
+  margin-top: 0;
 }
 
-.remove-padding{
-    padding: 0px !important;
+.remove-padding {
+  padding: 0 !important;
 }

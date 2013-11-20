@@ -2,28 +2,28 @@
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.main
-    @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tab.js")"></script>
-    }
-    @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
-    }
+  @additionalScripts = {
+    <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tab.js")"></script>
+  }
+  @additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+  }
 @main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles) {
-    <div class="container">
-    @helper.form(action = MedicalController.createPopulatedGet()) {
-        <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
-            <h2>Medical Search Patient</h2>
-            <div class="form-group form-horizontal">
-                <label for="id" class="sr-only">Patient ID</label>
-                <input type="number" class="form-control" id="id" name="id" placeholder="Patient ID">
-            </div>
-            <button type="submit" class="idSearch btn btn-primary btn-lg">Search</button>
-        </div>
-        <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
-            <h1>@message</h1>
-        </div>
-    }
+  <div class="container">
+  @helper.form(action = MedicalController.searchPost()) {
+    <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
+      <h2>Medical Search Patient</h2>
+      <div class="form-group form-horizontal">
+        <label for="id" class="sr-only">Patient ID</label>
+        <input type="number" class="form-control" id="id" name="id" placeholder="Patient ID">
+      </div>
+      <button type="submit" class="idSearch btn btn-primary btn-lg">Search</button>
     </div>
+    <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
+      <h1>@message</h1>
+    </div>
+  }
+  </div>
 }

@@ -1,11 +1,11 @@
-@(currentUser: femr.business.dtos.CurrentUser = null)
+@(currentUser: femr.business.dtos.CurrentUser = null, showSearchButton: Boolean)
 
 @import femr.ui.views.html.partials
 
 <header class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     @if(currentUser != null) {
-      @partials.authenticated(currentUser)
+      @partials.authenticated(currentUser, showSearchButton)
     } else {
       @partials.anonymous()
     }

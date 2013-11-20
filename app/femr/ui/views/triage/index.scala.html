@@ -27,7 +27,7 @@
     </div>
   }
   }
-@medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
+@medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById, showSearchBtn = true) {
   <div class="row">
   @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal") {
     <div class="col-sm-5 col-xs-12">

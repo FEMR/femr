@@ -123,7 +123,13 @@ public class TriageHelper {
 
         //Height - Inches
         if (viewModelPost.getHeightInches() == null) {
-            patientEncounterVital[5].setVitalValue(-1);
+            //if HeightFeet is set and HeightInches is not, make HeightInches 0
+            if (patientEncounterVital[4].getVitalValue() > -1){
+                patientEncounterVital[5].setVitalValue(0);
+            }
+            else{
+                patientEncounterVital[5].setVitalValue(-1);
+            }
         } else {
             patientEncounterVital[5].setVitalValue(viewModelPost.getHeightInches().floatValue());
         }

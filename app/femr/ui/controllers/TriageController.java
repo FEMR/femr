@@ -126,7 +126,7 @@ public class TriageController extends Controller {
         List<IPatientEncounterVital> patientEncounterVitals = triageHelper.populateVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
         for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
+            if (patientEncounterVitals.get(i).getVitalValue() > -1) {
                 patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
                 if (patientEncounterVitalServiceResponse.hasErrors()) {
                     return internalServerError();

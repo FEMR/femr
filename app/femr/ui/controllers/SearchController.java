@@ -5,10 +5,7 @@ import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.common.models.*;
 import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
 import femr.util.calculations.dateUtils;
@@ -83,8 +80,30 @@ public class SearchController extends Controller {
             viewModel.setSex(patient.getSex());
         }
 
+        //Get treatment info
 
 
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findAllTreatmentByEncounterId(id);
+        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
+        List<String> dynamicViewProblems = new ArrayList<>();
+
+        if (patientEncounterProblemsServiceResponse.hasErrors()) {
+
+        } else {
+            patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
+        }
+
+        if (patientEncounterProblems.size() > 0) {
+            for (int problem = 0; problem < patientEncounterProblems.size(); problem++) {
+                dynamicViewProblems.add(patientEncounterProblems.get(problem).getTreatmentFieldValue());
+            }
+        }
+
+        if(patientEncounterProblemsServiceResponse.getResponseObject() != null){
+            if(patientEncounterProblemsServiceResponse.getResponseObject().get(0).getTreatmentFieldId() == 1){
+                viewModel.setAssessment(patientEncounterProblemsServiceResponse.getResponseObject().get(0).getTreatmentFieldValue());
+            }
+        }
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));
     }

@@ -16,6 +16,10 @@ public class CreateEncounterViewModel {
     private String city;
     private int age;
     private String sex;
+    private String assessment;
+    private String treatment;
+    private String familyHist;
+
 
     public Float getBloodPressureSystolic() {
         return bloodPressureSystolic;
@@ -135,5 +139,29 @@ public class CreateEncounterViewModel {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getAssessment() {
+        return assessment;
+    }
+
+    public void setAssessment(String assessment) {
+        this.assessment = assessment;
+    }
+
+    public String getTreatment() {
+        return treatment;
+    }
+
+    public void setTreatment(String treatment) {
+        this.treatment = treatment;
+    }
+
+    public String getFamilyHist() {
+        return familyHist;
+    }
+
+    public void setFamilyHist(String familyHist) {
+        this.familyHist = familyHist;
     }
 }

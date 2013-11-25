@@ -38,7 +38,7 @@ public class SearchController extends Controller {
     Not yet implemented.
      */
     public Result viewEncounter(int id) {
-
+         //Get patientEncounter
         CreateEncounterViewModel viewModel = new CreateEncounterViewModel();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
@@ -46,7 +46,7 @@ public class SearchController extends Controller {
 
 
 
-        //
+        // Fetch Vitals
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse= null;
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
 
@@ -59,12 +59,41 @@ public class SearchController extends Controller {
                 patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
             }
         }
-        //viewModel.setPatientVitalResult(patientEncounterVitals);
+        viewModel.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)));
+        viewModel.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)));
+        viewModel.setTemperature(getVitalOrNull(patientEncounterVitals.get(2)));
+        viewModel.setOxygenSaturation(getVitalOrNull(patientEncounterVitals.get(3)));
+        viewModel.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)));
+        viewModel.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)));
+        viewModel.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
+        viewModel.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
+        viewModel.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
 
-        //also grab prescriptions and problems from search service, maybe make new model for all of this
+
+         //Get Patient Name and other basic info
+        ServiceResponse<IPatient> patientServiceResponseid= null;
+        patientServiceResponseid = searchService.findPatientById(patientEncounter.getPatientId());
+        if (!patientServiceResponseid.hasErrors()) {
+            IPatient patient = patientServiceResponseid.getResponseObject();
+            viewModel.setFirstName(patient.getFirstName());
+            viewModel.setLastName(patient.getLastName());
+            viewModel.setAddress(patient.getAddress());
+            viewModel.setCity(patient.getCity());
+            viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
+            viewModel.setSex(patient.getSex());
+        }
+
+
 
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));
+    }
+
+    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital) {
+        if (patientEncounterVital == null)
+            return null;
+        else
+            return patientEncounterVital.getVitalValue();
     }
 
     /*

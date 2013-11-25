@@ -1,5 +1,7 @@
 package femr.ui.models.search;
 
+import java.util.List;
+
 public class CreateEncounterViewModel {
     private Float bloodPressureSystolic;
     private Float bloodPressureDiastolic;
@@ -19,6 +21,7 @@ public class CreateEncounterViewModel {
     private String assessment;
     private String treatment;
     private String familyHist;
+    private List<String> problemList;
 
 
     public Float getBloodPressureSystolic() {
@@ -163,5 +166,13 @@ public class CreateEncounterViewModel {
 
     public void setFamilyHist(String familyHist) {
         this.familyHist = familyHist;
+    }
+
+    public List<String> getProblemList() {
+        return problemList;
+    }
+
+    public void setProblemList(List<String> problemList) {
+        this.problemList = problemList;
     }
 }

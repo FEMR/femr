@@ -8,6 +8,7 @@
 }
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/search.css")">
     }
 
 
@@ -115,19 +116,12 @@
                     </div>
                     <div class="form-group">
                         <label for="problem">Problem List</label>
-                        <div class="row">
-                            <div class="col-xs-9 col-sm-9 col-md-9">
-                                <input id="problem1" name="problem1" type="text" class="form-control input-sm" value=""/>
-                                <input id="problem2" name="problem2" type="text" class="form-control input-sm hidden" value=""/>
-                                <input id="problem3" name="problem3" type="text" class="form-control input-sm hidden" value=""/>
-                                <input id="problem4" name="problem4" type="text" class="form-control input-sm hidden" value=""/>
-                                <input id="problem5" name="problem5" type="text" class="form-control input-sm hidden" value=""/>
-                            </div>
-                            <div class="col-xs-3 col-sm-3 col-md-3">
-                                <button id="addProblemButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                            </div>
-                        </div>
-                    </div>
+                        <ul id="listElement">
+                        @for( a <- 0 to viewModel.getProblemList.size()-1){
+                            <li><a>@viewModel.getProblemList.get(a)</a></li>
+                        }
+                        </ul>
+
                     <div class="form-group">
                         <label for="prescription">Prescriptions</label>
                         <div class="row">
@@ -138,18 +132,15 @@
                                 <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value=""/>
                                 <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value=""/>
                             </div>
-                            <div class="col-xs-3 col-sm-3 col-md-3">
-                                <button id="addPrescriptionButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="treatment">Treatment Given</label>
-                        <textarea rows="3" name="treatment" class="form-control input-sm"></textarea>
+                        <textarea rows="3" name="treatment" class="form-control input-sm" readonly>@viewModel.getTreatment</textarea>
                     </div>
                     <div class="form-group">
                         <label for="familyHistory">Family History</label>
-                        <textarea rows="3" name="familyHistory" class="form-control input-sm"></textarea>
+                        <textarea rows="3" name="familyHistory" class="form-control input-sm" readonly>@viewModel.getFamilyHist</textarea>
                     </div>
                 </div>
 

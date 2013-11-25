@@ -81,29 +81,30 @@ public class SearchController extends Controller {
         }
 
         //Get treatment info
-
+        List<String> problemList = new ArrayList<String>();
 
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findAllTreatmentByEncounterId(id);
-        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
-        List<String> dynamicViewProblems = new ArrayList<>();
-
-        if (patientEncounterProblemsServiceResponse.hasErrors()) {
-
-        } else {
-            patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
-        }
-
-        if (patientEncounterProblems.size() > 0) {
-            for (int problem = 0; problem < patientEncounterProblems.size(); problem++) {
-                dynamicViewProblems.add(patientEncounterProblems.get(problem).getTreatmentFieldValue());
-            }
-        }
-
         if(patientEncounterProblemsServiceResponse.getResponseObject() != null){
-            if(patientEncounterProblemsServiceResponse.getResponseObject().get(0).getTreatmentFieldId() == 1){
-                viewModel.setAssessment(patientEncounterProblemsServiceResponse.getResponseObject().get(0).getTreatmentFieldValue());
+            for(int i = 0; i<patientEncounterProblemsServiceResponse.getResponseObject().size(); i++){
+                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 1){
+                    viewModel.setAssessment(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
+                }
+                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 2){
+                    problemList.add(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
+                }
+                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 3){
+                    viewModel.setTreatment(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
+                }
+                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 4){
+                    viewModel.setFamilyHist(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
+                }
             }
+            viewModel.setProblemList(problemList);
         }
+
+        //Get patient prescriptions
+
+
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));
     }

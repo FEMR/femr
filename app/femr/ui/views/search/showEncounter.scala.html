@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, patientEncounter: femr.common.models.IPatientEncounter)
+@(currentUser: femr.business.dtos.CurrentUser,  patientEncounter: femr.common.models.IPatientEncounter, viewModel: femr.ui.models.search.CreateEncounterViewModel)
 
 @import femr.ui.views.html.layouts.main
 @main("search", currentUser) {
@@ -12,7 +12,7 @@
             <h3>Chief Complaint: @patientEncounter.getChiefComplaint</h3>
 
             <ul>
-                <li>Vitals: </li>
+                <li>Vitals:  </li>
                 <li>Assessment</li>
                 <li>Treatment</li>
                 <li>Family History</li>

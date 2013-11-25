@@ -7,6 +7,9 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
+import femr.common.models.IVital;
+import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
 import femr.util.calculations.dateUtils;
 import play.mvc.Controller;
@@ -16,6 +19,7 @@ import femr.ui.views.html.search.showEncounter;
 import femr.ui.views.html.search.showError;
 import femr.util.stringhelpers.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchController extends Controller {
@@ -34,10 +38,33 @@ public class SearchController extends Controller {
     Not yet implemented.
      */
     public Result viewEncounter(int id) {
+
+        CreateEncounterViewModel viewModel = new CreateEncounterViewModel();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
-        return ok(showEncounter.render(currentUser, patientEncounter));
+
+
+
+        //
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse= null;
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+
+        for (int vital = 1; vital <= 9; vital++) {
+            patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, id);
+            if (patientEncounterVitalServiceResponse.hasErrors()) {
+                patientEncounterVitals.add(null);
+            }
+            else{
+                patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
+            }
+        }
+        //viewModel.setPatientVitalResult(patientEncounterVitals);
+
+        //also grab prescriptions and problems from search service, maybe make new model for all of this
+
+
+        return ok(showEncounter.render(currentUser, patientEncounter, viewModel));
     }
 
     /*
@@ -52,6 +79,7 @@ public class SearchController extends Controller {
         String s_id = request().getQueryString("id");
         ServiceResponse  <List<? extends IPatient>> patientServiceResponse= null;
         ServiceResponse<IPatient> patientServiceResponseid= null;
+
         Integer id;
 
         if (!StringUtils.isNullOrWhiteSpace(s_id)){
@@ -86,13 +114,13 @@ public class SearchController extends Controller {
             return ok(showError.render(currentUser));
         }
 
+
         List<? extends IPatientEncounter> patientEncounters = patientEncountersServiceResponse.getResponseObject();
         CreateViewModel viewModel = new CreateViewModel();
         if(patientServiceResponse != null){
             if (!patientServiceResponse.hasErrors()) {
                 IPatient patient = patientServiceResponse.getResponseObject().get(0);
                 viewModel.setPatientNameResult(patientServiceResponse.getResponseObject());
-
                 viewModel.setFirstName(patient.getFirstName());
                 viewModel.setLastName(patient.getLastName());
                 viewModel.setAddress(patient.getAddress());

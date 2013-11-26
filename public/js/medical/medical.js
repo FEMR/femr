@@ -1,11 +1,5 @@
 //BMI auto- calculator
 
-function getQueryStringValue(key) {
-  key = key.replace(/[*+?^$.\[\]{}()|\\\/]/g, "\\$&"); // escape RegEx control chars
-  var match = location.search.match(new RegExp("[?&]" + key + "=([^&]+)(&|$)"));
-  return match && decodeURIComponent(match[1].replace(/\+/g, " "));
-}
-
 $(document).ready(function () {
 
   $('#resetVitalsBtn').on('click', function () {
@@ -94,7 +88,7 @@ $(document).ready(function () {
     }
 
     $.ajax({
-             url: '/medical/updateVitals/' + getQueryStringValue('id'),
+             url: '/medical/updateVitals/' + $("#patientId").val(),
              type: 'POST',
              data: newVitals,
              dataType: 'json'

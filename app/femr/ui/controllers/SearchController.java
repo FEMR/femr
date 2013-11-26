@@ -198,7 +198,7 @@ public class SearchController extends Controller {
                 viewModel.setCity(patient.getCity());
                 viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
                 viewModel.setSex(patient.getSex());
-                viewModel.setUserID(patient.getId());
+                viewModel.setPatientID(patient.getId());
             } else {
                 return ok(showError.render(currentUser));
             }

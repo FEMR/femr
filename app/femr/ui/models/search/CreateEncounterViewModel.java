@@ -22,6 +22,7 @@ public class CreateEncounterViewModel {
     private String treatment;
     private String familyHist;
     private List<String> problemList;
+    private List<String> perscribList;
 
 
     public Float getBloodPressureSystolic() {
@@ -174,5 +175,13 @@ public class CreateEncounterViewModel {
 
     public void setProblemList(List<String> problemList) {
         this.problemList = problemList;
+    }
+
+    public List<String> getPerscribList() {
+        return perscribList;
+    }
+
+    public void setPerscribList(List<String> perscribList) {
+        this.perscribList = perscribList;
     }
 }

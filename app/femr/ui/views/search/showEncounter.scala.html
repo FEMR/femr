@@ -106,7 +106,7 @@
 
             <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
                 <ul id="myTab" class="nav nav-tabs">
-                    <li><a id="treatmentTab">Treatment</a></li>
+                    <li><a id="treatmentTab">Encounter Info</a></li>
                 </ul>
 
                 <div id="treatmentControl" class="show">
@@ -117,22 +117,23 @@
                     <div class="form-group">
                         <label for="problem">Problem List</label>
                         <ul id="listElement">
+                        @if(viewModel.getProblemList != null){
                         @for( a <- 0 to viewModel.getProblemList.size()-1){
                             <li><a>@viewModel.getProblemList.get(a)</a></li>
+                        }
                         }
                         </ul>
 
                     <div class="form-group">
                         <label for="prescription">Prescriptions</label>
-                        <div class="row">
-                            <div class="col-xs-9 col-sm-9 col-md-9">
-                                <input id = "prescription1" name="prescription1" type="text" class="form-control input-sm" value=""/>
-                                <input id = "prescription2" name="prescription2" type="text" class="form-control input-sm hidden" value=""/>
-                                <input id = "prescription3" name="prescription3" type="text" class="form-control input-sm hidden" value=""/>
-                                <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value=""/>
-                                <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value=""/>
-                            </div>
-                        </div>
+                        <ul id="listElement">
+                        @if(viewModel.getPerscribList != null){
+                        @for( a <- 0 to viewModel.getPerscribList.size()-1){
+                            <li><a>@viewModel.getPerscribList.get(a)</a></li>
+                        }
+                        }
+                        </ul>
+
                     </div>
                     <div class="form-group">
                         <label for="treatment">Treatment Given</label>

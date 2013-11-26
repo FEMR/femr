@@ -103,6 +103,14 @@ public class SearchController extends Controller {
         }
 
         //Get patient prescriptions
+        List<String> prescriptionsList = new ArrayList<String>();
+        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        if (!patientPrescriptionsServiceResponse.hasErrors()) {
+            for(int i = 0; i<patientPrescriptionsServiceResponse.getResponseObject().size(); i++){
+                prescriptionsList.add(patientPrescriptionsServiceResponse.getResponseObject().get(i).getMedicationName());
+            }
+            viewModel.setPerscribList(prescriptionsList);
+        }
 
 
 

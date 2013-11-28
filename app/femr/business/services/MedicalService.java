@@ -89,12 +89,21 @@ public class MedicalService implements IMedicalService{
         ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id",encounterId);
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
 
-        if (patientEncounterHpiFields.size() > 0)
+        if (patientEncounterHpiFields.size() > 0){
+            //set response to object so we can grab a user ID and a date
+            //for verification
             return true;
-        if (patientEncounterTreatmentFields.size() > 0)
+        }
+        if (patientEncounterTreatmentFields.size() > 0){
+            //set response to object so we can grab a user ID and a date
+            //for verification
             return true;
-        if (patientPrescriptions.size() > 0)
+        }
+        if (patientPrescriptions.size() > 0){
+            //set response to object so we can grab a user ID and a date
+            //for verification
             return true;
+        }
         return false;
     }
 

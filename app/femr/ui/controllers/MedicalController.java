@@ -49,15 +49,12 @@ public class MedicalController extends Controller {
         this.medicalHelper = medicalHelper;
     }
 
-    public Result indexGet(boolean searchError) {
+    public Result indexGet(boolean duplicatePatientError, String message) {
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        if (searchError) {
-            return ok(index.render(currentUserSession, "That patient has already been seen"));
-        }
 
-        return ok(index.render(currentUserSession, null));
+        return ok(index.render(currentUserSession, message));
     }
 
     public Result searchPost() {
@@ -103,7 +100,16 @@ public class MedicalController extends Controller {
         //if they have, don't goto the populated page
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
         if (hasPatientBeenCheckedIn == true) {
-            return redirect(routes.MedicalController.indexGet(true));
+
+            //make sure they were seen today by the user trying to see them again
+            //if they were
+
+
+            return redirect(routes.MedicalController.indexGet(true,"That patient has already been seen"));
+
+
+
+
         } else {
             return ok(edit.render(currentUserSession, viewModel));
         }
@@ -160,7 +166,7 @@ public class MedicalController extends Controller {
                 }
             }
         }
-        return redirect(routes.MedicalController.indexGet(false));
+        return redirect(routes.MedicalController.indexGet(false,null));
     }
 
     public Result updateVitalsPost(int id) {

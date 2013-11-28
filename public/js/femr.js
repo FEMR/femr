@@ -1,31 +1,29 @@
 $(document).ready(function () {
-//NO DUPLICATE CODe!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    $('#id').change(function () {
-        var idString = $('#id').val();
-        var intRegex = /^\d+$/;
-        if (intRegex.test(idString)) {
-            $('#id').css('border', '');
-        }
-        else {
-            $('#id').val('');
-            $('#id').css('border-color', 'red');
-            $('#id').attr('placeholder', 'Invalid Id');
-        }
-    });
+  var $id = $('#id');
+  $id.change(function () {
+    var idString = $id.val();
+    var intRegex = /^\d+$/;
+    if (intRegex.test(idString)) {
+      $('#id').css('border', '');
+    } else {
+      $id.val('');
+      $id.css('border-color', 'red');
+      $id.attr('placeholder', 'Invalid Id');
+    }
+  });
 
-    $('.idSearch').click(function (event) {
-        var idString = $('#id').val();
-        var intRegex = /^\d+$/;
-        if (intRegex.test(idString)) {
-            $('#id').css('border', '');
-        }
-        else {
-            $('#id').val('');
-            $('#id').css('border-color', 'red');
-            $('#id').attr('placeholder', 'Invalid Id');
-            return false;
-        }
-    });
+  $('.idSearch').click(function () {
+    var idString = $id.val();
+    var intRegex = /^\d+$/;
+    if (intRegex.test(idString)) {
+      $('#id').css('border', '');
+    } else {
+      $id.val('');
+      $id.css('border-color', 'red');
+      $id.attr('placeholder', 'Invalid Id');
+      return false;
+    }
+  });
 });
 
 /*
@@ -36,25 +34,22 @@ $(document).ready(function () {
  * 1.1
  */
 function decimalCheck(wonkyDeci) {
-    var regexDecimal =  /^\d+(\.\d{1,2})?$/;
-    return regexDecimal.test(wonkyDeci);
+  var regexDecimal = /^\d+(\.\d{1,2})?$/;
+  return regexDecimal.test(wonkyDeci);
 }
 /*
  * positive integer numbers
  * excludes 1.
  */
 function integerCheck(wonkyInt) {
-    var regexInt =  /^\d+$/;
-    return regexInt.test(wonkyInt);
+  var regexInt = /^\d+$/;
+  return regexInt.test(wonkyInt);
 }
 
 /*
  * Checks if value of input is equal to NaN
  */
 function randomString(strVal) {
-    if (isNaN(strVal)) {
-        return true;
-    }
-    return false;
+  return isNaN(strVal);
 }
 

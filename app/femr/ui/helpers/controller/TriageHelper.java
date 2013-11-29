@@ -66,7 +66,7 @@ public class TriageHelper {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patient.getId());
         patientEncounter.setUserId(currentUser.getId());
-        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTime());
+        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
         patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
@@ -80,7 +80,7 @@ public class TriageHelper {
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
         for (int i = 0; i < 9; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();
-            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTime()));
+            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital[i].setUserId(currentUser.getId());
             patientEncounterVital[i].setPatientEncounterId(patientEncounter.getId());
             patientEncounterVital[i].setVitalId(i + 1);

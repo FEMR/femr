@@ -126,7 +126,7 @@ public class MedicalHelper {
 
         for (int i = 0; i < 9; i++) {
             IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
-            patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTime()));
+            patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital.setUserId(currentUserId);
             patientEncounterVital.setPatientEncounterId(patientEncounterId);
             patientEncounterVital.setVitalId(i + 1);

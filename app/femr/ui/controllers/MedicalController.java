@@ -103,21 +103,17 @@ public class MedicalController extends Controller {
         //if they have, don't goto the populated page
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
         if (hasPatientBeenCheckedIn == true) {
+            String message = "That patient has already been checked in.";
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
-            //String dateTime = dateResponse.getResponseObject();
-            //String dateTimeNow = dateUtils.getCurrentDateTime();
+            if (dateResponse.hasErrors()){
+                return redirect(routes.MedicalController.indexGet(true,message));
+            }
 
-           // String message = "diff";
-            //DateTime dateTime = new DateTime();
-            //DateTime dateTime2 = new DateTime();
-            //if (dateTime.compareTo(dateTime2) == 0){
-              //      message="same";
-            //}
-            String message = "diff";
-            DateTime dateNow = new DateTime();
+            DateTime dateNow = dateUtils.getCurrentDateTime();
             DateTime dateTaken = dateResponse.getResponseObject();
-            if (dateNow.millisOfDay().equals(dateTaken.millisOfDay())){
-                message="same";
+
+            if (dateNow.dayOfYear().equals(dateTaken.dayOfYear())){
+                message="That patient has already been seen today. Would you like to edit their encounter?";
             }
 
 

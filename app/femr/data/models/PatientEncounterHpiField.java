@@ -1,6 +1,7 @@
 package femr.data.models;
 
 import femr.common.models.IPatientEncounterHpiField;
+import org.joda.time.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ public class PatientEncounterHpiField implements IPatientEncounterHpiField {
     @Column(name = "hpi_field_value", nullable = false)
     private String hpiFieldValue;
     @Column(name = "date_taken", nullable = false)
-    private String dateTaken;
+    private DateTime dateTaken;
 
     @Override
     public int getId() {
@@ -60,12 +61,12 @@ public class PatientEncounterHpiField implements IPatientEncounterHpiField {
     }
 
     @Override
-    public String getDateTaken() {
+    public DateTime getDateTaken() {
         return dateTaken;
     }
 
     @Override
-    public void setDateTaken(String dateTaken) {
+    public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
     }
 

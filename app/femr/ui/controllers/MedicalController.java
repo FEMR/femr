@@ -17,13 +17,16 @@ import femr.ui.models.medical.SearchViewModel;
 import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.index;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -100,12 +103,25 @@ public class MedicalController extends Controller {
         //if they have, don't goto the populated page
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
         if (hasPatientBeenCheckedIn == true) {
+            ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
+            //String dateTime = dateResponse.getResponseObject();
+            //String dateTimeNow = dateUtils.getCurrentDateTime();
 
-            //make sure they were seen today by the user trying to see them again
-            //if they were
+           // String message = "diff";
+            //DateTime dateTime = new DateTime();
+            //DateTime dateTime2 = new DateTime();
+            //if (dateTime.compareTo(dateTime2) == 0){
+              //      message="same";
+            //}
+            String message = "diff";
+            DateTime dateNow = new DateTime();
+            DateTime dateTaken = dateResponse.getResponseObject();
+            if (dateNow.millisOfDay().equals(dateTaken.millisOfDay())){
+                message="same";
+            }
 
 
-            return redirect(routes.MedicalController.indexGet(true,"That patient has already been seen"));
+            return redirect(routes.MedicalController.indexGet(true,message));
 
 
 

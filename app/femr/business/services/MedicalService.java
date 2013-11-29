@@ -12,6 +12,7 @@ import femr.data.daos.IRepository;
 import femr.data.models.PatientEncounterHpiField;
 import femr.data.models.PatientEncounterTreatmentField;
 import femr.data.models.PatientPrescription;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -58,7 +59,6 @@ public class MedicalService implements IMedicalService{
         else{
             response.addError("patientPrescription","failed to save");
         }
-
         return response;
     }
 
@@ -101,7 +101,7 @@ public class MedicalService implements IMedicalService{
     }
 
     @Override
-    public ServiceResponse<String> getDateOfCheckIn(int encounterId){
+    public ServiceResponse<DateTime> getDateOfCheckIn(int encounterId){
         ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiField().where().eq("patient_encounter_id",encounterId);
         List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
 
@@ -111,17 +111,16 @@ public class MedicalService implements IMedicalService{
         ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id",encounterId);
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
 
-        ServiceResponse<String> response = new ServiceResponse<>();
+        ServiceResponse<DateTime> response = new ServiceResponse<>();
 
-        if (patientEncounterHpiFields.size() > 0){
-            response.setResponseObject(patientEncounterHpiFields.get(0).getDateTaken());
-        }
-        else if (patientEncounterTreatmentFields.size() > 0){
-            response.setResponseObject(patientEncounterTreatmentFields.get(0).getDateTaken());
-        }
-        else if (patientPrescriptions.size() > 0){
-            //prescriptions need a date taken field
-            //response.setResponseObject(patientPrescriptions.get(0).get);
+        //if (patientEncounterHpiFields.size() > 0){
+           // response.setResponseObject(patientEncounterHpiFields.get(0).getDateTaken());
+        //}
+       // else if (patientEncounterTreatmentFields.size() > 0){
+            //response.setResponseObject(patientEncounterTreatmentFields.get(0).getDateTaken());
+       // }
+        if (patientPrescriptions.size() > 0){
+            response.setResponseObject(patientPrescriptions.get(0).getDateTaken());
         }
         else{
             response.addError("values","That patient has not yet been seen");

@@ -1,6 +1,8 @@
 package femr.data.models;
 
 import femr.common.models.IPatientPrescription;
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 
 @Entity
@@ -24,7 +26,7 @@ public class PatientPrescription implements IPatientPrescription {
     @Column(name = "medication_name", nullable = false)
     private String medicationName;
     @Column(name = "date_taken", nullable = false)
-    private String dateTaken;
+    private DateTime dateTaken;
 
     @Override
     public int getId() {
@@ -102,12 +104,12 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public String getDateTaken() {
+    public DateTime getDateTaken() {
         return dateTaken;
     }
 
     @Override
-    public void setDateTaken(String dateTaken) {
+    public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
     }
 }

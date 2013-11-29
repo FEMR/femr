@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 public interface IPatientPrescription {
 
     int getId();
@@ -32,7 +34,7 @@ public interface IPatientPrescription {
 
     void setMedicationName(String medicationName);
 
-    String getDateTaken();
+    DateTime getDateTaken();
 
-    void setDateTaken(String dateTaken);
+    void setDateTaken(DateTime dateTaken);
 }

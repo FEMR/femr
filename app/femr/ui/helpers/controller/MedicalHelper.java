@@ -97,6 +97,7 @@ public class MedicalHelper {
             patientPrescription[i].setUserId(currentUserSession.getId());
             patientPrescription[i].setReplaced(false);
             patientPrescription[i].setReplacementId(null);
+            patientPrescription[i].setDateTaken(dateUtils.getCurrentDateTime());
         }
 
         patientPrescription[0].setMedicationName(viewModelPost.getPrescription1());

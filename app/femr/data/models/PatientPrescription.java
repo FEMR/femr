@@ -23,7 +23,7 @@ public class PatientPrescription implements IPatientPrescription {
     private Integer replacementId;
     @Column(name = "medication_name", nullable = false)
     private String medicationName;
-    @Column(name = "date_time", nullable = false)
+    @Column(name = "date_taken", nullable = false)
     private String dateTaken;
 
     @Override

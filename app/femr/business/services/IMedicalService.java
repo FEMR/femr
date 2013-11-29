@@ -13,4 +13,5 @@ public interface IMedicalService {
     ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
 
     boolean hasPatientBeenCheckedIn(int encounterId);
+    public ServiceResponse<String> getDateOfCheckIn(int encounterId);
 }

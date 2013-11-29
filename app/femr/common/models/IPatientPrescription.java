@@ -31,4 +31,8 @@ public interface IPatientPrescription {
     String getMedicationName();
 
     void setMedicationName(String medicationName);
+
+    String getDateTaken();
+
+    void setDateTaken(String dateTaken);
 }

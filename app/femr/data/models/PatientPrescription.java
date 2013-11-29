@@ -23,6 +23,8 @@ public class PatientPrescription implements IPatientPrescription {
     private Integer replacementId;
     @Column(name = "medication_name", nullable = false)
     private String medicationName;
+    @Column(name = "date_time", nullable = false)
+    private String dateTaken;
 
     @Override
     public int getId() {
@@ -97,5 +99,15 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setMedicationName(String medicationName) {
         this.medicationName = medicationName;
+    }
+
+    @Override
+    public String getDateTaken() {
+        return dateTaken;
+    }
+
+    @Override
+    public void setDateTaken(String dateTaken) {
+        this.dateTaken = dateTaken;
     }
 }

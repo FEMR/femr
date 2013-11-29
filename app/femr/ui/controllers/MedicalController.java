@@ -94,7 +94,7 @@ public class MedicalController extends Controller {
             }
         }
 
-        CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
+
 
         //check to make sure a patient hasn't been checked in before
         //if they have, don't goto the populated page
@@ -111,6 +111,7 @@ public class MedicalController extends Controller {
 
 
         } else {
+            CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
             return ok(edit.render(currentUserSession, viewModel));
         }
     }

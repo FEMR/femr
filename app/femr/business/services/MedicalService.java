@@ -13,7 +13,6 @@ import femr.data.models.PatientEncounterHpiField;
 import femr.data.models.PatientEncounterTreatmentField;
 import femr.data.models.PatientPrescription;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -90,21 +89,44 @@ public class MedicalService implements IMedicalService{
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
 
         if (patientEncounterHpiFields.size() > 0){
-            //set response to object so we can grab a user ID and a date
-            //for verification
             return true;
         }
         if (patientEncounterTreatmentFields.size() > 0){
-            //set response to object so we can grab a user ID and a date
-            //for verification
             return true;
         }
         if (patientPrescriptions.size() > 0){
-            //set response to object so we can grab a user ID and a date
-            //for verification
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ServiceResponse<String> getDateOfCheckIn(int encounterId){
+        ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiField().where().eq("patient_encounter_id",encounterId);
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+
+        ExpressionList<PatientEncounterTreatmentField> query2 = getPatientEncounterTreatmentField().where().eq("patient_encounter_id",encounterId);
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query2);
+
+        ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id",encounterId);
+        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
+
+        ServiceResponse<String> response = new ServiceResponse<>();
+
+        if (patientEncounterHpiFields.size() > 0){
+            response.setResponseObject(patientEncounterHpiFields.get(0).getDateTaken());
+        }
+        else if (patientEncounterTreatmentFields.size() > 0){
+            response.setResponseObject(patientEncounterTreatmentFields.get(0).getDateTaken());
+        }
+        else if (patientPrescriptions.size() > 0){
+            //prescriptions need a date taken field
+            //response.setResponseObject(patientPrescriptions.get(0).get);
+        }
+        else{
+            response.addError("values","That patient has not yet been seen");
+        }
+        return response;
     }
 
     private Query<PatientEncounterHpiField> getPatientEncounterHpiField(){

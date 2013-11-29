@@ -52,12 +52,11 @@ public class MedicalController extends Controller {
         this.medicalHelper = medicalHelper;
     }
 
-    public Result indexGet(boolean duplicatePatientError, String message) {
+    public Result indexGet(boolean duplicatePatient, String message) {
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-
-        return ok(index.render(currentUserSession, message));
+        return ok(index.render(currentUserSession, message, duplicatePatient));
     }
 
     public Result searchPost() {
@@ -73,7 +72,7 @@ public class MedicalController extends Controller {
         //current Patient info for view model
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientId);
         if (patientServiceResponse.hasErrors()) {
-            return ok(index.render(currentUserSession, "That patient can not be found."));
+            return redirect(routes.MedicalController.indexGet(false,"That patient can not be found."));
         }
         IPatient patient = patientServiceResponse.getResponseObject();
 
@@ -106,7 +105,7 @@ public class MedicalController extends Controller {
             String message = "That patient has already been checked in.";
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
             if (dateResponse.hasErrors()){
-                return redirect(routes.MedicalController.indexGet(true,message));
+                return redirect(routes.MedicalController.indexGet(false,message));
             }
 
             DateTime dateNow = dateUtils.getCurrentDateTime();
@@ -116,12 +115,7 @@ public class MedicalController extends Controller {
                 message="That patient has already been seen today. Would you like to edit their encounter?";
             }
 
-
             return redirect(routes.MedicalController.indexGet(true,message));
-
-
-
-
         } else {
             CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
             return ok(edit.render(currentUserSession, viewModel));

@@ -68,7 +68,7 @@ public class MedicalController extends Controller {
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         if (patientServiceResponse.hasErrors()) {
-            return redirect(routes.MedicalController.indexGet(0,"That patient can not be found."));
+            return redirect(routes.MedicalController.indexGet(0, "That patient can not be found."));
         }
 
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
@@ -78,22 +78,21 @@ public class MedicalController extends Controller {
         if (hasPatientBeenCheckedIn == true) {
             String message;
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
-            if (dateResponse.hasErrors()){
-                return redirect(routes.MedicalController.indexGet(0,"A fatal error has been encountered. Please try again."));
+            if (dateResponse.hasErrors()) {
+                return redirect(routes.MedicalController.indexGet(0, "A fatal error has been encountered. Please try again."));
             }
 
             DateTime dateNow = dateUtils.getCurrentDateTime();
             DateTime dateTaken = dateResponse.getResponseObject();
 
-            if (dateNow.dayOfYear().equals(dateTaken.dayOfYear())){
-                message="That patient has already been seen today. Would you like to edit their encounter?";
-            }
-            else{
+            if (dateNow.dayOfYear().equals(dateTaken.dayOfYear())) {
+                message = "That patient has already been seen today. Would you like to edit their encounter?";
+            } else {
                 message = "That patient has already been checked in.";
                 id = 0;
             }
 
-            return redirect(routes.MedicalController.indexGet(id,message));
+            return redirect(routes.MedicalController.indexGet(id, message));
         }
         return redirect(routes.MedicalController.editGet(searchViewModel.getId()));
     }
@@ -104,7 +103,7 @@ public class MedicalController extends Controller {
 
         //current Patient info for view model
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientId);
-        if (patientServiceResponse.hasErrors()){
+        if (patientServiceResponse.hasErrors()) {
             //this error should have been caught by searchPost
             return internalServerError();
         }
@@ -132,30 +131,27 @@ public class MedicalController extends Controller {
 
         //viewModelPost is populated with editable fields
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
-        List<? extends  IPatientPrescription> patientPrescriptions;
-        if (patientPrescriptionsServiceResponse.hasErrors()){
+        List<? extends IPatientPrescription> patientPrescriptions = new ArrayList<>();
+        if (patientPrescriptionsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available prescriptions
-        }
-        else{
+        } else {
             patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         }
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields;
-        if (patientTreatmentFieldsServiceResponse.hasErrors()){
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
+        if (patientTreatmentFieldsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available treatments
-        }
-        else{
+        } else {
             patientEncounterTreatmentFields = patientTreatmentFieldsServiceResponse.getResponseObject();
         }
         ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiFieldsServiceResponse = searchService.findHpiFieldsByEncounterId(patientEncounter.getId());
-        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields;
-        if (patientHpiFieldsServiceResponse.hasErrors()){
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
+        if (patientHpiFieldsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available hpi fields
-        }
-        else{
+        } else {
             patientEncounterHpiFields = patientHpiFieldsServiceResponse.getResponseObject();
         }
-        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientEncounter.getId());
+        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentFields, patientEncounterHpiFields);
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -211,7 +207,7 @@ public class MedicalController extends Controller {
                 }
             }
         }
-        return redirect(routes.MedicalController.indexGet(0,null));
+        return redirect(routes.MedicalController.indexGet(0, null));
     }
 
     public Result updateVitalsPost(int id) {

@@ -136,7 +136,7 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
-    public CreateViewModelPost populateViewModelPost(int encounterId){
+    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields, List<? extends IPatientEncounterHpiField> patientEncounterHpiFields){
         CreateViewModelPost viewModelPost = new CreateViewModelPost();
         return viewModelPost;
     }

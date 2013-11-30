@@ -139,7 +139,7 @@ public class MedicalController extends Controller {
 
 
         ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
-        Map<Integer,List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new HashMap<>();
+        Map<Integer,List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
         if (patientTreatmentFieldsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available treatments
         } else {
@@ -159,7 +159,7 @@ public class MedicalController extends Controller {
             patientEncounterHpiFields = patientHpiFieldsServiceResponse.getResponseObject();
         }
         CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiFields);
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals, viewModelPost);
         return ok(edit.render(currentUserSession, viewModelGet));
     }
 

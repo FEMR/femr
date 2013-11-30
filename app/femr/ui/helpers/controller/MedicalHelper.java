@@ -137,12 +137,22 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
-    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer,List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, List<? extends IPatientEncounterHpiField> patientEncounterHpiFields){
+    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, List<? extends IPatientEncounterHpiField> patientEncounterHpiFields) {
+        //the maps are set in descending order based on when the treatment value was taken
+        //this way, if the record has been edited we will see the most recent value
         CreateViewModelPost viewModelPost = new CreateViewModelPost();
+        viewModelPost.setAssessment(getTreatmentFieldOrNull(1,patientEncounterTreatmentMap));
+        viewModelPost.setProblem1(getTreatmentProblemOrNull(1,patientEncounterTreatmentMap));
+        viewModelPost.setProblem2(getTreatmentProblemOrNull(2,patientEncounterTreatmentMap));
+        viewModelPost.setProblem3(getTreatmentProblemOrNull(3,patientEncounterTreatmentMap));
+        viewModelPost.setProblem4(getTreatmentProblemOrNull(4,patientEncounterTreatmentMap));
+        viewModelPost.setProblem5(getTreatmentProblemOrNull(5,patientEncounterTreatmentMap));
+        viewModelPost.setTreatment(getTreatmentFieldOrNull(3,patientEncounterTreatmentMap));
+        viewModelPost.setFamilyHistory(getTreatmentFieldOrNull(4,patientEncounterTreatmentMap));
         return viewModelPost;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals) {
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals, CreateViewModelPost viewModelPost) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //patient
         viewModelGet.setpID(patient.getId());
@@ -151,9 +161,6 @@ public class MedicalHelper {
         viewModelGet.setLastName(patient.getLastName());
         viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
-        //patient encounter
-        viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
-        viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
         //patient encounter vitals
         viewModelGet.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)));
         viewModelGet.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)));
@@ -164,6 +171,18 @@ public class MedicalHelper {
         viewModelGet.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
         viewModelGet.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
         viewModelGet.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
+        //patient encounter
+        viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
+        viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
+        //editable information - Treatment_fields
+        viewModelGet.setAssessment(viewModelPost.getAssessment());
+        viewModelGet.setProblem1(viewModelPost.getProblem1());
+        viewModelGet.setProblem2(viewModelPost.getProblem2());
+        viewModelGet.setProblem3(viewModelPost.getProblem3());
+        viewModelGet.setProblem4(viewModelPost.getProblem4());
+        viewModelGet.setProblem5(viewModelPost.getProblem5());
+        viewModelGet.setTreatment(viewModelPost.getTreatment());
+        viewModelGet.setFamilyHistory(viewModelPost.getFamilyHistory());
 
         return viewModelGet;
     }
@@ -173,5 +192,24 @@ public class MedicalHelper {
             return null;
         else
             return patientEncounterVital.getVitalValue();
+    }
+
+    private String getTreatmentFieldOrNull(int key, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {
+        if (patientEncounterTreatmentMap.containsKey(key)){
+            if (patientEncounterTreatmentMap.get(key).size() < 1) {
+                return null;
+            }
+            return patientEncounterTreatmentMap.get(key).get(0).getTreatmentFieldValue();
+        }
+        return null;
+    }
+    private String getTreatmentProblemOrNull(int problem, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap){
+        if (patientEncounterTreatmentMap.containsKey(2)){
+            if (patientEncounterTreatmentMap.get(2).size() >= problem){
+                return patientEncounterTreatmentMap.get(2).get(problem - 1).getTreatmentFieldValue();
+            }
+            return null;
+        }
+        return null;
     }
 }

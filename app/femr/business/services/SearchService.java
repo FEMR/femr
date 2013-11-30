@@ -9,10 +9,7 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SearchService implements ISearchService {
     private IRepository<IMedication> medicationRepository;
@@ -155,13 +152,13 @@ public class SearchService implements ISearchService {
 
     @Override
     public ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int id) {
-        Map<Integer,List<? extends IPatientEncounterTreatmentField>> mappedTreatmentFields = new HashMap<>();
+        Map<Integer,List<? extends IPatientEncounterTreatmentField>> mappedTreatmentFields = new LinkedHashMap<>();
 
-        ExpressionList<PatientEncounterTreatmentField> query;
+        Query<PatientEncounterTreatmentField> query;
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields;
 
         for (int treatmentFieldId = 1; treatmentFieldId < 5; treatmentFieldId++){
-            query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id",treatmentFieldId);
+            query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id",treatmentFieldId).order().desc("date_taken");
             patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
             mappedTreatmentFields.put(treatmentFieldId,patientEncounterTreatmentFields);
         }

@@ -14,23 +14,15 @@
     }
 @main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles) {
     <div class="container">
-    @helper.form(action = MedicalController.searchPost()) {
-        <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
-            <h2>Medical Search Patient</h2>
-
-
-            @searchBox(patientId)
-
-
-
-        </div>
-    }
-
-
+        @helper.form(action = MedicalController.searchPost()) {
+            <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
+                <h2>Medical Search Patient</h2>
+                @searchBox(patientId)
+            </div>
+        }
         <div class="text-center col-sm-offset-4 col-md-offset-4 col-md-4 col-sm-4 col-xs-4">
             <h3>@message</h3>
             @editEncounterButton(patientId)
         </div>
-
     </div>
 }

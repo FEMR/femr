@@ -19,3 +19,8 @@
     border-left: 1px solid #d8d2c0;
     border-right: 1px solid #d8d2c0;
 }
+
+.addSubtractBtn {
+    float: left;
+    border: 1px solid #d8d2c0;
+}

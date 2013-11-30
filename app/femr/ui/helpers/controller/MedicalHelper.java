@@ -137,19 +137,31 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
-    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<Integer,List<? extends IPatientEncounterHpiField>> patientEncounterHpiFields) {
+    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<Integer,List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
         //the maps are set in descending order based on when the treatment value was taken
         //this way, if the record has been edited we will see the most recent value
         CreateViewModelPost viewModelPost = new CreateViewModelPost();
 
+        //treatment fields
         viewModelPost.setAssessment(getTreatmentFieldOrNull(1,patientEncounterTreatmentMap));
         viewModelPost.setProblem1(getTreatmentProblemOrNull(1,patientEncounterTreatmentMap));
-        viewModelPost.setProblem2(getTreatmentProblemOrNull(2,patientEncounterTreatmentMap));
-        viewModelPost.setProblem3(getTreatmentProblemOrNull(3,patientEncounterTreatmentMap));
-        viewModelPost.setProblem4(getTreatmentProblemOrNull(4,patientEncounterTreatmentMap));
+        viewModelPost.setProblem2(getTreatmentProblemOrNull(2, patientEncounterTreatmentMap));
+        viewModelPost.setProblem3(getTreatmentProblemOrNull(3, patientEncounterTreatmentMap));
+        viewModelPost.setProblem4(getTreatmentProblemOrNull(4, patientEncounterTreatmentMap));
         viewModelPost.setProblem5(getTreatmentProblemOrNull(5,patientEncounterTreatmentMap));
         viewModelPost.setTreatment(getTreatmentFieldOrNull(3,patientEncounterTreatmentMap));
         viewModelPost.setFamilyHistory(getTreatmentFieldOrNull(4,patientEncounterTreatmentMap));
+        //hpi fields
+        viewModelPost.setOnset(getHpiFieldOrNull(1,patientEncounterHpiMap));
+        viewModelPost.setOnsetTime(getHpiFieldOrNull(2,patientEncounterHpiMap));
+        viewModelPost.setSeverity(getHpiFieldOrNull(3,patientEncounterHpiMap));
+        viewModelPost.setRadiation(getHpiFieldOrNull(4,patientEncounterHpiMap));
+        viewModelPost.setQuality(getHpiFieldOrNull(5,patientEncounterHpiMap));
+        viewModelPost.setProvokes(getHpiFieldOrNull(6,patientEncounterHpiMap));
+        viewModelPost.setPalliates(getHpiFieldOrNull(7,patientEncounterHpiMap));
+        viewModelPost.setTimeOfDay(getHpiFieldOrNull(8,patientEncounterHpiMap));
+        viewModelPost.setPhysicalExamination(getHpiFieldOrNull(9,patientEncounterHpiMap));
+
         return viewModelPost;
     }
 
@@ -184,6 +196,15 @@ public class MedicalHelper {
         viewModelGet.setProblem5(viewModelPost.getProblem5());
         viewModelGet.setTreatment(viewModelPost.getTreatment());
         viewModelGet.setFamilyHistory(viewModelPost.getFamilyHistory());
+        //editable information - Hpi_fields
+        viewModelGet.setOnset(viewModelPost.getOnset());
+        viewModelGet.setSeverity(viewModelPost.getSeverity());
+        viewModelGet.setRadiation(viewModelPost.getRadiation());
+        viewModelGet.setQuality(viewModelPost.getQuality());
+        viewModelGet.setProvokes(viewModelPost.getProvokes());
+        viewModelGet.setPalliates(viewModelPost.getPalliates());
+        viewModelGet.setTimeOfDay(viewModelPost.getTimeOfDay());
+        viewModelGet.setPhysicalExamination(viewModelPost.getPhysicalExamination());
 
         return viewModelGet;
     }

@@ -86,7 +86,7 @@ public class MedicalController extends Controller {
             if (dateNow.dayOfYear().equals(dateTaken.dayOfYear())) {
                 message = "That patient has already been seen today. Would you like to edit their encounter?";
             } else {
-                message = "That patient has already been checked in.";
+                message = "That patient's encounter has been closed.";
                 id = 0;
             }
 

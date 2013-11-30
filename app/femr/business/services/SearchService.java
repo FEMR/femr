@@ -151,59 +151,45 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int id) {
-        Map<Integer,List<? extends IPatientEncounterTreatmentField>> mappedTreatmentFields = new LinkedHashMap<>();
+    public ServiceResponse<Map<Integer, List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int id) {
 
+        Map<Integer, List<? extends IPatientEncounterTreatmentField>> mappedTreatmentFields = new LinkedHashMap<>();
         Query<PatientEncounterTreatmentField> query;
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields;
 
-        for (int treatmentFieldId = 1; treatmentFieldId < 5; treatmentFieldId++){
-            query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id",treatmentFieldId).order().desc("date_taken");
+        for (int treatmentFieldId = 1; treatmentFieldId < 5; treatmentFieldId++) {
+            query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", treatmentFieldId).order().desc("date_taken");
             patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
-            mappedTreatmentFields.put(treatmentFieldId,patientEncounterTreatmentFields);
+            mappedTreatmentFields.put(treatmentFieldId, patientEncounterTreatmentFields);
         }
 
-        ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> response = new ServiceResponse<>();
-        if (mappedTreatmentFields.isEmpty()){
+        ServiceResponse<Map<Integer, List<? extends IPatientEncounterTreatmentField>>> response = new ServiceResponse<>();
+        if (mappedTreatmentFields.isEmpty()) {
             response.addError("treatmentFields", "No treatment fields found");
-        }
-        else{
+        } else {
             response.setResponseObject(mappedTreatmentFields);
         }
         return response;
-
-
-
-
-//        for (int treatmentFieldIndex = 0; treatmentFieldIndex < patientEncounterTreatmentFields.size(); treatmentFieldIndex++){
-//            if (mappedTreatmentFields.get(patientEncounterTreatmentFields.get(treatmentFieldIndex).getId()) == null){
-//                //no array list assigned yet, initalize it
-//                //    mappedTreatmentFields.put(patientEncounterTreatmentFields.get(treatmentFieldIndex).getId(), new ArrayList<IPatientEncounterTreatmentField>());
-//            }
-//            //  mappedTreatmentFields.get(patientEncounterTreatmentFields.get(treatmentFieldIndex).getId()).add(patientEncounterTreatmentFields.get(treatmentFieldIndex));
-//        }
-
-
-
-//        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
-//        if (patientEncounterTreatmentFields.size() > 0) {
-//            response.setResponseObject(patientEncounterTreatmentFields);
-//        } else {
-//            response.addError("treatmentFields", "No treatment fields found");
-//        }
-//        return response;
     }
 
     @Override
-    public ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFieldsByEncounterId(int id) {
-        ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiFieldQuery().where().eq("patient_encounter_id", id);
-        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+    public ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int id) {
 
-        ServiceResponse<List<? extends IPatientEncounterHpiField>> response = new ServiceResponse<>();
-        if (patientEncounterHpiFields.size() > 0) {
-            response.setResponseObject(patientEncounterHpiFields);
+        Map<Integer, List<? extends IPatientEncounterHpiField>> mappedHpiFields = new LinkedHashMap<>();
+        Query<PatientEncounterHpiField> query;
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields;
+
+        for (int hpiFieldId = 1; hpiFieldId < 10; hpiFieldId++) {
+            query = getPatientEncounterHpiFieldQuery().where().eq("patient_encounter_id", id).eq("hpi_field_id", hpiFieldId).order().desc("date_taken");
+            patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+            mappedHpiFields.put(hpiFieldId, patientEncounterHpiFields);
+        }
+
+        ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> response = new ServiceResponse<>();
+        if (mappedHpiFields.isEmpty()) {
+            response.addError("hpiFields", "no hpi fields found");
         } else {
-            response.addError("hpiFields", "could not find any hpi fields");
+            response.setResponseObject(mappedHpiFields);
         }
         return response;
     }

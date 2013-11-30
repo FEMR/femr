@@ -27,7 +27,7 @@ public interface ISearchService {
 
     ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int id);
 
-    ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFieldsByEncounterId(int id);
+    ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int id);
 
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
 }

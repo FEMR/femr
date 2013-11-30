@@ -146,19 +146,14 @@ public class MedicalController extends Controller {
             patientEncounterTreatmentMap = patientTreatmentFieldsServiceResponse.getResponseObject();
         }
 
-
-
-
-
-
-        ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiFieldsServiceResponse = searchService.findHpiFieldsByEncounterId(patientEncounter.getId());
-        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
+        ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> patientHpiFieldsServiceResponse = searchService.findHpiFieldsByEncounterId(patientEncounter.getId());
+        Map<Integer, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap = new LinkedHashMap<>();
         if (patientHpiFieldsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available hpi fields
         } else {
-            patientEncounterHpiFields = patientHpiFieldsServiceResponse.getResponseObject();
+            patientEncounterHpiMap = patientHpiFieldsServiceResponse.getResponseObject();
         }
-        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiFields);
+        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap);
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals, viewModelPost);
         return ok(edit.render(currentUserSession, viewModelGet));
     }

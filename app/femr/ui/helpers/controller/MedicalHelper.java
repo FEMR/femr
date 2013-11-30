@@ -137,10 +137,11 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
-    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, List<? extends IPatientEncounterHpiField> patientEncounterHpiFields) {
+    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<Integer,List<? extends IPatientEncounterHpiField>> patientEncounterHpiFields) {
         //the maps are set in descending order based on when the treatment value was taken
         //this way, if the record has been edited we will see the most recent value
         CreateViewModelPost viewModelPost = new CreateViewModelPost();
+
         viewModelPost.setAssessment(getTreatmentFieldOrNull(1,patientEncounterTreatmentMap));
         viewModelPost.setProblem1(getTreatmentProblemOrNull(1,patientEncounterTreatmentMap));
         viewModelPost.setProblem2(getTreatmentProblemOrNull(2,patientEncounterTreatmentMap));
@@ -192,6 +193,16 @@ public class MedicalHelper {
             return null;
         else
             return patientEncounterVital.getVitalValue();
+    }
+
+    private String getHpiFieldOrNull(int key, Map<Integer, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
+        if (patientEncounterHpiMap.containsKey(key)){
+            if (patientEncounterHpiMap.get(key).size() < 1) {
+                return null;
+            }
+            return patientEncounterHpiMap.get(key).get(0).getHpiFieldValue();
+        }
+        return null;
     }
 
     private String getTreatmentFieldOrNull(int key, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {

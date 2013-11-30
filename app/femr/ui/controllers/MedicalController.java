@@ -25,9 +25,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -137,13 +135,22 @@ public class MedicalController extends Controller {
         } else {
             patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         }
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
+
+
+
+        ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
+        Map<Integer,List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new HashMap<>();
         if (patientTreatmentFieldsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available treatments
         } else {
-            patientEncounterTreatmentFields = patientTreatmentFieldsServiceResponse.getResponseObject();
+            patientEncounterTreatmentMap = patientTreatmentFieldsServiceResponse.getResponseObject();
         }
+
+
+
+
+
+
         ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiFieldsServiceResponse = searchService.findHpiFieldsByEncounterId(patientEncounter.getId());
         List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
         if (patientHpiFieldsServiceResponse.hasErrors()) {
@@ -151,7 +158,7 @@ public class MedicalController extends Controller {
         } else {
             patientEncounterHpiFields = patientHpiFieldsServiceResponse.getResponseObject();
         }
-        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentFields, patientEncounterHpiFields);
+        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiFields);
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
         return ok(edit.render(currentUserSession, viewModelGet));
     }

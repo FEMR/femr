@@ -12,6 +12,7 @@ import femr.util.calculations.dateUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class MedicalHelper {
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
@@ -136,7 +137,7 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
-    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields, List<? extends IPatientEncounterHpiField> patientEncounterHpiFields){
+    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer,List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, List<? extends IPatientEncounterHpiField> patientEncounterHpiFields){
         CreateViewModelPost viewModelPost = new CreateViewModelPost();
         return viewModelPost;
     }

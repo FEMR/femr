@@ -1,0 +1,20 @@
+@(number: Integer, value: String, name: String)
+
+@*Auto populates prescriptions when editing a medical record.
+The name gets removed and the input field becomes readonly
+if the prescription exists so that it won't get
+submitted on POST*@
+
+@if(number == 1) {
+    @if(value != null && !value.isEmpty) {
+        <input id = "@name@number" type="text" class="form-control input-sm" value="@value" readonly/>
+    } else {
+        <input id = "@name@number" name="@name@number" type="text" class="form-control input-sm" value=""/>
+    }
+} else {
+    @if(value != null && !value.isEmpty) {
+        <input id = "@name@number" type="text" class="form-control input-sm " value="@value" readonly/>
+    } else {
+        <input id = "@name@number" name="@name@number" type="text" class="form-control input-sm hidden" value=""/>
+    }
+}

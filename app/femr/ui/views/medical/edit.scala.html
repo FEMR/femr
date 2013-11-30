@@ -190,11 +190,11 @@
                         <label for="problem">Problem List</label>
                         <div class="row">
                             <div class="col-xs-9 col-sm-9 col-md-9">
-                                <input id="problem1" name="problem1" type="text" class="form-control input-sm" value="@viewModel.getProblem1"/>
-                                <input id="problem2" name="problem2" type="text" class="form-control input-sm hidden" value="@viewModel.getProblem2"/>
-                                <input id="problem3" name="problem3" type="text" class="form-control input-sm hidden" value="@viewModel.getProblem3"/>
-                                <input id="problem4" name="problem4" type="text" class="form-control input-sm hidden" value="@viewModel.getProblem4"/>
-                                <input id="problem5" name="problem5" type="text" class="form-control input-sm hidden" value="@viewModel.getProblem5"/>
+                                @inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")
+                                @inputPrescriptionOrProblem(2, viewModel.getProblem2, "problem")
+                                @inputPrescriptionOrProblem(3, viewModel.getProblem3, "problem")
+                                @inputPrescriptionOrProblem(4, viewModel.getProblem4, "problem")
+                                @inputPrescriptionOrProblem(5, viewModel.getProblem5, "problem")
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3">
                                 <button id="addProblemButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
@@ -205,11 +205,11 @@
                         <label for="prescription">Prescriptions</label>
                         <div class="row">
                             <div class="col-xs-9 col-sm-9 col-md-9">
-                                @inputPrescription(1, viewModel.getPrescription1)
-                                @inputPrescription(2, viewModel.getPrescription2)
-                                @inputPrescription(3, viewModel.getPrescription3)
-                                @inputPrescription(4, viewModel.getPrescription4)
-                                @inputPrescription(5, viewModel.getPrescription5)
+                                @inputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
+                                @inputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
+                                @inputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
+                                @inputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
+                                @inputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3">
                                 <button id="addPrescriptionButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>

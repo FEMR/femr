@@ -3,8 +3,13 @@
 <label for="severity">Severity</label>
 <select name="severity">
     @for(x <- 1 to 10) {
-        @if(value.equals(x.toString)) {
-            <option value="@x" selected="selected">@x</option>
+        @if(value != null && !value.isEmpty) {
+            @if(value.equals(x.toString)) {
+                <option value="@x" selected="selected">@x</option>
+            } else {
+                <option value="@x">@x</option>
+            }
+
         } else {
             <option value="@x">@x</option>
         }

@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 public interface IPatientEncounterHpiField {
     int getId();
 
@@ -15,9 +17,9 @@ public interface IPatientEncounterHpiField {
 
     void setHpiFieldValue(String hpiFieldValue);
 
-    String getDateTaken();
+    DateTime getDateTaken();
 
-    void setDateTaken(String dateTaken);
+    void setDateTaken(DateTime dateTaken);
 
     int getUserId();
 

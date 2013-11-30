@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 public interface IPatientEncounterTreatmentField {
     int getId();
 
@@ -19,7 +21,7 @@ public interface IPatientEncounterTreatmentField {
 
     void setTreatmentFieldValue(String treatmentFieldValue);
 
-    String getDateTaken();
+    DateTime getDateTaken();
 
-    void setDateTaken(String dateTaken);
+    void setDateTaken(DateTime dateTaken);
 }

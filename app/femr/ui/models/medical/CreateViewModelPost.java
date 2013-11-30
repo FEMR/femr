@@ -3,6 +3,12 @@ package femr.ui.models.medical;
 public class CreateViewModelPost {
     //patient identifier
     private int id;
+    //prescription fields
+    private String prescription1;
+    private String prescription2;
+    private String prescription3;
+    private String prescription4;
+    private String prescription5;
     //treatment fields
     private String assessment;
     private String problem1;
@@ -10,11 +16,6 @@ public class CreateViewModelPost {
     private String problem3;
     private String problem4;
     private String problem5;
-    private String prescription1;
-    private String prescription2;
-    private String prescription3;
-    private String prescription4;
-    private String prescription5;
     private String treatment;
     private String familyHistory;
     //hpi fields
@@ -147,14 +148,6 @@ public class CreateViewModelPost {
         this.onset = onset;
     }
 
-    public String getOnsetTime() {
-        return onsetTime;
-    }
-
-    public void setOnsetTime(String onsetTime) {
-        this.onsetTime = onsetTime;
-    }
-
     public String getSeverity() {
         return severity;
     }
@@ -209,5 +202,13 @@ public class CreateViewModelPost {
 
     public void setPhysicalExamination(String physicalExamination) {
         this.physicalExamination = physicalExamination;
+    }
+
+    public String getOnsetTime() {
+        return onsetTime;
+    }
+
+    public void setOnsetTime(String onsetTime) {
+        this.onsetTime = onsetTime;
     }
 }

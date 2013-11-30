@@ -1,0 +1,14 @@
+@(patientId: java.lang.Integer)
+
+@if(patientId > 0){
+    <div class="form-group form-horizontal">
+        <label for="id" class="sr-only">Patient ID</label>
+        <input type="number" class="form-control" id="id" name="id" value="@patientId" readonly>
+    </div>
+}else{
+    <div class="form-group form-horizontal">
+        <label for="id" class="sr-only">Patient ID</label>
+        <input type="number" class="form-control" id="id" name="id" placeholder="Patient ID">
+    </div>
+    <button type="submit" class="idSearch btn btn-primary btn-lg">Search</button>
+}

@@ -19,7 +19,7 @@ POST        /triage                     @femr.ui.controllers.TriageController.cr
 GET         /medical/edit/:id           @femr.ui.controllers.MedicalController.editGet(id: Integer)
 POST        /medical/edit/:id           @femr.ui.controllers.MedicalController.editPost(id: Integer)
 POST        /medical/search             @femr.ui.controllers.MedicalController.searchPost()
-GET         /medical                    @femr.ui.controllers.MedicalController.indexGet(searchError: Boolean ?= false)
+GET         /medical                    @femr.ui.controllers.MedicalController.indexGet(patientId: Integer ?= 0, message: String ?= null)
 POST        /medical/updateVitals/:id   @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()

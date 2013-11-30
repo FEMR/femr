@@ -202,11 +202,11 @@
             <label for="prescription">Prescriptions</label>
             <div class="row">
               <div class="col-xs-9 col-sm-9 col-md-9">
-                <input id = "prescription1" name="prescription1" type="text" class="form-control input-sm" value=""/>
-                <input id = "prescription2" name="prescription2" type="text" class="form-control input-sm hidden" value=""/>
-                <input id = "prescription3" name="prescription3" type="text" class="form-control input-sm hidden" value=""/>
-                <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value=""/>
-                <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value=""/>
+                <input id = "prescription1" name="prescription1" type="text" class="form-control input-sm" value="@viewModel.getPrescription1"/>
+                <input id = "prescription2" name="prescription2" type="text" class="form-control input-sm hidden" value="@viewModel.getPrescription2"/>
+                <input id = "prescription3" name="prescription3" type="text" class="form-control input-sm hidden" value="@viewModel.getPrescription3"/>
+                <input id = "prescription4" name="prescription4" type="text" class="form-control input-sm hidden" value="@viewModel.getPrescription4"/>
+                <input id = "prescription5" name="prescription5" type="text" class="form-control input-sm hidden" value="@viewModel.getPrescription5"/>
               </div>
               <div class="col-xs-3 col-sm-3 col-md-3">
                 <button id="addPrescriptionButton" class="btn" type="button"><span class="glyphicon glyphicon-plus"></span></button>

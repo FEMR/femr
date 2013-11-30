@@ -1,0 +1,15 @@
+@(prescriptionNumber: Integer, prescription: String)
+
+@if(prescriptionNumber == 1) {
+    @if(prescription != null && !prescription.isEmpty) {
+        <input id = "prescription@prescriptionNumber" name="prescription@prescriptionNumber" type="text" class="form-control input-sm" value="@prescription" readonly/>
+    } else {
+        <input id = "prescription@prescriptionNumber" name="prescription@prescriptionNumber" type="text" class="form-control input-sm" value=""/>
+    }
+} else {
+    @if(prescription != null && !prescription.isEmpty) {
+        <input id = "prescription@prescriptionNumber" name="prescription@prescriptionNumber" type="text" class="form-control input-sm hidden" value="@prescription" readonly/>
+    } else {
+        <input id = "prescription@prescriptionNumber" name="prescription@prescriptionNumber" type="text" class="form-control input-sm hidden" value=""/>
+    }
+}

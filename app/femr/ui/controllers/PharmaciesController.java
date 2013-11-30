@@ -228,6 +228,7 @@ public class PharmaciesController extends Controller {
         patientPrescription.setReplaced(false);
         patientPrescription.setReplacementId(null);
         patientPrescription.setMedicationName(medicationName);
+        patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         return patientPrescription;
     }
 

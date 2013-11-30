@@ -76,10 +76,10 @@ public class MedicalController extends Controller {
 
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
         if (hasPatientBeenCheckedIn == true) {
-            String message = "That patient has already been checked in.";
+            String message;
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
             if (dateResponse.hasErrors()){
-                return redirect(routes.MedicalController.indexGet(0,message));
+                return redirect(routes.MedicalController.indexGet(0,"A fatal error has been encountered. Please try again."));
             }
 
             DateTime dateNow = dateUtils.getCurrentDateTime();
@@ -87,6 +87,10 @@ public class MedicalController extends Controller {
 
             if (dateNow.dayOfYear().equals(dateTaken.dayOfYear())){
                 message="That patient has already been seen today. Would you like to edit their encounter?";
+            }
+            else{
+                message = "That patient has already been checked in.";
+                id = 0;
             }
 
             return redirect(routes.MedicalController.indexGet(id,message));

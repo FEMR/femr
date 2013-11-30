@@ -20,6 +20,7 @@ public class CreateViewModelPost {
     private String familyHistory;
     //hpi fields
     private String onset;
+    private String onsetTime;
     private String severity;
     private String radiation;
     private String quality;
@@ -201,5 +202,13 @@ public class CreateViewModelPost {
 
     public void setPhysicalExamination(String physicalExamination) {
         this.physicalExamination = physicalExamination;
+    }
+
+    public String getOnsetTime() {
+        return onsetTime;
+    }
+
+    public void setOnsetTime(String onsetTime) {
+        this.onsetTime = onsetTime;
     }
 }

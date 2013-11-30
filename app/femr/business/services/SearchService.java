@@ -19,6 +19,7 @@ public class SearchService implements ISearchService {
     private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private IRepository<IPatientPrescription> patientPrescriptionRepository;
     private IRepository<IVital> vitalRepository;
+    private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
@@ -27,7 +28,8 @@ public class SearchService implements ISearchService {
                          IRepository<IVital> vitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
-                         IRepository<IMedication> medicationRepository) {
+                         IRepository<IMedication> medicationRepository,
+                         IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository) {
         this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -35,6 +37,7 @@ public class SearchService implements ISearchService {
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.vitalRepository = vitalRepository;
+        this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
     }
 
     @Override
@@ -148,6 +151,32 @@ public class SearchService implements ISearchService {
     }
 
     @Override
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFieldsByEncounterId(int id) {
+        ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id);
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
+        if (patientEncounterTreatmentFields.size() > 0) {
+            response.setResponseObject(patientEncounterTreatmentFields);
+        } else {
+            response.addError("treatmentFields", "No treatment fields found");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFieldsByEncounterId(int id) {
+        ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiFieldQuery().where().eq("patient_encounter_id", id);
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterHpiField>> response = new ServiceResponse<>();
+        if (patientEncounterHpiFields.size() > 0) {
+            response.setResponseObject(patientEncounterHpiFields);
+        } else {
+            response.addError("hpiFields", "could not find any hpi fields");
+        }
+        return response;
+    }
+
+    @Override
     public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id) {
         ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", 2);
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
@@ -202,5 +231,9 @@ public class SearchService implements ISearchService {
 
     private Query<PatientEncounterTreatmentField> getPatientEncounterTreatmentFieldQuery() {
         return Ebean.find(PatientEncounterTreatmentField.class);
+    }
+
+    private Query<PatientEncounterHpiField> getPatientEncounterHpiFieldQuery() {
+        return Ebean.find(PatientEncounterHpiField.class);
     }
 }

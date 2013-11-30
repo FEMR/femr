@@ -130,8 +130,34 @@ public class MedicalController extends Controller {
             }
         }
 
-        CreateViewModelGet viewModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
-        return ok(edit.render(currentUserSession, viewModel));
+        //viewModelPost is populated with editable fields
+        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        List<? extends  IPatientPrescription> patientPrescriptions;
+        if (patientPrescriptionsServiceResponse.hasErrors()){
+            //do nothing, there might not always be available prescriptions
+        }
+        else{
+            patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
+        }
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields;
+        if (patientTreatmentFieldsServiceResponse.hasErrors()){
+            //do nothing, there might not always be available treatments
+        }
+        else{
+            patientEncounterTreatmentFields = patientTreatmentFieldsServiceResponse.getResponseObject();
+        }
+        ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiFieldsServiceResponse = searchService.findHpiFieldsByEncounterId(patientEncounter.getId());
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields;
+        if (patientHpiFieldsServiceResponse.hasErrors()){
+            //do nothing, there might not always be available hpi fields
+        }
+        else{
+            patientEncounterHpiFields = patientHpiFieldsServiceResponse.getResponseObject();
+        }
+        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientEncounter.getId());
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals);
+        return ok(edit.render(currentUserSession, viewModelGet));
     }
 
     public Result editPost(int patientId) {

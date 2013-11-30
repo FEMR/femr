@@ -136,6 +136,11 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
+    public CreateViewModelPost populateViewModelPost(int encounterId){
+        CreateViewModelPost viewModelPost = new CreateViewModelPost();
+        return viewModelPost;
+    }
+
     public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //patient
@@ -149,7 +154,6 @@ public class MedicalHelper {
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
         //patient encounter vitals
-
         viewModelGet.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)));
         viewModelGet.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)));
         viewModelGet.setTemperature(getVitalOrNull(patientEncounterVitals.get(2)));

@@ -149,11 +149,11 @@ public class MedicalHelper {
                 dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
             }
         }
-        viewModelPost.setPrescription1(getPrescriptionOrNull(1,dynamicViewMedications));
-        viewModelPost.setPrescription2(getPrescriptionOrNull(2,dynamicViewMedications));
-        viewModelPost.setPrescription3(getPrescriptionOrNull(3,dynamicViewMedications));
-        viewModelPost.setPrescription4(getPrescriptionOrNull(4,dynamicViewMedications));
-        viewModelPost.setPrescription5(getPrescriptionOrNull(5,dynamicViewMedications));
+        viewModelPost.setPrescription1(getPrescriptionOrNull(1, dynamicViewMedications));
+        viewModelPost.setPrescription2(getPrescriptionOrNull(2, dynamicViewMedications));
+        viewModelPost.setPrescription3(getPrescriptionOrNull(3, dynamicViewMedications));
+        viewModelPost.setPrescription4(getPrescriptionOrNull(4, dynamicViewMedications));
+        viewModelPost.setPrescription5(getPrescriptionOrNull(5, dynamicViewMedications));
 
         //treatment fields
         viewModelPost.setAssessment(getTreatmentFieldOrNull(1, patientEncounterTreatmentMap));

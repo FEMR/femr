@@ -136,10 +136,8 @@ public class MedicalController extends Controller {
             patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         }
 
-
-
-        ServiceResponse<Map<Integer,List<? extends IPatientEncounterTreatmentField>>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
-        Map<Integer,List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
+        ServiceResponse<Map<Integer, List<? extends IPatientEncounterTreatmentField>>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
+        Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
         if (patientTreatmentFieldsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available treatments
         } else {

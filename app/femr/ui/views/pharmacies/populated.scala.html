@@ -5,6 +5,7 @@
 
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacyClientValidation.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/typeahead.min.js")"></script>
     }
     @additionalStyles = {
@@ -114,7 +115,7 @@
                         @for(x <- 1 to viewModel.getMedications.size) {
                             <div class="row add-margin">
                                 <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
-                                    <input type="text" name="prescription@x" value="@viewModel.getMedication(x - 1)" placeholder="Medication" class="form-control" readonly/>
+                                    <input type="text" id="medication@x" name="prescription@x" value="@viewModel.getMedication(x - 1)" placeholder="Medication" class="form-control" readonly/>
                                 </div>
                                 <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
                                     <div class="btn-group" data-toggle="buttons">
@@ -134,7 +135,7 @@
                             </div>
                         }
                         <div class="class row" align="right">
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" id="pharmacySubmitBtn" class="btn btn-default">Submit</button>
                         </div>
                     </div>
                 </div>

@@ -37,70 +37,119 @@ $(document).ready(function () {
         $('#boolPregnant').val(false);
     });
 
-    $(document).ready(function () {
-        $('.datepicker-age').datepicker({
-            format: "yyyy-mm-dd",
-            autoclose: true
-        });
-    });
+    $('#month').change(function (){
+        var dropdownMonth = parseInt($('#month').val()-1);
+        var dropdownDay = parseInt($('#day').val());
+        var dropdownYear = parseInt($('#year').val());
 
+        if((dropdownMonth >= 0))
+        {
+            $('#month').css('border', '');
+        }
+        else
+        {
+            $('#month').css('border-color','red');
+            $('#years').css('border-color','red');
+            $('#age').val(null);
+            $('#years').val(null);
+        }
 
-    $('#age').change(function (){
-        $('#age').css('border', '');
-
-        // birthdate not null calculate age in years
-        if ($('#age').val() && isDate($('#age').val()) == true) {
-            var birthString = $('#age').val();
-            var birthDate = new Date(birthString);
-            var ageInYears = ~~((Date.now() - birthDate)/(31557600000));
+        if((dropdownMonth >= 0) && ((dropdownDay && dropdownYear) >0))
+        {
+            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
+            var ageInYears = ~~((Date.now() - dropdownDate)/(31557600000));
             console.log(ageInYears);
             // birthdate is not a date clear fields
             var nan = randomString(ageInYears);
-            if (birthDate <= Date.now()) {
+            if (dropdownDate <= Date.now()) {
                 $('#years').val(Math.floor(ageInYears));
             }
-            else{
-                $('#age').val('');
-                $('#years').val('');
-                $('#age').css('border-color', 'red');
-                $('#age').attr('placeholder', 'Future dates are not allowed.');
+
+            $('#years').css('border', '');
+            $('#age').val(dropdownDate.toYMD())
+        }
+    });
+
+    $('#day').change(function (){
+        var dropdownMonth = parseInt($('#month').val()-1);
+        var dropdownDay = parseInt($('#day').val());
+        var dropdownYear = parseInt($('#year').val());
+
+        if((dropdownDay > 0))
+        {
+            $('#day').css('border', '');
+        }
+        else
+        {
+            $('#day').css('border-color','red');
+            $('#years').css('border-color','red');
+            $('#age').val(null);
+            $('#years').val(null);
+        }
+
+        if((dropdownMonth >=0) && ((dropdownDay && dropdownYear) >0))
+        {
+            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
+            var ageInYears = ~~((Date.now() - dropdownDate)/(31557600000));
+            console.log(ageInYears);
+            // birthdate is not a date clear fields
+            var nan = randomString(ageInYears);
+            if (dropdownDate <= Date.now()) {
+                $('#years').val(Math.floor(ageInYears));
             }
 
+            $('#years').css('border', '');
+            $('#age').val(dropdownDate.toYMD())
         }
-        else if (isDate($('#age').val()) == false) {
-            $('#age').val("");
-            $('#years').val("");
-            $('#age').css('border-color', 'red');
-            $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd');
+    });
+
+    $('#year').change(function (){
+        var dropdownMonth = parseInt($('#month').val()-1);
+        var dropdownDay = parseInt($('#day').val());
+        var dropdownYear = parseInt($('#year').val());
+
+        if((dropdownYear > 0))
+        {
+            $('#year').css('border', '');
         }
-        else if (!$('#age').val()) {
-            $('#years').val('');
+        else
+        {
+            $('#year').css('border-color','red');
+            $('#years').css('border-color','red');
+            $('#age').val(null);
+            $('#years').val(null);
+        }
+
+        if((dropdownMonth >=0) && ((dropdownDay && dropdownYear) >0))
+        {
+            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
+            var ageInYears = ~~((Date.now() - dropdownDate)/(31557600000));
+            console.log(ageInYears);
+            // birthdate is not a date clear fields
+            var nan = randomString(ageInYears);
+            if (dropdownDate <= Date.now()) {
+                $('#years').val(Math.floor(ageInYears));
+            }
+            $('#years').css('border', '');
+            $('#age').val(dropdownDate.toYMD())
         }
     });
 
     $('#years').change(function () {
         $('#years').css('border', '');
-        var checkyears = parseInt($('#years').val());
+        var checkYears = parseInt($('#years').val());
         // years in age not null calculate birthdate
-        if ($('#years').val() && integerCheck(checkyears) == true) {
+        if ($('#years').val() && integerCheck(checkYears) == true) {
             var birthDate = new Date();
-            birthDate.setFullYear(birthDate.getFullYear() - checkyears);
+            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
-            var checkDate = new Date();
             if (nan == false) {
+                $('#year').val(birthString.split('-')[0]);
+                $('#month').val(birthString.split('-')[1]);
+                $('#day').val(birthString.split('-')[2]);
                 $('#age').val(birthString);
             }
-        }
-        else if ($('#years').val() && integerCheck(checkyears) == false) {
-            $('#years').val('');
-            $('#age').val('');
-            $('#years').css('border-color', 'red');
-            $('#years').attr('placeholder', 'Enter correct age in Years');
-        }
-        // age in years erased, clear birthdate field
-        else if (!$('#years').val()) {
-            $('#age').val('');
         }
     });
 });
@@ -210,3 +259,11 @@ window.setInterval(function () {
     }
 }, 500);
 
+//Populate years drop down and just for DW max is 123yrs old LOL!
+(function () {
+    $('#year').append($('<option />').val(0).html("Year"));
+    for (i = new Date().getFullYear(); i > 1889; i--)
+    {
+        $('#year').append($('<option />').val(i).html(i));
+    }
+})();

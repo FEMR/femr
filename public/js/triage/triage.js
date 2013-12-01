@@ -37,44 +37,47 @@ $(document).ready(function () {
         $('#boolPregnant').val(false);
     });
 
-    $(document).ready(function () {
-        $('.datepicker-age').datepicker({
-            format: "yyyy-mm-dd",
-            autoclose: true
-        });
-    });
+    $('#year').change(function (){
+        var dropdownMonth = parseInt($('#month').val()-1);
+        var dropdownDay = parseInt($('#day').val());
+        var dropdownYear = parseInt($('#year').val());
 
+        if(dropdownMonth < 0)
+        {
+            $('#month').css('border-color','red');
+            $('#years').css('border-color','red');
+            $('#years').val("Input valid age or birth date")
 
-    $('#age').change(function (){
-        $('#age').css('border', '');
+        }
+        if(dropdownDay <= 0)
+        {
+            $('#day').css('border-color','red');
+            $('#years').css('border-color','red');
+            $('#years').val("Input valid age or birth date")
 
-        // birthdate not null calculate age in years
-        if ($('#age').val() && isDate($('#age').val()) == true) {
-            var birthString = $('#age').val();
-            var birthDate = new Date(birthString);
-            var ageInYears = ~~((Date.now() - birthDate)/(31557600000));
+        }
+        if(dropdownYear <= 0)
+        {
+            $('#year').css('border-color','red');
+            $('#years').css('border-color','red');
+            $('#years').val("Input valid age or birth date")
+
+        }
+        else if((dropdownMonth >=0) && ((dropdownDay && dropdownYear) !=0))
+        {
+            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
+            var ageInYears = ~~((Date.now() - dropdownDate)/(31557600000));
             console.log(ageInYears);
             // birthdate is not a date clear fields
             var nan = randomString(ageInYears);
-            if (birthDate <= Date.now()) {
+            if (dropdownDate <= Date.now()) {
                 $('#years').val(Math.floor(ageInYears));
             }
-            else{
-                $('#age').val('');
-                $('#years').val('');
-                $('#age').css('border-color', 'red');
-                $('#age').attr('placeholder', 'Future dates are not allowed.');
-            }
-
-        }
-        else if (isDate($('#age').val()) == false) {
-            $('#age').val("");
-            $('#years').val("");
-            $('#age').css('border-color', 'red');
-            $('#age').attr('placeholder', 'Enter a date: yyyy-mm-dd');
-        }
-        else if (!$('#age').val()) {
-            $('#years').val('');
+            $('#month').css('border', '');
+            $('#day').css('border', '');
+            $('#year').css('border', '');
+            $('#years').css('border', '');
+            $('#age').val(dropdownDate.toYMD())
         }
     });
 
@@ -87,20 +90,12 @@ $(document).ready(function () {
             birthDate.setFullYear(birthDate.getFullYear() - checkyears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
-            var checkDate = new Date();
             if (nan == false) {
-                $('#age').val(birthString);
+                $('#year').val(birthString.split('-')[0]);
+                $('#month').val(birthString.split('-')[1]);
+                $('#day').val(birthString.split('-')[2]);
+                $('#age').val(birthString)
             }
-        }
-        else if ($('#years').val() && integerCheck(checkyears) == false) {
-            $('#years').val('');
-            $('#age').val('');
-            $('#years').css('border-color', 'red');
-            $('#years').attr('placeholder', 'Enter correct age in Years');
-        }
-        // age in years erased, clear birthdate field
-        else if (!$('#years').val()) {
-            $('#age').val('');
         }
     });
 });
@@ -210,3 +205,11 @@ window.setInterval(function () {
     }
 }, 500);
 
+//Populate years drop down
+(function () {
+    $('#year').append($('<option />').val(0).html("Year"));
+    for (i = new Date().getFullYear(); i > 1889; i--)
+    {
+        $('#year').append($('<option />').val(i).html(i));
+    }
+})();

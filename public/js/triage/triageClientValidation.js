@@ -150,9 +150,9 @@ function checkNumbers(){
 }
 
 /*
-* check if age is a date
-* adopted from the webs!!!
-*/
+ * check if age is a date
+ * adopted from the webs!!!
+ */
 
 function stripCharsInBag(s, bag){
     var i;
@@ -180,9 +180,9 @@ function isDate(dtStr){
     var daysInMonth = DaysArray(12);
     var pos1=dtStr.indexOf(dtCh);
     var pos2=dtStr.indexOf(dtCh,pos1+1);
-    var strYear=dtStr.substring(0,pos1);  //changed from strMonth
+    var strYear=dtStr.substring(0,pos1); //changed from strMonth
     var strMonth=dtStr.substring(pos1+1,pos2); //changed from strDay
-    var strDay=dtStr.substring(pos2+1);    //changed from strYear
+    var strDay=dtStr.substring(pos2+1); //changed from strYear
     strYr=strYear;
     if (strDay.charAt(0)=="0" && strDay.length>1) {
         strDay=strDay.substring(1);
@@ -223,12 +223,5 @@ function isDate(dtStr){
 
 function validateDate(){
     var dt= $('#age').val();
-    if (isDate(dt.toString())==false){
-        $('#age').val("");
-        $('#years').val("");
-        $('#age').css('border-color','red');
-        $('#age').attr('placeholder','Enter correct date format: yyyy-mm-dd');
-        return false;
-    }
     return true;
 }

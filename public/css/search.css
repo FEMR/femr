@@ -29,3 +29,7 @@
 .bold{
     font-weight: bold;
 }
+
+#listElement {
+    font-size: 15px;
+}

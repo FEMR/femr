@@ -72,9 +72,9 @@ public class CreateViewModel {
         setFirstName(patient.getFirstName());
         setLastName(patient.getLastName());
         setAddress(patient.getAddress());
-        setCity(patient.getAddress());
+        setCity(patient.getCity());
         setSex(patient.getSex());
-        setUserID(patient.getId());
+        setPatientID(patient.getId());
         setAge(dateUtils.calculateYears(patient.getAge()));
     }
 
@@ -82,11 +82,11 @@ public class CreateViewModel {
         this.patientNameResult = patientNameResult;
     }
 
-    public int getUserID() {
+    public int getPatientID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setPatientID(int userID) {
         this.userID = userID;
     }
 }

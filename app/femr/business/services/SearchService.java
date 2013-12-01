@@ -208,6 +208,19 @@ public class SearchService implements ISearchService {
     }
 
     @Override
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findAllTreatmentByEncounterId(int id) {
+        ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id);
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
+        if (patientEncounterTreatmentFields.size() > 0) {
+            response.setResponseObject(patientEncounterTreatmentFields);
+        } else {
+            response.addError("problems", "could not find any problems");
+        }
+        return response;
+    }
+
+    @Override
     public ServiceResponse<List<? extends IVital>> findAllVitals() {
         List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
         ServiceResponse<List<? extends IVital>> response = new ServiceResponse<>();

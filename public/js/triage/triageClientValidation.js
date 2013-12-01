@@ -40,6 +40,18 @@ function checkRequiredInput() {
     if (!$('#age').val()) {
         $('#age').attr("placeholder", "Required Input");
         $('#age').css('border-color','red');
+        if($('#month').val() == 0) {
+            $('#month').css('border-color','red');
+            $('#years').css('border-color','red');
+        }
+        if($('#day').val() == 0) {
+            $('#day').css('border-color','red');
+            $('#years').css('border-color','red');
+        }
+        if($('#year').val() == 0) {
+            $('#year').css('border-color','red');
+            $('#years').css('border-color','red');
+        }
         pass = false;
     }
     if (!$('#city').val()) {
@@ -146,6 +158,8 @@ function checkNumbers(){
         $('#years').css('border-color','red');
         pass = false;
     }
+
+
     return pass;
 }
 
@@ -223,5 +237,12 @@ function isDate(dtStr){
 
 function validateDate(){
     var dt= $('#age').val();
+    if (isDate(dt.toString())==false){
+        $('#age').val("");
+        $('#years').val("");
+        $('#years').css('border-color','red');
+        $('#years').attr('placeholder','Input valid age or birth date');
+        return false;
+    }
     return true;
 }

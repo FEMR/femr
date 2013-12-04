@@ -14,13 +14,17 @@ public class dateUtils {
         return years.getYears();
     }
 
-    public static String getCurrentDateTime(){
+    public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
                 .forPattern("yyyy/mm/dd HH:mm:ss");
         LocalDateTime localDateTime = new LocalDateTime();
         dateFormat.print(localDateTime);
         String dt = localDateTime.toString();
         return dt;
+    }
+
+    public static DateTime getCurrentDateTime(){
+        return new DateTime();
     }
 }
 

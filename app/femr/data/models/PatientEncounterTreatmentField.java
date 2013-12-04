@@ -1,6 +1,7 @@
 package femr.data.models;
 
 import femr.common.models.IPatientEncounterTreatmentField;
+import org.joda.time.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ public class PatientEncounterTreatmentField implements IPatientEncounterTreatmen
     @Column(name = "treatment_field_value", nullable = false)
     private String treatmentFieldValue;
     @Column(name = "date_taken", nullable = false)
-    private String dateTaken;
+    private DateTime dateTaken;
 
     public int getId() {
         return id;
@@ -60,11 +61,11 @@ public class PatientEncounterTreatmentField implements IPatientEncounterTreatmen
         this.treatmentFieldValue = treatmentFieldValue;
     }
 
-    public String getDateTaken() {
+    public DateTime getDateTaken() {
         return dateTaken;
     }
 
-    public void setDateTaken(String dateTaken) {
+    public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
     }
 }

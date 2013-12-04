@@ -20,7 +20,7 @@ public class PharmacyService implements IPharmacyService {
 
     @Override
     public ServiceResponse<IPatientPrescription> findPatientPrescriptionByEncounterIdAndPrescriptionName(int id, String name) {
-        ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("encounter_id", id).eq("medication_name", name);
+        ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("encounter_id", id).eq("medication_name", name).eq("replaced",false);
         IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(query);
         ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
         if (patientPrescription == null) {

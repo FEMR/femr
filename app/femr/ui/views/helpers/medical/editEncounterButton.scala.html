@@ -1,0 +1,15 @@
+@(patientId: java.lang.Integer)
+
+@import femr.ui.controllers.routes.MedicalController
+
+@if(patientId > 0) {
+    @helper.form(action = MedicalController.editGet(patientId)) {
+        <button type="submit" class="btn btn-default btn-lg" name="editEncounter" value="true">Yes</button>
+    }
+    @helper.form(action = MedicalController.indexGet()) {
+        <button type="submit" class="btn btn-default btn-lg" name="editEncounter" value="false">No</button>
+    }
+} else {
+    <button type="button" class="btn btn-default btn-lg hidden" name="editEncounter" value="yes">Yes</button>
+    <button type="button" class="btn btn-default btn-lg hidden" name="editEncounter" value="no">No</button>
+}

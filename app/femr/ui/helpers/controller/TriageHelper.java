@@ -66,7 +66,7 @@ public class TriageHelper {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patient.getId());
         patientEncounter.setUserId(currentUser.getId());
-        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTime());
+        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
         patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
@@ -80,7 +80,7 @@ public class TriageHelper {
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
         for (int i = 0; i < 9; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();
-            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTime()));
+            patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital[i].setUserId(currentUser.getId());
             patientEncounterVital[i].setPatientEncounterId(patientEncounter.getId());
             patientEncounterVital[i].setVitalId(i + 1);
@@ -123,7 +123,13 @@ public class TriageHelper {
 
         //Height - Inches
         if (viewModelPost.getHeightInches() == null) {
-            patientEncounterVital[5].setVitalValue(-1);
+            //if HeightFeet is set and HeightInches is not, make HeightInches 0
+            if (patientEncounterVital[4].getVitalValue() > -1){
+                patientEncounterVital[5].setVitalValue(0);
+            }
+            else{
+                patientEncounterVital[5].setVitalValue(-1);
+            }
         } else {
             patientEncounterVital[5].setVitalValue(viewModelPost.getHeightInches().floatValue());
         }

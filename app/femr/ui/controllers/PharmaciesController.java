@@ -137,25 +137,7 @@ public class PharmaciesController extends Controller {
             viewModelGet.setHeightinches(getVitalOrNull(patientEncounterVitals.get(5)).intValue());
         }
         viewModelGet.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
-        /*
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(5, patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
-            viewModel.setHeightFeet(null);
-        else
-            viewModel.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
 
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(6, patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
-            viewModel.setHeightinches(null);
-        else
-            viewModel.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
-
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(7, patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
-            viewModel.setWeight(null);
-        else
-            viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
-        */
         //find patient prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         if (patientPrescriptionsServiceResponse.hasErrors()) {

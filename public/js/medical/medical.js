@@ -187,17 +187,27 @@ $(document).ready(function () {
             showHpi();
         } else if ($(this).attr('id') === "treatmentTab") {
             showTreatment();
+        } else if($(this).attr('id') === "pmhTab") {
+            showPmh();
         }
     });
 });
 
 function showTreatment() {
     $('#hpiControl').addClass('hidden');
+    $('#pmhControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');
 }
 function showHpi() {
     $('#hpiControl').removeClass('hidden');
+    $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
+}
+
+function showPmh() {
+    $('#pmhControl').removeClass('hidden');
+    $('#treatmentControl').addClass('hidden');
+    $('#hpiControl').addClass('hidden');
 }
 
 function calculateBMI() {

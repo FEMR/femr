@@ -17,6 +17,7 @@ import java.util.Map;
 public class MedicalHelper {
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
+    private Provider<IPatientEncounterPmhField> patientEncounterPMHFieldProvider;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 

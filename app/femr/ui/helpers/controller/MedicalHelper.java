@@ -188,15 +188,57 @@ public class MedicalHelper {
         viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
         //patient encounter vitals
-        viewModelGet.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)));
-        viewModelGet.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)));
+        if (patientEncounterVitals.get(0) == null)
+        {
+            viewModelGet.setRespiratoryRate(null);
+        }
+        else
+        {
+            viewModelGet.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)).intValue());
+        }
+        if (patientEncounterVitals.get(1) == null)
+        {
+            viewModelGet.setHeartRate(null);
+        }
+        else
+        {
+            viewModelGet.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)).intValue());
+        }
         viewModelGet.setTemperature(getVitalOrNull(patientEncounterVitals.get(2)));
         viewModelGet.setOxygenSaturation(getVitalOrNull(patientEncounterVitals.get(3)));
-        viewModelGet.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)));
-        viewModelGet.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)));
+        if (patientEncounterVitals.get(4) == null)
+        {
+            viewModelGet.setHeightFeet(null);
+        }
+        else
+        {
+            viewModelGet.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)).intValue());
+        }
+        if (patientEncounterVitals.get(5) == null)
+        {
+            viewModelGet.setHeightInches(null);
+        }
+        else
+        {
+            viewModelGet.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)).intValue());
+        }
         viewModelGet.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
-        viewModelGet.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
-        viewModelGet.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
+        if (patientEncounterVitals.get(7) == null)
+        {
+            viewModelGet.setBloodPressureSystolic(null);
+        }
+        else
+        {
+            viewModelGet.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)).intValue());
+        }
+        if (patientEncounterVitals.get(8) == null)
+        {
+            viewModelGet.setBloodPressureDiastolic(null);
+        }
+        else
+        {
+            viewModelGet.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)).intValue());
+        }
         //patient encounter
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());

@@ -80,7 +80,7 @@ public class PharmaciesController extends Controller {
         s_id = s_id.trim();
 
         Integer id = Integer.parseInt(s_id);
-        CreateViewModelGet viewModel = new CreateViewModelGet();
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
         Boolean error = false;
 
@@ -92,11 +92,11 @@ public class PharmaciesController extends Controller {
         }
 
         IPatient patient = patientServiceResponse.getResponseObject();
-        viewModel.setpID(patient.getId());
-        viewModel.setFirstName(patient.getFirstName());
-        viewModel.setLastName(patient.getLastName());
-        viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
-        viewModel.setSex(patient.getSex());
+        viewModelGet.setpID(patient.getId());
+        viewModelGet.setFirstName(patient.getFirstName());
+        viewModelGet.setLastName(patient.getLastName());
+        viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+        viewModelGet.setSex(patient.getSex());
 
         //return to index if error finding a patient encounter
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
@@ -106,27 +106,37 @@ public class PharmaciesController extends Controller {
         }
 
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
-        viewModel.setWeeksPregnant(patientEncounter.getWeeksPregnant());
+        viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
 
         //set viewModel field to null if patient vital does not exist
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(5, patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
-            viewModel.setHeightFeet(null);
+        int TOTAL_VITALS = 9;
+        for (int vital = 1; vital <= TOTAL_VITALS; vital++) {
+            patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, patientEncounter.getId());
+            if (patientEncounterVitalServiceResponse.hasErrors()) {
+                patientEncounterVitals.add(null);
+            } else {
+                patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
+            }
+        }
+        if (patientEncounterVitals.get(4) == null)
+        {
+            viewModelGet.setHeightFeet(null);
+        }
         else
-            viewModel.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
-
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(6, patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
-            viewModel.setHeightinches(null);
+        {
+            viewModelGet.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)).intValue());
+        }
+        if (patientEncounterVitals.get(5) == null)
+        {
+            viewModelGet.setHeightinches(null);
+        }
         else
-            viewModel.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
-
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(7, patientEncounter.getId());
-        if (patientEncounterVitalServiceResponse.hasErrors())
-            viewModel.setWeight(null);
-        else
-            viewModel.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+        {
+            viewModelGet.setHeightinches(getVitalOrNull(patientEncounterVitals.get(5)).intValue());
+        }
+        viewModelGet.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
 
         //find patient prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
@@ -146,7 +156,7 @@ public class PharmaciesController extends Controller {
         //this should probably be left as a List or ArrayList
         String[] viewMedications = new String[dynamicViewMedications.size()];
         viewMedications = dynamicViewMedications.toArray(viewMedications);
-        viewModel.setMedications(viewMedications);
+        viewModelGet.setMedications(viewMedications);
 
         //find patient problems, they don't have to exist.
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
@@ -167,9 +177,9 @@ public class PharmaciesController extends Controller {
 
         String[] viewProblems = new String[dynamicViewProblems.size()];
         viewProblems = dynamicViewProblems.toArray(viewProblems);
-        viewModel.setProblems(viewProblems);
+        viewModelGet.setProblems(viewProblems);
 
-        return ok(populated.render(currentUserSession, viewModel, error));
+        return ok(populated.render(currentUserSession, viewModelGet, error));
     }
 
     public Result createPost(int id) {
@@ -238,5 +248,12 @@ public class PharmaciesController extends Controller {
         patientPrescription.setReplaced(true);
         patientPrescription.setReplacementId(replacementId);
         return patientPrescription;
+    }
+
+    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital) {
+        if (patientEncounterVital == null)
+            return null;
+        else
+            return patientEncounterVital.getVitalValue();
     }
 }

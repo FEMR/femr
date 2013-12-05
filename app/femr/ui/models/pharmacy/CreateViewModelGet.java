@@ -13,8 +13,8 @@ public class CreateViewModelGet {
     private Integer weeksPregnant;
     //Vital Information
     private Float weight;
-    private Float heightFeet;
-    private Float heightinches;
+    private Integer heightFeet;
+    private Integer heightinches;
     //Prescriptions
     private String[] medications;
     //Problems
@@ -84,19 +84,19 @@ public class CreateViewModelGet {
         return weight;
     }
 
-    public void setHeightFeet(Float heightFeet) {
+    public void setHeightFeet(Integer heightFeet) {
         this.heightFeet = heightFeet;
     }
 
-    public Float getHeightFeet() {
+    public Integer getHeightFeet() {
         return heightFeet;
     }
 
-    public void setHeightinches(Float heightinches) {
+    public void setHeightinches(Integer heightinches) {
         this.heightinches = heightinches;
     }
 
-    public Float getHeightinches() {
+    public Integer getHeightinches() {
         return heightinches;
     }
 

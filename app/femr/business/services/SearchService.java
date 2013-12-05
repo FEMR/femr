@@ -204,7 +204,7 @@ public class SearchService implements ISearchService {
         Query<PatientEncounterPmhField> query;
         List<? extends IPatientEncounterPmhField> patientEncounterPmhFields;
 
-        for (int pmhFieldId = 1; pmhFieldId < 10; pmhFieldId++) {
+        for (int pmhFieldId = 1; pmhFieldId < 5; pmhFieldId++) {
             query = getPatientEncounterPmhFieldQuery().where().eq("patient_encounter_id", id).eq("pmh_field_id", pmhFieldId).order().desc("date_taken");
             patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query);
             mappedPmhFields.put(pmhFieldId, patientEncounterPmhFields);

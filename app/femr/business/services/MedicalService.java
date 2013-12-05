@@ -29,6 +29,7 @@ public class MedicalService implements IMedicalService {
     @Inject
     public MedicalService(IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
                           IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
+                          IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
                           IRepository<IPatientPrescription> patientPrescriptionRepository) {
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;

@@ -285,14 +285,6 @@ public class CreateViewModelGet {
         this.treatment = treatment;
     }
 
-    public String getFamilyHistory() {
-        return familyHistory;
-    }
-
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
-    }
-
     public String getOnset() {
         return onset;
     }
@@ -395,4 +387,13 @@ public class CreateViewModelGet {
     public void setMedicalSurgicalHistory(String medicalSurgicalHistory) {
         this.medicalSurgicalHistory = medicalSurgicalHistory;
     }
+
+    public String getFamilyHistory() {
+        return familyHistory;
+    }
+
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
+    }
+
 }

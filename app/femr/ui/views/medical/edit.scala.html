@@ -4,7 +4,7 @@
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.views.html.helpers.medical._
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")" xmlns="http://www.w3.org/1999/html">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
@@ -257,19 +257,19 @@
                 <div id="pmhControl" class="hidden">
                    <div class="form-group">
                         <label for="medsurghistory">Medical/Surgical History</label>
-                        <input name="medsurghistory" type="text" class="form-control input-sm" value="@viewModel.getMedicalSurgicalHistory"/>
+                        <textarea row="3" name="medsurghistory" class="form-control input-sm" > @viewModel.getMedicalSurgicalHistory </textarea>
                     </div>
                     <div class="form-group">
                         <label for="socialhist">Social History</label>
-                        <input name="socialhist" type="text" class="form-control input-sm" value="@viewModel.getSocialHistory"/>
+                        <textarea row ="3" name="socialhist"  class="form-control input-sm" > @viewModel.getSocialHistory </textarea>
                     </div>
                     <div class="form-group">
                         <label for="currmeds">Current Medications</label>
-                        <input name="currmeds" type="text" class="form-control input-sm" value="@viewModel.getCurrentMedication"/>
+                        <textarea row = "3" name="currmeds" type="text" class="form-control input-sm"> @viewModel.getCurrentMedication </textarea>
                     </div>
                     <div class="form-group">
                         <label for="familyHistory">Family History</label>
-                        <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory</textarea>
+                        <textarea rows="3" name="familyHistory" class="form-control input-sm"> @viewModel.getFamilyHistory  </textarea>
                     </div>
                 </div>
                 <button type="submit" id="medicalSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>

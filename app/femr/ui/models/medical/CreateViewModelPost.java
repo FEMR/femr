@@ -131,14 +131,6 @@ public class CreateViewModelPost {
         this.treatment = treatment;
     }
 
-    public String getFamilyHistory() {
-        return familyHistory;
-    }
-
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
-    }
-
     public int getId() {
         return id;
     }
@@ -250,5 +242,13 @@ public class CreateViewModelPost {
 
     public void setMedicalSurgicalHistory(String medicalSurgicalHistory) {
         this.medicalSurgicalHistory = medicalSurgicalHistory;
+    }
+
+    public String getFamilyHistory() {
+        return familyHistory;
+    }
+
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
     }
 }

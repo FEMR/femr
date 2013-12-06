@@ -59,7 +59,7 @@ public class MedicalHelper {
     public List<IPatientEncounterPmhField> populatePmhFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
         List<IPatientEncounterPmhField> patientEncounterPmhFields = new ArrayList<>();
         IPatientEncounterPmhField[] patientEncounterPmhField = new IPatientEncounterPmhField[5];
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             patientEncounterPmhField[i] = patientEncounterPmhFieldProvider.get();
             patientEncounterPmhField[i].setDateTaken(dateUtils.getCurrentDateTime());
             patientEncounterPmhField[i].setPatientEncounterId(patientEncounter.getId());
@@ -104,7 +104,7 @@ public class MedicalHelper {
         patientEncounterTreatmentField[6].setTreatmentFieldId(3);
         patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getTreatment());
         patientEncounterTreatmentField[7].setTreatmentFieldId(4);
-        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
+        patientEncounterTreatmentField[7].setTreatmentFieldValue(null);
 
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;

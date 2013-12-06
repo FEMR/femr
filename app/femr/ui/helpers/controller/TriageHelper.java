@@ -154,6 +154,13 @@ public class TriageHelper {
             patientEncounterVital[8].setVitalValue(viewModelPost.getBloodPressureDiastolic().floatValue());
         }
 
+        //Glucose
+        if (viewModelPost.getBloodPressureDiastolic() == null) {
+            patientEncounterVital[9].setVitalValue(-1);
+        } else {
+            patientEncounterVital[9].setVitalValue(viewModelPost.getGlucose());
+        }
+
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));
         return patientEncounterVitals;
     }

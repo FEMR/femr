@@ -76,6 +76,7 @@ public class TriageHelper {
     public List<IPatientEncounterVital> populateVitals(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatientEncounter patientEncounter) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+
         int NUMBER_OF_VITALS = 9;
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[NUMBER_OF_VITALS];
         for (int i = 0; i < NUMBER_OF_VITALS; i++) {
@@ -155,7 +156,7 @@ public class TriageHelper {
         }
 
         //Glucose
-        if (viewModelPost.getBloodPressureDiastolic() == null) {
+        if (viewModelPost.getGlucose() == null) {
             patientEncounterVital[9].setVitalValue(-1);
         } else {
             patientEncounterVital[9].setVitalValue(viewModelPost.getGlucose());

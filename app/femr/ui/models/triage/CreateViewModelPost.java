@@ -23,7 +23,7 @@ public class CreateViewModelPost {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
-    private int glucose;
+    private Integer glucose;
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
@@ -178,11 +178,11 @@ public class CreateViewModelPost {
         this.isPregnant = isPregnant;
     }
 
-    public int getGlucose() {
+    public Integer getGlucose() {
         return glucose;
     }
 
-    public void setGlucose(int glucose) {
+    public void setGlucose(Integer glucose) {
         this.glucose = glucose;
     }
 }

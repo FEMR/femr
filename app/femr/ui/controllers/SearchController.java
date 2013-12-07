@@ -47,7 +47,7 @@ public class SearchController extends Controller {
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse= null;
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
 
-        for (int vital = 1; vital <= 9; vital++) {
+        for (int vital = 1; vital <= 10; vital++) {
             patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, id);
             if (patientEncounterVitalServiceResponse.hasErrors()) {
                 patientEncounterVitals.add(null);
@@ -65,6 +65,7 @@ public class SearchController extends Controller {
         viewModel.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
         viewModel.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
         viewModel.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
+        viewModel.setGlucose(getVitalOrNull(patientEncounterVitals.get(9)));
 
 
          //Get Patient Name and other basic info

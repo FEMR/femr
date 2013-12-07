@@ -12,5 +12,5 @@ public interface ITriageService {
 
     ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
 
-
+    ServiceResponse<IPatient> updatePatientSex(int id, String sex);
 }

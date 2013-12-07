@@ -109,8 +109,10 @@ public class TriageController extends Controller {
             patientServiceResponse = triageService.createPatient(patient);
         } else {
             patientServiceResponse = searchService.findPatientById(id);
+            if (!StringUtils.isNullOrWhiteSpace(viewModel.getSex())){
+                patientServiceResponse = triageService.updatePatientSex(patientServiceResponse.getResponseObject().getId(),viewModel.getSex());
+            }
         }
-
         if (patientServiceResponse.hasErrors()) {
             return internalServerError();
         }

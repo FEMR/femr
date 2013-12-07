@@ -1,7 +1,5 @@
 package femr.common.models;
 
-import java.sql.Timestamp;
-
 public interface IPatientEncounter {
     int getId();
 

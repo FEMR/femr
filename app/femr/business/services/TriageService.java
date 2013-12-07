@@ -1,11 +1,15 @@
 package femr.business.services;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.data.daos.IRepository;
+import femr.data.models.Patient;
 
 public class TriageService implements ITriageService {
 
@@ -38,6 +42,24 @@ public class TriageService implements ITriageService {
     }
 
     @Override
+    public ServiceResponse<IPatient> updatePatientSex(int id, String sex){
+        ServiceResponse<IPatient> response = new ServiceResponse<>();
+        ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
+        IPatient savedPatient = patientRepository.findOne(query);
+        if (savedPatient == null){
+            response.addError("patient","does not exist");
+            return response;
+        }
+        savedPatient.setSex(sex);
+        savedPatient = patientRepository.update(savedPatient);
+        if (savedPatient.getSex() != sex){
+            response.addError("updating","error updating patient");
+        }
+        response.setResponseObject(savedPatient);
+        return response;
+    }
+
+    @Override
     public ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter) {
         IPatientEncounter newPatientEncounter = patientEncounterRepository.create(patientEncounter);
         ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();
@@ -63,5 +85,9 @@ public class TriageService implements ITriageService {
             response.addError("patient encounter vital","patient encounter vital could not be saved to database");
         }
         return response;
+    }
+
+    private Query<Patient> getPatientQuery() {
+        return Ebean.find(Patient.class);
     }
 }

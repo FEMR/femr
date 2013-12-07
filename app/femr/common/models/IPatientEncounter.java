@@ -1,7 +1,5 @@
 package femr.common.models;
 
-import java.sql.Timestamp;
-
 public interface IPatientEncounter {
     int getId();
 
@@ -20,10 +18,6 @@ public interface IPatientEncounter {
     String getChiefComplaint();
 
     void setChiefComplaint(String chiefComplaint);
-
-    Integer getWeeksPregnant();
-
-    void setWeeksPregnant(Integer weeksPregnant);
 
     Boolean getIsPregnant();
 

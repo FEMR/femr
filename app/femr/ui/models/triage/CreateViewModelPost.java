@@ -23,6 +23,7 @@ public class CreateViewModelPost {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
+
     private Integer weeksPregnant;
     //begin encounter
     private String chiefComplaint;

@@ -1,7 +1,7 @@
-$(document).ready(function(){
-    $('#pharmacySubmitBtn').click(function(){
+$(document).ready(function () {
+    $('#pharmacySubmitBtn').click(function () {
         var pass = true;
-        if (checkReplacementPrescriptions() === false){
+        if (checkReplacementPrescriptions() === false) {
             alert("Duplicate prescriptions can not be submitted.");
             pass = false;
         }
@@ -9,7 +9,7 @@ $(document).ready(function(){
     })
 });
 
-function checkReplacementPrescriptions(){
+function checkReplacementPrescriptions() {
     var medications = [];
     medications.push($('#medication1').val());
     medications.push($('#medication2').val());
@@ -26,19 +26,21 @@ function checkReplacementPrescriptions(){
     replacementMedications.sort();
 
     var last = replacementMedications[0];
-    for (var i=1; i<replacementMedications.length; i++){
-        if (replacementMedications[i] == last && replacementMedications[i] != '' && typeof replacementMedications[i] != 'undefined'){
-            return false;
-        }
-        last = replacementMedications[i];
-    }
-    for (var i = 0; i < replacementMedications.length; i++){
-        for (var j = 0; j < medications.length; j++){
-            if (replacementMedications[i] === medications[j] && replacementMedications[i] != '' && typeof replacementMedications[i] != 'undefined'){
+    for (var i = 1; i < replacementMedications.length; i++) {
+        if (typeof replacementMedications[i] != 'undefined') {
+            if (replacementMedications[i] === last.toLowerCase() && replacementMedications[i] != '') {
                 return false;
             }
         }
+        last = replacementMedications[i];
     }
-
-
+    for (var i = 0; i < replacementMedications.length; i++) {
+        for (var j = 0; j < medications.length; j++) {
+            if (typeof replacementMedications[j] != 'undefined') {
+                if (replacementMedications[i].toLowerCase() === medications[j].toLowerCase() && replacementMedications[i] != '') {
+                    return false;
+                }
+            }
+        }
+    }
 }

@@ -68,7 +68,14 @@ public class TriageHelper {
         patientEncounter.setUserId(currentUser.getId());
         patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
+
+
+
         patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
+
+
+
+
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
 
         return patientEncounter;

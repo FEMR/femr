@@ -28,7 +28,7 @@ function checkReplacementPrescriptions() {
     var last = replacementMedications[0];
     for (var i = 1; i < replacementMedications.length; i++) {
         if (typeof replacementMedications[i] != 'undefined') {
-            if (replacementMedications[i] === last.toLowerCase() && replacementMedications[i] != '') {
+            if (replacementMedications[i].toLowerCase().trim() === last.toLowerCase().trim() && replacementMedications[i] != '') {
                 return false;
             }
         }
@@ -37,7 +37,7 @@ function checkReplacementPrescriptions() {
     for (var i = 0; i < replacementMedications.length; i++) {
         for (var j = 0; j < medications.length; j++) {
             if (typeof replacementMedications[j] != 'undefined') {
-                if (replacementMedications[i].toLowerCase() === medications[j].toLowerCase() && replacementMedications[i] != '') {
+                if (replacementMedications[i].toLowerCase().trim() === medications[j].toLowerCase().trim() && replacementMedications[i] != '') {
                     return false;
                 }
             }

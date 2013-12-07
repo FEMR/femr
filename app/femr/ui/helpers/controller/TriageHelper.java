@@ -159,7 +159,7 @@ public class TriageHelper {
         if (viewModelPost.getGlucose() == null) {
             patientEncounterVital[9].setVitalValue(-1);
         } else {
-            patientEncounterVital[9].setVitalValue(viewModelPost.getGlucose());
+            patientEncounterVital[9].setVitalValue(viewModelPost.getGlucose().floatValue());
         }
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));

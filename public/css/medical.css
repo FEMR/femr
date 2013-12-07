@@ -7,7 +7,10 @@
 }
 
 #treatmentTab, #hpiTab {
-    background-color: #F0EAD6;
+    background-color: #dcdcdc;
+    color: #626262;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 #treatmentTab:hover, #hpiTab:hover {
@@ -15,12 +18,31 @@
 }
 
 .active {
-    border-top: 1px solid #d8d2c0;
-    border-left: 1px solid #d8d2c0;
-    border-right: 1px solid #d8d2c0;
+    border-top: 2px solid #939393;
+    border-left: 2px solid #939393;
+    border-right: 2px solid #939393;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .addSubtractBtn {
     float: left;
     border: 1px solid #d8d2c0;
+}
+
+.nav-tabs {
+    /*bootstrap override*/
+    border-bottom: 2px solid #939393 !important;
+}
+.nav-tabs > li.active > a {
+    /*bootstrap override*/
+    color: black !important;
+}
+.nav-tabs > li {
+    /*bootstrap override*/
+    margin-bottom: -2px !important;
+}
+.nav-tabs > li > a{
+    /*bootstrap override*/
+    margin-right: 0px !important;
 }

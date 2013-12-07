@@ -115,6 +115,7 @@ $(document).ready(function () {
             return;
         }
         $("#prescription" + $("body").data("script")).removeClass("hidden");
+        $("#prescription" + $("body").data("script")).focus();
         return;
     });
 
@@ -122,10 +123,11 @@ $(document).ready(function () {
         if (typeof $("body").data("script") === "undefined") {
             return;
         } else if ($("body").data("script") > 1) {
-            if ($("#prescription" + $("body").data("script")).val() == ''){
+            if ($("#prescription" + $("body").data("script")).val() == '') {
                 $("#prescription" + $("body").data("script")).addClass("hidden");
+                $("#prescription" + ($("body").data("script") - 1)).focus();
                 $("body").data("script", $("body").data("script") - 1);
-            } else{
+            } else {
                 return;
             }
         }
@@ -143,6 +145,7 @@ $(document).ready(function () {
             return;
         }
         $("#problem" + $("body").data("prob")).removeClass("hidden");
+        $("#problem" + $("body").data("prob")).focus();
         return;
     });
 
@@ -150,10 +153,11 @@ $(document).ready(function () {
         if (typeof $("body").data("prob") === "undefined") {
             return;
         } else if ($("body").data("prob") > 1) {
-            if ($("#problem" + $("body").data("prob")).val() == ''){
+            if ($("#problem" + $("body").data("prob")).val() == '') {
                 $("#problem" + $("body").data("prob")).addClass("hidden");
+                $("#problem" + ($("body").data("prob") - 1)).focus();
                 $("body").data("prob", $("body").data("prob") - 1);
-            } else{
+            } else {
                 return;
             }
         }

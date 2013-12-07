@@ -10,32 +10,17 @@ $(document).ready(function () {
     });
 
     $('#femaleBtn').change(function () {
-        if ($('#pregnantWrap').hasClass('hidden')) {
-            $('#pregnantWrap').removeClass('hidden');
-        }
+        $('#pregnancyBtn').removeClass('disabled');
     });
     $('#maleBtn').change(function () {
-        if (!$('#pregnantWrap').hasClass('hidden')) {
-            $('#pregnantWrap').addClass('hidden');
-        }
-        if ($('#yesPregnantBtn').is(':checked')) {
-            $('#yesPregnantBtn').prop('checked', false);
-            $('#yesPregnantBtn').parent().removeClass('active');
-        }
-        if (!$('#weeksWrap').hasClass('hidden')) {
-            $('#weeksWrap').addClass('hidden');
-        }
+        $('#pregnancyBtn').removeClass('active');
+        $('#pregnancyBtn').addClass('disabled');
+        $('#weeksPregnant').val('');
+        $('#weeksPregnant').attr('disabled','disabled');
     });
-
-    $('#yesPregnantBtn').change(function () {
-        $('#weeksWrap').removeClass('hidden');
-        $('#boolPregnant').val(true);
-    });
-
-    $('#noPregnantBtn').change(function () {
-        $('#weeksWrap').addClass('hidden');
-        $('#boolPregnant').val(false);
-    });
+    $('#pregnancyBtn').change(function(){
+        $('#weeksPregnant').removeAttr('disabled');
+    })
 
     $('#month').change(function (){
         var dropdownMonth = parseInt($('#month').val()-1);

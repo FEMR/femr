@@ -18,9 +18,8 @@
   border: none;
 }
 
-#pregnantWrap {
-  display: inline-block;
-  float: left;
+#pregnancyBtn{
+    margin-top: -6px;
 }
 
 /*Boot strap overrides*/

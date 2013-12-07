@@ -19,7 +19,15 @@ $(document).ready(function () {
         $('#weeksPregnant').attr('disabled','disabled');
     });
     $('#pregnancyBtn').change(function(){
-        $('#weeksPregnant').removeAttr('disabled');
+        if (typeof $("#weeksPregnant").attr('disabled') === "undefined"){
+            $('#weeksPregnant').val('');
+            $('#weeksPregnant').attr('disabled','disabled');
+        }
+        else{
+            $('#weeksPregnant').removeAttr('disabled');
+        }
+
+
     })
 
     $('#month').change(function (){

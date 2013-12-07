@@ -106,6 +106,10 @@ $(document).ready(function () {
     //Unhides a prescription input box everytime
     //the + button is clicked (max of 5)
     $('#addPrescriptionButton').click(function () {
+        var numberOfFilledPrescriptions = getNumberOfFilledScripts();
+        if (numberOfFilledPrescriptions > 0 && ($("body").data("script") < numberOfFilledPrescriptions || typeof $("body").data("script") === "undefined")) {
+            $("body").data("script", numberOfFilledPrescriptions);
+        }
 
         if (typeof $("body").data("script") === "undefined") {
             $("body").data("script", 2);
@@ -115,6 +119,7 @@ $(document).ready(function () {
             return;
         }
         $("#prescription" + $("body").data("script")).removeClass("hidden");
+        $("#prescription" + $("body").data("script")).focus();
         return;
     });
 
@@ -122,12 +127,10 @@ $(document).ready(function () {
         if (typeof $("body").data("script") === "undefined") {
             return;
         } else if ($("body").data("script") > 1) {
-            if ($("#prescription" + $("body").data("script")).val() == ''){
-                $("#prescription" + $("body").data("script")).addClass("hidden");
-                $("body").data("script", $("body").data("script") - 1);
-            } else{
-                return;
-            }
+            $("#prescription" + $("body").data("script")).addClass("hidden");
+            $("#prescription" + ($("body").data("script"))).val('');
+            $("#prescription" + ($("body").data("script") - 1)).focus();
+            $("body").data("script", $("body").data("script") - 1);
         }
         return;
     });
@@ -135,6 +138,12 @@ $(document).ready(function () {
     //Unhides a problem input box everytime
     //the + button is clicked (max of 5)
     $('#addProblemButton').click(function () {
+        var numberOfProblems = getNumberOfProblems();
+        if (numberOfProblems > 0 && ($("body").data("prob") < numberOfProblems || typeof $("body").data("prob") === "undefined")) {
+            $("body").data("prob", numberOfProblems);
+        }
+
+
         if (typeof $("body").data("prob") === "undefined") {
             $("body").data("prob", 2);
         } else if ($("body").data("prob") < 5) {
@@ -143,6 +152,7 @@ $(document).ready(function () {
             return;
         }
         $("#problem" + $("body").data("prob")).removeClass("hidden");
+        $("#problem" + $("body").data("prob")).focus();
         return;
     });
 
@@ -150,12 +160,10 @@ $(document).ready(function () {
         if (typeof $("body").data("prob") === "undefined") {
             return;
         } else if ($("body").data("prob") > 1) {
-            if ($("#problem" + $("body").data("prob")).val() == ''){
-                $("#problem" + $("body").data("prob")).addClass("hidden");
-                $("body").data("prob", $("body").data("prob") - 1);
-            } else{
-                return;
-            }
+            $("#problem" + $("body").data("prob")).addClass("hidden");
+            $("#problem" + ($("body").data("prob"))).val('');
+            $("#problem" + ($("body").data("prob") - 1)).focus();
+            $("body").data("prob", $("body").data("prob") - 1);
         }
         return;
     });
@@ -195,4 +203,24 @@ function calculateBMI() {
 
         $('#bmi').text(Math.round((weight_lbs / (height_in * height_in)) * 703));
     }
+}
+
+function getNumberOfFilledScripts() {
+    var x = 0;
+    $('.prescription').each(function () {
+        if ($(this).attr("readonly")) {
+            x++;
+        }
+    });
+    return x;
+}
+
+function getNumberOfProblems() {
+    var x = 0;
+    $('.problem').each(function () {
+        if ($(this).attr("readonly")) {
+            x++;
+        }
+    });
+    return x;
 }

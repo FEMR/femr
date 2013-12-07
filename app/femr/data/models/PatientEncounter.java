@@ -17,6 +17,8 @@ public class PatientEncounter implements IPatientEncounter {
     private String dateOfVisit;
     @Column(name = "chief_complaint", nullable = true)
     private String chiefComplaint;
+    @Column(name = "weeks_pregnant", nullable = true)
+    private Integer weeksPregnant;
     @Column(name = "is_pregnant", nullable = true)
     private Boolean isPregnant;
 
@@ -63,6 +65,16 @@ public class PatientEncounter implements IPatientEncounter {
     @Override
     public void setChiefComplaint(String chiefComplaint) {
         this.chiefComplaint = chiefComplaint;
+    }
+
+    @Override
+    public Integer getWeeksPregnant() {
+        return weeksPregnant;
+    }
+
+    @Override
+    public void setWeeksPregnant(Integer weeksPregnant) {
+        this.weeksPregnant = weeksPregnant;
     }
 
     @Override

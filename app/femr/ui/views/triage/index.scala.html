@@ -46,28 +46,6 @@
                 @inputGender(viewModel)
 
 
-
-
-                <div id="pregnantWrap" class="hidden">
-                    <input type="text" class="hidden" id="boolPregnant" name="isPregnant">
-                    <div class="btn-group pull-left" data-toggle="buttons">
-                        <label class="inputLabel">Pregnant?</label>
-                        <div class="btn-group pull-left" data-toggle="buttons">
-                            <label class="btn btn-default">
-                                <input type="radio" id="yesPregnantBtn">Yes
-                            </label>
-                            <label class="btn btn-default">
-                                <input type="radio" id="noPregnantBtn">No
-                            </label>
-                        </div>
-                    </div>
-                    <div id="weeksWrap" class="hidden">
-                        <label class="inputLabel">Weeks:</label>
-                        <input type="text" id="weeksPregnant" class="form-control input-sm pull-left" name="weeksPregnant">
-                    </div>
-                </div>
-
-
             </div>
         </div>
         @*Other Column*@
@@ -101,12 +79,22 @@
                             <input type="number" step="number" min="0" class="form-control" id="respirations" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
                         </div>
                     </div>
-                    @*<div class="form-group">*@
-                        @*<label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">Pregnant?</label>*@
-                        @*<div class="col-sm-6 col-xs-6">*@
-                            @*<input type="number" step="number" min="0" class="form-control" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" readonly/>*@
-                        @*</div>*@
-                    @*</div>*@
+                    <div class="form-group">
+
+
+                        <label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">
+                            <div data-toggle="buttons">
+                                <label class="btn btn-default disabled">
+                                    <input type="checkbox" id="isPregnant">Pregnant?
+                                </label>
+                            </div>
+                        </label>
+                        <div class="col-sm-6 col-xs-6">
+                            <input type="number" step="number" min="0" class="form-control" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+                        </div>
+
+
+                    </div>
 
 
                 </div>

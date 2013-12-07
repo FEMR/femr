@@ -19,6 +19,10 @@ public interface IPatientEncounter {
 
     void setChiefComplaint(String chiefComplaint);
 
+    Integer getWeeksPregnant();
+
+    void setWeeksPregnant(Integer weeksPregnant);
+
     Boolean getIsPregnant();
 
     void setIsPregnant(Boolean isPregnant);

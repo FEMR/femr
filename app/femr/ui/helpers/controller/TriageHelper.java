@@ -67,6 +67,7 @@ public class TriageHelper {
         patientEncounter.setUserId(currentUser.getId());
         patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
+        patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
 
         return patientEncounter;
@@ -75,7 +76,7 @@ public class TriageHelper {
     public List<IPatientEncounterVital> populateVitals(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatientEncounter patientEncounter) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        int NUMBER_OF_VITALS = 10;
+        int NUMBER_OF_VITALS = 9;
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[NUMBER_OF_VITALS];
         for (int i = 0; i < NUMBER_OF_VITALS; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();
@@ -151,13 +152,6 @@ public class TriageHelper {
             patientEncounterVital[8].setVitalValue(-1);
         } else {
             patientEncounterVital[8].setVitalValue(viewModelPost.getBloodPressureDiastolic().floatValue());
-        }
-
-        //Weeks Pregnant
-        if (viewModelPost.getWeeksPregnant() == null || viewModelPost.getWeeksPregnant() == 0) {
-            patientEncounterVital[9].setVitalValue(-1);
-        } else {
-            patientEncounterVital[9].setVitalValue(viewModelPost.getWeeksPregnant().floatValue());
         }
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));

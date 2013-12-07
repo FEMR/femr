@@ -21,18 +21,18 @@ public class TriageHelper {
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public TriageHelper(Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider){
+    public TriageHelper(Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, List<? extends IVital> vitalNames, boolean searchError){
+    public CreateViewModelGet populateViewModelGet(IPatient patient, List<? extends IVital> vitalNames, boolean searchError) {
         CreateViewModelGet createViewModelGet = new CreateViewModelGet();
         createViewModelGet.setVitalNames(vitalNames);
         createViewModelGet.setSearchError(searchError);
 
-        if (patient != null){
+        if (patient != null) {
             createViewModelGet.setId(patient.getId());
             createViewModelGet.setFirstName(patient.getFirstName());
             createViewModelGet.setLastName(patient.getLastName());
@@ -41,8 +41,7 @@ public class TriageHelper {
             createViewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
             createViewModelGet.setBirth(patient.getAge());
             createViewModelGet.setSex(patient.getSex());
-        }
-        else{
+        } else {
             createViewModelGet.setId(0);
             //required to keep textbox clear
             createViewModelGet.setAge(null);
@@ -50,7 +49,7 @@ public class TriageHelper {
         return createViewModelGet;
     }
 
-    public IPatient populatePatient(CreateViewModelPost viewModelPost, CurrentUser currentUser){
+    public IPatient populatePatient(CreateViewModelPost viewModelPost, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModelPost.getFirstName());
@@ -62,30 +61,23 @@ public class TriageHelper {
         return patient;
     }
 
-    public IPatientEncounter populatePatientEncounter(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatient patient){
+    public IPatientEncounter populatePatientEncounter(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatient patient) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patient.getId());
         patientEncounter.setUserId(currentUser.getId());
         patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
-
-
-
-        patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
-
-
-
-
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
 
         return patientEncounter;
     }
 
-    public List<IPatientEncounterVital> populateVitals(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatientEncounter patientEncounter){
+    public List<IPatientEncounterVital> populateVitals(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatientEncounter patientEncounter) {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[9];
-        for (int i = 0; i < 9; i++) {
+        int NUMBER_OF_VITALS = 10;
+        IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[NUMBER_OF_VITALS];
+        for (int i = 0; i < NUMBER_OF_VITALS; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();
             patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital[i].setUserId(currentUser.getId());
@@ -131,10 +123,9 @@ public class TriageHelper {
         //Height - Inches
         if (viewModelPost.getHeightInches() == null) {
             //if HeightFeet is set and HeightInches is not, make HeightInches 0
-            if (patientEncounterVital[4].getVitalValue() > -1){
+            if (patientEncounterVital[4].getVitalValue() > -1) {
                 patientEncounterVital[5].setVitalValue(0);
-            }
-            else{
+            } else {
                 patientEncounterVital[5].setVitalValue(-1);
             }
         } else {
@@ -160,6 +151,13 @@ public class TriageHelper {
             patientEncounterVital[8].setVitalValue(-1);
         } else {
             patientEncounterVital[8].setVitalValue(viewModelPost.getBloodPressureDiastolic().floatValue());
+        }
+
+        //Weeks Pregnant
+        if (viewModelPost.getWeeksPregnant() == null || viewModelPost.getWeeksPregnant() == 0) {
+            patientEncounterVital[9].setVitalValue(-1);
+        } else {
+            patientEncounterVital[9].setVitalValue(viewModelPost.getWeeksPregnant().floatValue());
         }
 
         patientEncounterVitals.addAll(Arrays.asList(patientEncounterVital));

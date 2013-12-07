@@ -77,7 +77,7 @@ public class TriageHelper {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
 
-        int NUMBER_OF_VITALS = 9;
+        int NUMBER_OF_VITALS = 10;
         IPatientEncounterVital[] patientEncounterVital = new IPatientEncounterVital[NUMBER_OF_VITALS];
         for (int i = 0; i < NUMBER_OF_VITALS; i++) {
             patientEncounterVital[i] = patientEncounterVitalProvider.get();

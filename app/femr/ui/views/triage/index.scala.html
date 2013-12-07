@@ -82,9 +82,15 @@
                     <div class="form-group">
                         <label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">
                             <div data-toggle="buttons">
-                                <label class="btn btn-default disabled" id="pregnancyBtn">
+                                @if(viewModel.getSex() == "Female"){
+                                <label class="btn btn-default" id="pregnancyBtn">
                                     <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
                                 </label>
+                                }else{
+                                    <label class="btn btn-default disabled" id="pregnancyBtn">
+                                        <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
+                                    </label>
+                                }
                             </div>
                         </label>
                         <div class="col-sm-6 col-xs-6">

@@ -199,15 +199,15 @@ function showTreatment() {
     $('#treatmentControl').removeClass('hidden');
 }
 function showHpi() {
-    $('#hpiControl').removeClass('hidden');
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
+    $('#hpiControl').removeClass('hidden');
 }
 
 function showPmh() {
-    $('#pmhControl').removeClass('hidden');
     $('#treatmentControl').addClass('hidden');
     $('#hpiControl').addClass('hidden');
+    $('#pmhControl').removeClass('hidden');
 }
 
 function calculateBMI() {

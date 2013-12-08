@@ -6,22 +6,16 @@
     background-color: #F0EAD6;
 }
 
-<<<<<<< HEAD
-#treatmentTab, #hpiTab {
+#treatmentTab, #hpiTab, #pmhTab {
     background-color: #dcdcdc;
     color: #626262;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-=======
-#treatmentTab, #hpiTab, #pmhTab {
-    background-color: #F0EAD6;
->>>>>>> [#185] medical service, serchservice, medicalcontroller, veiwmodelpost, sql script and medical.css modified for PMH tab
 }
 
-#treatmentTab:hover, #hpiTab:hover, #pmhTab {
+#treatmentTab:hover, #hpiTab:hover, #pmhTab:hover {
     cursor: pointer;
 }
-
 
 .active {
     border-top: 2px solid #939393;
@@ -40,15 +34,18 @@
     /*bootstrap override*/
     border-bottom: 2px solid #939393 !important;
 }
+
 .nav-tabs > li.active > a {
     /*bootstrap override*/
     color: black !important;
 }
+
 .nav-tabs > li {
     /*bootstrap override*/
     margin-bottom: -2px !important;
 }
-.nav-tabs > li > a{
+
+.nav-tabs > li > a {
     /*bootstrap override*/
     margin-right: 0px !important;
 }

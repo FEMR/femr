@@ -47,6 +47,7 @@ public class CreateViewModelGet {
     private String palliates;
     private String timeOfDay;
     private String physicalExamination;
+    private String narrative;
 
     public int getpID() {
         return pID;
@@ -358,5 +359,13 @@ public class CreateViewModelGet {
 
     public void setGlucose(Float glucose) {
         this.glucose = glucose;
+    }
+
+    public String getNarrative() {
+        return narrative;
+    }
+
+    public void setNarrative(String narrative) {
+        this.narrative = narrative;
     }
 }

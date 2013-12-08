@@ -179,7 +179,7 @@ public class SearchService implements ISearchService {
         Query<PatientEncounterHpiField> query;
         List<? extends IPatientEncounterHpiField> patientEncounterHpiFields;
 
-        for (int hpiFieldId = 1; hpiFieldId < 10; hpiFieldId++) {
+        for (int hpiFieldId = 1; hpiFieldId <= 10; hpiFieldId++) {
             query = getPatientEncounterHpiFieldQuery().where().eq("patient_encounter_id", id).eq("hpi_field_id", hpiFieldId).order().desc("date_taken");
             patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
             mappedHpiFields.put(hpiFieldId, patientEncounterHpiFields);

@@ -117,7 +117,7 @@ public class MedicalController extends Controller {
         //current vitals for view model
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        int TOTAL_VITALS = 9;
+        int TOTAL_VITALS = 10;
         for (int vital = 1; vital <= TOTAL_VITALS; vital++) {
             patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, patientEncounter.getId());
             if (patientEncounterVitalServiceResponse.hasErrors()) {

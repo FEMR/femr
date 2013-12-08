@@ -80,6 +80,7 @@
                         </div>
                     </div>
                     <div class="form-group">
+
                         <label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">
                             <div data-toggle="buttons">
                                 @if(viewModel.getSex() == "Female"){
@@ -95,6 +96,7 @@
                         </label>
                         <div class="col-sm-6 col-xs-6">
                             <input type="number" step="number" min="0" class="form-control" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+
                         </div>
                     </div>
                 </div>
@@ -124,6 +126,12 @@
                         <label class="col-sm-6 col-xs-6 control-label">BMI</label>
                         <div class="col-sm-6 col-xs-6">
                             <input type="text" id="bmi" class="form-control" disabled="true"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-6 col-xs-6 control-label">Glucose</label>
+                        <div class="col-sm-6 col-xs-6">
+                            <input type="number" step="number" min="0" class="form-control" id="glucose" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
                         </div>
                     </div>
                 </div>

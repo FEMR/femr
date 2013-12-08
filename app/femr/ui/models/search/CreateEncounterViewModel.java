@@ -12,6 +12,7 @@ public class CreateEncounterViewModel {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
+    private Float glucose;
     private String firstName;
     private String lastName;
     private String address;
@@ -183,5 +184,13 @@ public class CreateEncounterViewModel {
 
     public void setPerscribList(List<String> perscribList) {
         this.perscribList = perscribList;
+    }
+
+    public Float getGlucose() {
+        return glucose;
+    }
+
+    public void setGlucose(Float glucose) {
+        this.glucose = glucose;
     }
 }

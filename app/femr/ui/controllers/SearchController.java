@@ -35,82 +35,67 @@ public class SearchController extends Controller {
     Not yet implemented.
      */
     public Result viewEncounter(int id) {
-         //Get patientEncounter
+        //Get patientEncounter
         CreateEncounterViewModel viewModel = new CreateEncounterViewModel();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
 
-
         // Fetch Vitals
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse= null;
+        //this can be cleaned up by providing a method 'getVitalOrNull' that takes care of both
+        //ints and floats
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
 
-        for (int vital = 1; vital <= 9; vital++) {
+        for (int vital = 1; vital <= 10; vital++) {
             patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, id);
             if (patientEncounterVitalServiceResponse.hasErrors()) {
                 patientEncounterVitals.add(null);
-            }
-            else{
+            } else {
                 patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
             }
         }
-        if (patientEncounterVitals.get(0) == null)
-        {
+        if (patientEncounterVitals.get(0) == null) {
             viewModel.setRespiratoryRate(null);
-        }
-        else
-        {
+        } else {
             viewModel.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)).intValue());
         }
-        if (patientEncounterVitals.get(1) == null)
-        {
+        if (patientEncounterVitals.get(1) == null) {
             viewModel.setHeartRate(null);
-        }
-        else
-        {
+        } else {
             viewModel.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)).intValue());
         }
         viewModel.setTemperature(getVitalOrNull(patientEncounterVitals.get(2)));
         viewModel.setOxygenSaturation(getVitalOrNull(patientEncounterVitals.get(3)));
-        if (patientEncounterVitals.get(4) == null)
-        {
+        if (patientEncounterVitals.get(4) == null) {
             viewModel.setHeightFeet(null);
-        }
-        else
-        {
+        } else {
             viewModel.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)).intValue());
         }
-        if (patientEncounterVitals.get(5) == null)
-        {
+        if (patientEncounterVitals.get(5) == null) {
             viewModel.setHeightInches(null);
-        }
-        else
-        {
+        } else {
             viewModel.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)).intValue());
         }
         viewModel.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
-        if (patientEncounterVitals.get(7) == null)
-        {
+
+        if (patientEncounterVitals.get(7) == null) {
             viewModel.setBloodPressureSystolic(null);
-        }
-        else
-        {
+        } else {
             viewModel.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)).intValue());
         }
-        if (patientEncounterVitals.get(8) == null)
-        {
+        if (patientEncounterVitals.get(8) == null) {
             viewModel.setBloodPressureDiastolic(null);
-        }
-        else
-        {
+        } else {
             viewModel.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)).intValue());
         }
 
+        viewModel.setGlucose(getVitalOrNull(patientEncounterVitals.get(9)));
 
-         //Get Patient Name and other basic info
-        ServiceResponse<IPatient> patientServiceResponseid= null;
+
+        //Get Patient Name and other basic info
+        ServiceResponse<IPatient> patientServiceResponseid = null;
         patientServiceResponseid = searchService.findPatientById(patientEncounter.getPatientId());
         if (!patientServiceResponseid.hasErrors()) {
             IPatient patient = patientServiceResponseid.getResponseObject();
@@ -126,18 +111,18 @@ public class SearchController extends Controller {
         List<String> problemList = new ArrayList<String>();
 
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findAllTreatmentByEncounterId(id);
-        if(patientEncounterProblemsServiceResponse.getResponseObject() != null){
-            for(int i = 0; i<patientEncounterProblemsServiceResponse.getResponseObject().size(); i++){
-                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 1){
+        if (patientEncounterProblemsServiceResponse.getResponseObject() != null) {
+            for (int i = 0; i < patientEncounterProblemsServiceResponse.getResponseObject().size(); i++) {
+                if (patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 1) {
                     viewModel.setAssessment(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
                 }
-                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 2){
+                if (patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 2) {
                     problemList.add(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
                 }
-                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 3){
+                if (patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 3) {
                     viewModel.setTreatment(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
                 }
-                if(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 4){
+                if (patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldId() == 4) {
                     viewModel.setFamilyHist(patientEncounterProblemsServiceResponse.getResponseObject().get(i).getTreatmentFieldValue());
                 }
             }
@@ -148,12 +133,11 @@ public class SearchController extends Controller {
         List<String> prescriptionsList = new ArrayList<String>();
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         if (!patientPrescriptionsServiceResponse.hasErrors()) {
-            for(int i = 0; i<patientPrescriptionsServiceResponse.getResponseObject().size(); i++){
+            for (int i = 0; i < patientPrescriptionsServiceResponse.getResponseObject().size(); i++) {
                 prescriptionsList.add(patientPrescriptionsServiceResponse.getResponseObject().get(i).getMedicationName());
             }
             viewModel.setPerscribList(prescriptionsList);
         }
-
 
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));
@@ -176,33 +160,29 @@ public class SearchController extends Controller {
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
         String s_id = request().getQueryString("id");
-        ServiceResponse  <List<? extends IPatient>> patientServiceResponse= null;
-        ServiceResponse<IPatient> patientServiceResponseid= null;
+        ServiceResponse<List<? extends IPatient>> patientServiceResponse = null;
+        ServiceResponse<IPatient> patientServiceResponseid = null;
 
         Integer id;
 
-        if (!StringUtils.isNullOrWhiteSpace(s_id)){
+        if (!StringUtils.isNullOrWhiteSpace(s_id)) {
             s_id = s_id.trim();
             id = Integer.parseInt(s_id);
             patientServiceResponseid = searchService.findPatientById(id);
-        }
-       else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName) ||!StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
+        } else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName) || !StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
             firstName = firstName.trim();
             lastName = lastName.trim();
             patientServiceResponse = searchService.findPatientByName(firstName, lastName);
-            if(patientServiceResponse.getResponseObject() != null){
+            if (patientServiceResponse.getResponseObject() != null) {
                 id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
-            }
-            else{
+            } else {
                 id = 0;
             }
-        }
-
-        else{
+        } else {
 
             return ok(showError.render(currentUser));
         }
-        if(patientServiceResponseid != null){
+        if (patientServiceResponseid != null) {
             if (patientServiceResponseid.hasErrors()) {
                 return ok(showError.render(currentUser));
             }
@@ -216,7 +196,7 @@ public class SearchController extends Controller {
 
         List<? extends IPatientEncounter> patientEncounters = patientEncountersServiceResponse.getResponseObject();
         CreateViewModel viewModel = new CreateViewModel();
-        if(patientServiceResponse != null){
+        if (patientServiceResponse != null) {
             if (!patientServiceResponse.hasErrors()) {
                 IPatient patient = patientServiceResponse.getResponseObject().get(0);
                 viewModel.setPatientNameResult(patientServiceResponse.getResponseObject());
@@ -230,8 +210,7 @@ public class SearchController extends Controller {
                 return ok(showError.render(currentUser));
             }
 
-        }
-        else{
+        } else {
             if (!patientServiceResponseid.hasErrors()) {
                 IPatient patient = patientServiceResponseid.getResponseObject();
                 viewModel.setFirstName(patient.getFirstName());

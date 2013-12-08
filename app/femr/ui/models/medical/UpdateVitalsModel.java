@@ -10,6 +10,7 @@ public class UpdateVitalsModel {
     private double heightFt;
     private double heightIn;
     private double weight;
+    private double glucose;
 
     public double getBpSystolic() {
 
@@ -99,5 +100,13 @@ public class UpdateVitalsModel {
     public void setWeight(double weight) {
 
         this.weight = weight;
+    }
+
+    public double getGlucose() {
+        return glucose;
+    }
+
+    public void setGlucose(double glucose) {
+        this.glucose = glucose;
     }
 }

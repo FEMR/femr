@@ -137,6 +137,13 @@ function checkNumbers(){
         $('#heightInches').css('border-color','red');
         pass = false;
     }
+    //Glucose
+    if ($.trim($('#glucose').val().length) > 0 && integerCheck($('#glucose').val()) == false){
+        $('#glucose').val("");
+        $('#glucose').attr("placeholder","Enter a Number");
+        $('#glucose').css('border-color','red');
+        pass = false;
+    }
     //Pregnant - Weeks
     if ($.trim($('#weeksPregnant').val().length) > 0 && integerCheck($('#weeksPregnant').val()) == false){
         $('#weeksPregnant').val("");

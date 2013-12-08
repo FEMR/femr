@@ -122,6 +122,7 @@ public class MedicalHelper {
         vitals.add(updateVitalsModel.getWeight());
         vitals.add(updateVitalsModel.getBpSystolic());
         vitals.add(updateVitalsModel.getBpDiastolic());
+        vitals.add(updateVitalsModel.getGlucose());
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
 

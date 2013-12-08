@@ -1,5 +1,5 @@
 # --- !Ups
-INSERT INTO `vitals` (`id`, `name`, `data_type`, `unit_of_measurement`) VALUES ('10', 'Glucose', 'int', 'mg/dl');
+INSERT INTO `vitals` (`id`, `name`, `data_type`, `unit_of_measurement`) VALUES ('10', 'glucose', 'int', 'mg/dl');
 
 # --- !Downs
 

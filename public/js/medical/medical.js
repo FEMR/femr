@@ -90,7 +90,6 @@ $(document).ready(function () {
 
         if (glucose.val() !== '') {
             newVitals.glucose = glucose.val();
-
             $("#triageGlucose").text(newVitals.glucose);
             glucose.val('');
         }

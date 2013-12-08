@@ -31,8 +31,8 @@ public class MedicalHelper {
 
     public List<IPatientEncounterHpiField> populateHpiFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
         List<IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList<>();
-        IPatientEncounterHpiField[] patientEncounterHpiField = new IPatientEncounterHpiField[9];
-        for (int i = 0; i < 9; i++) {
+        IPatientEncounterHpiField[] patientEncounterHpiField = new IPatientEncounterHpiField[10];
+        for (int i = 0; i < 10; i++) {
             patientEncounterHpiField[i] = patientEncounterHpiFieldProvider.get();
             patientEncounterHpiField[i].setDateTaken(dateUtils.getCurrentDateTime());
             patientEncounterHpiField[i].setPatientEncounterId(patientEncounter.getId());
@@ -48,6 +48,7 @@ public class MedicalHelper {
         patientEncounterHpiField[6].setHpiFieldValue(viewModelPost.getPalliates());
         patientEncounterHpiField[7].setHpiFieldValue(viewModelPost.getTimeOfDay());
         patientEncounterHpiField[8].setHpiFieldValue(viewModelPost.getPhysicalExamination());
+        patientEncounterHpiField[9].setHpiFieldValue(viewModelPost.getNarrative());
 
         patientEncounterHpiFields.addAll(Arrays.asList(patientEncounterHpiField));
         return patientEncounterHpiFields;
@@ -174,6 +175,8 @@ public class MedicalHelper {
         viewModelPost.setPalliates(getHpiFieldOrNull(7, patientEncounterHpiMap));
         viewModelPost.setTimeOfDay(getHpiFieldOrNull(8, patientEncounterHpiMap));
         viewModelPost.setPhysicalExamination(getHpiFieldOrNull(9, patientEncounterHpiMap));
+        viewModelPost.setNarrative(getHpiFieldOrNull(10, patientEncounterHpiMap));
+
 
         return viewModelPost;
     }
@@ -266,6 +269,7 @@ public class MedicalHelper {
         viewModelGet.setPalliates(viewModelPost.getPalliates());
         viewModelGet.setTimeOfDay(viewModelPost.getTimeOfDay());
         viewModelGet.setPhysicalExamination(viewModelPost.getPhysicalExamination());
+        viewModelGet.setNarrative(viewModelPost.getNarrative());
 
         return viewModelGet;
     }

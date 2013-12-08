@@ -56,15 +56,57 @@ public class SearchController extends Controller {
                 patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
             }
         }
-        viewModel.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)));
-        viewModel.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)));
+        if (patientEncounterVitals.get(0) == null)
+        {
+            viewModel.setRespiratoryRate(null);
+        }
+        else
+        {
+            viewModel.setRespiratoryRate(getVitalOrNull(patientEncounterVitals.get(0)).intValue());
+        }
+        if (patientEncounterVitals.get(1) == null)
+        {
+            viewModel.setHeartRate(null);
+        }
+        else
+        {
+            viewModel.setHeartRate(getVitalOrNull(patientEncounterVitals.get(1)).intValue());
+        }
         viewModel.setTemperature(getVitalOrNull(patientEncounterVitals.get(2)));
         viewModel.setOxygenSaturation(getVitalOrNull(patientEncounterVitals.get(3)));
-        viewModel.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)));
-        viewModel.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)));
+        if (patientEncounterVitals.get(4) == null)
+        {
+            viewModel.setHeightFeet(null);
+        }
+        else
+        {
+            viewModel.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)).intValue());
+        }
+        if (patientEncounterVitals.get(5) == null)
+        {
+            viewModel.setHeightInches(null);
+        }
+        else
+        {
+            viewModel.setHeightInches(getVitalOrNull(patientEncounterVitals.get(5)).intValue());
+        }
         viewModel.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
-        viewModel.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)));
-        viewModel.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)));
+        if (patientEncounterVitals.get(7) == null)
+        {
+            viewModel.setBloodPressureSystolic(null);
+        }
+        else
+        {
+            viewModel.setBloodPressureSystolic(getVitalOrNull(patientEncounterVitals.get(7)).intValue());
+        }
+        if (patientEncounterVitals.get(8) == null)
+        {
+            viewModel.setBloodPressureDiastolic(null);
+        }
+        else
+        {
+            viewModel.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)).intValue());
+        }
 
 
          //Get Patient Name and other basic info

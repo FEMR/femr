@@ -8,7 +8,10 @@
     margin: 0 0 2px;
     border: none;
 }
-
+p {
+    word-break: normal;
+    white-space: normal;
+}
 .inputRow{
     font-size: 12px;
 }

@@ -146,24 +146,37 @@
                     <li><a id="treatmentTab">Treatment</a></li>
                 </ul>
                 <div id="hpiControl" class="">
-                    <div class="form-group">
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6">
-                                <label for="onset">Onset</label>
-                                <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
+                                <div class="form-group">
+                                    <label for="onset">Onset</label>
+                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="blank"></label>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    @severityDropDown(viewModel.getSeverity)
+                                </div>
+                            </div>
+                       </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="radiation">Radiation</label>
+                                    <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label for="quality">Quality</label>
+                                    <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality"/>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                    @severityDropDown(viewModel.getSeverity)
-                    </div>
-                    <div class="form-group">
-                        <label for="radiation">Radiation</label>
-                        <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="quality">Quality</label>
-                        <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality"/>
                     </div>
                     <div class="form-group">
                         <label for="provokes">Provokes</label>
@@ -176,6 +189,10 @@
                     <div class="form-group">
                         <label for="timeOfDay">Time of Day</label>
                         <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeOfDay">Narrative</label>
+                        <input name="arrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative"/>
                     </div>
                     <div class="form-group">
                         <label for="physicalExamination">Physical Examination</label>

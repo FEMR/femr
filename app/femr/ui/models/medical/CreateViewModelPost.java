@@ -28,6 +28,7 @@ public class CreateViewModelPost {
     private String palliates;
     private String timeOfDay;
     private String physicalExamination;
+    private String narrative;
 
     public String getAssessment() {
         return assessment;
@@ -210,5 +211,13 @@ public class CreateViewModelPost {
 
     public void setOnsetTime(String onsetTime) {
         this.onsetTime = onsetTime;
+    }
+
+    public String getNarrative() {
+        return narrative;
+    }
+
+    public void setNarrative(String narrative) {
+        this.narrative = narrative;
     }
 }

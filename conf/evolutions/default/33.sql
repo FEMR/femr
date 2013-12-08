@@ -4,4 +4,7 @@ INSERT INTO `vitals` (`id`, `name`, `data_type`, `unit_of_measurement`) VALUES (
 # --- !Downs
 
 DELETE FROM `vitals`
-WHERE id=10
+WHERE id=10;
+DELETE FROM `patient_encounter_vitals`
+WHERE vital_id=10;
+

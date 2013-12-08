@@ -8,4 +8,4 @@ DELETE FROM `patient_encounter_hpi_fields`
 WHERE `hpi_field_id` = 10;
 
 DELETE FROM `hpi_fields`
-WHERE `id`='10';
+WHERE `id` = 10;

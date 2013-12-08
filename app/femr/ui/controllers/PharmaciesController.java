@@ -32,22 +32,19 @@ public class PharmaciesController extends Controller {
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private ISessionService sessionService;
     private ISearchService searchService;
-    private ITriageService triageService;
     private IPharmacyService pharmacyService;
     private IMedicalService medicalService;
 
     @Inject
     public PharmaciesController(IPharmacyService pharmacyService,
-                                ITriageService triageService,
+                                IMedicalService medicalService,
                                 ISessionService sessionService,
                                 ISearchService searchService,
-                                IMedicalService medicalService,
                                 Provider<IPatientPrescription> patientPrescriptionProvider) {
         this.pharmacyService = pharmacyService;
-        this.triageService = triageService;
+        this.medicalService = medicalService;
         this.sessionService = sessionService;
         this.searchService = searchService;
-        this.medicalService = medicalService;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 

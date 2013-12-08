@@ -135,10 +135,10 @@
                         <div class="col-sm-6 col-xs-6 col-md-6">
                             <h3 class="pull-left bold margin-top-zero">Previous Encounters</h3>
                             <div class="medicalHistoryLineDivide"></div>
-                            <ol id="test">
+                            <ol>
                                 @for(patientEncounter <- patientEncounters) {
                                     <li><a href="/show/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block"
-                                    role="button" type="button"><p class="date" id="date">@patientEncounter.getDateOfVisit</p><p><label>Chief complaint: </label>
+                                    role="button" type="button"><p class="date" id="date">@patientEncounter.getDateOfVisit</p><p class ="chiefComplaint"><strong>Chief complaint: </strong>
                                         @patientEncounter.getChiefComplaint</p></a></li>
                                     <div class="medicalHistoryLineDivide"></div>
                                 }

@@ -4,7 +4,7 @@
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.views.html.helpers.medical._
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")" xmlns="http://www.w3.org/1999/html">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
@@ -148,6 +148,7 @@
                 <ul id="myTab" class="nav nav-tabs">
                     <li class="active"><a id="hpiTab">HPI</a></li>
                     <li><a id="treatmentTab">Treatment</a></li>
+                    <li><a id="pmhTab">PMH</a></li>
                 </ul>
                 <div id="hpiControl" class="">
                         <div class="row">
@@ -252,9 +253,23 @@
                         <label for="treatment">Treatment Given</label>
                         <textarea rows="3" name="treatment" class="form-control input-sm">@viewModel.getTreatment</textarea>
                     </div>
+                </div>
+                <div id="pmhControl" class="hidden">
+                   <div class="form-group">
+                        <label for="medicalSurgicalHistory">Medical/Surgical History</label>
+                        <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" > @viewModel.getMedicalSurgicalHistory </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="socialHistory">Social History</label>
+                        <textarea row ="3" name="socialHistory"  class="form-control input-sm" > @viewModel.getSocialHistory </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentMedication">Current Medications</label>
+                        <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm"> @viewModel.getCurrentMedication </textarea>
+                    </div>
                     <div class="form-group">
                         <label for="familyHistory">Family History</label>
-                        <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory</textarea>
+                        <textarea rows="3" name="familyHistory" class="form-control input-sm"> @viewModel.getFamilyHistory  </textarea>
                     </div>
                 </div>
                 <button type="submit" id="medicalSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>

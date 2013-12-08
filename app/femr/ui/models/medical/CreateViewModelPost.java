@@ -17,7 +17,6 @@ public class CreateViewModelPost {
     private String problem4;
     private String problem5;
     private String treatment;
-    private String familyHistory;
     //hpi fields
     private String onset;
     private String onsetTime;
@@ -29,6 +28,13 @@ public class CreateViewModelPost {
     private String timeOfDay;
     private String physicalExamination;
     private String narrative;
+
+    //editable information - PMH
+    private String familyHistory;
+    private String medicalSurgicalHistory;
+    private String socialHistory;
+    private String currentMedication;
+
 
     public String getAssessment() {
         return assessment;
@@ -125,14 +131,6 @@ public class CreateViewModelPost {
         this.treatment = treatment;
     }
 
-    public String getFamilyHistory() {
-        return familyHistory;
-    }
-
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
-    }
-
     public int getId() {
         return id;
     }
@@ -213,11 +211,44 @@ public class CreateViewModelPost {
         this.onsetTime = onsetTime;
     }
 
+
     public String getNarrative() {
         return narrative;
     }
 
     public void setNarrative(String narrative) {
         this.narrative = narrative;
+    }
+
+    public String getSocialHistory() {
+        return socialHistory;
+    }
+
+    public void setSocialHistory(String socialHistory) {
+        this.socialHistory = socialHistory;
+    }
+
+    public String getCurrentMedication() {
+        return currentMedication;
+    }
+
+    public void setCurrentMedication(String currentMedication) {
+        this.currentMedication = currentMedication;
+    }
+
+    public String getMedicalSurgicalHistory() {
+        return medicalSurgicalHistory;
+    }
+
+    public void setMedicalSurgicalHistory(String medicalSurgicalHistory) {
+        this.medicalSurgicalHistory = medicalSurgicalHistory;
+    }
+
+    public String getFamilyHistory() {
+        return familyHistory;
+    }
+
+    public void setFamilyHistory(String familyHistory) {
+        this.familyHistory = familyHistory;
     }
 }

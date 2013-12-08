@@ -151,7 +151,15 @@ public class MedicalController extends Controller {
         } else {
             patientEncounterHpiMap = patientHpiFieldsServiceResponse.getResponseObject();
         }
-        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap);
+
+        ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> patientPmhFieldsServiceResponse = searchService.findPmhFieldsByEncounterId(patientEncounter.getId());
+        Map<Integer, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap = new LinkedHashMap<>();
+        if (patientPmhFieldsServiceResponse.hasErrors()) {
+            //do nothing, there might not always be available pmh fields
+        } else {
+            patientEncounterPmhMap = patientPmhFieldsServiceResponse.getResponseObject();
+        }
+        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals, viewModelPost);
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -177,6 +185,20 @@ public class MedicalController extends Controller {
             } else {
                 patientEncounterHpiFieldServiceResponse = medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
                 if (patientEncounterHpiFieldServiceResponse.hasErrors()) {
+                    return internalServerError();
+                }
+            }
+        }
+
+        //PMH Data
+        List<IPatientEncounterPmhField> patientEncounterPmhFields = medicalHelper.populatePmhFields(viewModelPost, patientEncounter, currentUserSession);
+        ServiceResponse<IPatientEncounterPmhField> patientEncounterPmhFieldServiceResponse;
+        for (int m = 0; m < patientEncounterPmhFields.size(); m++) {
+            if (StringUtils.isNullOrWhiteSpace(patientEncounterPmhFields.get(m).getPmhFieldValue())) {
+                continue;
+            } else {
+                patientEncounterPmhFieldServiceResponse = medicalService.createPatientEncounterPmhField(patientEncounterPmhFields.get(m));
+                if (patientEncounterPmhFieldServiceResponse.hasErrors()) {
                     return internalServerError();
                 }
             }

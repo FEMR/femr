@@ -6,10 +6,12 @@ import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatientEncounterHpiField;
+import femr.common.models.IPatientEncounterPmhField;
 import femr.common.models.IPatientEncounterTreatmentField;
 import femr.common.models.IPatientPrescription;
 import femr.data.daos.IRepository;
 import femr.data.models.PatientEncounterHpiField;
+import femr.data.models.PatientEncounterPmhField;
 import femr.data.models.PatientEncounterTreatmentField;
 import femr.data.models.PatientPrescription;
 import org.joda.time.DateTime;
@@ -21,14 +23,17 @@ public class MedicalService implements IMedicalService {
 
     private IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository;
     private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
+    private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
     private IRepository<IPatientPrescription> patientPrescriptionRepository;
 
     @Inject
     public MedicalService(IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
                           IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
+                          IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
                           IRepository<IPatientPrescription> patientPrescriptionRepository) {
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
+        this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
     }
 
@@ -75,6 +80,20 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
+    public ServiceResponse<IPatientEncounterPmhField> createPatientEncounterPmhField(IPatientEncounterPmhField patientEncounterPmhField) {
+        IPatientEncounterPmhField newPatientEncounterPmhField =
+                patientEncounterPmhFieldRepository.create(patientEncounterPmhField);
+        ServiceResponse<IPatientEncounterPmhField> response = new ServiceResponse<>();
+
+        if (newPatientEncounterPmhField != null) {
+            response.setResponseObject(newPatientEncounterPmhField);
+        } else {
+            response.addError("patientEncounterPmhField", "Failed to save");
+        }
+        return response;
+    }
+
+    @Override
     public boolean hasPatientBeenCheckedIn(int encounterId) {
         ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiField().where().eq("patient_encounter_id", encounterId);
         List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
@@ -85,7 +104,13 @@ public class MedicalService implements IMedicalService {
         ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id", encounterId);
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
 
+        ExpressionList<PatientEncounterPmhField> query4 = getPatientEncounterPmhField().where().eq("patient_encounter_id", encounterId);
+        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query4);
+
         if (patientEncounterHpiFields.size() > 0) {
+            return true;
+        }
+        if (patientEncounterPmhFields.size() > 0) {
             return true;
         }
         if (patientEncounterTreatmentFields.size() > 0) {
@@ -108,10 +133,15 @@ public class MedicalService implements IMedicalService {
         ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id", encounterId);
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
 
+        ExpressionList<PatientEncounterPmhField> query4 = getPatientEncounterPmhField().where().eq("patient_encounter_id", encounterId);
+        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query4);
+
         ServiceResponse<DateTime> response = new ServiceResponse<>();
 
         if (patientEncounterHpiFields.size() > 0) {
             response.setResponseObject(patientEncounterHpiFields.get(0).getDateTaken());
+        }else if (patientEncounterPmhFields.size() > 0) {
+            response.setResponseObject(patientEncounterPmhFields.get(0).getDateTaken());
         } else if (patientEncounterTreatmentFields.size() > 0) {
             response.setResponseObject(patientEncounterTreatmentFields.get(0).getDateTaken());
         } else if (patientPrescriptions.size() > 0) {
@@ -124,6 +154,10 @@ public class MedicalService implements IMedicalService {
 
     private Query<PatientEncounterHpiField> getPatientEncounterHpiField() {
         return Ebean.find(PatientEncounterHpiField.class);
+    }
+
+    private Query<PatientEncounterPmhField> getPatientEncounterPmhField() {
+        return Ebean.find(PatientEncounterPmhField.class);
     }
 
     private Query<PatientEncounterTreatmentField> getPatientEncounterTreatmentField() {

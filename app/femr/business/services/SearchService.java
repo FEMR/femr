@@ -20,6 +20,7 @@ public class SearchService implements ISearchService {
     private IRepository<IPatientPrescription> patientPrescriptionRepository;
     private IRepository<IVital> vitalRepository;
     private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
+    private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
@@ -29,7 +30,8 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
                          IRepository<IMedication> medicationRepository,
-                         IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository) {
+                         IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
+                         IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository) {
         this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -38,6 +40,7 @@ public class SearchService implements ISearchService {
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.vitalRepository = vitalRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
+        this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
     }
 
     @Override
@@ -195,6 +198,28 @@ public class SearchService implements ISearchService {
     }
 
     @Override
+    public ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> findPmhFieldsByEncounterId(int id) {
+
+        Map<Integer, List<? extends IPatientEncounterPmhField>> mappedPmhFields = new LinkedHashMap<>();
+        Query<PatientEncounterPmhField> query;
+        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields;
+
+        for (int pmhFieldId = 1; pmhFieldId < 5; pmhFieldId++) {
+            query = getPatientEncounterPmhFieldQuery().where().eq("patient_encounter_id", id).eq("pmh_field_id", pmhFieldId).order().desc("date_taken");
+            patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query);
+            mappedPmhFields.put(pmhFieldId, patientEncounterPmhFields);
+        }
+
+        ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> response = new ServiceResponse<>();
+        if (mappedPmhFields.isEmpty()) {
+            response.addError("pmhFields", "no pmh fields found");
+        } else {
+            response.setResponseObject(mappedPmhFields);
+        }
+        return response;
+    }
+
+    @Override
     public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id) {
         ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", 2);
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
@@ -266,5 +291,9 @@ public class SearchService implements ISearchService {
 
     private Query<PatientEncounterHpiField> getPatientEncounterHpiFieldQuery() {
         return Ebean.find(PatientEncounterHpiField.class);
+    }
+
+    private Query<PatientEncounterPmhField> getPatientEncounterPmhFieldQuery() {
+        return Ebean.find(PatientEncounterPmhField.class);
     }
 }

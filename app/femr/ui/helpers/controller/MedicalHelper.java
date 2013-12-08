@@ -17,13 +17,15 @@ import java.util.Map;
 public class MedicalHelper {
     private Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider;
     private Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider;
+    private Provider<IPatientEncounterPmhField> patientEncounterPmhFieldProvider;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
     @Inject
-    public MedicalHelper(Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public MedicalHelper(Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientEncounterPmhField> patientEncounterPmhFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
+        this.patientEncounterPmhFieldProvider = patientEncounterPmhFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
@@ -54,6 +56,26 @@ public class MedicalHelper {
         return patientEncounterHpiFields;
     }
 
+    public List<IPatientEncounterPmhField> populatePmhFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
+        List<IPatientEncounterPmhField> patientEncounterPmhFields = new ArrayList<>();
+        IPatientEncounterPmhField[] patientEncounterPmhField = new IPatientEncounterPmhField[5];
+        for (int i = 0; i < 5; i++) {
+            patientEncounterPmhField[i] = patientEncounterPmhFieldProvider.get();
+            patientEncounterPmhField[i].setDateTaken(dateUtils.getCurrentDateTime());
+            patientEncounterPmhField[i].setPatientEncounterId(patientEncounter.getId());
+            patientEncounterPmhField[i].setUserId(currentUserSession.getId());
+            patientEncounterPmhField[i].setPmhFieldId(i + 1);
+        }
+        patientEncounterPmhField[0].setPmhFieldValue(viewModelPost.getMedicalSurgicalHistory());
+        patientEncounterPmhField[1].setPmhFieldValue(viewModelPost.getSocialHistory());
+        patientEncounterPmhField[2].setPmhFieldValue(viewModelPost.getCurrentMedication());
+        patientEncounterPmhField[3].setPmhFieldValue(viewModelPost.getFamilyHistory());
+
+
+        patientEncounterPmhFields.addAll(Arrays.asList(patientEncounterPmhField));
+        return patientEncounterPmhFields;
+    }
+
     public List<IPatientEncounterTreatmentField> populateTreatmentFields(CreateViewModelPost viewModelPost, IPatientEncounter patientEncounter, CurrentUser currentUserSession) {
 
         List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
@@ -82,7 +104,7 @@ public class MedicalHelper {
         patientEncounterTreatmentField[6].setTreatmentFieldId(3);
         patientEncounterTreatmentField[6].setTreatmentFieldValue(viewModelPost.getTreatment());
         patientEncounterTreatmentField[7].setTreatmentFieldId(4);
-        patientEncounterTreatmentField[7].setTreatmentFieldValue(viewModelPost.getFamilyHistory());
+        patientEncounterTreatmentField[7].setTreatmentFieldValue(null);
 
         patientEncounterTreatmentFields.addAll(Arrays.asList(patientEncounterTreatmentField));
         return patientEncounterTreatmentFields;
@@ -139,7 +161,7 @@ public class MedicalHelper {
         return patientEncounterVitals;
     }
 
-    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<Integer, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
+    public CreateViewModelPost populateViewModelPost(List<? extends IPatientPrescription> patientPrescriptions, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<Integer, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<Integer, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
         //the maps are set in descending order based on when the treatment value was taken
         //this way, if the record has been edited we will see the most recent value
         CreateViewModelPost viewModelPost = new CreateViewModelPost();
@@ -178,6 +200,11 @@ public class MedicalHelper {
         viewModelPost.setPhysicalExamination(getHpiFieldOrNull(9, patientEncounterHpiMap));
         viewModelPost.setNarrative(getHpiFieldOrNull(10, patientEncounterHpiMap));
 
+        //pmh fields
+        viewModelPost.setMedicalSurgicalHistory(getPmhFieldOrNull(1, patientEncounterPmhMap));
+        viewModelPost.setSocialHistory(getPmhFieldOrNull(2, patientEncounterPmhMap));
+        viewModelPost.setCurrentMedication(getPmhFieldOrNull(3, patientEncounterPmhMap));
+        viewModelPost.setFamilyHistory(getPmhFieldOrNull(4, patientEncounterPmhMap));
 
         return viewModelPost;
     }
@@ -280,6 +307,13 @@ public class MedicalHelper {
         viewModelGet.setPhysicalExamination(viewModelPost.getPhysicalExamination());
         viewModelGet.setNarrative(viewModelPost.getNarrative());
 
+        //editable information - Pmh_fields
+        viewModelGet.setMedicalSurgicalHistory(viewModelPost.getMedicalSurgicalHistory());
+        viewModelGet.setSocialHistory(viewModelPost.getSocialHistory());
+        viewModelGet.setCurrentMedication(viewModelPost.getCurrentMedication());
+        viewModelGet.setFamilyHistory(viewModelPost.getFamilyHistory());
+
+
         return viewModelGet;
     }
 
@@ -307,6 +341,16 @@ public class MedicalHelper {
         }
         return null;
     }
+    private String getPmhFieldOrNull(int key, Map<Integer, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
+        if (patientEncounterPmhMap.containsKey(key)) {
+            if (patientEncounterPmhMap.get(key).size() < 1) {
+                return null;
+            }
+            return patientEncounterPmhMap.get(key).get(0).getPmhFieldValue();
+        }
+        return null;
+    }
+
 
     private String getTreatmentFieldOrNull(int key, Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {
         if (patientEncounterTreatmentMap.containsKey(key)) {

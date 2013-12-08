@@ -6,16 +6,22 @@
     background-color: #F0EAD6;
 }
 
+<<<<<<< HEAD
 #treatmentTab, #hpiTab {
     background-color: #dcdcdc;
     color: #626262;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+=======
+#treatmentTab, #hpiTab, #pmhTab {
+    background-color: #F0EAD6;
+>>>>>>> [#185] medical service, serchservice, medicalcontroller, veiwmodelpost, sql script and medical.css modified for PMH tab
 }
 
-#treatmentTab:hover, #hpiTab:hover {
+#treatmentTab:hover, #hpiTab:hover, #pmhTab {
     cursor: pointer;
 }
+
 
 .active {
     border-top: 2px solid #939393;

@@ -125,7 +125,7 @@ public class MedicalHelper {
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
             patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital.setUserId(currentUserId);
@@ -238,6 +238,14 @@ public class MedicalHelper {
         else
         {
             viewModelGet.setBloodPressureDiastolic(getVitalOrNull(patientEncounterVitals.get(8)).intValue());
+        }
+        if (patientEncounterVitals.get(9) == null)
+        {
+            viewModelGet.setGlucose(null);
+        }
+        else
+        {
+            viewModelGet.setGlucose(getVitalOrNull(patientEncounterVitals.get(9)));
         }
         //patient encounter
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());

@@ -21,6 +21,7 @@ $(document).ready(function () {
         var heightFt = $('#heightFt');
         var heightIn = $('#heightIn');
         var weight = $('#newWeight');
+        var glucose = $('#newGlucose');
 
         if (bpSystolic.val() !== '') {
             newVitals.bpSystolic = bpSystolic.val();
@@ -85,6 +86,13 @@ $(document).ready(function () {
 
             $("#weight").text(newVitals.weight);
             weight.val('');
+        }
+
+        if (glucose.val() !== '') {
+            newVitals.glucose = glucose.val();
+
+            $("#triageGlucose").text(newVitals.glucose);
+            glucose.val('');
         }
 
         $.ajax({

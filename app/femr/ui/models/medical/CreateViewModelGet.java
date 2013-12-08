@@ -19,6 +19,7 @@ public class CreateViewModelGet {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
+    private Float glucose;
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
@@ -349,5 +350,13 @@ public class CreateViewModelGet {
 
     public void setPhysicalExamination(String physicalExamination) {
         this.physicalExamination = physicalExamination;
+    }
+
+    public Float getGlucose() {
+        return glucose;
+    }
+
+    public void setGlucose(Float glucose) {
+        this.glucose = glucose;
     }
 }

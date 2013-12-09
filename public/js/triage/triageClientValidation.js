@@ -7,7 +7,6 @@ $('#triageSubmitBtn').click(function () {
     return validate();
 });
 
-
 function validate(){
     var pass = new Boolean(true);
 
@@ -23,6 +22,8 @@ function validate(){
 
     return pass;
 }
+
+
 
 function checkRequiredInput() {
     var pass = new Boolean(true);
@@ -69,98 +70,74 @@ function checkNumbers(){
 
     //Respirations
     if ($.trim($('#respirations').val().length) > 0 && integerCheck($('#respirations').val()) == false){
-        $('#respirations').val("");
-        $('#respirations').attr("placeholder","Enter a Number");
         $('#respirations').css('border-color','red');
         pass = false;
     }
     //Blood Pressure - Systolic
     if ($.trim($('#bloodPressureSystolic').val().length) > 0 && integerCheck($('#bloodPressureSystolic').val()) == false){
-        $('#bloodPressureSystolic').val("");
-        $('#bloodPressureSystolic').attr("placeholder","Enter a Number");
         $('#bloodPressureSystolic').css('border-color','red');
         pass = false;
     }
     //Blood Pressure - Diastolic
     if ($.trim($('#bloodPressureDiastolic').val().length) > 0 && integerCheck($('#bloodPressureDiastolic').val()) == false){
-        $('#bloodPressureDiastolic').val("");
-        $('#bloodPressureDiastolic').attr("placeholder","Enter a Number");
         $('#bloodPressureDiastolic').css('border-color','red');
         pass = false;
     }
     //Heart Rate
     if ($.trim($('#heartRate').val().length) > 0 && integerCheck($('#heartRate').val()) == false){
-        $('#heartRate').val("");
-        $('#heartRate').attr("placeholder","Enter a Number");
         $('#heartRate').css('border-color','red');
         pass = false;
     }
     //Oxygen
     if ($.trim($('#oxygen').val().length) > 0 && decimalCheck($('#oxygen').val()) == false){
-        $('#oxygen').val("");
-        $('#oxygen').attr("placeholder","Enter a Number");
         $('#oxygen').css('border-color','red');
         pass = false;
     }
     //Temperature
     if ($.trim($('#temperature').val().length) > 0 && decimalCheck($('#temperature').val()) == false){
-        $('#temperature').val("");
-        $('#temperature').attr("placeholder","Enter a Number");
         $('#temperature').css('border-color','red');
         pass = false;
     }
     //Weight
     if ($.trim($('#weight').val().length) > 0 && decimalCheck($('#weight').val()) == false){
-        $('#weight').val("");
-        $('#weight').attr("placeholder","Enter a Number");
         $('#weight').css('border-color','red');
         pass = false;
     }
     //Height - Feet
     if ($.trim($('#heightFeet').val().length) > 0 && integerCheck($('#heightFeet').val()) == false){
-        $('#heightFeet').val("");
-        $('#heightFeet').attr("placeholder","Enter a Number");
         $('#heightFeet').css('border-color','red');
         pass = false;
     }
     //Height - Inches
     if ($.trim($('#heightInches').val().length) > 0 && integerCheck($('#heightInches').val()) == false){
-        $('#heightInches').val("");
         $('#heightInches').attr("placeholder","Enter a Number");
         $('#heightInches').css('border-color','red');
         pass = false;
     }
     //Height - Inches less than 12
     if ($.trim($('#heightInches').val()) >= 12){
-        $('#heightInches').val("");
         $('#heightInches').attr("placeholder","Max value: 11");
         $('#heightInches').css('border-color','red');
         pass = false;
     }
     //Glucose
     if ($.trim($('#glucose').val().length) > 0 && integerCheck($('#glucose').val()) == false){
-        $('#glucose').val("");
-        $('#glucose').attr("placeholder","Enter a Number");
         $('#glucose').css('border-color','red');
         pass = false;
     }
     //Pregnant - Weeks
     if ($.trim($('#weeksPregnant').val().length) > 0 && integerCheck($('#weeksPregnant').val()) == false){
-        $('#weeksPregnant').val("");
-        $('#weeksPregnant').attr("placeholder","Enter a Number");
         $('#weeksPregnant').css('border-color','red');
         pass = false;
     }
     //Pregnant - Weeks zero or greater
     if ($.trim($('#weeksPregnant').val()) < 0){
-        $('#weeksPregnant').val("");
         $('#weeksPregnant').attr("placeholder","Min value: 0");
         $('#weeksPregnant').css('border-color','red');
         pass = false;
     }
     //Age - Years
     if ($.trim($('#years').val().length) > 0 && integerCheck($('#years').val()) == false){
-        $('#years').val("");
         $('#years').attr("placeholder","Enter Correct Number of Years");
         $('#years').css('border-color','red');
         pass = false;
@@ -253,3 +230,6 @@ function validateDate(){
     }
     return true;
 }
+
+
+

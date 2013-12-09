@@ -194,44 +194,117 @@ $('#city').change(function () {
 });
 
 $('#respirations').change(function () {
-    $('#respirations').css('border', '');
+    if ($.trim($('#respirations').val().length) > 0 && integerCheck($('#respirations').val()) == false){
+        $('#respirations').css('border-color', 'red');
+        $('#errorMessageDecimal').removeClass('hidden');
+    }
+    else{
+        $('#respirations').css('border-color', '');
+        $('#errorMessageDecimal').addClass('hidden');
+    }
 });
 
 $('#bloodPressureSystolic').change(function () {
-    $('#bloodPressureSystolic').css('border', '');
+    if ($.trim($('#bloodPressureSystolic').val().length) > 0 && integerCheck($('#bloodPressureSystolic').val()) == false){
+        $('#bloodPressureSystolic').css('border-color', 'red');
+        $('#errorMessageDecimal').removeClass('hidden');
+    }
+    else{
+        $('#bloodPressureSystolic').css('border-color', '');
+        $('#errorMessageDecimal').addClass('hidden');
+    }
 });
 
 $('#bloodPressureDiastolic').change(function () {
-    $('#bloodPressureDiastolic').css('border', '');
+    if ($.trim($('#bloodPressureDiastolic').val().length) > 0 && integerCheck($('#bloodPressureDiastolic').val()) == false){
+        $('#bloodPressureDiastolic').css('border-color', 'red');
+        $('#errorMessageDecimal').removeClass('hidden');
+    }
+    else{
+        $('#bloodPressureDiastolic').css('border-color', '');
+        $('#errorMessageDecimal').addClass('hidden');
+    }
 });
 
 $('#heartRate').change(function () {
-    $('#heartRate').css('border', '');
+    if($.trim($('#heartRate').val().length) > 0 && integerCheck($('#heartRate').val()) == false){
+        $('#heartRate').css('border-color', 'red');
+        $('#errorMessageDecimal').removeClass('hidden');
+    }
+    else{
+        $('#heartRate').css('border-color', '');
+        $('#errorMessageDecimal').addClass('hidden');
+    }
 });
 
-$('#oxygen').change(function () {
-    $('#oxygen').css('border', '');
-});
+//$('#oxygen').change(function () {
+//    if (decimalCheck($('#oxygen').val()) == false){
+//        $('#oxygen').css('border-color', 'red');
+//    }
+//   else{
+//       $('#oxygen').css('border-color', '');
+//    }
+//});
 
-$('#temperature').change(function () {
-    $('#temperature').css('border', '');
-});
+//$('#temperature').change(function () {
+//    if (decimalCheck($('#temperature').val()) == false){
+//        $('#temperature').css('border-color', 'red');
+//    }
+//    else{
+//        $('#temperature').css('border-color', '');
+//    }
+//});
 
-$('#weight').change(function () {
-    $('#weight').css('border', '');
-});
+//$('#weight').change(function () {
+//    if (decimalCheck($('#weight').val()) == false){
+//        $('#weight').css('border-color', 'red');
+//    }
+//    else{
+//        $('#weight').css('border-color', '');
+//    }
+//});
 
 $('#heightFeet').change(function () {
-    $('#heightFeet').css('border', '');
+    if ($.trim($('#heightFeet').val().length) > 0 && integerCheck($('#heightFeet').val()) == false){
+        $('#heightFeet').css('border-color', 'red');
+        $('#errorMessageHeight').removeClass('hidden');
+    }
+    else{
+        $('#heightFeet').css('border-color', '');
+        $('#errorMessageHeight').addClass('hidden');
+    }
 });
 
 $('#heightInches').change(function () {
-    $('#heightInches').css('border', '');
+    if ($.trim($('#heightInches').val()) >= 12 || ($.trim($('#heightInches').val().length) > 0 && integerCheck($('#heightInches').val()) == false)){
+        $('#heightInches').css('border-color', 'red');
+        $('#errorMessageHeight').removeClass('hidden');
+    }
+    else{
+        $('#heightInches').css('border-color', '');
+        $('#errorMessageHeight').addClass('hidden');
+    }
 });
 
 $('#weeksPregnant').change(function () {
-    $('#weeksPregnant').css('border', '');
+    if (($.trim($('#weeksPregnant').val()) < 0) || ($.trim($('#weeksPregnant').val().length) > 0 && integerCheck($('#weeksPregnant').val()) == false))  {
+        $('#weeksPregnant').css('border-color', 'red');
+        $('#errorMessageDecimal').removeClass('hidden');
+    }
+    else{
+        $('#weeksPregnant').css('border-color', '');
+        $('#errorMessageDecimal').addClass('hidden');
+    }
 });
+
+//$('#glucose').change(function () {
+//    if (integerCheck($('#glucose').val()) == false){
+//        $('#glucose').css('border-color', 'red');
+//    }
+//    else{
+//        $('#glucose').css('border-color', '');
+//    }
+//})
 
 //BMI auto- calculator
 window.setInterval(function () {
@@ -260,3 +333,4 @@ window.setInterval(function () {
         $('#year').append($('<option />').val(i).html(i));
     }
 })();
+

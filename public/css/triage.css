@@ -18,6 +18,14 @@
   border: none;
 }
 
+#errorMessageDecimal{
+    color: red;
+}
+
+#errorMessageHeight{
+    color: red;
+}
+
 #pregnancyBtn{
     margin-top: -6px;
 }

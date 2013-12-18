@@ -37,6 +37,12 @@ Always clean and compile the project before a commit. *It wouldn't hurt to do th
 * This application is not HIPAA compliant (... yet).
 * This application is not meant to diagnose, treat, cure or prevent disease.
 
+### Questions?
+
+Email Kevin Zurek:
+
+    kevinzurek@gmail.com
+
 ### License
 
 The MIT License (MIT)

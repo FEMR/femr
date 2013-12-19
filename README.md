@@ -39,9 +39,10 @@ Always clean and compile the project before a commit. *It wouldn't hurt to do th
 
 ### Questions?
 
-Email Kevin Zurek:
+Twitter: [@kevin_zurek](https://twitter.com/kevin_zurek)
 
-    kevinzurek@gmail.com
+Email/Google Hangouts: kevinzurek@gmail.com
+
 
 ### License
 

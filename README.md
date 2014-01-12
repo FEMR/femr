@@ -1,10 +1,10 @@
-# fEMR - Free Electronic Medical Records
+# FEMR - Free Electronic Medical Records
 
-A simple, free, and lightweight EMR system.
+A simple and lightweight EMR system.
 
 ### Description
 
-fEMR is an free electronic medical record system. It is designed to help with the Wayne State University's School of Medicine's World Health Student Organization in Haiti. The goal is to become an easy EMR solution for remote clinics who depend on speed and ease of use rather than features.
+The goal is to become an easy EMR solution for remote clinics who depend on speed and ease of use rather than complex features.
 
 ### Dependencies
 
@@ -12,25 +12,14 @@ fEMR is an free electronic medical record system. It is designed to help with th
 
 ### Installation and Deployment
 
-Add play framework to your PATH environment variable if you haven't done so already.
+For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 
-For more information, visit the official [PlayConsole](http://www.playframework.com/documentation/2.1.x/PlayConsole) page.
+Add play framework to your PATH environment variable if you haven't done so already. For more information, visit the official [PlayConsole](http://www.playframework.com/documentation/2.1.x/PlayConsole) page.
 
-#### Enter the console
-    play
-
-Always clean and compile the project before a commit. *It wouldn't hurt to do this often, especially when adding/removing classes or views.*
-
-    clean
-    compile
-
-#### Development
-
-    run
-
-#### Test
-
-    test
+#### 1. Edit application.conf accordingly.
+#### 2. Enter the console.
+    play clean compile dist
+#### 3. This will generate a script used for executing FEMR.
 
 ### Warnings
 
@@ -39,10 +28,7 @@ Always clean and compile the project before a commit. *It wouldn't hurt to do th
 
 ### Questions?
 
-Twitter: [@kevin_zurek](https://twitter.com/kevin_zurek)
-
-Email/Google Hangouts: kevinzurek@gmail.com
-
+Email: kevinzurek@gmail.com
 
 ### License
 

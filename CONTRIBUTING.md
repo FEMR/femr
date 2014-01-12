@@ -1,13 +1,39 @@
-# Git Workflow
+#Installation and Configuration using IntelliJ IDEA
 
-## The Forking Workflow
+### Required downloads
+1. [MySQL](http://www.mysql.com/)
+2. [Play Framework](http://www.playframework.com/)
+3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+4. [IntelliJ IDEA](http://www.jetbrains.com/idea/)
+5. [Git](http://git-scm.com/)
 
-Learn the forking workflow in detail [here](https://www.atlassian.com/git/workflows#!workflow-forking).
+### Configuration
+1. make sure java and play enviroment variables are set
+
+2. clone the repository
+>git clone https://github.com/kevinzurek/femr.git
+
+3. convert the project to an IDEA module
+>play idea
+
+4. clean and compile the project
+>play clean compile
+
+### Setting up IntelliJ IDEA
+1. Install Plugins: Play 2.0 Support/Scala
+2. Open FEMR
+3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it.
+4. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // conf/application.dev.conf to the enviroment variables.
+5. Run!
+
+
+
+# Git
 
 ### Common commands during development:
 
 #### Create a branch to work on:
-
+    
     1. features:
     git checkout master
     git checkout -b feature-issue#-featureName

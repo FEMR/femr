@@ -8,16 +8,16 @@
 5. [Git](http://git-scm.com/)
 
 ### Configuration
-1. make sure java and play enviroment variables are set
+####1. make sure java and play enviroment variables are set
 
-2. clone the repository
->git clone https://github.com/kevinzurek/femr.git
+####2. clone the repository
+    git clone https://github.com/kevinzurek/femr.git
 
-3. convert the project to an IDEA module
->play idea
+####3. convert the project to an IDEA module
+    play idea
 
-4. clean and compile the project
->play clean compile
+####4. clean and compile the project
+    play clean compile
 
 ### Setting up IntelliJ IDEA
 1. Install Plugins: Play 2.0 Support/Scala
@@ -33,25 +33,25 @@
 ### Common commands during development:
 
 #### Create a branch to work on:
-    
-    1. features:
+
+#####1. features:
     git checkout master
     git checkout -b feature-issue#-featureName
 
-    2. bugs:
+#####2. bugs:
     git checkout master
     git checkout -b bug-issue#-bugName
 
 
 #### Sync master branch (fork) with master branch (main repository):
 
-    1. make sure you have a remote pointing upstream:
+#####1. make sure you have a remote pointing upstream:
     git remote
 
-    2. if you don't, add one:
+#####2. if you don't, add one:
     git remote add upstream https://github.com/kevinzurek/femr.git
 
-    3. sync:
+#####3. sync:
     git checkout master
     git pull upstream master
     git push origin master

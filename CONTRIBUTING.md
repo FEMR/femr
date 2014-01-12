@@ -1,87 +1,90 @@
-Verbiage taken from PhoneGap's [Git Contributor Workflow](https://github.com/phonegap/phonegap/wiki/Git-Contributor-Workflow) with some modifications.
+#Installation and Configuration using IntelliJ IDEA
 
-# Git Contribution Workflow
+### Required downloads
+1. [MySQL](http://www.mysql.com/)
+2. [Play Framework](http://www.playframework.com/)
+3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+4. [IntelliJ IDEA](http://www.jetbrains.com/idea/)
+5. [Git](http://git-scm.com/)
 
-## Topic Branch
+### Configuration
+1. make sure java and play enviroment variables are set
 
-A good habit to get into is using topic branches for your work, while keeping the master branch untouched. You can then keep the master branch up-to-date with the main repository without worrying about merge conflicts.
+2. clone the repository
+>git clone https://github.com/kevinzurek/femr.git
 
-### Reduce Merge Conflicts
+3. convert the project to an IDEA module
+>play idea
 
-By not working on the master branch, you ensure that the branch's history will not diverge from the main repository's master branch. This allows you to pull in updates from the main repository (delasteve/femr) without merge conflicts.
+4. clean and compile the project
+>play clean compile
 
-### Organize and Isolate Contributes
+### Setting up IntelliJ IDEA
+1. Install Plugins: Play 2.0 Support/Scala
+2. Open FEMR
+3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it.
+4. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // conf/application.dev.conf to the enviroment variables.
+5. Run!
 
-By creating a topic branch for each contribution, you effectively isolate your changes into a single branch of history. As long as the topic branch is up-to-date, your changes will merge cleanly into the main repository. If your contributions cannot be merged cleanly, the repository maintainer may have to reject your contribution until you update it.
 
-### Easier for the Maintainer
 
-Maintainers like topic branches. It is easier to review the pull request and merge the commit into the main repository.
+# Git
 
-## Git Workflow
+### Common commands during development:
 
-Consider that you've decided to work on issue #11, which implements BMI calculation.
+#### Create a branch to work on:
+    
+    1. features:
+    git checkout master
+    git checkout -b feature-issue#-featureName
 
-### Sync master branch with main repository
+    2. bugs:
+    git checkout master
+    git checkout -b bug-issue#-bugName
 
+
+#### Sync master branch (fork) with master branch (main repository):
+
+    1. make sure you have a remote pointing upstream:
+    git remote
+
+    2. if you don't, add one:
+    git remote add upstream https://github.com/kevinzurek/femr.git
+
+    3. sync:
     git checkout master
     git pull upstream master
     git push origin master
 
-### Create a topic branch
 
-    git checkout master
-    git checkout -b feature-11-calculate-BMI
-
-However you choose to name your branch is up to you. The maintainer's preferred method is:
-
-    [feature|bug]-[issue number if available]-[feature implementing]
-
-### Make changes to code
-
-    git add /path/to/file.java
-    git status
-    git commit -m "[#11] Added BMI Calculation"
-
-Prepare to send pull request
+#### Prepare to send a pull request:
 
     git checkout master
     git pull upstream master
-    git checkout feature-11-calculate-BMI
+    git checkout branchName
     git rebase master
 
-Before sending the pull request, you should ensure that your changes merge cleanly with the main repository delasteve/femr.
+Rebasing will update your branch with the master branch.
+You can find more info on rebasing [here](http://git-scm.com/book/ch3-6.html).
 
-You can do this by pulling the latest changes from the main repository and rebasing the history of the master branch onto the topic branch feature-11-calculate-BMI. Essentially, this will fast-forward your topic branch to the latest commit of the master.
+#### Sending a Pull Request from GitHub
 
-## Sending a Pull Request from GitHub
+Information on doing pull requests can be found [here](https://help.github.com/articles/using-pull-requests).
 
-Open a web browser to your GitHub account's fork of the femr repository.
-
-More soon...
-
-### When your Pull Request is Accepted
+#### If your Pull Request is Rejected
 
     git checkout master
     git pull upstream master
-    git log
-
-You can now delete your topic branch, because it is now merged into the main repository and in master branch.
-
-    git branch -d feature-11-calculate-BMI
-    git push origin :feature-11-calculate-BMI
-
-### When your Pull Request is Rejected
-
-    git checkout master
-    git pull upstream master
-    git checkout feature-11-calculate-BMI
+    git checkout branchName
     git rebase master
-    * Address issues in pull request discussion *
+    ~~~fix issues~~~
     git checkout master
     git pull upstream master
-    git checkout feature-11-calculate-BMI
+    git checkout branchName
     git rebase master
-    git push origin feature-11-calculate-BMI
+    git push origin branchName
 
-Resend pull request from GitHub account.
+#### Deleting your branch:
+
+    git branch -d branchName
+    git push origin :branchName

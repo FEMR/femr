@@ -10,13 +10,15 @@
 ### Configuration
 ####1. make sure java and play enviroment variables are set
 
-####2. clone the repository
-    git clone https://github.com/kevinzurek/femr.git
+####2. fork the repository to your github account
 
-####3. convert the project to an IDEA module
+####3. clone the repository
+    git clone https://github.com/yourusername/femr.git
+
+####4. convert the project to an IDEA module
     play idea
 
-####4. clean and compile the project
+####5. clean and compile the project
     play clean compile
 
 ### Setting up IntelliJ IDEA

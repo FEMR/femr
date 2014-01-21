@@ -15,7 +15,18 @@ public interface ISearchService {
 
     ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
 
+
+
+
+
     ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
+
+    ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name);
+
+
+
+
+
 
     ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
 

@@ -108,6 +108,22 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId) {
         Query<PatientEncounterVital> query = getPatientEncounterVitalQuery().where().eq("vital_id", vitalId).eq("patient_encounter_id", encounterId).order().desc("date_taken").setMaxRows(1);
@@ -126,6 +142,34 @@ public class SearchService implements ISearchService {
         }
         return response;
     }
+
+    @Override
+    public ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name){
+        Query<PatientEncounterVital> query = getPatientEncounterVitalQuery()
+                .fetch("vital", "name")
+                .where()
+                    .eq("patient_encounter_id", encounterId)
+                    .eq("vital.name",name)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+
+
+        ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
+        return response;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id) {

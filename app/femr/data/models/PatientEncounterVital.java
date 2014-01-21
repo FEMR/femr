@@ -1,6 +1,7 @@
 package femr.data.models;
 
 import femr.common.models.IPatientEncounterVital;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -14,8 +15,10 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    @Column(name = "vital_id", nullable = false)
-    private int vitalId;
+    //@Column(name = "vital_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vital_id", nullable = false)
+    private Vital vital;//private int vitalId;
     @Column(name = "vital_value", nullable = false)
     private float vitalValue;
     @Column(name = "date_taken", nullable = false)
@@ -46,14 +49,24 @@ public class PatientEncounterVital implements IPatientEncounterVital {
         this.patientEncounterId = patientEncounterId;
     }
 
+    /*
+        @Override
+        public int getVitalId() {
+            return vitalId;
+        }
+
+        @Override
+        public void setVitalId(int vitalId) {
+            this.vitalId = vitalId;
+        }*/
     @Override
-    public int getVitalId() {
-        return vitalId;
+    public Vital getVital() {
+        return vital;
     }
 
     @Override
-    public void setVitalId(int vitalId) {
-        this.vitalId = vitalId;
+    public void setVital(Vital vital) {
+        this.vital = vital;
     }
 
     @Override

@@ -192,7 +192,7 @@ public class MedicalHelper {
         return viewModelPost;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientEncounterVital> patientEncounterVitals, CreateViewModelPost viewModelPost) {
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, CreateViewModelPost viewModelPost) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //patient
         viewModelGet.setpID(patient.getId());
@@ -201,6 +201,9 @@ public class MedicalHelper {
         viewModelGet.setLastName(patient.getLastName());
         viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
+
+
+           /*
         //patient encounter vitals
         if (patientEncounterVitals.get(0) == null) {
             viewModelGet.setRespiratoryRate(null);
@@ -240,6 +243,10 @@ public class MedicalHelper {
         } else {
             viewModelGet.setGlucose(getVitalOrNull(patientEncounterVitals.get(9)));
         }
+              */
+
+
+
         //patient encounter
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());

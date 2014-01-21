@@ -114,18 +114,7 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        //current vitals for view model
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        int TOTAL_VITALS = 10;
-        for (int vital = 1; vital <= TOTAL_VITALS; vital++) {
-            patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, patientEncounter.getId());
-            if (patientEncounterVitalServiceResponse.hasErrors()) {
-                patientEncounterVitals.add(null);
-            } else {
-                patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
-            }
-        }
+
 
         //viewModelPost is populated with editable fields
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
@@ -160,7 +149,38 @@ public class MedicalController extends Controller {
             patientEncounterPmhMap = patientPmhFieldsServiceResponse.getResponseObject();
         }
         CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals, viewModelPost);
+
+
+
+
+
+        //set up viewModelGet with everything except vitals
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, viewModelPost);
+
+        //add vitals to viewModelGet
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("respiratoryRate",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setHeartRate((int) getPatientEncounterVitalOrNull("heartRate", patientEncounter.getId()).getVitalValue());
+        viewModelGet.setTemperature(getPatientEncounterVitalOrNull("temperature", patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("oxygenSaturation",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("heightFeet",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("heightInches",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("weight",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("bloodPressureSystolic",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("bloodPressureDiastolic",patientEncounter.getId()).getVitalValue());
+        viewModelGet.setRespiratoryRate((int)getPatientEncounterVitalOrNull("glucose",patientEncounter.getId()).getVitalValue()   
+
+
+
+
+
+
+
+
+
+
+
+
+
         return ok(edit.render(currentUserSession, viewModelGet));
     }
 
@@ -286,6 +306,15 @@ public class MedicalController extends Controller {
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVital);
         if (patientEncounterVitalServiceResponse.hasErrors()) {
             //error
+        }
+    }
+    private IPatientEncounterVital getPatientEncounterVitalOrNull(String name, int encounterId) {
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVital(encounterId,name);
+        if (patientEncounterVitalServiceResponse.hasErrors()){
+            return null;
+        }else{
+            return patientEncounterVitalServiceResponse.getResponseObject();
         }
     }
 }

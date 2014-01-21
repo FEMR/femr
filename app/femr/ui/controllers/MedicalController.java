@@ -243,46 +243,46 @@ public class MedicalController extends Controller {
 
 
         if (updateVitalsModel.getRespRate() > 0) {
-            createPatientEncounterVital("respiratoryRate", updateVitalsModel.getRespRate(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("respiratoryRate", updateVitalsModel.getRespRate(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getHeartRate() > 0) {
-            createPatientEncounterVital("heartRate", updateVitalsModel.getHeartRate(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("heartRate", updateVitalsModel.getHeartRate(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getTemperature() > 0) {
-            createPatientEncounterVital("temperature", updateVitalsModel.getTemperature(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("temperature", updateVitalsModel.getTemperature(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getOxygen() > 0) {
-            createPatientEncounterVital("oxygenSaturation", updateVitalsModel.getOxygen(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("oxygenSaturation", updateVitalsModel.getOxygen(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getHeightFt() > 0) {
-            createPatientEncounterVital("heightFeet", updateVitalsModel.getHeightFt(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("heightFeet", updateVitalsModel.getHeightFt(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getHeightIn() > 0) {
-            createPatientEncounterVital("heightInches", updateVitalsModel.getHeightIn(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("heightInches", updateVitalsModel.getHeightIn(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getWeight() > 0) {
-            createPatientEncounterVital("weight", updateVitalsModel.getWeight(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("weight", updateVitalsModel.getWeight(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getBpSystolic() > 0) {
-            createPatientEncounterVital("bloodPressureSystolic", updateVitalsModel.getBpSystolic(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("bloodPressureSystolic", updateVitalsModel.getBpSystolic(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getBpDiastolic() > 0) {
-            createPatientEncounterVital("bloodPressureDiastolic", updateVitalsModel.getBpDiastolic(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("bloodPressureDiastolic", updateVitalsModel.getBpDiastolic(), currentUser.getId(), patientEncounter.getId());
         }
         if (updateVitalsModel.getGlucose() > 0) {
-            createPatientEncounterVital("glucose", updateVitalsModel.getGlucose(), currentUser.getId(), patientEncounter.getId());
+            savePatientEncounterVital("glucose", updateVitalsModel.getGlucose(), currentUser.getId(), patientEncounter.getId());
         }
 
         return ok("true");
     }
 
-    private void createPatientEncounterVital(String name, double vitalValue, int userId, int patientEncounterId) {
+    private void savePatientEncounterVital(String name, double vitalValue, int userId, int patientEncounterId) {
         ServiceResponse<IVital> vitalServiceResponse = searchService.findVital(name);
         if (vitalServiceResponse.hasErrors()) {
             //error
         }
         IVital vital = vitalServiceResponse.getResponseObject();
-        IPatientEncounterVital patientEncounterVital = medicalHelper.createPatientEncounterVital(userId, patientEncounterId, vital, vitalValue);
+        IPatientEncounterVital patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vital, vitalValue);
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVital);
         if (patientEncounterVitalServiceResponse.hasErrors()) {
             //error

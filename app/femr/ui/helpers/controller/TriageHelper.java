@@ -50,7 +50,7 @@ public class TriageHelper {
         return createViewModelGet;
     }
 
-    public IPatient populatePatient(CreateViewModelPost viewModelPost, CurrentUser currentUser) {
+    public IPatient getPatient(CreateViewModelPost viewModelPost, CurrentUser currentUser) {
         IPatient patient = patientProvider.get();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModelPost.getFirstName());
@@ -62,7 +62,7 @@ public class TriageHelper {
         return patient;
     }
 
-    public IPatientEncounter populatePatientEncounter(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatient patient) {
+    public IPatientEncounter getPatientEncounter(CreateViewModelPost viewModelPost, CurrentUser currentUser, IPatient patient) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patient.getId());
         patientEncounter.setUserId(currentUser.getId());
@@ -74,7 +74,7 @@ public class TriageHelper {
         return patientEncounter;
     }
 
-    public IPatientEncounterVital createPatientEncounterVital(int userId, int patientEncounterId, IVital vital, float vitalValue){
+    public IPatientEncounterVital getPatientEncounterVital(int userId, int patientEncounterId, IVital vital, float vitalValue){
 
         IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
         patientEncounterVital.setUserId(userId);

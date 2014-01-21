@@ -134,7 +134,7 @@ public class MedicalHelper {
         return patientPrescriptions;
     }
 
-    public IPatientEncounterVital createPatientEncounterVital(int userId, int patientEncounterId, IVital vital, double vitalValue) {
+    public IPatientEncounterVital getPatientEncounterVital(int userId, int patientEncounterId, IVital vital, double vitalValue) {
         IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
         patientEncounterVital.setUserId(userId);
         patientEncounterVital.setPatientEncounterId(patientEncounterId);

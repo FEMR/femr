@@ -108,22 +108,7 @@ public class SearchService implements ISearchService {
         return response;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //phase out this method
     @Override
     public ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId) {
         Query<PatientEncounterVital> query = getPatientEncounterVitalQuery().where().eq("vital_id", vitalId).eq("patient_encounter_id", encounterId).order().desc("date_taken").setMaxRows(1);
@@ -144,31 +129,30 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name){
+    public ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name) {
+
         Query<PatientEncounterVital> query = getPatientEncounterVitalQuery()
-                .fetch("vital", "name")
+                .fetch("vital")
                 .where()
                     .eq("patient_encounter_id", encounterId)
-                    .eq("vital.name",name)
+                    .eq("vital.name", name)
                 .order().desc("date_taken");
-        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
 
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+        IPatientEncounterVital patientEncounterVital = null;
+
+        if (patientEncounterVitals.size() == 1) {
+            patientEncounterVital = patientEncounterVitals.get(0);
+        }
 
         ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
+        if (patientEncounterVital == null) {
+            response.addError("patientEncounterVital", "could not find vital");
+        } else {
+            response.setResponseObject(patientEncounterVital);
+        }
         return response;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -302,6 +286,20 @@ public class SearchService implements ISearchService {
     }
 
     @Override
+    public ServiceResponse<IVital> findVital(String name){
+        ExpressionList<Vital> query = getVitalQuery().where().eq("name",name);
+        IVital vital = vitalRepository.findOne(query);
+
+        ServiceResponse<IVital> response = new ServiceResponse<>();
+        if (vital != null){
+            response.setResponseObject(vital);
+        }else{
+            response.addError("","error finding vital");
+        }
+        return response;
+    }
+
+    @Override
     public ServiceResponse<List<? extends IMedication>> findAllMedications() {
         List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
         ServiceResponse<List<? extends IMedication>> response = new ServiceResponse<>();
@@ -311,6 +309,10 @@ public class SearchService implements ISearchService {
             response.addError("medications", "no medications available");
         }
         return response;
+    }
+
+    private Query<Vital> getVitalQuery(){
+        return Ebean.find(Vital.class);
     }
 
     private Query<Patient> getPatientQuery() {

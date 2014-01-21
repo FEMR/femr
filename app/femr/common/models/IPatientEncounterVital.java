@@ -16,7 +16,7 @@ public interface IPatientEncounterVital {
 
     void setVitalId(int vitalId);*/
 
-    Vital getVital();
+    IVital getVital();
 
     void setVital(IVital vital);
 

@@ -162,18 +162,13 @@ public class TriageController extends Controller {
     }
 
     private void createPatientEncounterVital(String name, float vitalValue, int userId, int patientEncounterId){
-        ServiceResponse<IVital> vitalServiceResponse;
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        IVital vital;
-        IPatientEncounterVital patientEncounterVital;
-
-        vitalServiceResponse = searchService.findVital(name);
+        ServiceResponse<IVital> vitalServiceResponse = searchService.findVital(name);
         if (vitalServiceResponse.hasErrors()){
             //error
         }
-        vital = vitalServiceResponse.getResponseObject();
-        patientEncounterVital = triageHelper.createPatientEncounterVital(userId, patientEncounterId, vital, vitalValue);
-        patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVital);
+        IVital vital = vitalServiceResponse.getResponseObject();
+        IPatientEncounterVital patientEncounterVital = triageHelper.createPatientEncounterVital(userId, patientEncounterId, vital, vitalValue);
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVital);
         if (patientEncounterVitalServiceResponse.hasErrors()){
             //error
         }

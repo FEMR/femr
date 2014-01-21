@@ -154,7 +154,7 @@ public class MedicalHelper {
             patientEncounterVital.setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital.setUserId(currentUserId);
             patientEncounterVital.setPatientEncounterId(patientEncounterId);
-            patientEncounterVital.setVitalId(i + 1);
+            //patientEncounterVital.setVitalId(i + 1);
             patientEncounterVital.setVitalValue(vitals.get(i).floatValue());
             patientEncounterVitals.add(patientEncounterVital);
         }

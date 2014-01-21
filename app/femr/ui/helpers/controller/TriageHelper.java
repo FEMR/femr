@@ -84,7 +84,7 @@ public class TriageHelper {
             patientEncounterVital[i].setDateTaken((dateUtils.getCurrentDateTimeString()));
             patientEncounterVital[i].setUserId(currentUser.getId());
             patientEncounterVital[i].setPatientEncounterId(patientEncounter.getId());
-            patientEncounterVital[i].setVitalId(i + 1);
+           // patientEncounterVital[i].setVitalId(i + 1);
         }
 
         //Respiratory Rate

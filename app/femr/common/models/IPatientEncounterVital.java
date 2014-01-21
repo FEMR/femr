@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import femr.data.models.Vital;
+
 public interface IPatientEncounterVital {
     int getId();
 
@@ -9,9 +11,14 @@ public interface IPatientEncounterVital {
 
     void setPatientEncounterId(int patientEncounterId);
 
+            /*
     int getVitalId();
 
-    void setVitalId(int vitalId);
+    void setVitalId(int vitalId);*/
+
+    Vital getVital();
+
+    void setVital(Vital vital);
 
     float getVitalValue();
 

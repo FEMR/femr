@@ -44,6 +44,9 @@ public class TriageController extends Controller {
     public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+        //testing search service
+        ServiceResponse<IPatientEncounterVital> listServiceResponse = searchService.findPatientEncounterVital(66,"bloodPressureDiastolic");
+
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             return internalServerError();

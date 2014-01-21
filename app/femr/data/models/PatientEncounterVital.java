@@ -15,10 +15,9 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    //@Column(name = "vital_id", nullable = false)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vital_id", nullable = false)
-    private Vital vital;//private int vitalId;
+    private Vital vital;
     @Column(name = "vital_value", nullable = false)
     private float vitalValue;
     @Column(name = "date_taken", nullable = false)

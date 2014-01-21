@@ -18,7 +18,7 @@ public interface IPatientEncounterVital {
 
     Vital getVital();
 
-    void setVital(Vital vital);
+    void setVital(IVital vital);
 
     float getVitalValue();
 

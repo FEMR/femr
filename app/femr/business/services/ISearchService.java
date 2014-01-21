@@ -18,7 +18,7 @@ public interface ISearchService {
 
 
 
-
+    //phase out this method
     ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
 
     ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name);
@@ -31,6 +31,8 @@ public interface ISearchService {
     ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
 
     ServiceResponse<List<? extends IVital>> findAllVitals();
+
+    ServiceResponse<IVital> findVital(String name);
 
     ServiceResponse<List<? extends IMedication>> findAllMedications();
 

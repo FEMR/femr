@@ -126,34 +126,34 @@ public class TriageController extends Controller {
 
         //create and save vitals in new encounter
         int success = 1;
-        if (viewModel.getRespiratoryRate() > 0) {
+        if (viewModel.getRespiratoryRate() != null && viewModel.getRespiratoryRate() > 0) {
             success = savePatientEncounterVital("respiratoryRate", viewModel.getRespiratoryRate(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getHeartRate() > 0) {
+        if (viewModel.getHeartRate() != null && viewModel.getHeartRate() > 0) {
             success = savePatientEncounterVital("heartRate", viewModel.getHeartRate(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getTemperature() > 0) {
+        if (viewModel.getTemperature() != null && viewModel.getTemperature() > 0) {
             success = savePatientEncounterVital("temperature", viewModel.getTemperature(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getOxygenSaturation() > 0) {
+        if (viewModel.getOxygenSaturation() != null && viewModel.getOxygenSaturation() > 0) {
             success = savePatientEncounterVital("oxygenSaturation", viewModel.getOxygenSaturation(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getHeightFeet() > 0) {
+        if (viewModel.getHeightFeet() != null && viewModel.getHeightFeet() > 0) {
             success = savePatientEncounterVital("heightFeet", viewModel.getHeightFeet(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getHeightInches() > 0) {
+        if (viewModel.getHeightInches() != null && viewModel.getHeightInches() > 0) {
             success = savePatientEncounterVital("heightInches", viewModel.getHeightInches(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getWeight() > 0) {
+        if (viewModel.getWeight() != null && viewModel.getWeight() > 0) {
             success = savePatientEncounterVital("weight", viewModel.getWeight(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getBloodPressureSystolic() > 0) {
+        if (viewModel.getBloodPressureSystolic() != null && viewModel.getBloodPressureSystolic() > 0) {
             success = savePatientEncounterVital("bloodPressureSystolic", viewModel.getBloodPressureSystolic(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getBloodPressureDiastolic() > 0) {
+        if (viewModel.getBloodPressureDiastolic() != null && viewModel.getBloodPressureDiastolic() > 0) {
             success = savePatientEncounterVital("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic(), currentUser.getId(), patientEncounter.getId());
         }
-        if (viewModel.getGlucose() > 0) {
+        if (viewModel.getGlucose() != null && viewModel.getGlucose() > 0) {
             success = savePatientEncounterVital("glucose", viewModel.getGlucose(), currentUser.getId(), patientEncounter.getId());
         }
         if (success == 0){

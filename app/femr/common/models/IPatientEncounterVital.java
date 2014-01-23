@@ -20,7 +20,7 @@ public interface IPatientEncounterVital {
 
     void setVital(IVital vital);
 
-    float getVitalValue();
+    Float getVitalValue();
 
     void setVitalValue(float vitalValue);
 

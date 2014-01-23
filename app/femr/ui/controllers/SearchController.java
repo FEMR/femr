@@ -42,6 +42,8 @@ public class SearchController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
 
+        //findPatientEncounterVitalByVitalIdAndEncounterId() is in the process of being replaced
+                  /*
         // Fetch Vitals
         //this can be cleaned up by providing a method 'getVitalOrNull' that takes care of both
         //ints and floats
@@ -92,7 +94,7 @@ public class SearchController extends Controller {
         }
 
         viewModel.setGlucose(getVitalOrNull(patientEncounterVitals.get(9)));
-
+            */
 
         //Get Patient Name and other basic info
         ServiceResponse<IPatient> patientServiceResponseid = null;

@@ -150,10 +150,6 @@ public class MedicalController extends Controller {
         }
         CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
 
-
-
-
-
         //set up viewModelGet with everything except vitals
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, viewModelPost);
 
@@ -186,21 +182,6 @@ public class MedicalController extends Controller {
         viewModelGet.setOxygenSaturation(getPatientEncounterVitalOrNull("oxygenSaturation", patientEncounter.getId()));
         viewModelGet.setWeight(getPatientEncounterVitalOrNull("weight", patientEncounter.getId()));
         viewModelGet.setGlucose(getPatientEncounterVitalOrNull("glucose", patientEncounter.getId()));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }

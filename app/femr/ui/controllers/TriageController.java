@@ -125,50 +125,56 @@ public class TriageController extends Controller {
         }
 
         //create and save vitals in new encounter
+        int success = 1;
         if (viewModel.getRespiratoryRate() > 0) {
-            savePatientEncounterVital("respiratoryRate", viewModel.getRespiratoryRate(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("respiratoryRate", viewModel.getRespiratoryRate(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getHeartRate() > 0) {
-            savePatientEncounterVital("heartRate", viewModel.getHeartRate(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("heartRate", viewModel.getHeartRate(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getTemperature() > 0) {
-            savePatientEncounterVital("temperature", viewModel.getTemperature(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("temperature", viewModel.getTemperature(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getOxygenSaturation() > 0) {
-            savePatientEncounterVital("oxygenSaturation", viewModel.getOxygenSaturation(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("oxygenSaturation", viewModel.getOxygenSaturation(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getHeightFeet() > 0) {
-            savePatientEncounterVital("heightFeet", viewModel.getHeightFeet(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("heightFeet", viewModel.getHeightFeet(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getHeightInches() > 0) {
-            savePatientEncounterVital("heightInches", viewModel.getHeightInches(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("heightInches", viewModel.getHeightInches(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getWeight() > 0) {
-            savePatientEncounterVital("weight", viewModel.getWeight(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("weight", viewModel.getWeight(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getBloodPressureSystolic() > 0) {
-            savePatientEncounterVital("bloodPressureSystolic", viewModel.getBloodPressureSystolic(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("bloodPressureSystolic", viewModel.getBloodPressureSystolic(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getBloodPressureDiastolic() > 0) {
-            savePatientEncounterVital("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic(), currentUser.getId(), patientEncounter.getId());
         }
         if (viewModel.getGlucose() > 0) {
-            savePatientEncounterVital("glucose", viewModel.getGlucose(), currentUser.getId(), patientEncounter.getId());
+            success = savePatientEncounterVital("glucose", viewModel.getGlucose(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (success == 0){
+            return internalServerError();
         }
 
         return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
     }
 
-    private void savePatientEncounterVital(String name, float vitalValue, int userId, int patientEncounterId){
+    //returns 1 on success, 0 on failure
+    private int savePatientEncounterVital(String name, float vitalValue, int userId, int patientEncounterId){
         ServiceResponse<IVital> vitalServiceResponse = searchService.findVital(name);
         if (vitalServiceResponse.hasErrors()){
-            //error
+            return 0;
         }
         IVital vital = vitalServiceResponse.getResponseObject();
         IPatientEncounterVital patientEncounterVital = triageHelper.getPatientEncounterVital(userId, patientEncounterId, vital, vitalValue);
         ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVital);
         if (patientEncounterVitalServiceResponse.hasErrors()){
-            //error
+            return 0;
         }
+        return 1;
     }
 }

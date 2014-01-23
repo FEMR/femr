@@ -136,7 +136,7 @@ public class SearchService implements ISearchService {
                 .where()
                     .eq("patient_encounter_id", encounterId)
                     .eq("vital.name", name)
-                .order().desc("date_taken");
+                .order().desc("date_taken").setMaxRows(1);
 
         List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
         IPatientEncounterVital patientEncounterVital = null;
@@ -153,7 +153,6 @@ public class SearchService implements ISearchService {
         }
         return response;
     }
-
 
     @Override
     public ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id) {

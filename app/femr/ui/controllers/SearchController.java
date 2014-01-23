@@ -109,6 +109,7 @@ public class SearchController extends Controller {
             viewModel.setSex(patient.getSex());
         }
 
+        /*                findAllTreatmentByEncounterId is in the process of being replaced
         //Get treatment info
         List<String> problemList = new ArrayList<String>();
 
@@ -130,7 +131,7 @@ public class SearchController extends Controller {
             }
             viewModel.setProblemList(problemList);
         }
-
+                                */
         //Get patient prescriptions
         List<String> prescriptionsList = new ArrayList<String>();
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());

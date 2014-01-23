@@ -1,12 +1,10 @@
 package femr.data.models;
 
 import femr.common.models.IPatientEncounterTreatmentField;
+import femr.common.models.ITreatmentField;
 import org.joda.time.DateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "patient_encounter_treatment_fields")
@@ -18,53 +16,65 @@ public class PatientEncounterTreatmentField implements IPatientEncounterTreatmen
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    @Column(name = "treatment_field_id", nullable = false)
-    private int treatmentFieldId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="treatment_field_id", nullable = false)
+    private TreatmentField treatmentField;
     @Column(name = "treatment_field_value", nullable = false)
     private String treatmentFieldValue;
     @Column(name = "date_taken", nullable = false)
     private DateTime dateTaken;
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public int getUserId() {
         return userId;
     }
 
+    @Override
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
+    @Override
     public int getPatientEncounterId() {
         return patientEncounterId;
     }
 
+    @Override
     public void setPatientEncounterId(int patientEncounterId) {
         this.patientEncounterId = patientEncounterId;
     }
 
-    public int getTreatmentFieldId() {
-        return treatmentFieldId;
+    @Override
+    public ITreatmentField getTreatmentField() {
+        return treatmentField;
     }
 
-    public void setTreatmentFieldId(int treatmentFieldId) {
-        this.treatmentFieldId = treatmentFieldId;
+    @Override
+    public void setTreatmentField(ITreatmentField treatmentField) {
+        this.treatmentField = (TreatmentField)treatmentField;
     }
 
+    @Override
     public String getTreatmentFieldValue() {
         return treatmentFieldValue;
     }
 
+    @Override
     public void setTreatmentFieldValue(String treatmentFieldValue) {
         this.treatmentFieldValue = treatmentFieldValue;
     }
 
+    @Override
     public DateTime getDateTaken() {
         return dateTaken;
     }
 
+    @Override
     public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
     }

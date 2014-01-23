@@ -70,12 +70,10 @@ public class TriageHelper {
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
         patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
-
         return patientEncounter;
     }
 
     public IPatientEncounterVital getPatientEncounterVital(int userId, int patientEncounterId, IVital vital, float vitalValue){
-
         IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
         patientEncounterVital.setUserId(userId);
         patientEncounterVital.setPatientEncounterId(patientEncounterId);

@@ -48,16 +48,6 @@ public class PatientEncounterVital implements IPatientEncounterVital {
         this.patientEncounterId = patientEncounterId;
     }
 
-    /*
-        @Override
-        public int getVitalId() {
-            return vital;
-        }
-
-        @Override
-        public void setVitalId(int vital) {
-            this.vital = vital;
-        }*/
     @Override
     public IVital getVital() {
         return vital;

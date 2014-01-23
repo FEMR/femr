@@ -16,12 +16,9 @@ public interface ISearchService {
 
     ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
 
-
-    //phase out this method
-    ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId);
-
+    //turn the service response object into a List<? extends IPatientEncounterVital>
+    //to take into consideration replaced vitals
     ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name);
-
 
     ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
 

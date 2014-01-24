@@ -28,20 +28,20 @@ public interface ISearchService {
 
     ServiceResponse<ITreatmentField> findTreatmentField(String name);
 
+    ServiceResponse<IPmhField> findPmhField(String name);
+
     ServiceResponse<List<? extends IMedication>> findAllMedications();
 
     ServiceResponse<List<? extends IPatientPrescription>> findPrescriptionsByEncounterId(int id);
 
 
 
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentField(int encounterId, String name);
+    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name);
 
     ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int id);
-    ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiField(int encounterId, String name);
+    ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name);
 
-    ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> findPmhFieldsByEncounterId(int id);
-    ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhField(int encounterId, String name);
-
+    ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name);
 
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
 }

@@ -13,18 +13,12 @@ public interface ISearchService {
     ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
 
     ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
-
     ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
-
     ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
-
-    ServiceResponse<List<? extends IVital>> findAllVitals();
-    ServiceResponse<List<? extends IMedication>> findAllMedications();
-
     ServiceResponse<List<? extends IPatientPrescription>> findPrescriptionsByEncounterId(int id);
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
 
-    ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name);
+    ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name);
@@ -33,5 +27,6 @@ public interface ISearchService {
     ServiceResponse<ITreatmentField> findTreatmentField(String name);
     ServiceResponse<IHpiField> findHpiField(String name);
     ServiceResponse<IPmhField> findPmhField(String name);
-
+    ServiceResponse<List<? extends IVital>> findAllVitals();
+    ServiceResponse<List<? extends IMedication>> findAllMedications();
 }

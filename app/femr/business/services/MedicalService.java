@@ -62,6 +62,18 @@ public class MedicalService implements IMedicalService {
         }
         return response;
     }
+    @Override
+    public ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription){
+        IPatientPrescription newPatientPrescription = patientPrescriptionRepository.create(patientPrescription);
+        ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
+
+        if (newPatientPrescription != null) {
+            response.setResponseObject(newPatientPrescription);
+        } else {
+            response.addError("patientPrescription", "failed to save");
+        }
+        return response;
+    }
 
     @Override
     public ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields) {

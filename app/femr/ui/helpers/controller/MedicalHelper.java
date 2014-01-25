@@ -140,7 +140,7 @@ public class MedicalHelper {
         return viewModelPost;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, CreateViewModelPost viewModelPost) {
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, CreateViewModelPost viewModelPost, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //patient
         viewModelGet.setpID(patient.getId());
@@ -177,12 +177,22 @@ public class MedicalHelper {
         viewModelGet.setTimeOfDay(viewModelPost.getTimeOfDay());
         viewModelGet.setPhysicalExamination(viewModelPost.getPhysicalExamination());
         viewModelGet.setNarrative(viewModelPost.getNarrative());
-
         //editable information - Pmh_fields
         viewModelGet.setMedicalSurgicalHistory(viewModelPost.getMedicalSurgicalHistory());
         viewModelGet.setSocialHistory(viewModelPost.getSocialHistory());
         viewModelGet.setCurrentMedication(viewModelPost.getCurrentMedication());
         viewModelGet.setFamilyHistory(viewModelPost.getFamilyHistory());
+        //vitals
+        viewModelGet.setRespiratoryRate(getVitalOrNull("respiratoryRate", patientEncounterVitalMap).intValue());
+        viewModelGet.setHeartRate(getVitalOrNull("heartRate", patientEncounterVitalMap).intValue());
+        viewModelGet.setHeightFeet(getVitalOrNull("heightFeet", patientEncounterVitalMap).intValue());
+        viewModelGet.setHeightInches(getVitalOrNull("heightInches",patientEncounterVitalMap).intValue());
+        viewModelGet.setBloodPressureSystolic(getVitalOrNull("bloodPressureSystolic",patientEncounterVitalMap).intValue());
+        viewModelGet.setBloodPressureDiastolic(getVitalOrNull("bloodPressureDiastolic",patientEncounterVitalMap).intValue());
+        viewModelGet.setTemperature(getVitalOrNull("temperature",patientEncounterVitalMap));
+        viewModelGet.setOxygenSaturation(getVitalOrNull("oxygenSaturation",patientEncounterVitalMap));
+        viewModelGet.setWeight(getVitalOrNull("weight",patientEncounterVitalMap));
+        viewModelGet.setGlucose(getVitalOrNull("glucose",patientEncounterVitalMap));
 
 
         return viewModelGet;
@@ -196,11 +206,14 @@ public class MedicalHelper {
         }
     }
 
-    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital) {
-        if (patientEncounterVital == null)
-            return null;
-        else
-            return patientEncounterVital.getVitalValue();
+    private Float getVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
+        if (patientEncounterVitalMap.containsKey(key)){
+            if (patientEncounterVitalMap.get(key).size() < 1){
+                return null;
+            }
+            return patientEncounterVitalMap.get(key).get(0).getVitalValue();
+        }
+        return null;
     }
 
     private String getHpiFieldOrNull(String key, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {

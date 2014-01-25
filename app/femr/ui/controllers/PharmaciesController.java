@@ -106,23 +106,23 @@ public class PharmaciesController extends Controller {
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
 
         //set relevant vital information
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVital(patientEncounter.getId(), "heightFeet");
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse;
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightFeet");
         if (!patientEncounterVitalServiceResponse.hasErrors()) {
             if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
-                viewModelGet.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue().intValue());
+                viewModelGet.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue().intValue());
             }
         }
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVital(patientEncounter.getId(), "heightInches");
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightInches");
         if (!patientEncounterServiceResponse.hasErrors()) {
             if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
-                viewModelGet.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue().intValue());
+                viewModelGet.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue().intValue());
             }
         }
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVital(patientEncounter.getId(), "weight");
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "weight");
         if (!patientEncounterServiceResponse.hasErrors()) {
             if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
-                viewModelGet.setWeight(patientEncounterVitalServiceResponse.getResponseObject().getVitalValue());
+                viewModelGet.setWeight(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue());
             }
         }
 

@@ -120,26 +120,20 @@ public class SearchService implements ISearchService {
 
     //change this to return a List<IPatientEncounterVital
     @Override
-    public ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name) {
+    public ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name) {
         Query<PatientEncounterVital> query = getPatientEncounterVitalQuery()
                 .fetch("vital")
                 .where()
                 .eq("patient_encounter_id", encounterId)
                 .eq("vital.name", name)
-                .order().desc("date_taken").setMaxRows(1);
+                .order().desc("date_taken");
 
         List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
-        IPatientEncounterVital patientEncounterVital = null;
-
-        if (patientEncounterVitals.size() == 1) {
-            patientEncounterVital = patientEncounterVitals.get(0);
-        }
-
-        ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
-        if (patientEncounterVital == null) {
-            response.addError("patientEncounterVital", "could not find vital");
+        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
+        if (patientEncounterVitals.size() > 0) {
+            response.setResponseObject(patientEncounterVitals);
         } else {
-            response.setResponseObject(patientEncounterVital);
+            response.addError("patientEncounterVital", "could not find vital");
         }
         return response;
     }

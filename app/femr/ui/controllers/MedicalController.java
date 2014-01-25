@@ -440,12 +440,12 @@ public class MedicalController extends Controller {
     }
 
     private Float getPatientEncounterVitalOrNull(String name, int encounterId) {
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVital(encounterId, name);
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse;
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(encounterId, name);
         if (patientEncounterVitalServiceResponse.hasErrors()) {
             return null;
         } else {
-            return patientEncounterVitalServiceResponse.getResponseObject().getVitalValue();
+            return patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue();
         }
     }
 }

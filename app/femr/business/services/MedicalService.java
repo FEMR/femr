@@ -38,13 +38,12 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
-    public ServiceResponse<IPatientEncounterTreatmentField> createPatientEncounterTreatmentField(IPatientEncounterTreatmentField patientEncounterTreatmentField) {
-        IPatientEncounterTreatmentField newPatientEncounterTreatmentField =
-                patientEncounterTreatmentFieldRepository.create(patientEncounterTreatmentField);
-        ServiceResponse<IPatientEncounterTreatmentField> response = new ServiceResponse<>();
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> createPatientEncounterTreatmentFields(List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields){
+        List<? extends IPatientEncounterTreatmentField> newPatientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.createAll(patientEncounterTreatmentFields);
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
 
-        if (newPatientEncounterTreatmentField != null) {
-            response.setResponseObject(newPatientEncounterTreatmentField);
+        if (newPatientEncounterTreatmentFields != null) {
+            response.setResponseObject(newPatientEncounterTreatmentFields);
         } else {
             response.addError("patientEncounterTreatmentField", "Failed to save");
         }
@@ -52,8 +51,19 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
-    public ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription) {
+    public ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions) {
+        List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
+        ServiceResponse<List<? extends IPatientPrescription>> response = new ServiceResponse<>();
 
+        if (newPatientPrescriptions != null) {
+            response.setResponseObject(newPatientPrescriptions);
+        } else {
+            response.addError("patientPrescription", "failed to save");
+        }
+        return response;
+    }
+    @Override
+    public ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription){
         IPatientPrescription newPatientPrescription = patientPrescriptionRepository.create(patientPrescription);
         ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
 
@@ -66,13 +76,12 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
-    public ServiceResponse<IPatientEncounterHpiField> createPatientEncounterHpiField(IPatientEncounterHpiField patientEncounterHpiField) {
-        IPatientEncounterHpiField newPatientEncounterHpiField =
-                patientEncounterHpiFieldRepository.create(patientEncounterHpiField);
-        ServiceResponse<IPatientEncounterHpiField> response = new ServiceResponse<>();
+    public ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields) {
+        List<? extends IPatientEncounterHpiField> newPatientEncounterHpiFields = patientEncounterHpiFieldRepository.createAll(patientEncounterHpiFields);
+        ServiceResponse<List<? extends IPatientEncounterHpiField>> response = new ServiceResponse<>();
 
-        if (newPatientEncounterHpiField != null) {
-            response.setResponseObject(newPatientEncounterHpiField);
+        if (newPatientEncounterHpiFields != null) {
+            response.setResponseObject(newPatientEncounterHpiFields);
         } else {
             response.addError("patientEncounterHpiField", "Failed to save");
         }
@@ -80,13 +89,12 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
-    public ServiceResponse<IPatientEncounterPmhField> createPatientEncounterPmhField(IPatientEncounterPmhField patientEncounterPmhField) {
-        IPatientEncounterPmhField newPatientEncounterPmhField =
-                patientEncounterPmhFieldRepository.create(patientEncounterPmhField);
-        ServiceResponse<IPatientEncounterPmhField> response = new ServiceResponse<>();
+    public ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields){
+        List<? extends IPatientEncounterPmhField> newPatientEncounterPmhFields = patientEncounterPmhFieldRepository.createAll(patientEncounterPmhFields);
+        ServiceResponse<List<? extends IPatientEncounterPmhField>> response = new ServiceResponse<>();
 
-        if (newPatientEncounterPmhField != null) {
-            response.setResponseObject(newPatientEncounterPmhField);
+        if (newPatientEncounterPmhFields != null) {
+            response.setResponseObject(newPatientEncounterPmhFields);
         } else {
             response.addError("patientEncounterPmhField", "Failed to save");
         }

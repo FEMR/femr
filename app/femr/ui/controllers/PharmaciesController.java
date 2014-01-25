@@ -54,17 +54,17 @@ public class PharmaciesController extends Controller {
         return ok(index.render(currentUserSession, error, null));
     }
 
-    public Result typeaheadJSONGet(){
+    public Result typeaheadJSONGet() {
         ObjectNode result = Json.newObject();
 
         ServiceResponse<List<? extends IMedication>> medicationServiceResponse = searchService.findAllMedications();
-        if (medicationServiceResponse.hasErrors()){
+        if (medicationServiceResponse.hasErrors()) {
             return ok(result);
         }
         List<? extends IMedication> medications = medicationServiceResponse.getResponseObject();
 
-        for (int medication = 0; medication < medications.size(); medication++){
-            result.put("medicine" + medication,medications.get(medication).getName());
+        for (int medication = 0; medication < medications.size(); medication++) {
+            result.put("medicine" + medication, medications.get(medication).getName());
         }
 
         return ok(result);
@@ -105,35 +105,27 @@ public class PharmaciesController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
 
-        //set viewModel field to null if patient vital does not exist
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        int TOTAL_VITALS = 9;
-        for (int vital = 1; vital <= TOTAL_VITALS; vital++) {
-            patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, patientEncounter.getId());
-            if (patientEncounterVitalServiceResponse.hasErrors()) {
-                patientEncounterVitals.add(null);
-            } else {
-                patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
+        //set relevant vital information
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse;
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightFeet");
+        if (!patientEncounterVitalServiceResponse.hasErrors()) {
+            if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
+                viewModelGet.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue().intValue());
             }
         }
-        if (patientEncounterVitals.get(4) == null)
-        {
-            viewModelGet.setHeightFeet(null);
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightInches");
+        if (!patientEncounterServiceResponse.hasErrors()) {
+            if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
+                viewModelGet.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue().intValue());
+            }
         }
-        else
-        {
-            viewModelGet.setHeightFeet(getVitalOrNull(patientEncounterVitals.get(4)).intValue());
+        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "weight");
+        if (!patientEncounterServiceResponse.hasErrors()) {
+            if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
+                viewModelGet.setWeight(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue());
+            }
         }
-        if (patientEncounterVitals.get(5) == null)
-        {
-            viewModelGet.setHeightinches(null);
-        }
-        else
-        {
-            viewModelGet.setHeightinches(getVitalOrNull(patientEncounterVitals.get(5)).intValue());
-        }
-        viewModelGet.setWeight(getVitalOrNull(patientEncounterVitals.get(6)));
+
 
         //find patient prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());

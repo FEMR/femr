@@ -13,9 +13,9 @@ public interface IPatientEncounterTreatmentField {
 
     void setPatientEncounterId(int patientEncounterId);
 
-    int getTreatmentFieldId();
+    ITreatmentField getTreatmentField();
 
-    void setTreatmentFieldId(int treatmentFieldId);
+    void setTreatmentField(ITreatmentField treatmentField);
 
     String getTreatmentFieldValue();
 

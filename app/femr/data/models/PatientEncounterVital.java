@@ -1,8 +1,9 @@
 package femr.data.models;
 
 import femr.common.models.IPatientEncounterVital;
+import femr.common.models.IVital;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "patient_encounter_vitals")
@@ -14,8 +15,9 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    @Column(name = "vital_id", nullable = false)
-    private int vitalId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vital_id", nullable = false)
+    private Vital vital;//*eBean doesn't support mapping annotations on an interface...
     @Column(name = "vital_value", nullable = false)
     private float vitalValue;
     @Column(name = "date_taken", nullable = false)
@@ -47,17 +49,22 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     }
 
     @Override
-    public int getVitalId() {
-        return vitalId;
+    public IVital getVital() {
+        return vital;
     }
 
     @Override
-    public void setVitalId(int vitalId) {
-        this.vitalId = vitalId;
+    public void setVital(IVital vital) {
+        //cast IVital to Vital to get past the limitation of
+        //the bean not being able to map annotations to an
+        //interface
+        Vital newVital = (Vital)vital;
+        this.vital = newVital;
+
     }
 
     @Override
-    public float getVitalValue() {
+    public Float getVitalValue() {
         return vitalValue;
     }
 

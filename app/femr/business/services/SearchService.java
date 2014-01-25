@@ -9,6 +9,7 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 
+import javax.xml.ws.Service;
 import java.util.*;
 
 public class SearchService implements ISearchService {
@@ -21,6 +22,9 @@ public class SearchService implements ISearchService {
     private IRepository<IVital> vitalRepository;
     private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
     private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
+    private IRepository<ITreatmentField> treatmentFieldRepository;
+    private IRepository<IPmhField> pmhFieldRepository;
+    private IRepository<IHpiField> hpiFieldRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
@@ -31,7 +35,10 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
                          IRepository<IMedication> medicationRepository,
                          IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
-                         IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository) {
+                         IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
+                         IRepository<ITreatmentField> treatmentFieldRepository,
+                         IRepository<IPmhField> pmhFieldRepository,
+                         IRepository<IHpiField> hpiFieldRepository) {
         this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -41,6 +48,9 @@ public class SearchService implements ISearchService {
         this.vitalRepository = vitalRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
         this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
+        this.treatmentFieldRepository = treatmentFieldRepository;
+        this.pmhFieldRepository = pmhFieldRepository;
+        this.hpiFieldRepository = hpiFieldRepository;
     }
 
     @Override
@@ -108,21 +118,22 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    //change this to return a List<IPatientEncounterVital
     @Override
-    public ServiceResponse<IPatientEncounterVital> findPatientEncounterVitalByVitalIdAndEncounterId(int vitalId, int encounterId) {
-        Query<PatientEncounterVital> query = getPatientEncounterVitalQuery().where().eq("vital_id", vitalId).eq("patient_encounter_id", encounterId).order().desc("date_taken").setMaxRows(1);
+    public ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name) {
+        Query<PatientEncounterVital> query = getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", name)
+                .order().desc("date_taken");
+
         List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
-        IPatientEncounterVital patientEncounterVital = null;
-
-        if (patientEncounterVitals.size() == 1) {
-            patientEncounterVital = patientEncounterVitals.get(0);
-        }
-
-        ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
-        if (patientEncounterVital == null) {
-            response.addError("patientEncounterVital", "could not find vital");
+        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
+        if (patientEncounterVitals.size() > 0) {
+            response.setResponseObject(patientEncounterVitals);
         } else {
-            response.setResponseObject(patientEncounterVital);
+            response.addError("patientEncounterVital", "could not find vital");
         }
         return response;
     }
@@ -153,68 +164,57 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+
     @Override
-    public ServiceResponse<Map<Integer, List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int id) {
-
-        Map<Integer, List<? extends IPatientEncounterTreatmentField>> mappedTreatmentFields = new LinkedHashMap<>();
-        Query<PatientEncounterTreatmentField> query;
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields;
-
-        for (int treatmentFieldId = 1; treatmentFieldId < 5; treatmentFieldId++) {
-            query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", treatmentFieldId).order().desc("date_taken");
-            patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
-            mappedTreatmentFields.put(treatmentFieldId, patientEncounterTreatmentFields);
-        }
-
-        ServiceResponse<Map<Integer, List<? extends IPatientEncounterTreatmentField>>> response = new ServiceResponse<>();
-        if (mappedTreatmentFields.isEmpty()) {
-            response.addError("treatmentFields", "No treatment fields found");
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name) {
+        Query<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery()
+                .fetch("treatmentField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("treatmentField.name", name)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
+        if (patientEncounterTreatmentFields.size() > 0) {
+            response.setResponseObject(patientEncounterTreatmentFields);
         } else {
-            response.setResponseObject(mappedTreatmentFields);
+            response.addError(name, "Could not find any treatment entries");
         }
         return response;
     }
 
     @Override
-    public ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int id) {
-
-        Map<Integer, List<? extends IPatientEncounterHpiField>> mappedHpiFields = new LinkedHashMap<>();
-        Query<PatientEncounterHpiField> query;
-        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields;
-
-        for (int hpiFieldId = 1; hpiFieldId <= 10; hpiFieldId++) {
-            query = getPatientEncounterHpiFieldQuery().where().eq("patient_encounter_id", id).eq("hpi_field_id", hpiFieldId).order().desc("date_taken");
-            patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
-            mappedHpiFields.put(hpiFieldId, patientEncounterHpiFields);
-        }
-
-        ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> response = new ServiceResponse<>();
-        if (mappedHpiFields.isEmpty()) {
-            response.addError("hpiFields", "no hpi fields found");
+    public ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name) {
+        Query<PatientEncounterHpiField> query = getPatientEncounterHpiFieldQuery()
+                .fetch("hpiField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("hpiField.name", name)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterHpiField>> response = new ServiceResponse<>();
+        if (patientEncounterHpiFields.size() > 0) {
+            response.setResponseObject(patientEncounterHpiFields);
         } else {
-            response.setResponseObject(mappedHpiFields);
+            response.addError(name, "Could not find any HPI entries");
         }
         return response;
     }
 
     @Override
-    public ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> findPmhFieldsByEncounterId(int id) {
-
-        Map<Integer, List<? extends IPatientEncounterPmhField>> mappedPmhFields = new LinkedHashMap<>();
-        Query<PatientEncounterPmhField> query;
-        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields;
-
-        for (int pmhFieldId = 1; pmhFieldId < 5; pmhFieldId++) {
-            query = getPatientEncounterPmhFieldQuery().where().eq("patient_encounter_id", id).eq("pmh_field_id", pmhFieldId).order().desc("date_taken");
-            patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query);
-            mappedPmhFields.put(pmhFieldId, patientEncounterPmhFields);
-        }
-
-        ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> response = new ServiceResponse<>();
-        if (mappedPmhFields.isEmpty()) {
-            response.addError("pmhFields", "no pmh fields found");
+    public ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name) {
+        Query<PatientEncounterPmhField> query = getPatientEncounterPmhFieldQuery()
+                .fetch("pmhField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("pmhField.name", name)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterPmhField>> response = new ServiceResponse<>();
+        if (patientEncounterPmhFields.size() > 0) {
+            response.setResponseObject(patientEncounterPmhFields);
         } else {
-            response.setResponseObject(mappedPmhFields);
+            response.addError("", "Could not find any PMH fields");
         }
         return response;
     }
@@ -222,19 +222,6 @@ public class SearchService implements ISearchService {
     @Override
     public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id) {
         ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id).eq("treatment_field_id", 2);
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
-        if (patientEncounterTreatmentFields.size() > 0) {
-            response.setResponseObject(patientEncounterTreatmentFields);
-        } else {
-            response.addError("problems", "could not find any problems");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findAllTreatmentByEncounterId(int id) {
-        ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id);
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
         ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
         if (patientEncounterTreatmentFields.size() > 0) {
@@ -258,6 +245,97 @@ public class SearchService implements ISearchService {
     }
 
     @Override
+    public ServiceResponse<List<? extends ITreatmentField>> findAllTreatmentFields() {
+        List<? extends ITreatmentField> treatmentFields = treatmentFieldRepository.findAll(TreatmentField.class);
+        ServiceResponse<List<? extends ITreatmentField>> response = new ServiceResponse<>();
+        if (treatmentFields.size() > 0) {
+            response.setResponseObject(treatmentFields);
+        } else {
+            response.addError("", "no treatment fields available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IHpiField>> findAllHpiFields() {
+        List<? extends IHpiField> hpiFields = hpiFieldRepository.findAll(HpiField.class);
+        ServiceResponse<List<? extends IHpiField>> response = new ServiceResponse<>();
+        if (hpiFields.size() > 0) {
+            response.setResponseObject(hpiFields);
+        } else {
+            response.addError("", "no hpi fields available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IPmhField>> findAllPmhFields() {
+        List<? extends IPmhField> pmhFields = pmhFieldRepository.findAll(PmhField.class);
+        ServiceResponse<List<? extends IPmhField>> response = new ServiceResponse<>();
+        if (pmhFields.size() > 0) {
+            response.setResponseObject(pmhFields);
+        } else {
+            response.addError("", "no pmh fields available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<IVital> findVital(String name) {
+        ExpressionList<Vital> query = getVitalQuery().where().eq("name", name);
+        IVital vital = vitalRepository.findOne(query);
+
+        ServiceResponse<IVital> response = new ServiceResponse<>();
+        if (vital != null) {
+            response.setResponseObject(vital);
+        } else {
+            response.addError("", "error finding vital");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<IPmhField> findPmhField(String name) {
+        ExpressionList<PmhField> query = getPmhFieldQuery().where().eq("name", name);
+        IPmhField pmhField = pmhFieldRepository.findOne(query);
+        ServiceResponse<IPmhField> response = new ServiceResponse<>();
+        if (pmhField != null) {
+            response.setResponseObject(pmhField);
+        } else {
+            response.addError("", "error finding pmh field");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<IHpiField> findHpiField(String name) {
+        ExpressionList<HpiField> query = getHpiFieldQuery().where().eq("name", name);
+        IHpiField hpiField = hpiFieldRepository.findOne(query);
+
+        ServiceResponse<IHpiField> response = new ServiceResponse<>();
+        if (hpiField != null) {
+            response.setResponseObject(hpiField);
+        } else {
+            response.addError("", "error finding hpi field");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<ITreatmentField> findTreatmentField(String name) {
+        ExpressionList<TreatmentField> query = getTreatmentFieldQuery().where().eq("name", name);
+        ITreatmentField treatmentField = treatmentFieldRepository.findOne(query);
+
+        ServiceResponse<ITreatmentField> response = new ServiceResponse<>();
+        if (treatmentField != null) {
+            response.setResponseObject(treatmentField);
+        } else {
+            response.addError("", "error finding treatment field");
+        }
+        return response;
+    }
+
+    @Override
     public ServiceResponse<List<? extends IMedication>> findAllMedications() {
         List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
         ServiceResponse<List<? extends IMedication>> response = new ServiceResponse<>();
@@ -267,6 +345,22 @@ public class SearchService implements ISearchService {
             response.addError("medications", "no medications available");
         }
         return response;
+    }
+
+    private Query<Vital> getVitalQuery() {
+        return Ebean.find(Vital.class);
+    }
+
+    private Query<TreatmentField> getTreatmentFieldQuery() {
+        return Ebean.find(TreatmentField.class);
+    }
+
+    private Query<PmhField> getPmhFieldQuery() {
+        return Ebean.find(PmhField.class);
+    }
+
+    private Query<HpiField> getHpiFieldQuery() {
+        return Ebean.find(HpiField.class);
     }
 
     private Query<Patient> getPatientQuery() {

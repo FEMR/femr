@@ -8,6 +8,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.*;
+import femr.data.models.PatientEncounterHpiField;
 import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -89,14 +90,12 @@ public class MedicalController extends Controller {
                 message = "That patient's encounter has been closed.";
                 id = 0;
             }
-
             return redirect(routes.MedicalController.indexGet(id, message));
         }
         return redirect(routes.MedicalController.editGet(searchViewModel.getId()));
     }
 
     public Result editGet(int patientId) {
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         //current Patient info for view model
@@ -114,20 +113,8 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        //current vitals for view model
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        int TOTAL_VITALS = 10;
-        for (int vital = 1; vital <= TOTAL_VITALS; vital++) {
-            patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitalByVitalIdAndEncounterId(vital, patientEncounter.getId());
-            if (patientEncounterVitalServiceResponse.hasErrors()) {
-                patientEncounterVitals.add(null);
-            } else {
-                patientEncounterVitals.add(patientEncounterVitalServiceResponse.getResponseObject());
-            }
-        }
 
-        //viewModelPost is populated with editable fields
+        //get a list of prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         List<? extends IPatientPrescription> patientPrescriptions = new ArrayList<>();
         if (patientPrescriptionsServiceResponse.hasErrors()) {
@@ -136,36 +123,89 @@ public class MedicalController extends Controller {
             patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         }
 
-        ServiceResponse<Map<Integer, List<? extends IPatientEncounterTreatmentField>>> patientTreatmentFieldsServiceResponse = searchService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
-        Map<Integer, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
-        if (patientTreatmentFieldsServiceResponse.hasErrors()) {
-            //do nothing, there might not always be available treatments
-        } else {
-            patientEncounterTreatmentMap = patientTreatmentFieldsServiceResponse.getResponseObject();
+        //region **Mapping of treatment fields, HPI, PMH, and vitals**
+
+        //Create linked hash map of treatment fields
+        //get a list of available treatment fields
+        ServiceResponse<List<? extends ITreatmentField>> treatmentFieldsServiceResponse = searchService.findAllTreatmentFields();
+        List<? extends ITreatmentField> treatmentFields = treatmentFieldsServiceResponse.getResponseObject();
+
+        //initalize map to store treatment fields: Map<treatmentFieldName, List of values>
+        //the list of values is stored in desecending order by time taken
+        Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentServiceResponse;
+        String treatmentFieldName;
+        //loop through each available treatment field and build the map
+        for (int treatmentFieldIndex = 0; treatmentFieldIndex < treatmentFields.size(); treatmentFieldIndex++) {
+            treatmentFieldName = treatmentFields.get(treatmentFieldIndex).getName().trim();
+            patientTreatmentServiceResponse = searchService.findTreatmentFields(patientEncounter.getId(), treatmentFieldName);
+            if (patientTreatmentServiceResponse.hasErrors()) {
+                continue;
+            } else {
+                patientEncounterTreatmentMap.put(treatmentFieldName, patientTreatmentServiceResponse.getResponseObject());
+            }
         }
 
-        ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> patientHpiFieldsServiceResponse = searchService.findHpiFieldsByEncounterId(patientEncounter.getId());
-        Map<Integer, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap = new LinkedHashMap<>();
-        if (patientHpiFieldsServiceResponse.hasErrors()) {
-            //do nothing, there might not always be available hpi fields
-        } else {
-            patientEncounterHpiMap = patientHpiFieldsServiceResponse.getResponseObject();
+        //Create linked hash map of history of present illness fields
+        ServiceResponse<List<? extends IHpiField>> hpiFieldServiceResponse = searchService.findAllHpiFields();
+        List<? extends IHpiField> hpiFields = hpiFieldServiceResponse.getResponseObject();
+
+        Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap = new LinkedHashMap<>();
+        ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiServiceResponse;
+        String hpiFieldName;
+        for (int hpiFieldIndex = 0; hpiFieldIndex < hpiFields.size(); hpiFieldIndex++) {
+            hpiFieldName = hpiFields.get(hpiFieldIndex).getName().trim();
+            patientHpiServiceResponse = searchService.findHpiFields(patientEncounter.getId(), hpiFieldName);
+            if (patientHpiServiceResponse.hasErrors()) {
+                continue;
+            } else {
+                patientEncounterHpiMap.put(hpiFieldName, patientHpiServiceResponse.getResponseObject());
+            }
         }
 
-        ServiceResponse<Map<Integer, List<? extends IPatientEncounterPmhField>>> patientPmhFieldsServiceResponse = searchService.findPmhFieldsByEncounterId(patientEncounter.getId());
-        Map<Integer, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap = new LinkedHashMap<>();
-        if (patientPmhFieldsServiceResponse.hasErrors()) {
-            //do nothing, there might not always be available pmh fields
-        } else {
-            patientEncounterPmhMap = patientPmhFieldsServiceResponse.getResponseObject();
+        //Create linked hash map of past medical history fields
+        ServiceResponse<List<? extends IPmhField>> pmhFieldServiceResponse = searchService.findAllPmhFields();
+        List<? extends IPmhField> pmhFields = pmhFieldServiceResponse.getResponseObject();
+
+        Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap = new LinkedHashMap<>();
+        ServiceResponse<List<? extends IPatientEncounterPmhField>> patientPmhServiceResponse;
+        String pmhFieldName;
+        for (int pmhFieldIndex = 0; pmhFieldIndex < pmhFields.size(); pmhFieldIndex++) {
+            pmhFieldName = pmhFields.get(pmhFieldIndex).getName().trim();
+            patientPmhServiceResponse = searchService.findPmhFields(patientEncounter.getId(), pmhFieldName);
+            if (patientPmhServiceResponse.hasErrors()) {
+                continue;
+            } else {
+                patientEncounterPmhMap.put(pmhFieldName, patientPmhServiceResponse.getResponseObject());
+            }
         }
-        CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientEncounterVitals, viewModelPost);
+
+        //Create linked hash map of vitals
+        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
+
+        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap = new LinkedHashMap<>();
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
+        String vitalFieldName;
+        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
+            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
+            patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
+            if (patientVitalServiceResponse.hasErrors()) {
+                continue;
+            } else {
+                patientEncounterVitalMap.put(vitalFieldName, patientVitalServiceResponse.getResponseObject());
+            }
+        }
+
+        //endregion
+
+        //set up viewModelGet with everything except vitals
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
+
         return ok(edit.render(currentUserSession, viewModelGet));
     }
 
     public Result editPost(int patientId) {
-
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         CreateViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
@@ -176,80 +216,323 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        //HPI Data
-        List<IPatientEncounterHpiField> patientEncounterHpiFields = medicalHelper.populateHpiFields(viewModelPost, patientEncounter, currentUserSession);
-        ServiceResponse<IPatientEncounterHpiField> patientEncounterHpiFieldServiceResponse;
-        for (int j = 0; j < patientEncounterHpiFields.size(); j++) {
-            if (StringUtils.isNullOrWhiteSpace(patientEncounterHpiFields.get(j).getHpiFieldValue())) {
-                continue;
-            } else {
-                patientEncounterHpiFieldServiceResponse = medicalService.createPatientEncounterHpiField(patientEncounterHpiFields.get(j));
-                if (patientEncounterHpiFieldServiceResponse.hasErrors()) {
-                    return internalServerError();
-                }
-            }
+        //region **Save stuff**
+        //HPI tab
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = getPatientEncounterHpiFields(viewModelPost,patientEncounter.getId(),currentUserSession.getId());
+        ServiceResponse<List<? extends IPatientEncounterHpiField>> patientEncounterHpiFieldsServiceResponse = medicalService.createPatientEncounterHpiFields(patientEncounterHpiFields);
+        if (patientEncounterHpiFieldsServiceResponse.hasErrors()){
+            return internalServerError();
         }
 
-        //PMH Data
-        List<IPatientEncounterPmhField> patientEncounterPmhFields = medicalHelper.populatePmhFields(viewModelPost, patientEncounter, currentUserSession);
-        ServiceResponse<IPatientEncounterPmhField> patientEncounterPmhFieldServiceResponse;
-        for (int m = 0; m < patientEncounterPmhFields.size(); m++) {
-            if (StringUtils.isNullOrWhiteSpace(patientEncounterPmhFields.get(m).getPmhFieldValue())) {
-                continue;
-            } else {
-                patientEncounterPmhFieldServiceResponse = medicalService.createPatientEncounterPmhField(patientEncounterPmhFields.get(m));
-                if (patientEncounterPmhFieldServiceResponse.hasErrors()) {
-                    return internalServerError();
-                }
-            }
+        //PMH tab
+        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = getPatientEncounterPmhFields(viewModelPost,patientEncounter.getId(), currentUserSession.getId());
+        ServiceResponse<List<? extends IPatientEncounterPmhField>> patientEncounterPmhFieldsServiceResponse = medicalService.createPatientEncounterPmhFields(patientEncounterPmhFields);
+        if (patientEncounterPmhFieldsServiceResponse.hasErrors()){
+            return internalServerError();
         }
-        //Treatment Data
-        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = medicalHelper.populateTreatmentFields(viewModelPost, patientEncounter, currentUserSession);
-        ServiceResponse<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldServiceResponse;
-        for (int i = 0; i < patientEncounterTreatmentFields.size(); i++) {
-            if (StringUtils.isNullOrWhiteSpace(patientEncounterTreatmentFields.get(i).getTreatmentFieldValue())) {
-                continue;
-            } else {
-                patientEncounterTreatmentFieldServiceResponse = medicalService.createPatientEncounterTreatmentField(patientEncounterTreatmentFields.get(i));
-                if (patientEncounterTreatmentFieldServiceResponse.hasErrors()) {
-                    return internalServerError();
-                }
-            }
+
+        //treatment tab
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = getPatientEncounterTreatmentFields(viewModelPost, patientEncounter.getId(), currentUserSession.getId());
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentFieldsServiceResponse = medicalService.createPatientEncounterTreatmentFields(patientEncounterTreatmentFields);
+        if (patientEncounterTreatmentFieldsServiceResponse.hasErrors()){
+            return internalServerError();
         }
+
         //prescriptions
-        List<IPatientPrescription> patientPrescriptions = medicalHelper.populatePatientPrescriptions(viewModelPost, patientEncounter, currentUserSession);
-        ServiceResponse<IPatientPrescription> patientPrescriptionServiceResponse;
-        for (int k = 0; k < patientPrescriptions.size(); k++) {
-            if (StringUtils.isNullOrWhiteSpace(patientPrescriptions.get(k).getMedicationName())) {
-                continue;
-            } else {
-                patientPrescriptionServiceResponse = medicalService.createPatientPrescription(patientPrescriptions.get(k));
-                if (patientPrescriptionServiceResponse.hasErrors()) {
-                    return internalServerError();
-                }
-            }
+        List<? extends IPatientPrescription> patientPrescriptions = getPatientPrescriptions(viewModelPost, patientEncounter.getId(), currentUserSession.getId());
+        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = medicalService.createPatientPrescriptions(patientPrescriptions);
+        if (patientPrescriptionsServiceResponse.hasErrors()){
+            return internalServerError();
         }
+        //endregion
+
         return redirect(routes.MedicalController.indexGet(0, null));
     }
 
     public Result updateVitalsPost(int id) {
-
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         ServiceResponse<IPatientEncounter> currentEncounterByPatientId = searchService.findCurrentEncounterByPatientId(id);
+        if (currentEncounterByPatientId.hasErrors()) {
+            return internalServerError();
+        }
+
+        IPatientEncounter patientEncounter = currentEncounterByPatientId.getResponseObject();
 
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
 
-        List<? extends IPatientEncounterVital> patientEncounterVitals = medicalHelper.populatePatientVitals(updateVitalsModel, currentUser.getId(), currentEncounterByPatientId.getResponseObject().getId());
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > 0) {
-                patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
-                if (patientEncounterVitalServiceResponse.hasErrors()) {
-                    return internalServerError();
-                }
-            }
+        List<? extends IPatientEncounterVital> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel, patientEncounter.getId(), currentUser.getId());
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVitals(patientEncounterVitals);
+        if (patientEncounterVitalServiceResponse.hasErrors()) {
+            return internalServerError();
         }
+
         return ok("true");
     }
+
+    //region **generate lists of stuff from CreateViewModelPost**
+    private List<? extends IPatientPrescription> getPatientPrescriptions(CreateViewModelPost viewModelPost, int patientEncounterId, int userId){
+        IPatientPrescription patientPrescription;
+        List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription1())) {
+            patientPrescription = medicalHelper.getPatientPrescription(userId,patientEncounterId,viewModelPost.getPrescription1());
+            patientPrescriptions.add(patientPrescription);
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription2())) {
+            patientPrescription = medicalHelper.getPatientPrescription(userId,patientEncounterId,viewModelPost.getPrescription2());
+            patientPrescriptions.add(patientPrescription);
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription3())) {
+            patientPrescription = medicalHelper.getPatientPrescription(userId,patientEncounterId,viewModelPost.getPrescription3());
+            patientPrescriptions.add(patientPrescription);
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription4())) {
+            patientPrescription = medicalHelper.getPatientPrescription(userId,patientEncounterId,viewModelPost.getPrescription4());
+            patientPrescriptions.add(patientPrescription);
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription5())) {
+            patientPrescription = medicalHelper.getPatientPrescription(userId,patientEncounterId,viewModelPost.getPrescription5());
+            patientPrescriptions.add(patientPrescription);
+        }
+        return patientPrescriptions;
+    }
+    private List<? extends IPatientEncounterTreatmentField> getPatientEncounterTreatmentFields(CreateViewModelPost viewModelPost, int patientEncounterId, int userId){
+        ServiceResponse<ITreatmentField> treatmentFieldServiceResponse;
+        IPatientEncounterTreatmentField patientEncounterTreatmentField;
+        List<IPatientEncounterTreatmentField> patientEncounterTreatmentFields = new ArrayList<>();
+
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("assessment");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId, patientEncounterId, treatmentFieldServiceResponse.getResponseObject(), viewModelPost.getAssessment());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("treatment");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId,patientEncounterId,treatmentFieldServiceResponse.getResponseObject(),viewModelPost.getTreatment());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem1())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("problem");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId,patientEncounterId,treatmentFieldServiceResponse.getResponseObject(),viewModelPost.getProblem1());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem2())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("problem");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId,patientEncounterId,treatmentFieldServiceResponse.getResponseObject(),viewModelPost.getProblem2());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem3())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("problem");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId,patientEncounterId,treatmentFieldServiceResponse.getResponseObject(),viewModelPost.getProblem3());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem4())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("problem");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId,patientEncounterId,treatmentFieldServiceResponse.getResponseObject(),viewModelPost.getProblem4());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem5())) {
+            treatmentFieldServiceResponse = searchService.findTreatmentField("problem");
+            if (!treatmentFieldServiceResponse.hasErrors()){
+                patientEncounterTreatmentField = medicalHelper.getPatientEncounterTreatmentField(userId,patientEncounterId,treatmentFieldServiceResponse.getResponseObject(),viewModelPost.getProblem5());
+                patientEncounterTreatmentFields.add(patientEncounterTreatmentField);
+            }
+        }
+        return patientEncounterTreatmentFields;
+    }
+    private List<? extends IPatientEncounterPmhField> getPatientEncounterPmhFields(CreateViewModelPost viewModelPost, int patientEncounterId, int userId){
+        ServiceResponse<IPmhField> pmhFieldServiceResponse;
+        IPatientEncounterPmhField patientEncounterPmhField;
+        List<IPatientEncounterPmhField> patientEncounterPmhFields = new ArrayList<>();
+
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory())) {
+            pmhFieldServiceResponse = searchService.findPmhField("medicalSurgicalHistory");
+            if (!pmhFieldServiceResponse.hasErrors()){
+                patientEncounterPmhField = medicalHelper.getPatientEncounterPmhField(userId,patientEncounterId,pmhFieldServiceResponse.getResponseObject(),viewModelPost.getMedicalSurgicalHistory());
+                patientEncounterPmhFields.add(patientEncounterPmhField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory())) {
+            pmhFieldServiceResponse = searchService.findPmhField("socialHistory");
+            if (!pmhFieldServiceResponse.hasErrors()){
+                patientEncounterPmhField = medicalHelper.getPatientEncounterPmhField(userId,patientEncounterId,pmhFieldServiceResponse.getResponseObject(),viewModelPost.getSocialHistory());
+                patientEncounterPmhFields.add(patientEncounterPmhField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication())) {
+            pmhFieldServiceResponse = searchService.findPmhField("currentMedication");
+            if (!pmhFieldServiceResponse.hasErrors()){
+                patientEncounterPmhField = medicalHelper.getPatientEncounterPmhField(userId,patientEncounterId,pmhFieldServiceResponse.getResponseObject(),viewModelPost.getCurrentMedication());
+                patientEncounterPmhFields.add(patientEncounterPmhField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory())) {
+            pmhFieldServiceResponse = searchService.findPmhField("familyHistory");
+            if (!pmhFieldServiceResponse.hasErrors()){
+                patientEncounterPmhField = medicalHelper.getPatientEncounterPmhField(userId,patientEncounterId,pmhFieldServiceResponse.getResponseObject(),viewModelPost.getFamilyHistory());
+                patientEncounterPmhFields.add(patientEncounterPmhField);
+            }
+        }
+        return patientEncounterPmhFields;
+    }
+    private List<? extends IPatientEncounterHpiField> getPatientEncounterHpiFields(CreateViewModelPost viewModelPost, int patientEncounterId, int userId) {
+        ServiceResponse<IHpiField> hpiFieldServiceResponse;
+        IPatientEncounterHpiField patientEncounterHpiField;
+        List<IPatientEncounterHpiField> patientEncounterHpiFields = new ArrayList();
+
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset())) {
+            hpiFieldServiceResponse = searchService.findHpiField("onset");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getOnset());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSeverity())) {
+            hpiFieldServiceResponse = searchService.findHpiField("severity");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getSeverity());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRadiation())) {
+            hpiFieldServiceResponse = searchService.findHpiField("radiation");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getRadiation());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getQuality())) {
+            hpiFieldServiceResponse = searchService.findHpiField("quality");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getQuality());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProvokes())) {
+            hpiFieldServiceResponse = searchService.findHpiField("provokes");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getProvokes());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPalliates())) {
+            hpiFieldServiceResponse = searchService.findHpiField("palliates");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getPalliates());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTimeOfDay())) {
+            hpiFieldServiceResponse = searchService.findHpiField("timeOfDay");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getTimeOfDay());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPhysicalExamination())) {
+            hpiFieldServiceResponse = searchService.findHpiField("physicalExamination");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getPhysicalExamination());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getNarrative())) {
+            hpiFieldServiceResponse = searchService.findHpiField("narrative");
+            if (!hpiFieldServiceResponse.hasErrors()) {
+                patientEncounterHpiField = medicalHelper.getPatientEncounterHpiField(userId, patientEncounterId, hpiFieldServiceResponse.getResponseObject(), viewModelPost.getNarrative());
+                patientEncounterHpiFields.add(patientEncounterHpiField);
+            }
+        }
+        return patientEncounterHpiFields;
+    }
+    private List<? extends IPatientEncounterVital> getPatientEncounterVitals(UpdateVitalsModel updateVitalsModel, int patientEncounterId, int userId) {
+        ServiceResponse<IVital> vitalServiceResponse;
+        IPatientEncounterVital patientEncounterVital;
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+
+        if (updateVitalsModel.getRespRate() > 0) {
+            vitalServiceResponse = searchService.findVital("respiratoryRate");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getRespRate());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getHeartRate() > 0) {
+            vitalServiceResponse = searchService.findVital("heartRate");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getHeartRate());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getTemperature() > 0) {
+            vitalServiceResponse = searchService.findVital("temperature");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getTemperature());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getOxygen() > 0) {
+            vitalServiceResponse = searchService.findVital("oxygenSaturation");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getOxygen());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getHeightIn() > 0) {
+            vitalServiceResponse = searchService.findVital("heightInches");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getHeightIn());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getHeightFt() > 0) {
+            vitalServiceResponse = searchService.findVital("heightFeet");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getHeightFt());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getWeight() > 0) {
+            vitalServiceResponse = searchService.findVital("weight");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getWeight());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getBpSystolic() > 0) {
+            vitalServiceResponse = searchService.findVital("bloodPressureSystolic");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getBpSystolic());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getBpDiastolic() > 0) {
+            vitalServiceResponse = searchService.findVital("bloodPressureDiastolic");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getBpDiastolic());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        if (updateVitalsModel.getGlucose() > 0) {
+            vitalServiceResponse = searchService.findVital("glucose");
+            if (!vitalServiceResponse.hasErrors()) {
+                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getGlucose());
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+        return patientEncounterVitals;
+    }
+    //endregion
 }

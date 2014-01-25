@@ -20,7 +20,6 @@ import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.index;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import org.jboss.netty.util.internal.StringUtil;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;

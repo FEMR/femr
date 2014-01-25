@@ -17,6 +17,7 @@ public interface IMedicalService {
 
     ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields);
 
+    ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
     ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions);
 
     boolean hasPatientBeenCheckedIn(int encounterId);

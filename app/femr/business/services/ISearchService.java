@@ -28,5 +28,8 @@ public interface ISearchService {
     ServiceResponse<IHpiField> findHpiField(String name);
     ServiceResponse<IPmhField> findPmhField(String name);
     ServiceResponse<List<? extends IVital>> findAllVitals();
+    ServiceResponse<List<? extends ITreatmentField>> findAllTreatmentFields();
+    ServiceResponse<List<? extends IHpiField>> findAllHpiFields();
+    ServiceResponse<List<? extends IPmhField>> findAllPmhFields();
     ServiceResponse<List<? extends IMedication>> findAllMedications();
 }

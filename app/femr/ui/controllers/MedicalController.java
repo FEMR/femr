@@ -31,28 +31,7 @@ import java.util.*;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class MedicalController extends Controller {
-    private static final String[] TREATMENT_FIELDS = new String[]{
-            "assessment",
-            "problem",
-            "treatment",
-    };
-    private static final String[] PMH_FIELDS = new String[]{
-            "medicalSurgicalHistory",
-            "socialHistory",
-            "currentMedication",
-            "familyHistory"
-    };
-    private static final String[] HPI_FIELDS = new String[]{
-            "onset",
-            "severity",
-            "radiation",
-            "quality",
-            "provokes",
-            "palliates",
-            "timeOfDay",
-            "physicalExamination",
-            "narrative"
-    };
+
     private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
     private final Form<SearchViewModel> searchViewModelForm = Form.form(SearchViewModel.class);
     private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
@@ -137,7 +116,7 @@ public class MedicalController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
 
-        //viewModelPost is populated with editable fields
+        //get a list of prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         List<? extends IPatientPrescription> patientPrescriptions = new ArrayList<>();
         if (patientPrescriptionsServiceResponse.hasErrors()) {
@@ -146,77 +125,87 @@ public class MedicalController extends Controller {
             patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         }
 
+        //region **Mapping of treatment fields, HPI, and PMH**
+
+        //Create linked hash map of treatment fields
+        //get a list of available treatment fields
+        ServiceResponse<List<? extends ITreatmentField>> treatmentFieldsServiceResponse = searchService.findAllTreatmentFields();
+        List<? extends ITreatmentField> treatmentFields = treatmentFieldsServiceResponse.getResponseObject();
+
+        //initalize map to store treatment fields: Map<treatmentFieldName, List of values>
+        //the list of values is stored in desecending order by time taken
+        Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentServiceResponse;
+        String treatmentFieldName;
+        //loop through each available treatment field and build the map
+        for (int treatmentFieldIndex = 0; treatmentFieldIndex < treatmentFields.size(); treatmentFieldIndex++) {
+            treatmentFieldName = treatmentFields.get(treatmentFieldIndex).getName().trim();
+            patientTreatmentServiceResponse = searchService.findTreatmentFields(patientEncounter.getId(), treatmentFieldName);
+            if (patientTreatmentServiceResponse.hasErrors()) {
+                continue;
+            } else {
+                patientEncounterTreatmentMap.put(treatmentFieldName, patientTreatmentServiceResponse.getResponseObject());
+            }
+        }
+
         //Create linked hash map of history of present illness fields
+        ServiceResponse<List<? extends IHpiField>> hpiFieldServiceResponse = searchService.findAllHpiFields();
+        List<? extends IHpiField> hpiFields = hpiFieldServiceResponse.getResponseObject();
+
         Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap = new LinkedHashMap<>();
         ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiServiceResponse;
-        for (int hpiFieldIndex = 0; hpiFieldIndex < HPI_FIELDS.length; hpiFieldIndex++){
-            patientHpiServiceResponse = searchService.findHpiFields(patientEncounter.getId(), HPI_FIELDS[hpiFieldIndex]);
+        String hpiFieldName;
+        for (int hpiFieldIndex = 0; hpiFieldIndex < hpiFields.size(); hpiFieldIndex++){
+            hpiFieldName = hpiFields.get(hpiFieldIndex).getName().trim();
+            patientHpiServiceResponse = searchService.findHpiFields(patientEncounter.getId(), hpiFieldName);
             if (patientHpiServiceResponse.hasErrors()){
                 continue;
             }            else{
-                patientEncounterHpiMap.put(HPI_FIELDS[hpiFieldIndex], patientHpiServiceResponse.getResponseObject());
+                patientEncounterHpiMap.put(hpiFieldName, patientHpiServiceResponse.getResponseObject());
             }
         }
 
         //Create linked hash map of past medical history fields
+        ServiceResponse<List<? extends IPmhField>> pmhFieldServiceResponse = searchService.findAllPmhFields();
+        List<? extends IPmhField> pmhFields = pmhFieldServiceResponse.getResponseObject();
+
         Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap = new LinkedHashMap<>();
         ServiceResponse<List<? extends IPatientEncounterPmhField>> patientPmhServiceResponse;
-        for (int pmhFieldIndex = 0; pmhFieldIndex < PMH_FIELDS.length; pmhFieldIndex++) {
-            patientPmhServiceResponse = searchService.findPmhFields(patientEncounter.getId(), PMH_FIELDS[pmhFieldIndex]);
+        String pmhFieldName;
+        for (int pmhFieldIndex = 0; pmhFieldIndex < pmhFields.size(); pmhFieldIndex++) {
+            pmhFieldName = pmhFields.get(pmhFieldIndex).getName().trim();
+            patientPmhServiceResponse = searchService.findPmhFields(patientEncounter.getId(), pmhFieldName);
             if (patientPmhServiceResponse.hasErrors()) {
                 continue;
             } else {
-                patientEncounterPmhMap.put(PMH_FIELDS[pmhFieldIndex], patientPmhServiceResponse.getResponseObject());
+                patientEncounterPmhMap.put(pmhFieldName, patientPmhServiceResponse.getResponseObject());
             }
         }
 
-        //Create linked hash map of treatment fields
-        Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentServiceResponse;
-        for (int treatmentFieldIndex = 0; treatmentFieldIndex < TREATMENT_FIELDS.length; treatmentFieldIndex++) {
-            patientTreatmentServiceResponse = searchService.findTreatmentFields(patientEncounter.getId(), TREATMENT_FIELDS[treatmentFieldIndex]);
-            if (patientTreatmentServiceResponse.hasErrors()) {
+        //Create linked hash map of vitals
+        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
+
+        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap = new LinkedHashMap<>();
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
+        String vitalFieldName;
+        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++){
+            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
+            patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
+            if (patientVitalServiceResponse.hasErrors()){
                 continue;
-            } else {
-                patientEncounterTreatmentMap.put(TREATMENT_FIELDS[treatmentFieldIndex], patientTreatmentServiceResponse.getResponseObject());
+            }else{
+                patientEncounterVitalMap.put(vitalFieldName,patientVitalServiceResponse.getResponseObject());
             }
         }
+
+        //endregion
 
         //use CreateViewModelPost as a model for viewModelGet
         CreateViewModelPost viewModelPost = medicalHelper.populateViewModelPost(patientPrescriptions, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
 
         //set up viewModelGet with everything except vitals
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, viewModelPost);
-
-        //add vitals to viewModelGet
-        Float vital = getPatientEncounterVitalOrNull("respiratoryRate", patientEncounter.getId());
-        if (vital != null) {
-            viewModelGet.setRespiratoryRate(vital.intValue());
-        }
-        vital = getPatientEncounterVitalOrNull("heartRate", patientEncounter.getId());
-        if (vital != null) {
-            viewModelGet.setHeartRate(vital.intValue());
-        }
-        vital = getPatientEncounterVitalOrNull("heightFeet", patientEncounter.getId());
-        if (vital != null) {
-            viewModelGet.setHeightFeet(vital.intValue());
-        }
-        vital = getPatientEncounterVitalOrNull("heightInches", patientEncounter.getId());
-        if (vital != null) {
-            viewModelGet.setHeightInches(vital.intValue());
-        }
-        vital = getPatientEncounterVitalOrNull("bloodPressureSystolic", patientEncounter.getId());
-        if (vital != null) {
-            viewModelGet.setBloodPressureSystolic(vital.intValue());
-        }
-        vital = getPatientEncounterVitalOrNull("bloodPressureDiastolic", patientEncounter.getId());
-        if (vital != null) {
-            viewModelGet.setBloodPressureDiastolic(vital.intValue());
-        }
-        viewModelGet.setTemperature(getPatientEncounterVitalOrNull("temperature", patientEncounter.getId()));
-        viewModelGet.setOxygenSaturation(getPatientEncounterVitalOrNull("oxygenSaturation", patientEncounter.getId()));
-        viewModelGet.setWeight(getPatientEncounterVitalOrNull("weight", patientEncounter.getId()));
-        viewModelGet.setGlucose(getPatientEncounterVitalOrNull("glucose", patientEncounter.getId()));
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, viewModelPost, patientEncounterVitalMap);
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -437,15 +426,5 @@ public class MedicalController extends Controller {
             return 0;
         }
         return 1;
-    }
-
-    private Float getPatientEncounterVitalOrNull(String name, int encounterId) {
-        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse;
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(encounterId, name);
-        if (patientEncounterVitalServiceResponse.hasErrors()) {
-            return null;
-        } else {
-            return patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue();
-        }
     }
 }

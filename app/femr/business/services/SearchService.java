@@ -188,8 +188,8 @@ public class SearchService implements ISearchService {
         Query<PatientEncounterHpiField> query = getPatientEncounterHpiFieldQuery()
                 .fetch("hpiField")
                 .where()
-                    .eq("patient_encounter_id", encounterId)
-                    .eq("hpiField.name", name)
+                .eq("patient_encounter_id", encounterId)
+                .eq("hpiField.name", name)
                 .order().desc("date_taken");
         List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
         ServiceResponse<List<? extends IPatientEncounterHpiField>> response = new ServiceResponse<>();
@@ -240,6 +240,42 @@ public class SearchService implements ISearchService {
             response.setResponseObject(vitals);
         } else {
             response.addError("vitals", "no vitals available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends ITreatmentField>> findAllTreatmentFields() {
+        List<? extends ITreatmentField> treatmentFields = treatmentFieldRepository.findAll(TreatmentField.class);
+        ServiceResponse<List<? extends ITreatmentField>> response = new ServiceResponse<>();
+        if (treatmentFields.size() > 0) {
+            response.setResponseObject(treatmentFields);
+        } else {
+            response.addError("", "no treatment fields available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IHpiField>> findAllHpiFields() {
+        List<? extends IHpiField> hpiFields = hpiFieldRepository.findAll(HpiField.class);
+        ServiceResponse<List<? extends IHpiField>> response = new ServiceResponse<>();
+        if (hpiFields.size() > 0) {
+            response.setResponseObject(hpiFields);
+        } else {
+            response.addError("", "no hpi fields available");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IPmhField>> findAllPmhFields() {
+        List<? extends IPmhField> pmhFields = pmhFieldRepository.findAll(PmhField.class);
+        ServiceResponse<List<? extends IPmhField>> response = new ServiceResponse<>();
+        if (pmhFields.size() > 0) {
+            response.setResponseObject(pmhFields);
+        } else {
+            response.addError("", "no pmh fields available");
         }
         return response;
     }

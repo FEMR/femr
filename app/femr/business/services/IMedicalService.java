@@ -5,16 +5,19 @@ import femr.common.models.IPatientEncounterHpiField;
 import femr.common.models.IPatientEncounterPmhField;
 import femr.common.models.IPatientEncounterTreatmentField;
 import femr.common.models.IPatientPrescription;
+import femr.data.models.PatientEncounterHpiField;
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 public interface IMedicalService {
-    ServiceResponse<IPatientEncounterTreatmentField> createPatientEncounterTreatmentField(IPatientEncounterTreatmentField patientEncounterTreatmentField);
+    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> createPatientEncounterTreatmentFields(List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields);
 
-    ServiceResponse<IPatientEncounterHpiField> createPatientEncounterHpiField(IPatientEncounterHpiField patientEncounterHpiField);
+    ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields);
 
-    ServiceResponse<IPatientEncounterPmhField> createPatientEncounterPmhField(IPatientEncounterPmhField patientEncounterPmhField);
+    ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields);
 
-    ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
+    ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions);
 
     boolean hasPatientBeenCheckedIn(int encounterId);
     public ServiceResponse<DateTime> getDateOfCheckIn(int encounterId);

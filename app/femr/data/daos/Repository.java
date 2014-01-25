@@ -18,6 +18,11 @@ public class Repository<T> implements IRepository<T> {
         Ebean.save(entity);
         return entity;
     }
+    @Override
+    public List<? extends T> createAll(List<? extends T> entities){
+        Ebean.save(entities);
+        return entities;
+    }
 
     @Override
     public List<? extends T> findAll(Class<? extends T> clazz) {

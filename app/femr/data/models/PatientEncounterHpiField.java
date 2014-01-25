@@ -1,12 +1,10 @@
 package femr.data.models;
 
+import femr.common.models.IHpiField;
 import femr.common.models.IPatientEncounterHpiField;
 import org.joda.time.DateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "patient_encounter_hpi_fields")
@@ -18,8 +16,9 @@ public class PatientEncounterHpiField implements IPatientEncounterHpiField {
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    @Column(name = "hpi_field_id", nullable = false)
-    private int hpiFieldId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hpi_field_id", nullable = false)
+    private HpiField hpiField;
     @Column(name = "hpi_field_value", nullable = false)
     private String hpiFieldValue;
     @Column(name = "date_taken", nullable = false)
@@ -41,13 +40,13 @@ public class PatientEncounterHpiField implements IPatientEncounterHpiField {
     }
 
     @Override
-    public int getHpiFieldId() {
-        return hpiFieldId;
+    public IHpiField getHpiField() {
+        return hpiField;
     }
 
     @Override
-    public void setHpiFieldId(int hpiFieldId) {
-        this.hpiFieldId = hpiFieldId;
+    public void setHpiField(IHpiField hpiField) {
+        this.hpiField = (HpiField)hpiField;
     }
 
     @Override

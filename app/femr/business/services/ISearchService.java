@@ -10,38 +10,28 @@ import java.util.Map;
 public interface ISearchService {
     ServiceResponse<IPatient> findPatientById(int id);
 
-    public ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
+    ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
 
     ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
 
     ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
 
-    //turn the service response object into a List<? extends IPatientEncounterVital>
-    //to take into consideration replaced vitals
-    ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name);
-
     ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
 
     ServiceResponse<List<? extends IVital>> findAllVitals();
-
-    ServiceResponse<IVital> findVital(String name);
-
-    ServiceResponse<ITreatmentField> findTreatmentField(String name);
-
-    ServiceResponse<IPmhField> findPmhField(String name);
-
     ServiceResponse<List<? extends IMedication>> findAllMedications();
 
     ServiceResponse<List<? extends IPatientPrescription>> findPrescriptionsByEncounterId(int id);
+    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
 
-
-
+    ServiceResponse<IPatientEncounterVital> findPatientEncounterVital(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name);
-
-    ServiceResponse<Map<Integer, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int id);
     ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name);
-
     ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name);
 
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
+    ServiceResponse<IVital> findVital(String name);
+    ServiceResponse<ITreatmentField> findTreatmentField(String name);
+    ServiceResponse<IHpiField> findHpiField(String name);
+    ServiceResponse<IPmhField> findPmhField(String name);
+
 }

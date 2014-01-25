@@ -81,16 +81,16 @@ public class MedicalHelper {
         viewModelGet.setCurrentMedication(getPmhFieldOrNull("currentMedication", patientEncounterPmhMap));
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
-        viewModelGet.setRespiratoryRate(getVitalOrNull("respiratoryRate", patientEncounterVitalMap).intValue());
-        viewModelGet.setHeartRate(getVitalOrNull("heartRate", patientEncounterVitalMap).intValue());
-        viewModelGet.setHeightFeet(getVitalOrNull("heightFeet", patientEncounterVitalMap).intValue());
-        viewModelGet.setHeightInches(getVitalOrNull("heightInches", patientEncounterVitalMap).intValue());
-        viewModelGet.setBloodPressureSystolic(getVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap).intValue());
-        viewModelGet.setBloodPressureDiastolic(getVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap).intValue());
-        viewModelGet.setTemperature(getVitalOrNull("temperature", patientEncounterVitalMap));
-        viewModelGet.setOxygenSaturation(getVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
-        viewModelGet.setWeight(getVitalOrNull("weight", patientEncounterVitalMap));
-        viewModelGet.setGlucose(getVitalOrNull("glucose", patientEncounterVitalMap));
+        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
+        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
+        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
+        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
+        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
+        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
+        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
+        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
+        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
+        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
 
         return viewModelGet;
     }
@@ -156,7 +156,17 @@ public class MedicalHelper {
         }
     }
 
-    private Float getVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
+    private Integer getIntVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
+        if (patientEncounterVitalMap.containsKey(key)) {
+            if (patientEncounterVitalMap.get(key).size() < 1) {
+                return null;
+            }
+            return patientEncounterVitalMap.get(key).get(0).getVitalValue().intValue();
+        }
+        return null;
+    }
+
+    private Float getFloatVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
         if (patientEncounterVitalMap.containsKey(key)) {
             if (patientEncounterVitalMap.get(key).size() < 1) {
                 return null;

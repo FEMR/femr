@@ -1,8 +1,9 @@
 package femr.ui.models.search;
 
 import java.util.List;
+import femr.ui.models.medical.CreateViewModelGet;
 
-public class CreateEncounterViewModel {
+public class CreateEncounterViewModel extends femr.ui.models.medical.CreateViewModelGet {
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;

@@ -104,13 +104,16 @@ public class TriageController extends Controller {
         //save new patient if new form
         //else find the patient to create a new encounter for
         ServiceResponse<IPatient> patientServiceResponse;
+        IPatient patient;
         if (id == 0) {
-            IPatient patient = triageHelper.getPatient(viewModel, currentUser);
+            patient = triageHelper.getPatient(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
         } else {
             patientServiceResponse = searchService.findPatientById(id);
+            patient = patientServiceResponse.getResponseObject();
             if (!StringUtils.isNullOrWhiteSpace(viewModel.getSex())) {
-                patientServiceResponse = triageService.updatePatientSex(patientServiceResponse.getResponseObject().getId(), viewModel.getSex());
+                patient.setSex(viewModel.getSex());
+                patientServiceResponse = triageService.updatePatient(patient);
             }
         }
         if (patientServiceResponse.hasErrors()) {

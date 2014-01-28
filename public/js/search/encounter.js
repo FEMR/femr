@@ -3,6 +3,7 @@
  * adds bootstrap functionality to encounter page
  */
 
+// This is for the showEncounter.scala.html page
 $(document).ready(function () {
 
 $('#myTab a').click(function (e) {

@@ -1,9 +1,11 @@
 package femr.ui.models.search;
 
 import java.util.List;
-import femr.ui.models.medical.CreateViewModelGet;
+//import femr.ui.models.medical.CreateViewModelGet;
+//import femr.ui.models.pharmacy.CreateViewModelGet;
 
-public class CreateEncounterViewModel extends femr.ui.models.medical.CreateViewModelGet {
+
+public class CreateEncounterViewModel {
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;
@@ -26,6 +28,23 @@ public class CreateEncounterViewModel extends femr.ui.models.medical.CreateViewM
     private List<String> problemList;
     private List<String> perscribList;
 
+
+    // Add view models to this using component
+    private femr.ui.models.medical.CreateViewModelGet MedicalView;
+
+    private femr.ui.models.pharmacy.CreateViewModelGet PharmacyView;
+
+
+
+    // Medical View getter and setter
+    public femr.ui.models.medical.CreateViewModelGet getMedicalView() { return MedicalView; }
+
+    public void setMedicalView(femr.ui.models.medical.CreateViewModelGet medicalView) { MedicalView = medicalView; }
+
+    // Pharmacy view getter and setter
+    public femr.ui.models.pharmacy.CreateViewModelGet getPharmacyView() { return PharmacyView; }
+
+    public void setPharmacyView(femr.ui.models.pharmacy.CreateViewModelGet pharmacyView) { PharmacyView = pharmacyView; }
 
     public Integer getBloodPressureSystolic() {
         return bloodPressureSystolic;

@@ -19,6 +19,12 @@ import femr.util.stringhelpers.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+// include the view model for medical
+import femr.ui.models.medical.CreateViewModelGet;
+
+// include the view model for pharmacy
+//import femr.ui.models.pharmacy.CreateViewModelGet;
+
 public class SearchController extends Controller {
     private ISessionService sessionService;
     private ISearchService searchService;
@@ -109,6 +115,14 @@ public class SearchController extends Controller {
             viewModel.setSex(patient.getSex());
         }
 
+        // Get the medical Responce
+        // Store it in the medical component
+
+        femr.ui.models.medical.CreateViewModelGet MedicalModel = new femr.ui.models.medical.CreateViewModelGet();
+        femr.ui.models.pharmacy.CreateViewModelGet PharmacyModel = new femr.ui.models.pharmacy.CreateViewModelGet();
+        viewModel.setMedicalView(MedicalModel);
+        viewModel.setPharmacyView(PharmacyModel);
+
         /*                findAllTreatmentByEncounterId is in the process of being replaced
         //Get treatment info
         List<String> problemList = new ArrayList<String>();
@@ -143,7 +157,7 @@ public class SearchController extends Controller {
         }
 
 
-        return ok(showEncounter.render(currentUser, patientEncounter, viewModel));
+        return ok(showEncounter.render(currentUser, patientEncounter, viewModel));   // this is where the responce is returned to the encounter page
     }
 
     private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital) {

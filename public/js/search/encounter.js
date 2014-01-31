@@ -13,15 +13,15 @@ $('#myTab a').click(function (e) {
 });
     //this function handles the switching of the tabs in the encounter view
     $('#myTab a').click(function () {
-        if ($(this).attr('id') === "EncounterInfoTab"){
-            showEncounterInfo();
-        }
-        else if ($(this).attr('id') === "hpiTab") {
+        if ($(this).attr('id') === "hpiTab") {
             showHpi();
         } else if ($(this).attr('id') === "treatmentTab") {
             showTreatment();
         } else if($(this).attr('id') === "pmhTab") {
             showPmh();
+        }
+        else if($(this).attr('id') === "pharmacyTab"){
+            showPharamcy();
         }
     });
 
@@ -29,28 +29,25 @@ $('#myTab a').click(function (e) {
 
 // implement the functions to show and hide the tabes on the encounters page
 
-function showEncounterInfo() {
-    $('#hpiControl').addClass('hidden');
-    $('#treatmentControl').addClass('hidden');
-    $('#pmhControl').addClass('hidden');
-    $('#encounterControl').removeClass('hidden');
-}
 function showTreatment() {
-    $('#encounterControl').addClass('hidden');
     $('#hpiControl').addClass('hidden');
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');
 }
 function showHpi() {
-    $('#encounterControl').addClass('hidden');
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
     $('#hpiControl').removeClass('hidden');
 }
 
 function showPmh() {
-    $('#encounterControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
     $('#hpiControl').addClass('hidden');
     $('#pmhControl').removeClass('hidden');
+}
+function showPharamcy() {
+    $('#hpiControl').addClass('hidden');
+    $('#pmhControl').addClass('hidden');
+    $('#treatmentControl').addClass('hidden');
+    $('#pharmacyControl').removeClass('hidden');
 }

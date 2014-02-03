@@ -105,6 +105,7 @@
             <!--*************************
              List of all the tabs on the encounter page
              ********************************************-->
+     @*   @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {  *@
         <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
             <ul id="myTab" class="nav nav-tabs">
                 <li class="active"><a id="hpiTab">HPI</a></li>
@@ -125,16 +126,14 @@
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label for="onset">Onset</label>
-                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getOnset"/>
+                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getOnset" readonly/>
                                 </div>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
-                                    <label for="blank"></label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
+
                                     <label for="severity">Severity:</label>
-                                    <textarea rows="1" name="severity" class="form-control input-sm" >@viewModel.getMedicalView.getSeverity </textarea>
+                                    <input rows="1" name="severity" class="form-control input-sm" value="@viewModel.getMedicalView.getSeverity" readonly/>
 
                                 </div>
                             </div>
@@ -144,36 +143,36 @@
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <label for="radiation">Radiation</label>
-                                        <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getRadiation"/>
+                                        <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getRadiation" readonly/>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-xs-6">
                                     <div class="form-group">
                                         <label for="quality">Quality</label>
-                                        <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getQuality"/>
+                                        <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getQuality" readonly/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="provokes">Provokes</label>
-                            <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getProvokes"/>
+                            <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getProvokes" readonly/>
                         </div>
                         <div class="form-group">
                             <label for="palliates">Palliates</label>
-                            <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getPalliates"/>
+                            <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getPalliates" readonly/>
                         </div>
                         <div class="form-group">
                             <label for="timeOfDay">Time of Day</label>
-                            <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getTimeOfDay"/>
+                            <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getTimeOfDay" readonly/>
                         </div>
                         <div class="form-group">
                             <label for="timeOfDay">Narrative</label>
-                            <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getNarrative"/>
+                            <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getMedicalView.getNarrative" readonly/>
                         </div>
                         <div class="form-group">
                             <label for="physicalExamination">Physical Examination</label>
-                            <textarea rows="3" name="physicalExamination" class="form-control input-sm">@viewModel.getMedicalView.getPhysicalExamination</textarea>
+                            <textarea rows="3" name="physicalExamination" class="form-control input-sm" readonly>@viewModel.getMedicalView.getPhysicalExamination</textarea>
                         </div>
                     </div>
                 </div>
@@ -183,26 +182,19 @@
                 <div id="treatmentControl" class="hidden">
                     <div class="form-group">
                         <label for="assessment">Assessment</label>
-                        <textarea rows="3" name="assessment" class="form-control input-sm">@viewModel.getMedicalView.getAssessment</textarea>
+                        <textarea rows="3" name="assessment" class="form-control input-sm" readonly>@viewModel.getMedicalView.getAssessment</textarea>
                     </div>
                     <div class="form-group">
                         <label for="problem">Problem List</label>
                         <div class="row">
                             <div class="col-xs-9 col-sm-9 col-md-9">  <!-- I comented this out since I can fix it later -->
-                                <!--inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")
-                           inputPrescriptionOrProblem(2, viewModel.getProblem2, "problem")
-                            inputPrescriptionOrProblem(3, viewModel.getProblem3, "problem")
-                            inputPrescriptionOrProblem(4, viewModel.getProblem4, "problem")
-                           inputPrescriptionOrProblem(5, viewModel.getProblem5, "problem")  -->
+                             @*   @inputPrescriptionOrProblem(1, viewModel.getMedicalView.getProblem1, "problem")
+                                @inputPrescriptionOrProblem(2, viewModel.getMedicalView.getProblem2, "problem")
+                                @inputPrescriptionOrProblem(3, viewModel.getMedicalView.getProblem3, "problem")
+                                @inputPrescriptionOrProblem(4, viewModel.getMedicalView.getProblem4, "problem")
+                                @inputPrescriptionOrProblem(5, viewModel.getMedicalView.getProblem5, "problem") *@
                             </div>
-                            <div class="col-xs-3 col-sm-3 col-md-3">
-                                <div class="row">
-                                    <button id="addProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                                </div>
-                                <div class="row">
-                                    <button id="subtractProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -221,7 +213,7 @@
 
                     <div class="form-group">
                         <label for="treatment">Treatment Given</label>
-                        <textarea rows="3" name="treatment" class="form-control input-sm">@viewModel.getMedicalView.getTreatment</textarea>
+                        <textarea rows="3" name="treatment" class="form-control input-sm" readonly>@viewModel.getMedicalView.getTreatment</textarea>
                     </div>
                 </div>
 
@@ -229,50 +221,44 @@
                 <div id="pmhControl" class="hidden">
                     <div class="form-group">
                         <label for="medicalSurgicalHistory">Medical/Surgical History</label>
-                        <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" > @viewModel.getMedicalView.getMedicalSurgicalHistory </textarea>
+                        <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" readonly> @viewModel.getMedicalView.getMedicalSurgicalHistory </textarea>
                     </div>
                     <div class="form-group">
                         <label for="socialHistory">Social History</label>
-                        <textarea row ="3" name="socialHistory" class="form-control input-sm" > @viewModel.getMedicalView.getSocialHistory </textarea>
+                        <textarea row ="3" name="socialHistory" class="form-control input-sm" readonly> @viewModel.getMedicalView.getSocialHistory </textarea>
                     </div>
                     <div class="form-group">
                         <label for="currentMedication">Current Medications</label>
-                        <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm"> @viewModel.getMedicalView.getCurrentMedication </textarea>
+                        <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm" readonly> @viewModel.getMedicalView.getCurrentMedication </textarea>
                     </div>
                     <div class="form-group">
                         <label for="familyHistory">Family History</label>
-                        <textarea rows="3" name="familyHistory" class="form-control input-sm"> @viewModel.getMedicalView.getFamilyHistory  </textarea>
+                        <textarea rows="3" name="familyHistory" class="form-control input-sm" readonly> @viewModel.getMedicalView.getFamilyHistory  </textarea>
                     </div>
                 </div>
                     <!-- End of the PMH tab -->
 
                     <!-- This is the start of the Pharmacy tab -->
                 <div id="pharmacyControl" class="hidden">
-
-
-                    <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
-                        <div class="container text-center">
-                            <div class="row">
-                                <ol class="problems">
-                                    <label class="title">List of Diagnoses</label>
-                                        <!--   Need to fix this
+                    <div class="row">
+                        <ol class="problems">
+                            <label class="title">List of Diagnoses</label>
+                                <!--   Need to fix this
                                         for(y <- 1 to viewModel.getPharmacyView.getProblems.size) {
                                             <li>viewModel.getPharmacyView.getProblems(y - 1)</li>
                                         }  -->
-                                </ol>
-                            </div>
-                        </div>
+                        </ol>
                     </div>
-                    <div class="col-sm-9 col-md-9 col-xs-9 col-lg-9">
-                        <div class="container medicationContainer">
-                            <div class="row">
-                                <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
-                                    <label class="title">Medication</label>
-                                </div>
-                                <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
-                                    <label class="title">Replace?</label>
-                                </div>
-                            </div>
+
+
+                    <div class="form-group">
+
+                            <label class="title">Medication</label>
+
+
+                            <label class="title">Replace?</label>
+
+
                                 <!-- Need to fix this
                                 for(x <- 1 to viewModel.getPharmacyView.getMedications.size) {
                                     <div class="row add-margin">
@@ -297,13 +283,13 @@
                                     </div>
                                 } -->
 
-                        </div>
-                    </div>
-
                     </div>
                 </div>
+
             </div>
         </div>
+
+
 
     </div>
 

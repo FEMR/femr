@@ -1,8 +1,10 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
+import femr.business.services.IPharmacyService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.IMedicalService;
@@ -10,6 +12,7 @@ import femr.common.models.*;
 import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
+import femr.ui.views.html.pharmacies.index;
 import femr.util.calculations.dateUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -25,6 +28,7 @@ import java.util.Map;
 
 // include the view model for medical
 import femr.ui.models.medical.CreateViewModelGet;
+import views.html.defaultpages.error;
 
 // include the view model for pharmacy
 //import femr.ui.models.pharmacy.CreateViewModelGet;
@@ -33,16 +37,23 @@ public class SearchController extends Controller {
     private ISessionService sessionService;
     private ISearchService searchService;
     private IMedicalService medicalService;
+    private IPharmacyService pharmacyService;
+    private Provider<IPatientPrescription> patientPrescriptionProvider;
     private MedicalHelper medicalHelper;
+
     @Inject
     public SearchController(ISessionService sessionService,
                             ISearchService searchService,
                             IMedicalService medicalService,
+                            IPharmacyService pharmacyService,
+                            Provider<IPatientPrescription> patientPrescriptionProvider,
                             MedicalHelper medicalHelper) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.medicalHelper = medicalHelper;
+        this.pharmacyService = pharmacyService;
+        this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 
     /*
@@ -220,15 +231,35 @@ public class SearchController extends Controller {
         //set up viewModelGet with everything except vitals
         femr.ui.models.medical.CreateViewModelGet viewMedicalModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
 
-        // End of medical data
+        // ******* End of medical data
 
         // Get the medical Responce
         // Store it in the medical component
 
-
-        femr.ui.models.pharmacy.CreateViewModelGet PharmacyModel = new femr.ui.models.pharmacy.CreateViewModelGet();
         viewModel.setMedicalView(viewMedicalModel);
-        viewModel.setPharmacyView(PharmacyModel);
+
+        // ***************** Get the pharmacy data
+        //find patient prescriptions
+        femr.ui.models.pharmacy.CreateViewModelGet viewPharmacyModel = new femr.ui.models.pharmacy.CreateViewModelGet();
+
+       // List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
+        List<String> dynamicViewMedications = new ArrayList<>();
+
+        for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
+            if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
+                dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
+            }
+        }
+        //this should probably be left as a List or ArrayList
+        String[] viewMedications = new String[dynamicViewMedications.size()];
+        viewMedications = dynamicViewMedications.toArray(viewMedications);
+        viewPharmacyModel.setMedications(viewMedications);
+
+        // *********************** End of Pharmacy
+
+
+
+        viewModel.setPharmacyView(viewPharmacyModel);
 
         /*                findAllTreatmentByEncounterId is in the process of being replaced
         //Get treatment info

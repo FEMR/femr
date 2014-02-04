@@ -32,17 +32,20 @@ $('#myTab a').click(function (e) {
 function showTreatment() {
     $('#hpiControl').addClass('hidden');
     $('#pmhControl').addClass('hidden');
+    $('#pharmacyControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');
 }
 function showHpi() {
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
+    $('#pharmacyControl').addClass('hidden');
     $('#hpiControl').removeClass('hidden');
 }
 
 function showPmh() {
     $('#treatmentControl').addClass('hidden');
     $('#hpiControl').addClass('hidden');
+    $('#pharmacyControl').addClass('hidden');
     $('#pmhControl').removeClass('hidden');
 }
 function showPharamcy() {

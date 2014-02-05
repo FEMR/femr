@@ -1,7 +1,7 @@
 @(currentUser: femr.business.dtos.CurrentUser, patientEncounter: femr.common.models.IPatientEncounter, viewModel: femr.ui.models.search.CreateEncounterViewModel)
 
 @import femr.ui.views.html.layouts.main
-
+@import femr.ui.views.html.helpers.encounter._
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
@@ -187,12 +187,12 @@
                     <div class="form-group">
                         <label for="problem">Problem List</label>
                         <div class="row">
-                            <div class="col-xs-9 col-sm-9 col-md-9">  <!-- I comented this out since I can fix it later -->
-                             @*   @inputPrescriptionOrProblem(1, viewModel.getMedicalView.getProblem1, "problem")
-                                @inputPrescriptionOrProblem(2, viewModel.getMedicalView.getProblem2, "problem")
-                                @inputPrescriptionOrProblem(3, viewModel.getMedicalView.getProblem3, "problem")
-                                @inputPrescriptionOrProblem(4, viewModel.getMedicalView.getProblem4, "problem")
-                                @inputPrescriptionOrProblem(5, viewModel.getMedicalView.getProblem5, "problem") *@
+                            <div class="col-xs-9 col-sm-9 col-md-9">
+                                @outputPrescriptionOrProblem(1, viewModel.getMedicalView.getProblem1, "problem")
+                                @outputPrescriptionOrProblem(2, viewModel.getMedicalView.getProblem2, "problem")
+                                @outputPrescriptionOrProblem(3, viewModel.getMedicalView.getProblem3, "problem")
+                                @outputPrescriptionOrProblem(4, viewModel.getMedicalView.getProblem4, "problem")
+                                @outputPrescriptionOrProblem(5, viewModel.getMedicalView.getProblem5, "problem")
                             </div>
 
                         </div>
@@ -201,12 +201,11 @@
                         <label for="prescription">Prescriptions</label>
                         <div class="row">
                             <div class="col-xs-9 col-sm-9 col-md-9">
-                                    <!-- Come back and fix this
-                            inputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
-                            inputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
-                            inputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
-                            inputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
-                            inputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")  -->
+                            @outputPrescriptionOrProblem(1, viewModel.getMedicalView.getPrescription1, "prescription")
+                            @outputPrescriptionOrProblem(2, viewModel.getMedicalView.getPrescription2, "prescription")
+                            @outputPrescriptionOrProblem(3, viewModel.getMedicalView.getPrescription3, "prescription")
+                            @outputPrescriptionOrProblem(4, viewModel.getMedicalView.getPrescription4, "prescription")
+                            @outputPrescriptionOrProblem(5, viewModel.getMedicalView.getPrescription5, "prescription")
                             </div>
                         </div>
                     </div>

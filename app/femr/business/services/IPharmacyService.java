@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IPharmacyService {
 
-    ServiceResponse<IPatientPrescription> findPatientPrescriptionByEncounterIdAndPrescriptionName(int id, String name);
+    ServiceResponse<IPatientPrescription> findPatientPrescription(int id, String name);
 
     ServiceResponse<IPatientPrescription> updatePatientPrescription(IPatientPrescription patientPrescription);
 }

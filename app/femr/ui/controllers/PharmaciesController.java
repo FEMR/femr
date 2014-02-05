@@ -232,7 +232,7 @@ public class PharmaciesController extends Controller {
     }
 
     private IPatientPrescription updateOldPrescription(int replacementId, int encounterId, String name) {
-        ServiceResponse<IPatientPrescription> patientPrescriptionServiceResponse = pharmacyService.findPatientPrescriptionByEncounterIdAndPrescriptionName(encounterId, name);
+        ServiceResponse<IPatientPrescription> patientPrescriptionServiceResponse = pharmacyService.findPatientPrescription(encounterId, name);
         IPatientPrescription patientPrescription = patientPrescriptionServiceResponse.getResponseObject();
         patientPrescription.setReplaced(true);
         patientPrescription.setReplacementId(replacementId);

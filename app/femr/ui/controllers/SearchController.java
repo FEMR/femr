@@ -9,6 +9,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.IMedicalService;
 import femr.common.models.*;
+import femr.ui.helpers.controller.EncounterHelper;
 import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
@@ -39,7 +40,7 @@ public class SearchController extends Controller {
     private IMedicalService medicalService;
     private IPharmacyService pharmacyService;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
-    private MedicalHelper medicalHelper;
+    private EncounterHelper encounterHelper;
 
     @Inject
     public SearchController(ISessionService sessionService,
@@ -47,11 +48,11 @@ public class SearchController extends Controller {
                             IMedicalService medicalService,
                             IPharmacyService pharmacyService,
                             Provider<IPatientPrescription> patientPrescriptionProvider,
-                            MedicalHelper medicalHelper) {
+                            EncounterHelper encounterHelper) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
-        this.medicalHelper = medicalHelper;
+        this.encounterHelper = encounterHelper;
         this.pharmacyService = pharmacyService;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
@@ -62,7 +63,7 @@ public class SearchController extends Controller {
      */
     public Result viewEncounter(int id) {
         //Get patientEncounter
-        CreateEncounterViewModel viewModel = new CreateEncounterViewModel();
+        //CreateEncounterViewModel viewModel = new CreateEncounterViewModel();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findPatientEncounterById(id);
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
@@ -128,16 +129,16 @@ public class SearchController extends Controller {
         ServiceResponse<IPatient> patientServiceResponseid = null;
         patientServiceResponseid = searchService.findPatientById(patientEncounter.getPatientId());
         IPatient patient = patientServiceResponseid.getResponseObject();
-        if (!patientServiceResponseid.hasErrors()) {
-
-            viewModel.setFirstName(patient.getFirstName());
-            viewModel.setLastName(patient.getLastName());
-            viewModel.setAddress(patient.getAddress());
-            viewModel.setCity(patient.getCity());
-            viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
-            viewModel.setSex(patient.getSex());
-
-        }
+//        if (!patientServiceResponseid.hasErrors()) {
+//
+//            viewModel.setFirstName(patient.getFirstName());
+//            viewModel.setLastName(patient.getLastName());
+//            viewModel.setAddress(patient.getAddress());
+//            viewModel.setCity(patient.getCity());
+//            viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
+//            viewModel.setSex(patient.getSex());
+//
+//        }
 
         // Get medical
 
@@ -228,21 +229,12 @@ public class SearchController extends Controller {
 
         //endregion
 
-        //set up viewModelGet with everything except vitals
-        femr.ui.models.medical.CreateViewModelGet viewMedicalModel = medicalHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
-
-        // ******* End of medical data
-
-        // Get the medical Responce
-        // Store it in the medical component
-
-        viewModel.setMedicalView(viewMedicalModel);
+        CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
 
         // ***************** Get the pharmacy data
         //find patient prescriptions
-        femr.ui.models.pharmacy.CreateViewModelGet viewPharmacyModel = new femr.ui.models.pharmacy.CreateViewModelGet();
 
-       // List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
+        // List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         List<String> dynamicViewMedications = new ArrayList<>();
 
         for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
@@ -253,13 +245,32 @@ public class SearchController extends Controller {
         //this should probably be left as a List or ArrayList
         String[] viewMedications = new String[dynamicViewMedications.size()];
         viewMedications = dynamicViewMedications.toArray(viewMedications);
-        viewPharmacyModel.setMedications(viewMedications);
+        viewModel.setMedications(viewMedications);
+
+
+
+
+        // ***************** Get the pharmacy data
+        //find patient prescriptions
+
+       // List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
+//        List<String> dynamicViewMedications = new ArrayList<>();
+//
+//        for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
+//            if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
+//                dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
+//            }
+//        }
+//        //this should probably be left as a List or ArrayList
+//        String[] viewMedications = new String[dynamicViewMedications.size()];
+//        viewMedications = dynamicViewMedications.toArray(viewMedications);
+//        viewPharmacyModel.setMedications(viewMedications);
 
         // *********************** End of Pharmacy
 
 
 
-        viewModel.setPharmacyView(viewPharmacyModel);
+
 
         /*                findAllTreatmentByEncounterId is in the process of being replaced
         //Get treatment info

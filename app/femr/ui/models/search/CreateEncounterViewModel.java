@@ -5,24 +5,8 @@ import java.util.List;
 
 
 public class CreateEncounterViewModel {
-   /* private Integer bloodPressureSystolic;
-    private Integer bloodPressureDiastolic;
-    private Integer heartRate;
-    private Float temperature;
-    private Integer respiratoryRate;
-    private Float oxygenSaturation;
-    private Integer heightFeet;
-    private Integer heightInches;
-    private Float weight;
-    private Float glucose;
-    private String firstName;
-    private String lastName;*/
+
     private String address;
-/*    private String city;
-    private int age;
-    private String sex;
-    private String assessment;
-    private String treatment;*/
     private String familyHist;
     private List<String> problemList;
     private List<String> perscribList;
@@ -57,6 +41,13 @@ public class CreateEncounterViewModel {
     private String prescription3;
     private String prescription4;
     private String prescription5;
+    private String[] medications;
+    // Indicates is the Pharamacist replaced the medication
+    private Boolean replacedPerscription1;
+    private Boolean replacedPerscription2;
+    private Boolean replacedPerscription3;
+    private Boolean replacedPerscription4;
+    private Boolean replacedPerscription5;
     //editable information - Treatment_fields
     private String assessment;
     private String problem1;
@@ -80,10 +71,27 @@ public class CreateEncounterViewModel {
     private String medicalSurgicalHistory;
     private String socialHistory;
     private String currentMedication;
-    // Pharmacy information
-    //Prescriptions
-    private String[] medications;
 
+    // Gets and sets the perscription replaced values
+    public Boolean getReplacedPerscription5() { return replacedPerscription5; }
+
+    public void setReplacedPerscription5(Boolean replacedPerscription5) { this.replacedPerscription5 = replacedPerscription5; }
+
+    public Boolean getReplacedPerscription1() { return replacedPerscription1; }
+
+    public void setReplacedPerscription1(Boolean replacedPerscription1) { this.replacedPerscription1 = replacedPerscription1; }
+
+    public Boolean getReplacedPerscription2() { return replacedPerscription2; }
+
+    public void setReplacedPerscription2(Boolean replacedPerscription2) { this.replacedPerscription2 = replacedPerscription2; }
+
+    public Boolean getReplacedPerscription3() { return replacedPerscription3; }
+
+    public void setReplacedPerscription3(Boolean replacedPerscription3) { this.replacedPerscription3 = replacedPerscription3; }
+
+    public Boolean getReplacedPerscription4() { return replacedPerscription4; }
+
+    public void setReplacedPerscription4(Boolean replacedPerscription4) { this.replacedPerscription4 = replacedPerscription4; }
 
     public int getpID() {
         return pID;

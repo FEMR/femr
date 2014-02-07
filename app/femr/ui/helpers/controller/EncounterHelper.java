@@ -37,6 +37,8 @@ public class EncounterHelper {
                 dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
             }
         }
+        String[] viewMedications = new String[dynamicViewMedications.size()];
+        viewMedications = dynamicViewMedications.toArray(viewMedications);
 
         //patient
         viewModelGet.setpID(patient.getId());
@@ -54,6 +56,13 @@ public class EncounterHelper {
         viewModelGet.setPrescription3(getPrescriptionOrNull(3, dynamicViewMedications));
         viewModelGet.setPrescription4(getPrescriptionOrNull(4, dynamicViewMedications));
         viewModelGet.setPrescription5(getPrescriptionOrNull(5, dynamicViewMedications));
+        viewModelGet.setMedications(viewMedications);
+        // indicates if the medications was replaced by the pharmacist
+        viewModelGet.setReplacedPerscription1(getReplacedOrNull(1,patientPrescriptions));
+        viewModelGet.setReplacedPerscription1(getReplacedOrNull(2,patientPrescriptions));
+        viewModelGet.setReplacedPerscription1(getReplacedOrNull(3,patientPrescriptions));
+        viewModelGet.setReplacedPerscription1(getReplacedOrNull(4,patientPrescriptions));
+        viewModelGet.setReplacedPerscription1(getReplacedOrNull(5,patientPrescriptions));
         //editable information - Treatment_fields
         viewModelGet.setAssessment(getTreatmentFieldOrNull("assessment", patientEncounterTreatmentMap));
         viewModelGet.setProblem1(getTreatmentProblemOrNull(1, patientEncounterTreatmentMap));
@@ -89,6 +98,7 @@ public class EncounterHelper {
         viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
         viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
         viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
+        //Medication
 
         return viewModelGet;
     }
@@ -151,6 +161,16 @@ public class EncounterHelper {
             return patientPrescriptions.get(number - 1);
         } else {
             return null;
+        }
+    }
+
+    // get the replaced boolean for a perscription or return false by default
+    private Boolean getReplacedOrNull(int number, List<? extends IPatientPrescription> patientPrescriptions){
+        if(patientPrescriptions.size() >= number) {
+            return patientPrescriptions.get(number - 1).getReplaced();
+        }
+        else{
+            return false;
         }
     }
 

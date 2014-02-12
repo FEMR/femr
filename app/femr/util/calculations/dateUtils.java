@@ -26,5 +26,16 @@ public class dateUtils {
     public static DateTime getCurrentDateTime(){
         return new DateTime();
     }
+
+    public static String getAge(Date born) {
+        DateMidnight birthdate = new DateMidnight(born);
+        DateTime now = new DateTime();
+        Months months = Months.monthsBetween(birthdate, now);
+        int monthsInt = months.getMonths();
+        if (monthsInt < 24)
+            return Integer.toString(monthsInt) + " mo";
+        else
+            return Integer.toString(monthsInt/12) + " yo";
+    }
 }
 

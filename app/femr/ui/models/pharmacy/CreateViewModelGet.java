@@ -7,7 +7,7 @@ public class CreateViewModelGet {
     private String firstName;
     private String lastName;
     private int pID;
-    private int age;
+    private String age;
     private String sex;
     private Boolean pregnancyStatus;
     private Integer weeksPregnant;
@@ -44,11 +44,11 @@ public class CreateViewModelGet {
         return pID;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 

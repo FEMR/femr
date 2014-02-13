@@ -45,7 +45,7 @@ public class MedicalHelper {
         viewModelGet.setCity(patient.getCity());
         viewModelGet.setFirstName(patient.getFirstName());
         viewModelGet.setLastName(patient.getLastName());
-        viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+        viewModelGet.setAge(dateUtils.getAge(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
         //patient encounter
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());

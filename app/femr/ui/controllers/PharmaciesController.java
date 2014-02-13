@@ -92,7 +92,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setpID(patient.getId());
         viewModelGet.setFirstName(patient.getFirstName());
         viewModelGet.setLastName(patient.getLastName());
-        viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+        viewModelGet.setAge(dateUtils.getAge(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
 
         //return to index if error finding a patient encounter

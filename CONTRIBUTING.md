@@ -24,9 +24,10 @@
 ### Setting up IntelliJ IDEA
 1. Install Plugins: Play 2.0 Support/Scala
 2. Open FEMR
-3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it.
-4. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // conf/application.dev.conf to the enviroment variables.
-5. Run!
+3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your username and password.
+4. Create a database in mySQL with the same name as the database in the connection string inside of application.conf
+5. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // conf/application.dev.conf to the enviroment variables.
+6. Run!
 
 
 

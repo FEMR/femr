@@ -1,6 +1,7 @@
 package femr.business.services;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
@@ -22,7 +23,7 @@ public class TriageService implements ITriageService {
     @Inject
     public TriageService(IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
-                         IRepository<IPatientEncounterVital> patientEncounterVitaRepository){
+                         IRepository<IPatientEncounterVital> patientEncounterVitaRepository) {
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitaRepository;
@@ -33,31 +34,24 @@ public class TriageService implements ITriageService {
         IPatient newPatient = patientRepository.create(patient);
         ServiceResponse<IPatient> response = new ServiceResponse<>();
 
-        if (newPatient != null){
+        if (newPatient != null) {
             response.setResponseObject(newPatient);
-        }
-        else{
-            response.addError("patient","patient could not be saved to database");
+        } else {
+            response.addError("patient", "patient could not be saved to database");
         }
 
         return response;
     }
 
     @Override
-    public ServiceResponse<IPatient> updatePatientSex(int id, String sex){
+    public ServiceResponse<IPatient> updatePatient(IPatient patient) {
+        patient = patientRepository.update(patient);
         ServiceResponse<IPatient> response = new ServiceResponse<>();
-        ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
-        IPatient savedPatient = patientRepository.findOne(query);
-        if (savedPatient == null){
-            response.addError("patient","does not exist");
-            return response;
+        if (patient == null) {
+            response.addError("", "problem updating");
+        } else {
+            response.setResponseObject(patient);
         }
-        savedPatient.setSex(sex);
-        savedPatient = patientRepository.update(savedPatient);
-        if (savedPatient.getSex() != sex){
-            response.addError("updating","error updating patient");
-        }
-        response.setResponseObject(savedPatient);
         return response;
     }
 
@@ -66,39 +60,36 @@ public class TriageService implements ITriageService {
         IPatientEncounter newPatientEncounter = patientEncounterRepository.create(patientEncounter);
         ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();
 
-        if (newPatientEncounter != null){
+        if (newPatientEncounter != null) {
             response.setResponseObject(newPatientEncounter);
-        }
-        else{
-            response.addError("patient encounter","patient encounter could not be saved to database");
+        } else {
+            response.addError("patient encounter", "patient encounter could not be saved to database");
         }
         return response;
     }
 
     @Override
-    public ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital){
+    public ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital) {
         IPatientEncounterVital newPatientEncounterVital = patientEncounterVitalRepository.create(patientEncounterVital);
         ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
 
-        if (newPatientEncounterVital != null){
+        if (newPatientEncounterVital != null) {
             response.setResponseObject(newPatientEncounterVital);
-        }
-        else{
-            response.addError("patient encounter vital","patient encounter vital could not be saved to database");
+        } else {
+            response.addError("patient encounter vital", "patient encounter vital could not be saved to database");
         }
         return response;
     }
 
     @Override
-    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVitals){
+    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVitals) {
         List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
         ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
 
-        if (newPatientEncounterVitals != null){
+        if (newPatientEncounterVitals != null) {
             response.setResponseObject(newPatientEncounterVitals);
-        }
-        else{
-            response.addError("","patient encounter vitals could not be saved to database");
+        } else {
+            response.addError("", "patient encounter vitals could not be saved to database");
         }
         return response;
     }

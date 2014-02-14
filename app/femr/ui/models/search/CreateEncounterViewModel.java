@@ -1,5 +1,8 @@
 package femr.ui.models.search;
 
+import femr.util.DataStructure.Pair;
+
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -42,6 +45,7 @@ public class CreateEncounterViewModel {
     private String prescription4;
     private String prescription5;
     private String[] medications;
+    private List<Pair<String,String>> medicationAndReplacement;   // holds a list of medication and the replacement meds if it exist
     // Indicates is the Pharamacist replaced the medication
     private Boolean replacedPerscription1;
     private Boolean replacedPerscription2;
@@ -72,6 +76,38 @@ public class CreateEncounterViewModel {
     private String socialHistory;
     private String currentMedication;
 
+    // Get the doctor's name who saw the patient at medical station
+    private String doctorFirstName;
+    private String doctorLastName;
+
+    // the Pharmacist who gave the meds
+    private String pharmacistFirstName;
+    private String pharmacistLastName;
+
+    public List<Pair<String, String>> getMedicationAndReplacement() { return medicationAndReplacement; }
+
+    public void setMedicationAndReplacement(List<Pair<String, String>> medicationAndReplacement) {
+        this.medicationAndReplacement = medicationAndReplacement;
+    }
+
+    // Getters and setters for the doctors name
+    public String getDoctorFirstName() { return doctorFirstName; }
+
+    public void setDoctorFirstName(String doctorFirstName) { this.doctorFirstName = doctorFirstName; }
+
+    public String getDoctorLastName() { return doctorLastName; }
+
+    public void setDoctorLastName(String doctorLastName) { this.doctorLastName = doctorLastName; }
+
+    // getters and setters for pharmacist name
+    public String getPharmacistFirstName() { return pharmacistFirstName; }
+
+    public void setPharmacistFirstName(String pharmacistFirstName) { this.pharmacistFirstName = pharmacistFirstName; }
+
+    public String getPharmacistLastName() { return pharmacistLastName; }
+
+    public void setPharmacistLastName(String pharmacistLastName) { this.pharmacistLastName = pharmacistLastName; }
+
     // Gets and sets the perscription replaced values
     public Boolean getReplacedPerscription5() { return replacedPerscription5; }
 
@@ -92,6 +128,8 @@ public class CreateEncounterViewModel {
     public Boolean getReplacedPerscription4() { return replacedPerscription4; }
 
     public void setReplacedPerscription4(Boolean replacedPerscription4) { this.replacedPerscription4 = replacedPerscription4; }
+
+    // Gets the given prescription replaced value
 
     public int getpID() {
         return pID;

@@ -32,4 +32,6 @@ public interface ISearchService {
     ServiceResponse<List<? extends IHpiField>> findAllHpiFields();
     ServiceResponse<List<? extends IPmhField>> findAllPmhFields();
     ServiceResponse<List<? extends IMedication>> findAllMedications();
+
+    ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id);
 }

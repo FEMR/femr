@@ -4,10 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
-import femr.business.services.IPharmacyService;
-import femr.business.services.ISearchService;
-import femr.business.services.ISessionService;
-import femr.business.services.IMedicalService;
+import femr.business.services.*;
 import femr.common.models.*;
 import femr.ui.helpers.controller.EncounterHelper;
 import femr.ui.helpers.controller.MedicalHelper;
@@ -42,6 +39,7 @@ public class SearchController extends Controller {
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private EncounterHelper encounterHelper;
 
+
     @Inject
     public SearchController(ISessionService sessionService,
                             ISearchService searchService,
@@ -55,6 +53,7 @@ public class SearchController extends Controller {
         this.encounterHelper = encounterHelper;
         this.pharmacyService = pharmacyService;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
+
     }
 
     /*

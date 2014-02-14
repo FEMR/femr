@@ -2,13 +2,16 @@ package femr.ui.helpers.controller;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.dtos.CurrentUser;
+import femr.business.dtos.ServiceResponse;
+import femr.business.services.ISearchService;
+import femr.business.services.IUserService;
 import femr.common.models.*;
 import femr.ui.models.search.CreateEncounterViewModel;
+import femr.util.DataStructure.Pair;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +21,19 @@ public class EncounterHelper {
     private Provider<IPatientEncounterPmhField> patientEncounterPmhFieldProvider;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+    private IUserService userService;
+    private ISearchService searchService;
 
     @Inject
-    public EncounterHelper(Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientEncounterPmhField> patientEncounterPmhFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public EncounterHelper(Provider<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldProvider, Provider<IPatientEncounterHpiField> patientEncounterHpiFieldProvider, Provider<IPatientEncounterPmhField> patientEncounterPmhFieldProvider, Provider<IPatientPrescription> patientPrescriptionProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider,
+                           IUserService userService, ISearchService searchService) {
         this.patientEncounterTreatmentFieldProvider = patientEncounterTreatmentFieldProvider;
         this.patientEncounterHpiFieldProvider = patientEncounterHpiFieldProvider;
         this.patientEncounterPmhFieldProvider = patientEncounterPmhFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
+        this.userService = userService;
+        this.searchService = searchService;
     }
 
     public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
@@ -39,6 +47,37 @@ public class EncounterHelper {
         }
         String[] viewMedications = new String[dynamicViewMedications.size()];
         viewMedications = dynamicViewMedications.toArray(viewMedications);
+
+        // Create a list pairs that have medication and the replacement medication if it exist
+        List<Pair<String,String>> MedsAndReplace = new LinkedList<>();
+        List<Integer> IgnoreList = new ArrayList<>();
+
+        for(int prescriptionNum =0; prescriptionNum < patientPrescriptions.size(); prescriptionNum++) {
+            // check if the medication was replaced if so save it and the replacement medications name
+            if(patientPrescriptions.get(prescriptionNum).getReplaced()) {
+                MedsAndReplace.add(new Pair<String,String>(patientPrescriptions.get(prescriptionNum).getMedicationName(),
+                        getPrescriptionNameById(patientPrescriptions.get(prescriptionNum).getReplacementId())));
+                // add the replaced prescription id to the ignore list so we don't list it twice
+                IgnoreList.add(patientPrescriptions.get(prescriptionNum).getReplacementId());
+            }
+            else if(IgnoreList.contains(patientPrescriptions.get(prescriptionNum).getId()) != true) {
+
+                MedsAndReplace.add(new Pair<String,String>(patientPrescriptions.get(prescriptionNum).getMedicationName(),""));
+            }
+        }
+
+
+        // Set the doctor's first and last name
+        viewModelGet.setDoctorFirstName(this.userService.findById(patientEncounter.getUserId()).getFirstName());
+        viewModelGet.setDoctorLastName(this.userService.findById(patientEncounter.getUserId()).getLastName());
+        // set the pharmacist first and last name
+        viewModelGet.setPharmacistFirstName(null);
+        viewModelGet.setPharmacistLastName(null);
+        if(patientPrescriptions.size() >= 1)
+        {
+            viewModelGet.setPharmacistFirstName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getFirstName());
+            viewModelGet.setPharmacistLastName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getLastName());
+        }
 
         //patient
         viewModelGet.setpID(patient.getId());
@@ -63,6 +102,8 @@ public class EncounterHelper {
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(3,patientPrescriptions));
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(4,patientPrescriptions));
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(5,patientPrescriptions));
+        // sets the Medication and Replacement Pair list
+        viewModelGet.setMedicationAndReplacement(MedsAndReplace);
         //editable information - Treatment_fields
         viewModelGet.setAssessment(getTreatmentFieldOrNull("assessment", patientEncounterTreatmentMap));
         viewModelGet.setProblem1(getTreatmentProblemOrNull(1, patientEncounterTreatmentMap));
@@ -155,6 +196,7 @@ public class EncounterHelper {
     }
     //endregion
 
+
     //region **get value or get null**
     private String getPrescriptionOrNull(int number, List<String> patientPrescriptions) {
         if (patientPrescriptions.size() >= number) {
@@ -162,6 +204,18 @@ public class EncounterHelper {
         } else {
             return null;
         }
+    }
+
+    /**
+     * given the id for a prescription the function will return its name.
+     * used for getting the name of the replacement prescription
+     * @param id the id of the prescription
+     * @return The name of the Prescription as a string
+     */
+    private String getPrescriptionNameById(int id) {
+        ServiceResponse<IPatientPrescription> patientPrescriptionServiceResponse = searchService.findPatientPrescriptionById(id);
+        IPatientPrescription patientPrescription = patientPrescriptionServiceResponse.getResponseObject();
+        return patientPrescription.getMedicationName();
     }
 
     // get the replaced boolean for a perscription or return false by default

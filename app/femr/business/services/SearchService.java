@@ -347,6 +347,24 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    /**
+     * Finds a prescription by its id
+     * @param id
+     * @return the response object
+     */
+    // this is to help find the replacement meds name
+    public ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id) {
+        ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("id", id);
+        IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(query);
+        ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
+        if(patientPrescription == null) {
+            response.addError("patientPrescription", "could not find a prescription with that id");
+        } else {
+            response.setResponseObject(patientPrescription);
+        }
+        return response;
+    }
+
     private Query<Vital> getVitalQuery() {
         return Ebean.find(Vital.class);
     }

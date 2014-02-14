@@ -62,10 +62,19 @@
                 <div class="col-xs-8 col-sm-8 col-md-8">
                     <p>@patientEncounter.getDateOfVisit.substring(0, 10)</p>
                 </div>
-
             </div>
         </div>
 
+        <div class="col-xs-4 col-sm-4 col-md-4">
+            <div class="row">
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    <label for="">Doctor:</label>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <p>@viewModel.getDoctorFirstName @viewModel.getDoctorLastName</p>
+                </div>
+            </div>
+        </div>
 
     </div>
     <div class="row">
@@ -105,7 +114,7 @@
             <!--*************************
              List of all the tabs on the encounter page
              ********************************************-->
-     @*   @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {  *@
+        @* @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) { *@
         <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
             <ul id="myTab" class="nav nav-tabs">
                 <li class="active"><a id="hpiTab">HPI</a></li>
@@ -118,63 +127,63 @@
             <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
 
 
-               @* <div class="col-xs-9 col-sm-9 col-md-9 well well-sm"> *@
+                @* <div class="col-xs-9 col-sm-9 col-md-9 well well-sm"> *@
 
-                        <!-- This is the start of the HPI Tab -->
-                    <div id="hpiControl">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="onset">Onset</label>
-                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset" readonly/>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-
-                                    <label for="severity">Severity:</label>
-                                    <input rows="1" name="severity" class="form-control input-sm" value="@viewModel.getSeverity" readonly/>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
+                    <!-- This is the start of the HPI Tab -->
+                <div id="hpiControl">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
                             <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <label for="radiation">Radiation</label>
-                                        <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation" readonly/>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group">
-                                        <label for="quality">Quality</label>
-                                        <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality" readonly/>
-                                    </div>
-                                </div>
+                                <label for="onset">Onset</label>
+                                <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset" readonly/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="provokes">Provokes</label>
-                            <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getProvokes" readonly/>
-                        </div>
-                        <div class="form-group">
-                            <label for="palliates">Palliates</label>
-                            <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getPalliates" readonly/>
-                        </div>
-                        <div class="form-group">
-                            <label for="timeOfDay">Time of Day</label>
-                            <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay" readonly/>
-                        </div>
-                        <div class="form-group">
-                            <label for="timeOfDay">Narrative</label>
-                            <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative" readonly/>
-                        </div>
-                        <div class="form-group">
-                            <label for="physicalExamination">Physical Examination</label>
-                            <textarea rows="3" name="physicalExamination" class="form-control input-sm" readonly>@viewModel.getPhysicalExamination</textarea>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+
+                                <label for="severity">Severity:</label>
+                                <input rows="1" name="severity" class="form-control input-sm" value="@viewModel.getSeverity" readonly/>
+
+                            </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="radiation">Radiation</label>
+                                    <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation" readonly/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label for="quality">Quality</label>
+                                    <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality" readonly/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="provokes">Provokes</label>
+                        <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getProvokes" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="palliates">Palliates</label>
+                        <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getPalliates" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeOfDay">Time of Day</label>
+                        <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeOfDay">Narrative</label>
+                        <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label for="physicalExamination">Physical Examination</label>
+                        <textarea rows="3" name="physicalExamination" class="form-control input-sm" readonly>@viewModel.getPhysicalExamination</textarea>
+                    </div>
+                </div>
                 @*</div> *@
                     <!-- End of HPI Tab -->
 
@@ -201,11 +210,11 @@
                         <label for="prescription">Prescriptions</label>
                         <div class="row">
                             <div class="col-xs-9 col-sm-9 col-md-9">
-                            @outputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
-                            @outputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
-                            @outputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
-                            @outputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
-                            @outputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
+                                @outputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
+                                @outputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
+                                @outputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
+                                @outputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
+                                @outputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
                             </div>
                         </div>
                     </div>
@@ -241,47 +250,48 @@
                 <div id="pharmacyControl" class="hidden">
 
 
+                    @* <div class="col-sm-9 col-md-9 col-xs-9 col-lg-9"> *@
+                    <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2">
+                        <label for="PharmacistName">Pharamcist:</label>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
+                        <p>@viewModel.getPharmacistFirstName @viewModel.getPharmacistLastName</p>
+                    </div>
 
-                    <div class="col-sm-9 col-md-9 col-xs-9 col-lg-9">
-                        <div class="container medicationContainer">
+                    <div class="container medicationContainer">
+                        <div class="row">
                             <div class="row">
+                                    &nbsp;
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
+                                <label class="title">Medication</label>
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
+                                <label class="title">Replace</label>
+                            </div>
+                        </div>
+
+
+                        @for(x <- 1 to viewModel.getMedicationAndReplacement.size()) {
+                            <div class="row add-margin">
                                 <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
-                                    <label class="title">Medication</label>
+                                    <input type="text" id="medication@x" class="form-control" name="prescription@x" value="@viewModel.getMedicationAndReplacement.get(x - 1).getKey" readonly/>
                                 </div>
-                                <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
-                                    <label class="title">Replace?</label>
+
+                                <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
+
+                                    <input type="text" class="form-control" id="replacementMedication@x" name="replacementMedication@x" placeholder="" value="@viewModel.getMedicationAndReplacement.get(x - 1).getValue" readonly/>
+
                                 </div>
                             </div>
-                            @for(x <- 1 to viewModel.getMedications.size) {
-                                <div class="row add-margin">
-                                    <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
-                                        <input type="text" id="medication@x" class="form-control" name="prescription@x" value="@viewModel.getMedication(x - 1)" placeholder="Medication" readonly/>
-                                    </div>
-                                    <div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
-                                        <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btn-default toggleReplacement" id="y@x">
-                                                <input type="radio" name="Medication@x">Yes
-                                            </label>
-                                            <label class="btn btn-default active toggleReplacement" id="n@x">
-                                                <input type="radio" name="Medication@x">No
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-5 col-md-5 col-xs-5 col-lg-5">
+                        }
 
-                                        <input type="text" class="hidden form-control replacementMeds" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
-
-                                    </div>
-                                </div>
-                            }
-
-                        </div>
                     </div>
+
                 </div>
 
             </div>
         </div>
-
 
 
     </div>

@@ -4,7 +4,7 @@
 @import femr.ui.controllers.admin.routes.UsersController
 
 @admin("Create User", currentUser) {
-  <div class="admin-right-panel">
+  <div class="">
   @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal") {
     <div class="form-group">
       <label for="email" class="col-md-2 control-label">Email address</label>

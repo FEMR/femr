@@ -36,7 +36,6 @@ public class SessionsController extends Controller {
         if (response.hasErrors()) {
             return ok(create.render(createViewModelForm));
         }
-
         return redirect(routes.HomeController.index());
 
     }

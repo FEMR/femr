@@ -72,6 +72,19 @@ public class UserService implements IUserService {
         return user.getRoles();
     }
 
+    @Override
+    public ServiceResponse<IUser> update(IUser currentUser){
+        ServiceResponse<IUser> response = new ServiceResponse<>();
+        currentUser = userRepository.update(currentUser);
+        if (currentUser != null){
+            response.setResponseObject(currentUser);
+        }
+        else{
+            response.addError("","Could not update user");
+        }
+        return response;
+    }
+
     private Query<User> getQuery() {
         return Ebean.find(User.class);
     }

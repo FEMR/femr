@@ -1,22 +1,23 @@
 @(title: String, currentUser: femr.business.dtos.CurrentUser,
-    styles: Html = Html(""), scripts: Html = Html(""),
-    outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
+        styles: Html = Html(""), scripts: Html = Html(""),
+        outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.UsersController
 
 @main(title, currentUser, styles, scripts, search = null, showSearchButton = false) {
-  <div class="row">
-    <div class="col-md-3 admin-left-panel">
-      <div class=well>
-          <div class="row">
-            <a href="@UsersController.index()" class="btn btn-primary pull-left"><span class="glyphicon glyphicon-user"></span> Users</a>
-            <a href="@UsersController.createGet()" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Add user</a>
-          </div>
-      </div>
+    <div class="row">
+        <div class="col-md-3 admin-left-panel">
+            <div class="btn-group-vertical">
+                <a href="@UsersController.index()" class="btn btn-default pull-left userBtns listUserBtn"><span class="glyphicon glyphicon-user"></span>
+                    List Users</a>
+                <a href="@UsersController.createGet()" class="btn btn-default pull-left userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+                    Add User</a>
+            </div>
+
+        </div>
+        <div class="col-md-9 admin-right-panel">
+        @content
+        </div>
     </div>
-    <div class="col-md-9">
-    @content
-    </div>
-  </div>
 }

@@ -39,30 +39,22 @@ public class EncounterHelper {
     public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
         CreateEncounterViewModel viewModelGet = new CreateEncounterViewModel();
         //prescriptions
-        List<String> dynamicViewMedications = new ArrayList<>();
-        for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
-            if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
-                dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
-            }
-        }
-        String[] viewMedications = new String[dynamicViewMedications.size()];
-        viewMedications = dynamicViewMedications.toArray(viewMedications);
 
-        // Create a list pairs that have medication and the replacement medication if it exist
-        List<Pair<String,String>> MedsAndReplace = new LinkedList<>();
-        List<Integer> IgnoreList = new ArrayList<>();
+        // Create a list of pairs that have medication and the replacement medication if it exist for each entry
+        List<Pair<String,String>> medicationAndReplacement = new LinkedList<>();
+        List<Integer> IgnoreList = new ArrayList<>(); // list used to make sure we ignore duplicate entries
 
         for(int prescriptionNum =0; prescriptionNum < patientPrescriptions.size(); prescriptionNum++) {
             // check if the medication was replaced if so save it and the replacement medications name
             if(patientPrescriptions.get(prescriptionNum).getReplaced()) {
-                MedsAndReplace.add(new Pair<String,String>(patientPrescriptions.get(prescriptionNum).getMedicationName(),
+                medicationAndReplacement.add(new Pair<String, String>(patientPrescriptions.get(prescriptionNum).getMedicationName(),
                         getPrescriptionNameById(patientPrescriptions.get(prescriptionNum).getReplacementId())));
                 // add the replaced prescription id to the ignore list so we don't list it twice
                 IgnoreList.add(patientPrescriptions.get(prescriptionNum).getReplacementId());
             }
             else if(IgnoreList.contains(patientPrescriptions.get(prescriptionNum).getId()) != true) {
-
-                MedsAndReplace.add(new Pair<String,String>(patientPrescriptions.get(prescriptionNum).getMedicationName(),""));
+                // if the medication is not in the ignore list
+                medicationAndReplacement.add(new Pair<String, String>(patientPrescriptions.get(prescriptionNum).getMedicationName(), ""));
             }
         }
 
@@ -78,7 +70,6 @@ public class EncounterHelper {
             viewModelGet.setPharmacistFirstName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getFirstName());
             viewModelGet.setPharmacistLastName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getLastName());
         }
-
         //patient
         viewModelGet.setpID(patient.getId());
         viewModelGet.setCity(patient.getCity());
@@ -90,12 +81,12 @@ public class EncounterHelper {
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
         //editable information - prescriptions
-        viewModelGet.setPrescription1(getPrescriptionOrNull(1, dynamicViewMedications));
-        viewModelGet.setPrescription2(getPrescriptionOrNull(2, dynamicViewMedications));
-        viewModelGet.setPrescription3(getPrescriptionOrNull(3, dynamicViewMedications));
-        viewModelGet.setPrescription4(getPrescriptionOrNull(4, dynamicViewMedications));
-        viewModelGet.setPrescription5(getPrescriptionOrNull(5, dynamicViewMedications));
-        viewModelGet.setMedications(viewMedications);
+        viewModelGet.setPrescription1(getOriginalPrescriptionOrNull(1, medicationAndReplacement));
+        viewModelGet.setPrescription2(getOriginalPrescriptionOrNull(2, medicationAndReplacement));
+        viewModelGet.setPrescription3(getOriginalPrescriptionOrNull(3, medicationAndReplacement));
+        viewModelGet.setPrescription4(getOriginalPrescriptionOrNull(4, medicationAndReplacement));
+        viewModelGet.setPrescription5(getOriginalPrescriptionOrNull(5, medicationAndReplacement));
+        //viewModelGet.setMedications(viewMedications);
         // indicates if the medications was replaced by the pharmacist
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(1,patientPrescriptions));
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(2,patientPrescriptions));
@@ -103,7 +94,7 @@ public class EncounterHelper {
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(4,patientPrescriptions));
         viewModelGet.setReplacedPerscription1(getReplacedOrNull(5,patientPrescriptions));
         // sets the Medication and Replacement Pair list
-        viewModelGet.setMedicationAndReplacement(MedsAndReplace);
+        viewModelGet.setMedicationAndReplacement(medicationAndReplacement);
         //editable information - Treatment_fields
         viewModelGet.setAssessment(getTreatmentFieldOrNull("assessment", patientEncounterTreatmentMap));
         viewModelGet.setProblem1(getTreatmentProblemOrNull(1, patientEncounterTreatmentMap));
@@ -140,7 +131,6 @@ public class EncounterHelper {
         viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
         viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
         //Medication
-
         return viewModelGet;
     }
 
@@ -198,9 +188,9 @@ public class EncounterHelper {
 
 
     //region **get value or get null**
-    private String getPrescriptionOrNull(int number, List<String> patientPrescriptions) {
+    private String getOriginalPrescriptionOrNull(int number, List<Pair<String, String>> patientPrescriptions) {
         if (patientPrescriptions.size() >= number) {
-            return patientPrescriptions.get(number - 1);
+            return patientPrescriptions.get(number - 1).getKey();
         } else {
             return null;
         }

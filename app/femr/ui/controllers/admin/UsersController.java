@@ -17,6 +17,8 @@ import femr.ui.models.admin.users.CreateViewModelPost;
 import femr.ui.models.admin.users.CreateViewModelGet;
 import femr.ui.views.html.admin.users.create;
 import femr.ui.views.html.admin.users.index;
+import femr.util.calculations.dateUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -54,6 +56,12 @@ public class UsersController extends Controller {
             return internalServerError();
         }
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
+
+//        List<? extends IUser> users = userServiceResponse.getResponseObject();
+//        for(int userIndex = 0; userIndex < users.size(); userIndex++){
+//            users.get(userIndex).setLastLogin(dateUtils.formatDateTimeString(users.get(userIndex).getLastLogin()));
+//        }
+
         viewModelGet.setUsers(userServiceResponse.getResponseObject());
 
         return ok(index.render(currentUser, roles, viewModelGet));
@@ -107,6 +115,7 @@ public class UsersController extends Controller {
         user.setLastName(viewModel.getLastName());
         user.setEmail(viewModel.getEmail());
         user.setPassword(viewModel.getPassword());
+        user.setLastLogin(DateTime.now());
         return user;
     }
 }

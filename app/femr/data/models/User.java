@@ -2,6 +2,7 @@ package femr.data.models;
 
 import femr.common.models.IRole;
 import femr.common.models.IUser;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,6 +27,8 @@ public class User implements IUser {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<IRole> roles;
+    @Column(name = "last_login", nullable = false)
+    private DateTime lastLogin;
 
     @Override
     public int getId() {
@@ -89,5 +92,14 @@ public class User implements IUser {
     @Override
     public void addRole(IRole role) {
         roles.add(role);
+    }
+
+    @Override
+    public DateTime getLastLogin() {
+        return lastLogin;
+    }
+    @Override
+    public void setLastLogin(DateTime lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

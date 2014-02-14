@@ -1,8 +1,6 @@
 package femr.ui.models.search;
 
 import femr.util.DataStructure.Pair;
-
-import java.util.LinkedList;
 import java.util.List;
 
 

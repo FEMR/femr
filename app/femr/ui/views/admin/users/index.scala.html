@@ -2,14 +2,42 @@
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.views.html.layouts.admin
 
-@admin("Users", null) {
-    <div class="row">
-        <div class="col-md-12">
-            <ul>
-            @for(y <- 1 to viewModelGet.getUsers.size) {
-                <li>@viewModelGet.getUser(y - 1).getEmail</li>
-            }
-            </ul>
-        </div>
-    </div>
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/users.css")">
+    }
+
+
+@admin("Users", null, styles = additionalStyles) {
+    <table class="table table-bordered" id="userTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Last Login</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(y <- 1 to viewModelGet.getUsers.size) {
+            <tr>
+                <th>@y</th>
+                <td>@viewModelGet.getUser(y - 1).getFirstName</td>
+                <td>@viewModelGet.getUser(y - 1).getLastName</td>
+                <td>@viewModelGet.getUser(y - 1).getEmail</td>
+                <td>
+                @for(role <- 0 to viewModelGet.getUser(y - 1).getRoles.size - 1) {
+                    <ul>
+                    <li>@viewModelGet.getUser(y - 1).getRoles.get(role).getName</li>
+                    </ul>
+                }
+                </td>
+                <td>Day</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
 }

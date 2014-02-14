@@ -4,7 +4,13 @@ package femr.util.DataStructure;
  * Created by Danny on 2/13/14.
  *
  * This is a data structure that implements a pair structure
- * to use in a list or what ever
+ * to use in a list or what ever.  Like am map but better
+ */
+
+/**
+ * Creates an object that holds two different data types like a key value system
+ * @param <Key> the data type for the first value
+ * @param <Value> the data type for the second value
  */
 public class Pair<Key,Value> {
 
@@ -26,7 +32,7 @@ public class Pair<Key,Value> {
         this.value = value;
     }
 
-    public Pair<Key,Value> getPair(){
+    public Pair<Key,Value> get(){
         return new Pair<Key,Value>(this.key,this.value);
     }
 

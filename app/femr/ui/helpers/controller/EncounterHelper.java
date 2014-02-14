@@ -32,8 +32,8 @@ public class EncounterHelper {
         this.patientEncounterPmhFieldProvider = patientEncounterPmhFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
-        this.userService = userService;
-        this.searchService = searchService;
+        this.userService = userService; // Used to get the username associated with the values
+        this.searchService = searchService; // used to retreive the replacement pharmacy name
     }
 
     public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
@@ -42,19 +42,18 @@ public class EncounterHelper {
 
         // Create a list of pairs that have medication and the replacement medication if it exist for each entry
         List<Pair<String,String>> medicationAndReplacement = new LinkedList<>();
-        List<Integer> IgnoreList = new ArrayList<>(); // list used to make sure we ignore duplicate entries
+        List<Integer> ignoreList = new ArrayList<>(); // list used to make sure we ignore duplicate entries
 
-        for(int prescriptionNum =0; prescriptionNum < patientPrescriptions.size(); prescriptionNum++) {
+        for (IPatientPrescription patientPrescription : patientPrescriptions) {
             // check if the medication was replaced if so save it and the replacement medications name
-            if(patientPrescriptions.get(prescriptionNum).getReplaced()) {
-                medicationAndReplacement.add(new Pair<String, String>(patientPrescriptions.get(prescriptionNum).getMedicationName(),
-                        getPrescriptionNameById(patientPrescriptions.get(prescriptionNum).getReplacementId())));
-                // add the replaced prescription id to the ignore list so we don't list it twice
-                IgnoreList.add(patientPrescriptions.get(prescriptionNum).getReplacementId());
-            }
-            else if(IgnoreList.contains(patientPrescriptions.get(prescriptionNum).getId()) != true) {
+            if (patientPrescription.getReplaced()) {
+                medicationAndReplacement.add(new Pair<String, String>(patientPrescription.getMedicationName(),
+                        getPrescriptionNameById(patientPrescription.getReplacementId())));
+                // add the replaced prescription id to the ignore list so we don't show it twice
+                ignoreList.add(patientPrescription.getReplacementId());
+            } else if (!ignoreList.contains(patientPrescription.getId())) {
                 // if the medication is not in the ignore list
-                medicationAndReplacement.add(new Pair<String, String>(patientPrescriptions.get(prescriptionNum).getMedicationName(), ""));
+                medicationAndReplacement.add(new Pair<String, String>(patientPrescription.getMedicationName(), ""));
             }
         }
 
@@ -65,8 +64,10 @@ public class EncounterHelper {
         // set the pharmacist first and last name
         viewModelGet.setPharmacistFirstName(null);
         viewModelGet.setPharmacistLastName(null);
-        if(patientPrescriptions.size() >= 1)
-        {
+        // if the size of the prescriptions list is greater or equal to 1 then we know a prescription was prescribed
+        // and that their is a pharmacist name.  We also assume that the pharmacist who gave the first medication
+        // gave all the medications
+        if(patientPrescriptions.size() >= 1) {
             viewModelGet.setPharmacistFirstName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getFirstName());
             viewModelGet.setPharmacistLastName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getLastName());
         }
@@ -87,12 +88,7 @@ public class EncounterHelper {
         viewModelGet.setPrescription4(getOriginalPrescriptionOrNull(4, medicationAndReplacement));
         viewModelGet.setPrescription5(getOriginalPrescriptionOrNull(5, medicationAndReplacement));
         //viewModelGet.setMedications(viewMedications);
-        // indicates if the medications was replaced by the pharmacist
-        viewModelGet.setReplacedPerscription1(getReplacedOrNull(1,patientPrescriptions));
-        viewModelGet.setReplacedPerscription1(getReplacedOrNull(2,patientPrescriptions));
-        viewModelGet.setReplacedPerscription1(getReplacedOrNull(3,patientPrescriptions));
-        viewModelGet.setReplacedPerscription1(getReplacedOrNull(4,patientPrescriptions));
-        viewModelGet.setReplacedPerscription1(getReplacedOrNull(5,patientPrescriptions));
+
         // sets the Medication and Replacement Pair list
         viewModelGet.setMedicationAndReplacement(medicationAndReplacement);
         //editable information - Treatment_fields

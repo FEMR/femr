@@ -18,6 +18,7 @@ import femr.ui.models.admin.users.CreateViewModelGet;
 import femr.ui.views.html.admin.users.create;
 import femr.ui.views.html.admin.users.index;
 import femr.util.calculations.dateUtils;
+import org.codehaus.jackson.JsonNode;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
@@ -52,7 +53,7 @@ public class UsersController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IRole> roles = roleService.getAllRoles();
         ServiceResponse<List<? extends IUser>> userServiceResponse = userService.findAllUsers();
-        if (userServiceResponse.hasErrors()){
+        if (userServiceResponse.hasErrors()) {
             return internalServerError();
         }
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
@@ -76,22 +77,30 @@ public class UsersController extends Controller {
 
     public Result createPost() {
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
+        if (viewModel.getUserId() != null && viewModel.getUserId() > 0) {                           //activating or deactivating a user
+            //should have a service response
+            IUser user = userService.findById(viewModel.getUserId());
+            user.setDeleted(!user.getDeleted());
+            ServiceResponse<IUser> updateResponse = userService.update(user);
+            return ok("Update successful fuck yeah");
 
-        IUser user = createUser(viewModel);
+        } else {                                                                                    //creating a new user
+            IUser user = createUser(viewModel);
 
-        Map<String, String[]> map = request().body().asFormUrlEncoded();
-        String[] checkedValues = map.get("roles");
-        List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
-        for (String checkedValue : checkedValues) {
-            checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
-        }
+            Map<String, String[]> map = request().body().asFormUrlEncoded();
+            String[] checkedValues = map.get("roles");
+            List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
+            for (String checkedValue : checkedValues) {
+                checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
+            }
 
-        user = assignRolesToUser(user, checkValuesAsIntegers);
+            user = assignRolesToUser(user, checkValuesAsIntegers);
 
-        ServiceResponse<IUser> response = userService.createUser(user);
+            ServiceResponse<IUser> response = userService.createUser(user);
 
-        if (!response.hasErrors()) {
-            return redirect(HomeController.index());
+            if (!response.hasErrors()) {
+                return redirect(HomeController.index());
+            }
         }
 
         return TODO;

@@ -1,6 +1,7 @@
 package femr.ui.models.admin.users;
 
 public class CreateViewModelPost {
+    private Integer userId;
     private String firstName;
     private String lastName;
     private String email;
@@ -36,5 +37,13 @@ public class CreateViewModelPost {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

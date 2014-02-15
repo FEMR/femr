@@ -6,8 +6,12 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/users.css")">
     }
 
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/admin/admin.js")"></script>
+    }
 
-@admin("Users", null, styles = additionalStyles) {
+
+@admin("Users", null, styles = additionalStyles, scripts = additionalScripts) {
     <table class="table table-bordered" id="userTable">
         <thead>
             <tr>
@@ -17,7 +21,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>Last Login</th>
-                <th>Deactivate User</th>
+                <th>Deactivate</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +39,7 @@
                 }
                 </td>
                 <td>@viewModelGet.getUser(y - 1).getLastLogin</td>
+                <td><button type="button" class="btn btn-danger deactivateBtn" data-user_id="@viewModelGet.getUser(y-1).getId">Deactivate</button></td>
             </tr>
         }
         </tbody>

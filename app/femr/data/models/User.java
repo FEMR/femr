@@ -29,6 +29,8 @@ public class User implements IUser {
     private List<IRole> roles;
     @Column(name = "last_login", nullable = false)
     private DateTime lastLogin;
+    @Column(name = "isDeleted", nullable = false)
+    private Boolean deleted;
 
     @Override
     public int getId() {
@@ -101,5 +103,15 @@ public class User implements IUser {
     @Override
     public void setLastLogin(DateTime lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    @Override
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

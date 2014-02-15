@@ -33,4 +33,8 @@ public interface IUser {
     DateTime getLastLogin();
 
     void setLastLogin(DateTime lastLogin);
+
+    Boolean getDeleted();
+
+    void setDeleted(Boolean deleted);
 }

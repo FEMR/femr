@@ -16,6 +16,8 @@ public class Vital implements IVital {
     private String data_type;
     @Column(name = "unit_of_measurement", nullable = true)
     private String unitOfMeasurement;
+    @Column(name = "isDeleted", nullable = false)
+    private Boolean deleted;
 
     @Override
     public int getId() {
@@ -50,5 +52,15 @@ public class Vital implements IVital {
     @Override
     public void setUnitOfMeasurement(String unitOfMeasurement) {
         this.unitOfMeasurement = unitOfMeasurement;
+    }
+
+    @Override
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

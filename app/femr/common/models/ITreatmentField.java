@@ -6,4 +6,8 @@ public interface ITreatmentField {
     String getName();
 
     void setName(String name);
+
+    Boolean getDeleted();
+
+    void setDeleted(Boolean deleted);
 }

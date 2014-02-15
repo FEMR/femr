@@ -37,9 +37,6 @@ public class SessionService implements ISessionService {
             return response;
         }
 
-        userWithEmail.setLastLogin(DateTime.now());
-        userService.update(userWithEmail);
-
         sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));
         response.setResponseObject(createCurrentUser(userWithEmail));
 

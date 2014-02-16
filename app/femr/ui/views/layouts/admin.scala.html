@@ -7,7 +7,7 @@
 
 @main(title, currentUser, styles, scripts, search = null, showSearchButton = false) {
     <div class="row">
-        <div class="col-md-3 admin-left-panel">
+        <div class="col-md-2 admin-left-panel">
             <div class="btn-group-vertical">
                 <a href="@UsersController.index()" class="btn btn-default pull-left userBtns listUserBtn"><span class="glyphicon glyphicon-user"></span>
                     Manage Users</a>
@@ -16,7 +16,7 @@
             </div>
 
         </div>
-        <div class="col-md-9 admin-right-panel">
+        <div class="col-md-10 admin-right-panel">
         @content
         </div>
     </div>

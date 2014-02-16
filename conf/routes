@@ -3,6 +3,7 @@
 # ~~~~
 
 GET         /*path/                     femr.ui.controllers.ApplicationController.removeTrailingSlash(path: String)
+GET         /admin/users/edit/:id       @femr.ui.controllers.admin.UsersController.getEditPartial(id: Integer)
 POST        /admin/users/create         @femr.ui.controllers.admin.UsersController.createPost()
 GET         /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()
 GET         /admin/users                @femr.ui.controllers.admin.UsersController.index()

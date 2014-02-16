@@ -32,7 +32,7 @@ public class SessionService implements ISessionService {
         IUser userWithEmail = userService.findByEmail(email);
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
-        if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
+        if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword()) || userWithEmail.getDeleted() == true) {
             response.addError("", "Invalid email or password.");
             return response;
         }

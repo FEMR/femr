@@ -1,0 +1,64 @@
+@(user: femr.common.models.IUser)
+
+@import femr.ui.controllers.admin.routes.UsersController
+
+<div class="container">
+    <div class="row">
+    @helper.form(action = UsersController.createPost()) {
+
+
+        <div class="col-lg-7 col-md-7 col-sm-7">
+
+            <h3>First Name</h3>
+            <input type="text" class="form-control input-lg" name="firstName" value="@user.getFirstName"/>
+            <h3>Last Name</h3>
+            <input type="text" class="form-control input-lg" name="lastName" value="@user.getLastName"/>
+            <h3>Email</h3>
+            <input type="text" class="form-control input-lg" name="email" value="@user.getEmail"/>
+
+            <input type="text" class="hidden" name="userId" value="@user.getId"/>
+
+        </div>
+
+        <div class="col-lg-5 col-md-5 col-sm-5">
+            <h3>Roles</h3>
+
+
+            <div class="btn-group width-100">
+                <button type="button" class="btn btn-default dropdown-toggle width-100" data-toggle="dropdown">
+                    Add Role <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu width-100" role="menu">
+                    <li><a href="#">Administrator</a></li>
+                    <li><a href="#">Nurse</a></li>
+                    <li><a href="#">Pharmacist</a></li>
+                    <li><a href="#">Physician</a></li>
+                    <li><a href="#">Researcher</a></li>
+                </ul>
+            </div>
+
+
+            <ul class="list-group">
+            @for(role <- 1 to user.getRoles.size) {
+                <li class="list-group-item">
+                    <span class="badge">X</span>
+                    @user.getRoles.get(role - 1).getName
+                </li>
+            }
+
+
+            </ul>
+
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="btn-group pull-right">
+            <button type="submit" class="btn btn-default" id="saveBtn">Save</button>
+            <button type="button" class="btn btn-default" id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+
+    }
+</div>

@@ -214,6 +214,29 @@ public class EncounterHelper {
         }
     }
 
+    // Creates a list of Vitals
+    private List<Map<String, List<? extends IPatientEncounterVital>>> getVitalSets(Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
+        // First find the element with the biggest size
+        List<Map<String,Map<String, List<? extends IPatientEncounterVital>>>> vitalSet = new LinkedList<Map<String,Map<String, List<? extends IPatientEncounterVital>>>>();
+
+        // String off all the Keys
+        String[] keyNames = {"respiratoryRate", "heartRate", "heightFeet", "heightInches", "bloodPressureSystolic", "bloodPressureDiastolic",
+                              "temperature", "oxygenSaturation", "weight", "glucose"};
+        for(String vitalName : keyNames) {
+            if(patientEncounterVitalMap.containsKey(vitalName)) {
+                for(int i =0; i < patientEncounterVitalMap.get(vitalName).size(); i++) {
+                    // get the date entered and see if it is already in the list or if you need to add it
+                    //if(vitalSet. patientEncounterVitalMap.get(vitalName).get(i).getDateTaken())
+                }
+            }
+        }
+
+
+
+
+        return null;
+    }
+
     private Integer getIntVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
         if (patientEncounterVitalMap.containsKey(key)) {
             if (patientEncounterVitalMap.get(key).size() < 1) {

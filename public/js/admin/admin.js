@@ -1,25 +1,33 @@
 $(document).ready(function () {
-    bindDeactivateBtn();
+    bindToggleBtn();
 });
 
 
-function bindDeactivateBtn() {
-    $('.deactivateBtn').click(function () {
-        deactivateUser($(this).attr('data-user_id'));
-    })
+function bindToggleBtn() {
+    $('.toggleBtn').click(function () {
+        toggleUser(this);
+    });
 }
-function deactivateUser(id) {
+function toggleUser(btn) {
+    var id = $(btn).attr('data-user_id');
     $.ajax({
         url: '/admin/users/create',
         type: 'POST',
         data: {userId: id},
         dataType: 'text',
-
-        success: function (data) {
-            console.log(data);
+        success: function (buttonText) {
+            //on success, toggle button to reflect current state of the user
+            $(btn).html(buttonText);
+            if (buttonText ==="Activate"){
+                $(btn).removeClass("btn-danger");
+                $(btn).addClass("btn-success");
+            }else{
+                $(btn).removeClass("btn-success");
+                $(btn).addClass("btn-danger");
+            }
         },
         error: function (response) {
-            console.log(response);
+            //don't change button - implies an error
         }
     });
 

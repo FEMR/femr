@@ -1,0 +1,7 @@
+@(user: femr.common.models.IUser)
+
+@if(user.getDeleted == false){
+    <button type="button" class="btn btn-danger toggleBtn" data-user_id="@user.getId">Deactivate</button>
+}else{
+    <button type="button" class="btn btn-success toggleBtn" data-user_id="@user.getId">Activate</button>
+}

@@ -81,8 +81,19 @@ public class UsersController extends Controller {
             //should have a service response
             IUser user = userService.findById(viewModel.getUserId());
             user.setDeleted(!user.getDeleted());
+
             ServiceResponse<IUser> updateResponse = userService.update(user);
-            return ok("Update successful fuck yeah");
+            if (updateResponse.hasErrors()){
+                return internalServerError();
+            }else{
+                String buttonText = "Deactivate";
+                if (user.getDeleted() == true){
+                    buttonText = "Activate";
+                }
+                return ok(buttonText);
+            }
+
+
 
         } else {                                                                                    //creating a new user
             IUser user = createUser(viewModel);

@@ -1,6 +1,7 @@
 @(currentUser: femr.business.dtos.CurrentUser, roles: List[_ <: femr.common.models.IRole], viewModelGet: femr.ui.models.admin.users.CreateViewModelGet)
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.views.html.layouts.admin
+@import femr.ui.views.html.helpers.admin._
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/users.css")">
@@ -21,7 +22,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>Last Login</th>
-                <th>Deactivate</th>
+                <th>Toggle</th>
             </tr>
         </thead>
         <tbody>
@@ -34,12 +35,14 @@
                 <td>
                 @for(role <- 0 to viewModelGet.getUser(y - 1).getRoles.size - 1) {
                     <ul>
-                    <li>@viewModelGet.getUser(y - 1).getRoles.get(role).getName</li>
+                        <li>@viewModelGet.getUser(y - 1).getRoles.get(role).getName</li>
                     </ul>
                 }
                 </td>
                 <td>@viewModelGet.getUser(y - 1).getLastLogin</td>
-                <td><button type="button" class="btn btn-danger deactivateBtn" data-user_id="@viewModelGet.getUser(y-1).getId">Deactivate</button></td>
+                <td>
+                    @toggleButton(viewModelGet.getUser(y-1))
+                </td>
             </tr>
         }
         </tbody>

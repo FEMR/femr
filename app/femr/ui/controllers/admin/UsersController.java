@@ -16,8 +16,10 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.users.CreateViewModelPost;
 import femr.ui.models.admin.users.CreateViewModelGet;
 import femr.ui.views.html.admin.users.create;
+import femr.ui.views.html.admin.users.editUser;
 import femr.ui.views.html.admin.users.index;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.joda.time.DateTime;
 import play.data.Form;
@@ -51,21 +53,16 @@ public class UsersController extends Controller {
 
     public Result index() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-        List<? extends IRole> roles = roleService.getAllRoles();
+
         ServiceResponse<List<? extends IUser>> userServiceResponse = userService.findAllUsers();
         if (userServiceResponse.hasErrors()) {
             return internalServerError();
         }
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
 
-//        List<? extends IUser> users = userServiceResponse.getResponseObject();
-//        for(int userIndex = 0; userIndex < users.size(); userIndex++){
-//            users.get(userIndex).setLastLogin(dateUtils.formatDateTimeString(users.get(userIndex).getLastLogin()));
-//        }
-
         viewModelGet.setUsers(userServiceResponse.getResponseObject());
 
-        return ok(index.render(currentUser, roles, viewModelGet));
+        return ok(index.render(currentUser, viewModelGet));
     }
 
     public Result createGet() {
@@ -77,21 +74,48 @@ public class UsersController extends Controller {
 
     public Result createPost() {
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
-        if (viewModel.getUserId() != null && viewModel.getUserId() > 0) {                           //activating or deactivating a user
-            //should have a service response
+        if (viewModel.getUserId() != null && viewModel.getUserId() > 0) {                           //editing a user
             IUser user = userService.findById(viewModel.getUserId());
-            user.setDeleted(!user.getDeleted());
 
-            ServiceResponse<IUser> updateResponse = userService.update(user);
-            if (updateResponse.hasErrors()){
-                return internalServerError();
-            }else{
-                String buttonText = "Deactivate";
-                if (user.getDeleted() == true){
-                    buttonText = "Activate";
+            if (viewModel.getIsDeleted() != null){                                      //activating/deactivating a user
+                user.setDeleted(viewModel.getIsDeleted());
+                ServiceResponse<IUser> updateResponse = userService.update(user);
+
+                if (updateResponse.hasErrors()){
+                    return internalServerError();
+                }else{
+                    String buttonText = "Deactivate";
+                    if (user.getDeleted() == true){
+                        buttonText = "Activate";
+                    }
+                    //return text for button(used by js)
+                    return ok(buttonText);
                 }
-                return ok(buttonText);
+            }else{                                                                      //editing user info
+                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getEmail())){
+                    user.setEmail(viewModel.getEmail());
+                }
+                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getFirstName())){
+                    user.setFirstName(viewModel.getFirstName());
+                }
+                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getLastName())){
+                    user.setLastName(viewModel.getLastName());
+                }
+
+                ServiceResponse<IUser> updateResponse = userService.update(user);
+                if (updateResponse.hasErrors()){
+                    return internalServerError();
+                }else{
+                    //return to manage user homepage
+                    return redirect(routes.UsersController.index());
+
+                }
             }
+
+
+
+
+
 
 
 
@@ -115,6 +139,11 @@ public class UsersController extends Controller {
         }
 
         return TODO;
+    }
+
+    public Result getEditPartial(Integer id){
+        IUser user = userService.findById(id);
+        return ok(editUser.render(user));
     }
 
     private IUser assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {

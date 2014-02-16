@@ -6,6 +6,7 @@ public class CreateViewModelPost {
     private String lastName;
     private String email;
     private String password;
+    private Boolean isDeleted;
 
     public String getFirstName() {
         return firstName;
@@ -45,5 +46,13 @@ public class CreateViewModelPost {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

@@ -7,6 +7,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.IUserService;
 import femr.common.models.*;
 import femr.ui.models.search.CreateEncounterViewModel;
+import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
 import femr.util.calculations.dateUtils;
 
@@ -36,7 +37,7 @@ public class EncounterHelper {
         this.searchService = searchService; // used to retreive the replacement pharmacy name
     }
 
-    public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
+    public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, VitalMultiMap patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
         CreateEncounterViewModel viewModelGet = new CreateEncounterViewModel();
         //prescriptions
 
@@ -49,7 +50,7 @@ public class EncounterHelper {
             if (patientPrescription.getReplaced()) {
                 medicationAndReplacement.add(new Pair<String, String>(patientPrescription.getMedicationName(),
                         getPrescriptionNameById(patientPrescription.getReplacementId())));
-                // add the replaced prescription id to the ignore list so we don't show it twice
+                // add the replaced prescription id to the ignore list so we don't added it twice
                 ignoreList.add(patientPrescription.getReplacementId());
             } else if (!ignoreList.contains(patientPrescription.getId())) {
                 // if the medication is not in the ignore list
@@ -116,16 +117,17 @@ public class EncounterHelper {
         viewModelGet.setCurrentMedication(getPmhFieldOrNull("currentMedication", patientEncounterPmhMap));
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
-        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
-        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
-        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
-        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
-        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
-        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
-        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
-        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
-        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
-        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
+        viewModelGet.setVitalList(patientEncounterVitalMap);
+//        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
+//        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
+//        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
+//        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
+//        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
+//        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
+//        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
+//        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
+//        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
+//        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
         //Medication
         return viewModelGet;
     }
@@ -182,6 +184,14 @@ public class EncounterHelper {
     }
     //endregion
 
+    private String getDoctorFirstNameOrNull(IHpiField hpiField, IPmhField pmhField, ITreatmentField treatmentField) {
+        // check to see if the fields are filled out if so find the name of the doctor who filled it out
+        IPatientEncounterHpiField patientEncounterHpiField = patientEncounterHpiFieldProvider.get();
+        if(patientEncounterHpiField.getUserId() != null)
+        {
+            
+        }
+    }
 
     //region **get value or get null**
     private String getOriginalPrescriptionOrNull(int number, List<Pair<String, String>> patientPrescriptions) {
@@ -214,48 +224,28 @@ public class EncounterHelper {
         }
     }
 
-    // Creates a list of Vitals
-    private List<Map<String, List<? extends IPatientEncounterVital>>> getVitalSets(Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
-        // First find the element with the biggest size
-        List<Map<String,Map<String, List<? extends IPatientEncounterVital>>>> vitalSet = new LinkedList<Map<String,Map<String, List<? extends IPatientEncounterVital>>>>();
-
-        // String off all the Keys
-        String[] keyNames = {"respiratoryRate", "heartRate", "heightFeet", "heightInches", "bloodPressureSystolic", "bloodPressureDiastolic",
-                              "temperature", "oxygenSaturation", "weight", "glucose"};
-        for(String vitalName : keyNames) {
-            if(patientEncounterVitalMap.containsKey(vitalName)) {
-                for(int i =0; i < patientEncounterVitalMap.get(vitalName).size(); i++) {
-                    // get the date entered and see if it is already in the list or if you need to add it
-                    //if(vitalSet. patientEncounterVitalMap.get(vitalName).get(i).getDateTaken())
-                }
-            }
-        }
 
 
-
-
-        return null;
-    }
-
-    private Integer getIntVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
-        if (patientEncounterVitalMap.containsKey(key)) {
-            if (patientEncounterVitalMap.get(key).size() < 1) {
-                return null;
-            }
-            return patientEncounterVitalMap.get(key).get(0).getVitalValue().intValue();
-        }
-        return null;
-    }
-
-    private Float getFloatVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
-        if (patientEncounterVitalMap.containsKey(key)) {
-            if (patientEncounterVitalMap.get(key).size() < 1) {
-                return null;
-            }
-            return patientEncounterVitalMap.get(key).get(0).getVitalValue();
-        }
-        return null;
-    }
+    // The map has 2 keys the first key holds the name of the vital the second key holds the Date it was entered
+//    private Integer getIntVitalOrNull(String key,MultiKeyMap<String, String, IPatientEncounterVital> patientEncounterVitalMap) {
+//        if (patientEncounterVitalMap.containsKey1(key)) {
+//            if (patientEncounterVitalMap.get(key).size() < 1) {
+//                return null;
+//            }
+//            return patientEncounterVitalMap.get(key).get(0).getVitalValue().intValue();
+//        }
+//        return null;
+//    }
+//
+//    private Float getFloatVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
+//        if (patientEncounterVitalMap.containsKey(key)) {
+//            if (patientEncounterVitalMap.get(key).size() < 1) {
+//                return null;
+//            }
+//            return patientEncounterVitalMap.get(key).get(0).getVitalValue();
+//        }
+//        return null;
+//    }
 
     private String getHpiFieldOrNull(String key, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
         if (patientEncounterHpiMap.containsKey(key)) {

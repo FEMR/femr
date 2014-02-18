@@ -7,11 +7,12 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.*;
 import femr.common.models.*;
 import femr.ui.helpers.controller.EncounterHelper;
-import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
 import femr.ui.views.html.pharmacies.index;
+import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
+
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.search.show;
@@ -143,20 +144,29 @@ public class SearchController extends Controller {
             }
         }
 
+        // rewrite this to store the vital keys as the dates
         //Create linked hash map of vitals
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
 
-        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap = new LinkedHashMap<>();
+        // This map has two keys per value the first is the Vital name the second is the date the vital was taken
+        VitalMultiMap patientEncounterVitalMap = new VitalMultiMap();
+
         ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
         String vitalFieldName;
+        String vitalFieldDate;
         for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
             vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
             patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
+
             if (patientVitalServiceResponse.hasErrors()) {
                 continue;
             } else {
-                patientEncounterVitalMap.put(vitalFieldName, patientVitalServiceResponse.getResponseObject());
+                for(IPatientEncounterVital vitalData : patientVitalServiceResponse.getResponseObject())
+                {
+                    vitalFieldDate = vitalData.getDateTaken().trim();
+                    patientEncounterVitalMap.put(vitalFieldName, vitalFieldDate, vitalData.getVitalValue());
+                }
             }
         }
 

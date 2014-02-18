@@ -30,10 +30,11 @@ public class VitalMultiMap {
     }
 
     /**
-     * Gets the list of dates to use to search by for the vitals
+     * Gets the list of dates to use to search by for the vitals in acending order
      * @return A List of dates as type string
      */
     public List<String> getDateList() {
+        Collections.sort(dateList);
         return dateList;
     }
 

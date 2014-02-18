@@ -184,14 +184,6 @@ public class EncounterHelper {
     }
     //endregion
 
-    private String getDoctorFirstNameOrNull(IHpiField hpiField, IPmhField pmhField, ITreatmentField treatmentField) {
-        // check to see if the fields are filled out if so find the name of the doctor who filled it out
-        IPatientEncounterHpiField patientEncounterHpiField = patientEncounterHpiFieldProvider.get();
-        if(patientEncounterHpiField.getUserId() != null)
-        {
-            
-        }
-    }
 
     //region **get value or get null**
     private String getOriginalPrescriptionOrNull(int number, List<Pair<String, String>> patientPrescriptions) {

@@ -10,29 +10,29 @@
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <label>Blood Pressure</label>
-                    <p><span id="triageBpSystolic">@viewModel.getVitalList.get("bloodPressureSystolic", date)</span> @* @viewModel.getBloodPressureSystolic *@
-                        / <span id="triageBpDiastolic">@viewModel.getVitalList.get("bloodPressureDiastolic", date)</span></p> @* @viewModel.getBloodPressureDiastolic *@
+                    <p><span id="triageBpSystolic">@viewModel.getVitalList.get("bloodPressureSystolic", date)</span>
+                        / <span id="triageBpDiastolic">@viewModel.getVitalList.get("bloodPressureDiastolic", date)</span></p>
                     <label>Heart Rate</label>
-                    <p id="triageHeartRate">@viewModel.getVitalList.get("heartRate", date)</p> @* @viewModel.getHeartRate *@
+                    <p id="triageHeartRate">@viewModel.getVitalList.get("heartRate", date)</p>
                     <label>Temperature</label>
-                    <p id="triageTemperature">@viewModel.getVitalList.get("temperature", date)</p> @* @viewModel.getTemperature *@
+                    <p id="triageTemperature">@viewModel.getVitalList.get("temperature", date)</p>
                     <label>Respirations</label>
-                    <p id="triageRespRate">@viewModel.getVitalList.get("respiratoryRate", date)</p> @* @viewModel.getRespiratoryRate *@
+                    <p id="triageRespRate">@viewModel.getVitalList.get("respiratoryRate", date)</p>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <label>Oxygen</label>
-                    <p id="triageOxygen">@viewModel.getVitalList.get("oxygenSaturation", date)</p> @* @viewModel.getOxygenSaturation *@
+                    <p id="triageOxygen">@viewModel.getVitalList.get("oxygenSaturation", date)</p>
                     <label>Height</label>
-                    <p><span id="triageHeightFt">@viewModel.getVitalList.get("heightFeet", date)</span> @* @viewModel.getHeightFeet *@
+                    <p><span id="triageHeightFt">@viewModel.getVitalList.get("heightFeet", date)</span>
                         ' <span id=triageHeightIn>@viewModel.getVitalList.get("heightInches", date)</span>
-                        "</p> @* @viewModel.getHeightInches *@
+                        "</p>
                     @*used by bmi calculator*@
-                    <p id="heightFeet" class="hidden">@viewModel.getVitalList.get("heightFeet", date)</p> @* @viewModel.getHeightFeet *@
-                    <p id="heightInches" class="hidden">@viewModel.getVitalList.get("heightInches", date)</p> @* @viewModel.getHeightInches *@
+                    <p id="heightFeet" class="hidden">@viewModel.getVitalList.get("heightFeet", date)</p>
+                    <p id="heightInches" class="hidden">@viewModel.getVitalList.get("heightInches", date)</p>
                     <label>Weight</label>
-                    <p id="weight">@viewModel.getVitalList.get("weight", date)</p> @* @viewModel.getWeight *@
+                    <p id="weight">@viewModel.getVitalList.get("weight", date)</p>
                     <label>Glucose</label>
-                    <p id="weight">@viewModel.getVitalList.get("glucose", date)</p> @* @viewModel.getGlucose *@
+                    <p id="weight">@viewModel.getVitalList.get("glucose", date)</p>
                 </div>
             </div>
         </div>

@@ -164,7 +164,8 @@ public class UsersController extends Controller {
         user.setLastName(viewModel.getLastName());
         user.setEmail(viewModel.getEmail());
         user.setPassword(viewModel.getPassword());
-        user.setLastLogin(DateTime.now());
+        user.setLastLogin(dateUtils.getCurrentDateTime());
+        user.setDeleted(false);
         return user;
     }
 }

@@ -5,6 +5,7 @@ import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.Role;
 import femr.data.models.User;
+import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import play.Play;
@@ -38,6 +39,8 @@ public class DatabaseSeeder {
             adminUser.setLastName("");
             adminUser.setEmail(defaultAdminUsername);
             adminUser.setPassword(encryptedPassword);
+            adminUser.setLastLogin(dateUtils.getCurrentDateTime());
+            adminUser.setDeleted(false);
             Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
             adminUser.addRole(role);
 

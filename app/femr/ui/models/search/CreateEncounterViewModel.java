@@ -1,6 +1,10 @@
 package femr.ui.models.search;
 
+import femr.common.models.IPatientEncounterVital;
+import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
+
+
 import java.util.List;
 
 
@@ -81,6 +85,14 @@ public class CreateEncounterViewModel {
     // the Pharmacist who gave the meds
     private String pharmacistFirstName;
     private String pharmacistLastName;
+
+    // List of Vitals
+    private VitalMultiMap vitalList;
+
+
+    public VitalMultiMap getVitalList() { return vitalList; }
+
+    public void setVitalList(VitalMultiMap vitalList) { this.vitalList = vitalList; }
 
     public List<Pair<String, String>> getMedicationAndReplacement() { return medicationAndReplacement; }
 

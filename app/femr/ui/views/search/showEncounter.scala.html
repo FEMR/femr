@@ -77,14 +77,18 @@
         </div>
 
     </div>
-    <div class="row">
-        <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
+
+    @* Display multiple sets of vitals based on dates *@
+    <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
+    @outputVitalList(viewModel)
+        @*
+
             <h3>Vitals</h3>
             <div id="populatedVitals">
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <label>Blood Pressure</label>
-                        <p><span id="triageBpSystolic">@viewModel.getBloodPressureSystolic</span>
+                        <p><span id="triageBpSystolic">   @viewModel.getBloodPressureSystolic</span>
                             / <span id="triageBpDiastolic">@viewModel.getBloodPressureDiastolic</span></p>
                         <label>Heart Rate</label>
                         <p id="triageHeartRate">@viewModel.getHeartRate</p>
@@ -100,7 +104,7 @@
                         <p><span id="triageHeightFt">@viewModel.getHeightFeet</span>
                             ' <span id=triageHeightIn>@viewModel.getHeightInches</span>"</p>
                         @*used by bmi calculator*@
-                        <p id="heightFeet" class="hidden">@viewModel.getHeightFeet</p>
+                    @*    <p id="heightFeet" class="hidden">@viewModel.getHeightFeet</p>
                         <p id="heightInches" class="hidden">@viewModel.getHeightInches</p>
                         <label>Weight</label>
                         <p id="weight">@viewModel.getWeight</p>
@@ -108,7 +112,7 @@
                         <p id="weight">@viewModel.getGlucose</p>
                     </div>
                 </div>
-            </div>
+            </div> *@
         </div>
 
             <!--*************************

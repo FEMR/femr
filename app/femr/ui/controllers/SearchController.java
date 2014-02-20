@@ -144,8 +144,8 @@ public class SearchController extends Controller {
             }
         }
 
-        // rewrite this to store the vital keys as the dates
-        //Create linked hash map of vitals
+
+        //Create linked hash map of vitals where the key is the date as well as the name so two keys
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
 
@@ -172,21 +172,13 @@ public class SearchController extends Controller {
 
         //endregion
 
+
         CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
 
 
 
 
 
-        //Get patient prescriptions
-//        List<String> prescriptionsList = new ArrayList<String>();
-//        //ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
-//        if (!patientPrescriptionsServiceResponse.hasErrors()) {
-//            for (int i = 0; i < patientPrescriptionsServiceResponse.getResponseObject().size(); i++) {
-//                prescriptionsList.add(patientPrescriptionsServiceResponse.getResponseObject().get(i).getMedicationName());
-//            }
-//            viewModel.setPerscribList(prescriptionsList);
-//        }
 
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));   // this is where the responce is returned to the encounter page

@@ -8,12 +8,13 @@ import java.util.*;
 import org.apache.commons.collections.map.MultiKeyMap;
 
 /**
- * This data type is designed for the vitals allowing us to search for vitals by date and value
+ * This DataStructure is designed for the patient vitals allowing us to search for vitals by date and vital name at the same time
+ * we can also get a list of dates
  */
 public class VitalMultiMap {
 
     private final MultiKeyMap vitalMap = new MultiKeyMap();
-    private final List<String> dateList = new LinkedList<String>();
+    private final List<String> dateList = new LinkedList<>();
 
     /**
      * Puts a value into the map and associatres the name and date as the two keys to the value
@@ -30,11 +31,11 @@ public class VitalMultiMap {
     }
 
     /**
-     * Gets the list of dates to use to search by for the vitals in acending order
+     * Gets a list of Date Keys and sorts them in descending order
      * @return A List of dates as type string
      */
     public List<String> getDateList() {
-        Collections.sort(dateList);
+        Collections.sort(dateList, Collections.reverseOrder());
         return dateList;
     }
 
@@ -51,10 +52,4 @@ public class VitalMultiMap {
         }
         return null;
     }
-
-
-
-
-
-
 }

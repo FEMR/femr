@@ -81,38 +81,7 @@
     @* Display multiple sets of vitals based on dates *@
     <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
     @outputVitalList(viewModel)
-        @*
 
-            <h3>Vitals</h3>
-            <div id="populatedVitals">
-                <div class="row">
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <label>Blood Pressure</label>
-                        <p><span id="triageBpSystolic">   @viewModel.getBloodPressureSystolic</span>
-                            / <span id="triageBpDiastolic">@viewModel.getBloodPressureDiastolic</span></p>
-                        <label>Heart Rate</label>
-                        <p id="triageHeartRate">@viewModel.getHeartRate</p>
-                        <label>Temperature</label>
-                        <p id="triageTemperature">@viewModel.getTemperature</p>
-                        <label>Respirations</label>
-                        <p id="triageRespRate">@viewModel.getRespiratoryRate</p>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <label>Oxygen</label>
-                        <p id="triageOxygen">@viewModel.getOxygenSaturation</p>
-                        <label>Height</label>
-                        <p><span id="triageHeightFt">@viewModel.getHeightFeet</span>
-                            ' <span id=triageHeightIn>@viewModel.getHeightInches</span>"</p>
-                        @*used by bmi calculator*@
-                    @*    <p id="heightFeet" class="hidden">@viewModel.getHeightFeet</p>
-                        <p id="heightInches" class="hidden">@viewModel.getHeightInches</p>
-                        <label>Weight</label>
-                        <p id="weight">@viewModel.getWeight</p>
-                        <label>Glucose</label>
-                        <p id="weight">@viewModel.getGlucose</p>
-                    </div>
-                </div>
-            </div> *@
         </div>
 
             <!--*************************
@@ -255,12 +224,16 @@
 
 
                     @* <div class="col-sm-9 col-md-9 col-xs-9 col-lg-9"> *@
-                    <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2">
+
+                    <!-- Currently we don't have a way to get the pharmacist so this is disabled for know,
+                        but is ready to go once that has been implemented -->
+
+                  @*  <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2">
                         <label for="PharmacistName">Pharamcist:</label>
                     </div>
                     <div class="col-sm-4 col-md-4 col-xs-4 col-lg-4">
                         <p>@viewModel.getPharmacistFirstName @viewModel.getPharmacistLastName</p>
-                    </div>
+                    </div> *@
 
                     <div class="container medicationContainer">
                         <div class="row">

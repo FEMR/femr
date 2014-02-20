@@ -1,4 +1,4 @@
-@(user: femr.common.models.IUser)
+@(viewModel: femr.ui.models.admin.users.EditUserViewModel)
 
 @import femr.ui.controllers.admin.routes.UsersController
 
@@ -10,13 +10,13 @@
         <div class="col-lg-7 col-md-7 col-sm-7">
 
             <h3>First Name</h3>
-            <input type="text" class="form-control input-lg" name="firstName" value="@user.getFirstName"/>
+            <input type="text" class="form-control input-lg" name="firstName" value="@viewModel.getUser.getFirstName"/>
             <h3>Last Name</h3>
-            <input type="text" class="form-control input-lg" name="lastName" value="@user.getLastName"/>
+            <input type="text" class="form-control input-lg" name="lastName" value="@viewModel.getUser.getLastName"/>
             <h3>Email</h3>
-            <input type="text" class="form-control input-lg" name="email" value="@user.getEmail"/>
+            <input type="text" class="form-control input-lg" name="email" value="@viewModel.getUser.getEmail"/>
 
-            <input type="text" class="hidden" name="userId" value="@user.getId"/>
+            <input type="text" class="hidden" name="userId" value="@viewModel.getUser.getId"/>
 
         </div>
 
@@ -29,20 +29,20 @@
                     Add Role <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu width-100" role="menu">
-                    <li><a href="#">Administrator</a></li>
-                    <li><a href="#">Nurse</a></li>
-                    <li><a href="#">Pharmacist</a></li>
-                    <li><a href="#">Physician</a></li>
-                    <li><a href="#">Researcher</a></li>
+                    @for(role <- 1 to viewModel.getAllRoles.size()){
+                        <li class="roleListItem"><a>@viewModel.getAllRoles.get(role - 1).getName</a></li>
+                    }
                 </ul>
             </div>
 
 
-            <ul class="list-group">
-            @for(role <- 1 to user.getRoles.size) {
-                <li class="list-group-item">
+            <ul class="list-group" id="currentRoles">
+            @for(role <- 1 to viewModel.getUser.getRoles.size) {
+                <li class="list-group-item" value="@viewModel.getUser.getRoles.get(role - 1).getName">
                     <span class="badge">X</span>
-                    @user.getRoles.get(role - 1).getName
+                    @viewModel.getUser.getRoles.get(role - 1).getName
+                    <!-- stores hidden value for POST -->
+                    <input type="text" class="hidden" name="role" value="@viewModel.getUser.getRoles.get(role - 1).getName"/>
                 </li>
             }
 

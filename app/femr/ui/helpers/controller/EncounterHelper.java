@@ -60,18 +60,12 @@ public class EncounterHelper {
 
 
         // Set the doctor's first and last name
-        viewModelGet.setDoctorFirstName(this.userService.findById(patientEncounter.getUserId()).getFirstName());
-        viewModelGet.setDoctorLastName(this.userService.findById(patientEncounter.getUserId()).getLastName());
+        viewModelGet.setDoctorFirstName(getDoctorFirstNameOrNull(patientEncounter.getId()));  //this.userService.findById(patientEncounter.getUserId()).getFirstName()
+        viewModelGet.setDoctorLastName(getDoctorLastNameOrNull(patientEncounter.getId()));
         // set the pharmacist first and last name
         viewModelGet.setPharmacistFirstName(null);
         viewModelGet.setPharmacistLastName(null);
-        // if the size of the prescriptions list is greater or equal to 1 then we know a prescription was prescribed
-        // and that their is a pharmacist name.  We also assume that the pharmacist who gave the first medication
-        // gave all the medications
-        if(patientPrescriptions.size() >= 1) {
-            viewModelGet.setPharmacistFirstName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getFirstName());
-            viewModelGet.setPharmacistLastName(this.userService.findById(patientPrescriptions.get(0).getUserId()).getLastName());
-        }
+
         //patient
         viewModelGet.setpID(patient.getId());
         viewModelGet.setCity(patient.getCity());
@@ -132,57 +126,68 @@ public class EncounterHelper {
         return viewModelGet;
     }
 
-    //region **get encounter fields**
-    public IPatientPrescription getPatientPrescription(int userId, int patientEncounterId, String name){
-        IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
-        patientPrescription.setEncounterId(patientEncounterId);
-        patientPrescription.setUserId(userId);
-        patientPrescription.setReplaced(false);
-        patientPrescription.setReplacementId(null);
-        patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
-        patientPrescription.setMedicationName(name);
-        return patientPrescription;
-    }
-    public IPatientEncounterVital getPatientEncounterVital(int userId, int patientEncounterId, IVital vital, double vitalValue) {
-        IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
-        patientEncounterVital.setUserId(userId);
-        patientEncounterVital.setPatientEncounterId(patientEncounterId);
-        patientEncounterVital.setVital(vital);
-        patientEncounterVital.setVitalValue((float) vitalValue);
-        patientEncounterVital.setDateTaken(dateUtils.getCurrentDateTimeString());
-        return patientEncounterVital;
+
+    /**
+     * Gets the first name of the doctor given an encounter ID.  If there are multiple doctors only display latest
+     * @param encounterId The ID of the encounter you want a doctor name from
+     * @return The First name of the doctor as a string
+     */
+    private String getDoctorFirstNameOrNull(int encounterId) {
+        // Gets the doctor for the patient encounter.
+        // this is done by first looking at the Hpi field for a UserId  if empty then look in Pmh, then treatment
+        ServiceResponse<IPatientEncounterHpiField> patientEncounterHpiFieldResponse = searchService.findDoctorIdByEncounterIdInHpiField(encounterId);
+        IPatientEncounterHpiField patientEncounterHpiField;
+        int doctorID;
+
+        //check for errors
+        if(!patientEncounterHpiFieldResponse.hasErrors()) {
+            patientEncounterHpiField = patientEncounterHpiFieldResponse.getResponseObject();
+            doctorID = patientEncounterHpiField.getUserId();
+            return this.userService.findById(doctorID).getFirstName().trim();
+        }
+
+        // Assume that HPI failed or was empty, try the Pmh field instead
+        ServiceResponse<IPatientEncounterPmhField> patientEncounterPmhFieldResponse = searchService.findDoctorIdByEncounterIdInPmhField(encounterId);
+        IPatientEncounterPmhField patientEncounterPmhField;
+        if(!patientEncounterPmhFieldResponse.hasErrors()) {
+            patientEncounterPmhField = patientEncounterPmhFieldResponse.getResponseObject();
+            doctorID = patientEncounterPmhField.getUserId();
+            return this.userService.findById(doctorID).getFirstName().trim();
+        }
+
+        // The Pmh failed or was empty so try the treatment field
+        ServiceResponse<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldResponse = searchService.findDoctorIdByEncounterIdInTreatmentField(encounterId);
+        IPatientEncounterTreatmentField patientEncounterTreatmentField;
+        if(!patientEncounterTreatmentFieldResponse.hasErrors()) {
+            patientEncounterTreatmentField = patientEncounterTreatmentFieldResponse.getResponseObject();
+            doctorID = patientEncounterTreatmentField.getUserId();
+            return this.userService.findById(doctorID).getFirstName().trim();
+        }
+
+        // if we reach this point we failed to find a userid in any of the medical fields so return null
+        return null;
     }
 
-    public IPatientEncounterTreatmentField getPatientEncounterTreatmentField(int userId, int patientEncounterId, ITreatmentField treatmentField, String treatmentValue) {
-        IPatientEncounterTreatmentField patientEncounterTreatmentField = patientEncounterTreatmentFieldProvider.get();
-        patientEncounterTreatmentField.setUserId(userId);
-        patientEncounterTreatmentField.setPatientEncounterId(patientEncounterId);
-        patientEncounterTreatmentField.setTreatmentField(treatmentField);
-        patientEncounterTreatmentField.setTreatmentFieldValue(treatmentValue.trim());
-        patientEncounterTreatmentField.setDateTaken(dateUtils.getCurrentDateTime());
-        return patientEncounterTreatmentField;
+    /**
+     * Gets the last name of the doctor given an encounter ID.  If there are multiple doctors only display latest
+     * @param encounterId The ID of the encounter you want a doctors name from
+     * @return The Last name of the doctor as a string
+     */
+    private String getDoctorLastNameOrNull(int encounterId) {
+        // Gets the doctor for the patient encounter.
+        // this is done by first looking at the Hpi field for a UserId  if empty then look in Pmh, then treatment
+        ServiceResponse<IPatientEncounterHpiField> patientEncounterHpiFieldResponse = searchService.findDoctorIdByEncounterIdInHpiField(encounterId);
+        IPatientEncounterHpiField patientEncounterHpiField;
+        int doctorID;
+        String lastName = null;
+        //check for errors
+        if(!patientEncounterHpiFieldResponse.hasErrors()) {
+            patientEncounterHpiField = patientEncounterHpiFieldResponse.getResponseObject();
+            doctorID = patientEncounterHpiField.getUserId();
+            lastName = this.userService.findById(doctorID).getLastName().trim();
+        }
+        return lastName;
     }
-
-    public IPatientEncounterPmhField getPatientEncounterPmhField(int userId, int patientEncounterId, IPmhField pmhField, String pmhValue) {
-        IPatientEncounterPmhField patientEncounterPmhField = patientEncounterPmhFieldProvider.get();
-        patientEncounterPmhField.setUserId(userId);
-        patientEncounterPmhField.setPatientEncounterId(patientEncounterId);
-        patientEncounterPmhField.setPmhField(pmhField);
-        patientEncounterPmhField.setPmhFieldValue(pmhValue.trim());
-        patientEncounterPmhField.setDateTaken(dateUtils.getCurrentDateTime());
-        return patientEncounterPmhField;
-    }
-
-    public IPatientEncounterHpiField getPatientEncounterHpiField(int userId, int patientEncounterId, IHpiField hpiField, String hpiValue) {
-        IPatientEncounterHpiField patientEncounterHpiField = patientEncounterHpiFieldProvider.get();
-        patientEncounterHpiField.setUserId(userId);
-        patientEncounterHpiField.setPatientEncounterId(patientEncounterId);
-        patientEncounterHpiField.setHpiField(hpiField);
-        patientEncounterHpiField.setHpiFieldValue(hpiValue);
-        patientEncounterHpiField.setDateTaken(dateUtils.getCurrentDateTime());
-        return patientEncounterHpiField;
-    }
-    //endregion
 
 
     //region **get value or get null**
@@ -215,29 +220,6 @@ public class EncounterHelper {
             return false;
         }
     }
-
-
-
-    // The map has 2 keys the first key holds the name of the vital the second key holds the Date it was entered
-//    private Integer getIntVitalOrNull(String key,MultiKeyMap<String, String, IPatientEncounterVital> patientEncounterVitalMap) {
-//        if (patientEncounterVitalMap.containsKey1(key)) {
-//            if (patientEncounterVitalMap.get(key).size() < 1) {
-//                return null;
-//            }
-//            return patientEncounterVitalMap.get(key).get(0).getVitalValue().intValue();
-//        }
-//        return null;
-//    }
-//
-//    private Float getFloatVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {
-//        if (patientEncounterVitalMap.containsKey(key)) {
-//            if (patientEncounterVitalMap.get(key).size() < 1) {
-//                return null;
-//            }
-//            return patientEncounterVitalMap.get(key).get(0).getVitalValue();
-//        }
-//        return null;
-//    }
 
     private String getHpiFieldOrNull(String key, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
         if (patientEncounterHpiMap.containsKey(key)) {

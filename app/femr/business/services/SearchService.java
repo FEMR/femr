@@ -348,11 +348,10 @@ public class SearchService implements ISearchService {
     }
 
     /**
-     * Finds a prescription by its id
-     * @param id
+     * Finds a prescription by its ID so we can find the name of the replacement meds
+     * @param id The id of the medication to find
      * @return the response object
      */
-    // this is to help find the replacement meds name
     public ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id) {
         ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("id", id);
         IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(query);
@@ -361,6 +360,77 @@ public class SearchService implements ISearchService {
             response.addError("patientPrescription", "could not find a prescription with that id");
         } else {
             response.setResponseObject(patientPrescription);
+        }
+        return response;
+    }
+
+    /**
+     * Gets the id of the doctor for a given Encounter in the HpiField
+     * @param id The encounter ID
+     * @return The userID associated with that field
+     */
+    public ServiceResponse<IPatientEncounterHpiField> findDoctorIdByEncounterIdInHpiField(int id) {
+        Query<PatientEncounterHpiField> query = getPatientEncounterHpiFieldQuery()
+                .fetch("hpiField")
+                .where()
+                .eq("patient_encounter_id", id)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
+        IPatientEncounterHpiField patientEncounterHpiField;
+        ServiceResponse<IPatientEncounterHpiField> response = new ServiceResponse<>();
+        //check to see if the list is empty
+        if(patientEncounterHpiFields.isEmpty()) {
+            response.addError("patientEncounterHpiField", "Could not find Hpi Field for the given encounter id");
+        }
+        else {
+            patientEncounterHpiField = patientEncounterHpiFields.get(0); // the first entry should be the newest
+            response.setResponseObject(patientEncounterHpiField);
+        }
+        return response;
+    }
+
+
+    /**
+     * Gets the id of the doctor for a given Encounter in the PmhField
+     * @param id The encounter ID
+     * @return The userID associated with that field
+     */
+    public ServiceResponse<IPatientEncounterPmhField> findDoctorIdByEncounterIdInPmhField(int id) {
+        Query<PatientEncounterPmhField> query = getPatientEncounterPmhFieldQuery()
+                .fetch("pmhField")
+                .where()
+                .eq("patient_encounter_id", id)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query);
+        IPatientEncounterPmhField patientEncounterPmhField;
+        ServiceResponse<IPatientEncounterPmhField> response = new ServiceResponse<>();
+        //check to see if the list is empty
+        if(patientEncounterPmhFields.isEmpty()) {
+            response.addError("patientEncounterPmhField", "Could not find Pmh field for the given encounter id");
+        }
+        else {
+            patientEncounterPmhField = patientEncounterPmhFields.get(0); // the first entry should be the newest
+            response.setResponseObject(patientEncounterPmhField);
+        }
+        return response;
+    }
+
+
+
+    /**
+     * Gets the id of the doctor for a given Encounter in the TreatmentField
+     * @param id The encounter ID
+     * @return The userID associated with that field
+     */
+    public ServiceResponse<IPatientEncounterTreatmentField> findDoctorIdByEncounterIdInTreatmentField(int id) {
+        ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id);
+        IPatientEncounterTreatmentField patientEncounterTreatmentField = patientEncounterTreatmentFieldRepository.findOne(query);
+        ServiceResponse<IPatientEncounterTreatmentField> response = new ServiceResponse<>();
+        if(patientEncounterTreatmentField == null) {
+            response.addError("patientEncounterTreatmentField", "Could not find Treatment for the given encounter id");
+        }
+        else {
+            response.setResponseObject(patientEncounterTreatmentField);
         }
         return response;
     }

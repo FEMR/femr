@@ -11,10 +11,12 @@ import femr.business.services.IUserService;
 import femr.common.models.IRole;
 import femr.common.models.IUser;
 import femr.common.models.Roles;
+import femr.data.models.Role;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.users.CreateViewModelPost;
 import femr.ui.models.admin.users.CreateViewModelGet;
+import femr.ui.models.admin.users.EditUserViewModel;
 import femr.ui.views.html.admin.users.create;
 import femr.ui.views.html.admin.users.editUser;
 import femr.ui.views.html.admin.users.index;
@@ -102,6 +104,7 @@ public class UsersController extends Controller {
                     user.setLastName(viewModel.getLastName());
                 }
 
+
                 ServiceResponse<IUser> updateResponse = userService.update(user);
                 if (updateResponse.hasErrors()){
                     return internalServerError();
@@ -111,13 +114,6 @@ public class UsersController extends Controller {
 
                 }
             }
-
-
-
-
-
-
-
 
         } else {                                                                                    //creating a new user
             IUser user = createUser(viewModel);
@@ -142,8 +138,13 @@ public class UsersController extends Controller {
     }
 
     public Result getEditPartial(Integer id){
+        EditUserViewModel editUserViewModel = new EditUserViewModel();
         IUser user = userService.findById(id);
-        return ok(editUser.render(user));
+        List<? extends IRole> roles = roleService.getAllRoles();
+        editUserViewModel.setUser(user);
+        editUserViewModel.setAllRoles(roles);
+
+        return ok(editUser.render(editUserViewModel));
     }
 
     private IUser assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {

@@ -17,7 +17,7 @@ $(document).ready(function () {
 //on cancel click
 
 
-//on edit click
+/*  on edit click events */
 function bindEditDialog() {
     $('.editBtn').click(function () {
         var id = $(this).attr('data-user_id');
@@ -31,6 +31,7 @@ function bindEditDialog() {
                 $('#cancelBtn').click(function () {
                     $('#editDialog').dialog("close");
                 });
+                bindRoleDropDownClick();
             },
             error: function (response) {
                 alert("fatal error dear lord what have you done");
@@ -38,6 +39,25 @@ function bindEditDialog() {
         })
 
     });
+}
+function bindRoleDropDownClick() {
+    $('.roleListItem').click(function () {
+        var role = $(this).text();
+        if (!doesRoleAlreadyExist(role)) {
+            $('#currentRoles').append("<li class=list-group-item value=" + role + "><span class=badge>X</span>" + role + "</li><input type=text class=hidden name=role value=" + role + ">");
+        }
+    });
+}
+//checks if a role exists in the currentRole list
+function doesRoleAlreadyExist(role) {
+    var exist = false;
+    var $roles = $('#currentRoles > li');
+    $($roles).each(function () {
+        if ($(this).attr('value').toLowerCase() === role.toLowerCase()) {
+            exist = true;
+        }
+    });
+    return exist;
 }
 
 

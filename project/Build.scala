@@ -5,7 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName         = "fEMR"
-  val appVersion      = "0.0.1"
+  val appVersion      = "1.0.1"
 
   val appDependencies = Seq(
     // Add your project dependencies here,

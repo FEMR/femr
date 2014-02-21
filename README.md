@@ -1,6 +1,6 @@
-# FEMR - Free Electronic Medical Records
+# FEMR - Fast Electronic Medical Records
 
-A simple and lightweight EMR system.
+A simple and fast EMR system.
 
 ### Description
 

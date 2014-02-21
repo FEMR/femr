@@ -1,7 +1,7 @@
 @(name: String, forInput: String, value: Date)
   @inputBlock = {
     <div class="form-group">
-        <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<font>(*)</font></label>
+        <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<span style="color:red; font-weight:bold">*</span></label>
       <div class="col-sm-7 col-xs-7">
       @if(value == null) {
           <div class="h5">

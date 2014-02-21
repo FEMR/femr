@@ -2,7 +2,7 @@
   @inputBlock = {
     <div class="form-group">
       @if(required == true) {
-      <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<font>(*)</font></label>
+      <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<span style="color:red; font-weight:bold">*</span></label>
       } else {
       <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name</label>
       }

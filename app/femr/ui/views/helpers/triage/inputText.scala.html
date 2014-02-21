@@ -1,7 +1,11 @@
-@(name: String, forInput: String, value: Object)
+@(name: String, forInput: String, required: Boolean, value: Object)
   @inputBlock = {
     <div class="form-group">
+      @if(required == true) {
+      <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<span class="red bold">*</span></label>
+      } else {
       <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name</label>
+      }
       <div class="col-sm-7 col-xs-7">
       @if(value == null) {
         <input type="text" class="form-control" id="@forInput" name="@forInput" placeholder="@name">

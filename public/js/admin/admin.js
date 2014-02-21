@@ -32,6 +32,7 @@ function bindEditDialog() {
                     $('#editDialog').dialog("close");
                 });
                 bindRoleDropDownClick();
+                bindRoleBadge();
             },
             error: function (response) {
                 alert("fatal error dear lord what have you done");
@@ -44,8 +45,16 @@ function bindRoleDropDownClick() {
     $('.roleListItem').click(function () {
         var role = $(this).text();
         if (!doesRoleAlreadyExist(role)) {
-            $('#currentRoles').append("<li class=list-group-item value=" + role + "><span class=badge>X</span>" + role + "</li><input type=text class=hidden name=role value=" + role + ">");
+            $('#currentRoles').append("<li class=list-group-item value=" + role + "><span class='badge roleBadge'>X</span>" + role + "</li><input type=text class=hidden name=roles[] value=" + role + ">");
+            bindRoleBadge();
         }
+
+    });
+}
+function bindRoleBadge(){
+    $('.roleBadge').unbind();
+    $('.roleBadge').click(function(){
+       $(this).parent().remove();
     });
 }
 //checks if a role exists in the currentRole list

@@ -103,6 +103,18 @@ public class UsersController extends Controller {
                 if (StringUtils.isNotNullOrWhiteSpace(viewModel.getLastName())){
                     user.setLastName(viewModel.getLastName());
                 }
+                if (viewModel.getRoles().size() > 0){
+                    List<? extends IRole> allRoles = roleService.getAllRoles();
+                    List<IRole> userRoles = new ArrayList<>();
+                    for(IRole role : allRoles ){
+                        if (viewModel.getRoles().contains(role.getName())){
+                            userRoles.add(role);
+                        }
+                    }
+                    user.setRoles(userRoles);
+                }
+
+
 
 
                 ServiceResponse<IUser> updateResponse = userService.update(user);

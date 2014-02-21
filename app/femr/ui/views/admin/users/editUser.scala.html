@@ -39,10 +39,10 @@
             <ul class="list-group" id="currentRoles">
             @for(role <- 1 to viewModel.getUser.getRoles.size) {
                 <li class="list-group-item" value="@viewModel.getUser.getRoles.get(role - 1).getName">
-                    <span class="badge">X</span>
+                    <span class="badge roleBadge">X</span>
                     @viewModel.getUser.getRoles.get(role - 1).getName
                     <!-- stores hidden value for POST -->
-                    <input type="text" class="hidden" name="role" value="@viewModel.getUser.getRoles.get(role - 1).getName"/>
+                    <input type="text" class="hidden" name="roles[]" value="@viewModel.getUser.getRoles.get(role - 1).getName"/>
                 </li>
             }
 

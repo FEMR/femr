@@ -10,6 +10,9 @@
 #userTable td{
     font-size: 11px;
 }
+.badge:hover{
+    cursor: pointer;
+}
 
 
 

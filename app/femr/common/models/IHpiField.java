@@ -6,4 +6,8 @@ public interface IHpiField {
     String getName();
 
     void setName(String name);
+
+    Boolean getDeleted();
+
+    void setDeleted(Boolean deleted);
 }

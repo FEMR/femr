@@ -1,10 +1,15 @@
 package femr.ui.models.admin.users;
 
+import java.util.List;
+
 public class CreateViewModelPost {
+    private Integer userId;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private Boolean isDeleted;
+    private List<String> roles;
 
     public String getFirstName() {
         return firstName;
@@ -36,5 +41,29 @@ public class CreateViewModelPost {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

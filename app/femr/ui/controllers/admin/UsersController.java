@@ -11,12 +11,19 @@ import femr.business.services.IUserService;
 import femr.common.models.IRole;
 import femr.common.models.IUser;
 import femr.common.models.Roles;
+import femr.data.models.Role;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.users.CreateViewModelPost;
 import femr.ui.models.admin.users.CreateViewModelGet;
+import femr.ui.models.admin.users.EditUserViewModel;
 import femr.ui.views.html.admin.users.create;
+import femr.ui.views.html.admin.users.editUser;
 import femr.ui.views.html.admin.users.index;
+import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -48,15 +55,16 @@ public class UsersController extends Controller {
 
     public Result index() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-        List<? extends IRole> roles = roleService.getAllRoles();
+
         ServiceResponse<List<? extends IUser>> userServiceResponse = userService.findAllUsers();
-        if (userServiceResponse.hasErrors()){
+        if (userServiceResponse.hasErrors()) {
             return internalServerError();
         }
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
+
         viewModelGet.setUsers(userServiceResponse.getResponseObject());
 
-        return ok(index.render(currentUser, roles, viewModelGet));
+        return ok(index.render(currentUser, viewModelGet));
     }
 
     public Result createGet() {
@@ -68,25 +76,87 @@ public class UsersController extends Controller {
 
     public Result createPost() {
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
+        if (viewModel.getUserId() != null && viewModel.getUserId() > 0) {                           //editing a user
+            IUser user = userService.findById(viewModel.getUserId());
 
-        IUser user = createUser(viewModel);
+            if (viewModel.getIsDeleted() != null){                                      //activating/deactivating a user
+                user.setDeleted(viewModel.getIsDeleted());
+                ServiceResponse<IUser> updateResponse = userService.update(user);
 
-        Map<String, String[]> map = request().body().asFormUrlEncoded();
-        String[] checkedValues = map.get("roles");
-        List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
-        for (String checkedValue : checkedValues) {
-            checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
-        }
+                if (updateResponse.hasErrors()){
+                    return internalServerError();
+                }else{
+                    String buttonText = "Deactivate";
+                    if (user.getDeleted() == true){
+                        buttonText = "Activate";
+                    }
+                    //return text for button(used by js)
+                    return ok(buttonText);
+                }
+            }else{                                                                      //editing user info
+                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getEmail())){
+                    user.setEmail(viewModel.getEmail());
+                }
+                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getFirstName())){
+                    user.setFirstName(viewModel.getFirstName());
+                }
+                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getLastName())){
+                    user.setLastName(viewModel.getLastName());
+                }
+                if (viewModel.getRoles().size() > 0){
+                    List<? extends IRole> allRoles = roleService.getAllRoles();
+                    List<IRole> userRoles = new ArrayList<>();
+                    for(IRole role : allRoles ){
+                        if (viewModel.getRoles().contains(role.getName())){
+                            userRoles.add(role);
+                        }
+                    }
+                    user.setRoles(userRoles);
+                }
 
-        user = assignRolesToUser(user, checkValuesAsIntegers);
 
-        ServiceResponse<IUser> response = userService.createUser(user);
 
-        if (!response.hasErrors()) {
-            return redirect(HomeController.index());
+
+                ServiceResponse<IUser> updateResponse = userService.update(user);
+                if (updateResponse.hasErrors()){
+                    return internalServerError();
+                }else{
+                    //return to manage user homepage
+                    return redirect(routes.UsersController.index());
+
+                }
+            }
+
+        } else {                                                                                    //creating a new user
+            IUser user = createUser(viewModel);
+
+            Map<String, String[]> map = request().body().asFormUrlEncoded();
+            String[] checkedValues = map.get("roles");
+            List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
+            for (String checkedValue : checkedValues) {
+                checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
+            }
+
+            user = assignRolesToUser(user, checkValuesAsIntegers);
+
+            ServiceResponse<IUser> response = userService.createUser(user);
+
+            if (!response.hasErrors()) {
+                return redirect(HomeController.index());
+            }
         }
 
         return TODO;
+    }
+
+    public Result getEditPartial(Integer id){
+        EditUserViewModel editUserViewModel = new EditUserViewModel();
+        IUser user = userService.findById(id);
+        List<? extends IRole> roles = roleService.getAllRoles();
+        editUserViewModel.setUser(user);
+        editUserViewModel.setAllRoles(roles);
+
+        return ok(editUser.render(editUserViewModel));
     }
 
     private IUser assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {
@@ -107,6 +177,8 @@ public class UsersController extends Controller {
         user.setLastName(viewModel.getLastName());
         user.setEmail(viewModel.getEmail());
         user.setPassword(viewModel.getPassword());
+        user.setLastLogin(dateUtils.getCurrentDateTime());
+        user.setDeleted(false);
         return user;
     }
 }

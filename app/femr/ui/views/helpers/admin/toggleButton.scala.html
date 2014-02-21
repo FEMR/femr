@@ -1,0 +1,10 @@
+@(user: femr.common.models.IUser)
+
+@*Make sure you can't remove the master admin account*@
+@if(user.getEmail != "admin") {
+    @if(user.getDeleted == false) {
+        <button type="button" class="btn btn-danger toggleBtn" data-user_id="@user.getId">Deactivate</button>
+    } else {
+        <button type="button" class="btn btn-success toggleBtn" data-user_id="@user.getId">Activate</button>
+    }
+}

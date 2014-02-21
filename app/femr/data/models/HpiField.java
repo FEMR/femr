@@ -15,6 +15,8 @@ public class HpiField implements IHpiField {
     private int id;
     @Column(name = "name", unique = false, nullable = false)
     private String name;
+    @Column(name = "isDeleted", nullable = false)
+    private Boolean deleted;
 
     @Override
     public int getId() {
@@ -29,5 +31,15 @@ public class HpiField implements IHpiField {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

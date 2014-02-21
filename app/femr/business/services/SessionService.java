@@ -5,7 +5,9 @@ import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.common.models.IUser;
+import femr.data.daos.IRepository;
 import femr.util.encryptions.IPasswordEncryptor;
+import org.joda.time.DateTime;
 
 //import static play.mvc.Controller.session;
 
@@ -14,13 +16,15 @@ public class SessionService implements ISessionService {
     private IUserService userService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
+    private IRepository<IUser> userRepository;
 
     @Inject
     public SessionService(IUserService userService, IPasswordEncryptor passwordEncryptor,
-                          ISessionHelper sessionHelper) {
+                          ISessionHelper sessionHelper, IRepository<IUser> userRepository) {
         this.userService = userService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -28,7 +32,7 @@ public class SessionService implements ISessionService {
         IUser userWithEmail = userService.findByEmail(email);
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
-        if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
+        if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword()) || userWithEmail.getDeleted() == true) {
             response.addError("", "Invalid email or password.");
             return response;
         }

@@ -1,0 +1,30 @@
+
+/*User table*/
+#userTable ul{
+    list-style-type: none;
+}
+#userTable th{
+    font-size: 14px;
+    text-align: center;
+}
+#userTable td{
+    font-size: 11px;
+}
+.badge:hover{
+    cursor: pointer;
+}
+
+
+
+/*jQuery UI Dialog*/
+
+.editUserDialog .ui-dialog-titlebar {
+    background: none;
+    border: none;
+
+    font-size: 20px;
+    font-weight: 300;
+}
+.width-100{
+    width: 100%;
+}

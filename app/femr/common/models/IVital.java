@@ -14,4 +14,8 @@ public interface IVital {
     String getUnitOfMeasurement();
 
     void setUnitOfMeasurement(String unitOfMeasurement);
+
+    Boolean getDeleted();
+
+    void setDeleted(Boolean deleted);
 }

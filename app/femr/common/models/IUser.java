@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 public interface IUser {
@@ -27,4 +29,12 @@ public interface IUser {
     void setRoles(List<IRole> roles);
 
     void addRole(IRole role);
+
+    DateTime getLastLogin();
+
+    void setLastLogin(DateTime lastLogin);
+
+    Boolean getDeleted();
+
+    void setDeleted(Boolean deleted);
 }

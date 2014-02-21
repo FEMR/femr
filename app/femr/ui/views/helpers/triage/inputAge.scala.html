@@ -1,14 +1,19 @@
-@(name: String, forInput: String, value: Integer)
+@(label: String, field1: String, forInput1: String, field2: String, forInput2: String, value1: Integer, value2: Integer)
   @inputBlock = {
-    <div class="form-group">
-      <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<span class="red bold">*</span></label>
-      <div class="col-sm-7 col-xs-7">
-      @if(value == null) {
-        <input type="number" class="form-control" id="@forInput" name="@forInput" placeholder="@name">
-      } else {
-        <input type="number" class="form-control" id="@forInput" name="@forInput" value="@value" readonly/>
-      }
-      </div>
-    </div>
+     <div class="form-group">
+          <label for="@label" class="col-sm-3 col-xs-3 control-label stackedInput">Age<span class="red bold">*</span></label>
+          <div class="col-sm-7 col-xs-7">
+          @if(value1 == null) {
+              <input type="number" step="number" min="0" class="form-control" id="@forInput1" name="@forInput1" placeholder="@field1">
+          } else {
+              <input type="number" step="number" min="0" class="form-control" id="@forInput1" name="@forInput1" value="@value1" readonly/>
+          }
+          @if(value2 == null) {
+              <input type="number" step="number" min="0" max="24" class="form-control" id="@forInput2" name="@forInput2" placeholder="@field2">
+          } else {
+              <input type="number" step="number" min="0" max="24" class="form-control" id="@forInput2" name="@forInput2" value="@value2" readonly/>
+          }
+          </div>
+     </div>
   }
 @inputBlock

@@ -33,9 +33,9 @@ public class dateUtils {
         Months months = Months.monthsBetween(birthdate, now);
         int monthsInt = months.getMonths();
         if (monthsInt < 24)
-            return Integer.toString(monthsInt) + " mo";
+            return Integer.toString(monthsInt) + " MO";
         else
-            return Integer.toString(monthsInt/12) + " yoa";
+            return Integer.toString(monthsInt/12) + " YOA";
     }
 }
 

@@ -37,8 +37,7 @@
 
 .patientMedicalHistory {
   padding-bottom: 4px !important;
-  margin-bottom: 4px;
-!important;
+  margin-bottom: 4px !important;
 }
 
 .padding-right-zero {
@@ -54,5 +53,5 @@
 }
 
 .red {
-    color:red; font-weight: bold;
+    color:red;
 }

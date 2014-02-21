@@ -36,10 +36,10 @@
         <div class="col-sm-5 col-xs-12">
             <h2>General Info</h2>
             <div>
-                @inputText("First Name", "firstName", if(viewModel != null) viewModel.getFirstName else null)
-                @inputText("Last Name", "lastName", if(viewModel != null) viewModel.getLastName else null)
-                @inputText("Address", "address", if(viewModel != null) viewModel.getAddress else null)
-                @inputText("City", "city", if(viewModel != null) viewModel.getCity else null)
+                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getFirstName else null)
+                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getLastName else null)
+                @inputText("Address", "address", false, if(viewModel != null) viewModel.getAddress else null)
+                @inputText("City", "city", true, if(viewModel != null) viewModel.getCity else null)
                 @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getBirth else null)
                 @inputAge("Age", "years", if(viewModel != null) viewModel.getAge else null)
                 @inputGender(viewModel)

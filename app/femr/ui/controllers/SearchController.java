@@ -7,6 +7,8 @@ import femr.business.dtos.ServiceResponse;
 import femr.business.services.*;
 import femr.common.models.*;
 import femr.ui.helpers.controller.EncounterHelper;
+import femr.ui.helpers.security.AllowedRoles;
+import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
 import femr.ui.views.html.pharmacies.index;
@@ -27,11 +29,13 @@ import java.util.Map;
 
 // include the view model for medical
 import femr.ui.models.medical.CreateViewModelGet;
+import play.mvc.Security;
 import views.html.defaultpages.error;
 
 // include the view model for pharmacy
 //import femr.ui.models.pharmacy.CreateViewModelGet;
-
+@Security.Authenticated(FEMRAuthenticated.class)
+@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class SearchController extends Controller {
     private ISessionService sessionService;
     private ISearchService searchService;

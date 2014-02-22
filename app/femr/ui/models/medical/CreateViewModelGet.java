@@ -1,6 +1,8 @@
 package femr.ui.models.medical;
 
 
+import femr.util.DataStructure.VitalMultiMap;
+
 public class CreateViewModelGet {
     //begin patient
     private int pID;
@@ -10,6 +12,9 @@ public class CreateViewModelGet {
     private String age;
     private String sex;
     //begin vitals
+    private VitalMultiMap vitalList;
+    // we are going to store all the vitals in a list
+    // so the indivitual variables wont be used
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;
@@ -52,6 +57,10 @@ public class CreateViewModelGet {
     private String medicalSurgicalHistory;
     private String socialHistory;
     private String currentMedication;
+
+    public VitalMultiMap getVitalList() { return vitalList; }
+
+    public void setVitalList(VitalMultiMap vitalList) { this.vitalList = vitalList; }
 
     public int getpID() {
         return pID;

@@ -18,6 +18,7 @@ import femr.ui.models.medical.SearchViewModel;
 import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.index;
+import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -182,22 +183,46 @@ public class MedicalController extends Controller {
             }
         }
 
-        //Create linked hash map of vitals
+        //Create linked hash map of vitals where the key is the date as well as the name so two keys
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
-
-        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap = new LinkedHashMap<>();
+        // This map has two keys per value the first is the Vital name the second is the date the vital was taken
+        VitalMultiMap patientEncounterVitalMap = new VitalMultiMap();
         ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
         String vitalFieldName;
+        String vitalFieldDate;
         for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
             vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
             patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
+
             if (patientVitalServiceResponse.hasErrors()) {
                 continue;
             } else {
-                patientEncounterVitalMap.put(vitalFieldName, patientVitalServiceResponse.getResponseObject());
+                // iterate through all the stored vitals and put them in the map with there date and name
+                for(IPatientEncounterVital vitalData : patientVitalServiceResponse.getResponseObject())
+                {
+                    vitalFieldDate = vitalData.getDateTaken().trim();
+                    patientEncounterVitalMap.put(vitalFieldName, vitalFieldDate, vitalData.getVitalValue());
+                }
             }
         }
+
+//        //Create linked hash map of vitals
+//        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+//        List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
+//
+//        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap = new LinkedHashMap<>();
+//        ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
+//        String vitalFieldName;
+//        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
+//            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
+//            patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
+//            if (patientVitalServiceResponse.hasErrors()) {
+//                continue;
+//            } else {
+//                patientEncounterVitalMap.put(vitalFieldName, patientVitalServiceResponse.getResponseObject());
+//            }
+//        }
 
         //endregion
 

@@ -78,42 +78,6 @@
 
 
 
-    <div id="newVitals" class="hidden">
-        <div class="alert alert-info"><strong>Heads up!</strong>
-            Only fields with values in them will be updated.</div>
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <label>Blood Pressure</label>
-                <input type="number" id="bpSystolic" class="form-control input-sm col-sm-3" placeholder="Systolic">
-                <input type="number" id="bpDiastolic" class="form-control input-sm col-sm-3" placeholder="Diastolic">
-                <label>Heart Rate</label>
-                <input type="number" id="heartRate" class="form-control input-sm"/>
-                <label>Temperature</label>
-                <input type="number" id="temperature" class="form-control input-sm" placeholder="Fahrenheit"/>
-                <label>Respirations</label>
-                <input type="number" id="respRate" class="form-control input-sm"/>
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <label>Oxygen</label>
-                <input type="number" id="oxygen" class="form-control input-sm"/>
-                <label>Height</label>
-                <input type="number" id="heightFt" class="form-control input-sm col-sm-3" placeholder="Feet"/>
-                <input type="number" id="heightIn" class="form-control input-sm col-sm-3" placeholder="Inches"/>
-                <div class="input-group">
-                    <label>Weight</label>
-                    <input type="number" id="newWeight" class="form-control input-sm" placeholder="Pounds"/>
-                    <label>Glucose</label>
-                    <input type="number" id="newGlucose" class="form-control input-sm" placeholder="mg/dl"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12">
-            <button type="button" id="resetVitalsBtn" class="btn btn-block btn-default">Record New Vitals</button>
-            <button type="button" id="saveVitalsBtn" class="btn btn-block btn-primary hidden">Save New Vitals</button>
-        </div>
-    </div>
     </div>
     @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {
         <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">

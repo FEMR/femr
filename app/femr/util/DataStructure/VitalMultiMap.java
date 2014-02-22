@@ -4,8 +4,13 @@ package femr.util.DataStructure;
  * Created by Danny on 2/17/14.
  */
 
+import java.text.ParseException;
 import java.util.*;
+
+import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
+
+import java.text.SimpleDateFormat;
 
 /**
  * This DataStructure is designed for the patient vitals allowing us to search for vitals by date and vital name at the same time
@@ -27,6 +32,7 @@ public class VitalMultiMap {
         // check if the dated is already in the dateList if so don't add it
         if(!dateList.contains(date)) {
             dateList.add(date);
+            Collections.sort(dateList, Collections.reverseOrder());
         }
     }
 
@@ -51,5 +57,26 @@ public class VitalMultiMap {
             return vitalMap.get(vitalName,date).toString();
         }
         return null;
+    }
+
+    /**
+     * gets the date for a given index
+     * @param i The index of the date
+     * @return The date as a string
+     */
+    public String getDate(int i) {
+        // check that the index specified
+        if(dateList.size() < i || i < 0) {
+            return null;
+        }
+        return dateList.get(i);
+    }
+
+    public String getFormatedDate(int i) {
+        // check that the index specified
+        if(dateList.size() < i || i < 0) {
+            return null;
+        }
+        return StringUtils.FormatDat(dateList.get(i));
     }
 }

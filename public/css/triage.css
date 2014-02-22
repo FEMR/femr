@@ -29,6 +29,9 @@
 #pregnancyBtn{
     margin-top: -6px;
 }
+#patientHistoryColumn{
+    margin-left: 122px;
+}
 
 /*Boot strap overrides*/
 .clear-none {

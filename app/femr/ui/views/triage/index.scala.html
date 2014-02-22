@@ -43,6 +43,8 @@
                 @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getBirth else null)
                 @inputAge("Age", "years", if(viewModel != null) viewModel.getAge else null)
                 @inputGender(viewModel)
+                @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
+
 
 
             </div>

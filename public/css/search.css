@@ -28,6 +28,12 @@ p {
 .encbtns:hover{
     background-color: #E1DDCF;
 }
+#encounterAlert{
+    margin-left: 40px;
+}
+
+
+
 /*Boot strap overrides*/
 .bold{
     font-weight: bold;

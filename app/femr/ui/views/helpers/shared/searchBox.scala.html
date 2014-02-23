@@ -1,0 +1,27 @@
+@(page: java.lang.String, patientId: java.lang.Integer, message: java.lang.String)
+
+<div class="text-center col-lg-offset-4 col-sm-offset-4 col-md-offset-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <h2>@page Search</h2>
+    @if(patientId > 0) {
+        <div class="form-group form-horizontal">
+            <label for="id" class="sr-only">Patient ID</label>
+            <input type="number" class="form-control" id="id" name="id" value="@patientId" readonly>
+        </div>
+
+        <p>@message</p>
+        <div class="btn-group btn-group-justified">
+            <a href="/medical/edit/@patientId" class="btn btn-default">Yes</a>
+            <a href="/medical" class="btn btn-default">No</a>
+        </div>
+
+    } else {
+        <div class="form-group form-horizontal">
+            <label for="id" class="sr-only">Patient ID</label>
+            <input type="number" class="form-control" id="id" name="id" placeholder="Patient ID">
+        </div>
+
+        <p>@message</p>
+        @*idSearch used to validate id via client*@
+        <button type="submit" class="idSearch btn btn-primary width-100">Search</button>
+    }
+</div>

@@ -19,8 +19,11 @@ public interface ISearchService {
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
 
     ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
+    ServiceResponse<IPatientEncounterTreatmentField> findRecentTreatmentField(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name);
+    ServiceResponse<IPatientEncounterHpiField> findRecentHpiField(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name);
+    ServiceResponse<IPatientEncounterPmhField> findRecentPmhField(int encounterId, String name);
     ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name);
 
     ServiceResponse<IVital> findVital(String name);

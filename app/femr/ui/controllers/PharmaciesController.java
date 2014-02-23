@@ -49,9 +49,8 @@ public class PharmaciesController extends Controller {
     }
 
     public Result index() {
-        boolean error = false;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(index.render(currentUserSession, error, null));
+        return ok(index.render(currentUserSession, null, 0));
     }
 
     public Result typeaheadJSONGet() {
@@ -79,13 +78,13 @@ public class PharmaciesController extends Controller {
         Integer id = Integer.parseInt(s_id);
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        Boolean error = false;
+        String message;
 
         //return to index if error finding a patient
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
         if (patientServiceResponse.hasErrors()) {
-            error = true;
-            return ok(index.render(currentUserSession, error, "That patient can not be found."));
+            message = "That patient can not be found.";
+            return ok(index.render(currentUserSession, message, 0));
         }
 
         IPatient patient = patientServiceResponse.getResponseObject();
@@ -98,8 +97,8 @@ public class PharmaciesController extends Controller {
         //return to index if error finding a patient encounter
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
         if (patientEncounterServiceResponse.hasErrors()) {
-            error = true;
-            return ok(index.render(currentUserSession, error, "An error has occured"));
+            message = "An error has occured.";
+            return ok(index.render(currentUserSession, message, 0));
         }
 
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
@@ -130,8 +129,8 @@ public class PharmaciesController extends Controller {
         //find patient prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         if (patientPrescriptionsServiceResponse.hasErrors()) {
-            error = true;
-            return ok(index.render(currentUserSession, error, "No prescriptions exist for that patient"));
+            message = "No prescriptions exist for that patient.";
+            return ok(index.render(currentUserSession, message, 0));
         }
 
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
@@ -168,7 +167,7 @@ public class PharmaciesController extends Controller {
         viewProblems = dynamicViewProblems.toArray(viewProblems);
         viewModelGet.setProblems(viewProblems);
 
-        return ok(populated.render(currentUserSession, viewModelGet, error));
+        return ok(populated.render(currentUserSession, viewModelGet, false));
     }
 
     public Result createPost(int id) {
@@ -176,6 +175,12 @@ public class PharmaciesController extends Controller {
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientEncounter.getPatientId());
+        if (patientServiceResponse.hasErrors()) {
+            return internalServerError();
+        }
+        IPatient patient = patientServiceResponse.getResponseObject();
 
         //replace prescription 1
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())) {
@@ -217,7 +222,10 @@ public class PharmaciesController extends Controller {
             IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription5());
             ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
         }
-        return index();
+
+        String message = "Patient information for " + patient.getFirstName() + " " + patient.getLastName() + " (id: " + patient.getId() + ") was saved successfully.";
+
+        return ok(index.render(currentUserSession, message, 0));
     }
 
     private IPatientPrescription initializeNewPrescription(CurrentUser currentUserSession, IPatientEncounter patientEncounter, String medicationName) {

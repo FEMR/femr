@@ -145,6 +145,155 @@ $(document).ready(function () {
             }
         }
     });
+
+    //PHOTO LOGIC ::START::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+    var _imgInfo = {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        imgData: null,
+        deletePhoto: false,
+        jWinCrop: null
+    };
+
+    //Initialize controls, shows or hides
+    //  patient photo or upload control depending on if image
+    //  has been loaded already
+    function _photoInit()
+    {
+        //destroy crop window if it already exists:
+        var jwc = $('#patientPhoto').getjWindowCrop();
+        if(jwc != undefined)
+            jwc.destroyCrop();
+
+
+        //Create new crop window
+        jwc = $('#patientPhoto').jWindowCrop({
+            targetWidth: 250,
+            targetHeight: 250,
+            loadingText: '',
+            zoomInId: 'btnZoomIn',
+            zoomOutId: 'btnZoomOut',
+
+            onChange: function(result) {
+                _imgInfo.x = result.cropX;
+                _imgInfo.y = result.cropY;
+                _imgInfo.width = result.cropW;
+                _imgInfo.height = result.cropH;
+                $('#imageCoords').val("{" + result.cropX + "," + result.cropY +
+                                      "," + result.cropW + "," + result.cropH + "}");
+                var temp = $('#imageCoords').val();
+            }
+        });
+        jwc.touchit(); //This invokes the "touchit" module which translates mouse/click
+        //events into touch/drag events
+        _imgInfo.jWinCrop = $('#patientPhoto').getjWindowCrop();
+
+        if($('#patientPhoto').attr('src') == "")
+        {
+            //If picture is empty, then let's hide the jCrop window
+            //  and show the upload button instead
+            $('#patientPhotoDiv').hide();
+            $('#photoInputFormDiv').show();
+        }
+        else
+        {
+            $('#patientPhotoDiv').show();
+            $('#photoInputFormDiv').hide();
+        }
+    }
+
+    //Handle photo delete operation
+    function _photoDeleteImage()
+    {
+        $('#patientPhoto').attr('src', '');
+        _photoInit();
+        _photoResetFileUpload();
+        _imgInfo.deletePhoto = true;
+        $('#deletePhoto').prop('checked', true);  //set hidden element to true so that the image will be deleted server-side
+    }
+
+    //Reset the file upload box
+    function _photoResetFileUpload()
+    {
+        var control = $("#photoInput");
+        control.replaceWith( control = control.clone( true ) );
+    }
+
+    //Kick off jWindowCrop library
+    //  This also keeps the _imgInfo object up to date
+    $(function() {
+      _photoInit();
+    });
+
+    //Crops photo within jCropWindow frame and
+    //  saves data to fileupload element
+    function PrepPatientPhotoForUpload()
+    {
+        //_imgInfo.jWinCrop.set
+        //var cnvs = document.createElement('canvas');
+        //_imgInfo.deletePhoto = true;
+        //$('#patientPhoto').attr("src", "");
+        //_imgInfo.jWinCrop.destroyCrop();
+
+        /*
+         var cnvs = document.getElementById('testCanvas');
+         cnvs.setAttribute("width", _imgInfo.width);
+         cnvs.setAttribute("height", _imgInfo.height);
+         cnvs.setAttribute("id","photoCanvas");
+         var ctx = cnvs.getContext("2d");
+         var img = new Image();
+         img.onload = function() {
+         ctx.drawImage(img, _imgInfo.x, _imgInfo.y, _imgInfo.width, _imgInfo.height, 0, 0, _imgInfo.width, _imgInfo.height);
+         };
+         img.src = $('#patientPhoto').attr('src');*/
+    }
+
+
+
+    //When the user chooses a photo, this function will
+    //  Load the photo into the image frame at which point the user
+    //  may drag / crop the photo
+    $('#photoInput').change(function(evt) {
+        var files = evt.target.files; // FileList object
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+
+            // Only process image files.
+            if (!f.type.match('image.*')) {
+                continue;
+            }
+
+            $('#patientPhotoDiv').show();
+            $('#photoInputFormDiv').hide();
+
+            var reader = new FileReader();
+
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    $('#patientPhoto').attr('src', e.target.result);
+                };
+            })(f);
+
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
+            return;
+        }
+
+    });
+
+
+    //Notes:  on post, I can create a temporary canvas, crop the image,
+    // and then place data into upload section
+    $('#btnDeletePhoto').click(function() {
+        var b = confirm("Are you sure you would like to delete this photo?");
+        if(b == true)
+            _photoDeleteImage();
+    });
+
+    //PHOTO LOGIC ::END::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
 });
 
 //BMI auto- calculator

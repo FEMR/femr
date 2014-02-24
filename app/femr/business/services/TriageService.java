@@ -9,6 +9,7 @@ import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
+import femr.common.models.IPhoto;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 
@@ -56,6 +57,25 @@ public class TriageService implements ITriageService {
     }
 
     @Override
+    public ServiceResponse<IPatient> setPhotoId(int id, int photoId)
+    {
+        ServiceResponse<IPatient> response = new ServiceResponse<>();
+        ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
+        IPatient savedPatient = patientRepository.findOne(query);
+        if (savedPatient == null){
+            response.addError("patient","does not exist");
+            return response;
+        }
+        savedPatient.setPhotoId(photoId);
+        savedPatient = patientRepository.update(savedPatient);
+        if (savedPatient.getPhotoId() != photoId){
+            response.addError("updating","error updating patient photo id");
+        }
+        response.setResponseObject(savedPatient);
+        return response;
+    }
+
+    @Override
     public ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter) {
         IPatientEncounter newPatientEncounter = patientEncounterRepository.create(patientEncounter);
         ServiceResponse<IPatientEncounter> response = new ServiceResponse<>();
@@ -97,4 +117,6 @@ public class TriageService implements ITriageService {
     private Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
     }
+
+
 }

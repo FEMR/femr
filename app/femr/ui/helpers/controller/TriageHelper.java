@@ -3,10 +3,7 @@ package femr.ui.helpers.controller;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.common.models.*;
 import femr.data.models.Vital;
 import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
@@ -59,6 +56,7 @@ public class TriageHelper {
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());
+
         return patient;
     }
 

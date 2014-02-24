@@ -10,7 +10,9 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/datepicker.css")">
     }
     @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/triage/touchit-1.0.0.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/triage/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
     }
@@ -33,7 +35,7 @@
     <h2 class="text-center">Check In - Triage</h2>
 
     <div class="row">
-    @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal") {
+    @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
         <div class="col-sm-5 col-xs-12">
             <h2>General Info</h2>
             <div>
@@ -51,7 +53,34 @@
                     </div>
                 </div>
 
-
+                <div class="form-group">
+                    <label for="photo" class="col-sm-3 col-xs-3 control-label">Patient Photo</label>
+                    <div id="photoInputFormDiv" class="col-sm-7 col-xs-7">
+                        <input type="file" class="form-control" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
+                    </div>
+                    <div id="patientPhotoDiv" class="col-sm-7 col-xs-7">
+                        <div class="btn-group" >
+                            <img id="patientPhoto" class="crop_me" alt="" src="" />
+                            <div class="btn-toolbar" role="buttons">
+                                <div class="btn-group">
+                                    <button  id="btnZoomIn" class="btn btn-default btn-lg">
+                                        <span class="glyphicon glyphicon-zoom-in"></span>
+                                    </button>
+                                    <button id="btnZoomOut" class="btn btn-default btn-lg">
+                                        <span class="glyphicon glyphicon-zoom-out"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group">
+                                    <button id="btnDeletePhoto" type="button" class="btn btn-danger btn-lg pull-right">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input hidden="true" type="checkbox" name="deletePhoto" value="true"     id="deletePhoto">
+                    <input hidden="true" type="text"     name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
+                </div>
             </div>
         </div>
         @*Other Column*@

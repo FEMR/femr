@@ -3,10 +3,12 @@ package femr.ui.controllers;
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
+import femr.business.services.IPhotoService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.*;
+import femr.data.models.Photo;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.triage.CreateViewModelGet;
@@ -15,9 +17,7 @@ import femr.ui.helpers.controller.TriageHelper;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Result;
-import play.mvc.Security;
+import play.mvc.*;
 
 import java.util.List;
 
@@ -30,15 +30,21 @@ public class TriageController extends Controller {
     private ISessionService sessionService;
     private ISearchService searchService;
     private TriageHelper triageHelper;
+    private IPhotoService photoService;
 
 
     @Inject
-    public TriageController(ITriageService triageService, ISessionService sessionService, ISearchService searchService, TriageHelper triageHelper) {
+    public TriageController(ITriageService triageService,
+                            ISessionService sessionService,
+                            ISearchService searchService,
+                            TriageHelper triageHelper,
+                            IPhotoService photoService) {
 
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.triageHelper = triageHelper;
+        this.photoService = photoService;
     }
 
     public Result createGet() {
@@ -96,9 +102,19 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result createPost(int id) {
+        Http.MultipartFormData.FilePart fpPhoto;
+
+        try
+        {
+            //Safely capture handle to photo object
+            fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
+        }
+        catch(Exception ex)
+        {
+            fpPhoto = null;
+        }
 
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
-
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         //save new patient if new form
@@ -119,6 +135,33 @@ public class TriageController extends Controller {
         if (patientServiceResponse.hasErrors()) {
             return internalServerError();
         }
+
+        //Handle photo logic:
+        /*
+        if(fpPhoto != null)
+        {
+            String sFileName = "Patient_" + patientServiceResponse.getResponseObject().getId();
+            //user needs to insert or update a photo
+            if(patientServiceResponse.getResponseObject().getPhotoId() == null)
+            {
+                IPhoto pPhoto = new Photo();
+                pPhoto.setDescription("");
+                pPhoto.setFilePath("sFileName");
+                ServiceResponse<IPhoto>  pPhotoResponse = photoService.createPhoto(pPhoto);
+                triageService.setPhotoId(patientServiceResponse.getResponseObject().getId(), pPhoto.getId());
+
+                //Crop photo if we were given coords:
+                if(viewModel.getImageCoords() != null)
+                   photoService.CropImage(fpPhoto.getFile(), viewModel.getImageCoords());
+            }
+            else
+            {
+                //Update photo
+
+            }
+
+            photoService.SavePhoto(fpPhoto.getFile(), sFileName);
+        }*/
 
         //create and save a new encounter
         IPatientEncounter patientEncounter = triageHelper.getPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
@@ -180,4 +223,6 @@ public class TriageController extends Controller {
         }
         return 1;
     }
+
+
 }

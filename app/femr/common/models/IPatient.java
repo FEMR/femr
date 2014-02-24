@@ -35,4 +35,9 @@ public interface IPatient {
     void setCity(String city);
 
     void setId(int id);
+
+    Integer getPhotoId();
+
+    void setPhotoId(Integer id);
+
 }

@@ -13,6 +13,8 @@ public class CreateViewModelPost {
     private String city;
     private Date age;
     private String sex;
+    public Boolean deletePhoto; //flag to determine if user would like to delete image file
+    public String imageCoords; //Image crop coordinates
     //begin vitals
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
@@ -31,6 +33,11 @@ public class CreateViewModelPost {
 
     public CreateViewModelPost() {
     }
+
+    public Boolean getDeletePhoto() { return deletePhoto; }
+
+    public String getImageCoords() { return imageCoords; }
+    public void   setImageCoord(String coords) { imageCoords = coords; }
 
     //begin general info
     public String getFirstName() {

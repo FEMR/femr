@@ -50,6 +50,8 @@ public class MedicalHelper {
         //patient encounter
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
+        viewModelGet.setIsPregnant(patientEncounter.getIsPregnant());
+
         //editable information - prescriptions
         viewModelGet.setPrescription1(getPrescriptionOrNull(1, dynamicViewMedications));
         viewModelGet.setPrescription2(getPrescriptionOrNull(2, dynamicViewMedications));

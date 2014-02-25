@@ -105,6 +105,7 @@ public class PharmaciesController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
 
+
         //set relevant vital information
         ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse;
         patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightFeet");

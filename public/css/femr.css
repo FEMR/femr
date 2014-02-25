@@ -50,6 +50,14 @@ hr {
 .width-100{
     width: 100%;
 }
+.width-50{
+    width: 50%;
+}
+
+/* Bootstrap won't offset for xs columns, but i want to */
+.col-xs-offset-4{
+    margin-left: 33%;
+}
 
 /*Admin*/
 .userBtns{

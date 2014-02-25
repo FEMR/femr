@@ -4,7 +4,7 @@
     <div class="form-group">
       <label class="col-sm-3 col-xs-3 control-label">Gender</label>
       <div class="col-sm-7 col-xs-7">
-        <div class="btn-group pull-left" data-toggle="buttons">
+        <div class="btn-group width-100" data-toggle="buttons">
           @inputButton("Male", "sex", "maleBtn",
             if(viewModel != null) viewModel.getSex == "" || viewModel.getSex == null else true,
             if(viewModel != null) viewModel.getSex == "Male" else false,

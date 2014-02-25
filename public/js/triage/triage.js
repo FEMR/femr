@@ -187,8 +187,34 @@ $(document).ready(function () {
     $('#years').change(function () {
         $('#years').css('border', '');
         var checkYears = parseInt($('#years').val());
+        if (!$('#months').val()) {
+            $('#months').val(0);
+        }
+        var checkMonths = parseInt($('#months').val());
         // years in age not null calculate birthdate
-        if ($('#years').val() && integerCheck(checkYears) == true) {
+        if ($('#years').val() && integerCheck(checkYears) == true && $('#months').val() && integerCheck(checkMonths) == true) {
+            var birthDate = new Date();
+            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            var birthString = birthDate.toYMD();
+            var nan = randomString(birthDate);
+            if (nan == false) {
+                $('#year').val(parseInt(birthString.split('-')[0]));
+                $('#month').val(parseInt(birthString.split('-')[1]));
+                $('#day').val(parseInt(birthString.split('-')[2]));
+                $('#age').val(birthString);
+            }
+        }
+    });
+
+    $('#months').change(function () {
+        $('#months').css('border', '');
+        var checkMonths = parseInt($('#months').val());
+        if (!$('#years').val()) {
+            $('#years').val(0);
+        }
+        var checkYears = parseInt($('#years').val());
+        // years in age not null calculate birthdate
+        if ($('#months').val() && integerCheck(checkMonths) == true) {
             var birthDate = new Date();
             birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();

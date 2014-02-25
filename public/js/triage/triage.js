@@ -138,9 +138,9 @@ $(document).ready(function () {
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
-                $('#year').val(birthString.split('-')[0]);
-                $('#month').val(birthString.split('-')[1]);
-                $('#day').val(birthString.split('-')[2]);
+                $('#year').val(parseInt(birthString.split('-')[0]));
+                $('#month').val(parseInt(birthString.split('-')[1]));
+                $('#day').val(parseInt(birthString.split('-')[2]));
                 $('#age').val(birthString);
             }
         }

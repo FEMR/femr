@@ -3,6 +3,7 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.views.html.helpers.medical._
+@import femr.ui.views.html.helpers.shared._
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")" xmlns="http://www.w3.org/1999/html">
     }
@@ -24,6 +25,9 @@
 @medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts, styles = additionalStyles, showSearchBtn = true) {
     <input type="hidden" value="@viewModel.getpID" id="patientId"/>
     <div class="row well well-sm">
+        <div class="pull-left" id="historyButtonWrap">
+        @historyButton(viewModel.getpID())
+        </div>
         <h3 class="text-center">Patient Overview - Medical</h3>
         <div class="col-xs-4 col-sm-4 col-md-4">
             <div class="row">
@@ -151,22 +155,22 @@
                     <li><a id="pmhTab">PMH</a></li>
                 </ul>
                 <div id="hpiControl" class="">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="onset">Onset</label>
-                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
-                                </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="onset">Onset</label>
+                                <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="blank"></label>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="blank"></label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    @severityDropDown(viewModel.getSeverity)
-                                </div>
+                            @severityDropDown(viewModel.getSeverity)
                             </div>
-                       </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="form-group">
                             <div class="col-xs-6 col-sm-6 col-md-6">
@@ -255,13 +259,13 @@
                     </div>
                 </div>
                 <div id="pmhControl" class="hidden">
-                   <div class="form-group">
+                    <div class="form-group">
                         <label for="medicalSurgicalHistory">Medical/Surgical History</label>
                         <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" >@viewModel.getMedicalSurgicalHistory </textarea>
                     </div>
                     <div class="form-group">
                         <label for="socialHistory">Social History</label>
-                        <textarea row ="3" name="socialHistory"  class="form-control input-sm" >@viewModel.getSocialHistory </textarea>
+                        <textarea row ="3" name="socialHistory" class="form-control input-sm" >@viewModel.getSocialHistory </textarea>
                     </div>
                     <div class="form-group">
                         <label for="currentMedication">Current Medications</label>
@@ -275,5 +279,5 @@
                 <button type="submit" id="medicalSubmitBtn" class="btn btn-default pull-right">Submit Patient</button>
                 }
     </div>
-        }
-    </div>
+    }
+</div>

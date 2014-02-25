@@ -3,6 +3,7 @@
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.views.html.helpers.triage._
+@import femr.ui.views.html.helpers.shared._
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
@@ -43,8 +44,12 @@
                 @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getBirth else null)
                 @inputAge("Age", "years", if(viewModel != null) viewModel.getAge else null)
                 @inputGender(viewModel)
-                @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
-
+                <div class="form-group">
+                    <div class="col-sm-3 col-xs-3"></div>
+                    <div class="col-sm-7 col-xs-7">
+                    @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
+                    </div>
+                </div>
 
 
             </div>
@@ -88,15 +93,15 @@
 
                         <label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">
                             <div data-toggle="buttons">
-                                @if(viewModel.getSex() == "Female"){
+                            @if(viewModel.getSex() == "Female") {
                                 <label class="btn btn-default" id="pregnancyBtn">
                                     <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
                                 </label>
-                                }else{
-                                    <label class="btn btn-default disabled" id="pregnancyBtn">
-                                        <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
-                                    </label>
-                                }
+                            } else {
+                                <label class="btn btn-default disabled" id="pregnancyBtn">
+                                    <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
+                                </label>
+                            }
                             </div>
                         </label>
                         <div class="col-sm-6 col-xs-6">

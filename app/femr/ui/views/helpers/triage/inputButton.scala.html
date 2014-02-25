@@ -2,18 +2,18 @@
 
   @inputBlock = {
   @if(Boolean2boolean(emptyModel)) {
-    <label class="btn btn-default">
+    <label class="btn btn-default width-50">
       <input type="radio" name="@forInput" id="@id" value="@value">
       @name
     </label>
   } else {
     @if(Boolean2boolean(active)) {
-      <label class="btn btn-primary active disabled">
+      <label class="btn btn-primary active disabled  width-50">
         <input type="radio" name="@forInput" id="@id" value="@value">
         @name
       </label>
     } else {
-      <label class="btn btn-default disabled">
+      <label class="btn btn-default disabled  width-50">
         <input type="radio" name="@forInput" id="@id" value="@value">
         @name
       </label>

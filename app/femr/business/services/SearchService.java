@@ -476,13 +476,19 @@ public class SearchService implements ISearchService {
      * @return The userID associated with that field
      */
     public ServiceResponse<IPatientEncounterTreatmentField> findDoctorIdByEncounterIdInTreatmentField(int id) {
-        ExpressionList<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery().where().eq("patient_encounter_id", id);
-        IPatientEncounterTreatmentField patientEncounterTreatmentField = patientEncounterTreatmentFieldRepository.findOne(query);
+        Query<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery()
+                .fetch("treatmentField")
+                .where()
+                .eq("patient_encounter_id", id)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
+        IPatientEncounterTreatmentField patientEncounterTreatmentField;
         ServiceResponse<IPatientEncounterTreatmentField> response = new ServiceResponse<>();
-        if(patientEncounterTreatmentField == null) {
-            response.addError("patientEncounterTreatmentField", "Could not find Treatment for the given encounter id");
+        if(patientEncounterTreatmentFields.isEmpty()) {
+            response.addError("patientEncounterTreatmentField", "Could not find Treatment field for the given encounter id");
         }
         else {
+            patientEncounterTreatmentField = patientEncounterTreatmentFields.get(0); // the first entry should be the newest
             response.setResponseObject(patientEncounterTreatmentField);
         }
         return response;

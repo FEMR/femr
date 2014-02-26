@@ -39,7 +39,9 @@ $(document).ready(function () {
             $('#month').css('border', '');
         }
         else {
-            $('#month').css('border-color','red');
+            $('#month').css('border-color', 'red');
+            $('#day').css('border-color', 'red');
+            $('#year').css('border-color', 'red');
             $('#years').css('border-color','red');
             $('#months').css('border-color','red');
             $('#age').val(null);
@@ -71,7 +73,9 @@ $(document).ready(function () {
                 $('#age').val(dropdownDate.toYMD());
             }
             else {
-                $('#month').css('border-color','red');
+                $('#month').css('border-color', 'red');
+                $('#day').css('border-color', 'red');
+                $('#year').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
                 $('#age').val(null);
@@ -90,7 +94,9 @@ $(document).ready(function () {
             $('#day').css('border', '');
         }
         else {
-            $('#day').css('border-color','red');
+            $('#month').css('border-color', 'red');
+            $('#day').css('border-color', 'red');
+            $('#year').css('border-color', 'red');
             $('#years').css('border-color','red');
             $('#months').css('border-color','red');
             $('#age').val(null);
@@ -123,7 +129,9 @@ $(document).ready(function () {
                 $('#age').val(dropdownDate.toYMD());
             }
             else {
-                $('#day').css('border-color','red');
+                $('#month').css('border-color', 'red');
+                $('#day').css('border-color', 'red');
+                $('#year').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
                 $('#age').val(null);
@@ -142,7 +150,9 @@ $(document).ready(function () {
             $('#year').css('border', '');
         }
         else {
-            $('#year').css('border-color','red');
+            $('#month').css('border-color', 'red');
+            $('#day').css('border-color', 'red');
+            $('#year').css('border-color', 'red');
             $('#years').css('border-color','red');
             $('#months').css('border-color','red');
             $('#age').val(null);
@@ -174,7 +184,9 @@ $(document).ready(function () {
                 $('#age').val(dropdownDate.toYMD());
             }
             else {
-                $('#year').css('border-color','red');
+                $('#month').css('border-color', 'red');
+                $('#day').css('border-color', 'red');
+                $('#year').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
                 $('#age').val(null);
@@ -197,17 +209,13 @@ $(document).ready(function () {
         // years in age not null calculate birthdate
         if (integerCheck(checkYears) == true && integerCheck(checkMonths) == true) {
             var birthDate = new Date();
-            if (checkMonths == 0) {
-                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            while (birthDate.getMonth() - checkMonths < 0) {
+                checkMonths = checkMonths - birthDate.getMonth() - 1;
+                birthDate.setMonth(11);
+                birthDate.setFullYear(birthDate.getFullYear() - 1);
             }
-            else {
-                while (birthDate.getMonth() - checkMonths < 0) {
-                    checkMonths = checkMonths - birthDate.getMonth();
-                    birthDate.setMonth(11);
-                    birthDate.setFullYear(birthDate.getFullYear() - 1);
-                }
-                birthDate.setMonth(birthDate.getMonth() - checkMonths)
-            }
+            birthDate.setMonth(birthDate.getMonth() - checkMonths);
+            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -237,18 +245,15 @@ $(document).ready(function () {
         // years in age not null calculate birthdate
         if (integerCheck(checkMonths) == true && integerCheck(checkYears) == true) {
             var birthDate = new Date();
-            if (checkMonths == 0) {
-                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+
+            while (birthDate.getMonth() - checkMonths < 0) {
+                checkMonths = checkMonths - birthDate.getMonth() - 1;
+                birthDate.setMonth(11);
+                birthDate.setFullYear(birthDate.getFullYear() - 1);
             }
-            else {
-                while (birthDate.getMonth() - checkMonths < 0) {
-                    checkMonths = checkMonths - birthDate.getMonth() - 1;
-                    birthDate.setMonth(11);
-                    birthDate.setFullYear(birthDate.getFullYear() - 1);
-                }
-                birthDate.setMonth(birthDate.getMonth() - checkMonths)
-            }
+            birthDate.setMonth(birthDate.getMonth() - checkMonths);
             birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {

@@ -218,7 +218,8 @@ $(document).ready(function () {
                     birthDate.setMonth(11);
                     birthDate.setFullYear(birthDate.getFullYear() - 1);
                 }
-                birthDate.setMonth(birthDate.getMonth() - checkMonths)
+                birthDate.setMonth(birthDate.getMonth() - checkMonths);
+                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             }
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
@@ -258,9 +259,9 @@ $(document).ready(function () {
                     birthDate.setMonth(11);
                     birthDate.setFullYear(birthDate.getFullYear() - 1);
                 }
-                birthDate.setMonth(birthDate.getMonth() - checkMonths)
+                birthDate.setMonth(birthDate.getMonth() - checkMonths);
+                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             }
-            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {

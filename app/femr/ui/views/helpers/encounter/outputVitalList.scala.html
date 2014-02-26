@@ -1,38 +1,38 @@
 @(viewModel: femr.ui.models.search.CreateEncounterViewModel)
 
 @* Generates the list of vital sets based on the dates the vitals where taken *@
-@for(date <- viewModel.getVitalList.getDateList) {
+@for(date <- 1 to viewModel.getVitalList.getDateList.size()) {
 
     @*<div class="col-xs-3 col-sm-3 col-md-3 well well-sm"> *@
         <h3>Vitals:</h3>
-        <p> @date</p>
+        <p> @viewModel.getVitalList.getFormatedDate(date -1)</p>
         <div id="populatedVitals">
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <label>Blood Pressure</label>
-                    <p><span id="triageBpSystolic">@viewModel.getVitalList.get("bloodPressureSystolic", date)</span>
-                        / <span id="triageBpDiastolic">@viewModel.getVitalList.get("bloodPressureDiastolic", date)</span></p>
+                    <p><span id="triageBpSystolic">@viewModel.getVitalList.get("bloodPressureSystolic", viewModel.getVitalList.getDate(date - 1))</span>
+                        / <span id="triageBpDiastolic">@viewModel.getVitalList.get("bloodPressureDiastolic",viewModel.getVitalList.getDate(date - 1))</span></p>
                     <label>Heart Rate</label>
-                    <p id="triageHeartRate">@viewModel.getVitalList.get("heartRate", date)</p>
+                    <p id="triageHeartRate">@viewModel.getVitalList.get("heartRate", viewModel.getVitalList.getDate(date -1))</p>
                     <label>Temperature</label>
-                    <p id="triageTemperature">@viewModel.getVitalList.get("temperature", date)</p>
+                    <p id="triageTemperature">@viewModel.getVitalList.get("temperature", viewModel.getVitalList.getDate(date -1))</p>
                     <label>Respirations</label>
-                    <p id="triageRespRate">@viewModel.getVitalList.get("respiratoryRate", date)</p>
+                    <p id="triageRespRate">@viewModel.getVitalList.get("respiratoryRate", viewModel.getVitalList.getDate(date -1))</p>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <label>Oxygen</label>
-                    <p id="triageOxygen">@viewModel.getVitalList.get("oxygenSaturation", date)</p>
+                    <p id="triageOxygen">@viewModel.getVitalList.get("oxygenSaturation", viewModel.getVitalList.getDate(date -1))</p>
                     <label>Height</label>
-                    <p><span id="triageHeightFt">@viewModel.getVitalList.get("heightFeet", date)</span>
-                        ' <span id=triageHeightIn>@viewModel.getVitalList.get("heightInches", date)</span>
+                    <p><span id="triageHeightFt">@viewModel.getVitalList.get("heightFeet", viewModel.getVitalList.getDate(date -1))</span>
+                        ' <span id=triageHeightIn>@viewModel.getVitalList.get("heightInches", viewModel.getVitalList.getDate(date -1))</span>
                         "</p>
                     @*used by bmi calculator*@
-                    <p id="heightFeet" class="hidden">@viewModel.getVitalList.get("heightFeet", date)</p>
-                    <p id="heightInches" class="hidden">@viewModel.getVitalList.get("heightInches", date)</p>
+                    <p id="heightFeet" class="hidden">@viewModel.getVitalList.get("heightFeet", viewModel.getVitalList.getDate(date -1))</p>
+                    <p id="heightInches" class="hidden">@viewModel.getVitalList.get("heightInches", viewModel.getVitalList.getDate(date -1))</p>
                     <label>Weight</label>
-                    <p id="weight">@viewModel.getVitalList.get("weight", date)</p>
+                    <p id="weight">@viewModel.getVitalList.get("weight", viewModel.getVitalList.getDate(date -1))</p>
                     <label>Glucose</label>
-                    <p id="weight">@viewModel.getVitalList.get("glucose", date)</p>
+                    <p id="weight">@viewModel.getVitalList.get("glucose", viewModel.getVitalList.getDate(date -1))</p>
                 </div>
             </div>
         </div>

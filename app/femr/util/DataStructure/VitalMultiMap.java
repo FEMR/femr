@@ -5,6 +5,8 @@ package femr.util.DataStructure;
  */
 
 import java.util.*;
+
+import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
 
 /**
@@ -51,5 +53,31 @@ public class VitalMultiMap {
             return vitalMap.get(vitalName,date).toString();
         }
         return null;
+    }
+
+    /**
+     * gets the date for a given index
+     * @param i The index of the date
+     * @return The date as a string
+     */
+    public String getDate(int i) {
+        // check that the index specified
+        if(dateList.size() < i || i < 0) {
+            return null;
+        }
+        return dateList.get(i);
+    }
+
+    /**
+     * Returns the date in a more human readable form
+     * @param i the index of the date to return
+     * @return The date in a nice formate or the original date formate if it fails
+     */
+    public String getFormatedDate(int i) {
+        // check that the index specified
+        if(dateList.size() < i || i < 0) {
+            return null;
+        }
+        return StringUtils.FormatDate(dateList.get(i));
     }
 }

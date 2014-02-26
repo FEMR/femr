@@ -58,3 +58,7 @@
 .red {
     color:red;
 }
+
+.age-input {
+    display:inline-block !important;
+}

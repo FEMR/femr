@@ -186,15 +186,20 @@ $(document).ready(function () {
 
     $('#years').change(function () {
         $('#years').css('border', '');
-        var checkYears = parseInt($('#years').val());
+        if (!$('#years').val()) {
+            $('#years').val(0);
+        }
         if (!$('#months').val()) {
             $('#months').val(0);
         }
+        var checkYears = parseInt($('#years').val());
         var checkMonths = parseInt($('#months').val());
         // years in age not null calculate birthdate
-        if ($('#years').val() && integerCheck(checkYears) == true && $('#months').val() && integerCheck(checkMonths) == true) {
+        if (integerCheck(checkYears) == true && integerCheck(checkMonths) == true) {
             var birthDate = new Date();
-            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            if (checkMonths == 0) {
+                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            }
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -202,20 +207,31 @@ $(document).ready(function () {
                 $('#month').val(parseInt(birthString.split('-')[1]));
                 $('#day').val(parseInt(birthString.split('-')[2]));
                 $('#age').val(birthString);
+                $('#years').css('border', '');
+                $('#months').css('border', '');
+                $('#month').css('border', '');
+                $('#day').css('border', '');
+                $('#year').css('border', '');
             }
         }
     });
 
     $('#months').change(function () {
         $('#months').css('border', '');
-        var checkMonths = parseInt($('#months').val());
+        if (!$('#months').val()) {
+            $('#months').val(0);
+        }
         if (!$('#years').val()) {
             $('#years').val(0);
         }
+        var checkMonths = parseInt($('#months').val());
         var checkYears = parseInt($('#years').val());
         // years in age not null calculate birthdate
-        if ($('#months').val() && integerCheck(checkMonths) == true) {
+        if (integerCheck(checkMonths) == true && integerCheck(checkYears) == true) {
             var birthDate = new Date();
+            if (checkMonths == 0) {
+                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            }
             birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
@@ -224,6 +240,11 @@ $(document).ready(function () {
                 $('#month').val(parseInt(birthString.split('-')[1]));
                 $('#day').val(parseInt(birthString.split('-')[2]));
                 $('#age').val(birthString);
+                $('#years').css('border', '');
+                $('#months').css('border', '');
+                $('#month').css('border', '');
+                $('#day').css('border', '');
+                $('#year').css('border', '');
             }
         }
     });

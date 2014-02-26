@@ -249,7 +249,7 @@ public class SearchController extends Controller {
                 viewModel.setLastName(patient.getLastName());
                 viewModel.setAddress(patient.getAddress());
                 viewModel.setCity(patient.getCity());
-                viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
+                viewModel.setAge(dateUtils.getAge(patient.getAge()));
                 viewModel.setSex(patient.getSex());
             } else {
                 return ok(showError.render(currentUser));
@@ -262,7 +262,7 @@ public class SearchController extends Controller {
                 viewModel.setLastName(patient.getLastName());
                 viewModel.setAddress(patient.getAddress());
                 viewModel.setCity(patient.getCity());
-                viewModel.setAge(dateUtils.calculateYears(patient.getAge()));
+                viewModel.setAge(dateUtils.getAge(patient.getAge()));
                 viewModel.setSex(patient.getSex());
                 viewModel.setPatientID(patient.getId());
             } else {

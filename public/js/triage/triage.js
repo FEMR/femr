@@ -200,6 +200,14 @@ $(document).ready(function () {
             if (checkMonths == 0) {
                 birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             }
+            else {
+                while (birthDate.getMonth() - checkMonths < 0) {
+                    checkMonths = checkMonths - birthDate.getMonth();
+                    birthDate.setMonth(11);
+                    birthDate.setFullYear(birthDate.getFullYear() - 1);
+                }
+                birthDate.setMonth(birthDate.getMonth() - checkMonths)
+            }
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -231,6 +239,14 @@ $(document).ready(function () {
             var birthDate = new Date();
             if (checkMonths == 0) {
                 birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            }
+            else {
+                while (birthDate.getMonth() - checkMonths < 0) {
+                    checkMonths = checkMonths - birthDate.getMonth() - 1;
+                    birthDate.setMonth(11);
+                    birthDate.setFullYear(birthDate.getFullYear() - 1);
+                }
+                birthDate.setMonth(birthDate.getMonth() - checkMonths)
             }
             birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();

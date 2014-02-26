@@ -10,7 +10,7 @@ public class CreateViewModel {
     private String lastName;
     private String address;
     private String city;
-    private int age;
+    private String age;
     private String sex;
     private int userID;
     private List<IPatient> patientNameResult;
@@ -47,11 +47,11 @@ public class CreateViewModel {
         this.city = city;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -75,7 +75,7 @@ public class CreateViewModel {
         setCity(patient.getCity());
         setSex(patient.getSex());
         setPatientID(patient.getId());
-        setAge(dateUtils.calculateYears(patient.getAge()));
+        setAge(dateUtils.getAge(patient.getAge()));
     }
 
     public void setPatientNameResult(List patientNameResult) {

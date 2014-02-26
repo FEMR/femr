@@ -36,7 +36,7 @@ public class TriageHelper {
             createViewModelGet.setLastName(patient.getLastName());
             createViewModelGet.setAddress(patient.getAddress());
             createViewModelGet.setCity(patient.getCity());
-            createViewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+            createViewModelGet.setAge(dateUtils.getAge(patient.getAge()));
             createViewModelGet.setBirth(patient.getAge());
             createViewModelGet.setSex(patient.getSex());
         } else {

@@ -9,9 +9,9 @@ public interface IPatientEncounterPmhField {
 
     void setPatientEncounterId(int patientEncounterId);
 
-    int getPmhFieldId();
+    IPmhField getPmhField();
 
-    void setPmhFieldId(int hpiFieldId);
+    void setPmhField(IPmhField pmhField);
 
     String getPmhFieldValue();
 

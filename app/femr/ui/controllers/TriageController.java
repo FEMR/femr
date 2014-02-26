@@ -105,12 +105,12 @@ public class TriageController extends Controller {
         //else find the patient to create a new encounter for
         ServiceResponse<IPatient> patientServiceResponse;
         if (id == 0) {
-            IPatient patient = triageHelper.populatePatient(viewModel, currentUser);
+            IPatient patient = triageHelper.getPatient(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
         } else {
             patientServiceResponse = searchService.findPatientById(id);
-            if (!StringUtils.isNullOrWhiteSpace(viewModel.getSex())){
-                patientServiceResponse = triageService.updatePatientSex(patientServiceResponse.getResponseObject().getId(),viewModel.getSex());
+            if (!StringUtils.isNullOrWhiteSpace(viewModel.getSex())) {
+                patientServiceResponse = triageService.updatePatientSex(patientServiceResponse.getResponseObject().getId(), viewModel.getSex());
             }
         }
         if (patientServiceResponse.hasErrors()) {
@@ -118,24 +118,63 @@ public class TriageController extends Controller {
         }
 
         //create and save a new encounter
-        IPatientEncounter patientEncounter = triageHelper.populatePatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
+        IPatientEncounter patientEncounter = triageHelper.getPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
         if (patientEncounterServiceResponse.hasErrors()) {
             return internalServerError();
         }
 
         //create and save vitals in new encounter
-        List<IPatientEncounterVital> patientEncounterVitals = triageHelper.populateVitals(viewModel, currentUser, patientEncounterServiceResponse.getResponseObject());
-        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse;
-        for (int i = 0; i < patientEncounterVitals.size(); i++) {
-            if (patientEncounterVitals.get(i).getVitalValue() > -1) {
-                patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVitals.get(i));
-                if (patientEncounterVitalServiceResponse.hasErrors()) {
-                    return internalServerError();
-                }
-            }
+        int success = 1;
+        if (viewModel.getRespiratoryRate() != null && viewModel.getRespiratoryRate() > 0) {
+            success = savePatientEncounterVital("respiratoryRate", viewModel.getRespiratoryRate(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getHeartRate() != null && viewModel.getHeartRate() > 0) {
+            success = savePatientEncounterVital("heartRate", viewModel.getHeartRate(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getTemperature() != null && viewModel.getTemperature() > 0) {
+            success = savePatientEncounterVital("temperature", viewModel.getTemperature(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getOxygenSaturation() != null && viewModel.getOxygenSaturation() > 0) {
+            success = savePatientEncounterVital("oxygenSaturation", viewModel.getOxygenSaturation(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getHeightFeet() != null && viewModel.getHeightFeet() > 0) {
+            success = savePatientEncounterVital("heightFeet", viewModel.getHeightFeet(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getHeightInches() != null && viewModel.getHeightInches() > 0) {
+            success = savePatientEncounterVital("heightInches", viewModel.getHeightInches(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getWeight() != null && viewModel.getWeight() > 0) {
+            success = savePatientEncounterVital("weight", viewModel.getWeight(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getBloodPressureSystolic() != null && viewModel.getBloodPressureSystolic() > 0) {
+            success = savePatientEncounterVital("bloodPressureSystolic", viewModel.getBloodPressureSystolic(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getBloodPressureDiastolic() != null && viewModel.getBloodPressureDiastolic() > 0) {
+            success = savePatientEncounterVital("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (viewModel.getGlucose() != null && viewModel.getGlucose() > 0) {
+            success = savePatientEncounterVital("glucose", viewModel.getGlucose(), currentUser.getId(), patientEncounter.getId());
+        }
+        if (success == 0){
+            return internalServerError();
         }
 
         return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
+    }
+
+    //returns 1 on success, 0 on failure
+    private int savePatientEncounterVital(String name, float vitalValue, int userId, int patientEncounterId){
+        ServiceResponse<IVital> vitalServiceResponse = searchService.findVital(name);
+        if (vitalServiceResponse.hasErrors()){
+            return 0;
+        }
+        IVital vital = vitalServiceResponse.getResponseObject();
+        IPatientEncounterVital patientEncounterVital = triageHelper.getPatientEncounterVital(userId, patientEncounterId, vital, vitalValue);
+        ServiceResponse<IPatientEncounterVital> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVital(patientEncounterVital);
+        if (patientEncounterVitalServiceResponse.hasErrors()){
+            return 0;
+        }
+        return 1;
     }
 }

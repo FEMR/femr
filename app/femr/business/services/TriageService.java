@@ -11,6 +11,8 @@ import femr.common.models.IPatientEncounterVital;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 
+import java.util.List;
+
 public class TriageService implements ITriageService {
 
     private IRepository<IPatient> patientRepository;
@@ -83,6 +85,20 @@ public class TriageService implements ITriageService {
         }
         else{
             response.addError("patient encounter vital","patient encounter vital could not be saved to database");
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVitals){
+        List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
+        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
+
+        if (newPatientEncounterVitals != null){
+            response.setResponseObject(newPatientEncounterVitals);
+        }
+        else{
+            response.addError("","patient encounter vitals could not be saved to database");
         }
         return response;
     }

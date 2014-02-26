@@ -2,12 +2,10 @@ package femr.data.models;
 
 import femr.common.models.IPatientEncounterHpiField;
 import femr.common.models.IPatientEncounterPmhField;
+import femr.common.models.IPmhField;
 import org.joda.time.DateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "patient_encounter_pmh_fields")
@@ -19,8 +17,9 @@ public class PatientEncounterPmhField implements IPatientEncounterPmhField {
     private int userId;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
-    @Column(name = "pmh_field_id", nullable = false)
-    private int pmhFieldId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pmh_field_id", nullable = false)
+    private PmhField pmhField;
     @Column(name = "pmh_field_value", nullable = false)
     private String pmhFieldValue;
     @Column(name = "date_taken", nullable = false)
@@ -42,13 +41,13 @@ public class PatientEncounterPmhField implements IPatientEncounterPmhField {
     }
 
     @Override
-    public int getPmhFieldId() {
-        return pmhFieldId;
+    public IPmhField getPmhField() {
+        return pmhField;
     }
 
     @Override
-    public void setPmhFieldId(int pmhFieldId) {
-        this.pmhFieldId = pmhFieldId;
+    public void setPmhField(IPmhField pmhField) {
+        this.pmhField = (PmhField) pmhField;
     }
 
     @Override

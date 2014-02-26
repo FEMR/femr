@@ -44,14 +44,17 @@ function checkRequiredInput() {
         if($('#month').val() == 0) {
             $('#month').css('border-color','red');
             $('#years').css('border-color','red');
+            $('#months').css('border-color','red');
         }
         if($('#day').val() == 0) {
             $('#day').css('border-color','red');
             $('#years').css('border-color','red');
+            $('#months').css('border-color','red');
         }
         if($('#year').val() == 0) {
             $('#year').css('border-color','red');
             $('#years').css('border-color','red');
+            $('#months').css('border-color','red');
         }
         pass = false;
     }
@@ -142,6 +145,12 @@ function checkNumbers(){
         $('#years').css('border-color','red');
         pass = false;
     }
+    //Age - Months
+    if ($.trim($('#months').val().length) > 0 && integerCheck($('#years').val()) == false){
+        $('#months').attr("placeholder","Enter Correct Number of Months");
+        $('#months').css('border-color','red');
+        pass = false;
+    }
 
 
     return pass;
@@ -225,7 +234,10 @@ function validateDate(){
         $('#age').val("");
         $('#years').val("");
         $('#years').css('border-color','red');
-        $('#years').attr('placeholder','Input valid age or birth date');
+        $('#years').attr('placeholder','Input age or birth date (years)');
+        $('#months').val("");
+        $('#months').css('border-color','red');
+        $('#months').attr('placeholder','Input age or birth date (months)');
         return false;
     }
     return true;

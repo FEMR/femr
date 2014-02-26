@@ -39,7 +39,9 @@ $(document).ready(function () {
             $('#month').css('border', '');
         }
         else {
-            $('#month').css('border-color','red');
+            $('#month').css('border-color', 'red');
+            $('#day').css('border-color', 'red');
+            $('#year').css('border-color', 'red');
             $('#years').css('border-color','red');
             $('#months').css('border-color','red');
             $('#age').val(null);
@@ -71,7 +73,9 @@ $(document).ready(function () {
                 $('#age').val(dropdownDate.toYMD());
             }
             else {
-                $('#month').css('border-color','red');
+                $('#month').css('border-color', 'red');
+                $('#day').css('border-color', 'red');
+                $('#year').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
                 $('#age').val(null);
@@ -90,7 +94,9 @@ $(document).ready(function () {
             $('#day').css('border', '');
         }
         else {
-            $('#day').css('border-color','red');
+            $('#month').css('border-color', 'red');
+            $('#day').css('border-color', 'red');
+            $('#year').css('border-color', 'red');
             $('#years').css('border-color','red');
             $('#months').css('border-color','red');
             $('#age').val(null);
@@ -123,7 +129,9 @@ $(document).ready(function () {
                 $('#age').val(dropdownDate.toYMD());
             }
             else {
-                $('#day').css('border-color','red');
+                $('#month').css('border-color', 'red');
+                $('#day').css('border-color', 'red');
+                $('#year').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
                 $('#age').val(null);
@@ -142,7 +150,9 @@ $(document).ready(function () {
             $('#year').css('border', '');
         }
         else {
-            $('#year').css('border-color','red');
+            $('#month').css('border-color', 'red');
+            $('#day').css('border-color', 'red');
+            $('#year').css('border-color', 'red');
             $('#years').css('border-color','red');
             $('#months').css('border-color','red');
             $('#age').val(null);
@@ -174,7 +184,9 @@ $(document).ready(function () {
                 $('#age').val(dropdownDate.toYMD());
             }
             else {
-                $('#year').css('border-color','red');
+                $('#month').css('border-color', 'red');
+                $('#day').css('border-color', 'red');
+                $('#year').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
                 $('#age').val(null);
@@ -202,7 +214,7 @@ $(document).ready(function () {
             }
             else {
                 while (birthDate.getMonth() - checkMonths < 0) {
-                    checkMonths = checkMonths - birthDate.getMonth();
+                    checkMonths = checkMonths - birthDate.getMonth() - 1;
                     birthDate.setMonth(11);
                     birthDate.setFullYear(birthDate.getFullYear() - 1);
                 }

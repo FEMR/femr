@@ -141,14 +141,38 @@ function checkNumbers(){
     }
     //Age - Years
     if ($.trim($('#years').val().length) > 0 && integerCheck($('#years').val()) == false){
-        $('#years').attr("placeholder","Enter Correct Number of Years");
+        $('#age').val(null);
+        $('#month').val(0);
+        $('#day').val(0);
+        $('#year').val(0);
+        $('#month').css('border-color', 'red');
+        $('#day').css('border-color', 'red');
+        $('#year').css('border-color', 'red');
+        $('#day').val(0);
+        $('#year').val(0);
+        $('#years').val(null);
         $('#years').css('border-color','red');
+        $('#years').attr('placeholder','Input age');
+        $('#months').val(null);
+        $('#months').css('border-color','red');
+        $('#months').attr('placeholder','or birth date');
         pass = false;
     }
     //Age - Months
-    if ($.trim($('#months').val().length) > 0 && integerCheck($('#years').val()) == false){
-        $('#months').attr("placeholder","Enter Correct Number of Months");
+    if ($.trim($('#months').val().length) > 0 && integerCheck($('#months').val()) == false){
+        $('#age').val(null);
+        $('#month').val(0);
+        $('#day').val(0);
+        $('#year').val(0);
+        $('#month').css('border-color', 'red');
+        $('#day').css('border-color', 'red');
+        $('#year').css('border-color', 'red');
+        $('#years').val(null);
+        $('#years').css('border-color','red');
+        $('#years').attr('placeholder','Input age');
+        $('#months').val(null);
         $('#months').css('border-color','red');
+        $('#months').attr('placeholder','or birth date');
         pass = false;
     }
 
@@ -231,13 +255,19 @@ function isDate(dtStr){
 function validateDate(){
     var dt= $('#age').val();
     if (isDate(dt.toString())==false){
-        $('#age').val("");
-        $('#years').val("");
+        $('#age').val(null);
+        $('#month').val(0);
+        $('#day').val(0);
+        $('#year').val(0);
+        $('#month').css('border-color', 'red');
+        $('#day').css('border-color', 'red');
+        $('#year').css('border-color', 'red');
+        $('#years').val(null);
         $('#years').css('border-color','red');
-        $('#years').attr('placeholder','Input age or birth date (years)');
-        $('#months').val("");
+        $('#years').attr('placeholder','Input age');
+        $('#months').val(null);
         $('#months').css('border-color','red');
-        $('#months').attr('placeholder','Input age or birth date (months)');
+        $('#months').attr('placeholder','or birth date');
         return false;
     }
     return true;

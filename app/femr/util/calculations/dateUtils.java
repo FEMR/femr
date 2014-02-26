@@ -35,7 +35,7 @@ public class dateUtils {
         if (monthsInt < 24)
             return Integer.toString(monthsInt) + " MO";
         else
-            return Integer.toString(monthsInt/12) + " YOA";
+            return Integer.toString(monthsInt/12) + " YO";
     }
 }
 

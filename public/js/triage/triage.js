@@ -209,18 +209,13 @@ $(document).ready(function () {
         // years in age not null calculate birthdate
         if (integerCheck(checkYears) == true && integerCheck(checkMonths) == true) {
             var birthDate = new Date();
-            if (checkMonths == 0) {
-                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            while (birthDate.getMonth() - checkMonths < 0) {
+                checkMonths = checkMonths - birthDate.getMonth() - 1;
+                birthDate.setMonth(11);
+                birthDate.setFullYear(birthDate.getFullYear() - 1);
             }
-            else {
-                while (birthDate.getMonth() - checkMonths < 0) {
-                    checkMonths = checkMonths - birthDate.getMonth() - 1;
-                    birthDate.setMonth(11);
-                    birthDate.setFullYear(birthDate.getFullYear() - 1);
-                }
-                birthDate.setMonth(birthDate.getMonth() - checkMonths);
-                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
-            }
+            birthDate.setMonth(birthDate.getMonth() - checkMonths);
+            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -250,18 +245,15 @@ $(document).ready(function () {
         // years in age not null calculate birthdate
         if (integerCheck(checkMonths) == true && integerCheck(checkYears) == true) {
             var birthDate = new Date();
-            if (checkMonths == 0) {
-                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+
+            while (birthDate.getMonth() - checkMonths < 0) {
+                checkMonths = checkMonths - birthDate.getMonth() - 1;
+                birthDate.setMonth(11);
+                birthDate.setFullYear(birthDate.getFullYear() - 1);
             }
-            else {
-                while (birthDate.getMonth() - checkMonths < 0) {
-                    checkMonths = checkMonths - birthDate.getMonth() - 1;
-                    birthDate.setMonth(11);
-                    birthDate.setFullYear(birthDate.getFullYear() - 1);
-                }
-                birthDate.setMonth(birthDate.getMonth() - checkMonths);
-                birthDate.setFullYear(birthDate.getFullYear() - checkYears);
-            }
+            birthDate.setMonth(birthDate.getMonth() - checkMonths);
+            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {

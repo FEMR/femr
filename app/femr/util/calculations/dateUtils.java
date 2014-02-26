@@ -7,12 +7,12 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class dateUtils {
-    public static int calculateYears(Date age) {
-        DateMidnight birthdate = new DateMidnight(age);
-        DateTime now = new DateTime();
-        Years years = Years.yearsBetween(birthdate, now);
-        return years.getYears();
-    }
+//    public static int calculateYears(Date age) {
+//        DateMidnight birthdate = new DateMidnight(age);
+//        DateTime now = new DateTime();
+//        Years years = Years.yearsBetween(birthdate, now);
+//        return years.getYears();
+//    }
 
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
@@ -33,9 +33,9 @@ public class dateUtils {
         Months months = Months.monthsBetween(birthdate, now);
         int monthsInt = months.getMonths();
         if (monthsInt < 24)
-            return Integer.toString(monthsInt) + " mo";
+            return Integer.toString(monthsInt) + " MO";
         else
-            return Integer.toString(monthsInt/12) + " yo";
+            return Integer.toString(monthsInt/12) + " YOA";
     }
 }
 

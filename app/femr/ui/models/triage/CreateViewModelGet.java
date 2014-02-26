@@ -15,7 +15,7 @@ public class CreateViewModelGet {
     private String lastName;
     private String address;
     private String city;
-    private Integer age;
+    private String age;
     private Date birth;
     private String sex;
     //search info
@@ -59,11 +59,11 @@ public class CreateViewModelGet {
         this.city = city;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(String age) {
         this.age = age;
     }
 

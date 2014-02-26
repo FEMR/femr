@@ -28,6 +28,8 @@ public class Patient implements IPatient {
     private String address;
     @Column(name = "city", nullable = false)
     private String city;
+    @Column(name = "photo_id", nullable = true)
+    private Integer photoId;
 
     @Override
     public int getId() {
@@ -108,4 +110,10 @@ public class Patient implements IPatient {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public Integer getPhotoId() { return this.photoId;  }
+
+    @Override
+    public void setPhotoId(Integer id) { this.photoId = id; }
 }

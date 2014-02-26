@@ -17,5 +17,7 @@ public class BusinessLayerModule extends AbstractModule {
         bind(ISearchService.class).to(SearchService.class);
         bind(IPharmacyService.class).to(PharmacyService.class);
         bind(IMedicalService.class).to(MedicalService.class);
+        bind(IPhotoService.class).to(PhotoService.class);
+
     }
 }

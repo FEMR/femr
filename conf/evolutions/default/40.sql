@@ -10,3 +10,5 @@ SET last_login = '9999-01-01'
 
 ALTER TABLE `users`
 DROP COLUMN `last_login`;
+
+

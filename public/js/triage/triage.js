@@ -198,24 +198,47 @@ $(document).ready(function () {
 
     $('#years').change(function () {
         $('#years').css('border', '');
-        if (!$('#years').val()) {
+        if (!$('#years').val() || $('#years').val() < 0) {
             $('#years').val(0);
         }
-        if (!$('#months').val()) {
+        if (!$('#months').val() || $('#months').val() < 0) {
             $('#months').val(0);
         }
         var checkYears = parseInt($('#years').val());
         var checkMonths = parseInt($('#months').val());
         // years in age not null calculate birthdate
         if (integerCheck(checkYears) == true && integerCheck(checkMonths) == true) {
-            var birthDate = new Date();
-            while (birthDate.getMonth() - checkMonths < 0) {
-                checkMonths = checkMonths - birthDate.getMonth() - 1;
-                birthDate.setMonth(11);
-                birthDate.setFullYear(birthDate.getFullYear() - 1);
+            $('#months').val(checkMonths);
+            $('#years').val(checkYears);
+            var nowDate = new Date();
+            var birthMonth = nowDate.getMonth();
+            var birthDay = nowDate.getDate();
+            var birthYear = nowDate.getFullYear();
+            while (birthMonth - checkMonths < 0) {
+                checkMonths = checkMonths - birthMonth - 1;
+                birthMonth = 11;
+                birthYear = birthYear - 1;
             }
-            birthDate.setMonth(birthDate.getMonth() - checkMonths);
-            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
+            birthMonth = birthMonth - checkMonths;
+            birthYear = birthYear - checkYears;
+            if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
+                birthDay = 30;
+            }
+            else if (birthDay > 28 && birthMonth == 1) {
+                if (birthYear % 400 == 0) {
+                    birthDay = 29;
+                }
+                else if (birthYear % 100 == 0) {
+                    birthDay = 28;
+                }
+                else if (birthYear % 4 == 0) {
+                    birthDay = 29;
+                }
+                else {
+                    birthDay = 28;
+                }
+            }
+            var birthDate = new Date(birthYear, birthMonth, birthDay, 0, 0, 0,0);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -234,26 +257,47 @@ $(document).ready(function () {
 
     $('#months').change(function () {
         $('#months').css('border', '');
-        if (!$('#months').val()) {
-            $('#months').val(0);
-        }
-        if (!$('#years').val()) {
+        if (!$('#years').val() || $('#years').val() < 0) {
             $('#years').val(0);
+        }
+        if (!$('#months').val() || $('#months').val() < 0) {
+            $('#months').val(0);
         }
         var checkMonths = parseInt($('#months').val());
         var checkYears = parseInt($('#years').val());
         // years in age not null calculate birthdate
         if (integerCheck(checkMonths) == true && integerCheck(checkYears) == true) {
-            var birthDate = new Date();
-
-            while (birthDate.getMonth() - checkMonths < 0) {
-                checkMonths = checkMonths - birthDate.getMonth() - 1;
-                birthDate.setMonth(11);
-                birthDate.setFullYear(birthDate.getFullYear() - 1);
+            $('#months').val(checkMonths);
+            $('#years').val(checkYears);
+            var nowDate = new Date();
+            var birthMonth = nowDate.getMonth();
+            var birthDay = nowDate.getDate();
+            var birthYear = nowDate.getFullYear();
+            while (birthMonth - checkMonths < 0) {
+                checkMonths = checkMonths - birthMonth - 1;
+                birthMonth = 11;
+                birthYear = birthYear - 1;
             }
-            birthDate.setMonth(birthDate.getMonth() - checkMonths);
-            birthDate.setFullYear(birthDate.getFullYear() - checkYears);
-
+            birthMonth = birthMonth - checkMonths;
+            birthYear = birthYear - checkYears;
+            if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
+                birthDay = 30;
+            }
+            else if (birthDay > 28 && birthMonth == 1) {
+                if (birthYear % 400 == 0) {
+                    birthDay = 29;
+                }
+                else if (birthYear % 100 == 0) {
+                    birthDay = 28;
+                }
+                else if (birthYear % 4 == 0) {
+                    birthDay = 29;
+                }
+                else {
+                    birthDay = 28;
+                }
+            }
+            var birthDate = new Date(birthYear, birthMonth, birthDay, 0, 0, 0,0);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {

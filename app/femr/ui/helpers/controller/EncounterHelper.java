@@ -10,6 +10,7 @@ import femr.ui.models.search.CreateEncounterViewModel;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
 import femr.util.calculations.dateUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -71,7 +72,7 @@ public class EncounterHelper {
         viewModelGet.setCity(patient.getCity());
         viewModelGet.setFirstName(patient.getFirstName());
         viewModelGet.setLastName(patient.getLastName());
-        viewModelGet.setAge(dateUtils.calculateYears(patient.getAge()));
+        viewModelGet.setAge(dateUtils.getAge(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
         //patient encounter
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
@@ -138,12 +139,15 @@ public class EncounterHelper {
         ServiceResponse<IPatientEncounterHpiField> patientEncounterHpiFieldResponse = searchService.findDoctorIdByEncounterIdInHpiField(encounterId);
         IPatientEncounterHpiField patientEncounterHpiField;
         int doctorID;
-
+        String firstName = null;
+        String tempName = null;
+        DateTime dateTaken = null;
         //check for errors
         if(!patientEncounterHpiFieldResponse.hasErrors()) {
             patientEncounterHpiField = patientEncounterHpiFieldResponse.getResponseObject();
             doctorID = patientEncounterHpiField.getUserId();
-            return this.userService.findById(doctorID).getFirstName().trim();
+            firstName = this.userService.findById(doctorID).getFirstName().trim();
+            dateTaken = patientEncounterHpiField.getDateTaken();
         }
 
         // Assume that HPI failed or was empty, try the Pmh field instead
@@ -152,20 +156,34 @@ public class EncounterHelper {
         if(!patientEncounterPmhFieldResponse.hasErrors()) {
             patientEncounterPmhField = patientEncounterPmhFieldResponse.getResponseObject();
             doctorID = patientEncounterPmhField.getUserId();
-            return this.userService.findById(doctorID).getFirstName().trim();
+            tempName = this.userService.findById(doctorID).getFirstName().trim();
+            // check to see if this is newer then the previous entry if so use it instead
+            if(firstName != null && patientEncounterPmhField.getDateTaken().isAfter(dateTaken)) {
+                firstName = tempName;
+                dateTaken = patientEncounterPmhField.getDateTaken();
+            }
+            if(firstName == null) {
+                firstName = tempName;
+                dateTaken = patientEncounterPmhField.getDateTaken();
+            }
         }
 
-        // The Pmh failed or was empty so try the treatment field
         ServiceResponse<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldResponse = searchService.findDoctorIdByEncounterIdInTreatmentField(encounterId);
         IPatientEncounterTreatmentField patientEncounterTreatmentField;
         if(!patientEncounterTreatmentFieldResponse.hasErrors()) {
             patientEncounterTreatmentField = patientEncounterTreatmentFieldResponse.getResponseObject();
             doctorID = patientEncounterTreatmentField.getUserId();
-            return this.userService.findById(doctorID).getFirstName().trim();
+            tempName = this.userService.findById(doctorID).getFirstName().trim();
+            // check to see if this is newer then the previous entry if so use it instead
+            if(firstName != null && patientEncounterTreatmentField.getDateTaken().isAfter(dateTaken)) {
+                firstName = tempName;
+            }
+            if(firstName == null) {
+                firstName = tempName;
+            }
         }
-
         // if we reach this point we failed to find a userid in any of the medical fields so return null
-        return null;
+        return firstName;
     }
 
     /**
@@ -175,16 +193,51 @@ public class EncounterHelper {
      */
     private String getDoctorLastNameOrNull(int encounterId) {
         // Gets the doctor for the patient encounter.
-        // this is done by first looking at the Hpi field for a UserId  if empty then look in Pmh, then treatment
         ServiceResponse<IPatientEncounterHpiField> patientEncounterHpiFieldResponse = searchService.findDoctorIdByEncounterIdInHpiField(encounterId);
         IPatientEncounterHpiField patientEncounterHpiField;
         int doctorID;
         String lastName = null;
+        String tempName = null;
+        DateTime dateTaken = null;
         //check for errors
         if(!patientEncounterHpiFieldResponse.hasErrors()) {
             patientEncounterHpiField = patientEncounterHpiFieldResponse.getResponseObject();
             doctorID = patientEncounterHpiField.getUserId();
             lastName = this.userService.findById(doctorID).getLastName().trim();
+            dateTaken = patientEncounterHpiField.getDateTaken();
+        }
+
+        // get the Pmh data
+        ServiceResponse<IPatientEncounterPmhField> patientEncounterPmhFieldResponse = searchService.findDoctorIdByEncounterIdInPmhField(encounterId);
+        IPatientEncounterPmhField patientEncounterPmhField;
+        if(!patientEncounterPmhFieldResponse.hasErrors()) {
+            patientEncounterPmhField = patientEncounterPmhFieldResponse.getResponseObject();
+            doctorID = patientEncounterPmhField.getUserId();
+            tempName = this.userService.findById(doctorID).getLastName().trim();
+            // check to see if this is newer then the previous entry if so use it instead
+            if(lastName != null && patientEncounterPmhField.getDateTaken().isAfter(dateTaken)) {
+                lastName = tempName;
+                dateTaken = patientEncounterPmhField.getDateTaken();
+            }
+            if(lastName == null) {
+                lastName = tempName;
+                dateTaken = patientEncounterPmhField.getDateTaken();
+            }
+        }
+
+        ServiceResponse<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldResponse = searchService.findDoctorIdByEncounterIdInTreatmentField(encounterId);
+        IPatientEncounterTreatmentField patientEncounterTreatmentField;
+        if(!patientEncounterTreatmentFieldResponse.hasErrors()) {
+            patientEncounterTreatmentField = patientEncounterTreatmentFieldResponse.getResponseObject();
+            doctorID = patientEncounterTreatmentField.getUserId();
+            tempName = this.userService.findById(doctorID).getLastName().trim();
+            // check to see if this is newer then the previous entry if so use it instead
+            if(lastName != null && patientEncounterTreatmentField.getDateTaken().isAfter(dateTaken)) {
+                lastName = tempName;
+            }
+            if(lastName == null) {
+                lastName = tempName;
+            }
         }
         return lastName;
     }

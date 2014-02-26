@@ -24,7 +24,7 @@ public class CreateEncounterViewModel {
     private String city;
     private String firstName;
     private String lastName;
-    private int age;
+    private String age;
     private String sex;
     //begin vitals
     private Integer bloodPressureSystolic;
@@ -173,11 +173,11 @@ public class CreateEncounterViewModel {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 

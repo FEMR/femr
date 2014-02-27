@@ -140,7 +140,7 @@ function checkNumbers(){
         pass = false;
     }
     //Age - Years
-    if ($.trim($('#years').val().length) > 0 && integerCheck($('#years').val()) == false && !$('#years').is('[readonly]')){
+    if ($.trim($('#years').val().length) > 0 && integerCheck($('#years').val()) == false){
         $('#age').val(null);
         $('#month').val(0);
         $('#day').val(0);

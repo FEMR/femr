@@ -487,21 +487,6 @@ $(document).ready(function () {
     //PHOTO LOGIC ::END::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
 });
 
-//BMI auto- calculator
-window.setInterval(function () {
-    if ($('#heightFeet').val() && $('#weight').val() && $('#heightInches').val()) {
-
-        var weight_lbs = parseInt($('#weight').val());
-        var height_in = parseInt($('#heightInches').val());
-        var height_ft = parseInt($('#heightFeet').val());
-
-        height_in = height_in + height_ft * 12;
-
-        $('#bmi').val(Math.round((weight_lbs / (height_in * height_in)) * 703));
-
-    }
-}, 500);
-
 // Format date object as yyyy-MM-dd
 (function () {
     Date.prototype.toYMD = Date_toYMD;

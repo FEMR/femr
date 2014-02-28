@@ -1,25 +1,32 @@
 package femr.business.services;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
 import com.typesafe.config.ConfigFactory;
 
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.awt.image.*;
+import java.nio.file.*;
+
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import com.google.inject.Inject;
 import femr.data.daos.IRepository;
-
+import femr.data.models.*;
 
 
 public class PhotoService implements IPhotoService {
     private String _path;
     private IRepository<IPhoto> patientPhotoRepository;
+    private IRepository<IPatient> patientRepository;
 
     @Inject
-    public PhotoService(IRepository<IPhoto> patientPhotoRepository)
+    public PhotoService(IRepository<IPhoto> patientPhotoRepository,
+                        IRepository<IPatient> patientRepository)
     {
         this.patientPhotoRepository = patientPhotoRepository;
+        this.patientRepository = patientRepository;
 
         this.Init();
     }
@@ -27,9 +34,15 @@ public class PhotoService implements IPhotoService {
     protected void Init()
     {
         File f;
-        _path = ConfigFactory.load().getString("photos.path");
-        if(_path == null)
+        try
+        {
+            _path = ConfigFactory.load().getString("photos.path");
+        }
+        catch(Exception ex)
+        {
+            //If config doesn't exist, default to "photos"
             _path = "photos";
+        }
 
         //Append ending slash if needed
         if(!_path.endsWith(File.separator))
@@ -63,21 +76,92 @@ public class PhotoService implements IPhotoService {
         return iout;
     }
 
+
+    /**
+     * Handles all things related to the patient photo. If img is null and
+     *  deleteFlag == true, this method will delete the photo. Else,
+     *  it will update/create the patient photo
+     * @param img
+     * @param patientId
+     * @param coords
+     * @param deleteFlag
+     * @return Returns the new image Id on Save/Update, else null
+     */
     @Override
-    public void SavePhoto(File imgFile, String fileName)
+    public void HandlePatientPhoto(File img, IPatient patient, String coords, Boolean deleteFlag)
+    {
+        String sFileName = "Patient_" + patient.getId() + ".jpg";
+        Integer photoId;
+
+        try
+        {
+            if(img != null)
+            {
+                if(patient.getPhotoId() == null)
+                {
+                    //Create new photo Id record
+                    IPhoto pPhoto = new Photo();
+                    pPhoto.setDescription("");
+                    pPhoto.setFilePath(_path + sFileName);
+                    ServiceResponse<IPhoto>  pPhotoResponse = createPhoto(pPhoto);
+                    photoId = pPhoto.getId();
+                }
+                else
+                {
+                    //Record already exists:
+                    photoId = patient.getPhotoId();
+                }
+
+                CropImage(img, coords); //Crop image
+                SavePhoto(img, _path + sFileName);  //Save to disk
+
+
+                //Update patient photoId
+                patient.setPhotoId(photoId);
+                patientRepository.update(patient);
+            }
+            else
+            {
+                if(deleteFlag != null)
+                    if(deleteFlag && patient.getPhotoId() != null)
+                    {
+                        //delete photo
+                        //First make sure the photoId is null in the patient record
+                        Integer id = patient.getPhotoId();
+                        patient.setPhotoId(null);
+                        patientRepository.update(patient);
+                        //Now remove the photo record:
+                        this.deletePhotoById(id);
+                    }
+            }
+        }
+        catch(Exception ex)
+        {
+            //TODO: Handle exception
+        }
+    }
+
+    protected void SavePhoto(File imgFile, String fileName)
     {
         try
         {
-            File outFile = new File(_path + fileName);
-            outFile.createNewFile();
-            ImageIO.write(ImageIO.read(imgFile), "jpg", outFile);
+            //File outFile = new File(_path + fileName);
+            //outFile.createNewFile();
+            //imgFile.renameTo(outFile);
+            Path src = FileSystems.getDefault().getPath(imgFile.getAbsolutePath());
+            Path dest = FileSystems.getDefault().getPath(fileName);
+            //Path dest = basePath.resolve(_path + fileName);
+
+            //Files.move(src, dest, REPLACE_EXISTING);
+
+            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+            //ImageIO.write(ImageIO.read(imgFile), "jpg", outFile);
         }catch(Exception ex)
         {
         }
     }
 
-    @Override
-    public void CropImage(File imgFile, String coords)
+    protected void CropImage(File imgFile, String coords)
     {
         int[] vals = this.parseCoords(coords);
         if(vals != null)
@@ -101,8 +185,7 @@ public class PhotoService implements IPhotoService {
         }
     }
 
-    @Override
-    public ServiceResponse<IPhoto> createPhoto(IPhoto photo)
+    protected ServiceResponse<IPhoto> createPhoto(IPhoto photo)
     {
         IPhoto newPhoto = patientPhotoRepository.create(photo);
         ServiceResponse<IPhoto> response = new ServiceResponse<>();
@@ -112,6 +195,41 @@ public class PhotoService implements IPhotoService {
         }
         else{
             response.addError("photo","photo could not be saved to database");
+        }
+
+        return response;
+    }
+
+    protected ServiceResponse<IPhoto> getPhotoById(int id)
+    {
+
+        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
+        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
+        ServiceResponse<IPhoto> response = new ServiceResponse<>();
+
+        if (savedPhoto != null){
+            response.setResponseObject(savedPhoto);
+        }
+        else{
+            response.addError("photo","photo could not be fetched from the database");
+        }
+
+        return response;
+    }
+
+    protected ServiceResponse<IPhoto> deletePhotoById(int id)
+    {
+        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
+        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
+        if(savedPhoto != null)
+            Ebean.delete(savedPhoto);
+        ServiceResponse<IPhoto> response = new ServiceResponse<>();
+
+        if (savedPhoto != null){
+            response.setResponseObject(savedPhoto);
+        }
+        else{
+            response.addError("photo","photo could not be deleted from the database");
         }
 
         return response;

@@ -102,18 +102,6 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result createPost(int id) {
-        Http.MultipartFormData.FilePart fpPhoto;
-
-        try
-        {
-            //Safely capture handle to photo object
-            fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
-        }
-        catch(Exception ex)
-        {
-            fpPhoto = null;
-        }
-
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
@@ -137,31 +125,20 @@ public class TriageController extends Controller {
         }
 
         //Handle photo logic:
-        /*
-        if(fpPhoto != null)
+        try
         {
-            String sFileName = "Patient_" + patientServiceResponse.getResponseObject().getId();
-            //user needs to insert or update a photo
-            if(patientServiceResponse.getResponseObject().getPhotoId() == null)
-            {
-                IPhoto pPhoto = new Photo();
-                pPhoto.setDescription("");
-                pPhoto.setFilePath("sFileName");
-                ServiceResponse<IPhoto>  pPhotoResponse = photoService.createPhoto(pPhoto);
-                triageService.setPhotoId(patientServiceResponse.getResponseObject().getId(), pPhoto.getId());
+            Http.MultipartFormData.FilePart fpPhoto;
+            fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
+            photoService.HandlePatientPhoto(fpPhoto.getFile(),
+                    patientServiceResponse.getResponseObject(),
+                    viewModel.getImageCoords(), viewModel.getDeletePhoto());
+        }
+        catch(Exception ex)
+        {
 
-                //Crop photo if we were given coords:
-                if(viewModel.getImageCoords() != null)
-                   photoService.CropImage(fpPhoto.getFile(), viewModel.getImageCoords());
-            }
-            else
-            {
-                //Update photo
+        }
 
-            }
 
-            photoService.SavePhoto(fpPhoto.getFile(), sFileName);
-        }*/
 
         //create and save a new encounter
         IPatientEncounter patientEncounter = triageHelper.getPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());

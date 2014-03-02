@@ -166,25 +166,7 @@ public class SearchService implements ISearchService {
 
 
     @Override
-    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name) {
-        Query<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery()
-                .fetch("treatmentField")
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .eq("treatmentField.name", name)
-                .order().desc("date_taken");
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
-        if (patientEncounterTreatmentFields.size() > 0) {
-            response.setResponseObject(patientEncounterTreatmentFields);
-        } else {
-            response.addError(name, "Could not find any treatment entries");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<IPatientEncounterTreatmentField> findRecentTreatmentField(int encounterId, String name){
+    public ServiceResponse<IPatientEncounterTreatmentField> findRecentTreatmentField(int encounterId, String name) {
         Query<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery()
                 .fetch("treatmentField")
                 .where()
@@ -202,7 +184,7 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public ServiceResponse<IPatientEncounterHpiField> findRecentHpiField(int encounterId, String name){
+    public ServiceResponse<IPatientEncounterHpiField> findRecentHpiField(int encounterId, String name) {
         Query<PatientEncounterHpiField> query = getPatientEncounterHpiFieldQuery()
                 .fetch("hpiField")
                 .where()
@@ -218,8 +200,9 @@ public class SearchService implements ISearchService {
         }
         return response;
     }
+
     @Override
-    public ServiceResponse<IPatientEncounterPmhField> findRecentPmhField(int encounterId, String name){
+    public ServiceResponse<IPatientEncounterPmhField> findRecentPmhField(int encounterId, String name) {
         Query<PatientEncounterPmhField> query = getPatientEncounterPmhFieldQuery()
                 .fetch("pmhField")
                 .where()
@@ -235,6 +218,7 @@ public class SearchService implements ISearchService {
         }
         return response;
     }
+
 
     @Override
     public ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name) {
@@ -253,6 +237,28 @@ public class SearchService implements ISearchService {
         }
         return response;
     }
+
+
+
+
+    @Override
+    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name) {
+        Query<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery()
+                .fetch("treatmentField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("treatmentField.name", name)
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
+        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
+        if (patientEncounterTreatmentFields.size() > 0) {
+            response.setResponseObject(patientEncounterTreatmentFields);
+        } else {
+            response.addError(name, "Could not find any treatment entries");
+        }
+        return response;
+    }
+
 
     @Override
     public ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name) {
@@ -402,6 +408,7 @@ public class SearchService implements ISearchService {
 
     /**
      * Finds a prescription by its ID so we can find the name of the replacement meds
+     *
      * @param id The id of the medication to find
      * @return the response object
      */
@@ -409,7 +416,7 @@ public class SearchService implements ISearchService {
         ExpressionList<PatientPrescription> query = getPatientPrescriptionQuery().where().eq("id", id);
         IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(query);
         ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
-        if(patientPrescription == null) {
+        if (patientPrescription == null) {
             response.addError("patientPrescription", "could not find a prescription with that id");
         } else {
             response.setResponseObject(patientPrescription);
@@ -419,6 +426,7 @@ public class SearchService implements ISearchService {
 
     /**
      * Gets the id of the doctor for a given Encounter in the HpiField
+     *
      * @param id The encounter ID
      * @return The userID associated with that field
      */
@@ -432,10 +440,9 @@ public class SearchService implements ISearchService {
         IPatientEncounterHpiField patientEncounterHpiField;
         ServiceResponse<IPatientEncounterHpiField> response = new ServiceResponse<>();
         //check to see if the list is empty
-        if(patientEncounterHpiFields.isEmpty()) {
+        if (patientEncounterHpiFields.isEmpty()) {
             response.addError("patientEncounterHpiField", "Could not find Hpi Field for the given encounter id");
-        }
-        else {
+        } else {
             patientEncounterHpiField = patientEncounterHpiFields.get(0); // the first entry should be the newest
             response.setResponseObject(patientEncounterHpiField);
         }
@@ -445,6 +452,7 @@ public class SearchService implements ISearchService {
 
     /**
      * Gets the id of the doctor for a given Encounter in the PmhField
+     *
      * @param id The encounter ID
      * @return The userID associated with that field
      */
@@ -458,10 +466,9 @@ public class SearchService implements ISearchService {
         IPatientEncounterPmhField patientEncounterPmhField;
         ServiceResponse<IPatientEncounterPmhField> response = new ServiceResponse<>();
         //check to see if the list is empty
-        if(patientEncounterPmhFields.isEmpty()) {
+        if (patientEncounterPmhFields.isEmpty()) {
             response.addError("patientEncounterPmhField", "Could not find Pmh field for the given encounter id");
-        }
-        else {
+        } else {
             patientEncounterPmhField = patientEncounterPmhFields.get(0); // the first entry should be the newest
             response.setResponseObject(patientEncounterPmhField);
         }
@@ -469,9 +476,9 @@ public class SearchService implements ISearchService {
     }
 
 
-
     /**
      * Gets the id of the doctor for a given Encounter in the TreatmentField
+     *
      * @param id The encounter ID
      * @return The userID associated with that field
      */
@@ -484,10 +491,9 @@ public class SearchService implements ISearchService {
         List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query);
         IPatientEncounterTreatmentField patientEncounterTreatmentField;
         ServiceResponse<IPatientEncounterTreatmentField> response = new ServiceResponse<>();
-        if(patientEncounterTreatmentFields.isEmpty()) {
+        if (patientEncounterTreatmentFields.isEmpty()) {
             response.addError("patientEncounterTreatmentField", "Could not find Treatment field for the given encounter id");
-        }
-        else {
+        } else {
             patientEncounterTreatmentField = patientEncounterTreatmentFields.get(0); // the first entry should be the newest
             response.setResponseObject(patientEncounterTreatmentField);
         }

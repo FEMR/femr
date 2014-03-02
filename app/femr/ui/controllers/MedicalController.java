@@ -103,7 +103,6 @@ public class MedicalController extends Controller {
         //Get Patient
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientId);
         if (patientServiceResponse.hasErrors()) {
-            //this error should have been caught by searchPost
             return internalServerError();
         }
         IPatient patient = patientServiceResponse.getResponseObject();
@@ -162,13 +161,20 @@ public class MedicalController extends Controller {
         //Create linked hash map of vitals
         ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> patientEncounterVitalMapResponse = medicalService.findVitalsByEncounterId(patientEncounter.getId());
         Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap;
-        if (patientEncounterVitalMapResponse.hasErrors()) {
+
+
+        //set up viewModelGet with everything except vitals
+
+        if (patientEncounterVitalMapResponse.hasErrors()){
             return internalServerError();
-        } else {
+        }else{
             patientEncounterVitalMap = patientEncounterVitalMapResponse.getResponseObject();
         }
 
-        //set up viewModelGet with everything except vitals
+        //endregion
+
+        //Populate ViewModel
+
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
 
         return ok(edit.render(currentUserSession, viewModelGet));

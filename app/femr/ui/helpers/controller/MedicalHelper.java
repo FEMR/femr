@@ -180,7 +180,7 @@ public class MedicalHelper {
 
     private String getHpiFieldOrNull(String key, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
         if (patientEncounterHpiMap.containsKey(key)) {
-            if (patientEncounterHpiMap.get(key).size() < 1) {
+            if (patientEncounterHpiMap.get(key) == null || patientEncounterHpiMap.get(key).size() == 0) {
                 return null;
             }
             return patientEncounterHpiMap.get(key).get(0).getHpiFieldValue().trim();
@@ -190,7 +190,7 @@ public class MedicalHelper {
 
     private String getPmhFieldOrNull(String key, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
         if (patientEncounterPmhMap.containsKey(key)) {
-            if (patientEncounterPmhMap.get(key).size() < 1) {
+            if (patientEncounterPmhMap.get(key) == null || patientEncounterPmhMap.get(key).size() == 0) {
                 return null;
             }
             return patientEncounterPmhMap.get(key).get(0).getPmhFieldValue().trim();
@@ -201,7 +201,7 @@ public class MedicalHelper {
 
     private String getTreatmentFieldOrNull(String key, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {
         if (patientEncounterTreatmentMap.containsKey(key)) {
-            if (patientEncounterTreatmentMap.get(key).size() < 1) {
+            if (patientEncounterTreatmentMap.get(key) == null || patientEncounterTreatmentMap.get(key).size() == 0) {
                 return null;
             }
             return patientEncounterTreatmentMap.get(key).get(0).getTreatmentFieldValue().trim();
@@ -211,7 +211,7 @@ public class MedicalHelper {
 
     private String getTreatmentProblemOrNull(int problem, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {
         if (patientEncounterTreatmentMap.containsKey("problem")) {
-            if (patientEncounterTreatmentMap.get("problem").size() >= problem) {
+            if (patientEncounterTreatmentMap.get("problem") != null && patientEncounterTreatmentMap.get("problem").size() >= problem) {
                 return patientEncounterTreatmentMap.get("problem").get(problem - 1).getTreatmentFieldValue();
             }
             return null;

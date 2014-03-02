@@ -2,112 +2,6 @@
 
 $(document).ready(function () {
 
-    $('#resetVitalsBtn').on('click', function () {
-        $('#populatedVitals').addClass('hidden');
-        $('#newVitals').removeClass('hidden');
-        $('#saveVitalsBtn').removeClass('hidden');
-        $('#resetVitalsBtn').addClass('hidden');
-    });
-
-    $('#saveVitalsBtn').on('click', function () {
-        var newVitals = {};
-
-        var bpSystolic = $('#bpSystolic');
-        var bpDiastolic = $('#bpDiastolic');
-        var heartRate = $('#heartRate');
-        var temperature = $('#temperature');
-        var respRate = $('#respRate');
-        var oxygen = $('#oxygen');
-        var heightFt = $('#heightFt');
-        var heightIn = $('#heightIn');
-        var weight = $('#newWeight');
-        var glucose = $('#newGlucose');
-
-        if (bpSystolic.val() !== '') {
-            newVitals.bpSystolic = bpSystolic.val();
-
-            $("#triageBpSystolic").text(newVitals.bpSystolic);
-            bpSystolic.val('');
-        }
-
-        if (bpDiastolic.val() !== '') {
-            newVitals.bpDiastolic = bpDiastolic.val();
-
-            $("#triageBpDiastolic").text(newVitals.bpDiastolic);
-            bpDiastolic.val('');
-        }
-
-        if (heartRate.val() !== '') {
-            newVitals.heartRate = heartRate.val();
-
-            $("#triageHeartRate").text(newVitals.heartRate);
-            heartRate.val('');
-        }
-
-        if (temperature.val() !== '') {
-            newVitals.temperature = temperature.val();
-
-            $("#triageTemperature").text(newVitals.temperature);
-            temperature.val('');
-        }
-
-        if (oxygen.val() !== '') {
-            newVitals.oxygen = oxygen.val();
-
-            $("#triageOxygen").text(newVitals.oxygen);
-            oxygen.val('');
-        }
-
-        if (respRate.val() !== '') {
-            newVitals.respRate = respRate.val();
-
-            $("#triageRespRate").text(newVitals.respRate);
-            respRate.val('');
-        }
-
-        if (heightFt.val() !== '') {
-            newVitals.heightFt = heightFt.val();
-
-            $("#heightFeet").text(newVitals.heightFt);
-            $("#triageHeightFt").text(newVitals.heightFt);
-            heightFt.val('');
-        }
-
-        if (heightIn.val() !== '') {
-            newVitals.heightIn = heightIn.val();
-
-            $("#heightInches").text(newVitals.heightIn);
-            $("#triageHeightIn").text(newVitals.heightIn);
-            heightIn.val('');
-        }
-
-        if (weight.val() !== '') {
-            newVitals.weight = weight.val();
-
-            $("#weight").text(newVitals.weight);
-            weight.val('');
-        }
-
-        if (glucose.val() !== '') {
-            newVitals.glucose = glucose.val();
-            $("#triageGlucose").text(newVitals.glucose);
-            glucose.val('');
-        }
-
-        $.ajax({
-            url: '/medical/updateVitals/' + $("#patientId").val(),
-            type: 'POST',
-            data: newVitals,
-            dataType: 'json'
-        }).done(function () {
-                calculateBMI();
-                $('#populatedVitals').removeClass('hidden');
-                $('#newVitals').addClass('hidden');
-                $('#saveVitalsBtn').addClass('hidden');
-                $('#resetVitalsBtn').removeClass('hidden');
-            });
-    });
-
     calculateBMI();
 
     //Unhides a prescription input box everytime
@@ -176,21 +70,51 @@ $(document).ready(function () {
     });
 
     //controls the tabbed viewing of HPI and Treatment
-    $('#myTab a').click(function (e) {
+    $('#medicalTabs a').click(function (e) {
         e.preventDefault()
         $(this).tab('show')
 
     });
 
-    $('#myTab a').click(function () {
+    $('#medicalTabs a').click(function () {
         if ($(this).attr('id') === "hpiTab") {
             showHpi();
         } else if ($(this).attr('id') === "treatmentTab") {
             showTreatment();
-        } else if($(this).attr('id') === "pmhTab") {
+        } else if ($(this).attr('id') === "pmhTab") {
             showPmh();
         }
     });
+
+
+    $('#newVitalsDialog').dialog({
+        dialogClass: 'editUserDialog',
+        autoOpen: false,
+        draggable: true,
+        position: 'center',
+        modal: true,
+        height: 400,
+        width: 450
+
+    });
+
+    $('#newVitalsBtn').click(function () {
+        var id = $(this).attr('data-user_id');
+        $.ajax({
+            url: '/medical/newVitals',
+            type: 'GET',
+            success: function (partialView) {
+                $('#newVitalsPartial').html(partialView);
+                $('#newVitalsDialog').dialog("open");
+            },
+            error: function (response) {
+                alert("Error. Please make sure you are connected to fEMR.");
+            }
+        })
+
+    });
+
+
 });
 
 function showTreatment() {
@@ -210,17 +134,7 @@ function showPmh() {
     $('#pmhControl').removeClass('hidden');
 }
 
-function calculateBMI() {
-    if ($('#heightFeet').text() && $('#weight').text() && $('#heightInches').text()) {
-        var weight_lbs = parseInt($('#weight').text());
-        var height_in = parseInt($('#heightInches').text());
-        var height_ft = parseInt($('#heightFeet').text());
 
-        height_in = height_in + height_ft * 12;
-
-        $('#bmi').text(Math.round((weight_lbs / (height_in * height_in)) * 703));
-    }
-}
 
 function getNumberOfFilledScripts() {
     var x = 0;

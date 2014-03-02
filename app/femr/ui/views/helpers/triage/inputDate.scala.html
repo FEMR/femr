@@ -1,14 +1,13 @@
 @(name: String, forInput: String, value: Date)
     @inputBlock = {
-        <div class="form-group">
-            <label for="@forInput" class="col-sm-3 col-xs-3 control-label">@name<span class="red bold">*</span></label>
-            <div class="col-sm-7 col-xs-7">
+        <div class="generalInfoInput">
+            <label for="@forInput">@name <span class="red bold">*</span></label>
+
             @if(value == null) {
-                <input type="date" class="form-control" id="@forInput" name="@forInput">
+                <input type="date" class="fInput" id="@forInput" name="@forInput">
             } else {
-                <input type="date" class="form-control" id="readOnlyBirthDate" name="@forInput" value="@value.format("yyyy-MM-dd")" readonly/>
+                <input type="date" class="fInput" id="readOnlyBirthDate" name="@forInput" value="@value.format("yyyy-MM-dd")" readonly/>
             }
-            </div>
         </div>
     }
 @inputBlock

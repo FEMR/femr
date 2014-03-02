@@ -1,0 +1,72 @@
+@(vitalMap: femr.util.DataStructure.VitalMultiMap)
+
+<link rel="stylesheet" href="@routes.Assets.at("css/jquery.tablescroll.css")" xmlns="http://www.w3.org/1999/xhtml">
+<link rel="stylesheet" href="@routes.Assets.at("css/medical/listVitals.css")" xmlns="http://www.w3.org/1999/xhtml">
+
+
+<script>window.jQuery || document.write ( '<script type="text/javascript" src="   @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
+<script type="text/javascript" src="@routes.Assets.at("js/jquery.tablescroll.js")"></script>
+<script type="text/javascript" src="@routes.Assets.at("js/medical/listVitals.js")"></script>
+
+
+<table id="vitalTable" cellspacing="0">
+    <thead></thead>
+    <tbody>
+        <tr class="first">
+            <th></th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.getFormatedDateTime(dateIndex - 1)</td>
+            }
+        </tr>
+        <tr>
+            <th>BP</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1))
+                    / @vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr>
+            <th>HR</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr>
+            <th>T</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr>
+            <th>RR</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("respiratoryRate", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr>
+            <th>Gluc</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("glucose", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr>
+            <th>SpO2</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("oxygenSaturation", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr id="height">
+            <th>Ht</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))
+                    ' @vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+        <tr id="weight">
+            <th>Wt</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td>@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))</td>
+            }
+        </tr>
+    </tbody>
+</table>

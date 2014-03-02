@@ -236,25 +236,6 @@ public class MedicalService implements IMedicalService {
         return response;
     }
 
-    @Override
-    public ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> findVitalsByEncounterId(int encounterId) {
-        ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> response = new ServiceResponse<>();
-        List<? extends IVital> vitals = vitalFieldRepository.findAll(Vital.class);
-        Query<PatientEncounterVital> query;
-
-        Map<String, List<? extends IPatientEncounterVital>> vitalMap = new LinkedHashMap<>();
-        List<? extends IPatientEncounterVital> patientEncounterVitals;
-        String vitalFieldName;
-        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
-            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
-            query = getPatientEncounterVitalQuery().fetch("vital").where().eq("patient_encounter_id", encounterId).eq("vital.name", vitalFieldName).order().desc("date_taken");
-            patientEncounterVitals = patientEncounterVitalRepository.find(query);
-            vitalMap.put(vitalFieldName, patientEncounterVitals);
-        }
-        response.setResponseObject(vitalMap);
-        return response;
-    }
-
     private Query<PatientEncounterHpiField> getPatientEncounterHpiField() {
         return Ebean.find(PatientEncounterHpiField.class);
     }

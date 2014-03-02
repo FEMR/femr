@@ -18,19 +18,14 @@ public interface IMedicalService {
 
     ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int encounterId);
 
-    ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> findVitalsByEncounterId(int encounterId);
 
     /* Create Actions */
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> createPatientEncounterTreatmentFields(List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields);
-
     ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields);
-
     ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields);
-
     ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
 
     ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions);
-
 
     boolean hasPatientBeenCheckedInByPhysician(int encounterId);
 

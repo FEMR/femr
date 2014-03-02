@@ -1,64 +1,180 @@
+/* General Page styles */
+
+#triageContentWrap {
+    overflow: hidden;
+}
+
+.sectionBackground {
+    min-height: 638px;
+    padding: 10px;
+}
+
+#genInfoWrap {
+    float: left;
+    width: 40%;
+}
+
+#vitalsWrap {
+    float: left;
+    width: 60%;
+}
+
+#leftVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#rightVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+.vitalWrap {
+    padding: 5px 15px 5px 15px;
+    overflow: hidden;
+}
+
+.vitalWrap label {
+    margin-top: 3px;
+    display: block;
+}
+
+.vitalWrap input {
+    width: 100px;
+    float: left;
+    margin-right: 40px;
+    /*display: inline-block;*/
+    box-sizing: border-box;
+}
+
+#bloodPressureSystolic {
+    /*margin-bottom: 10px;*/
+}
+
+#weeksPregnant {
+    margin: 0px 0px 0px 45px;
+    float: left;
+}
+
+#pregnancyBtn {
+    margin-top: -6px;
+    width: 100px;
+}
+
+.doubleVital {
+    overflow: hidden;
+}
+
+#chiefComplaint {
+    width: 100%;
+}
+
+.generalInfoInput {
+    padding: 5px;
+    overflow: hidden;
+}
+
+.generalInfoInput input {
+    float: right;
+    margin-right: 120px;
+}
+
+#historyButton {
+    width: 100%;
+    float: right;
+    text-align: center;
+
+}
+
+.submitResetWrap {
+    padding: 20px;
+}
+
+.historyInput {
+    padding-top: 20px;
+    overflow: hidden;
+}
+
+/* Photo stuff */
+#photoInputFormDiv {
+    overflow: hidden;
+}
+
+#photoInput {
+    width: inherit;
+}
+
+/* General info stuff */
+#genderBtns {
+    float: right;
+    margin-right: 120px;
+    width: 175px;
+}
+
 /*Triage Page*/
 .stackedInput {
-  margin-top: 15px!important;
+    margin-top: 15px !important;
 }
+
 .textAreaLabel {
-  margin-top: 25px!important;
+    margin-top: 25px !important;
 }
+
 .floatButtonOffset {
-  margin-left: 10px;
+    margin-left: 10px;
 }
+
 .medicalHistoryLineDivide {
-  background: #000000;
-  clear: both;
-  float: none;
-  width: 100%;
-  height: 1px;
-  margin: 0 0 2px;
-  border: none;
+    background: #000000;
+    clear: both;
+    float: none;
+    width: 100%;
+    height: 1px;
+    margin: 0 0 2px;
+    border: none;
 }
 
-#errorMessageDecimal{
-    color: red;
-}
-
-#errorMessageHeight{
-    color: red;
-}
-
-#pregnancyBtn{
-    margin-top: -6px;
-}
-#patientHistoryColumn{
-    margin-left: 122px;
-}
-
-/*Boot strap overrides*/
-.clear-none {
-  clear: none !important;
-}
-
-.patientMedicalHistory {
-  padding-bottom: 4px !important;
-  margin-bottom: 4px !important;
-}
-
-.padding-right-zero {
-  padding-right: 0 !important;
-}
-
-.padding-left-zero {
-  padding-left: 0 !important;
-}
-
-.bold {
-  font-weight: bold;
+#photoInput {
+    float: left !important;
 }
 
 .red {
-    color:red;
+    color: red;
 }
 
-.age-input {
-    display:inline-block !important;
+/* Shrinking of General Info section */
+@media (max-width: 1199px) {
+    #genderBtns {
+        margin-right: 0px;
+    }
+
+    .generalInfoInput input {
+        margin-right: 0px;
+    }
+    .vitalWrap input{
+        float: right;
+    }
 }
+
+@media (max-width: 991px) {
+    .sectionBackground {
+        padding: 0px;
+    }
+}
+@media (max-width: 620px){
+    .vitalWrap input {
+        float: none;
+    }
+    #weeksPregnant{
+        margin: 0;
+    }
+}
+
+@media (max-width: 495px) {
+    #genInfoWrap input {
+        float: none;
+    }
+
+
+}
+

@@ -1,6 +1,8 @@
 package femr.ui.models.medical;
 
 
+import femr.util.DataStructure.VitalMultiMap;
+
 public class CreateViewModelGet {
     //begin patient
     private int pID;
@@ -10,16 +12,7 @@ public class CreateViewModelGet {
     private String age;
     private String sex;
     //begin vitals
-    private Integer bloodPressureSystolic;
-    private Integer bloodPressureDiastolic;
-    private Integer heartRate;
-    private Float temperature;
-    private Integer respiratoryRate;
-    private Float oxygenSaturation;
-    private Integer heightFeet;
-    private Integer heightInches;
-    private Float weight;
-    private Float glucose;
+    private VitalMultiMap vitalMap;
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
@@ -103,76 +96,12 @@ public class CreateViewModelGet {
         this.sex = sex;
     }
 
-    public Integer getBloodPressureSystolic() {
-        return bloodPressureSystolic;
+    public VitalMultiMap getVitalMap() {
+        return vitalMap;
     }
 
-    public void setBloodPressureSystolic(Integer bloodPressureSystolic) {
-        this.bloodPressureSystolic = bloodPressureSystolic;
-    }
-
-    public Integer getBloodPressureDiastolic() {
-        return bloodPressureDiastolic;
-    }
-
-    public void setBloodPressureDiastolic(Integer bloodPressureDiastolic) {
-        this.bloodPressureDiastolic = bloodPressureDiastolic;
-    }
-
-    public Integer getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(Integer heartRate) {
-        this.heartRate = heartRate;
-    }
-
-    public Float getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Float temperature) {
-        this.temperature = temperature;
-    }
-
-    public Float getOxygenSaturation() {
-        return oxygenSaturation;
-    }
-
-    public void setOxygenSaturation(Float oxygenSaturation) {
-        this.oxygenSaturation = oxygenSaturation;
-    }
-
-    public Integer getRespiratoryRate() {
-        return respiratoryRate;
-    }
-
-    public void setRespiratoryRate(Integer respiratoryRate) {
-        this.respiratoryRate = respiratoryRate;
-    }
-
-    public Integer getHeightFeet() {
-        return heightFeet;
-    }
-
-    public void setHeightFeet(Integer heightFeet) {
-        this.heightFeet = heightFeet;
-    }
-
-    public Integer getHeightInches() {
-        return heightInches;
-    }
-
-    public void setHeightInches(Integer heightInches) {
-        this.heightInches = heightInches;
-    }
-
-    public Float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Float weight) {
-        this.weight = weight;
+    public void setVitalMap(VitalMultiMap vitalMap) {
+        this.vitalMap = vitalMap;
     }
 
     public String getChiefComplaint() {
@@ -359,13 +288,6 @@ public class CreateViewModelGet {
         this.physicalExamination = physicalExamination;
     }
 
-    public Float getGlucose() {
-        return glucose;
-    }
-
-    public void setGlucose(Float glucose) {
-        this.glucose = glucose;
-    }
 
     public String getNarrative() {
         return narrative;
@@ -374,6 +296,7 @@ public class CreateViewModelGet {
     public void setNarrative(String narrative) {
         this.narrative = narrative;
     }
+
     public String getCurrentMedication() {
         return currentMedication;
     }
@@ -405,5 +328,4 @@ public class CreateViewModelGet {
     public void setFamilyHistory(String familyHistory) {
         this.familyHistory = familyHistory;
     }
-
 }

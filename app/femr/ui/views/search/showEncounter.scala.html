@@ -7,79 +7,44 @@
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
         <!-- adds the javascript bootstraps to this page -->
         <script type="text/javascript" src="@routes.Assets.at("js/search/encounter.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery.tablescroll.js")"></script>
     }
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")">
         <link rel="stylesheet" href="@routes.Assets.at("css/search.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/jquery.tablescroll.css")" xmlns="http://www.w3.org/1999/xhtml">
     }
 
 
 @main("search", currentUser, scripts = additionalScripts, styles = additionalStyles) {
-    <div class="row well well-sm">
-        <h3 class="text-center">Encounter View</h3>
-        <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2">
-                    <label>Name:</label>
-                </div>
-                <div class="col-xs-8 col-sm-8 col-md-8">
-                    <p>@viewModel.getFirstName @viewModel.getLastName</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2">
-                    <label for="">Age:</label>
-                </div>
-                <div class="col-xs-8 col-sm-8 col-md-8">
-                    <p>@viewModel.getAge</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2">
-                    <label for="">Sex:</label>
-                </div>
-                <div class="col-xs-8 col-sm-8 col-md-8">
-                    <p>@viewModel.getSex</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2">
-                    <label for="">City:</label>
-                </div>
-                <div class="col-xs-8 col-sm-8 col-md-8">
-                    <p>@viewModel.getCity</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="row">
-                <div class="col-xs-4 col-sm-4 col-md-4">
-                    <label>Encounter Date:</label>
-                </div>
-                <div class="col-xs-8 col-sm-8 col-md-8">
-                    <p>@patientEncounter.getDateOfVisit.substring(0, 10)</p>
-                </div>
-            </div>
-        </div>
+    <div id="patientOverviewWrap" class="backgroundForWrap">
 
-        <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="row">
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                    <label for="">Doctor:</label>
-                </div>
-                <div class="col-xs-8 col-sm-8 col-md-8">
-                    <p>@viewModel.getDoctorFirstName @viewModel.getDoctorLastName</p>
-                </div>
+        <h3 class="text-center">Patient Encounter Information for @viewModel.getFirstName @viewModel.getLastName</h3>
+        <div id="generalInfoWrap">
+            <div id="chiefComplaint">
+            @if(viewModel.getChiefComplaint != null && !viewModel.getChiefComplaint.isEmpty()) {
+                <span><label>Complaint:</label>@viewModel.getChiefComplaint</span>
+            }
             </div>
+            <div id="patientInfo">
+                <label>Age:</label><span>@viewModel.getAge</span>
+                <label>Sex:</label><span>@viewModel.getSex</span>
+                <label>City:</label><span>@viewModel.getCity</span>
+                <label>Encounter Date:</label><span>@patientEncounter.getDateOfVisit</span>
+                <label>Doctor:</label><span>@viewModel.getDoctorFirstName @viewModel.getDoctorLastName</span>
+                @if(viewModel.getWeeksPregnant != null && viewModel.getWeeksPregnant > 0) {
+                    <span><label>Weeks Pregnant:</label>@viewModel.getWeeksPregnant</span>
+                }
+            </div>
+
+
         </div>
 
     </div>
 
     @* Display multiple sets of vitals based on dates *@
-    <div class="col-xs-3 col-sm-3 col-md-3 well well-sm">
-    @outputVitalList(viewModel)
+    <div class="col-xs-3 col-sm-3 col-md-3 backgroundForWrap" id="vitalWrap">
+    @* Currently uses medicals vital helper *@
+        @femr.ui.views.html.medical.listVitals(viewModel.getVitalList)
 
     </div>
 
@@ -87,12 +52,12 @@
              List of all the tabs on the encounter page
              ********************************************-->
 
-    <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
-        <ul id="myTab" class="nav nav-tabs">
-            <li class="active"><a id="hpiTab">HPI</a></li>
-            <li><a id="pmhTab">PMH</a></li>
-            <li><a id="treatmentTab">Treatment</a></li>
-            <li><a id="pharmacyTab">Pharmacy</a></li>
+    <div class="col-xs-9 col-sm-9 col-md-9 backgroundForWrap">
+        <ul id="encounterTabs">
+            <li class="active"><a href="#" id="hpiTab">HPI</a></li>
+            <li><a href="#" id="pmhTab">PMH</a></li>
+            <li><a href="#" id="treatmentTab">Treatment</a></li>
+            <li><a href="#" id="pharmacyTab">Pharmacy</a></li>
         </ul>
 
 

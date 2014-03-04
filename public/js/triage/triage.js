@@ -247,9 +247,9 @@ $(document).ready(function () {
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
-                $('#year').val(parseInt(birthString.split('-')[0]));
-                $('#month').val(parseInt(birthString.split('-')[1]));
-                $('#day').val(parseInt(birthString.split('-')[2]));
+                $('#year').val(birthString.split('-')[0]);
+                $('#month').val(birthString.split('-')[1]);
+                $('#day').val(birthString.split('-')[2]);
                 $('#age').val(birthString);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
@@ -311,9 +311,9 @@ $(document).ready(function () {
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
-                $('#year').val(parseInt(birthString.split('-')[0]));
-                $('#month').val(parseInt(birthString.split('-')[1]));
-                $('#day').val(parseInt(birthString.split('-')[2]));
+                $('#year').val(birthString.split('-')[0]);
+                $('#month').val(birthString.split('-')[1]);
+                $('#day').val(birthString.split('-')[2]);
                 $('#age').val(birthString);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
@@ -327,7 +327,7 @@ $(document).ready(function () {
     //Populate years drop down and just for DW max is 123yrs old LOL!
     (function () {
         $('#year').append($('<option />').val(0).html("Year"));
-        for (i = new Date().getFullYear(); i > 1889; i--)
+        for (var i = new Date().getFullYear(); i > 1889; i--)
         {
             $('#year').append($('<option />').val(i).html(i));
         }

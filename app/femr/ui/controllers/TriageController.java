@@ -19,6 +19,7 @@ import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
 
+import java.io.File;
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -55,7 +56,7 @@ public class TriageController extends Controller {
             return internalServerError();
         }
 
-        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, vitalServiceResponse.getResponseObject(), false);
+        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, null, vitalServiceResponse.getResponseObject(), false);
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -70,6 +71,7 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         IPatient patient = null;
+        IPhoto   patientPhoto = null;
 
         //retrieve patient id from query string
         String s_id = request().getQueryString("id");
@@ -86,13 +88,22 @@ public class TriageController extends Controller {
             }
         }
 
+        if(patient != null)
+            if(patient.getPhotoId() != null)
+            {
+                //fetch photo record:
+                ServiceResponse<IPhoto> photoResponse = photoService.getPhotoById(patient.getPhotoId());
+                if(!photoResponse.hasErrors())
+                    patientPhoto = photoResponse.getResponseObject();
+            }
+
         //retrieve vitals names for dynamic html element naming
         ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
         if (vitalServiceResponse.hasErrors()) {
             return internalServerError();
         }
 
-        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, vitalServiceResponse.getResponseObject(), searchError);
+        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, patientPhoto, vitalServiceResponse.getResponseObject(), searchError);
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -128,17 +139,18 @@ public class TriageController extends Controller {
         try
         {
             Http.MultipartFormData.FilePart fpPhoto;
+            File photoFile = null;
             fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
-            photoService.HandlePatientPhoto(fpPhoto.getFile(),
+            if(fpPhoto != null)
+                photoFile = fpPhoto.getFile();
+
+            photoService.HandlePatientPhoto(photoFile,
                     patientServiceResponse.getResponseObject(),
                     viewModel.getImageCoords(), viewModel.getDeletePhoto());
         }
         catch(Exception ex)
         {
-
         }
-
-
 
         //create and save a new encounter
         IPatientEncounter patientEncounter = triageHelper.getPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
@@ -200,6 +212,7 @@ public class TriageController extends Controller {
         }
         return 1;
     }
+
 
 
 }

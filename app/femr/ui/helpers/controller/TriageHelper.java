@@ -5,6 +5,7 @@ import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.common.models.*;
 import femr.data.models.Vital;
+import femr.ui.controllers.routes;
 import femr.ui.models.triage.CreateViewModelGet;
 import femr.ui.models.triage.CreateViewModelPost;
 import femr.util.calculations.dateUtils;
@@ -17,15 +18,19 @@ public class TriageHelper {
     private Provider<IPatient> patientProvider;
     private Provider<IPatientEncounter> patientEncounterProvider;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+    private Provider<IPhoto> patientPhotoProvider;
 
     @Inject
-    public TriageHelper(Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider, Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+    public TriageHelper(Provider<IPatient> patientProvider, Provider<IPatientEncounter> patientEncounterProvider,
+                        Provider<IPatientEncounterVital> patientEncounterVitalProvider,
+                        Provider<IPhoto> patientPhotoService) {
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
+        this.patientPhotoProvider = patientPhotoService;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, List<? extends IVital> vitalNames, boolean searchError) {
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPhoto patientPhoto, List<? extends IVital> vitalNames, boolean searchError) {
         CreateViewModelGet createViewModelGet = new CreateViewModelGet();
         createViewModelGet.setVitalNames(vitalNames);
         createViewModelGet.setSearchError(searchError);
@@ -39,6 +44,16 @@ public class TriageHelper {
             createViewModelGet.setAge(dateUtils.getAge(patient.getAge()));
             createViewModelGet.setBirth(patient.getAge());
             createViewModelGet.setSex(patient.getSex());
+            if(patientPhoto != null)
+            {
+                String photoPath = routes.PhotoController.GetPatientPhoto(patient.getId()).toString();
+                createViewModelGet.setPhotoPath(photoPath);
+            }
+            else
+            {
+                createViewModelGet.setPhotoPath("");
+            }
+
         } else {
             createViewModelGet.setId(0);
             //required to keep textbox clear

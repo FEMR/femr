@@ -55,7 +55,10 @@ public class PhotoService implements IPhotoService {
     }
 
     @Override
-    public String GetPhotoPath() { return _path; }
+    public String GetRootPhotoPath()
+    {
+        return _path;
+    }
 
     protected int[] parseCoords(String s)
     {
@@ -82,7 +85,7 @@ public class PhotoService implements IPhotoService {
      *  deleteFlag == true, this method will delete the photo. Else,
      *  it will update/create the patient photo
      * @param img
-     * @param patientId
+     * @param patient
      * @param coords
      * @param deleteFlag
      * @return Returns the new image Id on Save/Update, else null
@@ -102,7 +105,7 @@ public class PhotoService implements IPhotoService {
                     //Create new photo Id record
                     IPhoto pPhoto = new Photo();
                     pPhoto.setDescription("");
-                    pPhoto.setFilePath(_path + sFileName);
+                    pPhoto.setFilePath(sFileName);
                     ServiceResponse<IPhoto>  pPhotoResponse = createPhoto(pPhoto);
                     photoId = pPhoto.getId();
                 }
@@ -145,17 +148,9 @@ public class PhotoService implements IPhotoService {
     {
         try
         {
-            //File outFile = new File(_path + fileName);
-            //outFile.createNewFile();
-            //imgFile.renameTo(outFile);
             Path src = FileSystems.getDefault().getPath(imgFile.getAbsolutePath());
             Path dest = FileSystems.getDefault().getPath(fileName);
-            //Path dest = basePath.resolve(_path + fileName);
-
-            //Files.move(src, dest, REPLACE_EXISTING);
-
             java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
-            //ImageIO.write(ImageIO.read(imgFile), "jpg", outFile);
         }catch(Exception ex)
         {
         }
@@ -200,7 +195,8 @@ public class PhotoService implements IPhotoService {
         return response;
     }
 
-    protected ServiceResponse<IPhoto> getPhotoById(int id)
+    @Override
+    public ServiceResponse<IPhoto> getPhotoById(int id)
     {
 
         ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
@@ -217,12 +213,27 @@ public class PhotoService implements IPhotoService {
         return response;
     }
 
+    protected void deleteImageFile(String path)
+    {
+        try
+        {
+            File photo = new File(path);
+            photo.delete();
+        }
+        catch(Exception ex)
+        {
+        }
+    }
+
     protected ServiceResponse<IPhoto> deletePhotoById(int id)
     {
         ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
         IPhoto savedPhoto = patientPhotoRepository.findOne(query);
         if(savedPhoto != null)
+        {
+            deleteImageFile(_path + savedPhoto.getFilePath()); //Delete file
             Ebean.delete(savedPhoto);
+        }
         ServiceResponse<IPhoto> response = new ServiceResponse<>();
 
         if (savedPhoto != null){

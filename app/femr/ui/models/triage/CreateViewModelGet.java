@@ -23,6 +23,8 @@ public class CreateViewModelGet {
     //vital names
     List<? extends IVital> vitalNames;
 
+    private String photoPath;
+
     public CreateViewModelGet() {
     }
 
@@ -105,4 +107,7 @@ public class CreateViewModelGet {
     public void setId(int id) {
         Id = id;
     }
+
+    public String getPhotoPath() { return photoPath; }
+    public void   setPhotoPath(String path) { photoPath = path; }
 }

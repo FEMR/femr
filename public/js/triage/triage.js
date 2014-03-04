@@ -369,6 +369,13 @@ $(document).ready(function () {
         {
             $('#patientPhotoDiv').show();
             $('#photoInputFormDiv').hide();
+            /*
+                At the moment, we will only support
+                the delete functionality if the photo was
+                pulled down from the server, thus we will
+                disable the zooming controls
+            */
+            $('#zoomControls').hide();
         }
     }
 
@@ -394,31 +401,6 @@ $(document).ready(function () {
     $(function() {
       _photoInit();
     });
-
-    //Crops photo within jCropWindow frame and
-    //  saves data to fileupload element
-    function PrepPatientPhotoForUpload()
-    {
-        //_imgInfo.jWinCrop.set
-        //var cnvs = document.createElement('canvas');
-        //_imgInfo.deletePhoto = true;
-        //$('#patientPhoto').attr("src", "");
-        //_imgInfo.jWinCrop.destroyCrop();
-
-        /*
-         var cnvs = document.getElementById('testCanvas');
-         cnvs.setAttribute("width", _imgInfo.width);
-         cnvs.setAttribute("height", _imgInfo.height);
-         cnvs.setAttribute("id","photoCanvas");
-         var ctx = cnvs.getContext("2d");
-         var img = new Image();
-         img.onload = function() {
-         ctx.drawImage(img, _imgInfo.x, _imgInfo.y, _imgInfo.width, _imgInfo.height, 0, 0, _imgInfo.width, _imgInfo.height);
-         };
-         img.src = $('#patientPhoto').attr('src');*/
-    }
-
-
 
     //When the user chooses a photo, this function will
     //  Load the photo into the image frame at which point the user

@@ -176,13 +176,13 @@ $(document).ready(function () {
     });
 
     //controls the tabbed viewing of HPI and Treatment
-    $('#myTab a').click(function (e) {
+    $('#medicalTabs a').click(function (e) {
         e.preventDefault()
         $(this).tab('show')
 
     });
 
-    $('#myTab a').click(function () {
+    $('#medicalTabs a').click(function () {
         if ($(this).attr('id') === "hpiTab") {
             showHpi();
         } else if ($(this).attr('id') === "treatmentTab") {

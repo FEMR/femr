@@ -1,3 +1,106 @@
+
+
+
+
+/* General page styles */
+#generalInfoWrap{
+    background-color: #b5b5b5;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border: 1px solid #0092d7;
+}
+#generalInfoWrap span{
+    padding: 5px;
+
+}
+#mainWrap{
+
+}
+#vitalsWrap{
+    border-right: 1px solid #0092d7;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+#vitalMainWrap{
+    background-color: #b5b5b5;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom: 1px solid #0092d7;
+    border-right: 1px solid #0092d7;
+    border-left: 1px solid #0092d7;
+
+}
+
+
+
+/* Add subtract button for problems and prescriptions */
+.addSubtractBtn {
+    float: left;
+    border: 1px solid #4577d4;
+    background-color: #e1e8f6;
+}
+
+/* Patient History button */
+#historyButtonWrap{
+    margin-top: 10px;
+    width: 175px;
+}
+#historyButtonWrap a{
+    background-color: #3ec303;
+}
+
+#resetVitalsBtn{
+    background-color: #3ec303;
+}
+#medicalSubmitBtn{
+    background-color: #3ec303;
+}
+
+/* Tabs for HPI, Treatment, PMH, etc.. */
+#medicalTabs{
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #0074b9;
+}
+#medicalTabs li{
+    display: inline;
+    padding: 0;
+    margin: 0;
+
+}
+#medicalTabs li.active a{
+    background: #727454;
+}
+#medicalTabs li:first-child a{
+    /* first-child not supported in IE, but who cares */
+
+    margin-left: 0;
+}
+
+#medicalTabs a:link,
+#medicalTabs a:visited{
+    margin-left: 5px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #0074b9;
+    color: #000;
+    background: #0092d7;
+    padding: 10px 25px 10px 25px;
+    float: left;
+    width: auto;
+    text-decoration:none;
+    text-transform:uppercase;
+    font-size: 20px;
+}
+#medicalTabs a:hover,
+#medicalTabs a:focus{
+    color: #fff;
+    background: #727454;
+}
+
+/*
 #myTab {
     font-size: 25px;
 }
@@ -9,20 +112,13 @@
 .active {
     background-color: #b7c9ea;
 }
-
-.addSubtractBtn {
-    float: left;
-    border: 1px solid #4577d4;
-    background-color: #e1e8f6;
-}
-
 .nav-tabs {
-    /*bootstrap override*/
+    /*bootstrap override
     border-bottom: 2px solid #7c9fe0 !important;
 }
 
 .nav-tabs > li.active > a {
-    /*bootstrap override*/
+    /*bootstrap override
     color: black !important;
     background-color: #b7c9ea;
     border: none;
@@ -31,7 +127,7 @@
 }
 
 .nav-tabs > li {
-    /*bootstrap override*/
+    /*bootstrap override
     margin-bottom: -2px !important;
     border-top: 2px solid #7c9fe0;
     border-left: 2px solid #7c9fe0;
@@ -43,7 +139,7 @@
 }
 
 .nav-tabs > li > a {
-    /*bootstrap override*/
+    /*bootstrap override
     margin-right: 0px !important;
     color: #052a6e;
     border: none;
@@ -59,7 +155,4 @@
     cursor: pointer;
     border: none !important;
 }
-#historyButtonWrap{
-    margin-top: 10px;
-    width: 175px;
-}
+             */

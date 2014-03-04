@@ -243,9 +243,7 @@ $(document).ready(function () {
                     birthDay = 28;
                 }
             }
-            birthDate.setDate(birthDay);
-            birthDate.setFullYear(birthYear);
-            birthDate.setMonth(birthMonth);
+            birthDate.setFullYear(birthYear, birthMonth, birthDay);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -309,9 +307,7 @@ $(document).ready(function () {
                     birthDay = 28;
                 }
             }
-            birthDate.setDate(birthDay);
-            birthDate.setFullYear(birthYear);
-            birthDate.setMonth(birthMonth);
+            birthDate.setFullYear(birthYear, birthMonth, birthDay);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {

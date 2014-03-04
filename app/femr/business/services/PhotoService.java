@@ -140,7 +140,6 @@ public class PhotoService implements IPhotoService {
         }
         catch(Exception ex)
         {
-            //TODO: Handle exception
         }
     }
 

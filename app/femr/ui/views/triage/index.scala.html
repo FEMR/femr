@@ -60,9 +60,9 @@
                     </div>
                     <div id="patientPhotoDiv" class="col-sm-7 col-xs-7">
                         <div class="btn-group" >
-                            <img id="patientPhoto" class="crop_me" alt="" src="" />
+                            <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPhotoPath()" />
                             <div class="btn-toolbar" role="buttons">
-                                <div class="btn-group">
+                                <div class="btn-group" id="zoomControls">
                                     <button  id="btnZoomIn" class="btn btn-default btn-lg">
                                         <span class="glyphicon glyphicon-zoom-in"></span>
                                     </button>

@@ -30,35 +30,20 @@ $(document).ready(function () {
 
     })
 
-    $('#month').change(function (){
-        var dropdownMonth = parseInt($('#month').val()-1);
-        var dropdownDay = parseInt($('#day').val());
-        var dropdownYear = parseInt($('#year').val());
-
-        if((dropdownMonth >= 0)) {
-            $('#month').css('border', '');
-        }
-        else {
-            $('#month').css('border-color', 'red');
-            $('#day').css('border-color', 'red');
-            $('#year').css('border-color', 'red');
-            $('#years').css('border-color','red');
-            $('#months').css('border-color','red');
-            $('#age').val(null);
-            $('#years').val(null);
-            $('#months').val(null);
-        }
-
-        if((dropdownMonth >=0) && ((dropdownDay && dropdownYear) >0)) {
-            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
-            if (dropdownDate <= Date.now()) {
+    $('#age').change(function (){
+        var inputYear = $('#age').val().split('-')[0];
+        var inputMonth = $('#age').val().split('-')[1] - 1;
+        var inputDay = $('#age').val().split('-')[2];
+        if((inputMonth >=0) && ((inputDay && inputYear) >0)) {
+            var inputDate = new Date(inputYear, inputMonth, inputDay);
+            if (inputDate <= Date.now()) {
                 var nowDate = new Date();
                 var nowMonth = nowDate.getMonth();
                 var nowDay = nowDate.getDate();
                 var nowYear = nowDate.getFullYear();
-                var diffMonth = nowMonth - dropdownMonth;
-                var diffDay = nowDay - dropdownDay;
-                var diffYear = nowYear - dropdownYear;
+                var diffMonth = nowMonth - inputMonth;
+                var diffDay = nowDay - inputDay;
+                var diffYear = nowYear - inputYear;
                 var ageMonths = 12 * diffYear + diffMonth;
                 if (diffDay < 0) {
                     ageMonths--;
@@ -67,129 +52,12 @@ $(document).ready(function () {
                 $('#months').val(ageMonths%12);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
-                $('#month').css('border', '');
-                $('#day').css('border', '');
-                $('#year').css('border', '');
-                $('#age').val(dropdownDate.toYMD());
+                $('#age').css('border', '');
             }
             else {
-                $('#month').css('border-color', 'red');
-                $('#day').css('border-color', 'red');
-                $('#year').css('border-color', 'red');
+                $('#age').css('border-color', 'red');
                 $('#years').css('border-color','red');
                 $('#months').css('border-color','red');
-                $('#age').val(null);
-                $('#years').val(null);
-                $('#months').val(null);
-            }
-        }
-    });
-
-    $('#day').change(function (){
-        var dropdownMonth = parseInt($('#month').val()-1);
-        var dropdownDay = parseInt($('#day').val());
-        var dropdownYear = parseInt($('#year').val());
-
-        if((dropdownDay > 0)) {
-            $('#day').css('border', '');
-        }
-        else {
-            $('#month').css('border-color', 'red');
-            $('#day').css('border-color', 'red');
-            $('#year').css('border-color', 'red');
-            $('#years').css('border-color','red');
-            $('#months').css('border-color','red');
-            $('#age').val(null);
-            $('#years').val(null);
-            $('#months').val(null);
-        }
-
-        if((dropdownMonth >=0) && ((dropdownDay && dropdownYear) >0))
-        {
-            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
-            if (dropdownDate <= Date.now()) {
-                var nowDate = new Date();
-                var nowMonth = nowDate.getMonth();
-                var nowDay = nowDate.getDate();
-                var nowYear = nowDate.getFullYear();
-                var diffMonth = nowMonth - dropdownMonth;
-                var diffDay = nowDay - dropdownDay;
-                var diffYear = nowYear - dropdownYear;
-                var ageMonths = 12 * diffYear + diffMonth;
-                if (diffDay < 0) {
-                    ageMonths--;
-                }
-                $('#years').val(Math.floor(ageMonths/12));
-                $('#months').val(ageMonths%12);
-                $('#years').css('border', '');
-                $('#months').css('border', '');
-                $('#month').css('border', '');
-                $('#day').css('border', '');
-                $('#year').css('border', '');
-                $('#age').val(dropdownDate.toYMD());
-            }
-            else {
-                $('#month').css('border-color', 'red');
-                $('#day').css('border-color', 'red');
-                $('#year').css('border-color', 'red');
-                $('#years').css('border-color','red');
-                $('#months').css('border-color','red');
-                $('#age').val(null);
-                $('#years').val(null);
-                $('#months').val(null);
-            }
-        }
-    });
-
-    $('#year').change(function (){
-        var dropdownMonth = parseInt($('#month').val()-1);
-        var dropdownDay = parseInt($('#day').val());
-        var dropdownYear = parseInt($('#year').val());
-
-        if((dropdownYear > 0)) {
-            $('#year').css('border', '');
-        }
-        else {
-            $('#month').css('border-color', 'red');
-            $('#day').css('border-color', 'red');
-            $('#year').css('border-color', 'red');
-            $('#years').css('border-color','red');
-            $('#months').css('border-color','red');
-            $('#age').val(null);
-            $('#years').val(null);
-            $('#months').val(null);
-        }
-
-        if((dropdownMonth >=0) && ((dropdownDay && dropdownYear) >0)) {
-            var dropdownDate = new Date(dropdownYear, dropdownMonth, dropdownDay);
-            if (dropdownDate <= Date.now()) {
-                var nowDate = new Date();
-                var nowMonth = nowDate.getMonth();
-                var nowDay = nowDate.getDate();
-                var nowYear = nowDate.getFullYear();
-                var diffMonth = nowMonth - dropdownMonth;
-                var diffDay = nowDay - dropdownDay;
-                var diffYear = nowYear - dropdownYear;
-                var ageMonths = 12 * diffYear + diffMonth;
-                if (diffDay < 0) {
-                    ageMonths--;
-                }
-                $('#years').val(Math.floor(ageMonths/12));
-                $('#months').val(ageMonths%12);
-                $('#years').css('border', '');
-                $('#months').css('border', '');
-                $('#month').css('border', '');
-                $('#day').css('border', '');
-                $('#year').css('border', '');
-                $('#age').val(dropdownDate.toYMD());
-            }
-            else {
-                $('#month').css('border-color', 'red');
-                $('#day').css('border-color', 'red');
-                $('#year').css('border-color', 'red');
-                $('#years').css('border-color','red');
-                $('#months').css('border-color','red');
-                $('#age').val(null);
                 $('#years').val(null);
                 $('#months').val(null);
             }
@@ -202,15 +70,10 @@ $(document).ready(function () {
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
-                $('#year').val(birthString.split('-')[0]);
-                $('#month').val(birthString.split('-')[1]);
-                $('#day').val(birthString.split('-')[2]);
                 $('#age').val(birthString);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
-                $('#month').css('border', '');
-                $('#day').css('border', '');
-                $('#year').css('border', '');
+                $('#age').css('border', '');
             }
         }
     });
@@ -221,34 +84,20 @@ $(document).ready(function () {
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
-                $('#year').val(birthString.split('-')[0]);
-                $('#month').val(birthString.split('-')[1]);
-                $('#day').val(birthString.split('-')[2]);
                 $('#age').val(birthString);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
-                $('#month').css('border', '');
-                $('#day').css('border', '');
-                $('#year').css('border', '');
+                $('#age').css('border', '');
             }
         }
     });
 
-    //Populate years drop down and just for DW max is 123yrs old LOL!
-    (function () {
-        $('#year').append($('<option />').val(0).html("Year"));
-        for (var i = new Date().getFullYear(); i > 1889; i--)
-        {
-            $('#year').append($('<option />').val(i).html(i));
-        }
-    })();
-
     function _ageChangeCheck() {
         $('#years').css('border', '');
-        if (!$('#years').val() || $('#years').val() < 0) {
+        if (!$('#years').val() || parseInt($('#years').val()) < 0) {
             $('#years').val(0);
         }
-        if (!$('#months').val() || $('#months').val() < 0) {
+        if (!$('#months').val() || parseInt($('#months').val()) < 0) {
             $('#months').val(0);
         }
         var checkYears = parseInt($('#years').val());

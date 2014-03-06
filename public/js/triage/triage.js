@@ -102,8 +102,8 @@ $(document).ready(function () {
             $('#months').css('border', '');
             return false;
         }
-        var checkYears = parseInt($('#years').val());
-        var checkMonths = parseInt($('#months').val());
+        var checkYears = Math.round($('#years').val());
+        var checkMonths = Math.round($('#months').val());
         var pass = true;
         if ($('#years').val()){
             if (checkYears < 0 || isNaN(checkYears)) {
@@ -143,13 +143,13 @@ $(document).ready(function () {
             inputYears = 0;
         }
         else {
-            inputYears = parseInt($('#years').val());
+            inputYears = $('#years').val();
         }
         if (!$('#months').val()){
             inputMonths = 0;
         }
         else {
-            inputMonths = parseInt($('#months').val());
+            inputMonths = $('#months').val();
         }
         var birthDate = new Date();
         var birthMonth = birthDate.getMonth();

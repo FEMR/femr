@@ -29,7 +29,7 @@ function checkRequiredInput() {
         $('#lastName').css('border-color','red');
         pass = false;
     }
-    if (!$('#age').val()) {
+    if (!$('#age').val() && !$('#readOnlyBirthDate').val()) {
         $('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
@@ -40,7 +40,7 @@ function checkRequiredInput() {
         $('#months').attr('placeholder','or birth date');
         pass = false;
     }
-    else {
+    else if ($('#age').val()) {
         var inputYear = $('#age').val().split('-')[0];
         var inputMonth = $('#age').val().split('-')[1] - 1;
         var inputDay = $('#age').val().split('-')[2];
@@ -57,7 +57,7 @@ function checkRequiredInput() {
             pass = false;
         }
     }
-    if (!$('#years').val()) {
+    if (!$('#years').val() && !$('#readOnlyAge').val()) {
         $('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
@@ -68,7 +68,7 @@ function checkRequiredInput() {
         $('#months').attr('placeholder','or birth date');
         pass = false;
     }
-    if (!$('#months').val()) {
+    if (!$('#months').val() && !$('#readOnlyAge').val()) {
         $('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);

@@ -6,7 +6,7 @@
             @if(value == null) {
                 <input type="date" class="form-control" id="@forInput" name="@forInput">
             } else {
-                <input type="date" class="form-control" id="@forInput" name="@forInput" value="@value.format("yyyy-MM-dd")" readonly/>
+                <input type="date" class="form-control" id=readOnlyBirthDate name="@forInput" value="@value.format("yyyy-MM-dd")" readonly/>
             }
             </div>
         </div>

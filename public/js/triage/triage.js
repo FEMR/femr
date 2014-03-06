@@ -56,11 +56,14 @@ $(document).ready(function () {
             }
             else {
                 $('#age').css('border-color', 'red');
-                $('#years').css('border-color','red');
-                $('#months').css('border-color','red');
                 $('#years').val(null);
                 $('#months').val(null);
             }
+        }
+        else {
+            $('#age').css('border', '');
+            $('#years').val(null);
+            $('#months').val(null);
         }
     });
 
@@ -93,22 +96,61 @@ $(document).ready(function () {
     });
 
     function _ageChangeCheck() {
-        $('#years').css('border', '');
-        if (!$('#years').val() || parseInt($('#years').val()) < 0) {
-            $('#years').val(0);
-        }
-        if (!$('#months').val() || parseInt($('#months').val()) < 0) {
-            $('#months').val(0);
+        if (!$('#years').val() && !$('#months').val()) {
+            $('#age').val(null);
+            $('#years').css('border', '');
+            $('#months').css('border', '');
+            return false;
         }
         var checkYears = parseInt($('#years').val());
         var checkMonths = parseInt($('#months').val());
-
-        return (integerCheck(checkYears) == true && integerCheck(checkMonths) == true)
+        var pass = true;
+        if ($('#years').val()){
+            if (checkYears < 0 || isNaN(checkYears)) {
+                $('#years').css('border-color', 'red');
+                $('#age').val(null);
+                pass = false;
+            }
+            else {
+                $('#years').val(checkYears);
+                $('#years').css('border', '');
+            }
+        }
+        else {
+            $('#years').css('border', '');
+        }
+        if ($('#months').val()){
+            if (checkMonths < 0 || isNaN(checkMonths)) {
+                $('#months').css('border-color', 'red');
+                $('#age').val(null);
+                pass = false;
+            }
+            else {
+                $('#months').val(checkMonths);
+                $('#months').css('border', '');
+            }
+        }
+        else {
+            $('#months').css('border', '');
+        }
+        return (pass)
     }
 
     function _calcBirthdateFromAge() {
-        var inputYears = parseInt($('#years').val());
-        var inputMonths = parseInt($('#months').val());
+        var inputYears;
+        var inputMonths;
+        if (!$('#years').val()){
+            inputYears = 0;
+        }
+        else {
+            inputYears = parseInt($('#years').val());
+        }
+        if (!$('#months').val()){
+            inputMonths = 0;
+        }
+        else {
+            inputMonths = parseInt($('#months').val());
+        }
         var birthDate = new Date();
         var birthMonth = birthDate.getMonth();
         var birthDay = birthDate.getDate();

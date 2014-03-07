@@ -1,37 +1,35 @@
-
-
-
-
 /* General page styles */
-#generalInfoWrap{
-    background-color: #b5b5b5;
+#generalInfoWrap {
+    background-color: #dddad6;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    border: 1px solid #0092d7;
+    border: 1px solid #b1aaa0;
 }
-#generalInfoWrap span{
+
+#generalInfoWrap span {
     padding: 5px;
 
 }
-#mainWrap{
+
+#mainWrap {
 
 }
-#vitalsWrap{
-    border-right: 1px solid #0092d7;
+
+#vitalsWrap {
+    border-right: 1px solid #b1aaa0;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
-#vitalMainWrap{
-    background-color: #b5b5b5;
+
+#vitalMainWrap {
+    background-color: #dddad6;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
-    border-bottom: 1px solid #0092d7;
-    border-right: 1px solid #0092d7;
-    border-left: 1px solid #0092d7;
+    border-bottom: 1px solid #b1aaa0;
+    border-right: 1px solid #b1aaa0;
+    border-left: 1px solid #b1aaa0;
 
 }
-
-
 
 /* Add subtract button for problems and prescriptions */
 .addSubtractBtn {
@@ -41,118 +39,73 @@
 }
 
 /* Patient History button */
-#historyButtonWrap{
+#historyButtonWrap {
     margin-top: 10px;
     width: 175px;
 }
-#historyButtonWrap a{
-    background-color: #3ec303;
+
+#historyButtonWrap a {
+    background-color: #ce847b;
+    color: black;
+    border-color: #be5c50;
+}
+#historyButtonWrap a:hover{
+    background-color: #be5c50;
 }
 
-#resetVitalsBtn{
-    background-color: #3ec303;
+#resetVitalsBtn {
+    background-color: #c9776d;
 }
-#medicalSubmitBtn{
-    background-color: #3ec303;
+
+#medicalSubmitBtn {
+    background-color: #c9776d;
 }
 
 /* Tabs for HPI, Treatment, PMH, etc.. */
-#medicalTabs{
+#medicalTabs {
     margin: 0;
-    padding: 0;
+    padding: 15px 0 0 0;
     float: left;
     width: 100%;
-    border-bottom: 1px solid #0074b9;
+    border-bottom: 1px solid #5fb9c4;
 }
-#medicalTabs li{
+
+#medicalTabs li {
     display: inline;
     padding: 0;
     margin: 0;
 
 }
-#medicalTabs li.active a{
-    background: #727454;
+
+#medicalTabs li.active a {
+    background: #6dbfc9;
 }
-#medicalTabs li:first-child a{
+
+#medicalTabs li:first-child a {
     /* first-child not supported in IE, but who cares */
 
     margin-left: 0;
 }
 
 #medicalTabs a:link,
-#medicalTabs a:visited{
+#medicalTabs a:visited {
     margin-left: 5px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    border: 1px solid #0074b9;
+    border: 1px solid #5fb9c4;
+    border-bottom: none;
     color: #000;
-    background: #0092d7;
+    background: #a6d8de;
     padding: 10px 25px 10px 25px;
     float: left;
     width: auto;
-    text-decoration:none;
-    text-transform:uppercase;
+    text-decoration: none;
+    text-transform: uppercase;
     font-size: 20px;
 }
+
 #medicalTabs a:hover,
-#medicalTabs a:focus{
-    color: #fff;
-    background: #727454;
+#medicalTabs a:focus {
+    color: #000;
+    background: #6dbfc9;
 }
-
-/*
-#myTab {
-    font-size: 25px;
-}
-
-.active>a {
-    background-color: #b7c9ea;
-}
-
-.active {
-    background-color: #b7c9ea;
-}
-.nav-tabs {
-    /*bootstrap override
-    border-bottom: 2px solid #7c9fe0 !important;
-}
-
-.nav-tabs > li.active > a {
-    /*bootstrap override
-    color: black !important;
-    background-color: #b7c9ea;
-    border: none;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-.nav-tabs > li {
-    /*bootstrap override
-    margin-bottom: -2px !important;
-    border-top: 2px solid #7c9fe0;
-    border-left: 2px solid #7c9fe0;
-    border-right: 2px solid #7c9fe0;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    margin-right: 9px;
-
-}
-
-.nav-tabs > li > a {
-    /*bootstrap override
-    margin-right: 0px !important;
-    color: #052a6e;
-    border: none;
-
-
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    width: inherit !important;
-
-}
-.nav-tabs > li > a:hover{
-    background-color: #b7c9ea !important;
-    cursor: pointer;
-    border: none !important;
-}
-             */

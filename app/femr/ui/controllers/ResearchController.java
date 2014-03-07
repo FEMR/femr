@@ -5,11 +5,11 @@ package femr.ui.controllers;
  */
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
-import femr.business.services.*;
-import femr.common.models.*;
+import femr.business.services.IResearchService;
+import femr.business.services.ISessionService;
+
+import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.views.html.research.index;
@@ -26,14 +26,14 @@ public class ResearchController extends Controller {
     private ISessionService sessionService;
 
     @Inject
-    public ResearchController(IResearchService researchService, ISessionService sessionService) {
-        this.researchService = researchService;
+    public ResearchController(ISessionService sessionService) {
+       // this.researchService = researchService;
         this.sessionService = sessionService;
     }
 
     public Result index() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        return ok(index.render(currentUserSession)) ;
+        return ok(index.render(currentUserSession, null)) ;
     }
 
 

@@ -7,6 +7,7 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.controllers.admin.routes.AdminController
+@import femr.ui.controllers.routes.ResearchController
 <div class="navbar-header">
   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
     <span class="icon-bar"></span>
@@ -23,7 +24,7 @@
       <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
     }
     @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
-      <li><a href="@AdminController.index()">Research</a></li>
+      <li><a href="@ResearchController.index()">Research</a></li>
     }
     @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles)) {
       <li><a href="@AdminController.index()">Admin</a></li>

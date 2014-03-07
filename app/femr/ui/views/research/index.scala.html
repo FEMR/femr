@@ -1,9 +1,16 @@
-@(currentUser: femr.business.dtos.CurrentUser)
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.research.CreateViewModelPost)
 
 @import femr.ui.controllers.routes.ResearchController
+@import femr.ui.views.html.layouts.main
+
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+    }
+
+@main("Research",currentUser, scripts = additionalScripts) {
+    <p>Research Place holder</p>
+}
 
 
-@* This is the research page used to take in the initial query
 
-this is just a place holder *@
    <!-- TODO-RESEARCH: Create the Research initial query page -->

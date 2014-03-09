@@ -5,6 +5,7 @@ package femr.ui.controllers;
  */
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.services.IResearchService;
 import femr.business.services.ISessionService;
@@ -13,10 +14,11 @@ import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.views.html.research.index;
-
+import femr.ui.views.html.research.index$;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+
 
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -26,8 +28,8 @@ public class ResearchController extends Controller {
     private ISessionService sessionService;
 
     @Inject
-    public ResearchController(ISessionService sessionService) {
-       // this.researchService = researchService;
+    public ResearchController(ISessionService sessionService, IResearchService researchService) {
+        this.researchService = researchService;
         this.sessionService = sessionService;
     }
 
@@ -35,6 +37,7 @@ public class ResearchController extends Controller {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
         return ok(index.render(currentUserSession, null)) ;
     }
+
 
 
     //TODO-RESEARCH: Add the code for the Research controller here

@@ -5,16 +5,28 @@ package femr.business.services;
  * and returning the ServiceResponse
  */
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.*;
+import femr.common.models.IPatient;
+import femr.common.models.IPatientEncounter;
+import femr.common.models.IPatientEncounterVital;
+import femr.common.models.IMedication;
+import femr.common.models.IPatientEncounterTreatmentField;
+import femr.common.models.IPatientPrescription;
+import femr.common.models.IVital;
+import femr.common.models.IPatientEncounterHpiField;
+import femr.common.models.IPatientEncounterPmhField;
+import femr.common.models.ITreatmentField;
+import femr.common.models.IPmhField;
+import femr.common.models.IHpiField;
 import femr.data.daos.IRepository;
-import femr.data.models.*;
+import femr.data.models.Patient;
 
-import javax.xml.ws.Service;
-import java.util.*;
+import java.util.List;
+
 
 
 public class ResearchService implements IResearchService{
@@ -63,13 +75,19 @@ public class ResearchService implements IResearchService{
 
     /**
      * Gets all the basic patient information like name, age, city ...
-     * for all the patients and returns it
+     * for all the patients in the database and returns it
      * @return A list of the patient info to analyzed
      */
     @Override
     public ServiceResponse<List<? extends IPatient>> findAllPatient() {
         List<? extends IPatient> patients = patientRepository.findAll(Patient.class);
-        return null;
+        ServiceResponse<List<? extends IPatient>> response = new ServiceResponse<>();
+        if(patients.size() > 0) {
+            response.setResponseObject(patients);
+        } else {
+            response.addError("patients", "No patients available");
+        }
+        return response;
     }
 
     // TODO-RESEARCH: Implement the services

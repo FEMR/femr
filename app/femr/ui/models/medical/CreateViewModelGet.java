@@ -55,14 +55,24 @@ public class CreateViewModelGet {
     private String socialHistory;
     private String currentMedication;
 
+
+    /**
+     *
+     * the patients general information based on the patient unique id.
+     * patients first name, last name, age, address, sex, data from vitals( blood pressure, heart rate,
+     *temperature, respiration, glucose, oxygen, height, weight, BMI)
+     */
+
     public int getpID() {
         return pID;
     }
 
+    // getters and setter for patient id
     public void setpID(int pID) {
         this.pID = pID;
     }
 
+    //getters and setter for city
     public String getCity() {
         return city;
     }
@@ -71,6 +81,7 @@ public class CreateViewModelGet {
         this.city = city;
     }
 
+    //getters and setters for first name and last name
     public String getFirstName() {
         return firstName;
     }
@@ -87,6 +98,7 @@ public class CreateViewModelGet {
         this.lastName = lastName;
     }
 
+    //getters and setter for patients age
     public String getAge() {
         return age;
     }
@@ -95,6 +107,7 @@ public class CreateViewModelGet {
         this.age = age;
     }
 
+    //getters and setter for patient sex
     public String getSex() {
         return sex;
     }
@@ -103,6 +116,7 @@ public class CreateViewModelGet {
         this.sex = sex;
     }
 
+    //getters and setter for patient blood pressure
     public Integer getBloodPressureSystolic() {
         return bloodPressureSystolic;
     }
@@ -119,6 +133,7 @@ public class CreateViewModelGet {
         this.bloodPressureDiastolic = bloodPressureDiastolic;
     }
 
+   //getters and setter for patients heart rate, temperature, oxygen, respirations, height, weight, chieft complaints, pregnancy
     public Integer getHeartRate() {
         return heartRate;
     }

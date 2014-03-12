@@ -27,6 +27,8 @@ public class dateUtils {
         return new DateTime();
     }
 
+    //this displays a new born baby's age in months instead of years
+
     public static String getAge(Date born) {
         DateMidnight birthdate = new DateMidnight(born);
         DateTime now = new DateTime();

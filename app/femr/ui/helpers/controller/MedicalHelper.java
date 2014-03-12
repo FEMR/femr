@@ -40,14 +40,14 @@ public class MedicalHelper {
             }
         }
 
-        //patient
+        //general information of a patient in terms of their id, address, names and their sex
         viewModelGet.setpID(patient.getId());
         viewModelGet.setCity(patient.getCity());
         viewModelGet.setFirstName(patient.getFirstName());
         viewModelGet.setLastName(patient.getLastName());
         viewModelGet.setAge(dateUtils.getAge(patient.getAge()));
         viewModelGet.setSex(patient.getSex());
-        //patient encounter
+        //patient encounter in terms of patients pregnancy status and any main complaints
         viewModelGet.setChiefComplaint(patientEncounter.getChiefComplaint());
         viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
         viewModelGet.setIsPregnant(patientEncounter.getIsPregnant());

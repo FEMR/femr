@@ -7,7 +7,7 @@ import java.util.Date;
 @Entity
 @Table(name = "photos")
 public class Photo implements IPhoto {
-
+//basic information of a photo
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int _id;

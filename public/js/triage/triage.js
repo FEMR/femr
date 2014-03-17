@@ -8,16 +8,18 @@ $(document).ready(function () {
         }
 
     });
-
+//weeks pregnant button
     $('#femaleBtn').change(function () {
         $('#pregnancyBtn').removeClass('disabled');
     });
+    //if the patient is male, weeks pregnant button will not give the option to that particular field
     $('#maleBtn').change(function () {
         $('#pregnancyBtn').removeClass('active');
         $('#pregnancyBtn').addClass('disabled');
         $('#weeksPregnant').val('');
         $('#weeksPregnant').attr('disabled','disabled');
     });
+
     $('#pregnancyBtn').change(function(){
         if (typeof $("#weeksPregnant").attr('disabled') === "undefined"){
             $('#weeksPregnant').val('');
@@ -30,6 +32,7 @@ $(document).ready(function () {
 
     })
 
+    //gets the date from the input to set the age
     $('#age').change(function (){
         var inputYear = $('#age').val().split('-')[0];
         var inputMonth = $('#age').val().split('-')[1] - 1;

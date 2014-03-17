@@ -1,7 +1,7 @@
 $('#triageSubmitBtn').click(function () {
     return validate();
 });
-
+//validating the buttons
 function validate(){
     var pass = new Boolean(true);
 
@@ -15,7 +15,7 @@ function validate(){
 }
 
 
-
+//checking things to make sure that the required field have data
 function checkRequiredInput() {
     var pass = new Boolean(true);
 

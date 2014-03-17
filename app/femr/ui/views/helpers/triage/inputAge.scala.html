@@ -1,6 +1,7 @@
 @(label: String, field1: String, forInput1: String, field2: String, forInput2: String, value: String)
   @inputBlock = {
-     <div class="form-group">
+     @* adds the Age in Triage field to user, which is marked by "*" to indicate required field *@
+      <div class="form-group">
           <label for="@label" class="col-sm-3 col-xs-3 control-label">Age<span class="red bold">*</span></label>
           <div class="col-sm-7 col-xs-7">
           @if(value == null) {

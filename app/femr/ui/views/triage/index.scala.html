@@ -38,7 +38,7 @@
     @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
         <div class="col-sm-5 col-xs-12">
             <h2>General Info</h2>
-            <div>
+            <div> @*Indicates required Triage fields to user by putting a "*" next to it *@
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getFirstName else null)
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getLastName else null)
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getAddress else null)

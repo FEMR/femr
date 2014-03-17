@@ -22,6 +22,8 @@
         </div>
     }
     }
+
+    @*diplays patients overview in terms of their name, age, city, sex, complaints, and pregnancy status *@
 @medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts, styles = additionalStyles, showSearchBtn = true) {
     <input type="hidden" value="@viewModel.getpID" id="patientId"/>
     <div class="row well well-sm">
@@ -75,10 +77,10 @@
                 </div>
             </div>
 
-
+            @*displays "Weeks Pregnant" in the medical field *@
         <div class="row">
             <div class="col-xs-4 col-sm-4 col-md-4">
-                <label>Weeks Pregnant:</label>
+                <label>Pregnancy:</label>
             </div>
             <div class="col-xs-8 col-sm-8 col-md-8">
                 <p>@viewModel.getWeeksPregnant</p>
@@ -162,6 +164,7 @@
         </div>
         @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {
             <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
+                @* rearranged the tabs in medical field in the order of HPI, PMH, and Treatment *@
                 <ul id="myTab" class="nav nav-tabs">
                     <li class="active"><a id="hpiTab">HPI</a></li>
                     <li><a id="pmhTab">PMH</a></li>

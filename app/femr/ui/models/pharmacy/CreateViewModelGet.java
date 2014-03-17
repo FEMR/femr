@@ -19,7 +19,7 @@ public class CreateViewModelGet {
     private String[] medications;
     //Problems
     private String[] problems;
-
+//setters and getters for first and last name
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -35,7 +35,7 @@ public class CreateViewModelGet {
     public String getLastName() {
         return lastName;
     }
-
+//setters and getters for patient id
     public void setpID(int pID) {
         this.pID = pID;
     }
@@ -43,7 +43,7 @@ public class CreateViewModelGet {
     public int getpID() {
         return pID;
     }
-
+//setters and getters for age
     public void setAge(String age) {
         this.age = age;
     }
@@ -51,7 +51,7 @@ public class CreateViewModelGet {
     public String getAge() {
         return age;
     }
-
+//setters and getters for sex
     public void setSex(String sex) {
         this.sex = sex;
     }
@@ -60,6 +60,7 @@ public class CreateViewModelGet {
         return sex;
     }
 
+    //setters and getters for pregnancy, height, weight, medication, problems
     public void setPregnancyStatus(Boolean pregnancyStatus) {
         this.pregnancyStatus = pregnancyStatus;
     }

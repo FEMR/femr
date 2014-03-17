@@ -42,8 +42,9 @@ public class PhotoService implements IPhotoService {
     }
 
     @Override
-    public String GetPhotoPath() { return _path; }
+    public String GetPhotoPath() { return _path; }//returns the path to the photo
 
+    //searches through the coordinate for data
     protected int[] parseCoords(String s)
     {
         int[] iout = {0,0,0,0};
@@ -68,6 +69,8 @@ public class PhotoService implements IPhotoService {
     {
         try
         {
+            //setting up a path for the newely created file;
+            //the image is going to be stored in that file and its a JPG format.
             File outFile = new File(_path + fileName);
             outFile.createNewFile();
             ImageIO.write(ImageIO.read(imgFile), "jpg", outFile);
@@ -83,7 +86,7 @@ public class PhotoService implements IPhotoService {
         if(vals != null)
             CropImage(imgFile, vals[0], vals[1], vals[2], vals[3]);
     }
-
+//cropping the original image size so it fits with the format of the software
     protected void CropImage(File imgFile, int offset_x, int offset_y, int width, int height)
     {
         try

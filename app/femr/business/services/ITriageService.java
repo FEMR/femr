@@ -8,7 +8,7 @@ import femr.common.models.IPhoto;
 
 import java.util.List;
 
-public interface ITriageService {
+public interface ITriageService {//lays the groundwork for triage services
     ServiceResponse<IPatient> createPatient(IPatient patient);
     ServiceResponse<IPatient> setPhotoId(int id, int photoId);
 

@@ -10,6 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "patients")
+//patient info class
 public class Patient implements IPatient {
     @Id
     @Column(name = "id", unique = true, nullable = false)

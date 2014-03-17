@@ -15,6 +15,7 @@ import femr.data.models.Patient;
 
 import java.util.List;
 
+//handles the triage repository/dao
 public class TriageService implements ITriageService {
 
     private IRepository<IPatient> patientRepository;

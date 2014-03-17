@@ -27,6 +27,8 @@ public class CreateViewModelGet {
     }
 
     //begin general info
+    //getters and setters of general info
+
     public String getFirstName() {
         return firstName;
     }

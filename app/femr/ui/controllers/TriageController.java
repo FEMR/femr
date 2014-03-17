@@ -34,6 +34,7 @@ public class TriageController extends Controller {
 
 
     @Inject
+    //sets the value for services equal to the given value
     public TriageController(ITriageService triageService,
                             ISessionService sessionService,
                             ISearchService searchService,
@@ -170,7 +171,7 @@ public class TriageController extends Controller {
             return internalServerError();
         }
 
-        //create and save vitals in new encounter
+        //creates and saves the vital for patients in terms of hieght, weight, heart rate, oxygen, blood pressure etc.
         int success = 1;
         if (viewModel.getRespiratoryRate() != null && viewModel.getRespiratoryRate() > 0) {
             success = savePatientEncounterVital("respiratoryRate", viewModel.getRespiratoryRate(), currentUser.getId(), patientEncounter.getId());

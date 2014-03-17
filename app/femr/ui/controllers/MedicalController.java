@@ -51,7 +51,7 @@ public class MedicalController extends Controller {
         this.medicalHelper = medicalHelper;
     }
 
-    public Result indexGet(Integer patientId) {
+    public Result indexGet(Integer patientId) {//gets the index
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
@@ -306,6 +306,7 @@ public class MedicalController extends Controller {
         }
         return patientPrescriptions;
     }
+
 
     private List<? extends IPatientEncounterTreatmentField> getPatientEncounterTreatmentFields(CreateViewModelPost viewModelPost, int patientEncounterId, int userId) {
         ServiceResponse<ITreatmentField> treatmentFieldServiceResponse;

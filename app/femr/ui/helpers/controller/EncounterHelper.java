@@ -214,7 +214,7 @@ public class EncounterHelper {
             patientEncounterPmhField = patientEncounterPmhFieldResponse.getResponseObject();
             doctorID = patientEncounterPmhField.getUserId();
             tempName = this.userService.findById(doctorID).getLastName().trim();
-            // check to see if this is newer then the previous entry if so use it instead
+            // check to see if this is newer than the previous entry, if so use it instead
             if(lastName != null && patientEncounterPmhField.getDateTaken().isAfter(dateTaken)) {
                 lastName = tempName;
                 dateTaken = patientEncounterPmhField.getDateTaken();
@@ -273,7 +273,7 @@ public class EncounterHelper {
             return false;
         }
     }
-
+//gets the value of the hpi field, or return null if they are invalid
     private String getHpiFieldOrNull(String key, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {
         if (patientEncounterHpiMap.containsKey(key)) {
             if (patientEncounterHpiMap.get(key).size() < 1) {
@@ -284,6 +284,7 @@ public class EncounterHelper {
         return null;
     }
 
+    ////gets the value of the PMH field, or return null if they are invalid
     private String getPmhFieldOrNull(String key, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
         if (patientEncounterPmhMap.containsKey(key)) {
             if (patientEncounterPmhMap.get(key).size() < 1) {
@@ -294,7 +295,7 @@ public class EncounterHelper {
         return null;
     }
 
-
+    //gets the value of the treatment field, or return null if they are invalid
     private String getTreatmentFieldOrNull(String key, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {
         if (patientEncounterTreatmentMap.containsKey(key)) {
             if (patientEncounterTreatmentMap.get(key).size() < 1) {
@@ -305,6 +306,7 @@ public class EncounterHelper {
         return null;
     }
 
+    ////gets the value of the Treatment Problem field, or return null if they are invalid
     private String getTreatmentProblemOrNull(int problem, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap) {
         if (patientEncounterTreatmentMap.containsKey("problem")) {
             if (patientEncounterTreatmentMap.get("problem").size() >= problem) {

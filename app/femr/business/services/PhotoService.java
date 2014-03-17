@@ -42,8 +42,9 @@ public class PhotoService implements IPhotoService {
     }
 
     @Override
-    public String GetPhotoPath() { return _path; }
+    public String GetPhotoPath() { return _path; }//returns the path to the photo
 
+    //searches through the coordinate for data
     protected int[] parseCoords(String s)
     {
         int[] iout = {0,0,0,0};

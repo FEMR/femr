@@ -38,13 +38,15 @@ public class ResearchController extends Controller {
         this.sessionService = sessionService;
     }
 
+
     public Result index() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         // Create the viewModel
         CreateViewModelRequest viewModelRequest = new CreateViewModelRequest();
+        QueryObjectPatientModel viewPatientModel = CreatePatientModel();
 
-        return ok(index.render(currentUserSession, null, null)) ;
+        return ok(index.render(currentUserSession, viewModelRequest, viewPatientModel)) ;
     }
 
     /**
@@ -75,9 +77,21 @@ public class ResearchController extends Controller {
 
         patientModel.setComparisonList(comparisonList);
 
+        // Create the tempoaray patient info
+        List<Pair<String,Object>> patientProperties = new ArrayList<>();
+        patientProperties.add(new Pair<String, Object>("ID",Integer.class));
+        patientProperties.add(new Pair<String, Object>("Age",Integer.class));
+        patientProperties.add(new Pair<String, Object>("City",String.class));
+        patientProperties.add(new Pair<String, Object>("Gender",String.class));
+        patientProperties.add(new Pair<String, Object>("Date Taken",String.class));
+        patientProperties.add(new Pair<String, Object>("Medication",String.class));
+        patientProperties.add(new Pair<String, Object>("Treatment",String.class));
+
+        patientModel.setPatientProperties(patientProperties);
         // TODO-RESEARCH: Add the properties associated with a patient that the user can choose from
 
         return patientModel; // temporary replace
+
     }
 
 

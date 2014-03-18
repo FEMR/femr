@@ -1,6 +1,7 @@
 body {
     padding-top: 50px;
     background: url("../img/paper_3.png") repeat;
+    font-family: 'Roboto', Helvetica;
 }
 
 hr {

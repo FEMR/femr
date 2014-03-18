@@ -1,9 +1,9 @@
 package femr.ui.models.research;
 
 /**
- *  This defines all the objects being returned to the page in the response
+ *  This defines all the objects being requested
  */
-public class CreateViewModelGet {
+public class CreateViewModelRequest {
 
     //TODO-RESEARCH: Add all the objects that we will need for the page
 

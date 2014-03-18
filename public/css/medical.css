@@ -1,9 +1,27 @@
+
+input, textarea {
+    border-style: ridge;
+    background: #32313b !important;
+    background-repeat: repeat;
+    margin: 1px 1px 1px 5px;
+    color: white !important;
+
+}
+label{
+    color: #39b1c6;
+}
+
+#hpiControl{
+    border: 1px solid black;
+    border-top: none;
+}
+
 /* General page styles */
 #generalInfoWrap {
-    background-color: #dddad6;
+    background-color: #25242c;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    border: 1px solid #b1aaa0;
+    /*border: 1px solid #b1aaa0;*/
 }
 
 #generalInfoWrap span {
@@ -16,13 +34,13 @@
 }
 
 #vitalsWrap {
-    border-right: 1px solid #b1aaa0;
+    /*border-right: 1px solid #b1aaa0;*/
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
 #vitalMainWrap {
-    background-color: #dddad6;
+    background-color: #25242c;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border-bottom: 1px solid #b1aaa0;
@@ -45,9 +63,9 @@
 }
 
 #historyButtonWrap a {
-    background-color: #ce847b;
-    color: black;
-    border-color: #be5c50;
+    background-color: #32313b;
+    color: deeppink;
+    border-color: black;
 }
 #historyButtonWrap a:hover{
     background-color: #be5c50;
@@ -58,7 +76,9 @@
 }
 
 #medicalSubmitBtn {
-    background-color: #c9776d;
+    background-color: #32313b;
+    color: deeppink;
+    border-color: black;
 }
 
 /* Tabs for HPI, Treatment, PMH, etc.. */
@@ -67,7 +87,7 @@
     padding: 15px 0 0 0;
     float: left;
     width: 100%;
-    border-bottom: 1px solid #5fb9c4;
+    border-bottom: 1px solid #222222;
 }
 
 #medicalTabs li {
@@ -78,7 +98,7 @@
 }
 
 #medicalTabs li.active a {
-    background: #6dbfc9;
+    background: #222222;
 }
 
 #medicalTabs li:first-child a {
@@ -92,10 +112,11 @@
     margin-left: 5px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    border: 1px solid #5fb9c4;
+    /*border: 1px solid #5fb9c4;*/
+    border: 1px solid black;
     border-bottom: none;
     color: #000;
-    background: #a6d8de;
+    background: #222222;
     padding: 10px 25px 10px 25px;
     float: left;
     width: auto;

@@ -1,9 +1,6 @@
 package femr.business.services;
 
-/**
- * This implements the ResearchService interface through querying the database
- * and returning the ServiceResponse
- */
+
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
@@ -28,7 +25,10 @@ import femr.data.models.Patient;
 import java.util.List;
 
 
-
+/**
+ * This implements the ResearchService interface through querying the database
+ * and returning the ServiceResponse
+ */
 public class ResearchService implements IResearchService{
     private IRepository<IMedication> medicationRepository;
     private IRepository<IPatient> patientRepository;

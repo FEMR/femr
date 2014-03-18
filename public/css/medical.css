@@ -3,17 +3,12 @@ input, textarea {
     border-style: ridge;
     background: #32313b !important;
     background-repeat: repeat;
-    margin: 1px 1px 1px 5px;
+    margin: 1px 1px 1px 0px;
     color: white !important;
 
 }
 label{
     color: #39b1c6;
-}
-
-#hpiControl{
-    border: 1px solid black;
-    border-top: none;
 }
 
 /* General page styles */
@@ -29,8 +24,11 @@ label{
 
 }
 
-#mainWrap {
-
+#tabContentWrap {
+    border: 1px solid black;
+    min-height: 550px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 #vitalsWrap {
@@ -49,45 +47,43 @@ label{
 
 }
 
-/* Add subtract button for problems and prescriptions */
+/* Buttons */
 .addSubtractBtn {
     float: left;
     border: 1px solid #4577d4;
     background-color: #e1e8f6;
 }
 
-/* Patient History button */
+#medicalSubmitBtn{
+    margin-right: 15px;
+    width: 175px;
+}
+
 #historyButtonWrap {
     margin-top: 10px;
     width: 175px;
 }
 
-#historyButtonWrap a {
+.fButton{
     background-color: #32313b;
-    color: deeppink;
-    border-color: black;
+    color: #f49e5d;
+    border: 1px solid black;
+
+    padding: 6px 12px;
+    border-radius: 4px;
 }
-#historyButtonWrap a:hover{
-    background-color: #be5c50;
+.fButton:hover{
+    background-color: #3e3d49;
 }
 
-#resetVitalsBtn {
-    background-color: #c9776d;
-}
 
-#medicalSubmitBtn {
-    background-color: #32313b;
-    color: deeppink;
-    border-color: black;
-}
 
-/* Tabs for HPI, Treatment, PMH, etc.. */
+/* Tabs */
 #medicalTabs {
     margin: 0;
     padding: 15px 0 0 0;
     float: left;
     width: 100%;
-    border-bottom: 1px solid #222222;
 }
 
 #medicalTabs li {
@@ -98,12 +94,13 @@ label{
 }
 
 #medicalTabs li.active a {
-    background: #222222;
+    background: #25242c;
+    border-bottom: 1px solid #25242c;
+    margin-bottom: -1px;
 }
 
 #medicalTabs li:first-child a {
     /* first-child not supported in IE, but who cares */
-
     margin-left: 0;
 }
 
@@ -128,5 +125,7 @@ label{
 #medicalTabs a:hover,
 #medicalTabs a:focus {
     color: #000;
-    background: #6dbfc9;
+    background: #25242c;
+    border-bottom: 1px solid #25242c;
+    margin-bottom: -1px;
 }

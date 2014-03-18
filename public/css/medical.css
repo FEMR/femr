@@ -11,6 +11,10 @@ label{
     color: #39b1c6;
 }
 
+body{
+    color: #EDEDED !important;
+}
+
 /* General page styles */
 #generalInfoWrap {
     background-color: #25242c;

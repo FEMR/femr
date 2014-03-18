@@ -1,11 +1,11 @@
 package femr.ui.models.research;
 
 /**
- * this is the view model for the research page for sending the data to the server
+ * this is the view model for the research page for sending the data back from the server
  *
  * this is the blank page !!! Update this description when done !!!
  */
-public class CreateViewModelPost {
+public class CreateViewModelResponse {
 
     // This is the stage 1 implementation
 

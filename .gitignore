@@ -27,3 +27,5 @@ test-result
 server.pid
 *.iml
 *.eml
+Upload
+dist

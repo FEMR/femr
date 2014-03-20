@@ -15,6 +15,7 @@ POST        /pharmacy/find              @femr.ui.controllers.PharmaciesControlle
 GET         /show/encounter/:id         @femr.ui.controllers.SearchController.viewEncounter(id: Integer)
 GET         /show                       @femr.ui.controllers.SearchController.createGet()
 GET         /triage/find                @femr.ui.controllers.TriageController.createPopulatedGet()
+GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer)
 GET         /triage                     @femr.ui.controllers.TriageController.createGet()
 POST        /triage                     @femr.ui.controllers.TriageController.createPost(id: Integer)
 GET         /medical/edit/:id           @femr.ui.controllers.MedicalController.editGet(id: Integer)

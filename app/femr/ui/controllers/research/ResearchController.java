@@ -1,11 +1,8 @@
 package femr.ui.controllers.research;
 
-/**
- * This is the controller for the research page
- */
+
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.business.services.IResearchService;
 import femr.business.services.ISessionService;
@@ -13,10 +10,9 @@ import femr.business.services.ISessionService;
 import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.research.CreateViewModelRequest;
+import femr.ui.models.research.CreateViewModelPost;
 import femr.ui.models.research.QueryObjectPatientModel;
 import femr.ui.views.html.research.index;
-import femr.ui.views.html.research.index$;
 import femr.util.DataStructure.Pair;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -25,28 +21,38 @@ import play.mvc.Security;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This is the controller for the research page
+ */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.RESEARCHER})
 public class ResearchController extends Controller {
     private IResearchService researchService;
     private ISessionService sessionService;
 
+    /**
+     * Research Controller constructer that Injects the services indicated by the parameters
+     * @param sessionService {@link ISessionService}
+     * @param researchService {@link IResearchService}
+     */
     @Inject
     public ResearchController(ISessionService sessionService, IResearchService researchService) {
         this.researchService = researchService;
         this.sessionService = sessionService;
     }
 
-
+    /**
+     * Creates the model and renders the view for the index page of Research
+     * @return The models for the index page
+     */
     public Result index() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         // Create the viewModel
-        CreateViewModelRequest viewModelRequest = new CreateViewModelRequest();
+        CreateViewModelPost viewModelPost = new CreateViewModelPost();
         QueryObjectPatientModel viewPatientModel = CreatePatientModel();
 
-        return ok(index.render(currentUserSession, viewModelRequest, viewPatientModel)) ;
+        return ok(index.render(currentUserSession, viewModelPost, viewPatientModel)) ;
     }
 
     /**
@@ -96,5 +102,5 @@ public class ResearchController extends Controller {
 
 
 
-    //TODO-RESEARCH: Add the code for the Research controller here
+    //TODO-RESEARCH: Add the code for rest the Research controller here
 }

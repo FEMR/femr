@@ -75,7 +75,7 @@ public class MedicalController extends Controller {
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-        boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedIn(patientEncounter.getId());
+        boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedInByPhysician(patientEncounter.getId());
         if (hasPatientBeenCheckedIn == true) {
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
             if (dateResponse.hasErrors()) {
@@ -100,7 +100,7 @@ public class MedicalController extends Controller {
     public Result editGet(int patientId) {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
-        //current Patient info for view model
+        //Get Patient
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientId);
         if (patientServiceResponse.hasErrors()) {
             //this error should have been caught by searchPost
@@ -108,15 +108,14 @@ public class MedicalController extends Controller {
         }
         IPatient patient = patientServiceResponse.getResponseObject();
 
-        //current Encounter info for view model
+        //Get Patient Encounter
         ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(patientId);
         if (patientEncounterServiceResponse.hasErrors()) {
             return internalServerError();
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
-
-        //get a list of prescriptions
+        //Get Prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         List<? extends IPatientPrescription> patientPrescriptions = new ArrayList<>();
         if (patientPrescriptionsServiceResponse.hasErrors()) {
@@ -125,81 +124,49 @@ public class MedicalController extends Controller {
             patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         }
 
-        //region **Mapping of treatment fields, HPI, PMH, and vitals**
+        //region **Get treatment fields, HPI, PMH, and vitals**
 
-        //Create linked hash map of treatment fields
-        //get a list of available treatment fields
-        ServiceResponse<List<? extends ITreatmentField>> treatmentFieldsServiceResponse = searchService.findAllTreatmentFields();
-        List<? extends ITreatmentField> treatmentFields = treatmentFieldsServiceResponse.getResponseObject();
-
-        //initalize map to store treatment fields: Map<treatmentFieldName, List of values>
-        //the list of values is stored in desecending order by time taken
-        Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap = new LinkedHashMap<>();
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientTreatmentServiceResponse;
-        String treatmentFieldName;
-        //loop through each available treatment field and build the map
-        for (int treatmentFieldIndex = 0; treatmentFieldIndex < treatmentFields.size(); treatmentFieldIndex++) {
-            treatmentFieldName = treatmentFields.get(treatmentFieldIndex).getName().trim();
-            patientTreatmentServiceResponse = searchService.findTreatmentFields(patientEncounter.getId(), treatmentFieldName);
-            if (patientTreatmentServiceResponse.hasErrors()) {
-                continue;
-            } else {
-                patientEncounterTreatmentMap.put(treatmentFieldName, patientTreatmentServiceResponse.getResponseObject());
-            }
+        /* Treatment Fields */
+        //String = HpiFieldName
+        //List = list of values based on encounter ID OR null if none exist
+        ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> patientEncounterTreatmentMapResponse = medicalService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
+        Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap;
+        if (patientEncounterTreatmentMapResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            patientEncounterTreatmentMap = patientEncounterTreatmentMapResponse.getResponseObject();
         }
 
-        //Create linked hash map of history of present illness fields
-        ServiceResponse<List<? extends IHpiField>> hpiFieldServiceResponse = searchService.findAllHpiFields();
-        List<? extends IHpiField> hpiFields = hpiFieldServiceResponse.getResponseObject();
-
-        Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap = new LinkedHashMap<>();
-        ServiceResponse<List<? extends IPatientEncounterHpiField>> patientHpiServiceResponse;
-        String hpiFieldName;
-        for (int hpiFieldIndex = 0; hpiFieldIndex < hpiFields.size(); hpiFieldIndex++) {
-            hpiFieldName = hpiFields.get(hpiFieldIndex).getName().trim();
-            patientHpiServiceResponse = searchService.findHpiFields(patientEncounter.getId(), hpiFieldName);
-            if (patientHpiServiceResponse.hasErrors()) {
-                continue;
-            } else {
-                patientEncounterHpiMap.put(hpiFieldName, patientHpiServiceResponse.getResponseObject());
-            }
+        /* HPI Fields */
+        //String = HpiFieldName
+        //List = list of values based on encounter ID OR null if none exist
+        ServiceResponse<Map<String, List<? extends IPatientEncounterHpiField>>> patientEncounterHpiMapResponse = medicalService.findHpiFieldsByEncounterId(patientEncounter.getId());
+        Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap;
+        if (patientEncounterHpiMapResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            patientEncounterHpiMap = patientEncounterHpiMapResponse.getResponseObject();
         }
 
-        //Create linked hash map of past medical history fields
-        ServiceResponse<List<? extends IPmhField>> pmhFieldServiceResponse = searchService.findAllPmhFields();
-        List<? extends IPmhField> pmhFields = pmhFieldServiceResponse.getResponseObject();
-
-        Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap = new LinkedHashMap<>();
-        ServiceResponse<List<? extends IPatientEncounterPmhField>> patientPmhServiceResponse;
-        String pmhFieldName;
-        for (int pmhFieldIndex = 0; pmhFieldIndex < pmhFields.size(); pmhFieldIndex++) {
-            pmhFieldName = pmhFields.get(pmhFieldIndex).getName().trim();
-            patientPmhServiceResponse = searchService.findPmhFields(patientEncounter.getId(), pmhFieldName);
-            if (patientPmhServiceResponse.hasErrors()) {
-                continue;
-            } else {
-                patientEncounterPmhMap.put(pmhFieldName, patientPmhServiceResponse.getResponseObject());
-            }
+        /* PMH fields */
+        //String = HpiFieldName
+        //List = list of values based on encounter ID OR null if none exist
+        ServiceResponse<Map<String, List<? extends IPatientEncounterPmhField>>> patientEncounterPmhMapResponse = medicalService.findPmhFieldsByEncounterId(patientEncounter.getId());
+        Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap;
+        if (patientEncounterPmhMapResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            patientEncounterPmhMap = patientEncounterPmhMapResponse.getResponseObject();
         }
 
         //Create linked hash map of vitals
-        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
-        List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
-
-        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap = new LinkedHashMap<>();
-        ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
-        String vitalFieldName;
-        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
-            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
-            patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
-            if (patientVitalServiceResponse.hasErrors()) {
-                continue;
-            } else {
-                patientEncounterVitalMap.put(vitalFieldName, patientVitalServiceResponse.getResponseObject());
-            }
+        ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> patientEncounterVitalMapResponse = medicalService.findVitalsByEncounterId(patientEncounter.getId());
+        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap;
+        if (patientEncounterVitalMapResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            patientEncounterVitalMap = patientEncounterVitalMapResponse.getResponseObject();
         }
-
-        //endregion
 
         //set up viewModelGet with everything except vitals
         CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);

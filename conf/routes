@@ -23,7 +23,7 @@ POST        /medical/edit/:id           @femr.ui.controllers.MedicalController.e
 POST        /medical/search             @femr.ui.controllers.MedicalController.searchPost()
 GET         /medical                    @femr.ui.controllers.MedicalController.indexGet(patientId: Integer ?= 0)
 POST        /medical/updateVitals/:id   @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
-GET         /research                   @femr.ui.controllers.ResearchController.index()
+GET         /research                   @femr.ui.controllers.research.ResearchController.index()
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()
 GET         /login                      @femr.ui.controllers.SessionsController.createGet()

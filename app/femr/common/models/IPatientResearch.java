@@ -1,11 +1,37 @@
 package femr.common.models;
 
+import java.util.List;
+
 /**
  * Defines the interface for all the items that are returned from the research
  * Patient query
  */
 public interface IPatientResearch {
 
+    int getId();
+
+    void setId(int id);
+
+    int getPatientId();
+
+    void setPatientId(int patientId);
+
+    String getDateOfVisit();
+
+    void setDateOfVisit(String dateOfVisit);
+
+    String getChiefComplaint();
+
+    void setChiefComplaint(String chiefComplaint);
+
+    List<IPatient> getPatient();
+
+    void setPatient(List<IPatient> patient);
+
+
+
+
+    /*
     // hpi fields Table
     String getHPI_FIELDS_Onset();
     void  setHPI_FIELDS_Onset(String Onset);
@@ -106,6 +132,7 @@ public interface IPatientResearch {
     int getPatient_Encounters_Is_Pregnant();
     void setPatient_Encounters_Is_Pregnant(int Pregnant);
 
+    */
 
 
 

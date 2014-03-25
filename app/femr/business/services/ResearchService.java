@@ -7,20 +7,10 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IMedication;
-import femr.common.models.IPatientEncounterTreatmentField;
-import femr.common.models.IPatientPrescription;
-import femr.common.models.IVital;
-import femr.common.models.IPatientEncounterHpiField;
-import femr.common.models.IPatientEncounterPmhField;
-import femr.common.models.ITreatmentField;
-import femr.common.models.IPmhField;
-import femr.common.models.IHpiField;
+import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
+import femr.data.models.PatientResearch;
 
 import java.util.List;
 
@@ -30,6 +20,7 @@ import java.util.List;
  * and returning the ServiceResponse
  */
 public class ResearchService implements IResearchService{
+    /*
     private IRepository<IMedication> medicationRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounter> patientEncounterRepository;
@@ -42,9 +33,17 @@ public class ResearchService implements IResearchService{
     private IRepository<ITreatmentField> treatmentFieldRepository;
     private IRepository<IPmhField> pmhFieldRepository;
     private IRepository<IHpiField> hpiFieldRepository;
+    */
+
+    private IRepository<IPatientResearch> patientResearchRepository;
+
 
     @Inject
-    public ResearchService(IRepository<IMedication> medicationRepository,
+    public ResearchService(IRepository<IPatientResearch> patientResearchRepository) {
+
+        this.patientResearchRepository = patientResearchRepository;
+        /*
+        IRepository<IMedication> medicationRepository,
              IRepository<IPatient> patientRepository,
              IRepository<IPatientEncounter> patientEncounterRepository,
              IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
@@ -55,8 +54,10 @@ public class ResearchService implements IResearchService{
              IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
              IRepository<ITreatmentField> treatmentFieldRepository,
              IRepository<IPmhField> pmhFieldRepository,
-             IRepository<IHpiField> hpiFieldRepository) {
+             IRepository<IHpiField> hpiFieldRepository
+         */
 
+        /*
         this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -69,6 +70,7 @@ public class ResearchService implements IResearchService{
         this.treatmentFieldRepository = treatmentFieldRepository;
         this.pmhFieldRepository = pmhFieldRepository;
         this.hpiFieldRepository = hpiFieldRepository;
+        */
 
     }
 
@@ -78,7 +80,7 @@ public class ResearchService implements IResearchService{
      * for all the patients in the database and returns it
      * @return A list of the patient info to analyzed
      */
-    @Override
+ /*   @Override
     public ServiceResponse<List<? extends IPatient>> findAllPatient() {
         List<? extends IPatient> patients = patientRepository.findAll(Patient.class);
         ServiceResponse<List<? extends IPatient>> response = new ServiceResponse<>();
@@ -88,7 +90,25 @@ public class ResearchService implements IResearchService{
             response.addError("patients", "No patients available");
         }
         return response;
+    } */
+
+    @Override
+    public ServiceResponse<List<? extends IPatientResearch>> testModel() {
+        List<? extends IPatientResearch> patientResearch = patientResearchRepository.findAll(PatientResearch.class);
+        ServiceResponse<List<? extends IPatientResearch>> response = new ServiceResponse<>();
+        if(patientResearch.size() > 0) {
+            response.setResponseObject(patientResearch);
+        }
+        else {
+            response.addError("patientResearch","Failed to query database");
+        }
+        return response;
     }
 
     // TODO-RESEARCH: Implement the services
+
+
+    private Query<PatientResearch> getPatientResearchQuery() {
+        return Ebean.find(PatientResearch.class);
+    }
 }

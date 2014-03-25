@@ -82,4 +82,5 @@ public class PatientResearch implements IPatientResearch{
     public void setPatient(List<IPatient> patient) {
         this.patient = patient;
     }
+    
 }

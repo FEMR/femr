@@ -1,0 +1,41 @@
+.fieldInputBox{
+    list-style: none;
+    padding: 0;
+}
+
+
+/* Dropdown wrapper */
+.selectWrap{
+    display: block;
+    width: 450px;
+    margin: 0 auto;
+}
+.selectWrap select{
+    width: 125px;
+}
+.selectGroup{
+    display: inline-block;
+}
+
+/* Expression display */
+.queryWrap{
+    width: 400px;
+    margin: 0 auto;
+    padding-top: 50px;
+}
+.queryWrap li{
+    font-size: 20px;
+}
+.queryWrap li:hover{
+    cursor: default;
+}
+
+/* Actual expression lists */
+.expressions, .expressions ol{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.expressions li{
+    display: inline;
+}

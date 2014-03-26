@@ -32,6 +32,8 @@ public class User implements IUser {
     @Column(name = "isDeleted", nullable = false)
     private Boolean deleted;
 
+
+
     @Override
     public int getId() {
         return id;

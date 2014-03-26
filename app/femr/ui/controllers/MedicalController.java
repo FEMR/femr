@@ -76,6 +76,10 @@ public class MedicalController extends Controller {
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
         boolean hasPatientBeenCheckedIn = medicalService.hasPatientBeenCheckedInByPhysician(patientEncounter.getId());
+
+        DateTime dateNow = dateUtils.getCurrentDateTime();
+        DateTime dateTaken;
+
         if (hasPatientBeenCheckedIn == true) {
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
             if (dateResponse.hasErrors()) {
@@ -83,16 +87,37 @@ public class MedicalController extends Controller {
                 return ok(index.render(currentUserSession, message, 0));
             }
 
-            DateTime dateNow = dateUtils.getCurrentDateTime();
-            DateTime dateTaken = dateResponse.getResponseObject();
+            dateTaken = dateResponse.getResponseObject();
 
-            if (dateNow.dayOfYear().equals(dateTaken.dayOfYear())) {
+            if (dateNow.dayOfYear().equals(dateTaken.dayOfYear()) && dateNow.year().equals(dateTaken.year())) {
                 message = "That patient has already been seen today. Would you like to edit their encounter?";
             } else {
                 message = "That patient's encounter has been closed.";
                 id = 0;
             }
             return ok(index.render(currentUserSession, message, id));
+        } else {
+            ServiceResponse<String> dateResponseString = triageService.getDateOfTriageCheckIn(patientEncounter.getId());
+            if (dateResponseString.hasErrors()) {
+                message = "A fatal error has been encountered. Please try again.";
+                return ok(index.render(currentUserSession, message, 0));
+            }
+
+            String str = dateResponseString.getResponseObject();
+            int year = Integer.parseInt(str.substring(0, 4));
+            int month = Integer.parseInt(str.substring(5, 7));
+            int day = Integer.parseInt(str.substring(8, 10));
+            dateTaken = new DateTime(year, month, day, 0, 0);
+            DateTime dayAfterTaken = dateTaken.plusDays(1);
+            if (dateNow.dayOfYear().equals(dateTaken.dayOfYear()) && dateNow.year().equals(dateTaken.year())) {
+
+            } else if (dateNow.dayOfYear().equals(dayAfterTaken.dayOfYear()) && dateNow.year().equals(dayAfterTaken.year())) {
+
+            } else {
+                message = "That patient's encounter has been closed.";
+                id = 0;
+                return ok(index.render(currentUserSession, message, id));
+            }
         }
         return redirect(routes.MedicalController.editGet(searchViewModel.getId()));
     }

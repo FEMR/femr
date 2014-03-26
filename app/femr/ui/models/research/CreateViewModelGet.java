@@ -7,9 +7,14 @@ package femr.ui.models.research;
  */
 public class CreateViewModelGet {
 
+    private QueryObjectPatientModel patientModel;
 
+    public QueryObjectPatientModel getPatientModel() {
+        return patientModel;
+    }
 
-
-
+    public void setPatientModel(QueryObjectPatientModel patientModel) {
+        this.patientModel = patientModel;
+    }
     // TODO-RESEARCH: Create model for displaying the data
 }

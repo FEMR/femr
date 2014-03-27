@@ -10,14 +10,15 @@
     width: 450px;
     margin: 0 auto;
 }
-.selectWrap select{
+.selectWrap select, input{
     width: 125px;
+    height: 25px;
 }
 .selectGroup{
     display: inline-block;
 }
 
-/* Expression display */
+/* Expressions wrapper */
 .queryWrap{
     width: 400px;
     margin: 0 auto;
@@ -30,7 +31,7 @@
     cursor: default;
 }
 
-/* Actual expression lists */
+/* Actual expression <ol> lists */
 .expressions, .expressions ol{
     list-style-type: none;
     margin: 0;
@@ -38,4 +39,7 @@
 }
 .expressions li{
     display: inline;
+}
+.expressions li:after{
+    content: "\00a0";
 }

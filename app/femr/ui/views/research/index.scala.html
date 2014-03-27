@@ -13,83 +13,54 @@
 
 @main("Research", currentUser, styles = additionalStyles, scripts = additionalScripts) {
     @helper.form(action = ResearchController.createPost()) {
-
         <div class="selectWrap">
             <div class="selectGroup">
                 <h4>Properties</h4>
-                <select>
-                    <option>Select...</option>
+                <select id="expressionProperty">
+                    <option value="">Select...</option>
                     @for(prop <- 1 to viewModel.getPatientModel.getPatientProperties.size) {
-                        <option>@viewModel.getPatientModel.getPatientProperties.get(prop - 1).getKey</option>
+                        <option value="@viewModel.getPatientModel.getPatientProperties.get(prop - 1).getKey">@viewModel.getPatientModel.getPatientProperties.get(prop - 1).getKey</option>
                     }
                 </select>
             </div>
             <div class="selectGroup">
                 <h4>Operators</h4>
-                <select>
-                    <option>Select...</option>
+                <select id="expressionOperator">
+                    <option value="">Select...</option>
                     @for(oper <- 1 to viewModel.getPatientModel.getComparisonList.size) {
-                        <option>@viewModel.getPatientModel.getComparisonList.get(oper - 1)</option>
+                        <option value="@viewModel.getPatientModel.getComparisonList.get(oper - 1)">@viewModel.getPatientModel.getComparisonList.get(oper - 1)</option>
                     }
                 </select>
             </div>
             <div class="selectGroup">
+                <h4>Value</h4>
+                <input type="text" id="expressionValue" />
+            </div>
+            <div class="selectGroup hidden">
                 <h4>Boolean</h4>
-                <select>
-                    <option>Select...</option>
+                <select id="expressionBool">
+                    <option value="">Select...</option>
                     @for(bool <- 1 to viewModel.getPatientModel.getConditionList.size) {
-                        <option>@viewModel.getPatientModel.getConditionList.get(bool - 1)</option>
+                        <option value="@viewModel.getPatientModel.getConditionList.get(bool - 1)">@viewModel.getPatientModel.getConditionList.get(bool - 1)</option>
                     }
                 </select>
             </div>
             <div class="selectGroup">
                 <button type="button" id="addExpressionBtn">Add</button>
             </div>
+            <div class="selectGroup hidden">
+                <button type="button" id="addBoolBtn">Add</button>
+            </div>
         </div>
         <div class="queryWrap">
-            @* Use the object oriented aspect of javascript to formulate the string from
-            the following lists *@
-
-            @* In the meantime, format the lists to look good for the user *@
+            @* Looks like shit *@
             <ol class="expressions">
-                <li id="expression1">
-                     <ol>
-                         <li class="property">Age</li>
-                         <li class="operator"><</li>
-                         <li class="value">12</li>
-                         <li class="boolean">AND</li>
-                     </ol>
-                </li>
-                <li id="expression2">
-                    <ol>
-                        <li class="property">Sex</li>
-                        <li class="operator">=</li>
-                        <li class="value">Male</li>
-                        <li class="boolean">OR</li>
-                    </ol>
-                </li>
-                <li id="expression3">
-                    <ol>
-                        <li class="property">Medication</li>
-                        <li class="operator">=</li>
-                        <li class="value">Tylenol</li>
-                    </ol>
-                </li>
+
             </ol>
+
         </div>
 
-
-
-
-        <button type="submit" class="btn btn-default">Submit</button>
+        <input type="text" class="hidden" id="submitString" name="QueryString"/>
+        <button type="submit" class="btn btn-default" id="submitBtn">Submit</button>
     }
-
-
 }
-
-    <!--
-        Age > 12 AND Medication = Tylenol
-        -->
-
-
-    <!-- TODO-RESEARCH: Create the Research initial query page -->

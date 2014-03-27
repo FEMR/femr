@@ -14,6 +14,7 @@ import femr.ui.models.research.CreateViewModelPost;
 import femr.ui.models.research.QueryObjectPatientModel;
 import femr.ui.views.html.research.index;
 import femr.util.DataStructure.Pair;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -27,6 +28,7 @@ import java.util.List;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.RESEARCHER})
 public class ResearchController extends Controller {
+    private final Form<CreateViewModelPost> createViewModelForm = Form.form(CreateViewModelPost.class);
     private IResearchService researchService;
     private ISessionService sessionService;
 
@@ -109,12 +111,10 @@ public class ResearchController extends Controller {
     //TODO-RESEARCH: Add the code for rest the Research controller here
 
     public Result createPost() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        //bind QueryString from POST request
+        CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
 
-        // Create the viewModel
-        CreateViewModelGet viewModel = new CreateViewModelGet();
-        viewModel.setPatientModel(CreatePatientModel());
-
-        return ok(index.render(currentUserSession, viewModel));
+        //do a redirect because what the fuck else would i do
+        return redirect("/research");
     }
 }

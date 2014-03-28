@@ -4,6 +4,8 @@ package femr.business.services;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.IPatient;
 import femr.common.models.IPatientResearch;
+import femr.data.models.PatientResearch;
+import femr.ui.controllers.research.ResearchDataModel;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface IResearchService {
     //TODO-RESEARCH: Declare the services
 
     ServiceResponse<List<? extends IPatientResearch>> testModel();
+
+    List<PatientResearch> testModelSQL();
 }

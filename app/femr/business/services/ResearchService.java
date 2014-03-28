@@ -1,16 +1,14 @@
 package femr.business.services;
 
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Expr;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import com.avaje.ebean.*;
 import com.google.inject.Inject;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 import femr.data.models.PatientResearch;
+import femr.ui.controllers.research.ResearchDataModel;
 
 import java.util.List;
 
@@ -92,18 +90,69 @@ public class ResearchService implements IResearchService{
         return response;
     } */
 
-    @Override
-    public ServiceResponse<List<? extends IPatientResearch>> testModel() {
-        List<? extends IPatientResearch> patientResearch = patientResearchRepository.findAll(PatientResearch.class);
-        ServiceResponse<List<? extends IPatientResearch>> response = new ServiceResponse<>();
-        if(patientResearch.size() > 0) {
-            response.setResponseObject(patientResearch);
+    //@Override
+    public List<PatientResearch> testModelSQL() {
+        String sqlTest = "select patient_encounters.id from patient_encounters";
+
+        //String sql = " select id, pe.patient_id, pe.chief_complaint, pe.date_of_visit, p.age, p.sex, p.city"  //  pp.medication_name
+        //        + " from patient_encounters pe"
+        //        + " join patients p on p.id = pe.patient_id "
+               // + " join patient_prescriptions pp on pp.encounter_id = pe.id "
+        //        + " group by pe.id ";
+
+//        RawSql rawSql = RawSqlBuilder.parse(sql)
+//                // map the sql result columns to bean properties
+//                .columnMapping("id", "researchDataModel.encounterID")
+//                .columnMapping("pe.patient_id", "researchDataModel.patientID")
+//                .columnMapping("pe.chief_complaint", "researchDataModel.condition")
+//                .columnMapping("pe.date_of_visit", "researchDataModel.dateTaken")
+//                .columnMapping("p.age", "researchDataModel.age")
+//                .columnMapping("p.sex", "researchDataModel.sex")
+//                .columnMapping("p.city", "researchDataModel.city")
+//               // .columnMapping("pp.medication_name", "researchDataModel.medication")
+//                .create();
+
+        RawSql rawSql = RawSqlBuilder.parse(sqlTest)
+                .columnMapping("patient_encounters.id", "researchDataModel.encounterID")
+                .create();
+
+        Query<PatientResearch> query = Ebean.find(PatientResearch.class);
+        query.setRawSql(rawSql)
+                .where().eq("researchDataModel.encounterID", 1);
+
+        String poop = query.getGeneratedSql();
+
+        List<PatientResearch> results = null;
+        try{
+            results = query.findList();
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        ServiceResponse<List<PatientResearch>> response = new ServiceResponse<>();
+        if(results.size() > 0) {
+            response.setResponseObject(results);
         }
         else {
-            response.addError("patientResearch","Failed to query database");
+            response.addError("", "Faild to query database");
         }
-        return response;
+
+        return results;
     }
+
+
+
+
+    @Override
+    public ServiceResponse<List<? extends IPatientResearch>> testModel() {
+        Query<PatientResearch> query = getPatientResearchQuery();
+
+
+        return null;
+    }
+
+
 
     // TODO-RESEARCH: Implement the services
 
@@ -111,4 +160,6 @@ public class ResearchService implements IResearchService{
     private Query<PatientResearch> getPatientResearchQuery() {
         return Ebean.find(PatientResearch.class);
     }
+
+
 }

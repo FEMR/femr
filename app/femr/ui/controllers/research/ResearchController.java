@@ -3,10 +3,13 @@ package femr.ui.controllers.research;
 
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
+import femr.business.dtos.ServiceResponse;
 import femr.business.services.IResearchService;
 import femr.business.services.ISessionService;
 
+import femr.common.models.IPatientResearch;
 import femr.common.models.Roles;
+import femr.data.models.PatientResearch;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.CreateViewModelGet;
@@ -51,6 +54,16 @@ public class ResearchController extends Controller {
      */
     public Result index() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        researchService.testModelSQL();
+
+        /*ServiceResponse<List<PatientResearch>> patientResearchServiceResponse =  researchService.testModel();
+        List<? extends IPatientResearch> patientResearches = new ArrayList<>();
+        if(patientResearchServiceResponse.hasErrors()) {
+            patientResearchServiceResponse.getErrors();
+        }
+        else {
+            patientResearches = patientResearchServiceResponse.getResponseObject();
+        } */
 
         // Create the viewModel
         //CreateViewModelPost viewModelPost = new CreateViewModelPost();

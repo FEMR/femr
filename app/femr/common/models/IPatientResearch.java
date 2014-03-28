@@ -1,5 +1,8 @@
 package femr.common.models;
 
+import femr.common.models.research.*;
+import femr.ui.controllers.research.ResearchDataModel;
+
 import java.util.List;
 
 /**
@@ -8,7 +11,38 @@ import java.util.List;
  */
 public interface IPatientResearch {
 
+
+    ResearchDataModel getResearchDataModel();
+
+    void setResearchDataModel(ResearchDataModel researchDataModel);
+
+
+    /*
     int getId();
+
+    int getPatientId();
+
+    void setPatientId(int patientId);
+
+    String getDateOfVisit();
+
+    void setDateOfVisit(String dateOfVisit);
+
+    String getChiefComplaint();
+
+    void setChiefComplaint(String chiefComplaint);
+
+    List<femr.common.models.research.IPatient> getPatients();
+
+    void setPatients(List<femr.common.models.research.IPatient> patients);
+
+    List<femr.common.models.research.IPatientPrescription> getPatientPrescriptions();
+
+    void setPatientPrescriptions(List<femr.common.models.research.IPatientPrescription> patientPrescriptions); */
+
+
+
+   /* int getId();
 
     void setId(int id);
 
@@ -26,8 +60,7 @@ public interface IPatientResearch {
 
     List<IPatient> getPatient();
 
-    void setPatient(List<IPatient> patient);
-
+    void setPatient(List<IPatient> patient); */
 
 
 

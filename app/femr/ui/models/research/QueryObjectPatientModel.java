@@ -1,7 +1,5 @@
 package femr.ui.models.research;
 
-import femr.util.DataStructure.Pair;
-
 import java.util.List;
 
 /**
@@ -9,26 +7,26 @@ import java.util.List;
  */
 public class QueryObjectPatientModel {
 
-    private List<Pair<String,Object>> patientProperties;  // the pair is <Name of property, property type> ex. <age,int>
-    private List<String> conditionList; // and, or, not, etc.
+    private List<String> patientProperties;  // the pair is <Name of property, property type> ex. <age,int>
+    private List<String> logicList; // and, or, not, etc.
     private List<String> comparisonList;
 
 
 
-    public List<Pair<String, Object>> getPatientProperties() {
+    public List<String> getPatientProperties() {
         return patientProperties;
     }
 
-    public void setPatientProperties(List<Pair<String, Object>> patientProperties) {
+    public void setPatientProperties(List<String> patientProperties) {
         this.patientProperties = patientProperties;
     }
 
-    public List<String> getConditionList() {
-        return conditionList;
+    public List<String> getLogicList() {
+        return logicList;
     }
 
-    public void setConditionList(List<String> conditionList) {
-        this.conditionList = conditionList;
+    public void setLogicList(List<String> logicList) {
+        this.logicList = logicList;
     }
 
     public List<String> getComparisonList() {

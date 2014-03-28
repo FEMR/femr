@@ -1,18 +1,21 @@
 package femr.business.services;
 
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Expr;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
-import femr.data.models.Patient;
 import femr.data.models.PatientResearch;
+import femr.data.models.research.ResearchModelBuilder;
+import femr.data.models.research.ResearchSQLBuilder;
+import femr.ui.models.research.ResearchDataModel;
+import femr.util.DataStructure.Pair;
+import play.db.DB;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -20,95 +23,125 @@ import java.util.List;
  * and returning the ServiceResponse
  */
 public class ResearchService implements IResearchService{
-    /*
-    private IRepository<IMedication> medicationRepository;
-    private IRepository<IPatient> patientRepository;
-    private IRepository<IPatientEncounter> patientEncounterRepository;
-    private IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository;
-    private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private IRepository<IVital> vitalRepository;
-    private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
-    private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
-    private IRepository<ITreatmentField> treatmentFieldRepository;
-    private IRepository<IPmhField> pmhFieldRepository;
-    private IRepository<IHpiField> hpiFieldRepository;
-    */
 
     private IRepository<IPatientResearch> patientResearchRepository;
+    private IPatientResearch patientResearch;
 
-
+    /**
+     * Initializes the research service and injects the dependence
+     * @param patientResearchRepository this parameter is dependance injected so don't do anything with it
+     */
     @Inject
     public ResearchService(IRepository<IPatientResearch> patientResearchRepository) {
 
         this.patientResearchRepository = patientResearchRepository;
-        /*
-        IRepository<IMedication> medicationRepository,
-             IRepository<IPatient> patientRepository,
-             IRepository<IPatientEncounter> patientEncounterRepository,
-             IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
-             IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
-             IRepository<IPatientPrescription> patientPrescriptionRepository,
-             IRepository<IVital> vitalRepository,
-             IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
-             IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
-             IRepository<ITreatmentField> treatmentFieldRepository,
-             IRepository<IPmhField> pmhFieldRepository,
-             IRepository<IHpiField> hpiFieldRepository
-         */
+        this.patientResearch = new PatientResearch();
+    }
 
-        /*
-        this.medicationRepository = medicationRepository;
-        this.patientRepository = patientRepository;
-        this.patientEncounterRepository = patientEncounterRepository;
-        this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
-        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
-        this.vitalRepository = vitalRepository;
-        this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
-        this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
-        this.treatmentFieldRepository = treatmentFieldRepository;
-        this.pmhFieldRepository = pmhFieldRepository;
-        this.hpiFieldRepository = hpiFieldRepository;
-        */
 
+    @Override
+    public Map<String, String> getPatientPropertiesLookup() {
+        return this.patientResearch.getPatientPropertiesLookup();
+    }
+
+    @Override
+    public Map<String, String> getLogicLookup() {
+        return this.patientResearch.getLogicLookup();
+    }
+
+    @Override
+    public Map<String, String> getConditionLookup() {
+        return this.patientResearch.getConditionLookup();
+    }
+
+    @Override
+    public List<String> getPatientPropertiesLookupAsList() {
+        return this.patientResearch.getPatientPropertiesLookupAsList();
+    }
+
+    @Override
+    public List<String> getLogicLookupAsList() {
+        return this.patientResearch.getLogicLookupAsList();
+    }
+
+    @Override
+    public List<String> getConditionLookupAsList() {
+        return this.patientResearch.getConditionLookupAsList();
     }
 
 
     /**
-     * Gets all the basic patient information like name, age, city ...
-     * for all the patients in the database and returns it
-     * @return A list of the patient info to analyzed
+     * Takes a sql string generated from user input and querys the databases
+     * @param sql The WHERE part of SQL query
+     * @return A list of {@link ResearchDataModel} where each entry in the list is
+     *         one row from the result query or null if there is an error
      */
- /*   @Override
-    public ServiceResponse<List<? extends IPatient>> findAllPatient() {
-        List<? extends IPatient> patients = patientRepository.findAll(Patient.class);
-        ServiceResponse<List<? extends IPatient>> response = new ServiceResponse<>();
-        if(patients.size() > 0) {
-            response.setResponseObject(patients);
-        } else {
-            response.addError("patients", "No patients available");
+    public List<ResearchDataModel> ManualSqlQuery(String sql) {
+        Connection connection = DB.getConnection();
+        ResearchSQLBuilder rSQLBuilder = new ResearchSQLBuilder(sql,this.patientResearch);
+        if(rSQLBuilder == null)
+        {
+            return null;
         }
-        return response;
-    } */
 
-    @Override
-    public ServiceResponse<List<? extends IPatientResearch>> testModel() {
-        List<? extends IPatientResearch> patientResearch = patientResearchRepository.findAll(PatientResearch.class);
-        ServiceResponse<List<? extends IPatientResearch>> response = new ServiceResponse<>();
-        if(patientResearch.size() > 0) {
-            response.setResponseObject(patientResearch);
+        String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.city, p.sex," +
+                " pe.date_of_visit, pp.medication_name, petf_problem.problems, petf_treatment.treatments ";
+
+        String sqlFrom = " FROM patient_encounters pe " +
+                " JOIN patients p on pe.patient_id = p.id " +
+                " " +
+                " LEFT JOIN (SELECT group_concat(medication_name) as medication_name, encounter_id  " +
+                "      FROM patient_prescriptions " +
+                "      GROUP BY encounter_id) pp ON pe.id = pp.encounter_id " +
+                " " +
+                " LEFT JOIN (SELECT treatment_field_id, group_concat(treatment_field_value) as problems, patient_encounter_id " +
+                "      FROM patient_encounter_treatment_fields petf " +
+                "      WHERE petf.treatment_field_id = '2'  " +
+                "      GROUP BY patient_encounter_id) petf_problem ON pe.id = petf_problem.patient_encounter_id " +
+                " " +
+                " LEFT JOIN (SELECT treatment_field_id, group_concat(treatment_field_value) as treatments, patient_encounter_id " +
+                "      FROM patient_encounter_treatment_fields petf2 " +
+                "      WHERE petf2.treatment_field_id = '3' " +
+                "      GROUP BY patient_encounter_id) petf_treatment ON pe.id = petf_treatment.patient_encounter_id " +
+                " ";
+
+
+        // Gets the where statement to use in the preparedStatement and the list of values
+        // for the parameters
+        Pair<String,List<String>> wherePair = rSQLBuilder.CreatePreparedStatement(sql);
+        if(wherePair == null)
+        {
+            return null;
         }
-        else {
-            response.addError("patientResearch","Failed to query database");
+
+        String sqlWhere = wherePair.getKey();
+
+        String MasterSQL = sqlSelect + sqlFrom + sqlWhere; // + sqlGroup;
+
+
+        try {
+            // Constructs the preparedStatement
+            PreparedStatement ps = connection.prepareStatement(MasterSQL);
+            // fills in the parameters with the user provided values
+            // we do this to gard against sql injections
+            ps = rSQLBuilder.BuildQuery(ps,wherePair.getValue());
+
+            if(ps == null)
+            {
+                return null;
+            }
+
+            ResultSet resultSet = ps.executeQuery();
+
+            return ResearchModelBuilder.CreateResultModel(resultSet);
+
+
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        return response;
+
+        return null;
     }
 
-    // TODO-RESEARCH: Implement the services
 
-
-    private Query<PatientResearch> getPatientResearchQuery() {
-        return Ebean.find(PatientResearch.class);
-    }
 }

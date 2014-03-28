@@ -1,5 +1,15 @@
 $(document).ready(function () {
 
+    $(function() {
+        $('#paginator').pagination({
+            pages: 30,
+            cssStyle: 'light-theme',
+            onPageClick: function(pageNumber){
+                test(pageNumber);
+            }
+        });
+    });
+
     $('#addExpressionBtn').click(function () {
         addExpression();
         //hide all options
@@ -27,6 +37,17 @@ $(document).ready(function () {
         return true;
     })
 });
+
+function test(pageNumber)
+{
+
+    var page="#page-"+pageNumber;
+    $('.selection').hide();
+    $(page).show();
+
+}
+
+
 
 
 function addBool() {
@@ -60,7 +81,9 @@ function addExpression() {
     var args = {};
     args.expressionProperty = $('#expressionProperty').val().trim();
     args.expressionOperator = $('#expressionOperator').val().trim();
-    args.expressionValue = $('#expressionValue').val().trim();
+    var tempValue = $('#expressionValue').val().trim();
+    tempValue = tempValue.replace(/ /g,"_");  //replaces the spaces in the value with underscores
+    args.expressionValue = tempValue; //$('#expressionValue').val().trim();
     args.expressionBool = $('#expressionBool').val().trim();
     var newExpression = new Expression(numberOfExpressions + 1, args);
     newExpression.addToDOM();

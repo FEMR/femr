@@ -12,15 +12,14 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.CreateViewModelGet;
 import femr.ui.models.research.CreateViewModelPost;
 import femr.ui.models.research.QueryObjectPatientModel;
-import femr.ui.views.html.research.index;
-import femr.util.DataStructure.Pair;
+import femr.ui.models.research.ResearchDataModel;
+import femr.ui.views.html.research.*;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is the controller for the research page
@@ -53,12 +52,32 @@ public class ResearchController extends Controller {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         // Create the viewModel
-        //CreateViewModelPost viewModelPost = new CreateViewModelPost();
-        //QueryObjectPatientModel viewPatientModel = CreatePatientModel();
         CreateViewModelGet viewModel = new CreateViewModelGet();
         viewModel.setPatientModel(CreatePatientModel());
 
         return ok(index.render(currentUserSession, viewModel));
+    }
+
+    /**
+     * Gets the generated search query and parses it then sends it to the service layer and displays the results
+     * @return The Rendered results the the view
+     */
+    public Result createPost() {
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        //bind QueryString from POST request
+        CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
+        String sql = viewModelPost.getQueryString();
+
+
+        System.out.println(sql);
+        // execute query
+        List<ResearchDataModel> resultModel = researchService.ManualSqlQuery(sql);
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+        viewModelGet.setPatientData(resultModel);
+
+
+        //do a redirect
+        return ok(result.render(currentUserSession,viewModelGet));
     }
 
     /**
@@ -70,51 +89,17 @@ public class ResearchController extends Controller {
     private QueryObjectPatientModel CreatePatientModel() {
         QueryObjectPatientModel patientModel = new QueryObjectPatientModel();
 
-        // create a list of conditional
-        List<String> conditionList = new ArrayList<>();
-        conditionList.add("AND");
-        conditionList.add("OR");
-        conditionList.add("NOT");
-        conditionList.add("XOR");
+        List<String> Logic = researchService.getLogicLookupAsList();
+        patientModel.setLogicList(Logic);
 
-        patientModel.setConditionList(conditionList);
 
-        // create a list of comparison symbols
-        List<String> comparisonList = new ArrayList<>();
-        comparisonList.add("=");
-        comparisonList.add("!=");
-        comparisonList.add("<");
-        comparisonList.add("<=");
-        comparisonList.add(">");
-        comparisonList.add(">=");
+        List<String> Condition = researchService.getConditionLookupAsList();
+        patientModel.setComparisonList(Condition);
 
-        patientModel.setComparisonList(comparisonList);
-
-        // Create the tempoaray patient info
-        List<Pair<String, Object>> patientProperties = new ArrayList<>();
-        patientProperties.add(new Pair<String, Object>("ID", Integer.class));
-        patientProperties.add(new Pair<String, Object>("Age", Integer.class));
-        patientProperties.add(new Pair<String, Object>("City", String.class));
-        patientProperties.add(new Pair<String, Object>("Gender", String.class));
-        patientProperties.add(new Pair<String, Object>("Date Taken", String.class));
-        patientProperties.add(new Pair<String, Object>("Medication", String.class));
-        patientProperties.add(new Pair<String, Object>("Treatment", String.class));
-
-        patientModel.setPatientProperties(patientProperties);
-        // TODO-RESEARCH: Add the properties associated with a patient that the user can choose from
+        List<String> Properties = researchService.getPatientPropertiesLookupAsList();
+        patientModel.setPatientProperties(Properties);
 
         return patientModel; // temporary replace
 
-    }
-
-
-    //TODO-RESEARCH: Add the code for rest the Research controller here
-
-    public Result createPost() {
-        //bind QueryString from POST request
-        CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
-
-        //do a redirect because what the fuck else would i do
-        return redirect("/research");
     }
 }

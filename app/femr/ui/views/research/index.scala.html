@@ -19,7 +19,7 @@
                 <select id="expressionProperty">
                     <option value="">Select...</option>
                     @for(prop <- 1 to viewModel.getPatientModel.getPatientProperties.size) {
-                        <option value="@viewModel.getPatientModel.getPatientProperties.get(prop - 1).getKey">@viewModel.getPatientModel.getPatientProperties.get(prop - 1).getKey</option>
+                        <option value="@viewModel.getPatientModel.getPatientProperties.get(prop - 1)">@viewModel.getPatientModel.getPatientProperties.get(prop - 1)</option>
                     }
                 </select>
             </div>
@@ -40,8 +40,8 @@
                 <h4>Boolean</h4>
                 <select id="expressionBool">
                     <option value="">Select...</option>
-                    @for(bool <- 1 to viewModel.getPatientModel.getConditionList.size) {
-                        <option value="@viewModel.getPatientModel.getConditionList.get(bool - 1)">@viewModel.getPatientModel.getConditionList.get(bool - 1)</option>
+                    @for(bool <- 1 to viewModel.getPatientModel.getLogicList.size) {
+                        <option value="@viewModel.getPatientModel.getLogicList.get(bool - 1)">@viewModel.getPatientModel.getLogicList.get(bool - 1)</option>
                     }
                 </select>
             </div>

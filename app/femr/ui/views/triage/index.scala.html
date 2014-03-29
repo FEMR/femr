@@ -30,33 +30,43 @@
         </div>
     }
     }
+
 @medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById, showSearchBtn = true) {
 
-    <h2 class="text-center">Check In - Triage</h2>
+    <div id="triageContentWrap">
+        <h2 class="text-center">Check In - Triage</h2>
 
-    <div class="row">
-    @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
-        <div class="col-sm-5 col-xs-12">
-            <h2>General Info</h2>
-            <div>
-                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getFirstName else null)
-                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getLastName else null)
-                @inputText("Address", "address", false, if(viewModel != null) viewModel.getAddress else null)
-                @inputText("City", "city", true, if(viewModel != null) viewModel.getCity else null)
+
+        @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+            <div id="genInfoWrap"class="sectionBackground">
+
+                <h2>General Info</h2>
+
+                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getFirstName else null, "text")
+                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getLastName else null, "text")
+                @inputText("Address", "address", false, if(viewModel != null) viewModel.getAddress else null, "text")
+                @inputText("City", "city", true, if(viewModel != null) viewModel.getCity else null, "text")
+                    <!--inputText("Birth Date", "age", true, if(viewModel != null) viewModel.getBirth else null, "date")-->
                 @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getBirth else null)
                 @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getAge else null)
                 @inputGender(viewModel)
-                <div class="form-group">
-                    <label for="photo" class="col-sm-3 col-xs-3 control-label">Patient Photo</label>
-                    <div id="photoInputFormDiv" class="col-sm-7 col-xs-7">
-                        <input type="file" class="form-control" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
+
+
+                <div class="generalInfoInput">
+
+
+                    <label for="photo">Patient Photo</label>
+                    <div id="photoInputFormDiv">
+                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
                     </div>
-                    <div id="patientPhotoDiv" class="col-sm-7 col-xs-7">
+
+
+                    <div id="patientPhotoDiv">
                         <div class="btn-group" >
                             <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPhotoPath()" />
                             <div class="btn-toolbar" role="buttons">
                                 <div class="btn-group" id="zoomControls">
-                                    <button  id="btnZoomIn" class="btn btn-default btn-lg">
+                                    <button id="btnZoomIn" class="btn btn-default btn-lg">
                                         <span class="glyphicon glyphicon-zoom-in"></span>
                                     </button>
                                     <button id="btnZoomOut" class="btn btn-default btn-lg">
@@ -71,25 +81,41 @@
                             </div>
                         </div>
                     </div>
-                    <input hidden="true" type="checkbox" name="deletePhoto" value="true"     id="deletePhoto">
-                    <input hidden="true" type="text"     name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
+                    <input hidden="true" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
+                    <input hidden="true" type="text" name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
+
+
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-3 col-xs-3"></div>
-                    <div class="col-sm-7 col-xs-7">
-                    @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
-                    </div>
-                </div>
+
+
+                @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
+
+
             </div>
-        </div>
-        @*Other Column*@
-        <div class="col-sm-7 col-xs-12">
-            <div class="row">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="vitalsWrap" class="sectionBackground">
+
                 <h2>Vitals</h2>
-                <h5 id="errorMessageDecimal" class="hidden">Boxes in red must be whole numbers</h5>
-                <h5 id="errorMessageHeight" class="hidden">Inches for height must be less than 12 and a whole number</h5>
-            </div>
-            <div class="row">
+                <h5 id="errorMessageDecimal" class="red hidden">Boxes in red must be whole numbers</h5>
+                <h5 id="errorMessageHeight" class="red hidden">
+                    Inches for height must be less than 12 and a whole number</h5>
+
+
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group">
                         <label for="temperature" class="col-sm-6 col-xs-6 control-label">Temperature</label>
@@ -173,15 +199,16 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="chiefComplaint" class="col-sm-3 col-xs-3 textAreaLabel control-label">Chief Complaint</label>
-                <div class="col-sm-9 col-xs-9">
-                    <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
+
+                <div class="form-group">
+                    <label for="chiefComplaint" class="col-sm-3 col-xs-3 textAreaLabel control-label">Chief Complaint</label>
+                    <div class="col-sm-9 col-xs-9">
+                        <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
+
         </div>
-    </div>
     <div class="row">
         <div class="col-sm-12 col-xs-12">
             <button type="submit" id="triageSubmitBtn" class="btn btn-primary pull-right floatButtonOffset">
@@ -189,6 +216,7 @@
             <button type="button" class="newPatientBtn btn btn-default pull-right">Reset Fields</button>
         </div>
     </div>
+
 }
 }
 

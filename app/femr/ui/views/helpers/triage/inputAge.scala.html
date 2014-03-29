@@ -1,17 +1,15 @@
 @(label: String, field1: String, forInput1: String, field2: String, forInput2: String, value: String)
-  @inputBlock = {
-     <div class="form-group">
-          <label for="@label" class="col-sm-3 col-xs-3 control-label">Age<span class="red bold">*</span></label>
-          <div class="col-sm-7 col-xs-7">
-          @if(value == null) {
-              <input type="text" class="form-control width-50 age-input" id="@forInput1" name="@forInput1" placeholder="@field1">
-              <span>Years</span>
-              <input type="text" class="form-control width-50 age-input" id="@forInput2" name="@forInput2" placeholder="@field2">
-              <span>Months</span>
-          } else {
-              <input type="text" class="form-control" id="readOnlyAge" name="readOnlyAge" value="@value" readonly/>
-          }
-          </div>
-     </div>
-  }
+    @inputBlock = {
+        <div class="generalInfoInput">
+            <label for="@label">Age<span class="red bold">*</span></label>
+            @if(value == null) {
+                <input type="text" class="age-input fInput" id="@forInput1" name="@forInput1" placeholder="@field1">
+                <span>Years</span>
+                <input type="text" class="age-input fInput" id="@forInput2" name="@forInput2" placeholder="@field2">
+                <span>Months</span>
+            } else {
+                <input type="text" class="fInput" id="readOnlyAge" name="readOnlyAge" value="@value" readonly/>
+            }
+        </div>
+    }
 @inputBlock

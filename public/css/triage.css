@@ -1,3 +1,56 @@
+
+/* General Page styles */
+
+#triageContentWrap{
+    overflow: hidden;
+}
+.sectionBackground{
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
+    border-radius: 10px;
+    min-height: 600px;
+    padding: 10px;
+}
+#genInfoWrap{
+    float: left;
+    width: 40%;
+}
+#vitalsWrap{
+    float: left;
+    width: 60%;
+}
+
+
+.generalInfoInput{
+    padding: 5px;
+    overflow: hidden;
+}
+.generalInfoInput input{
+    float: right;
+    margin-right: 120px;
+}
+
+
+/* Photo stuff */
+#photoInputFormDiv{
+    overflow: hidden;
+}
+#photoInput{
+    width: inherit;
+}
+
+/* General info stuff */
+#genderBtns{
+    float: right;
+    margin-right: 120px;
+    width: 175px;
+}
+
+
+
+
+
+
 /*Triage Page*/
 .stackedInput {
   margin-top: 15px!important;
@@ -18,47 +71,12 @@
   border: none;
 }
 
-#errorMessageDecimal{
-    color: red;
-}
-
-#errorMessageHeight{
-    color: red;
-}
-
 #pregnancyBtn{
     margin-top: -6px;
 }
-#patientHistoryColumn{
-    margin-left: 122px;
-}
 
-/*Boot strap overrides*/
-.clear-none {
-  clear: none !important;
-}
-
-.patientMedicalHistory {
-  padding-bottom: 4px !important;
-  margin-bottom: 4px !important;
-}
-
-.padding-right-zero {
-  padding-right: 0 !important;
-}
-
-.padding-left-zero {
-  padding-left: 0 !important;
-}
-
-.bold {
-  font-weight: bold;
-}
 
 .red {
     color:red;
 }
 
-.age-input {
-    display:inline-block !important;
-}

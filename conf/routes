@@ -7,7 +7,7 @@ GET         /admin/users/edit/:id       @femr.ui.controllers.admin.UsersControll
 POST        /admin/users/create         @femr.ui.controllers.admin.UsersController.createPost()
 GET         /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()
 GET         /admin/users                @femr.ui.controllers.admin.UsersController.index()
-GET         /admin                      femr.ui.controllers.admin.AdminController.index()
+GET         /admin                      @femr.ui.controllers.admin.AdminController.index()
 GET         /pharmacy/typeahead         @femr.ui.controllers.PharmaciesController.typeaheadJSONGet()
 GET         /pharmacy                   @femr.ui.controllers.PharmaciesController.index()
 GET         /pharmacy/find              @femr.ui.controllers.PharmaciesController.createGet()

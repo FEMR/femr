@@ -89,6 +89,20 @@ hr {
     background-color: #e5e5e5;
     border: 1px solid #3f3f3d;
 }
+/* THE fEMR input! */
+.fInput{
+    border-radius: 5px;
+    height: 33px;
+    width: 175px;
+    border: 1px solid #ccc;
+    padding: 5px 10px 5px 10px;
+    background-color: white;
+    color: #555;
+
+}
+.fInput:focus{
+    box-shadow: 0 0 5px #3f3f3d
+}
 
 /* The following 2 sections are used on both Medical and pharmacy */
 /* General info wrapper*/

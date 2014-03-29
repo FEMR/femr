@@ -12,12 +12,12 @@ import java.util.List;
 public interface IPatientResearch {
 
 
-    ResearchDataModel getResearchDataModel();
+//    ResearchDataModel getResearchDataModel();
+//
+//    void setResearchDataModel(ResearchDataModel researchDataModel);
 
-    void setResearchDataModel(ResearchDataModel researchDataModel);
 
 
-    /*
     int getId();
 
     int getPatientId();
@@ -38,7 +38,7 @@ public interface IPatientResearch {
 
     List<femr.common.models.research.IPatientPrescription> getPatientPrescriptions();
 
-    void setPatientPrescriptions(List<femr.common.models.research.IPatientPrescription> patientPrescriptions); */
+    void setPatientPrescriptions(List<femr.common.models.research.IPatientPrescription> patientPrescriptions);
 
 
 

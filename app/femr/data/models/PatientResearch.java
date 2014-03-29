@@ -18,9 +18,10 @@ import java.util.List;
  * //@Table(name = "patient_encounter")
  */
 @Entity
-@Sql
+@Table(name = "patient_encounters")
 public class PatientResearch implements IPatientResearch {
 
+    /*
     @OneToMany
     ResearchDataModel researchDataModel;
 
@@ -30,9 +31,9 @@ public class PatientResearch implements IPatientResearch {
 
     public void setResearchDataModel(ResearchDataModel researchDataModel) {
         this.researchDataModel = researchDataModel;
-    }
+    } */
 
-    /*
+
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
@@ -43,20 +44,17 @@ public class PatientResearch implements IPatientResearch {
     @Column(name = "chief_complaint", nullable = true)
     private String chiefComplaint;
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = femr.data.models.research.Patient.class,
-                cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = femr.data.models.research.Patient.class,cascade = CascadeType.ALL)
     @JoinTable(
             name = "patients",
             joinColumns = {@JoinColumn(name = "id", referencedColumnName = "patient_id")},
             inverseJoinColumns = {@JoinColumn(name = "id", referencedColumnName = "patient_id")})
     private List<femr.common.models.research.IPatient> patients;
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = PatientPrescription.class,
-                cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = femr.data.models.research.PatientPrescription.class,cascade = CascadeType.ALL)
     @JoinTable(
             name = "patient_prescriptions",
-            joinColumns = {@JoinColumn(name = "encounter_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "encounter_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "encounter_id", referencedColumnName = "id")})
     private List<IPatientPrescription> patientPrescriptions;
 
 
@@ -108,5 +106,5 @@ public class PatientResearch implements IPatientResearch {
         this.patientPrescriptions = patientPrescriptions;
     }
 
-    */
+
 }

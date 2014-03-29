@@ -54,20 +54,11 @@ public class ResearchController extends Controller {
      */
     public Result index() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        researchService.testModelSQL();
 
-        /*ServiceResponse<List<PatientResearch>> patientResearchServiceResponse =  researchService.testModel();
-        List<? extends IPatientResearch> patientResearches = new ArrayList<>();
-        if(patientResearchServiceResponse.hasErrors()) {
-            patientResearchServiceResponse.getErrors();
-        }
-        else {
-            patientResearches = patientResearchServiceResponse.getResponseObject();
-        } */
+        researchService.ManualSqlQuery("test");
+
 
         // Create the viewModel
-        //CreateViewModelPost viewModelPost = new CreateViewModelPost();
-        //QueryObjectPatientModel viewPatientModel = CreatePatientModel();
         CreateViewModelGet viewModel = new CreateViewModelGet();
         viewModel.setPatientModel(CreatePatientModel());
 
@@ -108,7 +99,7 @@ public class ResearchController extends Controller {
         patientProperties.add(new Pair<String, Object>("ID", Integer.class));
         patientProperties.add(new Pair<String, Object>("Age", Integer.class));
         patientProperties.add(new Pair<String, Object>("City", String.class));
-        patientProperties.add(new Pair<String, Object>("Gender", String.class));
+        patientProperties.add(new Pair<String, Object>("Sex", String.class));
         patientProperties.add(new Pair<String, Object>("Date Taken", String.class));
         patientProperties.add(new Pair<String, Object>("Medication", String.class));
         patientProperties.add(new Pair<String, Object>("Treatment", String.class));

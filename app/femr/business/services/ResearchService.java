@@ -9,7 +9,11 @@ import femr.data.daos.IRepository;
 import femr.data.models.Patient;
 import femr.data.models.PatientResearch;
 import femr.ui.controllers.research.ResearchDataModel;
+import play.db.DB;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
 
@@ -142,14 +146,65 @@ public class ResearchService implements IResearchService{
     }
 
 
+    public ResultSet ManualSqlQuery(String sql) {
+        Connection connection = DB.getConnection();
 
+        String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.sex, pp.medication_name ";
+
+        String sqlFrom = " FROM patient_encounters as pe " +
+                " JOIN patients as p " +
+                "   ON pe.patient_id = p.id " +
+                " JOIN patient_prescriptions as pp " +
+                "   ON pe.id = pp.encounter_id " +
+                " ";
+
+
+        String sqlWhere = " WHERE p.sex = 'Male' AND SOUNDEX(pp.medication_name) LIKE SOUNDEX('tilenal') ";
+
+        String sqlGroup = " GROUP BY pe.id ";
+
+        String MasterSQL = sqlSelect + sqlFrom + sqlWhere + sqlGroup;
+        try {
+            Statement st = connection.createStatement();
+            ResultSet resultSet = st.executeQuery(MasterSQL);
+
+            while(resultSet.next())
+            {
+                System.out.println(resultSet.getString("patient_id") + " " + resultSet.getString("encounter_id") + " " +
+                        resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("medication_name"));
+            }
+
+            return resultSet;
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     @Override
     public ServiceResponse<List<? extends IPatientResearch>> testModel() {
-        Query<PatientResearch> query = getPatientResearchQuery();
+        Query<PatientResearch> query = getPatientResearchQuery()
+                .select("id,patient.age")
+                .where()
+                .eq("age", "1999-01-09")
+                .order().desc("age");
 
+        String sqlStr = query.getGeneratedSql();
+        System.out.println("This is the raw QUERY: " + sqlStr);
+        List<? extends IPatientResearch> patientResearchs = patientResearchRepository.find(query);
+        IPatientResearch patientResearch;
+        ServiceResponse<List<? extends IPatientResearch>> response = new ServiceResponse<>();
 
-        return null;
+        if(patientResearchs.isEmpty()) {
+            response.addError("PatientResearch", "failed to query database");
+        }
+        else {
+            response.setResponseObject(patientResearchs);
+        }
+
+        return response;
     }
 
 

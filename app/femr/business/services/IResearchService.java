@@ -7,6 +7,7 @@ import femr.common.models.IPatientResearch;
 import femr.data.models.PatientResearch;
 import femr.ui.controllers.research.ResearchDataModel;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 /**
@@ -19,4 +20,7 @@ public interface IResearchService {
     ServiceResponse<List<? extends IPatientResearch>> testModel();
 
     List<PatientResearch> testModelSQL();
+    ResultSet ManualSqlQuery(String sql);
+
+
 }

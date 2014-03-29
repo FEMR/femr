@@ -80,7 +80,7 @@ public class MedicalController extends Controller {
         DateTime dateNow = dateUtils.getCurrentDateTime();
         DateTime dateTaken;
 
-        if (hasPatientBeenCheckedIn == true) {
+        if (hasPatientBeenCheckedIn) {
             ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
             if (dateResponse.hasErrors()) {
                 message = "A fatal error has been encountered. Please try again.";
@@ -110,16 +110,14 @@ public class MedicalController extends Controller {
             dateTaken = new DateTime(year, month, day, 0, 0);
             DateTime dayAfterTaken = dateTaken.plusDays(1);
             if (dateNow.dayOfYear().equals(dateTaken.dayOfYear()) && dateNow.year().equals(dateTaken.year())) {
-
+                return redirect(routes.MedicalController.editGet(searchViewModel.getId()));
             } else if (dateNow.dayOfYear().equals(dayAfterTaken.dayOfYear()) && dateNow.year().equals(dayAfterTaken.year())) {
-
+                return redirect(routes.MedicalController.editGet(searchViewModel.getId()));
             } else {
                 message = "That patient's encounter has been closed.";
-                id = 0;
-                return ok(index.render(currentUserSession, message, id));
+                return ok(index.render(currentUserSession, message, 0));
             }
         }
-        return redirect(routes.MedicalController.editGet(searchViewModel.getId()));
     }
 
     public Result editGet(int patientId) {

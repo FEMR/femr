@@ -21,42 +21,52 @@ body{
 }
 
 /* General page styles */
-#generalInfoWrap {
-    /*background-color: #cbcac2;*/
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    border: 1px solid #bfbeb5;
+
+/* Wrapper for general info section and main section*/
+#medicalContentWrap{
+    /*border-radius: 10px;*/
+
+    /*border: 1px solid #bfbeb5;*/
+
 }
 
+/* General info wrapper */
+#generalInfoWrap {
+    border-radius: 10px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
+
+}
 #generalInfoWrap span {
     padding: 5px;
+}
+
+/* Main section wrapper*/
+#mainWrap {
+    margin-top: 15px;
+    border-radius: 10px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
+    clear: both;
+    overflow: auto;
+
+}
+
+/* Vitals (part of main section) wrapper*/
+#vitalsWrap {
 
 }
 
 #tabContentWrap {
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     min-height: 550px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
 
-#vitalsWrap {
-    /*border-right: 1px solid #b1aaa0;*/
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
 
-#vitalMainWrap {
-    /*background-color: #cbcac2;*/
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom: 1px solid #bfbeb5;
-    /*border-right: 1px solid #bfbeb5;*/
-    border-left: 1px solid #bfbeb5;
 
-}
+
 
 /* Buttons */
 .addSubtractBtn {

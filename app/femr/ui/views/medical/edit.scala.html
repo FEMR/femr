@@ -26,7 +26,7 @@
     <input type="hidden" value="@viewModel.getpID" id="patientId"/>
 
     <div id="medicalContentWrap">
-        <div class="row" id="generalInfoWrap">
+        <div id="generalInfoWrap">
 
             <h3 class="text-center">Patient Overview - Medical</h3>
 
@@ -53,12 +53,12 @@
 
 
             <div class="pull-right" id="historyButtonWrap">
-            @historyButton(viewModel.getpID())
+            @*  @historyButton(viewModel.getpID())*@
             </div>
         </div>
 
 
-        <div class="row" id="vitalMainWrap">
+        <div id="mainWrap">
             <div class="col-xs-1 col-sm-1 col-md-1" id="vitalsWrap">
                 <h5>Vitals</h5>
                 <div id="populatedVitals">
@@ -280,6 +280,8 @@
 
                     }
         </div>
-        }
+        </div>
     </div>
-</div>
+}
+
+

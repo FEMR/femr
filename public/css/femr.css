@@ -1,7 +1,13 @@
+@font-face {
+    font-family: "dejavu";
+    src: url("../fonts/DejaVuSansCondensed.ttf");
+}
+
 body {
     padding-top: 50px;
-    background: url("../img/paper_3.png") repeat;
-    font-family: 'Roboto', Helvetica;
+    /*http://api.thumbr.it/whitenoise-361x370.png?background=a8a699ff&noise=626262&density=15&opacity=75*/
+    background: url("../img/paper_greyNoise.png") repeat;
+    font-family: dejavu;
 }
 
 hr {

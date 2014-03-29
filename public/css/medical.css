@@ -1,26 +1,32 @@
 
+
+/*
+background color link:
+http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&density=3&opacity=28
+*/
+
+
 input, textarea {
     border-style: ridge;
-    background: #32313b !important;
     background-repeat: repeat;
     margin: 1px 1px 1px 0px;
-    color: white !important;
-
 }
 label{
-    color: #39b1c6;
+    /*color: #39b1c6;*/
+
 }
 
 body{
-    color: #EDEDED !important;
+    /*color: #EDEDED !important;*/
 }
 
 /* General page styles */
 #generalInfoWrap {
-    background-color: #25242c;
+    /*background-color: #cbcac2;*/
+    background: url("../img/paper_greyLightNoise.png") repeat;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    /*border: 1px solid #b1aaa0;*/
+    border: 1px solid #bfbeb5;
 }
 
 #generalInfoWrap span {
@@ -42,12 +48,13 @@ body{
 }
 
 #vitalMainWrap {
-    background-color: #25242c;
+    /*background-color: #cbcac2;*/
+    background: url("../img/paper_greyLightNoise.png") repeat;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
-    border-bottom: 1px solid #b1aaa0;
-    border-right: 1px solid #b1aaa0;
-    border-left: 1px solid #b1aaa0;
+    border-bottom: 1px solid #bfbeb5;
+    /*border-right: 1px solid #bfbeb5;*/
+    border-left: 1px solid #bfbeb5;
 
 }
 

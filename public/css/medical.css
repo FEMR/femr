@@ -1,44 +1,36 @@
-
-
 /*
 background color link:
 http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&density=3&opacity=28
 */
 
-
-input, textarea {
-    border-style: ridge;
-    background-repeat: repeat;
-    margin: 1px 1px 1px 0px;
-}
-label{
-    /*color: #39b1c6;*/
-
-}
-
-body{
-    /*color: #EDEDED !important;*/
-}
-
 /* General page styles */
 
 /* Wrapper for general info section and main section*/
-#medicalContentWrap{
-    /*border-radius: 10px;*/
-
-    /*border: 1px solid #bfbeb5;*/
+#medicalContentWrap {
 
 }
 
 /* General info wrapper */
-#generalInfoWrap {
+#patientOverviewWrap {
     border-radius: 10px;
     background: url("../img/paper_greyLightNoise.png") repeat;
     border: 3px solid #3f3f3d;
+}
+
+#patientOverviewWrap span {
+    padding: 4px;
+}
+
+#generalInfoWrap{
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 15px;
+}
+#patientInfo{
 
 }
-#generalInfoWrap span {
-    padding: 5px;
+#chiefComplaint{
+
 }
 
 /* Main section wrapper*/
@@ -47,26 +39,39 @@ body{
     border-radius: 10px;
     background: url("../img/paper_greyLightNoise.png") repeat;
     border: 3px solid #3f3f3d;
-    clear: both;
-    overflow: auto;
 
+    overflow: hidden;
+    padding: 10px;
+    height: 100%;
 }
 
 /* Vitals (part of main section) wrapper*/
 #vitalsWrap {
+    float: left;
+    width: 10%;
+    min-height: 670px;
+    padding-right: 10px;
+}
 
+#inputWrap {
+    float: left;
+    width: 90%;
+    padding: 1px;
 }
 
 #tabContentWrap {
-    /*border: 1px solid black;*/
+    float: left;
+    width: 100%;
     min-height: 550px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
 
-
-
-
+.controlWrap {
+    border: solid #b2b2b0;
+    border-width: 0px 1px 1px 1px;
+    padding: 10px;
+}
 
 /* Buttons */
 .addSubtractBtn {
@@ -75,8 +80,8 @@ body{
     background-color: #e1e8f6;
 }
 
-#medicalSubmitBtn{
-    margin-right: 15px;
+#medicalSubmitBtn {
+    margin: 15px 0px 5px 15px;
     width: 175px;
 }
 
@@ -85,26 +90,36 @@ body{
     width: 175px;
 }
 
-.fButton{
-    background-color: #32313b;
-    color: #f49e5d;
-    border: 1px solid black;
+.fButton {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #3f3f3d;
 
     padding: 6px 12px;
     border-radius: 4px;
 }
-.fButton:hover{
-    background-color: #3e3d49;
+
+.fButton:hover {
+    background-color: #e5e5e5;
+    border: 1px solid #3f3f3d;
 }
 
-
+#resetVitalsBtn {
+    margin-top: 28px;
+}
 
 /* Tabs */
-#medicalTabs {
-    margin: 0;
-    padding: 15px 0 0 0;
+.tabWrap {
     float: left;
     width: 100%;
+}
+
+#medicalTabs {
+    margin-bottom: 0;
+    padding: 15px 0 0 0;
+    overflow: hidden;
+    width: 100%;
+    border-bottom: 1px solid #b2b2b0;
 }
 
 #medicalTabs li {
@@ -115,9 +130,7 @@ body{
 }
 
 #medicalTabs li.active a {
-    background: #25242c;
-    border-bottom: 1px solid #25242c;
-    margin-bottom: -1px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
 }
 
 #medicalTabs li:first-child a {
@@ -127,15 +140,15 @@ body{
 
 #medicalTabs a:link,
 #medicalTabs a:visited {
-    margin-left: 5px;
+
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    /*border: 1px solid #5fb9c4;*/
-    border: 1px solid black;
+    border: 1px solid #b2b2b0;
     border-bottom: none;
+    margin-left: 5px;
     color: #000;
-    background: #222222;
-    padding: 10px 25px 10px 25px;
+    background: #d4d3cc;
+    padding: 10px 20px 5px 20px;
     float: left;
     width: auto;
     text-decoration: none;
@@ -146,7 +159,5 @@ body{
 #medicalTabs a:hover,
 #medicalTabs a:focus {
     color: #000;
-    background: #25242c;
-    border-bottom: 1px solid #25242c;
-    margin-bottom: -1px;
+    background: #a9a8a3;
 }

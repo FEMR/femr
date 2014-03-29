@@ -73,3 +73,54 @@ hr {
 .listUserBtn{
     margin-top: 0px !important;
 }
+
+
+/* THE fEMR button! */
+.fButton {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #3f3f3d;
+
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.fButton:hover {
+    background-color: #e5e5e5;
+    border: 1px solid #3f3f3d;
+}
+
+/* The following 2 sections are used on both Medical and pharmacy */
+/* General info wrapper*/
+#patientOverviewWrap {
+    border-radius: 10px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
+}
+
+#patientOverviewWrap span {
+    padding: 4px;
+}
+
+#generalInfoWrap{
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 15px;
+}
+/* Main section wrapper*/
+#mainWrap {
+    margin-top: 15px;
+    border-radius: 10px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
+
+    overflow: hidden;
+    padding: 10px;
+    height: 100%;
+}
+/* Medical and Pharmacy landing pages */
+.searchWrap{
+    width: 300px;
+    text-align: center;
+    margin: 0 auto;
+}

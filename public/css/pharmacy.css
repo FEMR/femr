@@ -1,25 +1,32 @@
-.medicationContainer{
-    border-left: 1px solid black;
-}
 
-.add-margin{
-    margin-bottom: 20px;
+
+
+
+/* General page styles */
+
+#diagnosisWrap{
+    width: 30%;
+    float: left;
+    border-right: 1px solid #b2b2b0;
+    padding: 5px;
+}
+#medicationWrap{
+    width: 70%;
+    float: left;
+    padding: 5px;
 }
 
 .problems li{
     font-size: 15px;
     margin-bottom: 35px;
 }
-.title{
-    font-size: 24px;
-    font-weight: lighter;
-    margin-bottom: 15px;
-}
-.smallTitle{
-    font-size: 20px;
-    font-weight: lighter;
-    margin-bottom: 15px;
-}
+
+
+
+
+
+
+
 
 
 

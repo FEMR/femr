@@ -35,27 +35,17 @@
 
 
                 <div id="chiefComplaint">
-                    <span><label>Complaint:</label>
-                        @viewModel.getChiefComplaint</span>
+                    @if(viewModel.getChiefComplaint != null && !viewModel.getChiefComplaint.isEmpty()){
+                        <span><label>Complaint:</label>@viewModel.getChiefComplaint</span>
+                    }
                 </div>
                 <div id="patientInfo">
-                    <span><label>Name:</label>
-                        @viewModel.getFirstName @viewModel.getLastName</span>
-
-                    <span><label for="">Age:</label>
-                        @viewModel.getAge</span>
-
-                    <span><label for="">Sex:</label>
-                        @viewModel.getSex</span>
-
-
-                    <span><label for="">City:</label>
-                        @viewModel.getCity</span>
-
-
+                    <span><label>Name:</label>@viewModel.getFirstName @viewModel.getLastName</span>
+                    <span><label for="">Age:</label>@viewModel.getAge</span>
+                    <span><label for="">Sex:</label>@viewModel.getSex</span>
+                    <span><label for="">City:</label>@viewModel.getCity</span>
                     @if(viewModel.getWeeksPregnant != null && viewModel.getWeeksPregnant > 0) {
-                        <span><label>Weeks Pregnant:</label>
-                            @viewModel.getWeeksPregnant</span>
+                        <span><label>Weeks Pregnant:</label>@viewModel.getWeeksPregnant</span>
                     }
                 </div>
 
@@ -216,7 +206,7 @@
                             <textarea rows="3" name="assessment" class="form-control input-sm">@viewModel.getAssessment</textarea>
                         </div>
                         <div class="form-group">
-                            <label for="problem">Problem List</label>
+                            <label for="problem">Diagnosis</label>
                             <div class="row">
                                 <div class="col-xs-9 col-sm-9 col-md-9">
                                     @inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")

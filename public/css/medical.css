@@ -10,22 +10,9 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 
 }
 
-/* General info wrapper */
-#patientOverviewWrap {
-    border-radius: 10px;
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border: 3px solid #3f3f3d;
-}
 
-#patientOverviewWrap span {
-    padding: 4px;
-}
 
-#generalInfoWrap{
-    overflow: hidden;
-    text-align: center;
-    margin-bottom: 15px;
-}
+
 #patientInfo{
 
 }
@@ -33,17 +20,7 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 
 }
 
-/* Main section wrapper*/
-#mainWrap {
-    margin-top: 15px;
-    border-radius: 10px;
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border: 3px solid #3f3f3d;
 
-    overflow: hidden;
-    padding: 10px;
-    height: 100%;
-}
 
 /* Vitals (part of main section) wrapper*/
 #vitalsWrap {
@@ -88,20 +65,6 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 #historyButtonWrap {
     margin-top: 10px;
     width: 175px;
-}
-
-.fButton {
-    background-color: #ffffff;
-    color: black;
-    border: 1px solid #3f3f3d;
-
-    padding: 6px 12px;
-    border-radius: 4px;
-}
-
-.fButton:hover {
-    background-color: #e5e5e5;
-    border: 1px solid #3f3f3d;
 }
 
 #resetVitalsBtn {

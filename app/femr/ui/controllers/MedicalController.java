@@ -3,10 +3,7 @@ package femr.ui.controllers;
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
-import femr.business.services.IMedicalService;
-import femr.business.services.ISearchService;
-import femr.business.services.ISessionService;
-import femr.business.services.ITriageService;
+import femr.business.services.*;
 import femr.common.models.*;
 import femr.data.models.PatientEncounterHpiField;
 import femr.ui.helpers.controller.MedicalHelper;
@@ -20,8 +17,10 @@ import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import play.mvc.Http.MultipartFormData.FilePart;
 
 import java.util.*;
 
@@ -37,15 +36,20 @@ public class MedicalController extends Controller {
     private ITriageService triageService;
     private IMedicalService medicalService;
     private MedicalHelper medicalHelper;
+    private IPhotoService photoService;
 
     @Inject
-    public MedicalController(ISessionService sessionService, ISearchService searchService, ITriageService triageService, IMedicalService medicalService, MedicalHelper medicalHelper) {
+    public MedicalController(ISessionService sessionService, ISearchService searchService,
+                             ITriageService triageService, IMedicalService medicalService,
+                             MedicalHelper medicalHelper,
+                             IPhotoService photoService) {
 
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.triageService = triageService;
         this.medicalService = medicalService;
         this.medicalHelper = medicalHelper;
+        this.photoService = photoService;
     }
 
     public Result indexGet(Integer patientId) {
@@ -135,6 +139,8 @@ public class MedicalController extends Controller {
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
+        ServiceResponse<List<IPhoto>> photoList = photoService.GetEncounterPhotos(patientEncounter.getId());
+
         //Get Prescriptions
         ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse
                 = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
@@ -193,17 +199,18 @@ public class MedicalController extends Controller {
             vitalMap = patientEncounterVitalMapResponse.getResponseObject();
         }
 
-        //endregion
 
         //Populate ViewModel
 
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient,
-                patientEncounter,
-                patientPrescriptions,
-                vitalMap,
-                patientEncounterTreatmentMap,
-                patientEncounterHpiMap,
-                patientEncounterPmhMap);
+        ServiceResponse<List<IPhoto>> photoLstSr = photoService.GetEncounterPhotos(patientEncounter.getId());
+        List<IPhoto> photoLst = null;
+        if(!photoLstSr.hasErrors())
+            photoLst = photoLstSr.getResponseObject();
+
+        //set up viewModelGet with everything except vitals
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter,
+                patientPrescriptions, vitalMap, patientEncounterTreatmentMap,
+                patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -224,6 +231,10 @@ public class MedicalController extends Controller {
             return internalServerError();
         }
         IPatient patient = patientServiceResponse.getResponseObject();
+
+        List<FilePart> fps = request().body().asMultipartFormData().getFiles();
+
+        photoService.HandleEncounterPhotos(fps, patientEncounter, viewModelPost);
 
         //region **Save stuff**
         //HPI tab

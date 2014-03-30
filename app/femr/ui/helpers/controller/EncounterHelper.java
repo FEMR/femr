@@ -1,17 +1,22 @@
 package femr.ui.helpers.controller;
 
+import akka.dispatch.Create;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.ISearchService;
 import femr.business.services.IUserService;
 import femr.common.models.*;
+import femr.ui.controllers.routes;
 import femr.ui.models.search.CreateEncounterViewModel;
+import femr.ui.models.search.CreateViewModel;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +43,7 @@ public class EncounterHelper {
         this.searchService = searchService; // used to retreive the replacement pharmacy name
     }
 
-    public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, VitalMultiMap patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
+    public CreateEncounterViewModel populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, VitalMultiMap patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap, List<IPhoto> photos) {
         CreateEncounterViewModel viewModelGet = new CreateEncounterViewModel();
         //prescriptions
 
@@ -113,6 +118,30 @@ public class EncounterHelper {
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
         viewModelGet.setVitalList(patientEncounterVitalMap);
+//        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
+//        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
+//        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
+//        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
+//        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
+//        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
+//        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
+//        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
+//        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
+//        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
+        //Medication
+
+        //Setup photo info:
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        for(IPhoto p : photos)
+        {
+            CreateEncounterViewModel.PhotoModel pm = new CreateEncounterViewModel.PhotoModel();
+            pm.setId(p.getId()); //set photo Id
+            pm.setImageDesc(p.getDescription()); //set description
+            pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(p.getId()).toString()); //set image URL
+            pm.setImageDate(StringUtils.ToSimpleDate(p.getInsertTS()));
+            //finally, add to collection:
+            viewModelGet.getPhotos().add(pm);
+        }
 
         return viewModelGet;
     }

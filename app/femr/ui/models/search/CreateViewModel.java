@@ -14,6 +14,8 @@ public class CreateViewModel {
     private String sex;
     private int userID;
     private List<IPatient> patientNameResult;
+    private List<String>   photoURIs;
+    private String photoURI;
 
     public String getFirstName() {
         return firstName;
@@ -76,7 +78,10 @@ public class CreateViewModel {
         setSex(patient.getSex());
         setPatientID(patient.getId());
         setAge(dateUtils.getAge(patient.getAge()));
+        setPhotoURI(this.photoURIs.get(index));
     }
+
+    public void setPhotoURIList(List<String> photoURIs) { this.photoURIs = photoURIs;}
 
     public void setPatientNameResult(List patientNameResult) {
         this.patientNameResult = patientNameResult;
@@ -89,4 +94,7 @@ public class CreateViewModel {
     public void setPatientID(int userID) {
         this.userID = userID;
     }
+
+    public String getPhotoURI() { return this.photoURI; }
+    public void   setPhotoURI(String photoURI) { this.photoURI = photoURI; }
 }

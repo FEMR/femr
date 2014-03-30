@@ -30,7 +30,7 @@ function checkRequiredInput() {
         pass = false;
     }
     if (!$('#age').val() && !$('#readOnlyBirthDate').val()) {
-        $('#age').val(null);
+        //$('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
         $('#years').css('border-color','red');
@@ -46,7 +46,7 @@ function checkRequiredInput() {
         var inputDay = $('#age').val().split('-')[2];
         var inputDate = new Date(inputYear, inputMonth, inputDay);
         if (inputDate > Date.now()) {
-            $('#age').val(null);
+            //$('#age').val(null);
             $('#age').css('border-color', 'red');
             $('#years').val(null);
             $('#years').css('border-color','red');
@@ -58,7 +58,7 @@ function checkRequiredInput() {
         }
     }
     if (!$('#years').val() && !$('#months').val() && !$('#readOnlyAge').val()) {
-        $('#age').val(null);
+        //$('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
         $('#years').css('border-color','red');
@@ -162,7 +162,7 @@ function checkNumbers(){
         months = 0;
     }
     if (years + months/12 > 125) {
-        $('#age').val(null);
+        //$('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
         $('#years').css('border-color','red');

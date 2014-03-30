@@ -41,7 +41,7 @@ public class PhotoService implements IPhotoService {
         catch(Exception ex)
         {
             //If config doesn't exist, default to "photos"
-            _path = "photos";
+            _path = "./photos";
         }
 
         //Append ending slash if needed

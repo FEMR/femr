@@ -60,6 +60,7 @@ p {
     font-size: 15px;
 }
 
+
 /* background */
 .encounterInfoWrap{
     padding: 20px;
@@ -126,4 +127,13 @@ p {
 #encounterTabs a:focus {
     color: #000;
     background: url("../img/paper_greyLightNoise.png") repeat;
+
+.searchThumb {
+    width: 80px;
+    height: 80px;
+}
+
+.table tbody>tr>td.vert-align
+{
+    vertical-align: middle;
 }

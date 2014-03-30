@@ -1,6 +1,7 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import com.typesafe.config.ConfigFactory;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.IPhotoService;
 import femr.business.services.ISearchService;
@@ -29,7 +30,13 @@ public class PhotoController {
     }
 
 
-    public Result GetPatientPhoto(Integer patientId)
+    /**
+     * Returns patient image file
+     * @param patientId Patient Primary Key Value
+     * @param showDefault If True, return default image when patient photo is not found, else return nothing
+     * @return
+     */
+    public Result GetPatientPhoto(Integer patientId, Boolean showDefault)
     {
         try
         {
@@ -58,7 +65,21 @@ public class PhotoController {
         {
         }
 
-        String temp = null;
-        return ok(temp);
+        //If there is no photo, then attempt to return the default image from config file
+        if(showDefault)
+        {
+            try
+            {
+                String path = ConfigFactory.load().getString("photos.defaultProfilePhoto");
+                return ok(new File(path)).as("image/jpg");
+            }
+            catch(Exception ex)
+            {
+                String temp = ex.getMessage();
+            }
+        }
+
+        //No luck, return nothing
+        return ok("");
     }
 }

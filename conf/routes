@@ -15,7 +15,7 @@ POST        /pharmacy/find              @femr.ui.controllers.PharmaciesControlle
 GET         /show/encounter/:id         @femr.ui.controllers.SearchController.viewEncounter(id: Integer)
 GET         /show                       @femr.ui.controllers.SearchController.createGet()
 GET         /triage/find                @femr.ui.controllers.TriageController.createPopulatedGet()
-GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer)
+GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /triage                     @femr.ui.controllers.TriageController.createGet()
 POST        /triage                     @femr.ui.controllers.TriageController.createPost(id: Integer)
 GET         /medical/newVitals          @femr.ui.controllers.MedicalController.newVitalsGet()
@@ -29,6 +29,7 @@ GET         /logout                     @femr.ui.controllers.SessionsController.
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()
 GET         /login                      @femr.ui.controllers.SessionsController.createGet()
 GET         /                           @femr.ui.controllers.HomeController.index()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file               controllers.Assets.at(path="/public", file)

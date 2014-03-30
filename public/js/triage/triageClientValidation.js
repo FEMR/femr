@@ -30,7 +30,7 @@ function checkRequiredInput() {
         pass = false;
     }
     if (!$('#age').val() && !$('#readOnlyBirthDate').val()) {
-        $('#age').val(null);
+        //$('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
         $('#years').css('border-color','red');
@@ -46,7 +46,7 @@ function checkRequiredInput() {
         var inputDay = $('#age').val().split('-')[2];
         var inputDate = new Date(inputYear, inputMonth, inputDay);
         if (inputDate > Date.now()) {
-            $('#age').val(null);
+            //$('#age').val(null);
             $('#age').css('border-color', 'red');
             $('#years').val(null);
             $('#years').css('border-color','red');
@@ -57,19 +57,8 @@ function checkRequiredInput() {
             pass = false;
         }
     }
-    if (!$('#years').val() && !$('#readOnlyAge').val()) {
-        $('#age').val(null);
-        $('#age').css('border-color', 'red');
-        $('#years').val(null);
-        $('#years').css('border-color','red');
-        $('#years').attr('placeholder','Input age');
-        $('#months').val(null);
-        $('#months').css('border-color','red');
-        $('#months').attr('placeholder','or birth date');
-        pass = false;
-    }
-    if (!$('#months').val() && !$('#readOnlyAge').val()) {
-        $('#age').val(null);
+    if (!$('#years').val() && !$('#months').val() && !$('#readOnlyAge').val()) {
+        //$('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
         $('#years').css('border-color','red');
@@ -161,8 +150,19 @@ function checkNumbers(){
         pass = false;
     }
     //Age < 125
-    if (parseInt($('#years').val()) + parseInt($('#months').val())/12 > 125) {
-        $('#age').val(null);
+    var years, months;
+    if ($('#years').val()) {
+        years = parseInt($('#years').val());
+    } else {
+        years = 0;
+    }
+    if ($('#months').val()) {
+        months = parseInt($('#months').val());
+    } else {
+        months = 0;
+    }
+    if (years + months/12 > 125) {
+        //$('#age').val(null);
         $('#age').css('border-color', 'red');
         $('#years').val(null);
         $('#years').css('border-color','red');

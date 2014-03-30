@@ -22,8 +22,11 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is the controller for the research page
@@ -54,9 +57,6 @@ public class ResearchController extends Controller {
      */
     public Result index() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-
-        researchService.ManualSqlQuery("test");
-
 
         // Create the viewModel
         CreateViewModelGet viewModel = new CreateViewModelGet();
@@ -114,9 +114,69 @@ public class ResearchController extends Controller {
 
     //TODO-RESEARCH: Add the code for rest the Research controller here
 
+    /**
+     * Gets the generated search query and parses it then sends it to the service layer and displays the results
+     * @return The Rendered results the the view
+     */
     public Result createPost() {
         //bind QueryString from POST request
         CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
+
+        // This is siimple parsing for now just proof of concept
+        Map<String,String> patientMap = new HashMap<>();
+        patientMap.put("ID","p.id");
+        patientMap.put("Age","p.age");
+        patientMap.put("City","p.city");
+        patientMap.put("Sex","p.sex");
+        patientMap.put("Date Taken","p.date_taken");
+        patientMap.put("Medication","pp.medication_name");
+        patientMap.put("Treatment","petf.treatment");
+
+        String sql = " WHERE ";
+        // split the string by spaces
+        String[] splitStr = viewModelPost.getQueryString().split("\\s+");
+        int count = 1;  // indicates what we are looking for
+        for(String word : splitStr)
+        {
+            // if count is 1 then get the property and returns its mapped name in the database
+            if(count == 1) {
+                sql += patientMap.get(word) + " ";
+                count ++;
+            }
+            // if count is 2 then get the comparison symbol
+            else if(count == 2) {
+                sql += word + " ";
+                count ++;
+            }
+            // if count is 3 get the value and put it in single quotes
+            else if(count == 3) {
+                sql += "'" + word + "' ";
+                count ++;
+            }
+            // if count is 4 gets the logic value and resets count to 1
+            else if(count == 4){
+                sql += word + " ";
+                count = 1;
+            }
+        }
+
+        // execute query
+        ResultSet resultSet = researchService.ManualSqlQuery(sql);
+       try{
+            while(resultSet.next())
+            {
+                System.out.println(resultSet.getString("patient_id") + " " + resultSet.getString("encounter_id") + " " +
+                        resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("medication_name"));
+            }
+        } catch(Exception e) {
+           e.printStackTrace();
+       }
+
+        System.out.println(sql);
+
+
+
+
 
         //do a redirect because what the fuck else would i do
         return redirect("/research");

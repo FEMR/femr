@@ -145,7 +145,11 @@ public class ResearchService implements IResearchService{
         return results;
     }
 
-
+    /**
+     * Takes a sql string generated from user input and querys the databases
+     * @param sql The WHERE part of SQL query
+     * @return ResultSet or null 
+     */
     public ResultSet ManualSqlQuery(String sql) {
         Connection connection = DB.getConnection();
 
@@ -163,16 +167,10 @@ public class ResearchService implements IResearchService{
 
         String sqlGroup = " GROUP BY pe.id ";
 
-        String MasterSQL = sqlSelect + sqlFrom + sqlWhere + sqlGroup;
+        String MasterSQL = sqlSelect + sqlFrom + sql + sqlGroup;
         try {
             Statement st = connection.createStatement();
             ResultSet resultSet = st.executeQuery(MasterSQL);
-
-            while(resultSet.next())
-            {
-                System.out.println(resultSet.getString("patient_id") + " " + resultSet.getString("encounter_id") + " " +
-                        resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("medication_name"));
-            }
 
             return resultSet;
 

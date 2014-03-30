@@ -31,6 +31,7 @@ public class StringUtils {
         return formattedDate;
     }
 
+
     /**
      * Formats the regular date string into a more humanly readable one
      * @param dateString the Date string in the format yyyy-MM-dd HH:mm:ss.S
@@ -47,6 +48,19 @@ public class StringUtils {
             e.printStackTrace();
         }
         return formattedDate;
+    }
+
+    public static String ToSimpleDate(Date dt)
+    {
+        try
+        {
+            if(dt != null)
+                return new SimpleDateFormat("yyyy-MM-dd").format(dt);
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

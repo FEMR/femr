@@ -5,11 +5,52 @@ import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 
 public class CreateEncounterViewModel {
+
+    public static class PhotoModel
+    {
+        private String imageUrl;
+        private String imageDesc;
+        private String imageDate;
+        private int Id;
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public String getImageDesc() {
+            return imageDesc;
+        }
+
+        public void setImageDesc(String imageDesc) {
+            this.imageDesc = imageDesc;
+        }
+
+        public String getImageDate() {
+            return imageDate;
+        }
+
+        public void setImageDate(String imageDate) {
+            this.imageDate = imageDate;
+        }
+
+        public int getId() {
+            return Id;
+        }
+
+        public void setId(int id) {
+            Id = id;
+        }
+    }
 
     private String address;
     private String familyHist;
@@ -89,6 +130,18 @@ public class CreateEncounterViewModel {
     // List of Vitals
     private VitalMultiMap vitalList;
 
+    //List of photoModel objects
+    private List<PhotoModel> photos;
+
+    public List<PhotoModel> getPhotos() {
+        if(this.photos == null)
+            this.photos = new ArrayList<>();
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoModel> photos) {
+        this.photos = photos;
+    }
 
     public VitalMultiMap getVitalList() { return vitalList; }
 

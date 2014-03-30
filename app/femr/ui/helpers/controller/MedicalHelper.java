@@ -1,15 +1,19 @@
 package femr.ui.helpers.controller;
 
+import akka.dispatch.Create;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.CurrentUser;
 import femr.common.models.*;
+import femr.ui.controllers.routes;
 import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.medical.UpdateVitalsModel;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +35,7 @@ public class MedicalHelper {
         this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, VitalMultiMap vitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, VitalMultiMap vitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap, List<IPhoto> photoLst) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //prescriptions
         List<String> dynamicViewMedications = new ArrayList<>();
@@ -85,6 +89,18 @@ public class MedicalHelper {
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
         viewModelGet.setVitalMap(vitalMap);
+
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
+        //build photo list:
+        for(IPhoto photo : photoLst)
+        {
+            CreateViewModelGet.PhotoModel pm = new CreateViewModelGet.PhotoModel();
+            pm.setId(photo.getId());
+            pm.setImageDesc(photo.getDescription());
+            pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(photo.getId()).toString());
+            pm.setImageDate(StringUtils.ToSimpleDate(photo.getInsertTS()));
+            viewModelGet.getPhotos().add(pm);
+        }
 
         return viewModelGet;
     }

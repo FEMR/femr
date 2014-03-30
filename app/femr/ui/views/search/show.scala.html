@@ -27,12 +27,13 @@
 @medicalPersonnel("search", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
     @if(viewModel.getPatientNameResult != null) {
         @if(viewModel.getPatientNameResult.size() > 1) {
-            <div class="row searchResult">
+            <div class="encounterInfoWrap backgroundForWrap">
                 <div class="row well well-sm">
                     <h4 class="text-center">Duplicate Patient Search Results</h4>
                     <div class="panel panel-default">
-                        <table class="table">
+                        <table class="table vert-align">
                             <tr>
+                                <th>Photo</th>
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Gender</th>
@@ -40,15 +41,17 @@
                                 <th>City</th>
                                 <th>&nbsp;</th>
                             </tr>
+
                             @for(a <- 0 to viewModel.getPatientNameResult.size() - 1) {
                                 @viewModel.setDupList(a)
                                 <tr>
-                                    <td>@viewModel.getPatientID</td>
-                                    <td>@viewModel.getFirstName @viewModel.getLastName</td>
-                                    <td>@viewModel.getSex</td>
-                                    <td>@viewModel.getAge</td>
-                                    <td>@viewModel.getCity</td>
-                                    <td><button type="submit" onclick="setSearchResults ( @viewModel.getPatientID )"
+                                    <td class="vert-align"><img class="thumbnail searchThumb" src="@viewModel.getPhotoURI" /></td>
+                                    <td class="vert-align">@viewModel.getPatientID</td>
+                                    <td class="vert-align">@viewModel.getFirstName @viewModel.getLastName</td>
+                                    <td class="vert-align">@viewModel.getSex</td>
+                                    <td class="vert-align">@viewModel.getAge</td>
+                                    <td class="vert-align">@viewModel.getCity</td>
+                                    <td class="vert-align"><button type="submit" onclick="setSearchResults ( @viewModel.getPatientID )"
                                     id="selectPageFromRow" class="btn btn-default pull-right">Select</button>
                                     </td>
                                 </tr>

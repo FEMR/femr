@@ -27,6 +27,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IVital.class).toProvider(VitalProvider.class);
         bind(IPhoto.class).to(Photo.class);
         bind(IPatientResearch.class).toProvider(PatientResearchProvider.class);
+        bind(IPatientEncounterPhoto.class).to(PatientEncounterPhoto.class);
 
         bind(new TypeLiteral<IRepository<IHpiField>>() {
         }).to(new TypeLiteral<Repository<IHpiField>>() {
@@ -46,5 +47,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IVital>>() {}).to(new TypeLiteral<Repository<IVital>>() {});
         bind(new TypeLiteral<IRepository<IPhoto>>() {}).to(new TypeLiteral<Repository<IPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientResearch>>() {}).to(new TypeLiteral<Repository<IPatientResearch>>() {});
+        bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
     }
 }

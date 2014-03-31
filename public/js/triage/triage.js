@@ -210,14 +210,19 @@ $(document).ready(function () {
         if (integerCheck(checkYears) == true && integerCheck(checkMonths) == true) {
             $('#months').val(checkMonths);
             $('#years').val(checkYears);
-            var nowDate = new Date();
-            var birthMonth = nowDate.getMonth();
-            var birthDay = nowDate.getDate();
-            var birthYear = nowDate.getFullYear();
-            while (birthMonth - checkMonths < 0) {
+            var birthDate = new Date();
+            var birthMonth = birthDate.getMonth();
+            var birthDay = birthDate.getDate();
+            var birthYear = birthDate.getFullYear();
+            if (birthMonth < checkMonths) {
                 checkMonths = checkMonths - birthMonth - 1;
                 birthMonth = 11;
                 birthYear = birthYear - 1;
+            }
+            if (birthMonth < checkMonths) {
+                var yearsFromMonths = Math.floor(checkMonths/12);
+                checkMonths = checkMonths - yearsFromMonths * 12;
+                birthYear = birthYear - yearsFromMonths;
             }
             birthMonth = birthMonth - checkMonths;
             birthYear = birthYear - checkYears;
@@ -238,7 +243,9 @@ $(document).ready(function () {
                     birthDay = 28;
                 }
             }
-            var birthDate = new Date(birthYear, birthMonth, birthDay, 0, 0, 0,0);
+            birthDate.setDate(birthDay);
+            birthDate.setFullYear(birthYear);
+            birthDate.setMonth(birthMonth);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -269,14 +276,19 @@ $(document).ready(function () {
         if (integerCheck(checkMonths) == true && integerCheck(checkYears) == true) {
             $('#months').val(checkMonths);
             $('#years').val(checkYears);
-            var nowDate = new Date();
-            var birthMonth = nowDate.getMonth();
-            var birthDay = nowDate.getDate();
-            var birthYear = nowDate.getFullYear();
-            while (birthMonth - checkMonths < 0) {
+            var birthDate = new Date();
+            var birthMonth = birthDate.getMonth();
+            var birthDay = birthDate.getDate();
+            var birthYear = birthDate.getFullYear();
+            if (birthMonth < checkMonths) {
                 checkMonths = checkMonths - birthMonth - 1;
                 birthMonth = 11;
                 birthYear = birthYear - 1;
+            }
+            if (birthMonth < checkMonths) {
+                var yearsFromMonths = Math.floor(checkMonths/12);
+                checkMonths = checkMonths - yearsFromMonths * 12;
+                birthYear = birthYear - yearsFromMonths;
             }
             birthMonth = birthMonth - checkMonths;
             birthYear = birthYear - checkYears;
@@ -297,7 +309,9 @@ $(document).ready(function () {
                     birthDay = 28;
                 }
             }
-            var birthDate = new Date(birthYear, birthMonth, birthDay, 0, 0, 0,0);
+            birthDate.setDate(birthDay);
+            birthDate.setFullYear(birthYear);
+            birthDate.setMonth(birthMonth);
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -313,6 +327,15 @@ $(document).ready(function () {
             }
         }
     });
+
+    //Populate years drop down and just for DW max is 123yrs old LOL!
+    (function () {
+        $('#year').append($('<option />').val(0).html("Year"));
+        for (i = new Date().getFullYear(); i > 1889; i--)
+        {
+            $('#year').append($('<option />').val(i).html(i));
+        }
+    })();
 
     //PHOTO LOGIC ::START::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
     var _imgInfo = {
@@ -642,12 +665,5 @@ window.setInterval(function () {
     }
 }, 500);
 
-//Populate years drop down and just for DW max is 123yrs old LOL!
-(function () {
-    $('#year').append($('<option />').val(0).html("Year"));
-    for (i = new Date().getFullYear(); i > 1889; i--)
-    {
-        $('#year').append($('<option />').val(i).html(i));
-    }
-})();
+
 

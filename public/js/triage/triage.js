@@ -197,53 +197,8 @@ $(document).ready(function () {
     });
 
     $('#years').change(function () {
-        $('#years').css('border', '');
-        if (!$('#years').val() || $('#years').val() < 0) {
-            $('#years').val(0);
-        }
-        if (!$('#months').val() || $('#months').val() < 0) {
-            $('#months').val(0);
-        }
-        var checkYears = parseInt($('#years').val());
-        var checkMonths = parseInt($('#months').val());
-        // years in age not null calculate birthdate
-        if (integerCheck(checkYears) == true && integerCheck(checkMonths) == true) {
-            $('#months').val(checkMonths);
-            $('#years').val(checkYears);
-            var birthDate = new Date();
-            var birthMonth = birthDate.getMonth();
-            var birthDay = birthDate.getDate();
-            var birthYear = birthDate.getFullYear();
-            if (birthMonth < checkMonths) {
-                checkMonths = checkMonths - birthMonth - 1;
-                birthMonth = 11;
-                birthYear = birthYear - 1;
-            }
-            if (birthMonth < checkMonths) {
-                var yearsFromMonths = Math.floor(checkMonths/12);
-                checkMonths = checkMonths - yearsFromMonths * 12;
-                birthYear = birthYear - yearsFromMonths;
-            }
-            birthMonth = birthMonth - checkMonths;
-            birthYear = birthYear - checkYears;
-            if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
-                birthDay = 30;
-            }
-            else if (birthDay > 28 && birthMonth == 1) {
-                if (birthYear % 400 == 0) {
-                    birthDay = 29;
-                }
-                else if (birthYear % 100 == 0) {
-                    birthDay = 28;
-                }
-                else if (birthYear % 4 == 0) {
-                    birthDay = 29;
-                }
-                else {
-                    birthDay = 28;
-                }
-            }
-            birthDate.setFullYear(birthYear, birthMonth, birthDay);
+        if (_ageChangeCheck()) {
+            var birthDate = _calcBirthdateFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -261,53 +216,8 @@ $(document).ready(function () {
     });
 
     $('#months').change(function () {
-        $('#months').css('border', '');
-        if (!$('#years').val() || $('#years').val() < 0) {
-            $('#years').val(0);
-        }
-        if (!$('#months').val() || $('#months').val() < 0) {
-            $('#months').val(0);
-        }
-        var checkMonths = parseInt($('#months').val());
-        var checkYears = parseInt($('#years').val());
-        // years in age not null calculate birthdate
-        if (integerCheck(checkMonths) == true && integerCheck(checkYears) == true) {
-            $('#months').val(checkMonths);
-            $('#years').val(checkYears);
-            var birthDate = new Date();
-            var birthMonth = birthDate.getMonth();
-            var birthDay = birthDate.getDate();
-            var birthYear = birthDate.getFullYear();
-            if (birthMonth < checkMonths) {
-                checkMonths = checkMonths - birthMonth - 1;
-                birthMonth = 11;
-                birthYear = birthYear - 1;
-            }
-            if (birthMonth < checkMonths) {
-                var yearsFromMonths = Math.floor(checkMonths/12);
-                checkMonths = checkMonths - yearsFromMonths * 12;
-                birthYear = birthYear - yearsFromMonths;
-            }
-            birthMonth = birthMonth - checkMonths;
-            birthYear = birthYear - checkYears;
-            if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
-                birthDay = 30;
-            }
-            else if (birthDay > 28 && birthMonth == 1) {
-                if (birthYear % 400 == 0) {
-                    birthDay = 29;
-                }
-                else if (birthYear % 100 == 0) {
-                    birthDay = 28;
-                }
-                else if (birthYear % 4 == 0) {
-                    birthDay = 29;
-                }
-                else {
-                    birthDay = 28;
-                }
-            }
-            birthDate.setFullYear(birthYear, birthMonth, birthDay);
+        if (_ageChangeCheck()) {
+            var birthDate = _calcBirthdateFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -332,6 +242,60 @@ $(document).ready(function () {
             $('#year').append($('<option />').val(i).html(i));
         }
     })();
+
+    function _ageChangeCheck() {
+        $('#years').css('border', '');
+        if (!$('#years').val() || $('#years').val() < 0) {
+            $('#years').val(0);
+        }
+        if (!$('#months').val() || $('#months').val() < 0) {
+            $('#months').val(0);
+        }
+        var checkYears = parseInt($('#years').val());
+        var checkMonths = parseInt($('#months').val());
+
+        return (integerCheck(checkYears) == true && integerCheck(checkMonths) == true)
+    }
+
+    function _calcBirthdateFromAge() {
+        var inputYears = parseInt($('#years').val());
+        var inputMonths = parseInt($('#months').val());
+        var birthDate = new Date();
+        var birthMonth = birthDate.getMonth();
+        var birthDay = birthDate.getDate();
+        var birthYear = birthDate.getFullYear();
+        if (birthMonth < inputMonths) {
+            inputMonths = inputMonths - birthMonth - 1;
+            birthMonth = 11;
+            birthYear = birthYear - 1;
+        }
+        if (birthMonth < inputMonths) {
+            var yearsFromMonths = Math.floor(inputMonths/12);
+            inputMonths = inputMonths - yearsFromMonths * 12;
+            birthYear = birthYear - yearsFromMonths;
+        }
+        birthMonth = birthMonth - inputMonths;
+        birthYear = birthYear - inputYears;
+        if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
+            birthDay = 30;
+        }
+        else if (birthDay > 28 && birthMonth == 1) {
+            if (birthYear % 400 == 0) {
+                birthDay = 29;
+            }
+            else if (birthYear % 100 == 0) {
+                birthDay = 28;
+            }
+            else if (birthYear % 4 == 0) {
+                birthDay = 29;
+            }
+            else {
+                birthDay = 28;
+            }
+        }
+        birthDate.setFullYear(birthYear, birthMonth, birthDay);
+        return birthDate;
+    }
 
     //PHOTO LOGIC ::START::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
     var _imgInfo = {

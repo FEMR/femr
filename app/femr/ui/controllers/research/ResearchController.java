@@ -165,6 +165,7 @@ public class ResearchController extends Controller {
        try{
             while(resultSet.next())
             {
+
                 System.out.println(resultSet.getString("patient_id") + " " + resultSet.getString("encounter_id") + " " +
                         resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("medication_name"));
             }

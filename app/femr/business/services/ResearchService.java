@@ -153,7 +153,7 @@ public class ResearchService implements IResearchService{
     public ResultSet ManualSqlQuery(String sql) {
         Connection connection = DB.getConnection();
 
-        String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.sex, pp.medication_name ";
+        String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.sex, group_concat(pp.medication_name) as \"medication_name\" ";
 
         String sqlFrom = " FROM patient_encounters as pe " +
                 " JOIN patients as p " +

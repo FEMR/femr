@@ -80,7 +80,9 @@
                     <input hidden="true" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
                     <input hidden="true" type="text" name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
                 </div>
+                <div class="historyInput">
                 @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
+                </div>
             </div>
 
             <div id="vitalsWrap" class="sectionBackground">
@@ -172,19 +174,20 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="chiefComplaint" class="col-sm-3 col-xs-3 textAreaLabel control-label">Chief Complaint</label>
-                    <div class="col-sm-9 col-xs-9">
+
+
+                    <div class="col-sm-12 col-xs-12 col-md-12">
+                        <label for="chiefComplaint" class="pull-left"> Chief Complaint</label>
                         <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-12 col-xs-12">
+
+
+                    <div class="submitResetWrap">
                         <button type="submit" id="triageSubmitBtn" class="fButton fSubmitButton pull-right floatButtonOffset">Submit Patient</button>
                         <button type="button" class="newPatientBtn fButton pull-right">Reset Fields</button>
                     </div>
-                </div>
+
             </div>
         </div>
 }

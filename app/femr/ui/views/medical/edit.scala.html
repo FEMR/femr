@@ -26,7 +26,7 @@
     <input type="hidden" value="@viewModel.getpID" id="patientId"/>
 
     <div id="medicalContentWrap">
-        <div id="patientOverviewWrap">
+        <div id="patientOverviewWrap" class="backgroundForWrap">
 
             <h3 class="text-center">Patient Overview - Medical</h3>
 
@@ -52,16 +52,10 @@
 
             </div>
 
-
-            @*<div class="pull-right" id="historyButtonWrap">
-            @historyButton(viewModel.getpID())
-            </div> *@
-
-
         </div>
 
 
-        <div id="mainWrap">
+        <div id="mainWrap" class="backgroundForWrap">
             <div id="vitalsWrap">
                 <h3>Vitals</h3>
                 <div id="populatedVitals">
@@ -136,11 +130,16 @@
             @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {
 
                 <div class="tabWrap">
+
+                    @historyButton(viewModel.getpID())
+
+
                     <ul id="medicalTabs">
                         <li class="active"><a href="#" id="hpiTab">HPI</a></li>
                         <li><a href="#" id="pmhTab">PMH</a></li>
                         <li><a href="#" id="treatmentTab">Treatment</a></li>
                     </ul>
+
                 </div>
 
                 <div id="tabContentWrap">

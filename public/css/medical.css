@@ -62,13 +62,12 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     width: 175px;
 }
 
-#historyButtonWrap {
-    margin-top: 10px;
-    width: 175px;
-}
-
 #resetVitalsBtn {
     margin-top: 28px;
+}
+#historyButton{
+    float: right;
+    margin-bottom: -30px;
 }
 
 /* Tabs */
@@ -84,6 +83,7 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     width: 100%;
     border-bottom: 1px solid #b2b2b0;
 }
+
 
 #medicalTabs li {
     display: inline;

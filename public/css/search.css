@@ -32,8 +32,6 @@ p {
     margin-left: 40px;
 }
 
-
-
 /*Boot strap overrides*/
 .bold{
     font-weight: bold;
@@ -41,4 +39,9 @@ p {
 
 #listElement {
     font-size: 15px;
+}
+
+/* background */
+.encounterInfoWrap{
+    padding: 20px;
 }

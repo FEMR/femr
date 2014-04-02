@@ -28,6 +28,19 @@
     float: right;
     margin-right: 120px;
 }
+#historyButton{
+    width: 100%;
+    float: right;
+    text-align: center;
+
+}
+.submitResetWrap{
+    padding: 20px;
+}
+.historyInput{
+    padding-top: 20px;
+    overflow: hidden;
+}
 
 
 /* Photo stuff */

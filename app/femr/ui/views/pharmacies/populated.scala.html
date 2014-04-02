@@ -28,7 +28,7 @@
 
 @medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById, styles = additionalStyles) {
     <div id="pharmacyContentWrap">
-        <div id="patientOverviewWrap">
+        <div id="patientOverviewWrap" class="backgroundForWrap">
             <h3 class="text-center">Patient Overview - Pharmacy</h3>
             <div id="generalInfoWrap">
                 <span><label>Name:</label>@viewModel.getFirstName @viewModel.getLastName</span>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div id="mainWrap">
+        <div id="mainWrap" class="backgroundForWrap">
         @helper.form(action = PharmaciesController.createPost(viewModel.getpID())) {
 
 

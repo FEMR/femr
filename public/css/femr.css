@@ -107,14 +107,14 @@ hr {
 .fSubmitButton{
     background-color: #51a1ba;
 }
+/* THE fEMR patient history button! */
+#historyButton:hover{
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
 
 /* The following 2 sections are used on both Medical and pharmacy */
-/* General info wrapper*/
-#patientOverviewWrap {
-    border-radius: 10px;
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border: 3px solid #3f3f3d;
-}
 
 #patientOverviewWrap span {
     padding: 4px;
@@ -128,10 +128,6 @@ hr {
 /* Main section wrapper*/
 #mainWrap {
     margin-top: 15px;
-    border-radius: 10px;
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border: 3px solid #3f3f3d;
-
     overflow: hidden;
     padding: 10px;
     height: 100%;
@@ -141,4 +137,11 @@ hr {
     width: 300px;
     text-align: center;
     margin: 0 auto;
+}
+
+/* fEMR's background with border */
+.backgroundForWrap{
+    border-radius: 10px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
 }

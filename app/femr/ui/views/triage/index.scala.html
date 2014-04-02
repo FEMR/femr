@@ -38,7 +38,7 @@
 
 
         @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
-            <div id="genInfoWrap"class="sectionBackground">
+            <div id="genInfoWrap" class="sectionBackground">
 
                 <h2>General Info</h2>
 
@@ -88,7 +88,8 @@
             <div id="vitalsWrap" class="sectionBackground">
                 <h2>Vitals</h2>
                 <h5 id="errorMessageDecimal" class="red hidden">Boxes in red must be whole numbers</h5>
-                <h5 id="errorMessageHeight" class="red hidden">Inches for height must be less than 12 and a whole number</h5>
+                <h5 id="errorMessageHeight" class="red hidden">
+                    Inches for height must be less than 12 and a whole number</h5>
 
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group">
@@ -175,18 +176,15 @@
                 </div>
 
 
-
-                    <div class="col-sm-12 col-xs-12 col-md-12">
-                        <label for="chiefComplaint" class="pull-left"> Chief Complaint</label>
-                        <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
-                    </div>
+                <label for="chiefComplaint" class="pull-left"> Chief Complaint</label>
+                <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
 
 
-
-                    <div class="submitResetWrap">
-                        <button type="submit" id="triageSubmitBtn" class="fButton fSubmitButton pull-right floatButtonOffset">Submit Patient</button>
-                        <button type="button" class="newPatientBtn fButton pull-right">Reset Fields</button>
-                    </div>
+                <div class="submitResetWrap">
+                    <button type="submit" id="triageSubmitBtn" class="fButton fSubmitButton pull-right floatButtonOffset">
+                        Submit Patient</button>
+                    <button type="button" class="newPatientBtn fButton pull-right">Reset Fields</button>
+                </div>
 
             </div>
         </div>

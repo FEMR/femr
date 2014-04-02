@@ -122,5 +122,5 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 #medicalTabs a:hover,
 #medicalTabs a:focus {
     color: #000;
-    background: #a9a8a3;
+    background: url("../img/paper_greyLightNoise.png") repeat;
 }

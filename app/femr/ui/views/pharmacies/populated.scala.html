@@ -27,9 +27,7 @@
     }
 
 @medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById, styles = additionalStyles) {
-
     <div id="pharmacyContentWrap">
-
         <div id="patientOverviewWrap">
             <h3 class="text-center">Patient Overview - Pharmacy</h3>
             <div id="generalInfoWrap">
@@ -64,31 +62,21 @@
                 <h4>Medications</h4>
 
 
-            @for(x <- 1 to viewModel.getMedications.size) {
-
-
-                <input type="text" id="medication@x" name="prescription@x" value="@viewModel.getMedication(x - 1)" placeholder="Medication" readonly/>
-
-
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default toggleReplacement" id="y@x">
-                        <input type="radio" name="Medication@x">Yes
-                    </label>
-                    <label class="btn btn-default active toggleReplacement" id="n@x">
-                        <input type="radio" name="Medication@x">No
-                    </label>
-                </div>
-
-
-
-                <input type="text" class="hidden replacementMeds" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
-
-
+                @for(x <- 1 to viewModel.getMedications.size) {
+                    <div class="medication">
+                        <input type="text" id="medication@x" class="fInput" name="prescription@x" value="@viewModel.getMedication(x - 1)" placeholder="Medication" readonly/>
+                        <button type="button" class="fButton replaceBtn">Replace?</button>
+                        <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
+                    </div>
+                }
+                <button type="submit" id="pharmacySubmitBtn" class="fButton pull-right">Submit</button>
             </div>
-                <button type="submit" id="pharmacySubmitBtn" class="btn btn-default">Submit</button>
-            }
+
+
 
         </div>
+
+
     </div>
 }
 }

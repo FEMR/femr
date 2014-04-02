@@ -103,6 +103,10 @@ hr {
 .fInput:focus{
     box-shadow: 0 0 5px #3f3f3d
 }
+/* THE fEMR submit button! */
+.fSubmitButton{
+    background-color: #51a1ba;
+}
 
 /* The following 2 sections are used on both Medical and pharmacy */
 /* General info wrapper*/

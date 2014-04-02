@@ -53,14 +53,10 @@
 
 
                 <div class="generalInfoInput">
-
-
                     <label for="photo">Patient Photo</label>
                     <div id="photoInputFormDiv">
                         <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
                     </div>
-
-
                     <div id="patientPhotoDiv">
                         <div class="btn-group" >
                             <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPhotoPath()" />
@@ -83,38 +79,14 @@
                     </div>
                     <input hidden="true" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
                     <input hidden="true" type="text" name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
-
-
                 </div>
-
-
                 @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
-
-
             </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <div id="vitalsWrap" class="sectionBackground">
-
                 <h2>Vitals</h2>
                 <h5 id="errorMessageDecimal" class="red hidden">Boxes in red must be whole numbers</h5>
-                <h5 id="errorMessageHeight" class="red hidden">
-                    Inches for height must be less than 12 and a whole number</h5>
-
+                <h5 id="errorMessageHeight" class="red hidden">Inches for height must be less than 12 and a whole number</h5>
 
                 <div class="col-sm-6 col-xs-12">
                     <div class="form-group">
@@ -207,20 +179,14 @@
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="col-sm-12 col-xs-12">
-                        <button type="submit" id="triageSubmitBtn" class="fButton pull-right floatButtonOffset">
-                            Submit Patient</button>
+                        <button type="submit" id="triageSubmitBtn" class="fButton fSubmitButton pull-right floatButtonOffset">Submit Patient</button>
                         <button type="button" class="newPatientBtn fButton pull-right">Reset Fields</button>
                     </div>
                 </div>
             </div>
-
-
         </div>
-
-
 }
 }
 

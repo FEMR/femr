@@ -17,7 +17,9 @@ import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.SearchViewModel;
 import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.medical.edit;
+import femr.ui.views.html.medical.editVitals;
 import femr.ui.views.html.medical.index;
+import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -251,6 +253,19 @@ public class MedicalController extends Controller {
         }
 
         return ok("true");
+    }
+
+    public Result getVitalsPartial(int id){
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        ServiceResponse<IPatientEncounter> currentEncounterByPatientId = searchService.findCurrentEncounterByPatientId(id);
+        if (currentEncounterByPatientId.hasErrors()) {
+            return internalServerError();
+        }
+
+
+        return ok(editVitals.render());
+
     }
 
     //region **generate lists of stuff from CreateViewModelPost**

@@ -149,30 +149,9 @@ public class SearchController extends Controller {
         }
 
 
-        //Create linked hash map of vitals where the key is the date as well as the name so two keys
-        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
-        List<? extends IVital> vitals = vitalServiceResponse.getResponseObject();
+        ServiceResponse<VitalMultiMap> vitalMapServiceResponse = searchService.getVitalMultiMap(patientEncounter.getId());
+        VitalMultiMap patientEncounterVitalMap = vitalMapServiceResponse.getResponseObject();
 
-        // This map has two keys per value the first is the Vital name the second is the date the vital was taken
-        VitalMultiMap patientEncounterVitalMap = new VitalMultiMap();
-
-        ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
-        String vitalFieldName;
-        String vitalFieldDate;
-        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
-            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
-            patientVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), vitalFieldName);
-
-            if (patientVitalServiceResponse.hasErrors()) {
-                continue;
-            } else {
-                for(IPatientEncounterVital vitalData : patientVitalServiceResponse.getResponseObject())
-                {
-                    vitalFieldDate = vitalData.getDateTaken().trim();
-                    patientEncounterVitalMap.put(vitalFieldName, vitalFieldDate, vitalData.getVitalValue());
-                }
-            }
-        }
 
         //endregion
 

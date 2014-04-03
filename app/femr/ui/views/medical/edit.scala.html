@@ -6,11 +6,13 @@
 @import femr.ui.views.html.helpers.shared._
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")" xmlns="http://www.w3.org/1999/html">
+        <link rel="stylesheet" href="@routes.Assets.at("css/jquery-ui.min.css")">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/jquery-ui.min.js")"></script>
     }
     @searchById = {
     @helper.form(action = MedicalController.searchPost()) {
@@ -89,6 +91,15 @@
 
 
                 </div>
+
+
+                <div id="vitalDialog" title="Vitals">
+                    <div id="vitalPartial">
+                        @*load partial view for editing a user via admin.js*@
+                    </div>
+                </div>
+
+                <!--
                 <div id="newVitals" class="hidden">
                     <label>BP</label>
                     <input type="number" class="fInput" id="bpSystolic"/>
@@ -108,7 +119,7 @@
                     <input type="number" class="fInput" id="heightIn"/>
                     <label>Wt</label>
                     <input type="number" class="fInput" id="newWeight"/>
-                </div>
+                </div>-->
                 <!--
                 <div id="newVitals" class="hidden">
                     <div class="alert alert-info"><strong>Heads up!</strong>

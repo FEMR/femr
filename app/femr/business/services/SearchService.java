@@ -8,6 +8,7 @@ import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
+import femr.util.DataStructure.VitalMultiMap;
 
 import javax.xml.ws.Service;
 import java.util.*;
@@ -403,6 +404,39 @@ public class SearchService implements ISearchService {
         } else {
             response.addError("medications", "no medications available");
         }
+        return response;
+    }
+
+    /**
+     * Create linked hash map of vitals where the key is the date as well as the name
+     *
+     * @param encounterId the id of the encounter to get vitals for
+     * @return vitals and dates related to encounter
+     */
+    @Override
+    public ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId){
+        List<? extends IVital> vitals = findAllVitals().getResponseObject();
+        VitalMultiMap vitalMultiMap = new VitalMultiMap();
+        String vitalFieldName;
+        String vitalFieldDate;
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientVitalServiceResponse;
+
+        for (int vitalFieldIndex = 0; vitalFieldIndex < vitals.size(); vitalFieldIndex++) {
+            vitalFieldName = vitals.get(vitalFieldIndex).getName().trim();
+            patientVitalServiceResponse = findPatientEncounterVitals(encounterId, vitalFieldName);
+
+            if (patientVitalServiceResponse.hasErrors()) {
+                continue;
+            } else {
+                for(IPatientEncounterVital vitalData : patientVitalServiceResponse.getResponseObject())
+                {
+                    vitalFieldDate = vitalData.getDateTaken().trim();
+                    vitalMultiMap.put(vitalFieldName, vitalFieldDate, vitalData.getVitalValue());
+                }
+            }
+        }
+        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
+        response.setResponseObject(vitalMultiMap);
         return response;
     }
 

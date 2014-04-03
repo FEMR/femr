@@ -23,6 +23,10 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 
 
 /* Vitals (part of main section) wrapper*/
+#newVitals input{
+    width: 50px;
+    height: 25px;
+}
 #vitalsWrap {
     float: left;
     width: 10%;

@@ -1,1 +1,46 @@
-<h1>wat up world</h1>
+@(vitals: femr.util.DataStructure.VitalMultiMap)
+
+
+<table id="vitalTable">
+    <thead>
+        <tr>
+            <th>Vital</th>
+            <th>Value</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <!--
+        <tr>
+            <td>Height</td>
+            for(date <- 1 to vitals.getDateList.size()){
+
+                <td>vitals.get("heightFeet",vitals.getDate(date - 1))</td>
+                <td>vitals.getFormatedDate(date-1)</td>
+
+            }
+        </tr>-->
+        @*VitalMultiMap needs to be altered to determine how many values a vital has*@
+        <tr>
+            <td rowspan="3">Height</td>
+            <td>2.0</td>
+            <td>3:00pm</td>
+        </tr>
+        <tr>
+            <td>69.0</td>
+            <td>6:00pm</td>
+        </tr>
+        <tr>
+            <td>234.0</td>
+            <td>3:00pm</td>
+        </tr>
+
+    </tbody>
+</table>
+
+<style>
+    #vitalTable td, th{
+        border: 1px solid black;
+    }
+</style>

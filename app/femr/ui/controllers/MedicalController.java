@@ -167,9 +167,9 @@ public class MedicalController extends Controller {
 
         //set up viewModelGet with everything except vitals
 
-        if (patientEncounterVitalMapResponse.hasErrors()){
+        if (patientEncounterVitalMapResponse.hasErrors()) {
             return internalServerError();
-        }else{
+        } else {
             patientEncounterVitalMap = patientEncounterVitalMapResponse.getResponseObject();
         }
 
@@ -255,16 +255,19 @@ public class MedicalController extends Controller {
         return ok("true");
     }
 
-    public Result getVitalsPartial(int id){
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        ServiceResponse<IPatientEncounter> currentEncounterByPatientId = searchService.findCurrentEncounterByPatientId(id);
-        if (currentEncounterByPatientId.hasErrors()) {
+    public Result getVitalsPartial(int id) {
+        ServiceResponse<IPatientEncounter> currentEncounterByPatientIdResponse = searchService.findCurrentEncounterByPatientId(id);
+        if (currentEncounterByPatientIdResponse.hasErrors()) {
             return internalServerError();
         }
+        ServiceResponse<VitalMultiMap> vitalMultiMapResponse = searchService.getVitalMultiMap(currentEncounterByPatientIdResponse.getResponseObject().getId());
+        if (vitalMultiMapResponse.hasErrors()) {
+            return internalServerError();
+        }
+        VitalMultiMap vitalMultiMap = vitalMultiMapResponse.getResponseObject();
 
 
-        return ok(editVitals.render());
+        return ok(editVitals.render(vitalMultiMap));
 
     }
 

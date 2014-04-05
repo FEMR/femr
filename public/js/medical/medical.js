@@ -104,7 +104,7 @@ $(document).ready(function () {
 
 
 
-              /*
+
 
     $('#resetVitalsBtn').on('click', function () {
         $('#populatedVitals').addClass('hidden');
@@ -210,9 +210,9 @@ $(document).ready(function () {
                 $('#saveVitalsBtn').addClass('hidden');
                 $('#resetVitalsBtn').removeClass('hidden');
             });
-    });*/
+    });
 
-
+    /*
     $('#vitalDialog').dialog({
         dialogClass: 'editUserDialog',
         autoOpen: false,
@@ -223,7 +223,7 @@ $(document).ready(function () {
         width: 600
 
     });
-    bindVitalDialog();
+    bindVitalDialog();*/
 });
 
 function bindVitalDialog() {

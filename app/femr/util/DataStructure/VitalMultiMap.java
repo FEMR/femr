@@ -80,4 +80,15 @@ public class VitalMultiMap {
         }
         return StringUtils.FormatDate(dateList.get(i));
     }
+
+    /**
+     * Returns the number of times a vital was recorded
+     * @param vitalName
+     * @return Number of times the vital was recorded
+     */
+
+    /*
+    public Integer getNumberOfRecordedVitals(string vitalName){
+
+    } */
 }

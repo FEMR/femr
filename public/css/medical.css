@@ -24,8 +24,8 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 
 /* Vitals (part of main section) wrapper*/
 #newVitals input{
-    width: 50px;
-    height: 25px;
+    width: 75px;
+    height: 35px;
 }
 #vitalsWrap {
     float: left;
@@ -125,3 +125,4 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     color: #000;
     background: url("../img/paper_greyLightNoise.png") repeat;
 }
+

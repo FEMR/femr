@@ -91,36 +91,35 @@
                 <h5 id="errorMessageHeight" class="red hidden">
                     Inches for height must be less than 12 and a whole number</h5>
 
-                <div class="col-sm-6 col-xs-12">
-                    <div class="form-group">
-                        <label for="temperature" class="col-sm-6 col-xs-6 control-label">Temperature</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="any" min="0" class="form-control" id="temperature" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="bloodPressureSystolic" class="col-sm-6 col-xs-6 control-label stackedInput">
-                            Blood Pressure</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                            <input type="number" step="number" min="0" class="form-control" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="heartRate" class="col-sm-6 col-xs-6 control-label">Heart Rate</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="heartRate" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="respirations" class="col-sm-6 col-xs-6 control-label">Respirations</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="respirations" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
 
-                        <label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">
+                <div id="leftVitalsWrap">
+
+                    <div class="vitalWrap">
+                        <label for="temperature">Temperature</label>
+                        <input type="number" step="any" min="0" class="fInput fVital" id="temperature" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
+                    </div>
+
+
+                    <div class="vitalWrap doubleVital">
+                        <label for="bloodPressureSystolic">Blood Pressure</label>
+
+                        <input type="number" step="number" min="0" class="fInput" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                        <input type="number" step="number" min="0" class="fInput" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+
+
+                    </div>
+                    <div class="vitalWrap">
+                        <label for="heartRate">Heart Rate</label>
+                        <input type="number" step="number" min="0" class="fInput" id="heartRate" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
+                    </div>
+
+                    <div class="vitalWrap">
+                        <label for="respirations">Respirations</label>
+                        <input type="number" step="number" min="0" class="fInput" id="respirations" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
+                    </div>
+
+                    <div class="vitalWrap">
+                        <label for="weeksPregnant">
                             <div data-toggle="buttons">
                             @if(viewModel.getSex() == "Female") {
                                 <label class="btn btn-default" id="pregnancyBtn">
@@ -133,46 +132,46 @@
                             }
                             </div>
                         </label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
 
-                        </div>
+
+                        <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
                     </div>
+
+
                 </div>
 
 
-                <div class="col-sm-6 col-xs-12">
-                    <div class="form-group">
-                        <label for="oxygen" class="col-sm-6 col-xs-6 control-label">Oxygen Saturation</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="any" min="0" class="form-control" id="oxygen" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
-                        </div>
+                <div id="rightVitalsWrap">
+
+                    <div class="vitalWrap">
+                        <label for="oxygen">Oxygen Saturation</label>
+
+                        <input type="number" step="any" min="0" class="fInput" id="oxygen" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
                     </div>
-                    <div class="form-group">
-                        <label for="heightFeet" class="col-sm-6 col-xs-6 control-label stackedInput">Height</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                            <input type="number" step="number" min="0" max="11" class="form-control" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
-                        </div>
+                    <div class="vitalWrap doubleVital">
+
+                        <label for="heightFeet">Height</label>
+
+                        <input type="number" step="number" min="0" class="fInput" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
+                        <input type="number" step="number" min="0" max="11" class="fInput" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
                     </div>
-                    <div class="form-group">
-                        <label for="weight" class="col-sm-6 col-xs-6 control-label">Weight</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="any" min="0" class="form-control" id="weight" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
-                        </div>
+                    <div class="vitalWrap">
+                        <label for="weight">Weight</label>
+
+                        <input type="number" step="any" min="0" class="fInput" id="weight" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-6 col-xs-6 control-label">BMI</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="text" id="bmi" class="form-control" disabled="true"/>
-                        </div>
+                    <div class="vitalWrap">
+                        <label >BMI</label>
+
+                        <input type="text" id="bmi" class="fInput" disabled="true"/>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-6 col-xs-6 control-label">Glucose</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="glucose" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
-                        </div>
+                    <div class="vitalWrap">
+                        <label>Glucose</label>
+
+                        <input type="number" step="number" min="0" class="fInput" id="glucose" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
                     </div>
+
+
                 </div>
 
 

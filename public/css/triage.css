@@ -19,6 +19,31 @@
     float: left;
     width: 60%;
 }
+    #leftVitalsWrap{
+        width: 50%;
+        float: left;
+    }
+    #rightVitalsWrap{
+        width: 50%;
+        float: left;
+    }
+    .vitalWrap{
+        padding: 15px;
+    }
+        .vitalWrap label{
+            margin-top: 3px;
+            display: inline-block;
+        }
+        .vitalWrap input{
+            display: inline-block;
+            width: 100px;
+            float: right;
+            margin-right: 40px;
+
+        }
+    .doubleVital{
+        padding: 40px 15px 40px 15px;
+    }
 
 .generalInfoInput{
     padding: 5px;

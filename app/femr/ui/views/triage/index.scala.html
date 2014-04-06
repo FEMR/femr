@@ -38,7 +38,7 @@
 
 
         @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
-            <div id="genInfoWrap" class="sectionBackground">
+            <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
                 <h2>General Info</h2>
 
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            <div id="vitalsWrap" class="sectionBackground">
+            <div id="vitalsWrap" class="sectionBackground backgroundForWrap">
                 <h2>Vitals</h2>
                 <h5 id="errorMessageDecimal" class="red hidden">Boxes in red must be whole numbers</h5>
                 <h5 id="errorMessageHeight" class="red hidden">
@@ -94,19 +94,19 @@
 
                 <div id="leftVitalsWrap">
 
+
                     <div class="vitalWrap">
                         <label for="temperature">Temperature</label>
                         <input type="number" step="any" min="0" class="fInput fVital" id="temperature" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
                     </div>
 
 
-                    <div class="vitalWrap doubleVital">
+                    <div class="vitalWrap">
                         <label for="bloodPressureSystolic">Blood Pressure</label>
-
-                        <input type="number" step="number" min="0" class="fInput" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                        <input type="number" step="number" min="0" class="fInput" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
-
-
+                        <div class="doubleVital">
+                            <input type="number" step="number" min="0" class="fInput" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                            <input type="number" step="number" min="0" class="fInput" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                        </div>
                     </div>
                     <div class="vitalWrap">
                         <label for="heartRate">Heart Rate</label>
@@ -135,8 +135,9 @@
 
 
                         <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
-                    </div>
 
+                    </div>
+                    <label for="chiefComplaint"> Chief Complaint</label>
 
                 </div>
 
@@ -148,12 +149,13 @@
 
                         <input type="number" step="any" min="0" class="fInput" id="oxygen" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
                     </div>
-                    <div class="vitalWrap doubleVital">
+                    <div class="vitalWrap">
 
                         <label for="heightFeet">Height</label>
-
-                        <input type="number" step="number" min="0" class="fInput" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                        <input type="number" step="number" min="0" max="11" class="fInput" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                        <div class="doubleVital">
+                            <input type="number" step="number" min="0" class="fInput" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
+                            <input type="number" step="number" min="0" max="11" class="fInput" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                        </div>
                     </div>
                     <div class="vitalWrap">
                         <label for="weight">Weight</label>
@@ -175,8 +177,9 @@
                 </div>
 
 
-                <label for="chiefComplaint" class="pull-left"> Chief Complaint</label>
-                <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
+
+
+                <textarea type="text" class="input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
 
 
                 <div class="submitResetWrap">

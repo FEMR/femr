@@ -18,8 +18,6 @@ public interface IMedicalService {
 
     ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int encounterId);
 
-    ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> findVitalsByEncounterId(int encounterId);
-
 
     /* Create Actions */
     ServiceResponse<List<? extends IPatientEncounterTreatmentField>> createPatientEncounterTreatmentFields(List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields);

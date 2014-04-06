@@ -17,7 +17,6 @@ import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.SearchViewModel;
 import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.medical.edit;
-import femr.ui.views.html.medical.editVitals;
 import femr.ui.views.html.medical.index;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
@@ -110,14 +109,16 @@ public class MedicalController extends Controller {
         IPatient patient = patientServiceResponse.getResponseObject();
 
         //Get Patient Encounter
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(patientId);
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse
+                = searchService.findCurrentEncounterByPatientId(patientId);
         if (patientEncounterServiceResponse.hasErrors()) {
             return internalServerError();
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
 
         //Get Prescriptions
-        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
+        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse
+                = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
         List<? extends IPatientPrescription> patientPrescriptions = new ArrayList<>();
         if (patientPrescriptionsServiceResponse.hasErrors()) {
             //do nothing, there might not always be available prescriptions
@@ -130,7 +131,8 @@ public class MedicalController extends Controller {
         /* Treatment Fields */
         //String = HpiFieldName
         //List = list of values based on encounter ID OR null if none exist
-        ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> patientEncounterTreatmentMapResponse = medicalService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
+        ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> patientEncounterTreatmentMapResponse
+                = medicalService.findTreatmentFieldsByEncounterId(patientEncounter.getId());
         Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap;
         if (patientEncounterTreatmentMapResponse.hasErrors()) {
             return internalServerError();
@@ -141,7 +143,8 @@ public class MedicalController extends Controller {
         /* HPI Fields */
         //String = HpiFieldName
         //List = list of values based on encounter ID OR null if none exist
-        ServiceResponse<Map<String, List<? extends IPatientEncounterHpiField>>> patientEncounterHpiMapResponse = medicalService.findHpiFieldsByEncounterId(patientEncounter.getId());
+        ServiceResponse<Map<String, List<? extends IPatientEncounterHpiField>>> patientEncounterHpiMapResponse
+                = medicalService.findHpiFieldsByEncounterId(patientEncounter.getId());
         Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap;
         if (patientEncounterHpiMapResponse.hasErrors()) {
             return internalServerError();
@@ -152,7 +155,8 @@ public class MedicalController extends Controller {
         /* PMH fields */
         //String = HpiFieldName
         //List = list of values based on encounter ID OR null if none exist
-        ServiceResponse<Map<String, List<? extends IPatientEncounterPmhField>>> patientEncounterPmhMapResponse = medicalService.findPmhFieldsByEncounterId(patientEncounter.getId());
+        ServiceResponse<Map<String, List<? extends IPatientEncounterPmhField>>> patientEncounterPmhMapResponse
+                = medicalService.findPmhFieldsByEncounterId(patientEncounter.getId());
         Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap;
         if (patientEncounterPmhMapResponse.hasErrors()) {
             return internalServerError();
@@ -160,24 +164,27 @@ public class MedicalController extends Controller {
             patientEncounterPmhMap = patientEncounterPmhMapResponse.getResponseObject();
         }
 
-        //Create linked hash map of vitals
-        ServiceResponse<Map<String, List<? extends IPatientEncounterVital>>> patientEncounterVitalMapResponse = medicalService.findVitalsByEncounterId(patientEncounter.getId());
-        Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap;
-
-
-        //set up viewModelGet with everything except vitals
-
+        /* Vital Fields */
+        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse
+                = searchService.getVitalMultiMap(patientEncounter.getId());
+        VitalMultiMap vitalMap;
         if (patientEncounterVitalMapResponse.hasErrors()) {
             return internalServerError();
         } else {
-            patientEncounterVitalMap = patientEncounterVitalMapResponse.getResponseObject();
+            vitalMap = patientEncounterVitalMapResponse.getResponseObject();
         }
 
         //endregion
 
         //Populate ViewModel
 
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient,
+                patientEncounter,
+                patientPrescriptions,
+                vitalMap,
+                patientEncounterTreatmentMap,
+                patientEncounterHpiMap,
+                patientEncounterPmhMap);
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -253,22 +260,6 @@ public class MedicalController extends Controller {
         }
 
         return ok("true");
-    }
-
-    public Result getVitalsPartial(int id) {
-        ServiceResponse<IPatientEncounter> currentEncounterByPatientIdResponse = searchService.findCurrentEncounterByPatientId(id);
-        if (currentEncounterByPatientIdResponse.hasErrors()) {
-            return internalServerError();
-        }
-        ServiceResponse<VitalMultiMap> vitalMultiMapResponse = searchService.getVitalMultiMap(currentEncounterByPatientIdResponse.getResponseObject().getId());
-        if (vitalMultiMapResponse.hasErrors()) {
-            return internalServerError();
-        }
-        VitalMultiMap vitalMultiMap = vitalMultiMapResponse.getResponseObject();
-
-
-        return ok(editVitals.render(vitalMultiMap));
-
     }
 
     //region **generate lists of stuff from CreateViewModelPost**

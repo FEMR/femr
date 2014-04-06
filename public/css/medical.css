@@ -23,23 +23,34 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 
 
 /* Vitals (part of main section) wrapper*/
+
+    #vitalsWrap {
+        float: left;
+        width: 25%;
+        min-height: 670px;
+        padding-right: 10px;
+        overflow: auto;
+    }
+        .vitalWrap{
+            padding: 9px 9px 9px 5px;
+        }
+        .vitalWrap label{
+            display: block;
+        }
+        .vitalWrap:hover{
+            cursor: default;
+        }
+
+    #inputWrap {
+        float: left;
+        width: 75%;
+        padding: 1px;
+    }
+
 #newVitals input{
     width: 75px;
     height: 35px;
 }
-#vitalsWrap {
-    float: left;
-    width: 10%;
-    min-height: 670px;
-    padding-right: 10px;
-}
-
-#inputWrap {
-    float: left;
-    width: 90%;
-    padding: 1px;
-}
-
 #tabContentWrap {
     float: left;
     width: 100%;

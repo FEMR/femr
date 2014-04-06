@@ -7,6 +7,7 @@ import femr.common.models.*;
 import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.medical.UpdateVitalsModel;
+import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class MedicalHelper {
         this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 
-    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
+    public CreateViewModelGet populateViewModelGet(IPatient patient, IPatientEncounter patientEncounter, List<? extends IPatientPrescription> patientPrescriptions, VitalMultiMap vitalMap, Map<String, List<? extends IPatientEncounterTreatmentField>> patientEncounterTreatmentMap, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap, Map<String, List<? extends IPatientEncounterPmhField>> patientEncounterPmhMap) {
         CreateViewModelGet viewModelGet = new CreateViewModelGet();
         //prescriptions
         List<String> dynamicViewMedications = new ArrayList<>();
@@ -83,16 +84,7 @@ public class MedicalHelper {
         viewModelGet.setCurrentMedication(getPmhFieldOrNull("currentMedication", patientEncounterPmhMap));
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
-        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
-        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
-        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
-        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
-        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
-        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
-        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
-        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
-        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
-        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
+        viewModelGet.setVitalMap(vitalMap);
 
         return viewModelGet;
     }

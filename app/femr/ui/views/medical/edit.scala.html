@@ -6,13 +6,11 @@
 @import femr.ui.views.html.helpers.shared._
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")" xmlns="http://www.w3.org/1999/html">
-        <link rel="stylesheet" href="@routes.Assets.at("css/jquery-ui.min.css")">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.at("js/jquery-ui.min.js")"></script>
     }
     @searchById = {
     @helper.form(action = MedicalController.searchPost()) {
@@ -37,9 +35,9 @@
 
 
                 <div id="chiefComplaint">
-                    @if(viewModel.getChiefComplaint != null && !viewModel.getChiefComplaint.isEmpty()){
-                        <span><label>Complaint:</label>@viewModel.getChiefComplaint</span>
-                    }
+                @if(viewModel.getChiefComplaint != null && !viewModel.getChiefComplaint.isEmpty()) {
+                    <span><label>Complaint:</label>@viewModel.getChiefComplaint</span>
+                }
                 </div>
                 <div id="patientInfo">
                     <span><label>Name:</label>@viewModel.getFirstName @viewModel.getLastName</span>
@@ -58,48 +56,115 @@
 
 
         <div id="mainWrap" class="backgroundForWrap">
-
-
             <div id="vitalsWrap">
+
+                <table>
+                    <tr>
+                        <th></th>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.getFormatedDateTime(dateIndex-1)</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>BP</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("bloodPressureSystolic",viewModel.getVitalMap.getDate(dateIndex-1)) / @viewModel.getVitalMap.get("bloodPressureDiastolic",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>HR</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("heartRate",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>T</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("temperature",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>RR</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("respiratoryRate",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Gluc</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("glucose",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>SpO2</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("oxygenSaturation",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Ht</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("heightFeet",viewModel.getVitalMap.getDate(dateIndex-1)) ' @viewModel.getVitalMap.get("heightInches",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Weight</td>
+                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
+                            <th>@viewModel.getVitalMap.get("weight",viewModel.getVitalMap.getDate(dateIndex-1))</th>
+                        }
+                    </tr>
+                </table>
+
+                <!--
                 <h3>Vitals</h3>
                 <div id="populatedVitals">
-
-
-                    <label>BP</label>
-                    <p><span id="triageBpSystolic">@viewModel.getBloodPressureSystolic</span>
-                        / <span id="triageBpDiastolic">@viewModel.getBloodPressureDiastolic</span></p>
-                    <label>HR</label>
-                    <p id="triageHeartRate">@viewModel.getHeartRate</p>
-                    <label>T</label>
-                    <p id="triageTemperature">@viewModel.getTemperature</p>
-                    <label>RR</label>
-                    <p id="triageRespRate">@viewModel.getRespiratoryRate</p>
-                    <label>Gluc</label>
-                    <p id="triageGlucose">@viewModel.getGlucose</p>
-                    <label>SpO2</label>
-                    <p id="triageOxygen">@viewModel.getOxygenSaturation</p>
-                    <label>Ht</label>
-                    <p><span id="triageHeightFt">@viewModel.getHeightFeet</span>
-                        ' <span id=triageHeightIn>@viewModel.getHeightInches</span>"</p>
-                    @*used by bmi calculator*@
-                    <p id="heightFeet" class="hidden">@viewModel.getHeightFeet</p>
-                    <p id="heightInches" class="hidden">@viewModel.getHeightInches</p>
-                    <label>Wt</label>
-                    <p id="weight">@viewModel.getWeight</p>
-                    <label>BMI</label>
-                    <p id="bmi"></p>
+                    <div class="vitalWrap">
+                        <label>BP</label>
+                        <span id="triageBpSystolic">viewModel.getBloodPressureSystolic</span>/
+                        <span id="triageBpDiastolic">viewModel.getBloodPressureDiastolic</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>HR</label>
+                        <span id="triageHeartRate">viewModel.getHeartRate</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>T</label>
+                        <span id="triageTemperature">viewModel.getTemperature</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>RR</label>
+                        <span id="triageRespRate">viewModel.getRespiratoryRate</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>Gluc</label>
+                        <span id="triageGlucose">viewModel.getGlucose</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>SpO2</label>
+                        <span id="triageOxygen">viewModel.getOxygenSaturation</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>Ht</label>
+                        <span id="triageHeightFt">viewModel.getHeightFeet</span>
+                        ' <span id=triageHeightIn>viewModel.getHeightInches</span>"
+                        @*used by bmi calculator*@
+                        <span id="heightFeet" class="hidden">viewModel.getHeightFeet</span>
+                        <span id="heightInches" class="hidden">viewModel.getHeightInches</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>Wt</label>
+                        <span id="weight">viewModel.getWeight</span>
+                    </div>
+                    <div class="vitalWrap">
+                        <label>BMI</label>
+                        <span id="bmi"></span>
+                    </div>
 
 
                 </div>
+                          -->
 
                     <!--
-                <div id="vitalDialog" title="Vitals">
-                    <div id="vitalPartial">
-                        @*load partial view for editing a user via admin.js*@
-                    </div>
-                </div>-->
-
-
                 @*DAT BR*@
                 <div id="newVitals" class="hidden">
                     <label>BP</label>
@@ -136,42 +201,15 @@
                     <br/>
                     <input type="number" class="fInput" id="newWeight" placeholder="lbs"/>
                 </div>
+                -->
+
+
                 <!--
-                <div id="newVitals" class="hidden">
-                    <div class="alert alert-info"><strong>Heads up!</strong>
-                        Only fields with values in them will be updated.</div>
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <label>Blood Pressure</label>
-                            <input type="number" id="bpSystolic" class="form-control input-sm col-sm-3" placeholder="Systolic">
-                            <input type="number" id="bpDiastolic" class="form-control input-sm col-sm-3" placeholder="Diastolic">
-                            <label>Heart Rate</label>
-                            <input type="number" id="heartRate" class="form-control input-sm"/>
-                            <label>Temperature</label>
-                            <input type="number" id="temperature" class="form-control input-sm" placeholder="Fahrenheit"/>
-                            <label>Respirations</label>
-                            <input type="number" id="respRate" class="form-control input-sm"/>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <label>Oxygen</label>
-                            <input type="number" id="oxygen" class="form-control input-sm"/>
-                            <label>Height</label>
-                            <input type="number" id="heightFt" class="form-control input-sm col-sm-3" placeholder="Feet"/>
-                            <input type="number" id="heightIn" class="form-control input-sm col-sm-3" placeholder="Inches"/>
-                            <div class="input-group">
-                                <label>Weight</label>
-                                <input type="number" id="newWeight" class="form-control input-sm" placeholder="Pounds"/>
-                                <label>Glucose</label>
-                                <input type="number" id="newGlucose" class="form-control input-sm" placeholder="mg/dl"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    -->
 
                 <button type="button" id="resetVitalsBtn" class="fButton">New</button>
+                <button type="button" id="fakeBtn" class="fButton">Fake</button>
                 <button type="button" id="saveVitalsBtn" class="fButton hidden">Save</button>
-
+                    -->
 
             </div>
             <div id="inputWrap">
@@ -315,7 +353,8 @@
                             <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory  </textarea>
                         </div>
                     </div>
-                    <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">Submit Patient</button>
+                    <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
+                        Submit Patient</button>
 
 
                 </div>
@@ -327,3 +366,9 @@
 }
 
 
+       <style>
+           #vitalsWrap table, th, td{
+               border: 1px solid black;
+
+           }
+       </style>

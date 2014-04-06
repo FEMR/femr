@@ -1,145 +1,180 @@
-
 /* General Page styles */
 
-#triageContentWrap{
+#triageContentWrap {
     overflow: hidden;
 }
-.sectionBackground{
-    background: url("../img/paper_greyLightNoise.png") repeat;
-    border: 3px solid #3f3f3d;
-    border-radius: 10px;
-    min-height: 600px;
+
+.sectionBackground {
+    min-height: 638px;
     padding: 10px;
 }
-#genInfoWrap{
+
+#genInfoWrap {
     float: left;
     width: 40%;
 }
-#vitalsWrap{
+
+#vitalsWrap {
     float: left;
     width: 60%;
 }
-    #leftVitalsWrap{
-        width: 50%;
-        float: left;
-    }
-    #rightVitalsWrap{
-        width: 50%;
-        float: left;
-    }
-    .vitalWrap{
-        padding: 15px;
-    }
-        .vitalWrap label{
-            margin-top: 3px;
-            display: inline-block;
-        }
-        .vitalWrap input{
-            display: inline-block;
-            width: 100px;
-            float: right;
-            margin-right: 40px;
 
-        }
-    .doubleVital{
-        padding: 40px 15px 40px 15px;
-    }
+#leftVitalsWrap {
+    width: 50%;
+    float: left;
+}
 
-.generalInfoInput{
+#rightVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+.vitalWrap {
+    padding: 5px 15px 5px 15px;
+    overflow: hidden;
+}
+
+.vitalWrap label {
+    margin-top: 3px;
+    display: block;
+}
+
+.vitalWrap input {
+    width: 100px;
+    float: left;
+    margin-right: 40px;
+    /*display: inline-block;*/
+    box-sizing: border-box;
+}
+
+#bloodPressureSystolic {
+    /*margin-bottom: 10px;*/
+}
+
+#weeksPregnant {
+    margin: 0px 0px 0px 45px;
+    float: left;
+}
+
+#pregnancyBtn {
+    margin-top: -6px;
+    width: 100px;
+}
+
+.doubleVital {
+    overflow: hidden;
+}
+
+#chiefComplaint {
+    width: 100%;
+}
+
+.generalInfoInput {
     padding: 5px;
     overflow: hidden;
 }
-.generalInfoInput input{
+
+.generalInfoInput input {
     float: right;
     margin-right: 120px;
 }
-#historyButton{
+
+#historyButton {
     width: 100%;
     float: right;
     text-align: center;
 
 }
-.submitResetWrap{
+
+.submitResetWrap {
     padding: 20px;
 }
-.historyInput{
+
+.historyInput {
     padding-top: 20px;
     overflow: hidden;
 }
 
-
 /* Photo stuff */
-#photoInputFormDiv{
+#photoInputFormDiv {
     overflow: hidden;
 }
-#photoInput{
+
+#photoInput {
     width: inherit;
 }
 
 /* General info stuff */
-#genderBtns{
+#genderBtns {
     float: right;
     margin-right: 120px;
     width: 175px;
 }
 
-
-
-
-
-
-
-
 /*Triage Page*/
 .stackedInput {
-  margin-top: 15px!important;
-}
-.textAreaLabel {
-  margin-top: 25px!important;
-}
-.floatButtonOffset {
-  margin-left: 10px;
-}
-.medicalHistoryLineDivide {
-  background: #000000;
-  clear: both;
-  float: none;
-  width: 100%;
-  height: 1px;
-  margin: 0 0 2px;
-  border: none;
+    margin-top: 15px !important;
 }
 
-#pregnancyBtn{
-    margin-top: -6px;
+.textAreaLabel {
+    margin-top: 25px !important;
 }
-#photoInput{
+
+.floatButtonOffset {
+    margin-left: 10px;
+}
+
+.medicalHistoryLineDivide {
+    background: #000000;
+    clear: both;
+    float: none;
+    width: 100%;
+    height: 1px;
+    margin: 0 0 2px;
+    border: none;
+}
+
+#photoInput {
     float: left !important;
 }
 
-
 .red {
-    color:red;
+    color: red;
 }
-
 
 /* Shrinking of General Info section */
-@media(max-width: 1199px){
-    #genderBtns{
+@media (max-width: 1199px) {
+    #genderBtns {
         margin-right: 0px;
     }
-    .generalInfoInput input{
+
+    .generalInfoInput input {
         margin-right: 0px;
+    }
+    .vitalWrap input{
+        float: right;
     }
 }
-@media(max-width: 991px){
-    .sectionBackground{
+
+@media (max-width: 991px) {
+    .sectionBackground {
         padding: 0px;
     }
 }
-@media(max-width: 495px){
-   #genInfoWrap input{
-       float: none;
-   }
+@media (max-width: 620px){
+    .vitalWrap input {
+        float: none;
+    }
+    #weeksPregnant{
+        margin: 0;
+    }
+}
+
+@media (max-width: 495px) {
+    #genInfoWrap input {
+        float: none;
+    }
+
+
 }
 

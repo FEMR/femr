@@ -106,7 +106,7 @@ $(document).ready(function () {
 
 
 
-    $('#resetVitalsBtn').on('click', function () {
+    $('#fakeBtn').on('click', function () {
         $('#populatedVitals').addClass('hidden');
         $('#newVitals').removeClass('hidden');
         $('#saveVitalsBtn').removeClass('hidden');
@@ -211,41 +211,7 @@ $(document).ready(function () {
                 $('#resetVitalsBtn').removeClass('hidden');
             });
     });
-
-    /*
-    $('#vitalDialog').dialog({
-        dialogClass: 'editUserDialog',
-        autoOpen: false,
-        draggable: true,
-        position: 'center',
-        modal: true,
-        height: 450,
-        width: 600
-
-    });
-    bindVitalDialog();*/
 });
-
-function bindVitalDialog() {
-    $('#resetVitalsBtn').click(function () {
-        var id = $('#patientId').val();
-        $.ajax({
-            url: '/medical/vitals/edit/' + id,
-            type: 'GET',
-            data: {id: id},
-            success: function (partialView) {
-                $('#vitalPartial').html(partialView);
-                $('#vitalDialog').dialog("open");
-//                $('#cancelBtn').click(function () {
-//                    $('#editDialog').dialog("close");
-//                });
-            },
-            error: function (response) {
-                alert("fatal error dear lord what have you done");
-            }
-        })
-    });
-}
 
 function showTreatment() {
     $('#hpiControl').addClass('hidden');

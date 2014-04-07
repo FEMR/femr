@@ -18,6 +18,8 @@ GET         /triage/find                @femr.ui.controllers.TriageController.cr
 GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer)
 GET         /triage                     @femr.ui.controllers.TriageController.createGet()
 POST        /triage                     @femr.ui.controllers.TriageController.createPost(id: Integer)
+GET         /medical/newVitals          @femr.ui.controllers.MedicalController.newVitalsGet()
+GET         /medical/listVitals/:id     @femr.ui.controllers.MedicalController.listVitalsGet(id: Integer)
 GET         /medical/edit/:id           @femr.ui.controllers.MedicalController.editGet(id: Integer)
 POST        /medical/edit/:id           @femr.ui.controllers.MedicalController.editPost(id: Integer)
 POST        /medical/search             @femr.ui.controllers.MedicalController.searchPost()

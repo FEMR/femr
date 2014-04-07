@@ -27,30 +27,31 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     #vitalsWrap {
         float: left;
         width: 25%;
-        min-height: 670px;
-        padding-right: 10px;
-        overflow: auto;
+        min-height: 670px;   /* should match scroll plugin */
+        padding: 15px 10px 10px 10px;
     }
-        .vitalWrap{
-            padding: 9px 9px 9px 5px;
-        }
-        .vitalWrap label{
-            display: block;
-        }
-        .vitalWrap:hover{
+        #vitalsWrap:hover{
             cursor: default;
         }
+    #vitalTable{
+        font-size: 18px;
+    }
+    #vitalTable th,td,tr{
+        border: 1px solid #ccc;
+    }
 
     #inputWrap {
         float: left;
         width: 75%;
         padding: 1px;
     }
+    #newVitalsBtn{
+        width: 100%;
+        margin-top: 10px;
+    }
 
-#newVitals input{
-    width: 75px;
-    height: 35px;
-}
+
+
 #tabContentWrap {
     float: left;
     width: 100%;
@@ -105,7 +106,7 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 }
 
 #medicalTabs li.active a {
-    background: url("../img/paper_greyLightNoise.png") repeat;
+    background: url("../../img/paper_greyLightNoise.png") repeat;
 }
 
 #medicalTabs li:first-child a {
@@ -134,6 +135,6 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 #medicalTabs a:hover,
 #medicalTabs a:focus {
     color: #000;
-    background: url("../img/paper_greyLightNoise.png") repeat;
+    background: url("../../img/paper_greyLightNoise.png") repeat;
 }
 

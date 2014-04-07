@@ -1,7 +1,10 @@
 package femr.ui.controllers.research;
 
+import java.util.List;
+
 /**
- * This model stores the return data from the research query
+ * This model represents the patient data being returned from the sql
+ * query
  */
 public class ResearchDataModel {
 
@@ -10,9 +13,10 @@ public class ResearchDataModel {
     public String age;
     public String city;
     public String sex;
-   // public String medication;
+    public List<String> medication;
     public String dateTaken;
     public String condition;
+    public String treatment;
 
 
     public int getPatientID() {
@@ -55,13 +59,21 @@ public class ResearchDataModel {
         this.sex = sex;
     }
 
-//    public String getMedication() {
-//        return medication;
-//    }
-//
-//    public void setMedication(String medication) {
-//        this.medication = medication;
-//    }
+    public List<String> getMedication() {
+        return medication;
+    }
+
+    public void setMedication(List<String> medication) {
+        this.medication = medication;
+    }
+
+    public String getTreatment() {
+        return treatment;
+    }
+
+    public void setTreatment(String treatment) {
+        this.treatment = treatment;
+    }
 
     public String getDateTaken() {
         return dateTaken;
@@ -71,11 +83,12 @@ public class ResearchDataModel {
         this.dateTaken = dateTaken;
     }
 
-    public String getCondition() {
-        return condition;
-    }
+//    public String getCondition() {
+//        return condition;
+//    }
+//
+//    public void setCondition(String condition) {
+//        this.condition = condition;
+//    }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
 }

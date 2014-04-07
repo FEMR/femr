@@ -3,30 +3,23 @@ package femr.ui.controllers.research;
 
 import com.google.inject.Inject;
 import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
 import femr.business.services.IResearchService;
 import femr.business.services.ISessionService;
 
-import femr.common.models.IPatientResearch;
 import femr.common.models.Roles;
-import femr.data.models.PatientResearch;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.CreateViewModelGet;
 import femr.ui.models.research.CreateViewModelPost;
 import femr.ui.models.research.QueryObjectPatientModel;
 import femr.ui.views.html.research.index;
-import femr.util.DataStructure.Pair;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This is the controller for the research page
@@ -74,14 +67,26 @@ public class ResearchController extends Controller {
     private QueryObjectPatientModel CreatePatientModel() {
         QueryObjectPatientModel patientModel = new QueryObjectPatientModel();
 
+
+
+        List<String> Logic = researchService.getLogicLookupAsList();
+        patientModel.setLogicList(Logic);
+
+
+        List<String> Condition = researchService.getConditionLookupAsList();
+        patientModel.setComparisonList(Condition);
+
+        List<String> Properties = researchService.getPatientPropertiesLookupAsList();
+        patientModel.setPatientProperties(Properties);
+
         // create a list of conditional
-        List<String> conditionList = new ArrayList<>();
+        /*List<String> conditionList = new ArrayList<>();
         conditionList.add("AND");
         conditionList.add("OR");
         conditionList.add("NOT");
         conditionList.add("XOR");
 
-        patientModel.setConditionList(conditionList);
+        patientModel.setLogicList(conditionList);
 
         // create a list of comparison symbols
         List<String> comparisonList = new ArrayList<>();
@@ -102,9 +107,9 @@ public class ResearchController extends Controller {
         patientProperties.add(new Pair<String, Object>("Sex", String.class));
         patientProperties.add(new Pair<String, Object>("Date Taken", String.class));
         patientProperties.add(new Pair<String, Object>("Medication", String.class));
-        patientProperties.add(new Pair<String, Object>("Treatment", String.class));
+        patientProperties.add(new Pair<String, Object>("Treatment", String.class)); */
 
-        patientModel.setPatientProperties(patientProperties);
+
         // TODO-RESEARCH: Add the properties associated with a patient that the user can choose from
 
         return patientModel; // temporary replace

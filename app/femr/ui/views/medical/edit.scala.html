@@ -4,13 +4,18 @@
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.views.html.helpers.medical._
 @import femr.ui.views.html.helpers.shared._
+@import femr.ui.views.html.medical.listVitals
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/medical.css")" xmlns="http://www.w3.org/1999/html">
+        <link rel="stylesheet" href="@routes.Assets.at("css/medical/medical.css")" xmlns="http://www.w3.org/1999/xhtml">
+        <link rel="stylesheet" href="@routes.Assets.at("css/jquery.tablescroll.css")" xmlns="http://www.w3.org/1999/xhtml">
+        <link rel="stylesheet" href="@routes.Assets.at("css/jquery-ui.min.css")" xmlns="http://www.w3.org/1999/xhtml">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery.tablescroll.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery-ui.min.js")"></script>
     }
     @searchById = {
     @helper.form(action = MedicalController.searchPost()) {
@@ -40,10 +45,11 @@
                 }
                 </div>
                 <div id="patientInfo">
-                    <span><label>Name:</label>@viewModel.getFirstName @viewModel.getLastName</span>
-                    <span><label for="">Age:</label>@viewModel.getAge</span>
-                    <span><label for="">Sex:</label>@viewModel.getSex</span>
-                    <span><label for="">City:</label>@viewModel.getCity</span>
+                    <label>Name:</label><span>@viewModel.getFirstName @viewModel.getLastName</span>
+                    <label for="">Age:</label><span>@viewModel.getAge</span>
+                    <label for="">Sex:</label><span>@viewModel.getSex</span>
+                    <label for="">City:</label><span>@viewModel.getCity</span>
+                    <label for="">BMI:</label><span id="bmi"></span>
                     @if(viewModel.getWeeksPregnant != null && viewModel.getWeeksPregnant > 0) {
                         <span><label>Weeks Pregnant:</label>@viewModel.getWeeksPregnant</span>
                     }
@@ -57,318 +63,168 @@
 
         <div id="mainWrap" class="backgroundForWrap">
             <div id="vitalsWrap">
-
-                <table>
-                    <tr>
-                        <th></th>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.getFormatedDateTime(dateIndex-1)</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>BP</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("bloodPressureSystolic",viewModel.getVitalMap.getDate(dateIndex-1)) / @viewModel.getVitalMap.get("bloodPressureDiastolic",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>HR</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("heartRate",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>T</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("temperature",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>RR</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("respiratoryRate",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>Gluc</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("glucose",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>SpO2</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("oxygenSaturation",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>Ht</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("heightFeet",viewModel.getVitalMap.getDate(dateIndex-1)) ' @viewModel.getVitalMap.get("heightInches",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                    <tr>
-                        <td>Weight</td>
-                        @for(dateIndex <- 1 to viewModel.getVitalMap.getDateListChronological.size){
-                            <th>@viewModel.getVitalMap.get("weight",viewModel.getVitalMap.getDate(dateIndex-1))</th>
-                        }
-                    </tr>
-                </table>
-
-                <!--
-                <h3>Vitals</h3>
-                <div id="populatedVitals">
-                    <div class="vitalWrap">
-                        <label>BP</label>
-                        <span id="triageBpSystolic">viewModel.getBloodPressureSystolic</span>/
-                        <span id="triageBpDiastolic">viewModel.getBloodPressureDiastolic</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>HR</label>
-                        <span id="triageHeartRate">viewModel.getHeartRate</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>T</label>
-                        <span id="triageTemperature">viewModel.getTemperature</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>RR</label>
-                        <span id="triageRespRate">viewModel.getRespiratoryRate</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>Gluc</label>
-                        <span id="triageGlucose">viewModel.getGlucose</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>SpO2</label>
-                        <span id="triageOxygen">viewModel.getOxygenSaturation</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>Ht</label>
-                        <span id="triageHeightFt">viewModel.getHeightFeet</span>
-                        ' <span id=triageHeightIn>viewModel.getHeightInches</span>"
-                        @*used by bmi calculator*@
-                        <span id="heightFeet" class="hidden">viewModel.getHeightFeet</span>
-                        <span id="heightInches" class="hidden">viewModel.getHeightInches</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>Wt</label>
-                        <span id="weight">viewModel.getWeight</span>
-                    </div>
-                    <div class="vitalWrap">
-                        <label>BMI</label>
-                        <span id="bmi"></span>
-                    </div>
-
-
+                <div id="vitalsPartial">
+                        <!-- Repalaced when user clicks save in record new vitals dialog -->
+                    @listVitals(viewModel.getVitalMap)
                 </div>
-                          -->
 
-                    <!--
-                @*DAT BR*@
-                <div id="newVitals" class="hidden">
-                    <label>BP</label>
-                    <br/>
-                    <input type="number" class="fInput" id="bpSystolic" placeholder="systolic"/>
-                    <input type="number" class="fInput" id="bpDiastolic" placeholder="diastolic"/>
-                    <br/>
-                    <label>HR</label>
-                    <br/>
-                    <input type="number" class="fInput" id="heartRate" placeholder="bpm"/>
-                    <br/>
-                    <label>T</label>
-                    <br/>
-                    <input type="number" class="fInput" id="temperature" placeholder="F"/>
-                    <br/>
-                    <label>RR</label>
-                    <br/>
-                    <input type="number" class="fInput" id="respRate" placeholder="bpm"/>
-                    <br/>
-                    <label>Gluc</label>
-                    <br/>
-                    <input type="number" class="fInput" id="newGlucose" placeholder="mg/dl"/>
-                    <br/>
-                    <label>SpO2</label>
-                    <br/>
-                    <input type="number" class="fInput" id="oxygen" placeholder="%"/>
-                    <br/>
-                    <label>Ht</label>
-                    <br/>
-                    <input type="number" class="fInput" id="heightFt" placeholder="ft"/>
-                    <input type="number" class="fInput" id="heightIn" placeholder="in"/>
-                    <br/>
-                    <label>Wt</label>
-                    <br/>
-                    <input type="number" class="fInput" id="newWeight" placeholder="lbs"/>
+                <button type="button" id="newVitalsBtn" class="fButton">Record New Vitals</button>
+
+                <div id="newVitalsDialog" title="Record New Vitals">
+                    <div id="newVitalsPartial">
+                        @*load partial view for editing a user via admin.js*@
+                    </div>
                 </div>
-                -->
+        </div>
+        <div id="inputWrap">
+        @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {
+
+            <div class="tabWrap">
+
+                @historyButton(viewModel.getpID())
 
 
-                <!--
-
-                <button type="button" id="resetVitalsBtn" class="fButton">New</button>
-                <button type="button" id="fakeBtn" class="fButton">Fake</button>
-                <button type="button" id="saveVitalsBtn" class="fButton hidden">Save</button>
-                    -->
+                <ul id="medicalTabs">
+                    <li class="active"><a href="#" id="hpiTab">HPI</a></li>
+                    <li><a href="#" id="pmhTab">PMH</a></li>
+                    <li><a href="#" id="treatmentTab">Treatment</a></li>
+                </ul>
 
             </div>
-            <div id="inputWrap">
-            @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {
 
-                <div class="tabWrap">
+            <div id="tabContentWrap">
 
-                    @historyButton(viewModel.getpID())
-
-
-                    <ul id="medicalTabs">
-                        <li class="active"><a href="#" id="hpiTab">HPI</a></li>
-                        <li><a href="#" id="pmhTab">PMH</a></li>
-                        <li><a href="#" id="treatmentTab">Treatment</a></li>
-                    </ul>
-
-                </div>
-
-                <div id="tabContentWrap">
-
-                    <div class="controlWrap" id="hpiControl">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="onset">Onset</label>
-                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="blank"></label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                @severityDropDown(viewModel.getSeverity)
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
+                <div class="controlWrap" id="hpiControl">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
                             <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6">
-                                    <div class="form-group">
-                                        <label for="radiation">Radiation</label>
-                                        <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation"/>
-                                    </div>
+                                <label for="onset">Onset</label>
+                                <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label for="blank"></label>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                            @severityDropDown(viewModel.getSeverity)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label for="radiation">Radiation</label>
+                                    <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation"/>
                                 </div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <div class="form-group">
-                                        <label for="quality">Quality</label>
-                                        <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality"/>
-                                    </div>
+                            </div>
+                            <div class="col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label for="quality">Quality</label>
+                                    <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="provokes">Provokes</label>
-                            <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getProvokes"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="palliates">Palliates</label>
-                            <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getPalliates"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="timeOfDay">Time of Day</label>
-                            <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="timeOfDay">Narrative</label>
-                            <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="physicalExamination">Physical Examination</label>
-                            <textarea rows="3" name="physicalExamination" class="form-control input-sm">@viewModel.getPhysicalExamination</textarea>
-                        </div>
                     </div>
-
-                    <div class="controlWrap hidden" id="treatmentControl">
-                        <div class="form-group">
-                            <label for="assessment">Assessment</label>
-                            <textarea rows="3" name="assessment" class="form-control input-sm">@viewModel.getAssessment</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="problem">Diagnosis</label>
-                            <div class="row">
-                                <div class="col-xs-9 col-sm-9 col-md-9">
-                                    @inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")
-                                    @inputPrescriptionOrProblem(2, viewModel.getProblem2, "problem")
-                                    @inputPrescriptionOrProblem(3, viewModel.getProblem3, "problem")
-                                    @inputPrescriptionOrProblem(4, viewModel.getProblem4, "problem")
-                                    @inputPrescriptionOrProblem(5, viewModel.getProblem5, "problem")
-                                </div>
-                                <div class="col-xs-3 col-sm-3 col-md-3">
-                                    <div class="row">
-                                        <button id="addProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                                    </div>
-                                    <div class="row">
-                                        <button id="subtractProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="prescription">Prescriptions</label>
-                            <div class="row">
-                                <div class="col-xs-9 col-sm-9 col-md-9">
-                                    @inputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
-                                    @inputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
-                                    @inputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
-                                    @inputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
-                                    @inputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
-                                </div>
-                                <div class="col-xs-3 col-sm-3 col-md-3">
-                                    <div class="row">
-                                        <button id="addPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                                    </div>
-                                    <div class="row">
-                                        <button id="subtractPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="treatment">Treatment Given</label>
-                            <textarea rows="3" name="treatment" class="form-control input-sm">@viewModel.getTreatment</textarea>
-                        </div>
+                    <div class="form-group">
+                        <label for="provokes">Provokes</label>
+                        <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getProvokes"/>
                     </div>
-                    <div class="controlWrap hidden" id="pmhControl">
-                        <div class="form-group">
-                            <label for="medicalSurgicalHistory">Medical/Surgical History</label>
-                            <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" >@viewModel.getMedicalSurgicalHistory </textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="socialHistory">Social History</label>
-                            <textarea row ="3" name="socialHistory" class="form-control input-sm" >@viewModel.getSocialHistory </textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="currentMedication">Current Medications</label>
-                            <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm">@viewModel.getCurrentMedication </textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="familyHistory">Family History</label>
-                            <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory  </textarea>
-                        </div>
+                    <div class="form-group">
+                        <label for="palliates">Palliates</label>
+                        <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getPalliates"/>
                     </div>
-                    <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
-                        Submit Patient</button>
-
-
+                    <div class="form-group">
+                        <label for="timeOfDay">Time of Day</label>
+                        <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="timeOfDay">Narrative</label>
+                        <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="physicalExamination">Physical Examination</label>
+                        <textarea rows="3" name="physicalExamination" class="form-control input-sm">@viewModel.getPhysicalExamination</textarea>
+                    </div>
                 </div>
 
-            }
+                <div class="controlWrap hidden" id="treatmentControl">
+                    <div class="form-group">
+                        <label for="assessment">Assessment</label>
+                        <textarea rows="3" name="assessment" class="form-control input-sm">@viewModel.getAssessment</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="problem">Diagnosis</label>
+                        <div class="row">
+                            <div class="col-xs-9 col-sm-9 col-md-9">
+                                @inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")
+                                @inputPrescriptionOrProblem(2, viewModel.getProblem2, "problem")
+                                @inputPrescriptionOrProblem(3, viewModel.getProblem3, "problem")
+                                @inputPrescriptionOrProblem(4, viewModel.getProblem4, "problem")
+                                @inputPrescriptionOrProblem(5, viewModel.getProblem5, "problem")
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+                                <div class="row">
+                                    <button id="addProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                                </div>
+                                <div class="row">
+                                    <button id="subtractProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prescription">Prescriptions</label>
+                        <div class="row">
+                            <div class="col-xs-9 col-sm-9 col-md-9">
+                                @inputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
+                                @inputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
+                                @inputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
+                                @inputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
+                                @inputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
+                            </div>
+                            <div class="col-xs-3 col-sm-3 col-md-3">
+                                <div class="row">
+                                    <button id="addPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                                </div>
+                                <div class="row">
+                                    <button id="subtractPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="treatment">Treatment Given</label>
+                        <textarea rows="3" name="treatment" class="form-control input-sm">@viewModel.getTreatment</textarea>
+                    </div>
+                </div>
+                <div class="controlWrap hidden" id="pmhControl">
+                    <div class="form-group">
+                        <label for="medicalSurgicalHistory">Medical/Surgical History</label>
+                        <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" >@viewModel.getMedicalSurgicalHistory </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="socialHistory">Social History</label>
+                        <textarea row ="3" name="socialHistory" class="form-control input-sm" >@viewModel.getSocialHistory </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentMedication">Current Medications</label>
+                        <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm">@viewModel.getCurrentMedication </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="familyHistory">Family History</label>
+                        <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory  </textarea>
+                    </div>
+                </div>
+                <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
+                    Submit Patient</button>
+
+
             </div>
+
+        }
         </div>
     </div>
+    </div>
 }
-
-
-       <style>
-           #vitalsWrap table, th, td{
-               border: 1px solid black;
-
-           }
-       </style>

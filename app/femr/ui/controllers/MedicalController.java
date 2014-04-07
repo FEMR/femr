@@ -12,12 +12,8 @@ import femr.data.models.PatientEncounterHpiField;
 import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.medical.CreateViewModelGet;
-import femr.ui.models.medical.CreateViewModelPost;
-import femr.ui.models.medical.SearchViewModel;
-import femr.ui.models.medical.UpdateVitalsModel;
-import femr.ui.views.html.medical.edit;
-import femr.ui.views.html.medical.index;
+import femr.ui.models.medical.*;
+import femr.ui.views.html.medical.*;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -260,6 +256,24 @@ public class MedicalController extends Controller {
         }
 
         return ok("true");
+    }
+
+    //partials
+    public Result newVitalsGet(){
+        return ok(newVitals.render());
+
+    }
+    public Result listVitalsGet(Integer id){
+        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
+        if (patientEncounterServiceResponse.hasErrors()){
+            return internalServerError();
+        }
+        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = searchService.getVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
+        if (vitalMultiMapServiceResponse.hasErrors()){
+            return internalServerError();
+        }
+
+        return ok(listVitals.render(vitalMultiMapServiceResponse.getResponseObject()));
     }
 
     //region **generate lists of stuff from CreateViewModelPost**

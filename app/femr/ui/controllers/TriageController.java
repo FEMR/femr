@@ -159,18 +159,45 @@ public class TriageController extends Controller {
         }
 
 
-        //save new vitals
+        //save new vitals - check to make sure the vital exists
+        //before putting it in the map
         Map<String, Float> newVitals = new HashMap<>();
-        newVitals.put("respiratoryRate", viewModel.getRespiratoryRate().floatValue());
-        newVitals.put("heartRate", viewModel.getHeartRate().floatValue());
-        newVitals.put("temperature", viewModel.getTemperature());
-        newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
-        newVitals.put("heightFeet", viewModel.getHeightFeet().floatValue());
-        newVitals.put("heightInches", viewModel.getHeightInches().floatValue());
-        newVitals.put("weight", viewModel.getWeight());
-        newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
-        newVitals.put("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic().floatValue());
-        newVitals.put("glucose", viewModel.getGlucose().floatValue());
+        if (viewModel.getRespiratoryRate() != null) {
+            newVitals.put("respiratoryRate", viewModel.getRespiratoryRate().floatValue());
+        }
+        if (viewModel.getHeartRate() != null) {
+            newVitals.put("heartRate", viewModel.getHeartRate().floatValue());
+        }
+        if (viewModel.getTemperature() != null){
+            newVitals.put("temperature", viewModel.getTemperature());
+        }
+        if (viewModel.getOxygenSaturation() != null){
+            newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
+        }
+        if(viewModel.getHeightFeet() != null){
+            newVitals.put("heightFeet", viewModel.getHeightFeet().floatValue());
+        }
+        if (viewModel.getHeightInches() != null){
+            newVitals.put("heightInches", viewModel.getHeightInches().floatValue());
+        }
+        if (viewModel.getWeight() != null){
+            newVitals.put("weight", viewModel.getWeight());
+        }
+        if (viewModel.getBloodPressureSystolic() != null){
+            newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
+        }
+        if (viewModel.getBloodPressureDiastolic() != null){
+            newVitals.put("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic().floatValue());
+        }
+        if (viewModel.getGlucose() != null){
+            newVitals.put("glucose", viewModel.getGlucose().floatValue());
+        }
+
+
+
+
+
+
         ServiceResponse<List<? extends IPatientEncounterVital>> vitalServiceResponse = triageService.createPatientEncounterVitals(newVitals, currentUser.getId(), patientEncounter.getId());
         if (vitalServiceResponse.hasErrors()) {
             return internalServerError();

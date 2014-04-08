@@ -12,6 +12,8 @@ import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IPhoto;
 import femr.data.daos.IRepository;
 import femr.data.models.Patient;
+import femr.data.models.PatientEncounter;
+import femr.data.models.PatientEncounterVital;
 
 import java.util.List;
 
@@ -114,8 +116,36 @@ public class TriageService implements ITriageService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<String> getDateOfTriageCheckIn(int encounterId) {
+        ExpressionList<PatientEncounter> query1 = getPatientEncounter().where().eq("id", encounterId);
+        List<? extends IPatientEncounter> patientEncounter = patientEncounterRepository.find(query1);
+
+        ExpressionList<PatientEncounterVital> query2 = getPatientEncounterVital().where().eq("patient_encounter_id", encounterId);
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query2);
+
+        ServiceResponse<String> response = new ServiceResponse<>();
+
+        if (patientEncounter.size() > 0) {
+            response.setResponseObject(patientEncounter.get(0).getDateOfVisit());
+        } else if (patientEncounterVitals.size() > 0) {
+            response.setResponseObject(patientEncounterVitals.get(0).getDateTaken());
+        } else {
+            response.addError("values", "That patient has no triage record");
+        }
+        return response;
+    }
+
     private Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
+    }
+
+    private Query<PatientEncounter> getPatientEncounter() {
+        return Ebean.find(PatientEncounter.class);
+    }
+
+    private Query<PatientEncounterVital> getPatientEncounterVital() {
+        return Ebean.find(PatientEncounterVital.class);
     }
 
 

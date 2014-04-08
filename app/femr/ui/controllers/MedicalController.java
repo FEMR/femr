@@ -272,11 +272,11 @@ public class MedicalController extends Controller {
 
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
 
-        List<? extends IPatientEncounterVital> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel, patientEncounter.getId(), currentUser.getId());
-        /*ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVitals(patientEncounterVitals);
-        if (patientEncounterVitalServiceResponse.hasErrors()) {
+        Map<String, Float> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel);
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalsServiceResponse = triageService.createPatientEncounterVitals(patientEncounterVitals, currentUser.getId(), patientEncounter.getId());
+        if (patientEncounterVitalsServiceResponse.hasErrors()){
             return internalServerError();
-        } */
+        }
 
         return ok("true");
     }
@@ -514,82 +514,39 @@ public class MedicalController extends Controller {
         return patientEncounterHpiFields;
     }
 
-    private List<? extends IPatientEncounterVital> getPatientEncounterVitals(UpdateVitalsModel updateVitalsModel, int patientEncounterId, int userId) {
-        ServiceResponse<IVital> vitalServiceResponse;
-        IPatientEncounterVital patientEncounterVital;
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-
-        if (updateVitalsModel.getRespRate() > 0) {
-            vitalServiceResponse = searchService.findVital("respiratoryRate");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getRespRate());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+    private Map<String, Float> getPatientEncounterVitals(UpdateVitalsModel viewModel) {
+        Map<String, Float> newVitals = new HashMap<>();
+        if (viewModel.getRespiratoryRate() != null) {
+            newVitals.put("respiratoryRate", viewModel.getRespiratoryRate().floatValue());
         }
-        if (updateVitalsModel.getHeartRate() > 0) {
-            vitalServiceResponse = searchService.findVital("heartRate");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getHeartRate());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getHeartRate() != null) {
+            newVitals.put("heartRate", viewModel.getHeartRate().floatValue());
         }
-        if (updateVitalsModel.getTemperature() > 0) {
-            vitalServiceResponse = searchService.findVital("temperature");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getTemperature());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getTemperature() != null){
+            newVitals.put("temperature", viewModel.getTemperature());
         }
-        if (updateVitalsModel.getOxygen() > 0) {
-            vitalServiceResponse = searchService.findVital("oxygenSaturation");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getOxygen());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getOxygenSaturation() != null){
+            newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
-        if (updateVitalsModel.getHeightIn() > 0) {
-            vitalServiceResponse = searchService.findVital("heightInches");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getHeightIn());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if(viewModel.getHeightFeet() != null){
+            newVitals.put("heightFeet", viewModel.getHeightFeet().floatValue());
         }
-        if (updateVitalsModel.getHeightFt() > 0) {
-            vitalServiceResponse = searchService.findVital("heightFeet");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getHeightFt());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getHeightInches() != null){
+            newVitals.put("heightInches", viewModel.getHeightInches().floatValue());
         }
-        if (updateVitalsModel.getWeight() > 0) {
-            vitalServiceResponse = searchService.findVital("weight");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getWeight());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getWeight() != null){
+            newVitals.put("weight", viewModel.getWeight());
         }
-        if (updateVitalsModel.getBpSystolic() > 0) {
-            vitalServiceResponse = searchService.findVital("bloodPressureSystolic");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getBpSystolic());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getBloodPressureSystolic() != null){
+            newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
         }
-        if (updateVitalsModel.getBpDiastolic() > 0) {
-            vitalServiceResponse = searchService.findVital("bloodPressureDiastolic");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getBpDiastolic());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getBloodPressureDiastolic() != null){
+            newVitals.put("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic().floatValue());
         }
-        if (updateVitalsModel.getGlucose() > 0) {
-            vitalServiceResponse = searchService.findVital("glucose");
-            if (!vitalServiceResponse.hasErrors()) {
-                patientEncounterVital = medicalHelper.getPatientEncounterVital(userId, patientEncounterId, vitalServiceResponse.getResponseObject(), updateVitalsModel.getGlucose());
-                patientEncounterVitals.add(patientEncounterVital);
-            }
+        if (viewModel.getGlucose() != null){
+            newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }
-        return patientEncounterVitals;
+        return newVitals;
     }
     //endregion
 }

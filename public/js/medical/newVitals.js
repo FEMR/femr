@@ -7,14 +7,14 @@ $(document).ready(function () {
     $('#saveVitalsBtn').on('click', function () {
         var newVitals = {};
 
-        var bpSystolic = $('#bpSystolic');
-        var bpDiastolic = $('#bpDiastolic');
+        var bloodPressureSystolic = $('#bpSystolic');
+        var bloodPressureDiastolic = $('#bpDiastolic');
         var heartRate = $('#heartRate');
         var temperature = $('#temperature');
-        var respRate = $('#respRate');
+        var respiratoryRate = $('#respRate');
         var oxygen = $('#oxygen');
-        var heightFt = $('#heightFt');
-        var heightIn = $('#heightIn');
+        var heightFeet = $('#heightFt');
+        var heightInches = $('#heightIn');
         var weight = $('#newWeight');
         var glucose = $('#newGlucose');
 

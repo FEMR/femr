@@ -15,6 +15,7 @@ import femr.ui.views.html.pharmacies.populated;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -134,6 +135,21 @@ public class PharmaciesController extends Controller {
             return ok(index.render(currentUserSession, message, 0));
         }
 
+        //check for encounter closed
+        DateTime dateNow = dateUtils.getCurrentDateTime();
+        DateTime dateTaken;
+        ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
+        if (dateResponse.hasErrors()) {
+            message = "A fatal error has been encountered. Please try again.";
+            return ok(index.render(currentUserSession, message, 0));
+        }
+        dateTaken = dateResponse.getResponseObject();
+        if (!(dateNow.dayOfYear().equals(dateTaken.dayOfYear()) && dateNow.year().equals(dateTaken.year()))) {
+            message = "That patient's encounter has been closed.";
+            return ok(index.render(currentUserSession, message, 0));
+        }
+
+        //continue find patient prescriptions
         List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
         List<String> dynamicViewMedications = new ArrayList<>();
 

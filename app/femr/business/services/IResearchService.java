@@ -23,6 +23,8 @@ public interface IResearchService {
     List<String> getLogicLookupAsList();
     List<String> getConditionLookupAsList();
 
+
+
     ResultSet ManualSqlQuery(String sql);
 
 

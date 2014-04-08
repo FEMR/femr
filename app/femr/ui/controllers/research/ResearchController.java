@@ -67,8 +67,6 @@ public class ResearchController extends Controller {
     private QueryObjectPatientModel CreatePatientModel() {
         QueryObjectPatientModel patientModel = new QueryObjectPatientModel();
 
-
-
         List<String> Logic = researchService.getLogicLookupAsList();
         patientModel.setLogicList(Logic);
 
@@ -79,45 +77,12 @@ public class ResearchController extends Controller {
         List<String> Properties = researchService.getPatientPropertiesLookupAsList();
         patientModel.setPatientProperties(Properties);
 
-        // create a list of conditional
-        /*List<String> conditionList = new ArrayList<>();
-        conditionList.add("AND");
-        conditionList.add("OR");
-        conditionList.add("NOT");
-        conditionList.add("XOR");
-
-        patientModel.setLogicList(conditionList);
-
-        // create a list of comparison symbols
-        List<String> comparisonList = new ArrayList<>();
-        comparisonList.add("=");
-        comparisonList.add("!=");
-        comparisonList.add("<");
-        comparisonList.add("<=");
-        comparisonList.add(">");
-        comparisonList.add(">=");
-
-        patientModel.setComparisonList(comparisonList);
-
-        // Create the tempoaray patient info
-        List<Pair<String, Object>> patientProperties = new ArrayList<>();
-        patientProperties.add(new Pair<String, Object>("ID", Integer.class));
-        patientProperties.add(new Pair<String, Object>("Age", Integer.class));
-        patientProperties.add(new Pair<String, Object>("City", String.class));
-        patientProperties.add(new Pair<String, Object>("Sex", String.class));
-        patientProperties.add(new Pair<String, Object>("Date Taken", String.class));
-        patientProperties.add(new Pair<String, Object>("Medication", String.class));
-        patientProperties.add(new Pair<String, Object>("Treatment", String.class)); */
-
-
-        // TODO-RESEARCH: Add the properties associated with a patient that the user can choose from
-
         return patientModel; // temporary replace
 
     }
 
 
-    //TODO-RESEARCH: Add the code for rest the Research controller here
+
 
     /**
      * Gets the generated search query and parses it then sends it to the service layer and displays the results
@@ -126,45 +91,10 @@ public class ResearchController extends Controller {
     public Result createPost() {
         //bind QueryString from POST request
         CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
+        String sql = viewModelPost.getQueryString();
 
-        // This is siimple parsing for now just proof of concept
-        Map<String,String> patientMap = new HashMap<>();
-        patientMap.put("ID","p.id");
-        patientMap.put("Age","p.age");
-        patientMap.put("City","p.city");
-        patientMap.put("Sex","p.sex");
-        patientMap.put("Date Taken","p.date_taken");
-        patientMap.put("Medication","pp.medication_name");
-        patientMap.put("Treatment","petf.treatment");
 
-        String sql = " WHERE ";
-        // split the string by spaces
-        String[] splitStr = viewModelPost.getQueryString().split("\\s+");
-        int count = 1;  // indicates what we are looking for
-        for(String word : splitStr)
-        {
-            // if count is 1 then get the property and returns its mapped name in the database
-            if(count == 1) {
-                sql += patientMap.get(word) + " ";
-                count ++;
-            }
-            // if count is 2 then get the comparison symbol
-            else if(count == 2) {
-                sql += word + " ";
-                count ++;
-            }
-            // if count is 3 get the value and put it in single quotes
-            else if(count == 3) {
-                sql += "'" + word + "' ";
-                count ++;
-            }
-            // if count is 4 gets the logic value and resets count to 1
-            else if(count == 4){
-                sql += word + " ";
-                count = 1;
-            }
-        }
-
+        System.out.println(sql);
         // execute query
         ResultSet resultSet = researchService.ManualSqlQuery(sql);
        try{
@@ -172,19 +102,13 @@ public class ResearchController extends Controller {
             {
 
                 System.out.println(resultSet.getString("patient_id") + " " + resultSet.getString("encounter_id") + " " +
-                        resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("medication_name"));
+                        resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("city") + " " + resultSet.getString("medication_name"));
             }
         } catch(Exception e) {
            e.printStackTrace();
        }
 
-        System.out.println(sql);
-
-
-
-
-
-        //do a redirect because what the fuck else would i do
+        //do a redirect
         return redirect("/research");
     }
 }

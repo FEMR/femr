@@ -1,17 +1,16 @@
 package femr.business.services;
 
 
-import com.avaje.ebean.*;
 import com.google.inject.Inject;
-import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
-import femr.data.models.Patient;
 import femr.data.models.PatientResearch;
-import femr.ui.controllers.research.ResearchDataModel;
+import femr.data.models.research.ResearchSQLBuilder;
+import femr.util.DataStructure.Pair;
 import play.db.DB;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
@@ -27,7 +26,10 @@ public class ResearchService implements IResearchService{
     private IRepository<IPatientResearch> patientResearchRepository;
     private IPatientResearch patientResearch;
 
-
+    /**
+     * Initializes the research service and injects the dependence
+     * @param patientResearchRepository this parameter is dependance injected so don't do anything with it
+     */
     @Inject
     public ResearchService(IRepository<IPatientResearch> patientResearchRepository) {
 
@@ -66,6 +68,7 @@ public class ResearchService implements IResearchService{
         return this.patientResearch.getConditionLookupAsList();
     }
 
+
     /**
      * Takes a sql string generated from user input and querys the databases
      * @param sql The WHERE part of SQL query
@@ -73,6 +76,11 @@ public class ResearchService implements IResearchService{
      */
     public ResultSet ManualSqlQuery(String sql) {
         Connection connection = DB.getConnection();
+        ResearchSQLBuilder rSQLBuilder = new ResearchSQLBuilder(sql,this.patientResearch);
+        if(rSQLBuilder == null)
+        {
+            return null;
+        }
 
         String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.sex, group_concat(pp.medication_name) as \"medication_name\" ";
 
@@ -82,16 +90,34 @@ public class ResearchService implements IResearchService{
                 " JOIN patient_prescriptions as pp " +
                 "   ON pe.id = pp.encounter_id " +
                 " ";
-
-
-        String sqlWhere = " WHERE p.sex = 'Male' AND SOUNDEX(pp.medication_name) LIKE SOUNDEX('tilenal') ";
-
         String sqlGroup = " GROUP BY pe.id ";
 
-        String MasterSQL = sqlSelect + sqlFrom + sql + sqlGroup;
+        // Gets the where statement to use in the preparedStatement and the list of values
+        // for the parameters
+        Pair<String,List<String>> wherePair = rSQLBuilder.CreatePreparedStatement(sql);
+        if(wherePair == null)
+        {
+            return null;
+        }
+
+        String sqlWhere = wherePair.getKey();
+
+        String MasterSQL = sqlSelect + sqlFrom + sqlWhere + sqlGroup;
+
+
         try {
-            Statement st = connection.createStatement();
-            ResultSet resultSet = st.executeQuery(MasterSQL);
+            // Constructs the preparedStatement
+            PreparedStatement ps = connection.prepareStatement(MasterSQL);
+            // fills in the parameters with the user provided values
+            // we do this to gard against sql injections
+            ps = rSQLBuilder.BuildQuery(ps,wherePair.getValue());
+
+            if(ps == null)
+            {
+                return null;
+            }
+
+            ResultSet resultSet = ps.executeQuery();
 
             return resultSet;
 
@@ -101,10 +127,6 @@ public class ResearchService implements IResearchService{
 
         return null;
     }
-
-
-
-    // TODO-RESEARCH: Implement the services
 
 
 }

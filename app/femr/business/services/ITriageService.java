@@ -7,6 +7,7 @@ import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IPhoto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITriageService {
     ServiceResponse<IPatient> createPatient(IPatient patient);
@@ -14,8 +15,9 @@ public interface ITriageService {
 
     ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter);
 
-    ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
-    ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVital);
+    //ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
+
+    ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String,Float> patientEncounterVital, int userId, int encounterId);
 
     ServiceResponse<IPatient> updatePatient(IPatient patient);
 

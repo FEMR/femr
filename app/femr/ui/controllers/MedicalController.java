@@ -273,10 +273,10 @@ public class MedicalController extends Controller {
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
 
         List<? extends IPatientEncounterVital> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel, patientEncounter.getId(), currentUser.getId());
-        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVitals(patientEncounterVitals);
+        /*ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse = triageService.createPatientEncounterVitals(patientEncounterVitals);
         if (patientEncounterVitalServiceResponse.hasErrors()) {
             return internalServerError();
-        }
+        } */
 
         return ok("true");
     }

@@ -33,12 +33,7 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
         #vitalsWrap:hover{
             cursor: default;
         }
-    #vitalTable{
-        font-size: 18px;
-    }
-    #vitalTable th,td,tr{
-        border: 1px solid #ccc;
-    }
+
 
     #inputWrap {
         float: left;

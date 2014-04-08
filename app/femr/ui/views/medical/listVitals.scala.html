@@ -1,12 +1,15 @@
 @(vitalMap: femr.util.DataStructure.VitalMultiMap)
 
 <link rel="stylesheet" href="@routes.Assets.at("css/jquery.tablescroll.css")" xmlns="http://www.w3.org/1999/xhtml">
+<link rel="stylesheet" href="@routes.Assets.at("css/medical/listVitals.css")" xmlns="http://www.w3.org/1999/xhtml">
 
 
-<script>window.jQuery || document.write ( '<script type="text/javascript" src="  @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
+<script>window.jQuery || document.write ( '<script type="text/javascript" src="   @routes.Assets.at("js/jquery-2.0.3.min.js") "><\/script>')</script>
 <script type="text/javascript" src="@routes.Assets.at("js/jquery.tablescroll.js")"></script>
-<table id="vitalTable" cellspacing="0">
+<script type="text/javascript" src="@routes.Assets.at("js/medical/listVitals.js")"></script>
 
+
+<table id="vitalTable" cellspacing="0">
     <thead></thead>
     <tbody>
         <tr class="first">
@@ -60,17 +63,10 @@
             }
         </tr>
         <tr id="weight">
-            <th>Weight</th>
+            <th>Wt</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
     </tbody>
 </table>
-    <script>
-        $(document).ready(function(){
-            $('#vitalTable').tableScroll({height: 670, width: 250});
-
-        });
-
-    </script>

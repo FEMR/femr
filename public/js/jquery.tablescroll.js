@@ -96,7 +96,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 			wrapper.css
 			({
-				'width': width+'px',
+				//'width': width+'px',
 				'height': settings.height+'px',
 				'overflow': 'auto'
 			});
@@ -108,12 +108,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 			var diff = wrapper_width-width;
 
 			// assume table will scroll
-			wrapper.css({width:((width-diff)+settings.scrollbarWidth)+'px'});
+			//wrapper.css({width:((width-diff)+settings.scrollbarWidth)+'px'});
 			tb.css('width',(width-diff)+'px');
 
 			if (tb.outerHeight() <= settings.height)
 			{
-				wrapper.css({height:'auto',width:(width-diff)+'px'});
+			//	wrapper.css({height:'auto',width:(width-diff)+'px'});
+                wrapper.css({height:'auto'})
 				flush = false;
 			}
 

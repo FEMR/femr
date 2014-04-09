@@ -1,112 +1,94 @@
 package femr.ui.models.medical;
 
 public class UpdateVitalsModel {
-    private double bpSystolic;
-    private double bpDiastolic;
-    private double heartRate;
-    private double temperature;
-    private double oxygen;
-    private double respRate;
-    private double heightFt;
-    private double heightIn;
-    private double weight;
-    private double glucose;
+    private Float bloodPressureSystolic;
+    private Float bloodPressureDiastolic;
+    private Float heartRate;
+    private Float temperature;
+    private Float oxygenSaturation;
+    private Float respiratoryRate;
+    private Float heightFeet;
+    private Float heightInches;
+    private Float weight;
+    private Float glucose;
 
-    public double getBpSystolic() {
-
-        return bpSystolic;
+    public Float getBloodPressureSystolic() {
+        return bloodPressureSystolic;
     }
 
-    public void setBpSystolic(double bpSystolic) {
-
-        this.bpSystolic = bpSystolic;
+    public void setBloodPressureSystolic(Float bloodPressureSystolic) {
+        this.bloodPressureSystolic = bloodPressureSystolic;
     }
 
-    public double getBpDiastolic() {
-
-        return bpDiastolic;
+    public Float getBloodPressureDiastolic() {
+        return bloodPressureDiastolic;
     }
 
-    public void setBpDiastolic(double bpDiastolic) {
-
-        this.bpDiastolic = bpDiastolic;
+    public void setBloodPressureDiastolic(Float bloodPressureDiastolic) {
+        this.bloodPressureDiastolic = bloodPressureDiastolic;
     }
 
-    public double getHeartRate() {
-
+    public Float getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(double heartRate) {
-
+    public void setHeartRate(Float heartRate) {
         this.heartRate = heartRate;
     }
 
-    public double getTemperature() {
-
+    public Float getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(double temperature) {
-
+    public void setTemperature(Float temperature) {
         this.temperature = temperature;
     }
 
-    public double getOxygen() {
-
-        return oxygen;
+    public Float getOxygenSaturation() {
+        return oxygenSaturation;
     }
 
-    public void setOxygen(double oxygen) {
-
-        this.oxygen = oxygen;
+    public void setOxygenSaturation(Float oxygenSaturation) {
+        this.oxygenSaturation = oxygenSaturation;
     }
 
-    public double getRespRate() {
-
-        return respRate;
+    public Float getRespiratoryRate() {
+        return respiratoryRate;
     }
 
-    public void setRespRate(double respRate) {
-
-        this.respRate = respRate;
+    public void setRespiratoryRate(Float respiratoryRate) {
+        this.respiratoryRate = respiratoryRate;
     }
 
-    public double getHeightFt() {
-
-        return heightFt;
+    public Float getHeightFeet() {
+        return heightFeet;
     }
 
-    public void setHeightFt(double heightFt) {
-
-        this.heightFt = heightFt;
+    public void setHeightFeet(Float heightFeet) {
+        this.heightFeet = heightFeet;
     }
 
-    public double getHeightIn() {
-
-        return heightIn;
+    public Float getHeightInches() {
+        return heightInches;
     }
 
-    public void setHeightIn(double heightIn) {
-
-        this.heightIn = heightIn;
+    public void setHeightInches(Float heightInches) {
+        this.heightInches = heightInches;
     }
 
-    public double getWeight() {
-
+    public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
-
+    public void setWeight(Float weight) {
         this.weight = weight;
     }
 
-    public double getGlucose() {
+    public Float getGlucose() {
         return glucose;
     }
 
-    public void setGlucose(double glucose) {
+    public void setGlucose(Float glucose) {
         this.glucose = glucose;
     }
 }

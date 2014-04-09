@@ -85,14 +85,4 @@ public class TriageHelper {
         patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
         return patientEncounter;
     }
-
-    public IPatientEncounterVital getPatientEncounterVital(int userId, int patientEncounterId, IVital vital, float vitalValue){
-        IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
-        patientEncounterVital.setUserId(userId);
-        patientEncounterVital.setPatientEncounterId(patientEncounterId);
-        patientEncounterVital.setVital(vital);
-        patientEncounterVital.setVitalValue(vitalValue);
-        patientEncounterVital.setDateTaken(dateUtils.getCurrentDateTimeString());
-        return patientEncounterVital;
-    }
 }

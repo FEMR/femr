@@ -1,6 +1,8 @@
 package femr.common.models;
 
 public interface IVital {
+    void setId(int id);
+
     int getId();
 
     String getName();

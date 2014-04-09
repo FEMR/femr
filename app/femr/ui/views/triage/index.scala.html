@@ -30,40 +30,39 @@
         </div>
     }
     }
+
 @medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById, showSearchBtn = true) {
 
-    <h2 class="text-center">Check In - Triage</h2>
+    <div id="triageContentWrap">
+        <h2 class="text-center">Check In - Triage</h2>
 
-    <div class="row">
-    @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
-        <div class="col-sm-5 col-xs-12">
-            <h2>General Info</h2>
-            <div>
-                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getFirstName else null)
-                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getLastName else null)
-                @inputText("Address", "address", false, if(viewModel != null) viewModel.getAddress else null)
-                @inputText("City", "city", true, if(viewModel != null) viewModel.getCity else null)
+
+        @helper.form(action = TriageController.createPost(viewModel.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+            <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
+
+                <h2>General Info</h2>
+
+                @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getFirstName else null, "text")
+                @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getLastName else null, "text")
+                @inputText("Address", "address", false, if(viewModel != null) viewModel.getAddress else null, "text")
+                @inputText("City", "city", true, if(viewModel != null) viewModel.getCity else null, "text")
+                    <!--inputText("Birth Date", "age", true, if(viewModel != null) viewModel.getBirth else null, "date")-->
                 @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getBirth else null)
                 @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getAge else null)
                 @inputGender(viewModel)
-                <div class="form-group">
-                    <div class="col-sm-3 col-xs-3"></div>
-                    <div class="col-sm-7 col-xs-7">
-                    @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="photo" class="col-sm-3 col-xs-3 control-label">Patient Photo</label>
-                    <div id="photoInputFormDiv" class="col-sm-7 col-xs-7">
-                        <input type="file" class="form-control" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
+
+                <div class="generalInfoInput">
+                    <label for="photo">Patient Photo</label>
+                    <div id="photoInputFormDiv">
+                        <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
                     </div>
-                    <div id="patientPhotoDiv" class="col-sm-7 col-xs-7">
+                    <div id="patientPhotoDiv">
                         <div class="btn-group" >
                             <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPhotoPath()" />
                             <div class="btn-toolbar" role="buttons">
                                 <div class="btn-group" id="zoomControls">
-                                    <button  id="btnZoomIn" class="btn btn-default btn-lg">
+                                    <button id="btnZoomIn" class="btn btn-default btn-lg">
                                         <span class="glyphicon glyphicon-zoom-in"></span>
                                     </button>
                                     <button id="btnZoomOut" class="btn btn-default btn-lg">
@@ -78,49 +77,49 @@
                             </div>
                         </div>
                     </div>
-                    <input hidden="true" type="checkbox" name="deletePhoto" value="true"     id="deletePhoto">
-                    <input hidden="true" type="text"     name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
+                    <input hidden="true" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
+                    <input hidden="true" type="text" name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
+                </div>
+                <div class="historyInput">
+                @historyButton(if(viewModel.getId != 0) viewModel.getId else null)
                 </div>
             </div>
-        </div>
-        @*Other Column*@
-        <div class="col-sm-7 col-xs-12">
-            <div class="row">
-                <h2>Vitals</h2>
-                <h5 id="errorMessageDecimal" class="hidden">Boxes in red must be whole numbers</h5>
-                <h5 id="errorMessageHeight" class="hidden">Inches for height must be less than 12 and a whole number</h5>
-            </div>
-            <div class="row">
-                <div class="col-sm-6 col-xs-12">
-                    <div class="form-group">
-                        <label for="temperature" class="col-sm-6 col-xs-6 control-label">Temperature</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="any" min="0" class="form-control" id="temperature" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="bloodPressureSystolic" class="col-sm-6 col-xs-6 control-label stackedInput">
-                            Blood Pressure</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
-                            <input type="number" step="number" min="0" class="form-control" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="heartRate" class="col-sm-6 col-xs-6 control-label">Heart Rate</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="heartRate" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="respirations" class="col-sm-6 col-xs-6 control-label">Respirations</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="respirations" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
 
-                        <label for="weeksPregnant" class="col-sm-6 col-xs-6 control-label">
+            <div id="vitalsWrap" class="sectionBackground backgroundForWrap">
+                <h2>Vitals</h2>
+                <h5 id="errorMessageDecimal" class="red hidden">Boxes in red must be whole numbers</h5>
+                <h5 id="errorMessageHeight" class="red hidden">
+                    Inches for height must be less than 12 and a whole number</h5>
+
+
+                <div id="leftVitalsWrap">
+
+
+                    <div class="vitalWrap">
+                        <label for="temperature">Temperature</label>
+                        <input type="number" step="any" min="0" class="fInput fVital" id="temperature" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
+                    </div>
+
+
+                    <div class="vitalWrap">
+                        <label for="bloodPressureSystolic">Blood Pressure</label>
+                        <div class="doubleVital">
+                            <input type="number" step="number" min="0" class="fInput" id="bloodPressureSystolic" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
+                            <input type="number" step="number" min="0" class="fInput" id="bloodPressureDiastolic" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
+                        </div>
+                    </div>
+                    <div class="vitalWrap">
+                        <label for="heartRate">Heart Rate</label>
+                        <input type="number" step="number" min="0" class="fInput" id="heartRate" name="@viewModel.getVitalNames.get(1).getName" placeholder="bpm"/>
+                    </div>
+
+                    <div class="vitalWrap">
+                        <label for="respirations">Respirations</label>
+                        <input type="number" step="number" min="0" class="fInput" id="respirations" name="@viewModel.getVitalNames.get(0).getName" placeholder="bpm"/>
+                    </div>
+
+                    <div class="vitalWrap">
+                        <label for="weeksPregnant">
                             <div data-toggle="buttons">
                             @if(viewModel.getSex() == "Female") {
                                 <label class="btn btn-default" id="pregnancyBtn">
@@ -133,63 +132,64 @@
                             }
                             </div>
                         </label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
 
-                        </div>
+
+                        <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+
                     </div>
+                    <label for="chiefComplaint"> Chief Complaint</label>
+
                 </div>
 
 
-                <div class="col-sm-6 col-xs-12">
-                    <div class="form-group">
-                        <label for="oxygen" class="col-sm-6 col-xs-6 control-label">Oxygen Saturation</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="any" min="0" class="form-control" id="oxygen" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
+                <div id="rightVitalsWrap">
+
+                    <div class="vitalWrap">
+                        <label for="oxygen">Oxygen Saturation</label>
+
+                        <input type="number" step="any" min="0" class="fInput" id="oxygen" name="@viewModel.getVitalNames.get(3).getName" placeholder="%"/>
+                    </div>
+                    <div class="vitalWrap">
+
+                        <label for="heightFeet">Height</label>
+                        <div class="doubleVital">
+                            <input type="number" step="number" min="0" class="fInput" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
+                            <input type="number" step="number" min="0" max="11" class="fInput" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="heightFeet" class="col-sm-6 col-xs-6 control-label stackedInput">Height</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="heightFeet" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                            <input type="number" step="number" min="0" max="11" class="form-control" id="heightInches" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
-                        </div>
+                    <div class="vitalWrap">
+                        <label for="weight">Weight</label>
+
+                        <input type="number" step="any" min="0" class="fInput" id="weight" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
                     </div>
-                    <div class="form-group">
-                        <label for="weight" class="col-sm-6 col-xs-6 control-label">Weight</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="any" min="0" class="form-control" id="weight" name="@viewModel.getVitalNames.get(6).getName" placeholder="lbs"/>
-                        </div>
+                    <div class="vitalWrap">
+                        <label >BMI</label>
+
+                        <input type="text" id="bmi" class="fInput" disabled="true"/>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-6 col-xs-6 control-label">BMI</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="text" id="bmi" class="form-control" disabled="true"/>
-                        </div>
+                    <div class="vitalWrap">
+                        <label>Glucose</label>
+
+                        <input type="number" step="number" min="0" class="fInput" id="glucose" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-6 col-xs-6 control-label">Glucose</label>
-                        <div class="col-sm-6 col-xs-6">
-                            <input type="number" step="number" min="0" class="form-control" id="glucose" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
-                        </div>
-                    </div>
+
+
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="chiefComplaint" class="col-sm-3 col-xs-3 textAreaLabel control-label">Chief Complaint</label>
-                <div class="col-sm-9 col-xs-9">
-                    <textarea type="text" class="form-control input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
+
+
+
+
+                <textarea type="text" class="input-lg" id="chiefComplaint" name="chiefComplaint" rows="3"></textarea>
+
+
+                <div class="submitResetWrap">
+                    <button type="submit" id="triageSubmitBtn" class="fButton fSubmitButton pull-right floatButtonOffset">
+                        Submit Patient</button>
+                    <button type="button" class="newPatientBtn fButton pull-right">Reset Fields</button>
                 </div>
+
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 col-xs-12">
-            <button type="submit" id="triageSubmitBtn" class="btn btn-primary pull-right floatButtonOffset">
-                Submit Patient</button>
-            <button type="button" class="newPatientBtn btn btn-default pull-right">Reset Fields</button>
-        </div>
-    </div>
 }
 }
 

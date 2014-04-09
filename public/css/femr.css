@@ -1,6 +1,13 @@
+@font-face {
+    font-family: "dejavu";
+    src: url("../fonts/DejaVuSansCondensed.ttf");
+}
+
 body {
     padding-top: 50px;
-    background: url("../img/paper_3.png") repeat;
+    /*http://api.thumbr.it/whitenoise-361x370.png?background=a8a699ff&noise=626262&density=15&opacity=75*/
+    background: url("../img/paper_greyNoise.png") repeat;
+    font-family: dejavu;
 }
 
 hr {
@@ -65,4 +72,76 @@ hr {
  }
 .listUserBtn{
     margin-top: 0px !important;
+}
+
+
+/* THE fEMR button! */
+.fButton {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #3f3f3d;
+
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.fButton:hover {
+    background-color: #e5e5e5;
+    border: 1px solid #3f3f3d;
+}
+/* THE fEMR input! */
+.fInput{
+    border-radius: 5px;
+    height: 33px;
+    width: 175px;
+    border: 1px solid #ccc;
+    padding: 5px 10px 5px 10px;
+    background-color: white;
+    color: #555;
+
+}
+.fInput:focus{
+    box-shadow: 0 0 5px #3f3f3d
+}
+/* THE fEMR submit button! */
+.fSubmitButton{
+    background-color: #51a1ba;
+}
+/* THE fEMR patient history button! */
+#historyButton:hover{
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+
+/* The following 2 sections are used on both Medical and pharmacy */
+
+#patientOverviewWrap span {
+    padding: 4px;
+}
+
+#generalInfoWrap{
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 15px;
+}
+/* Main section wrapper*/
+#mainWrap {
+    margin-top: 15px;
+    overflow: hidden;
+    padding: 10px;
+    height: 100%;
+}
+/* Medical and Pharmacy landing pages */
+.searchWrap{
+    width: 300px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* fEMR's background with border */
+.backgroundForWrap{
+    border-radius: 10px;
+    background: url("../img/paper_greyLightNoise.png") repeat;
+    border: 3px solid #3f3f3d;
 }

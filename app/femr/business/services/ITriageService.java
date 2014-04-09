@@ -21,4 +21,6 @@ public interface ITriageService {
 
     ServiceResponse<IPatient> updatePatient(IPatient patient);
 
+    public ServiceResponse<String> getDateOfTriageCheckIn(int encounterId);
+
 }

@@ -5,7 +5,9 @@ import com.google.inject.Inject;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.PatientResearch;
+import femr.data.models.research.ResearchModelBuilder;
 import femr.data.models.research.ResearchSQLBuilder;
+import femr.ui.controllers.research.ResearchDataModel;
 import femr.util.DataStructure.Pair;
 import play.db.DB;
 
@@ -72,9 +74,10 @@ public class ResearchService implements IResearchService{
     /**
      * Takes a sql string generated from user input and querys the databases
      * @param sql The WHERE part of SQL query
-     * @return ResultSet or null 
+     * @return A list of {@link ResearchDataModel} where each entry in the list is
+     *         one row from the result query or null if there is an error
      */
-    public ResultSet ManualSqlQuery(String sql) {
+    public List<ResearchDataModel> ManualSqlQuery(String sql) {
         Connection connection = DB.getConnection();
         ResearchSQLBuilder rSQLBuilder = new ResearchSQLBuilder(sql,this.patientResearch);
         if(rSQLBuilder == null)
@@ -82,15 +85,20 @@ public class ResearchService implements IResearchService{
             return null;
         }
 
-        String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.sex, group_concat(pp.medication_name) as \"medication_name\" ";
+        String sqlSelect = " SELECT DISTINCT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.sex, p.city, group_concat(pp.medication_name) as \"medication_name\", " +
+                " pe.date_of_visit, petf.treatment_field_value ";
 
         String sqlFrom = " FROM patient_encounters as pe " +
                 " JOIN patients as p " +
                 "   ON pe.patient_id = p.id " +
                 " JOIN patient_prescriptions as pp " +
                 "   ON pe.id = pp.encounter_id " +
-                " ";
-        String sqlGroup = " GROUP BY pe.id ";
+                " JOIN patient_encounter_treatment_fields as petf " +
+                "   ON pe.id = petf.patient_encounter_id " +
+                " JOIN treatment_fields as tf \n" +
+                "   ON petf.treatment_field_id = tf.id ";
+
+        String sqlGroup = " GROUP BY pe.id, tf.name = 'problem' ";
 
         // Gets the where statement to use in the preparedStatement and the list of values
         // for the parameters
@@ -119,7 +127,8 @@ public class ResearchService implements IResearchService{
 
             ResultSet resultSet = ps.executeQuery();
 
-            return resultSet;
+            return ResearchModelBuilder.CreateResultModel(resultSet);
+
 
         } catch(Exception e) {
             e.printStackTrace();

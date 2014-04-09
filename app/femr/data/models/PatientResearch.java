@@ -77,9 +77,10 @@ public class PatientResearch implements IPatientResearch {
         patientPropertiesLookup.put("Age","p.age");
         patientPropertiesLookup.put("City","p.city");
         patientPropertiesLookup.put("Sex","p.sex");
-        patientPropertiesLookup.put("Date Taken","p.date_taken");
+        patientPropertiesLookup.put("Date Taken","pe.date_of_visit");
         patientPropertiesLookup.put("Medication","pp.medication_name");
-        patientPropertiesLookup.put("Treatment","petf.treatment");
+        patientPropertiesLookup.put("Problem","petf.treatment_field_value");
+        //patientPropertiesLookup.put("Treatment","petf.treatment");
 
     }
 

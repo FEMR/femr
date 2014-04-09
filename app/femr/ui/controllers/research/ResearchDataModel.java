@@ -8,30 +8,30 @@ import java.util.List;
  */
 public class ResearchDataModel {
 
-    public int encounterID;
-    public int patientID;
-    public String age;
-    public String city;
-    public String sex;
-    public List<String> medication;
-    public String dateTaken;
-    public String condition;
-    public String treatment;
+    private String encounterID;
+    private String patientID;
+    private String age;
+    private String city;
+    private String sex;
+    private List<String> medication;
+    private String dateTaken;
+    //private String condition;
+    private String problem;
 
 
-    public int getPatientID() {
+    public String getPatientID() {
         return patientID;
     }
 
-    public void setPatientID(int patientID) {
+    public void setPatientID(String patientID) {
         this.patientID = patientID;
     }
 
-    public int getEncounterID() {
+    public String getEncounterID() {
         return encounterID;
     }
 
-    public void setEncounterID(int encounterID) {
+    public void setEncounterID(String encounterID) {
         this.encounterID = encounterID;
     }
 
@@ -67,12 +67,12 @@ public class ResearchDataModel {
         this.medication = medication;
     }
 
-    public String getTreatment() {
-        return treatment;
+    public String getProblem() {
+        return problem;
     }
 
-    public void setTreatment(String treatment) {
-        this.treatment = treatment;
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
 
     public String getDateTaken() {

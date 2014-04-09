@@ -25,7 +25,7 @@ public interface IResearchService {
 
 
 
-    ResultSet ManualSqlQuery(String sql);
+    List<ResearchDataModel> ManualSqlQuery(String sql);
 
 
 }

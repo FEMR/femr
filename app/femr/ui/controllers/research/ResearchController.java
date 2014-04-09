@@ -96,17 +96,8 @@ public class ResearchController extends Controller {
 
         System.out.println(sql);
         // execute query
-        ResultSet resultSet = researchService.ManualSqlQuery(sql);
-       try{
-            while(resultSet.next())
-            {
+        List<ResearchDataModel> resultModel = researchService.ManualSqlQuery(sql);
 
-                System.out.println(resultSet.getString("patient_id") + " " + resultSet.getString("encounter_id") + " " +
-                        resultSet.getString("sex") + " " + resultSet.getString("age") + " " + resultSet.getString("city") + " " + resultSet.getString("medication_name"));
-            }
-        } catch(Exception e) {
-           e.printStackTrace();
-       }
 
         //do a redirect
         return redirect("/research");

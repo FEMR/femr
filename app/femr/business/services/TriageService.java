@@ -101,31 +101,6 @@ public class TriageService implements ITriageService {
         return response;
     }
 
-//    @Override
-//    public ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital) {
-//        IPatientEncounterVital newPatientEncounterVital = patientEncounterVitalRepository.create(patientEncounterVital);
-//        ServiceResponse<IPatientEncounterVital> response = new ServiceResponse<>();
-//
-//        if (newPatientEncounterVital != null) {
-//            response.setResponseObject(newPatientEncounterVital);
-//        } else {
-//            response.addError("patient encounter vital", "patient encounter vital could not be saved to database");
-//        }
-//        return response;
-//    }
-
-    //    @Override
-//    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVitals) {
-//        List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
-//        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
-//
-//        if (newPatientEncounterVitals != null) {
-//            response.setResponseObject(newPatientEncounterVitals);
-//        } else {
-//            response.addError("", "patient encounter vitals could not be saved to database");
-//        }
-//        return response;
-//    }
     @Override
     public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();

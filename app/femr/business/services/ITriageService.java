@@ -15,8 +15,6 @@ public interface ITriageService {
 
     ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter);
 
-    //ServiceResponse<IPatientEncounterVital> createPatientEncounterVital(IPatientEncounterVital patientEncounterVital);
-
     ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String,Float> patientEncounterVital, int userId, int encounterId);
 
     ServiceResponse<IPatient> updatePatient(IPatient patient);

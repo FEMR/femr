@@ -26,10 +26,11 @@
             }
             </div>
             <div id="patientInfo">
-                <label for="">Age:</label><span>@viewModel.getAge</span>
-                <label for="">Sex:</label><span>@viewModel.getSex</span>
-                <label for="">City:</label><span>@viewModel.getCity</span>
-                <label for="">Date:</label><span>@patientEncounter.getDateOfVisit</span>
+                <label>Age:</label><span>@viewModel.getAge</span>
+                <label>Sex:</label><span>@viewModel.getSex</span>
+                <label>City:</label><span>@viewModel.getCity</span>
+                <label>Encounter Date:</label><span>@patientEncounter.getDateOfVisit</span>
+                <label>Doctor:</label><span>@viewModel.getDoctorFirstName @viewModel.getDoctorLastName</span>
                 @if(viewModel.getWeeksPregnant != null && viewModel.getWeeksPregnant > 0) {
                     <span><label>Weeks Pregnant:</label>@viewModel.getWeeksPregnant</span>
                 }

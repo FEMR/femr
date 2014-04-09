@@ -108,7 +108,7 @@ $(document).ready(function () {
                 $('#newVitalsDialog').dialog("open");
             },
             error: function (response) {
-                alert("fatal error dear lord what have you done");
+                alert("Error. Please make sure you are connected to fEMR.");
             }
         })
 

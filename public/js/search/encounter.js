@@ -5,25 +5,26 @@
 
 // This is for the showEncounter.scala.html page
 $(document).ready(function () {
+    //controls the tabbed viewing of HPI and Treatment
+    $('#encounterTabs a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
 
-$('#myTab a').click(function (e) {
-    e.preventDefault()
-    $(this).tab('show')
+    });
 
-});
-    //this function handles the switching of the tabs in the encounter view
-    $('#myTab a').click(function () {
+    $('#encounterTabs a').click(function () {
         if ($(this).attr('id') === "hpiTab") {
             showHpi();
         } else if ($(this).attr('id') === "treatmentTab") {
             showTreatment();
-        } else if($(this).attr('id') === "pmhTab") {
+        } else if ($(this).attr('id') === "pmhTab") {
             showPmh();
-        }
-        else if($(this).attr('id') === "pharmacyTab"){
+        } else if($(this).attr('id') === "pharmacyTab"){
             showPharamcy();
         }
     });
+
+
 
 });
 

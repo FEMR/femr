@@ -1,5 +1,9 @@
 package femr.ui.controllers.admin;
 
+import com.google.inject.Inject;
+import femr.business.dtos.CurrentUser;
+import femr.business.services.ISessionService;
+import femr.business.services.SessionService;
 import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -11,7 +15,15 @@ import play.mvc.Security;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR})
 public class AdminController extends Controller {
-    public static Result index() {
-        return ok(index.render(null, null));
+    private ISessionService sessionService;
+
+    @Inject
+    public AdminController(ISessionService sessionService){
+        this.sessionService = sessionService;
+    }
+
+    public Result index() {
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        return ok(index.render(currentUser, null));
     }
 }

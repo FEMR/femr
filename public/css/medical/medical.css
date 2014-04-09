@@ -1,0 +1,135 @@
+/*
+background color link:
+http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&density=3&opacity=28
+*/
+
+/* General page styles */
+
+/* Wrapper for general info section and main section*/
+#medicalContentWrap {
+
+}
+
+
+
+
+#patientInfo{
+
+}
+#chiefComplaint{
+
+}
+
+
+
+/* Vitals (part of main section) wrapper*/
+
+    #vitalsWrap {
+        float: left;
+        width: 25%;
+        min-height: 670px;   /* should match scroll plugin */
+        padding: 15px 10px 10px 10px;
+    }
+        #vitalsWrap:hover{
+            cursor: default;
+        }
+
+
+    #inputWrap {
+        float: left;
+        width: 75%;
+        padding: 1px;
+    }
+    #newVitalsBtn{
+        width: 100%;
+        margin-top: 10px;
+    }
+
+
+
+#tabContentWrap {
+    float: left;
+    width: 100%;
+    min-height: 550px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.controlWrap {
+    border: solid #b2b2b0;
+    border-width: 0px 1px 1px 1px;
+    padding: 10px;
+}
+
+/* Buttons */
+.addSubtractBtn {
+    float: left;
+    border: 1px solid #4577d4;
+    background-color: #e1e8f6;
+}
+
+#medicalSubmitBtn {
+    margin: 15px 0px 5px 15px;
+    width: 175px;
+}
+
+#historyButton{
+    float: right;
+    margin-bottom: -30px;
+}
+
+/* Tabs */
+.tabWrap {
+    float: left;
+    width: 100%;
+}
+
+#medicalTabs {
+    margin-bottom: 0;
+    padding: 15px 0 0 0;
+    overflow: hidden;
+    width: 100%;
+    border-bottom: 1px solid #b2b2b0;
+}
+
+
+#medicalTabs li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+
+}
+
+#medicalTabs li.active a {
+    background: url("../../img/paper_greyLightNoise.png") repeat;
+}
+
+#medicalTabs li:first-child a {
+    /* first-child not supported in IE, but who cares */
+    margin-left: 0;
+}
+
+#medicalTabs a:link,
+#medicalTabs a:visited {
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #b2b2b0;
+    border-bottom: none;
+    margin-left: 5px;
+    color: #000;
+    background: #d4d3cc;
+    padding: 10px 20px 5px 20px;
+    float: left;
+    width: auto;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+#medicalTabs a:hover,
+#medicalTabs a:focus {
+    color: #000;
+    background: url("../../img/paper_greyLightNoise.png") repeat;
+}
+

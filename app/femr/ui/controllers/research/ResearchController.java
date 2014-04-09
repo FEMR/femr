@@ -12,13 +12,13 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.CreateViewModelGet;
 import femr.ui.models.research.CreateViewModelPost;
 import femr.ui.models.research.QueryObjectPatientModel;
-import femr.ui.views.html.research.index;
+import femr.ui.models.research.ResearchDataModel;
+import femr.ui.views.html.research.*;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -59,6 +59,28 @@ public class ResearchController extends Controller {
     }
 
     /**
+     * Gets the generated search query and parses it then sends it to the service layer and displays the results
+     * @return The Rendered results the the view
+     */
+    public Result createPost() {
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        //bind QueryString from POST request
+        CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
+        String sql = viewModelPost.getQueryString();
+
+
+        System.out.println(sql);
+        // execute query
+        List<ResearchDataModel> resultModel = researchService.ManualSqlQuery(sql);
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+        viewModelGet.setPatientData(resultModel);
+
+
+        //do a redirect
+        return ok(result.render(currentUserSession,viewModelGet));
+    }
+
+    /**
      * Creates and populates the Patient object model with all the possible values the
      * user can search by as well as the conditions to combine them
      *
@@ -79,27 +101,5 @@ public class ResearchController extends Controller {
 
         return patientModel; // temporary replace
 
-    }
-
-
-
-
-    /**
-     * Gets the generated search query and parses it then sends it to the service layer and displays the results
-     * @return The Rendered results the the view
-     */
-    public Result createPost() {
-        //bind QueryString from POST request
-        CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
-        String sql = viewModelPost.getQueryString();
-
-
-        System.out.println(sql);
-        // execute query
-        List<ResearchDataModel> resultModel = researchService.ManualSqlQuery(sql);
-
-
-        //do a redirect
-        return redirect("/research");
     }
 }

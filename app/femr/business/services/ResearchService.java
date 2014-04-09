@@ -7,14 +7,13 @@ import femr.data.daos.IRepository;
 import femr.data.models.PatientResearch;
 import femr.data.models.research.ResearchModelBuilder;
 import femr.data.models.research.ResearchSQLBuilder;
-import femr.ui.controllers.research.ResearchDataModel;
+import femr.ui.models.research.ResearchDataModel;
 import femr.util.DataStructure.Pair;
 import play.db.DB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 

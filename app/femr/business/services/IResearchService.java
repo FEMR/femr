@@ -1,10 +1,8 @@
 package femr.business.services;
 
 
-import femr.data.models.PatientResearch;
-import femr.ui.controllers.research.ResearchDataModel;
+import femr.ui.models.research.ResearchDataModel;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 

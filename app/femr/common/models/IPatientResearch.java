@@ -1,8 +1,5 @@
 package femr.common.models;
 
-import femr.common.models.research.*;
-import femr.ui.controllers.research.ResearchDataModel;
-
 import java.util.List;
 import java.util.Map;
 

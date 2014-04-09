@@ -15,8 +15,8 @@ public class ResearchDataModel {
     private String sex;
     private List<String> medication;
     private String dateTaken;
-    //private String condition;
-    private String problem;
+    private List<String> problems;
+    private List<String> treatments;
 
 
     public String getPatientID() {
@@ -67,14 +67,6 @@ public class ResearchDataModel {
         this.medication = medication;
     }
 
-    public String getProblem() {
-        return problem;
-    }
-
-    public void setProblem(String problem) {
-        this.problem = problem;
-    }
-
     public String getDateTaken() {
         return dateTaken;
     }
@@ -83,12 +75,19 @@ public class ResearchDataModel {
         this.dateTaken = dateTaken;
     }
 
-//    public String getCondition() {
-//        return condition;
-//    }
-//
-//    public void setCondition(String condition) {
-//        this.condition = condition;
-//    }
+    public List<String> getProblems() {
+        return problems;
+    }
 
+    public void setProblems(List<String> problems) {
+        this.problems = problems;
+    }
+
+    public List<String> getTreatments() {
+        return treatments;
+    }
+
+    public void setTreatments(List<String> treatments) {
+        this.treatments = treatments;
+    }
 }

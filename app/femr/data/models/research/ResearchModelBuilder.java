@@ -28,8 +28,17 @@ public class ResearchModelBuilder {
             while(resultSet.next())
             {
                 ResearchDataModel tempModel = new ResearchDataModel();
-                String[] tempMedication = resultSet.getString("medication_name").split(",");
-                List<String> MedList = Arrays.asList(tempMedication);
+
+                String medicationStr = resultSet.getString("medication_name");
+                List<String> MedList = (medicationStr == null) ? null : Arrays.asList(resultSet.getString("medication_name").split(","));
+
+                String problemsStr = resultSet.getString("problems");
+                List<String> ProblemList = (problemsStr == null) ? null : Arrays.asList(resultSet.getString("problems").split(","));
+
+
+                String treatmentStr = resultSet.getString("treatments");
+                List<String> TreatmentList = (treatmentStr == null) ? null : Arrays.asList(resultSet.getString("treatments").split(","));
+
 
                 tempModel.setPatientID(resultSet.getString("patient_id"));
                 tempModel.setEncounterID(resultSet.getString("encounter_id"));
@@ -37,13 +46,14 @@ public class ResearchModelBuilder {
                 tempModel.setSex(resultSet.getString("sex"));
                 tempModel.setCity(resultSet.getString("city"));
                 tempModel.setDateTaken(resultSet.getString("date_of_visit"));
-                tempModel.setProblem(resultSet.getString("treatment_field_value"));
+                tempModel.setProblems(ProblemList);
                 tempModel.setMedication(MedList);
+                tempModel.setTreatments(TreatmentList);
 
                 resultModel.add(tempModel);
 
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

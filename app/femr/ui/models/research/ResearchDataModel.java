@@ -1,4 +1,4 @@
-package femr.ui.controllers.research;
+package femr.ui.models.research;
 
 import java.util.List;
 

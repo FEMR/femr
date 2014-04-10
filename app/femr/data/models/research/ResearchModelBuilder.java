@@ -1,6 +1,6 @@
 package femr.data.models.research;
 
-import femr.ui.controllers.research.ResearchDataModel;
+import femr.ui.models.research.ResearchDataModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

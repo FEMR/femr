@@ -1,3 +1,9 @@
+
+.selection{
+    display: none;
+}
+
+
 .fieldInputBox{
     list-style: none;
     padding: 0;

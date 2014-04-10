@@ -39,16 +39,22 @@
         <br>
         <label>EncounterID: </label> <span>@viewModel.getPatientData.get(patient - 1).getEncounterID</span>
         <br>
+        <label>PatientID: </label> <span>@viewModel.getPatientData.get(patient - 1).getPatientID</span>
+        <br>
 
         @for(med <- 1 to viewModel.getPatientData.get(patient - 1).getMedication.size) {
             <label>Medication@med :</label> <span>@viewModel.getPatientData.get(patient - 1).getMedication.get(med - 1)</span>
             <br>
         }
+        @for(prob <- 1 to viewModel.getPatientData.get(patient - 1).getProblems.size) {
+            <label>Problem@prob: </label> <span>@viewModel.getPatientData.get(patient - 1).getProblems.get(prob - 1)</span>
+            <br>
+        }
+        @for(treat <- 1 to viewModel.getPatientData.get(patient - 1).getTreatments.size) {
+            <label>Treatment@treat: </label> <span>@viewModel.getPatientData.get(patient - 1).getTreatments.get(treat - 1)</span>
+            <br>
+        }
 
-
-        <label>PatientID: </label> <span>@viewModel.getPatientData.get(patient - 1).getPatientID</span>
-        <br>
-        <label>Problem: </label> <span>@viewModel.getPatientData.get(patient - 1).getProblem</span>
         <br>
         <label>Sex: </label> <span>@viewModel.getPatientData.get(patient - 1).getSex</span>
         <br>

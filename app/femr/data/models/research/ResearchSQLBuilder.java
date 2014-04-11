@@ -18,15 +18,12 @@ import java.util.Map;
  */
 public class ResearchSQLBuilder {
 
-    //private Map<String,String> tableLookup;
-   // private Map<String,String> logicLookup;
+
     private String inputSt;
     private IPatientResearch patientResearch;
 
 
     public ResearchSQLBuilder(String input, IPatientResearch patientResearch) {
-    //    InitializeTableLookup();
-    //    InitializeLogicLookup();
         inputSt = input;
 
         this.patientResearch =  patientResearch;
@@ -81,6 +78,8 @@ public class ResearchSQLBuilder {
             {
                 tempSQL += "? ";
                 step ++;
+                // check to see if word contains underscores and if so turn them into spaces
+                word = word.replaceAll("_"," ");
                 wordList.add(word);
                 continue;
             }
@@ -122,52 +121,12 @@ public class ResearchSQLBuilder {
             case 2:
                 return this.patientResearch.getConditionLookup().get(input);
             case 3:
-                return "'" + input + "'";
+                return input;
             case 4:
                 return this.patientResearch.getLogicLookup().get(input);
         }
 
         return null;
     }
-
-
-
-    /**
-     * populates the table lookup map.  Add new tables to this function to they will be in the map
-     */
-//    private void InitializeTableLookup() {
-//
-//        tableLookup = new HashMap<>();
-//
-//        tableLookup.put("ID","p.id");
-//        tableLookup.put("Age","p.age");
-//        tableLookup.put("City","p.city");
-//        tableLookup.put("Sex","p.sex");
-//        tableLookup.put("Date Taken","p.date_taken");
-//        tableLookup.put("Medication","pp.medication_name");
-//        tableLookup.put("Treatment","petf.treatment");
-//
-//    }
-//
-//    /**
-//     * Populates the LocgicLookup map.
-//     */
-//    private void InitializeLogicLookup() {
-//
-//        logicLookup = new HashMap<>();
-//
-//        logicLookup.put("AND","AND");
-//        logicLookup.put("OR","OR");
-//        logicLookup.put("NOT","NOT");
-//        logicLookup.put("XOR","XOR");
-//        logicLookup.put("=","=");
-//        logicLookup.put("!=","!=");
-//        logicLookup.put("<","<");
-//        logicLookup.put("<=","<=");
-//        logicLookup.put(">",">");
-//        logicLookup.put(">=",">=");
-//
-//    }
-
 
 }

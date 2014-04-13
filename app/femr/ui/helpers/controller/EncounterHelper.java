@@ -113,17 +113,7 @@ public class EncounterHelper {
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
         viewModelGet.setVitalList(patientEncounterVitalMap);
-//        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
-//        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
-//        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
-//        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
-//        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
-//        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
-//        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
-//        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
-//        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
-//        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
-        //Medication
+
         return viewModelGet;
     }
 

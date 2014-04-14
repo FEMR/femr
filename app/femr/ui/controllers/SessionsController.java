@@ -7,8 +7,9 @@ import femr.business.services.ISessionService;
 import femr.business.services.IUserService;
 import femr.common.models.IUser;
 import femr.ui.models.sessions.CreateViewModel;
-import femr.ui.views.html.sessions.create;
+import femr.ui.views.html.sessions.*;
 import femr.util.calculations.dateUtils;
+import org.h2.command.ddl.CreateView;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -43,14 +44,41 @@ public class SessionsController extends Controller {
         }else{
             IUser user = userService.findById(response.getResponseObject().getId());
             user.setLastLogin(dateUtils.getCurrentDateTime());
-            ServiceResponse<IUser> userResponse = userService.update(user);
+            ServiceResponse<IUser> userResponse = userService.update(user, false);
             if (userResponse.hasErrors()){
-//                return internalServerError();
+                return internalServerError();
+            }
+            if (user.getPasswordReset() == true){
+                return editPasswordGet(user);
             }
         }
 
         return redirect(routes.HomeController.index());
 
+    }
+
+    public Result editPasswordGet(IUser user){
+
+        return ok(editPassword.render(user.getFirstName(), user.getLastName()));
+    }
+
+    public Result editPasswordPost(){
+        CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+        CurrentUser currentUser = sessionsService.getCurrentUserSession();
+        IUser user = userService.findById(currentUser.getId());
+        Boolean isNewPassword = false;
+
+        if (viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())){
+            user.setPassword(viewModel.getNewPassword());
+            user.setPasswordReset(false);
+            isNewPassword = true;
+        }
+
+        ServiceResponse<IUser> userResponse = userService.update(user, isNewPassword);
+        if (userResponse.hasErrors()){
+            return internalServerError();
+        }
+        return redirect(routes.HomeController.index());
     }
 
     public Result delete() {

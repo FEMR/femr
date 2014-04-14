@@ -89,7 +89,7 @@ hr {
     background-color: #e5e5e5;
     border: 1px solid #3f3f3d;
 }
-/* THE fEMR input! */
+/* THE fEMR input(text)! */
 .fInput{
     border-radius: 5px;
     height: 33px;
@@ -112,6 +112,10 @@ hr {
     cursor: pointer;
     text-decoration: none;
     color: black;
+}
+/* THE fEMR input(checkbox) */
+.fCheckbox{
+    padding: 20px;
 }
 
 /* The following 2 sections are used on both Medical and pharmacy */

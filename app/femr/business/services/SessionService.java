@@ -32,6 +32,9 @@ public class SessionService implements ISessionService {
         IUser userWithEmail = userService.findByEmail(email);
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
+        //user doesn't exist OR
+        //password is invalid OR
+        //user has been deleted - the if statement responsible for validating the user logging in!!
         if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword()) || userWithEmail.getDeleted() == true) {
             response.addError("", "Invalid email or password.");
             return response;

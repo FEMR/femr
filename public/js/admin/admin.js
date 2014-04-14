@@ -51,10 +51,10 @@ function bindRoleDropDownClick() {
 
     });
 }
-function bindRoleBadge(){
+function bindRoleBadge() {
     $('.roleBadge').unbind();
-    $('.roleBadge').click(function(){
-       $(this).parent().remove();
+    $('.roleBadge').click(function () {
+        $(this).parent().remove();
     });
 }
 //checks if a role exists in the currentRole list
@@ -80,30 +80,33 @@ function toggleUser(btn) {
     //user ID
     var id = $(btn).attr('data-user_id');
     //are we deleting the user?
-    var isDeleted = false;
-    if ($(btn).html() === "Deactivate")
-        isDeleted = true;
+
+    /*
+     var isDeleted = false;
+     if ($(btn).html() === "Deactivate")
+     isDeleted = true;*/
 
 
     $.ajax({
-        url: '/admin/users/create',
+        url: '/admin/users/toggle/' + id,
         type: 'POST',
-        data: {userId: id, isDeleted: isDeleted},
+        data: {},
         dataType: 'text',
-        success: function (buttonText) {
+        success: function (isDeleted) {
             //on success, toggle button to reflect current state of the user
-            $(btn).html(buttonText);
-            if (buttonText === "Activate") {
-                $(btn).removeClass("btn-danger");
-                $(btn).addClass("btn-success");
-            } else {
+            if (isDeleted === "false") {
+                $(btn).html("Deactivate");
                 $(btn).removeClass("btn-success");
                 $(btn).addClass("btn-danger");
+
+            } else {
+                $(btn).html("Activate");
+                $(btn).removeClass("btn-danger");
+                $(btn).addClass("btn-success");
             }
         },
         error: function (response) {
             //don't change button - implies an error
         }
     });
-
 }

@@ -3,25 +3,34 @@
 @import femr.ui.controllers.admin.routes.UsersController
 
 <div class="container">
-@helper.form(action = UsersController.createPost()) {
+@helper.form(action = UsersController.editPost()) {
     <div class="row">
+        @*track user id*@
+        <input type="text" class="hidden" name="userId" value="@viewModel.getUser.getId"/>
 
-
-        <div class="col-lg-7 col-md-7 col-sm-7">
-
-            <h3>First Name</h3>
-            <input type="text" class="form-control input-lg" name="firstName" value="@viewModel.getUser.getFirstName"/>
-            <h3>Last Name</h3>
-            <input type="text" class="form-control input-lg" name="lastName" value="@viewModel.getUser.getLastName"/>
-            <h3>Email</h3>
-            <input type="text" class="form-control input-lg" name="email" value="@viewModel.getUser.getEmail"/>
-
-            <input type="text" class="hidden" name="userId" value="@viewModel.getUser.getId"/>
+        <div class="col-lg-7 col-md-7 col-sm-7" id="userInfoWrap">
+            <label>First Name</label>
+            <input type="text" class="fInput" name="firstName" value="@viewModel.getUser.getFirstName"/>
+            <label>Last Name</label>
+            <input type="text" class="fInput" name="lastName" value="@viewModel.getUser.getLastName"/>
+            <label>Email</label>
+            <input type="text" class="fInput" name="email" value="@viewModel.getUser.getEmail"/>
+            <label>Password Reset?*</label>
+            @if(viewModel.getUser.getPasswordReset == true){
+                <input type="checkbox" name="passwordReset" checked="checked"/>
+            }else{
+                <input type="checkbox" name="passwordReset"/>
+            }
+            <p>*When checked, the user will be prompted to change their password on next login.</p>
+            <label>Change User Password**</label>
+            <p>**Changes the user's password when filled out. Proceed with caution.</p>
+            <input type="text" class="fInput" name="newPassword" placeholder="New Password"/>
+            <input type="text" class="fInput" name="newPasswordVerify" placeholder="Verify New Password"/>
 
         </div>
 
-        <div class="col-lg-5 col-md-5 col-sm-5">
-            <h3>Roles</h3>
+        <div class="col-lg-5 col-md-5 col-sm-5" id="userRolesWrap">
+            <label>Roles</label>
 
 
             <div class="btn-group width-100">
@@ -48,15 +57,12 @@
 
 
             </ul>
+            <div class="btn-group pull-right">
+                <button type="submit" class="btn btn-default" id="saveBtn">Save</button>
+                <button type="button" class="btn btn-default" id="cancelBtn">Cancel</button>
+            </div>
 
 
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="btn-group pull-right">
-            <button type="submit" class="btn btn-default" id="saveBtn">Save</button>
-            <button type="button" class="btn btn-default" id="cancelBtn">Cancel</button>
         </div>
     </div>
 

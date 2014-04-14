@@ -67,6 +67,8 @@ public class UsersController extends Controller {
         return ok(index.render(currentUser, viewModelGet));
     }
 
+    //  creating a user page
+    //  /admin/users/create
     public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IRole> roles = roleService.getAllRoles();
@@ -74,89 +76,110 @@ public class UsersController extends Controller {
         return ok(create.render(currentUser, roles, createViewModelForm));
     }
 
+    //  creating a user page
+    //  /admin/users/create
     public Result createPost() {
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
-        if (viewModel.getUserId() != null && viewModel.getUserId() > 0) {                           //editing a user
-            IUser user = userService.findById(viewModel.getUserId());
+        IUser user = createUser(viewModel);
 
-            if (viewModel.getIsDeleted() != null){                                      //activating/deactivating a user
-                user.setDeleted(viewModel.getIsDeleted());
-                ServiceResponse<IUser> updateResponse = userService.update(user);
-
-                if (updateResponse.hasErrors()){
-                    return internalServerError();
-                }else{
-                    String buttonText = "Deactivate";
-                    if (user.getDeleted() == true){
-                        buttonText = "Activate";
-                    }
-                    //return text for button(used by js)
-                    return ok(buttonText);
-                }
-            }else{                                                                      //editing user info
-                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getEmail())){
-                    user.setEmail(viewModel.getEmail());
-                }
-                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getFirstName())){
-                    user.setFirstName(viewModel.getFirstName());
-                }
-                if (StringUtils.isNotNullOrWhiteSpace(viewModel.getLastName())){
-                    user.setLastName(viewModel.getLastName());
-                }
-                if (viewModel.getRoles().size() > 0){
-                    List<? extends IRole> allRoles = roleService.getAllRoles();
-                    List<IRole> userRoles = new ArrayList<>();
-                    for(IRole role : allRoles ){
-                        if (viewModel.getRoles().contains(role.getName())){
-                            userRoles.add(role);
-                        }
-                    }
-                    user.setRoles(userRoles);
-                }
-
-
-
-
-                ServiceResponse<IUser> updateResponse = userService.update(user);
-                if (updateResponse.hasErrors()){
-                    return internalServerError();
-                }else{
-                    //return to manage user homepage
-                    return redirect(routes.UsersController.index());
-
-                }
-            }
-
-        } else {                                                                                    //creating a new user
-            IUser user = createUser(viewModel);
-
-            Map<String, String[]> map = request().body().asFormUrlEncoded();
-            String[] checkedValues = map.get("roles");
-            List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
-            for (String checkedValue : checkedValues) {
-                checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
-            }
-
-            user = assignRolesToUser(user, checkValuesAsIntegers);
-
-            ServiceResponse<IUser> response = userService.createUser(user);
-
-            if (!response.hasErrors()) {
-                return redirect(HomeController.index());
-            }
+        Map<String, String[]> map = request().body().asFormUrlEncoded();
+        String[] checkedValues = map.get("roles");
+        List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
+        for (String checkedValue : checkedValues) {
+            checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
         }
+
+        user = assignRolesToUser(user, checkValuesAsIntegers);
+
+        ServiceResponse<IUser> response = userService.createUser(user);
+
+        if (!response.hasErrors()) {
+            return redirect(HomeController.index());
+        }
+
 
         return TODO;
     }
 
-    public Result getEditPartial(Integer id){
+    //  edit a user dialog
+    //  /admin/users/edit
+    public Result editGet(Integer id) {
         EditUserViewModel editUserViewModel = new EditUserViewModel();
         IUser user = userService.findById(id);
         List<? extends IRole> roles = roleService.getAllRoles();
         editUserViewModel.setUser(user);
         editUserViewModel.setAllRoles(roles);
-
         return ok(editUser.render(editUserViewModel));
+    }
+
+    //  edit a user dialog
+    //  /admin/users/edit/:id
+    public Result editPost() {
+        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
+
+        IUser user = userService.findById(viewModel.getUserId());
+
+        Boolean isNewPassword = false;
+
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getEmail())) {
+            user.setEmail(viewModel.getEmail());
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getFirstName())) {
+            user.setFirstName(viewModel.getFirstName());
+        }
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getLastName())) {
+            user.setLastName(viewModel.getLastName());
+        }
+        //password reset checkbox.
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getPasswordReset()) && viewModel.getPasswordReset().equals("on")) {
+            user.setPasswordReset(true);
+        }else{
+            user.setPasswordReset(false);
+        }
+        //manual password reset
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getNewPassword()) && viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())){
+            user.setPassword(viewModel.getNewPassword());
+            isNewPassword = true;
+        }
+
+
+        if (viewModel.getRoles().size() > 0) {
+            List<? extends IRole> allRoles = roleService.getAllRoles();
+            List<IRole> userRoles = new ArrayList<>();
+            for (IRole role : allRoles) {
+                if (viewModel.getRoles().contains(role.getName())) {
+                    userRoles.add(role);
+                }
+            }
+            user.setRoles(userRoles);
+        }
+
+
+        ServiceResponse<IUser> updateResponse = userService.update(user, isNewPassword);
+        if (updateResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            //return to manage user homepage
+            return redirect(routes.UsersController.index());
+
+        }
+
+
+    }
+
+    //  jQuery calls this when activating/deactivating a user
+    //  /admin/users/toggle/:id
+    public Result toggleUser(Integer id) {
+        IUser user = userService.findById(id);
+
+        //toggle user
+        user.setDeleted(!user.getDeleted());
+        ServiceResponse<IUser> updateResponse = userService.update(user, false);
+        if (updateResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            return ok(user.getDeleted().toString());
+        }
     }
 
     private IUser assignRolesToUser(IUser user, List<Integer> checkValuesAsIntegers) {

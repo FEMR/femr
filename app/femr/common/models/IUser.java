@@ -37,4 +37,8 @@ public interface IUser {
     Boolean getDeleted();
 
     void setDeleted(Boolean deleted);
+
+    Boolean getPasswordReset();
+
+    void setPasswordReset(Boolean passwordReset);
 }

@@ -17,5 +17,5 @@ public interface IUserService {
 
     ServiceResponse<List<? extends IUser>> findAllUsers();
 
-    ServiceResponse<IUser> update(IUser currentUser);
+    ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword);
 }

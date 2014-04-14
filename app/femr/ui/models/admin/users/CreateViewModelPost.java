@@ -9,7 +9,10 @@ public class CreateViewModelPost {
     private String email;
     private String password;
     private Boolean isDeleted;
+    private String passwordReset;
     private List<String> roles;
+    private String newPassword;
+    private String newPasswordVerify;
 
     public String getFirstName() {
         return firstName;
@@ -65,5 +68,29 @@ public class CreateViewModelPost {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public String getPasswordReset() {
+        return passwordReset;
+    }
+
+    public void setPasswordReset(String passwordReset) {
+        this.passwordReset = passwordReset;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getNewPasswordVerify() {
+        return newPasswordVerify;
+    }
+
+    public void setNewPasswordVerify(String newPasswordVerify) {
+        this.newPasswordVerify = newPasswordVerify;
     }
 }

@@ -31,6 +31,8 @@ public class User implements IUser {
     private DateTime lastLogin;
     @Column(name = "isDeleted", nullable = false)
     private Boolean deleted;
+    @Column(name = "isPasswordReset", nullable = false)
+    private Boolean passwordReset;
 
 
 
@@ -102,6 +104,7 @@ public class User implements IUser {
     public DateTime getLastLogin() {
         return lastLogin;
     }
+
     @Override
     public void setLastLogin(DateTime lastLogin) {
         this.lastLogin = lastLogin;
@@ -115,5 +118,15 @@ public class User implements IUser {
     @Override
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    @Override
+    public Boolean getPasswordReset() {
+        return passwordReset;
+    }
+
+    @Override
+    public void setPasswordReset(Boolean passwordReset) {
+        this.passwordReset = passwordReset;
     }
 }

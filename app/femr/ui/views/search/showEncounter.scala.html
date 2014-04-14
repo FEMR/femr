@@ -58,10 +58,10 @@
             <li><a href="#" id="pmhTab">PMH</a></li>
             <li><a href="#" id="treatmentTab">Treatment</a></li>
             <li><a href="#" id="pharmacyTab">Pharmacy</a></li>
+            <li><a href="#" id="photoTab">Photos - @viewModel.getPhotos().size()</a></li>
         </ul>
 
-
-        <div class="col-xs-9 col-sm-9 col-md-9 well well-sm">
+        <div class="col-xs-12 col-sm-12 col-md-12 well well-sm">
 
             @* <div class="col-xs-9 col-sm-9 col-md-9 well well-sm"> *@
 
@@ -229,7 +229,42 @@
                 </div>
             </div>
                 <!-- End of Pharmacy tab -->
+            <div id="photoControl" class="hidden">
+                @if(viewModel.getPhotos().size() > 0){
+                    <div id="photoCarousel" class="carousel slide col-sm-12 col-md-12 col-xs-12 col-lg-12" data-ride="">
+                        <ol class="carousel-indicators">
+                        @for(index <- 0 until viewModel.getPhotos().size) {
+                            @if(index == 0) {
+                                <li data-target="#photoCarousel" data-slide-to="@index" class="active"></li>
+                            } else {
+                                <li data-target="#photoCarousel" data-slide-to="@index" class=""></li>
+                            }
 
+                        }
+                        </ol>
+                        <div class="carousel-inner">
+                            @for(index <- 0 until viewModel.getPhotos().size) {
+                                @if(index == 0){
+                                    <div class="item active">
+                                    }else {
+                                    <div class="item">
+                                    }
+                                <img src="@viewModel.getPhotos().get(index).getImageUrl()" alt="">
+                                <div class="label label-info carousel-caption">
+                                    <p>@viewModel.getPhotos().get(index).getImageDate():&nbsp;@viewModel.getPhotos().get(index).getImageDesc()</p>
+                                </div>
+                            </div>
+                            }
+                            </div>
+                            <a class="left carousel-control" href="#photoCarousel" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#photoCarousel" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                        </div>
+                } @* End of 'if' block to render carousel block *@
+                </div>
         </div>
     </div>
 

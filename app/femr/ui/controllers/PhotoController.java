@@ -82,4 +82,26 @@ public class PhotoController {
         //No luck, return nothing
         return ok("");
     }
+
+    public Result GetEncounterPhoto(Integer photoId)
+    {
+        try
+        {
+            if(photoId != null)
+            {
+                ServiceResponse<IPhoto> srPhoto = photoService.getPhotoById(photoId);
+                if(!srPhoto.hasErrors())
+                {
+                    IPhoto photo = srPhoto.getResponseObject();
+                    return ok(new File(photoService.GetRootEncounterPhotoPath() + photo.getFilePath())).as("image/jpg");
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+        }
+
+        //No luck, return nothing
+        return ok("");
+    }
 }

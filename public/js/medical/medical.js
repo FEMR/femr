@@ -83,7 +83,29 @@ $(document).ready(function () {
             showTreatment();
         } else if ($(this).attr('id') === "pmhTab") {
             showPmh();
+        } else if($(this).attr('id') === "photoTab") {
+            showPhotoTab();
         }
+
+    });
+
+    //Shown event for Modal form
+    $('#modalNewImage').on('shown.bs.modal', function(e) {
+        $('#modalTextEntry').focus();
+    });
+
+    //Hide event for Modal form
+    $('#modalNewImage').on('hide.bs.modal', function(e) {
+        //Clear the img src
+        $('#modalImg').attr('src','');
+        //Clear the textbox
+        $('#modalTextEntry').val('');
+        $('#modalSavePortrait').unbind(); //unbind any events associated to the save button
+
+    });
+
+    $('#medicalSubmitBtn').click(function () {
+        return photoNameFixup();
     });
 
 
@@ -120,21 +142,30 @@ $(document).ready(function () {
 function showTreatment() {
     $('#hpiControl').addClass('hidden');
     $('#pmhControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');
 }
 function showHpi() {
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#hpiControl').removeClass('hidden');
 }
 
 function showPmh() {
     $('#treatmentControl').addClass('hidden');
     $('#hpiControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#pmhControl').removeClass('hidden');
 }
 
 
+function showPhotoTab() {
+    $('#treatmentControl').addClass('hidden');
+    $('#hpiControl').addClass('hidden');
+    $('#pmhControl').addClass('hidden');
+    $('#photoControl').removeClass('hidden');
+}
 
 function getNumberOfFilledScripts() {
     var x = 0;
@@ -154,4 +185,183 @@ function getNumberOfProblems() {
         }
     });
     return x;
+}
+
+
+//Renders image from fileInputId and sets the image
+// id set to imgOutId.
+function setDynamicImage(fileChngEvt, imgOutId) {
+
+    var files = fileChngEvt.files; // FileList object
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+            continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+            return function(e) {
+                $(imgOutId).attr('src', e.target.result);
+            };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+        return;
+    }
+}
+
+function setupModal(titleText, descText, imgSrcVal, onSave)
+{
+    if(titleText != null)
+    {
+        $('#myModalLabel').text(titleText);
+    }
+    if(descText != null)
+    {
+        $('#modalTextEntry').val(descText);
+    }
+    if(imgSrcVal != null)
+    {
+        $('#modalImg').attr('src', imgSrcVal);
+    }
+    if(onSave != null)
+    {
+        $('#modalSavePortrait').on('click', onSave);
+    }
+}
+
+function addNewPortrait() {
+    //Copy template DIV into var
+    var newPortrait = $('#portraitTemplate').children().clone(true);
+    //Get description text from modal
+    var descriptionText = $('#modalTextEntry').val();
+    //copy image preview from Modal dialog to new frame
+    newPortrait.find('> div > img').replaceWith($('#modalImg').clone(true));
+    //Clear the id
+    newPortrait.find('> div > img').attr('id', '');
+    //copy description into new frame
+    newPortrait.find('> div > div > div > p ').html(descriptionText);
+    //Move and replace input box element
+    var dataList = newPortrait.find('> div[name=dataList]');
+    dataList.children('input[name=patientPhoto]').first().remove(); //delete old value
+    $('#photoInputContainer').children().first().prop('name', 'patientPhoto');
+    $('#photoInputContainer').children().appendTo(dataList);
+    //Create new photoInput element
+    replaceFileInputControl();
+
+    //Copy desc text to input control:
+    dataList.children('input[name=imageDescText]').first().val(descriptionText);
+    //dataList.children('input[name=imageDescText]').first().prop('name', 'imageDescText');
+
+    newPortrait.show();
+
+    $('#patientImageList').append(newPortrait);
+}
+
+function replaceFileInputControl()
+{
+    $('#photoInputContainer').html('<input type="file" class="form-control" onchange="imageInputChange(this)" placeholder="Choose Image" />');
+}
+
+function imageInputChange(evt) {
+    setDynamicImage(evt, "#modalImg");
+    setupModal("New Photo", "", null, function() {
+        addNewPortrait();
+        $('#modalNewImage').modal('hide');
+    });
+    $('#modalNewImage').modal();
+}
+
+function portraitEdit(e)
+{
+    //Get parent div ref:
+    var rootDiv = $(e).parent().parent().parent().parent().parent().first();
+    //Get ref to data elements
+    var dataDiv = rootDiv.find("> div[name=dataList]").first();
+
+    var descText = dataDiv.children('input[name=imageDescText]').first().val();
+    if(descText == undefined)
+        descText = "";
+    var srcVal = rootDiv.find('> > img').first().prop('src');
+
+    //Set modal text:
+    setupModal("Edit Description", descText, srcVal, function() {
+
+        var newDesc = $('#modalTextEntry').val();
+        if(descText != newDesc)
+        {
+            //User has edited the text. Update field and set update flag for server-side processing
+            dataDiv.children('input[name=hasUpdatedDesc]').first().prop('checked', true);
+            dataDiv.children('input[name=hasUpdatedDesc]').first().prop('value', true);
+            dataDiv.children('input[name=imageDescText]').first().val(newDesc);
+            var tempP = rootDiv.find('> > > > p').first();
+            tempP.text(newDesc);
+        }
+        $('#modalNewImage').modal('hide');
+    });
+    $('#modalNewImage').modal();
+
+
+}
+
+function portraitDelete(e)
+{
+    var b = confirm("Are you sure you would like to delete this photo?");
+    if(b == true)
+    {
+        //get a reference to the root div element (move up five places in this case)
+        var rootDiv = $(e).parent().parent().parent().parent().parent().first();
+        //get a reference to the data list
+        var dataDiv = rootDiv.find("> div[name=dataList]").first();
+        var photoIdInput = dataDiv.children("input[name=photoId]").first();
+        var temptest = photoIdInput.val();
+        if(photoIdInput.val() == "")
+        {
+            //A photo Id does not exist, therefore, this is a NEW photo (ie, not saved server-side)
+            //  Thus we can simply delete this element from the DOM
+            rootDiv.remove();
+        }
+        else
+        {
+            /* In this case, the photo exists on the server.
+               Therefore, we must set the 'deleteRequested' flag to TRUE
+              and then finally hide the element */
+
+            //Set is delete flag to TRUE
+            dataDiv.children("input[name=deleteRequested]").first().prop('checked', true);
+            dataDiv.children("input[name=deleteRequested]").first().prop('value', true);
+            //Hide element
+            rootDiv.hide();
+        }
+    }
+}
+
+/*
+   Loop through all of the photo 'portrait' frames
+    and update the names to array notation.
+    ie: photoId => photoId[0], photoId[1], ...
+ */
+function photoNameFixup()
+{
+    var photoList = $('#patientImageList').children();
+    photoList.each(function(i) {
+        var dataList = $(this).find('> div[name=dataList]').first();
+        //Now loop through all of the data elements
+        dataList.children().each(function(y) {
+            var oldName = $(this).attr('name');
+            var name = new String(oldName);
+            if(name.indexOf('[') >= 0)
+                name = name.substr(0,name.indexOf('['));
+            name = name + '[' + i + ']';
+            $(this).prop('name', name);
+        });
+    });
+
+    return true;
 }

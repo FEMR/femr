@@ -1,5 +1,10 @@
 package femr.ui.models.medical;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import play.api.mvc.MultipartFormData;
+
+import java.util.List;
+
 public class CreateViewModelPost {
     //patient identifier
     private int id;
@@ -34,6 +39,39 @@ public class CreateViewModelPost {
     private String medicalSurgicalHistory;
     private String socialHistory;
     private String currentMedication;
+
+    //Photo Info Arrays
+    private List<Boolean> deleteRequested;
+    private List<Boolean> hasUpdatedDesc;
+    private List<String>  imageDescText;
+    private List<Integer> photoId;
+
+    public List<Boolean> getDeleteRequested() {
+        return deleteRequested;
+    }
+
+    public void setDeleteRequested(List<Boolean> deleteRequested) {
+        this.deleteRequested = deleteRequested;
+    }
+
+    public List<Boolean> getHasUpdatedDesc() {
+        return hasUpdatedDesc;
+    }
+
+    public void setHasUpdatedDesc(List<Boolean> hasUpdatedDesc) {
+        this.hasUpdatedDesc = hasUpdatedDesc;
+    }
+
+    public List<Integer> getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(List<Integer> photoId) {
+        this.photoId = photoId;
+    }
+
+    public List<String> getImageDescText() { return imageDescText; }
+    public void setImageDescText(List<String> lst) { this.imageDescText = lst; }
 
 
     public String getAssessment() {

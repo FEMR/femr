@@ -19,6 +19,8 @@ $(document).ready(function () {
             showTreatment();
         } else if ($(this).attr('id') === "pmhTab") {
             showPmh();
+        } else if($(this).attr('id') === "photoTab") {
+            showPhotos();
         } else if($(this).attr('id') === "pharmacyTab"){
             showPharamcy();
         }
@@ -34,12 +36,14 @@ function showTreatment() {
     $('#hpiControl').addClass('hidden');
     $('#pmhControl').addClass('hidden');
     $('#pharmacyControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#treatmentControl').removeClass('hidden');
 }
 function showHpi() {
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
     $('#pharmacyControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#hpiControl').removeClass('hidden');
 }
 
@@ -47,11 +51,21 @@ function showPmh() {
     $('#treatmentControl').addClass('hidden');
     $('#hpiControl').addClass('hidden');
     $('#pharmacyControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#pmhControl').removeClass('hidden');
 }
 function showPharamcy() {
     $('#hpiControl').addClass('hidden');
     $('#pmhControl').addClass('hidden');
     $('#treatmentControl').addClass('hidden');
+    $('#photoControl').addClass('hidden');
     $('#pharmacyControl').removeClass('hidden');
+}
+
+function showPhotos() {
+    $('#hpiControl').addClass('hidden');
+    $('#pmhControl').addClass('hidden');
+    $('#treatmentControl').addClass('hidden');
+    $('#pharmacyControl').addClass('hidden');
+    $('#photoControl').removeClass('hidden');
 }

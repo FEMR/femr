@@ -43,6 +43,7 @@ public class SearchController extends Controller {
     private IPharmacyService pharmacyService;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private EncounterHelper encounterHelper;
+    private IPhotoService photoService;
 
 
     @Inject
@@ -51,13 +52,15 @@ public class SearchController extends Controller {
                             IMedicalService medicalService,
                             IPharmacyService pharmacyService,
                             Provider<IPatientPrescription> patientPrescriptionProvider,
-                            EncounterHelper encounterHelper) {
+                            EncounterHelper encounterHelper,
+                            IPhotoService photoService) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.encounterHelper = encounterHelper;
         this.pharmacyService = pharmacyService;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
+        this.photoService = photoService;
 
     }
 
@@ -110,8 +113,14 @@ public class SearchController extends Controller {
 
         //endregion
 
+        ServiceResponse<List<IPhoto>> photoListSr =  photoService.GetEncounterPhotos(id);
+        List<IPhoto> photoLst = null;
+        if(!photoListSr.hasErrors())
+            photoLst = photoListSr.getResponseObject();
 
-        CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
+        CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter,
+                                patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap,
+                                patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
 
 
 

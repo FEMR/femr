@@ -239,10 +239,10 @@
                     @for(photoRec <- viewModel.getPhotos()) {
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="thumbnail">
-                                <img src="@photoRec.getFilePath()">
+                                <img src="@photoRec.getImageUrl()">
                                 <div class="caption">
                                     <div class="form-group">
-                                        <p name="photoDescription" >@photoRec.getDescription()</p>
+                                        <p name="photoDescription" >@photoRec.getImageDesc()</p>
                                         <div class="btn-group">
                                             <button id="btnEditText" type="button" onclick="portraitEdit(this)" class="btn btn-default btn-med">
                                                 <span class="glyphicon glyphicon-edit"></span> Edit Description
@@ -253,7 +253,7 @@
                                                 <span class="glyphicon glyphicon-trash"></span> Delete
                                             </button>
                                         </div>
-                                        <p>@photoRec.getInsertTS().toString()</p>
+                                        <p>@photoRec.getImageDate().toString()</p>
                                     </div>
                                 </div>
                             </div>
@@ -266,7 +266,7 @@
                                     <!-- Place holder for new images -->
                                 <input hidden="true" type="file" name="patientPhoto" />
                                     <!-- text for POST -->
-                                <input hidden="true" type="text" name="imageDescText" value="@photoRec.getDescription()" />
+                                <input hidden="true" type="text" name="imageDescText" value="@photoRec.getImageDesc()" />
                                     <!-- photo Id -->
                                 <input hidden="true" type="text" name="photoId" value="@photoRec.getId().toString()" />
                             </div>

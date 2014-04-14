@@ -199,24 +199,18 @@ public class MedicalController extends Controller {
             vitalMap = patientEncounterVitalMapResponse.getResponseObject();
         }
 
-        //endregion
 
         //Populate ViewModel
 
-        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient,
-                patientEncounter,
-                patientPrescriptions,
-                vitalMap,
-                patientEncounterTreatmentMap,
-                patientEncounterHpiMap,
-                patientEncounterPmhMap);
+        ServiceResponse<List<IPhoto>> photoLstSr = photoService.GetEncounterPhotos(patientEncounter.getId());
+        List<IPhoto> photoLst = null;
+        if(!photoLstSr.hasErrors())
+            photoLst = photoLstSr.getResponseObject();
 
-
-        //TODO: Kind of a hack here
-        for(IPhoto photoEle : photoList.getResponseObject())
-            photoEle.setFilePath(routes.PhotoController.GetEncounterPhoto(photoEle.getId()).toString());
-
-        viewModelGet.setPhotos(photoList.getResponseObject());
+        //set up viewModelGet with everything except vitals
+        CreateViewModelGet viewModelGet = medicalHelper.populateViewModelGet(patient, patientEncounter,
+                patientPrescriptions, vitalMap, patientEncounterTreatmentMap,
+                patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }

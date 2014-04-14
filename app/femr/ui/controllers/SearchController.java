@@ -122,12 +122,6 @@ public class SearchController extends Controller {
                                 patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap,
                                 patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
 
-
-
-
-
-
-
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));   // this is where the responce is returned to the encounter page
     }
 

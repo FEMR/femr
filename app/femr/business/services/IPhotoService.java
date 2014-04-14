@@ -11,10 +11,11 @@ import femr.ui.models.medical.CreateViewModelPost;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 public interface IPhotoService {
-    void HandlePatientPhoto(File img, IPatient patient, String coords, Boolean deleteFlag);
-    ServiceResponse<IPhoto> getPhotoById(int id);
     String GetRootPhotoPath();
     String GetRootEncounterPhotoPath();
-    void HandleEncounterPhotos(List<FilePart> encounterImages, IPatientEncounter patientEncounter, CreateViewModelPost mod);
+    ServiceResponse<IPhoto> getPhotoById(int id);
     ServiceResponse<List<IPhoto>> GetEncounterPhotos(int encounterId);
+    ServiceResponse<Boolean> HandlePatientPhoto(File img, IPatient patient, String coords, Boolean deleteFlag);
+    ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages,
+                                                    IPatientEncounter patientEncounter, CreateViewModelPost mod);
 }

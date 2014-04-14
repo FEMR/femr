@@ -13,6 +13,7 @@ import femr.ui.models.search.CreateViewModel;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
@@ -137,8 +138,7 @@ public class EncounterHelper {
             pm.setId(p.getId()); //set photo Id
             pm.setImageDesc(p.getDescription()); //set description
             pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(p.getId()).toString()); //set image URL
-            if(p.getInsertTS() != null)
-                pm.setImageDate(sdf.format(p.getInsertTS())); //format date string
+            pm.setImageDate(StringUtils.ToSimpleDate(p.getInsertTS()));
             //finally, add to collection:
             viewModelGet.getPhotos().add(pm);
         }

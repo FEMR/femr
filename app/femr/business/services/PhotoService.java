@@ -138,8 +138,9 @@ public class PhotoService implements IPhotoService {
     }
 
     @Override
-    public void HandleEncounterPhotos(List<FilePart> encounterImages, IPatientEncounter patientEncounter, CreateViewModelPost mod)
+    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, IPatientEncounter patientEncounter, CreateViewModelPost mod)
     {
+        ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try
         {
             int count = mod.getPhotoId().size();
@@ -168,11 +169,15 @@ public class PhotoService implements IPhotoService {
                     }
                 }
             }
+            sr.setResponseObject(true);
         }
         catch(Exception ex)
         {
-            throw ex;
+            sr.setResponseObject(false);
+            sr.addError("HandleEncounterPhotos()", ex.getMessage());
         }
+
+        return sr;
     }
 
     protected void saveNewEncounterImage(FilePart image, IPatientEncounter patientEncounter, String descriptionText)
@@ -234,11 +239,12 @@ public class PhotoService implements IPhotoService {
      * @return Returns the new image Id on Save/Update, else null
      */
     @Override
-    public void HandlePatientPhoto(File img, IPatient patient, String coords, Boolean deleteFlag)
+    public ServiceResponse<Boolean> HandlePatientPhoto(File img, IPatient patient, String coords, Boolean deleteFlag)
     {
         String sFileName = "Patient_" + patient.getId() + ".jpg";
         Integer photoId;
 
+        ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try
         {
             if(img != null)
@@ -280,10 +286,14 @@ public class PhotoService implements IPhotoService {
                         this.deletePhotoById(id);
                     }
             }
+            sr.setResponseObject(true);
         }
         catch(Exception ex)
         {
+            sr.setResponseObject(false);
+            sr.addError("HandlePatientPhoto", ex.getMessage());
         }
+        return sr;
     }
 
     protected void SavePhoto(File imgFile, String fileName)

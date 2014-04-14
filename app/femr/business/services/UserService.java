@@ -73,8 +73,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ServiceResponse<IUser> update(IUser currentUser){
+    public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword){
         ServiceResponse<IUser> response = new ServiceResponse<>();
+        if (isNewPassword){
+            encryptAndSetUserPassword(currentUser);
+        }
+
         currentUser = userRepository.update(currentUser);
         if (currentUser != null){
             response.setResponseObject(currentUser);

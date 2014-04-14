@@ -3,9 +3,11 @@
 # ~~~~
 
 GET         /*path/                     femr.ui.controllers.ApplicationController.removeTrailingSlash(path: String)
-GET         /admin/users/edit/:id       @femr.ui.controllers.admin.UsersController.getEditPartial(id: Integer)
 POST        /admin/users/create         @femr.ui.controllers.admin.UsersController.createPost()
 GET         /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()
+POST        /admin/users/edit           @femr.ui.controllers.admin.UsersController.editPost()
+GET         /admin/users/edit/:id       @femr.ui.controllers.admin.UsersController.editGet(id: Integer)
+POST        /admin/users/toggle/:id     @femr.ui.controllers.admin.UsersController.toggleUser(id: Integer)
 GET         /admin/users                @femr.ui.controllers.admin.UsersController.index()
 GET         /admin                      @femr.ui.controllers.admin.AdminController.index()
 GET         /pharmacy/typeahead         @femr.ui.controllers.PharmaciesController.typeaheadJSONGet()
@@ -26,6 +28,7 @@ POST        /medical/search             @femr.ui.controllers.MedicalController.s
 GET         /medical                    @femr.ui.controllers.MedicalController.indexGet(patientId: Integer ?= 0)
 POST        /medical/updateVitals/:id   @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
+POST        /login/reset                @femr.ui.controllers.SessionsController.editPasswordPost()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()
 GET         /login                      @femr.ui.controllers.SessionsController.createGet()
 GET         /                           @femr.ui.controllers.HomeController.index()

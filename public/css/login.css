@@ -1,3 +1,20 @@
+#passwordsWrap{
+    overflow: hidden;
+    min-width: 350px;
+}
+#passwordsWrap div{
+    overflow: hidden;
+    padding: 10px 0px 10px 0px;
+}
+#passwordsWrap input{
+    float: right;
+}
+#passwordsWrap label{
+    margin-top: 5px;
+    text-align: right;
+    display: inline-block;
+}
+
 .form-signin {
   max-width: 330px;
   padding: 15px;

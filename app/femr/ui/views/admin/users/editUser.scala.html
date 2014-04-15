@@ -3,8 +3,8 @@
 @import femr.ui.controllers.admin.routes.UsersController
 
 <div class="container">
+@helper.form(action = UsersController.createPost()) {
     <div class="row">
-    @helper.form(action = UsersController.createPost()) {
 
 
         <div class="col-lg-7 col-md-7 col-sm-7">
@@ -29,9 +29,9 @@
                     Add Role <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu width-100" role="menu">
-                    @for(role <- 1 to viewModel.getAllRoles.size()){
-                        <li class="roleListItem"><a>@viewModel.getAllRoles.get(role - 1).getName</a></li>
-                    }
+                @for(role <- 1 to viewModel.getAllRoles.size()) {
+                    <li class="roleListItem"><a>@viewModel.getAllRoles.get(role - 1).getName</a></li>
+                }
                 </ul>
             </div>
 
@@ -41,7 +41,7 @@
                 <li class="list-group-item" value="@viewModel.getUser.getRoles.get(role - 1).getName">
                     <span class="badge roleBadge">X</span>
                     @viewModel.getUser.getRoles.get(role - 1).getName
-                    <!-- stores hidden value for POST -->
+                        <!-- stores hidden value for POST -->
                     <input type="text" class="hidden" name="roles[]" value="@viewModel.getUser.getRoles.get(role - 1).getName"/>
                 </li>
             }
@@ -60,5 +60,5 @@
         </div>
     </div>
 
-    }
+}
 </div>

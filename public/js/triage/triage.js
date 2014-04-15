@@ -157,7 +157,7 @@ $(document).ready(function () {
             _photoDeleteImage();
     });
     //PHOTO LOGIC ::END::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
-    (function () {
+    $(function () {
         Date.prototype.toYMD = Date_toYMD;
         function Date_toYMD() {
             var year, month, day;
@@ -172,7 +172,7 @@ $(document).ready(function () {
             }
             return year + "-" + month + "-" + day;
         }
-    })();
+    });
 
 });
 
@@ -223,10 +223,12 @@ function _photoInit() {
         //  and show the upload button instead
         $('#patientPhotoDiv').hide();
         $('#photoInputFormDiv').show();
+        $('#patientPhoto').show();
     }
     else {
         $('#patientPhotoDiv').show();
         $('#photoInputFormDiv').hide();
+        $('#patientPhoto').show();
         /*
          At the moment, we will only support
          the delete functionality if the photo was

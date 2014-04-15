@@ -156,17 +156,31 @@ public class PhotoService implements IPhotoService {
                 }
                 else
                 {
-                    //Possibly update the image
-                    Boolean bisUpdate = mod.getHasUpdatedDesc().get(i);
-                    if(bisUpdate != null)
+                    Boolean bDelete = mod.getDeleteRequested().get(i);
+                    if(bDelete == null)
+                        bDelete = false;
+
+                    if(bDelete)
                     {
-                        if(bisUpdate)
+                        //Delete image
+                        if(mod.getPhotoId().get(i) != null)
+                            this.deletePhotoById(mod.getPhotoId().get(i), _encounterPhotoPath);
+                    }
+                    else
+                    {
+                        //Possibly update the image
+                        Boolean bisUpdate = mod.getHasUpdatedDesc().get(i);
+                        if(bisUpdate != null)
                         {
-                            Integer photoId = mod.getPhotoId().get(i);
-                            if(photoId != null)
-                                updateImageDescription(photoId, mod.getImageDescText().get(i));
+                            if(bisUpdate)
+                            {
+                                Integer photoId = mod.getPhotoId().get(i);
+                                if(photoId != null)
+                                    updateImageDescription(photoId, mod.getImageDescText().get(i));
+                            }
                         }
                     }
+
                 }
             }
             sr.setResponseObject(true);
@@ -283,7 +297,7 @@ public class PhotoService implements IPhotoService {
                         patient.setPhotoId(null);
                         patientRepository.update(patient);
                         //Now remove the photo record:
-                        this.deletePhotoById(id);
+                        this.deletePhotoById(id, _profilePhotoPath);
                     }
             }
             sr.setResponseObject(true);
@@ -393,23 +407,21 @@ public class PhotoService implements IPhotoService {
         }
     }
 
-    protected ServiceResponse<IPhoto> deletePhotoById(int id)
+    protected ServiceResponse<IPhoto> deletePhotoById(int id, String imagePath)
     {
         ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
         IPhoto savedPhoto = patientPhotoRepository.findOne(query);
         if(savedPhoto != null)
         {
-            deleteImageFile(_profilePhotoPath + savedPhoto.getFilePath()); //Delete file
-            Ebean.delete(savedPhoto);
-
             //Delete any references from the patientencounterphotos table
             ExpressionList<PatientEncounterPhoto> peQuery =
                        Ebean.find(PatientEncounterPhoto.class).where().eq("photo_id", id);
             List<? extends IPatientEncounterPhoto> pep = patientEncounterPhotoRepository.find(peQuery);
             if(pep != null)
-            {
                 Ebean.delete(pep);
-            }
+
+            deleteImageFile(imagePath + savedPhoto.getFilePath()); //Delete file
+            Ebean.delete(savedPhoto);
 
         }
         ServiceResponse<IPhoto> response = new ServiceResponse<>();

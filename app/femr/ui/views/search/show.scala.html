@@ -27,7 +27,7 @@
 @medicalPersonnel("search", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
     @if(viewModel.getPatientNameResult != null) {
         @if(viewModel.getPatientNameResult.size() > 1) {
-            <div class="row searchResult">
+            <div class="encounterInfoWrap backgroundForWrap">
                 <div class="row well well-sm">
                     <h4 class="text-center">Duplicate Patient Search Results</h4>
                     <div class="panel panel-default">

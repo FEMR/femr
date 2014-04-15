@@ -34,6 +34,7 @@
         <div id="patientOverviewWrap" class="backgroundForWrap">
 
             <h3 class="text-center">Patient Overview - Medical</h3>
+
             <div id="generalInfoWrap">
                 <div id="chiefComplaint">
                 @if(viewModel.getChiefComplaint != null && !viewModel.getChiefComplaint.isEmpty()) {
@@ -53,6 +54,8 @@
 
 
             </div>
+
+
 
         </div>
 
@@ -76,10 +79,6 @@
         @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID))) {
 
             <div class="tabWrap">
-
-                @historyButton(viewModel.getpID())
-
-
                 <ul id="medicalTabs">
                     <li class="active"><a href="#" id="hpiTab">HPI</a></li>
                     <li><a href="#" id="pmhTab">PMH</a></li>
@@ -213,6 +212,11 @@
                         <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory  </textarea>
                     </div>
                 </div>
+
+                <div class="pull-left">
+                @historyButton(viewModel.getpID())
+                </div>
+
                 <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
                     Submit Patient</button>
 

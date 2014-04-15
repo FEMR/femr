@@ -2,8 +2,53 @@ package femr.ui.models.medical;
 
 
 import femr.util.DataStructure.VitalMultiMap;
+import femr.common.models.IPhoto;
+import femr.data.models.Photo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateViewModelGet {
+    public static class PhotoModel
+    {
+        private String imageUrl;
+        private String imageDesc;
+        private String imageDate;
+        private int Id;
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public String getImageDesc() {
+            return imageDesc;
+        }
+
+        public void setImageDesc(String imageDesc) {
+            this.imageDesc = imageDesc;
+        }
+
+        public String getImageDate() {
+            return imageDate;
+        }
+
+        public void setImageDate(String imageDate) {
+            this.imageDate = imageDate;
+        }
+
+        public int getId() {
+            return Id;
+        }
+
+        public void setId(int id) {
+            Id = id;
+        }
+    }
+
     //begin patient
     private int pID;
     private String city;
@@ -47,6 +92,18 @@ public class CreateViewModelGet {
     private String medicalSurgicalHistory;
     private String socialHistory;
     private String currentMedication;
+
+    private List<PhotoModel> photos;
+
+    public List<PhotoModel> getPhotos() {
+        if(this.photos == null)
+            this.photos = new ArrayList<>();
+        return photos;
+    }
+    public void setPhotos(List<PhotoModel> photos) {
+        this.photos = photos;
+    }
+
 
     public int getpID() {
         return pID;

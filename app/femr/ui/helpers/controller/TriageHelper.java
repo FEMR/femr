@@ -46,7 +46,7 @@ public class TriageHelper {
             createViewModelGet.setSex(patient.getSex());
             if(patientPhoto != null)
             {
-                String photoPath = routes.PhotoController.GetPatientPhoto(patient.getId()).toString();
+                String photoPath = routes.PhotoController.GetPatientPhoto(patient.getId(), false).toString();
                 createViewModelGet.setPhotoPath(photoPath);
             }
             else

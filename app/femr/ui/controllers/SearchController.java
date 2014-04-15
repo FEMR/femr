@@ -43,6 +43,7 @@ public class SearchController extends Controller {
     private IPharmacyService pharmacyService;
     private Provider<IPatientPrescription> patientPrescriptionProvider;
     private EncounterHelper encounterHelper;
+    private IPhotoService photoService;
 
 
     @Inject
@@ -51,13 +52,15 @@ public class SearchController extends Controller {
                             IMedicalService medicalService,
                             IPharmacyService pharmacyService,
                             Provider<IPatientPrescription> patientPrescriptionProvider,
-                            EncounterHelper encounterHelper) {
+                            EncounterHelper encounterHelper,
+                            IPhotoService photoService) {
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.encounterHelper = encounterHelper;
         this.pharmacyService = pharmacyService;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
+        this.photoService = photoService;
 
     }
 
@@ -110,14 +113,14 @@ public class SearchController extends Controller {
 
         //endregion
 
+        ServiceResponse<List<IPhoto>> photoListSr =  photoService.GetEncounterPhotos(id);
+        List<IPhoto> photoLst = null;
+        if(!photoListSr.hasErrors())
+            photoLst = photoListSr.getResponseObject();
 
-        CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter, patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap, patientEncounterHpiMap, patientEncounterPmhMap);
-
-
-
-
-
-
+        CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter,
+                                patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap,
+                                patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));   // this is where the responce is returned to the encounter page
     }
@@ -141,6 +144,7 @@ public class SearchController extends Controller {
         String s_id = request().getQueryString("id");
         ServiceResponse<List<? extends IPatient>> patientServiceResponse = null;
         ServiceResponse<IPatient> patientServiceResponseid = null;
+        List<String> photoURIs; //List to store all generated photo URIs.  Will pass into viewmodel object
 
         Integer id;
 
@@ -172,6 +176,12 @@ public class SearchController extends Controller {
             return ok(showError.render(currentUser));
         }
 
+        photoURIs = new ArrayList<String>();
+        if(patientServiceResponse != null)
+            if(patientServiceResponse.getResponseObject() != null)
+                for(int i = 0; i < patientServiceResponse.getResponseObject().size(); i++)
+                    photoURIs.add(routes.PhotoController.GetPatientPhoto(patientServiceResponse.getResponseObject().get(i).getId(), true).toString());
+
 
         List<? extends IPatientEncounter> patientEncounters = patientEncountersServiceResponse.getResponseObject();
         CreateViewModel viewModel = new CreateViewModel();
@@ -185,6 +195,7 @@ public class SearchController extends Controller {
                 viewModel.setCity(patient.getCity());
                 viewModel.setAge(dateUtils.getAge(patient.getAge()));
                 viewModel.setSex(patient.getSex());
+                viewModel.setPhotoURIList(photoURIs);
             } else {
                 return ok(showError.render(currentUser));
             }
@@ -199,6 +210,7 @@ public class SearchController extends Controller {
                 viewModel.setAge(dateUtils.getAge(patient.getAge()));
                 viewModel.setSex(patient.getSex());
                 viewModel.setPatientID(patient.getId());
+                viewModel.setPhotoURIList(photoURIs);
             } else {
                 return ok(showError.render(currentUser));
             }

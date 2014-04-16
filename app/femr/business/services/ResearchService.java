@@ -137,10 +137,10 @@ public class ResearchService implements IResearchService{
 
 
         } catch(Exception e) {
-            e.printStackTrace();
+            return null;
         }
 
-        return null;
+
     }
 
 

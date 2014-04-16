@@ -54,7 +54,6 @@ public class ResearchModelBuilder {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
         return resultModel;

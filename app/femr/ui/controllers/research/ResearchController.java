@@ -68,8 +68,6 @@ public class ResearchController extends Controller {
         CreateViewModelPost viewModelPost = createViewModelForm.bindFromRequest().get();
         String sql = viewModelPost.getQueryString();
 
-
-        System.out.println(sql);
         // execute query
         List<ResearchDataModel> resultModel = researchService.ManualSqlQuery(sql);
         CreateViewModelGet viewModelGet = new CreateViewModelGet();

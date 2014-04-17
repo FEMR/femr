@@ -1,6 +1,8 @@
 //BMI auto- calculator
 
 $(document).ready(function () {
+    //set a global variable to track browser compatibility with image previews
+    window.isFileReader = typeof FileReader !== 'undefined';
 
     calculateBMI();
 
@@ -83,21 +85,21 @@ $(document).ready(function () {
             showTreatment();
         } else if ($(this).attr('id') === "pmhTab") {
             showPmh();
-        } else if($(this).attr('id') === "photoTab") {
+        } else if ($(this).attr('id') === "photoTab") {
             showPhotoTab();
         }
 
     });
 
     //Shown event for Modal form
-    $('#modalNewImage').on('shown.bs.modal', function(e) {
+    $('#modalNewImage').on('shown.bs.modal', function (e) {
         $('#modalTextEntry').focus();
     });
 
     //Hide event for Modal form
-    $('#modalNewImage').on('hide.bs.modal', function(e) {
+    $('#modalNewImage').on('hide.bs.modal', function (e) {
         //Clear the img src
-        $('#modalImg').attr('src','');
+        $('#modalImg').attr('src', '');
         //Clear the textbox
         $('#modalTextEntry').val('');
         $('#modalSavePortrait').unbind(); //unbind any events associated to the save button
@@ -134,6 +136,11 @@ $(document).ready(function () {
             }
         })
 
+    });
+
+    $('#modalCancelPortrait').click(function () {
+        //remove warnings
+        $('#modalImg').parent().find('p').remove();
     });
 
 
@@ -201,37 +208,41 @@ function setDynamicImage(fileChngEvt, imgOutId) {
             continue;
         }
 
-        var reader = new FileReader();
+        //detect existance of FileReader
+        if (window.isFileReader) {
+            var reader = new FileReader();
 
-        // Closure to capture the file information.
-        reader.onload = (function(theFile) {
-            return function(e) {
-                $(imgOutId).attr('src', e.target.result);
-            };
-        })(f);
+            // Closure to capture the file information.
+            reader.onload = (function (theFile) {
+                return function (e) {
+                    $(imgOutId).attr('src', e.target.result);
+                };
+            })(f);
 
-        // Read in the image file as a data URL.
-        reader.readAsDataURL(f);
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
+        }
+
         return;
     }
 }
 
-function setupModal(titleText, descText, imgSrcVal, onSave)
-{
-    if(titleText != null)
-    {
+function setupModal(titleText, descText, imgSrcVal, onSave) {
+    if (!window.isFileReader) {
+        //add warnings for non FileReader compliant browsers
+        $('#modalImg').hide();
+        $('#modalImg').parent().append("<p>Image Preview is not supported in your browser.</p>")
+    }
+    if (titleText != null) {
         $('#myModalLabel').text(titleText);
     }
-    if(descText != null)
-    {
+    if (descText != null) {
         $('#modalTextEntry').val(descText);
     }
-    if(imgSrcVal != null)
-    {
+    if (imgSrcVal != null) {
         $('#modalImg').attr('src', imgSrcVal);
     }
-    if(onSave != null)
-    {
+    if (onSave != null) {
         $('#modalSavePortrait').on('click', onSave);
     }
 }
@@ -242,7 +253,13 @@ function addNewPortrait() {
     //Get description text from modal
     var descriptionText = $('#modalTextEntry').val();
     //copy image preview from Modal dialog to new frame
-    newPortrait.find('> div > img').replaceWith($('#modalImg').clone(true));
+    if (window.isFileReader){
+        newPortrait.find('> div > img').replaceWith($('#modalImg').clone(true));
+    }else{
+        newPortrait.find('> div > img').remove();
+        newPortrait.find('> div').append("<p>Image Preview is not supported in your browser.</p>")
+    }
+
     //Clear the id
     newPortrait.find('> div > img').attr('id', '');
     //copy description into new frame
@@ -264,38 +281,37 @@ function addNewPortrait() {
     $('#patientImageList').append(newPortrait);
 }
 
-function replaceFileInputControl()
-{
+function replaceFileInputControl() {
     $('#photoInputContainer').html('<input type="file" class="form-control" onchange="imageInputChange(this)" placeholder="Choose Image" />');
 }
 
 function imageInputChange(evt) {
     setDynamicImage(evt, "#modalImg");
-    setupModal("New Photo", "", null, function() {
+    setupModal("New Photo", "", null, function () {
+        //remove warnings from modal
+        $('#modalImg').parent().find('p').remove();
         addNewPortrait();
         $('#modalNewImage').modal('hide');
     });
     $('#modalNewImage').modal();
 }
 
-function portraitEdit(e)
-{
+function portraitEdit(e) {
     //Get parent div ref:
     var rootDiv = $(e).parent().parent().parent().parent().parent().first();
     //Get ref to data elements
     var dataDiv = rootDiv.find("> div[name=dataList]").first();
 
     var descText = dataDiv.children('input[name=imageDescText]').first().val();
-    if(descText == undefined)
+    if (descText == undefined)
         descText = "";
     var srcVal = rootDiv.find('> > img').first().prop('src');
 
     //Set modal text:
-    setupModal("Edit Description", descText, srcVal, function() {
+    setupModal("Edit Description", descText, srcVal, function () {
 
         var newDesc = $('#modalTextEntry').val();
-        if(descText != newDesc)
-        {
+        if (descText != newDesc) {
             //User has edited the text. Update field and set update flag for server-side processing
             dataDiv.children('input[name=hasUpdatedDesc]').first().prop('checked', true);
             dataDiv.children('input[name=hasUpdatedDesc]').first().prop('value', true);
@@ -310,28 +326,24 @@ function portraitEdit(e)
 
 }
 
-function portraitDelete(e)
-{
+function portraitDelete(e) {
     var b = confirm("Are you sure you would like to delete this photo?");
-    if(b == true)
-    {
+    if (b == true) {
         //get a reference to the root div element (move up five places in this case)
         var rootDiv = $(e).parent().parent().parent().parent().parent().first();
         //get a reference to the data list
         var dataDiv = rootDiv.find("> div[name=dataList]").first();
         var photoIdInput = dataDiv.children("input[name=photoId]").first();
         var temptest = photoIdInput.val();
-        if(photoIdInput.val() == "")
-        {
+        if (photoIdInput.val() == "") {
             //A photo Id does not exist, therefore, this is a NEW photo (ie, not saved server-side)
             //  Thus we can simply delete this element from the DOM
             rootDiv.remove();
         }
-        else
-        {
+        else {
             /* In this case, the photo exists on the server.
-               Therefore, we must set the 'deleteRequested' flag to TRUE
-              and then finally hide the element */
+             Therefore, we must set the 'deleteRequested' flag to TRUE
+             and then finally hide the element */
 
             //Set is delete flag to TRUE
             dataDiv.children("input[name=deleteRequested]").first().prop('checked', true);
@@ -343,21 +355,20 @@ function portraitDelete(e)
 }
 
 /*
-   Loop through all of the photo 'portrait' frames
-    and update the names to array notation.
-    ie: photoId => photoId[0], photoId[1], ...
+ Loop through all of the photo 'portrait' frames
+ and update the names to array notation.
+ ie: photoId => photoId[0], photoId[1], ...
  */
-function photoNameFixup()
-{
+function photoNameFixup() {
     var photoList = $('#patientImageList').children();
-    photoList.each(function(i) {
+    photoList.each(function (i) {
         var dataList = $(this).find('> div[name=dataList]').first();
         //Now loop through all of the data elements
-        dataList.children().each(function(y) {
+        dataList.children().each(function (y) {
             var oldName = $(this).attr('name');
             var name = new String(oldName);
-            if(name.indexOf('[') >= 0)
-                name = name.substr(0,name.indexOf('['));
+            if (name.indexOf('[') >= 0)
+                name = name.substr(0, name.indexOf('['));
             name = name + '[' + i + ']';
             $(this).prop('name', name);
         });

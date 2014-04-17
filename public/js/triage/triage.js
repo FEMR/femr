@@ -131,20 +131,25 @@ $(document).ready(function () {
                 continue;
             }
 
-            $('#patientPhotoDiv').show();
-            $('#photoInputFormDiv').hide();
+            //Older web browsers won't recognize FileReader
+            if (typeof FileReader !== 'undefined'){
+                $('#patientPhotoDiv').show();
+                $('#photoInputFormDiv').hide();
 
-            var reader = new FileReader();
 
-            // Closure to capture the file information.
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    $('#patientPhoto').attr('src', e.target.result);
-                };
-            })(f);
+                var reader = new FileReader();
 
-            // Read in the image file as a data URL.
-            reader.readAsDataURL(f);
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        $('#patientPhoto').attr('src', e.target.result);
+                    };
+                })(f);
+
+                // Read in the image file as a data URL.
+                reader.readAsDataURL(f);
+            }
+
             return;
         }
 

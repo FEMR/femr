@@ -202,6 +202,7 @@ public class UsersController extends Controller {
         user.setPassword(viewModel.getPassword());
         user.setLastLogin(dateUtils.getCurrentDateTime());
         user.setDeleted(false);
+        user.setPasswordReset(false);
         return user;
     }
 }

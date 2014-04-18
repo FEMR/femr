@@ -90,17 +90,7 @@ public class MedicalHelper {
         //vitals
         viewModelGet.setVitalMap(vitalMap);
 
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
-        //build photo list:
-        for(IPhoto photo : photoLst)
-        {
-            CreateViewModelGet.PhotoModel pm = new CreateViewModelGet.PhotoModel();
-            pm.setId(photo.getId());
-            pm.setImageDesc(photo.getDescription());
-            pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(photo.getId()).toString());
-            pm.setImageDate(StringUtils.ToSimpleDate(photo.getInsertTS()));
-            viewModelGet.getPhotos().add(pm);
-        }
+        viewModelGet.getPhotos().addAll(getPhotoModel(photoLst));
 
         return viewModelGet;
     }
@@ -174,6 +164,28 @@ public class MedicalHelper {
             return patientEncounterVitalMap.get(key).get(0).getVitalValue().intValue();
         }
         return null;
+    }
+
+    /**
+     * Gets the photo list and adds them to the Photo Model or sets it to null if it is empty
+     * @param photos the list of IPhoto to iterate over
+     * @return A list of PhotoModel or null
+     */
+    private List<CreateViewModelGet.PhotoModel> getPhotoModel(List<IPhoto> photos) {
+        List<CreateViewModelGet.PhotoModel> tempPhotoList = new ArrayList<>();
+        if(photos != null)
+        {
+            for(IPhoto photo : photos)
+            {
+                CreateViewModelGet.PhotoModel pm = new CreateViewModelGet.PhotoModel();
+                pm.setId(photo.getId());
+                pm.setImageDesc(photo.getDescription());
+                pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(photo.getId()).toString());
+                pm.setImageDate(StringUtils.ToSimpleDate(photo.getInsertTS()));
+                tempPhotoList.add(pm);
+            }
+        }
+        return tempPhotoList;
     }
 
     private Float getFloatVitalOrNull(String key, Map<String, List<? extends IPatientEncounterVital>> patientEncounterVitalMap) {

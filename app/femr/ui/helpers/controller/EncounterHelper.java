@@ -123,7 +123,7 @@ public class EncounterHelper {
 
         //Setup photo info:
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        viewModelGet.getPhotos().addAll(getPhotoModel(photos));
+        viewModelGet.setPhotos(getPhotoModel(photos));
 
 
         return viewModelGet;

@@ -90,7 +90,7 @@ public class MedicalHelper {
         //vitals
         viewModelGet.setVitalMap(vitalMap);
 
-        viewModelGet.getPhotos().addAll(getPhotoModel(photoLst));
+        viewModelGet.setPhotos(getPhotoModel(photoLst));
 
         return viewModelGet;
     }

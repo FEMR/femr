@@ -43,6 +43,8 @@ public class DatabaseSeeder {
             adminUser.setDeleted(false);
             Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
             adminUser.addRole(role);
+            adminUser.setPasswordReset(false);
+
 
             userRepository.create(adminUser);
         }

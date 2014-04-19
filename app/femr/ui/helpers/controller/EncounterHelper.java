@@ -8,6 +8,7 @@ import femr.business.services.ISearchService;
 import femr.business.services.IUserService;
 import femr.common.models.*;
 import femr.ui.controllers.routes;
+import femr.ui.models.medical.CreateViewModelGet;
 import femr.ui.models.search.CreateEncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
 import femr.util.DataStructure.VitalMultiMap;
@@ -118,30 +119,12 @@ public class EncounterHelper {
         viewModelGet.setFamilyHistory(getPmhFieldOrNull("familyHistory", patientEncounterPmhMap));
         //vitals
         viewModelGet.setVitalList(patientEncounterVitalMap);
-//        viewModelGet.setRespiratoryRate(getIntVitalOrNull("respiratoryRate", patientEncounterVitalMap));
-//        viewModelGet.setHeartRate(getIntVitalOrNull("heartRate", patientEncounterVitalMap));
-//        viewModelGet.setHeightFeet(getIntVitalOrNull("heightFeet", patientEncounterVitalMap));
-//        viewModelGet.setHeightInches(getIntVitalOrNull("heightInches", patientEncounterVitalMap));
-//        viewModelGet.setBloodPressureSystolic(getIntVitalOrNull("bloodPressureSystolic", patientEncounterVitalMap));
-//        viewModelGet.setBloodPressureDiastolic(getIntVitalOrNull("bloodPressureDiastolic", patientEncounterVitalMap));
-//        viewModelGet.setTemperature(getFloatVitalOrNull("temperature", patientEncounterVitalMap));
-//        viewModelGet.setOxygenSaturation(getFloatVitalOrNull("oxygenSaturation", patientEncounterVitalMap));
-//        viewModelGet.setWeight(getFloatVitalOrNull("weight", patientEncounterVitalMap));
-//        viewModelGet.setGlucose(getFloatVitalOrNull("glucose", patientEncounterVitalMap));
-        //Medication
+
 
         //Setup photo info:
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        for(IPhoto p : photos)
-        {
-            CreateEncounterViewModel.PhotoModel pm = new CreateEncounterViewModel.PhotoModel();
-            pm.setId(p.getId()); //set photo Id
-            pm.setImageDesc(p.getDescription()); //set description
-            pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(p.getId()).toString()); //set image URL
-            pm.setImageDate(StringUtils.ToSimpleDate(p.getInsertTS()));
-            //finally, add to collection:
-            viewModelGet.getPhotos().add(pm);
-        }
+        viewModelGet.setPhotos(getPhotoModel(photos));
+
 
         return viewModelGet;
     }
@@ -291,6 +274,28 @@ public class EncounterHelper {
         else{
             return false;
         }
+    }
+
+    /**
+     * Gets the photo list and adds them to the Photo Model or sets it to null if it is empty
+     * @param photos the list of IPhoto to iterate over
+     * @return A list of PhotoModel or null
+     */
+    private List<CreateEncounterViewModel.PhotoModel> getPhotoModel(List<IPhoto> photos) {
+        List<CreateEncounterViewModel.PhotoModel> tempPhotoList = new ArrayList<>();
+        if(photos != null)
+        {
+            for(IPhoto p : photos)
+            {
+                CreateEncounterViewModel.PhotoModel pm = new CreateEncounterViewModel.PhotoModel();
+                pm.setId(p.getId()); //set photo Id
+                pm.setImageDesc(p.getDescription()); //set description
+                pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(p.getId()).toString()); //set image URL
+                pm.setImageDate(StringUtils.ToSimpleDate(p.getInsertTS()));
+                tempPhotoList.add(pm);
+            }
+        }
+        return tempPhotoList;
     }
 
     private String getHpiFieldOrNull(String key, Map<String, List<? extends IPatientEncounterHpiField>> patientEncounterHpiMap) {

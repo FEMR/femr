@@ -82,8 +82,8 @@ function checkNumbers(){
 
 
     //Respirations
-    if ($.trim($('#respirations').val().length) > 0 && integerCheck($('#respirations').val()) == false){
-        $('#respirations').css('border-color','red');
+    if ($.trim($('#respiratoryRate').val().length) > 0 && integerCheck($('#respiratoryRate').val()) == false){
+        $('#respiratoryRate').css('border-color','red');
         pass = false;
     }
     //Blood Pressure - Systolic
@@ -102,8 +102,8 @@ function checkNumbers(){
         pass = false;
     }
     //Oxygen
-    if ($.trim($('#oxygen').val().length) > 0 && decimalCheck($('#oxygen').val()) == false){
-        $('#oxygen').css('border-color','red');
+    if ($.trim($('#oxygenSaturation').val().length) > 0 && decimalCheck($('#oxygenSaturation').val()) == false){
+        $('#oxygenSaturation').css('border-color','red');
         pass = false;
     }
     //Temperature

@@ -4,13 +4,19 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
+import com.typesafe.config.ConfigFactory;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
+import femr.ui.controllers.routes;
+import femr.ui.models.data.PatientItem;
+import femr.ui.models.data.VitalItem;
 import femr.util.DataStructure.VitalMultiMap;
+import femr.util.calculations.dateUtils;
 
 import javax.xml.ws.Service;
+import java.io.File;
 import java.util.*;
 
 public class SearchService implements ISearchService {
@@ -26,6 +32,7 @@ public class SearchService implements ISearchService {
     private IRepository<ITreatmentField> treatmentFieldRepository;
     private IRepository<IPmhField> pmhFieldRepository;
     private IRepository<IHpiField> hpiFieldRepository;
+    private IRepository<IPhoto> photoRepository;
 
     @Inject
     public SearchService(IRepository<IPatient> patientRepository,
@@ -39,7 +46,8 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
                          IRepository<ITreatmentField> treatmentFieldRepository,
                          IRepository<IPmhField> pmhFieldRepository,
-                         IRepository<IHpiField> hpiFieldRepository) {
+                         IRepository<IHpiField> hpiFieldRepository,
+                         IRepository<IPhoto> photoRepository) {
         this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -52,6 +60,7 @@ public class SearchService implements ISearchService {
         this.treatmentFieldRepository = treatmentFieldRepository;
         this.pmhFieldRepository = pmhFieldRepository;
         this.hpiFieldRepository = hpiFieldRepository;
+        this.photoRepository = photoRepository;
     }
 
     @Override
@@ -64,6 +73,44 @@ public class SearchService implements ISearchService {
             response.addError("id", "id does not exist");
         } else {
             response.setResponseObject(savedPatient);
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<PatientItem> findPatientItemById(Integer id) {
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+        if (id == null) {
+            response.addError("id", "null");
+            return response;
+        }
+
+        ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
+        IPatient savedPatient = patientRepository.findOne(query);
+
+        if (savedPatient == null) {
+            response.addError("id", "id does not exist");
+        } else {
+            PatientItem patientItem = new PatientItem();
+
+            ExpressionList<Photo> photoQuery = Ebean.find(Photo.class).where().eq("id", savedPatient.getId());
+            IPhoto savedPhoto = photoRepository.findOne(photoQuery);
+            if (savedPhoto != null) {
+                patientItem.setPathToPhoto(ConfigFactory.load().getString("photos.path") + savedPhoto.getFilePath());
+            } else {
+                patientItem.setPathToPhoto("");
+            }
+            patientItem.setId(savedPatient.getId());
+            patientItem.setFirstName(savedPatient.getFirstName());
+            patientItem.setLastName(savedPatient.getLastName());
+            patientItem.setAddress(savedPatient.getAddress());
+            patientItem.setCity(savedPatient.getCity());
+            patientItem.setAge(dateUtils.getAge(savedPatient.getAge()));
+            patientItem.setBirth(savedPatient.getAge());
+            patientItem.setSex(savedPatient.getSex());
+            patientItem.setPhotoId(savedPatient.getPhotoId());
+
+            response.setResponseObject(patientItem);
         }
         return response;
     }
@@ -240,8 +287,6 @@ public class SearchService implements ISearchService {
     }
 
 
-
-
     @Override
     public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name) {
         Query<PatientEncounterTreatmentField> query = getPatientEncounterTreatmentFieldQuery()
@@ -414,7 +459,7 @@ public class SearchService implements ISearchService {
      * @return vitals and dates related to encounter
      */
     @Override
-    public ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId){
+    public ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId) {
         List<? extends IVital> vitals = findAllVitals().getResponseObject();
         VitalMultiMap vitalMultiMap = new VitalMultiMap();
         String vitalFieldName;
@@ -428,8 +473,7 @@ public class SearchService implements ISearchService {
             if (patientVitalServiceResponse.hasErrors()) {
                 continue;
             } else {
-                for(IPatientEncounterVital vitalData : patientVitalServiceResponse.getResponseObject())
-                {
+                for (IPatientEncounterVital vitalData : patientVitalServiceResponse.getResponseObject()) {
                     vitalFieldDate = vitalData.getDateTaken().trim();
                     vitalMultiMap.put(vitalFieldName, vitalFieldDate, vitalData.getVitalValue());
                 }

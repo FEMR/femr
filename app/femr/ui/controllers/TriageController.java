@@ -8,58 +8,66 @@ import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
 import femr.common.models.*;
-import femr.data.models.Photo;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.triage.CreateViewModelGet;
-import femr.ui.models.triage.CreateViewModelPost;
-import femr.ui.helpers.controller.TriageHelper;
+import femr.ui.models.data.PatientEncounterItem;
+import femr.ui.models.data.PatientItem;
+import femr.ui.models.data.VitalItem;
+import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
-import femr.util.stringhelpers.StringUtils;
+import femr.util.calculations.dateUtils;
 import play.data.Form;
 import play.mvc.*;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * NOTE: The Triage Controller has had the majority of its business logic removed and
+ * placed in the service layer. This is why it may seem to have a different "feel"
+ * than other controllers.
+ */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class TriageController extends Controller {
 
-    private final Form<CreateViewModelPost> createViewModelForm = Form.form(CreateViewModelPost.class);
+    private final Form<IndexViewModelPost> IndexViewModelForm = Form.form(IndexViewModelPost.class);
     private ITriageService triageService;
     private ISessionService sessionService;
     private ISearchService searchService;
-    private TriageHelper triageHelper;
     private IPhotoService photoService;
-
 
     @Inject
     public TriageController(ITriageService triageService,
                             ISessionService sessionService,
                             ISearchService searchService,
-                            TriageHelper triageHelper,
                             IPhotoService photoService) {
 
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
-        this.triageHelper = triageHelper;
         this.photoService = photoService;
     }
 
-    public Result createGet() {
+    public Result indexGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        //retrieve all the vitals in the database so we can dynamically name
+        //the vitals in the view
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             return internalServerError();
         }
 
-        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(null, null, vitalServiceResponse.getResponseObject(), false);
+        //initalize an empty patient
+        PatientItem patientItem = new PatientItem();
+
+        IndexViewModelGet viewModelGet = populateViewModelGet(
+                vitalServiceResponse.getResponseObject(),
+                patientItem,
+                false
+        );
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -68,44 +76,38 @@ public class TriageController extends Controller {
     Used when user has searched for an existing patient
     and wants to create a new encounter
      */
-    public Result createPopulatedGet() {
+    public Result indexPopulatedGet() {
         boolean searchError = false;
+        PatientItem patient = new PatientItem();
 
+        //get user that is currently logged in
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        IPatient patient = null;
-        IPhoto patientPhoto = null;
-
-        //retrieve patient id from query string
-        String s_id = request().getQueryString("id");
-        if (StringUtils.isNullOrWhiteSpace(s_id)) {
-            searchError = true;
-        } else {
-            s_id = s_id.trim();
-            Integer id = Integer.parseInt(s_id);
-            ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-            if (patientServiceResponse.hasErrors()) {
-                searchError = true;
-            } else {
-                patient = patientServiceResponse.getResponseObject();
-            }
-        }
-
-        if (patient != null)
-            if (patient.getPhotoId() != null) {
-                //fetch photo record:
-                ServiceResponse<IPhoto> photoResponse = photoService.getPhotoById(patient.getPhotoId());
-                if (!photoResponse.hasErrors())
-                    patientPhoto = photoResponse.getResponseObject();
-            }
-
         //retrieve vitals names for dynamic html element naming
-        ServiceResponse<List<? extends IVital>> vitalServiceResponse = searchService.findAllVitals();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             return internalServerError();
         }
 
-        CreateViewModelGet viewModelGet = triageHelper.populateViewModelGet(patient, patientPhoto, vitalServiceResponse.getResponseObject(), searchError);
+        //retrieve patient id from query string and search for the patient
+        //error will be returned from business layer if there is anything
+        //wrong with the query string and/or patient
+        ServiceResponse<PatientItem> patientServiceResponse = searchService.findPatientItemById(
+                Integer.valueOf(
+                        request().getQueryString("id").trim()
+                )
+        );
+        if (patientServiceResponse.hasErrors()) {
+            searchError = true;
+        } else {
+            patient = patientServiceResponse.getResponseObject();
+        }
+
+        //create the view model
+        IndexViewModelGet viewModelGet = populateViewModelGet(
+                vitalServiceResponse.getResponseObject(),
+                patient,
+                searchError
+        );
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -114,30 +116,25 @@ public class TriageController extends Controller {
    *if id is 0 then it is a new patient and a new encounter
    * if id is > 0 then it is only a new encounter
     */
-    public Result createPost(int id) {
-        CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
+    public Result indexPost(int id) {
+        IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        //save new patient if new form
-        //else find the patient to create a new encounter for
-        ServiceResponse<IPatient> patientServiceResponse;
-        IPatient patient;
+        //create a new patient
+        //or get current patient for new encounter
+        ServiceResponse<PatientItem> patientServiceResponse;
+        PatientItem patient;
         if (id == 0) {
-            patient = triageHelper.getPatient(viewModel, currentUser);
+            patient = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = triageService.createPatient(patient);
         } else {
-            patientServiceResponse = searchService.findPatientById(id);
-            patient = patientServiceResponse.getResponseObject();
-            if (!StringUtils.isNullOrWhiteSpace(viewModel.getSex())) {
-                patient.setSex(viewModel.getSex());
-                patientServiceResponse = triageService.updatePatient(patient);
-            }
+            patientServiceResponse = triageService.findPatientAndUpdateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
             return internalServerError();
         }
 
-        //Handle photo logic:
+        //add or remove a patient photo
         try {
             Http.MultipartFormData.FilePart fpPhoto;
             File photoFile = null;
@@ -152,15 +149,21 @@ public class TriageController extends Controller {
         }
 
         //create and save a new encounter
-        IPatientEncounter patientEncounter = triageHelper.getPatientEncounter(viewModel, currentUser, patientServiceResponse.getResponseObject());
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounter);
+        PatientEncounterItem patientEncounterItem = populatePatientEncounterItem(
+                viewModel,
+                currentUser,
+                patientServiceResponse.getResponseObject().getId()
+        );
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
             return internalServerError();
+        } else {
+            patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         }
 
-
         //save new vitals - check to make sure the vital exists
-        //before putting it in the map
+        //before putting it in the map. This can be done more
+        //efficiently with JSON from the view
         Map<String, Float> newVitals = new HashMap<>();
         if (viewModel.getRespiratoryRate() != null) {
             newVitals.put("respiratoryRate", viewModel.getRespiratoryRate().floatValue());
@@ -168,37 +171,32 @@ public class TriageController extends Controller {
         if (viewModel.getHeartRate() != null) {
             newVitals.put("heartRate", viewModel.getHeartRate().floatValue());
         }
-        if (viewModel.getTemperature() != null){
+        if (viewModel.getTemperature() != null) {
             newVitals.put("temperature", viewModel.getTemperature());
         }
-        if (viewModel.getOxygenSaturation() != null){
+        if (viewModel.getOxygenSaturation() != null) {
             newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
-        if(viewModel.getHeightFeet() != null){
+        if (viewModel.getHeightFeet() != null) {
             newVitals.put("heightFeet", viewModel.getHeightFeet().floatValue());
         }
-        if (viewModel.getHeightInches() != null){
+        if (viewModel.getHeightInches() != null) {
             newVitals.put("heightInches", viewModel.getHeightInches().floatValue());
         }
-        if (viewModel.getWeight() != null){
+        if (viewModel.getWeight() != null) {
             newVitals.put("weight", viewModel.getWeight());
         }
-        if (viewModel.getBloodPressureSystolic() != null){
+        if (viewModel.getBloodPressureSystolic() != null) {
             newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
         }
-        if (viewModel.getBloodPressureDiastolic() != null){
+        if (viewModel.getBloodPressureDiastolic() != null) {
             newVitals.put("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic().floatValue());
         }
-        if (viewModel.getGlucose() != null){
+        if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }
 
-
-
-
-
-
-        ServiceResponse<List<? extends IPatientEncounterVital>> vitalServiceResponse = triageService.createPatientEncounterVitals(newVitals, currentUser.getId(), patientEncounter.getId());
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
             return internalServerError();
         }
@@ -206,5 +204,37 @@ public class TriageController extends Controller {
         return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
     }
 
+
+    private IndexViewModelGet populateViewModelGet(List<VitalItem> vitals, PatientItem patient, Boolean searchError) {
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+        viewModelGet.setVitalNames(vitals);
+        viewModelGet.setPatient(patient);
+        viewModelGet.setSearchError(searchError);
+        return viewModelGet;
+    }
+
+    private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
+        PatientItem patient = new PatientItem();
+        patient.setUserId(currentUser.getId());
+        patient.setFirstName(viewModelPost.getFirstName());
+        patient.setLastName(viewModelPost.getLastName());
+        patient.setBirth(viewModelPost.getAge());
+        patient.setSex(viewModelPost.getSex());
+        patient.setAddress(viewModelPost.getAddress());
+        patient.setCity(viewModelPost.getCity());
+
+        return patient;
+    }
+
+    private PatientEncounterItem populatePatientEncounterItem(IndexViewModelPost viewModelPost, CurrentUser currentUser, int patientId) {
+        PatientEncounterItem patientEncounter = new PatientEncounterItem();
+        patientEncounter.setPatientId(patientId);
+        patientEncounter.setUserId(currentUser.getId());
+        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
+        patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
+        patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
+        patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
+        return patientEncounter;
+    }
 
 }

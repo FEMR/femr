@@ -2,6 +2,8 @@ package femr.business.services;
 
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.ui.models.data.PatientItem;
+import femr.ui.models.data.VitalItem;
 import femr.util.DataStructure.VitalMultiMap;
 
 import java.util.LinkedHashMap;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ISearchService {
+    ServiceResponse<PatientItem> findPatientItemById(Integer id);
     ServiceResponse<IPatient> findPatientById(int id);
 
     ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
@@ -32,6 +35,7 @@ public interface ISearchService {
     ServiceResponse<IHpiField> findHpiField(String name);
     ServiceResponse<IPmhField> findPmhField(String name);
     ServiceResponse<List<? extends IVital>> findAllVitals();
+
     ServiceResponse<List<? extends ITreatmentField>> findAllTreatmentFields();
     ServiceResponse<List<? extends IHpiField>> findAllHpiFields();
     ServiceResponse<List<? extends IPmhField>> findAllPmhFields();

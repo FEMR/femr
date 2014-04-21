@@ -1,15 +1,8 @@
-package femr.ui.models.triage;
-
-import femr.common.models.IVital;
+package femr.ui.models.data;
 
 import java.util.Date;
-import java.util.List;
 
-//NOTE: the triage view sets the input element names dynamically
-//based on the vital name entry in the database, but this
-//ViewModel does NOT.
-public class CreateViewModelGet {
-    //patient info
+public class PatientItem {
     private int Id;
     private String firstName;
     private String lastName;
@@ -18,17 +11,24 @@ public class CreateViewModelGet {
     private String age;
     private Date birth;
     private String sex;
-    //search info
-    private boolean searchError = false;
-    //vital names
-    List<? extends IVital> vitalNames;
+    private Integer photoId;
+    private String pathToPhoto;
+    private int userId;
 
-    private String photoPath;
-
-    public CreateViewModelGet() {
+    public PatientItem(){
+        //default empty values
+        this.Id = 0;
+        this.pathToPhoto = "";
     }
 
-    //begin general info
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -85,29 +85,27 @@ public class CreateViewModelGet {
         this.sex = sex;
     }
 
-    public boolean isSearchError() {
-        return searchError;
+    public Integer getPhotoId() {
+        return photoId;
     }
 
-    public void setSearchError(boolean searchError) {
-        this.searchError = searchError;
+    public void setPhotoId(Integer photoId) {
+        this.photoId = photoId;
     }
 
-    public List<? extends IVital> getVitalNames(){
-        return vitalNames;
-    }
-    public void setVitalNames(List<? extends IVital> vitalNames){
-        this.vitalNames = vitalNames;
+    public String getPathToPhoto() {
+        return pathToPhoto;
     }
 
-    public int getId() {
-        return Id;
+    public void setPathToPhoto(String pathToPhoto) {
+        this.pathToPhoto = pathToPhoto;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public int getUserId() {
+        return userId;
     }
 
-    public String getPhotoPath() { return photoPath; }
-    public void   setPhotoPath(String path) { photoPath = path; }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

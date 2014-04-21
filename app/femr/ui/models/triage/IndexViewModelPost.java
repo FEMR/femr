@@ -5,7 +5,7 @@ import java.util.Date;
 //NOTE: the triage view sets the input element names dynamically
 //based on the vital name entry in the database, but this
 //ViewModel does NOT.
-public class CreateViewModelPost {
+public class IndexViewModelPost {
     //begin patient
     private String firstName;
     private String lastName;
@@ -30,9 +30,6 @@ public class CreateViewModelPost {
     private String chiefComplaint;
     private Integer weeksPregnant;
     private Boolean isPregnant;
-
-    public CreateViewModelPost() {
-    }
 
     public Boolean getDeletePhoto() { return deletePhoto; }
 

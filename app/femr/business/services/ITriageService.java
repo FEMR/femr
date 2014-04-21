@@ -5,20 +5,21 @@ import femr.common.models.IPatient;
 import femr.common.models.IPatientEncounter;
 import femr.common.models.IPatientEncounterVital;
 import femr.common.models.IPhoto;
+import femr.ui.models.data.PatientEncounterItem;
+import femr.ui.models.data.PatientItem;
+import femr.ui.models.data.VitalItem;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ITriageService {
-    ServiceResponse<IPatient> createPatient(IPatient patient);
-    ServiceResponse<IPatient> setPhotoId(int id, int photoId);
+    ServiceResponse<PatientItem> findPatientAndUpdateSex(int id, String sex);
+    ServiceResponse<List<VitalItem>> findAllVitalItems();
 
-    ServiceResponse<IPatientEncounter> createPatientEncounter(IPatientEncounter patientEncounter);
-
+    ServiceResponse<PatientItem> createPatient(PatientItem patient);
+    ServiceResponse<PatientEncounterItem> createPatientEncounter(PatientEncounterItem patientEncounterItem);
     ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String,Float> patientEncounterVital, int userId, int encounterId);
-
-    ServiceResponse<IPatient> updatePatient(IPatient patient);
+    ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String,Float> patientEncounterVital, int userId, int encounterId);
 
     public ServiceResponse<String> getDateOfTriageCheckIn(int encounterId);
-
 }

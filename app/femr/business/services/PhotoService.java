@@ -2,6 +2,7 @@ package femr.business.services;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.google.inject.Provider;
 import com.typesafe.config.ConfigFactory;
 
 import javax.imageio.ImageIO;
@@ -16,6 +17,7 @@ import femr.common.models.*;
 import com.google.inject.Inject;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
+import femr.ui.models.data.PatientItem;
 import femr.ui.models.medical.CreateViewModelPost;
 import play.mvc.Http.MultipartFormData.FilePart;
 
@@ -26,15 +28,18 @@ public class PhotoService implements IPhotoService {
     private IRepository<IPhoto> patientPhotoRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
+    private Provider<IPatient> patientProvider;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
-                        IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository)
+                        IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
+                        Provider<IPatient> patientProvider)
     {
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
+        this.patientProvider = patientProvider;
 
         this.Init();
     }
@@ -247,14 +252,16 @@ public class PhotoService implements IPhotoService {
      *  deleteFlag == true, this method will delete the photo. Else,
      *  it will update/create the patient photo
      * @param img
-     * @param patient
+     * @param patientItem
      * @param coords
      * @param deleteFlag
      * @return Returns the new image Id on Save/Update, else null
      */
     @Override
-    public ServiceResponse<Boolean> HandlePatientPhoto(File img, IPatient patient, String coords, Boolean deleteFlag)
+    public ServiceResponse<Boolean> HandlePatientPhoto(File img, PatientItem patientItem, String coords, Boolean deleteFlag)
     {
+        IPatient patient = populatePatient(patientItem);
+
         String sFileName = "Patient_" + patient.getId() + ".jpg";
         Integer photoId;
 
@@ -465,6 +472,23 @@ public class PhotoService implements IPhotoService {
         }
 
         return srlst;
+    }
+
+    private IPatient populatePatient(PatientItem patient){
+        //create an IPatient from a PatientItem
+        //includes the ID
+        IPatient newPatient = patientProvider.get();
+        newPatient.setId(newPatient.getId());
+        newPatient.setUserId(patient.getUserId());
+        newPatient.setFirstName(patient.getFirstName());
+        newPatient.setLastName(patient.getLastName());
+        newPatient.setAge(patient.getBirth());
+        newPatient.setSex(patient.getSex());
+        newPatient.setAddress(patient.getAddress());
+        newPatient.setCity(patient.getCity());
+        newPatient.setPhotoId(patient.getPhotoId());
+
+        return newPatient;
     }
 
 }

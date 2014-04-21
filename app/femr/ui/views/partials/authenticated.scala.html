@@ -19,7 +19,7 @@
 <div class="navbar-collapse collapse">
   <ul class="nav navbar-nav">
     @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
-      <li><a href="@TriageController.createGet()">Triage</a></li>
+      <li><a href="@TriageController.indexGet()">Triage</a></li>
       <li><a href="@MedicalController.indexGet()">Medical</a></li>
       <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
     }

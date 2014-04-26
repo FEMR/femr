@@ -4,16 +4,15 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
+import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MedicalService implements IMedicalService {
 
@@ -25,7 +24,8 @@ public class MedicalService implements IMedicalService {
     private IRepository<IHpiField> hpiFieldRepository;
     private IRepository<IPmhField> pmhFieldRepository;
     private IRepository<ITreatmentField> treatmentFieldRepository;
-    private IRepository<IVital> vitalFieldRepository;
+    private IRepository<IVital> vitalRepository;
+    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
 
     @Inject
@@ -36,8 +36,9 @@ public class MedicalService implements IMedicalService {
                           IRepository<IHpiField> hpiFieldRepository,
                           IRepository<IPmhField> pmhFieldRepository,
                           IRepository<ITreatmentField> treatmentFieldRepository,
-                          IRepository<IVital> vitalFieldRepository,
-                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository) {
+                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
+                          IRepository<IVital> vitalRepository,
+                          Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
         this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
@@ -45,8 +46,9 @@ public class MedicalService implements IMedicalService {
         this.hpiFieldRepository = hpiFieldRepository;
         this.pmhFieldRepository = pmhFieldRepository;
         this.treatmentFieldRepository = treatmentFieldRepository;
-        this.vitalFieldRepository = vitalFieldRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
+        this.vitalRepository = vitalRepository;
+        this.patientEncounterVitalProvider = patientEncounterVitalProvider;
     }
 
     @Override
@@ -236,6 +238,42 @@ public class MedicalService implements IMedicalService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+        IPatientEncounterVital patientEncounterVital;
+        IVital vital;
+
+        ExpressionList<Vital> query;
+        String currentTime = dateUtils.getCurrentDateTimeString();
+
+        for (String key : patientEncounterVitalMap.keySet()) {
+            if (patientEncounterVitalMap.get(key) != null) {
+                query = getVitalQuery().where().eq("name", key);
+                vital = vitalRepository.findOne(query);
+
+                patientEncounterVital = patientEncounterVitalProvider.get();
+                patientEncounterVital.setPatientEncounterId(encounterId);
+                patientEncounterVital.setUserId(userId);
+                patientEncounterVital.setDateTaken(currentTime);
+                patientEncounterVital.setVital(vital);
+                patientEncounterVital.setVitalValue(patientEncounterVitalMap.get(key));
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+
+        List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
+
+        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
+
+        if (newPatientEncounterVitals != null) {
+            response.setResponseObject(newPatientEncounterVitals);
+        } else {
+            response.addError("", "patient encounter vitals could not be saved to database");
+        }
+        return response;
+    }
+
     private Query<PatientEncounterHpiField> getPatientEncounterHpiField() {
         return Ebean.find(PatientEncounterHpiField.class);
     }
@@ -264,7 +302,7 @@ public class MedicalService implements IMedicalService {
         return Ebean.find(PatientEncounterPmhField.class);
     }
 
-    private Query<PatientEncounterVital> getPatientEncounterVitalQuery() {
-        return Ebean.find(PatientEncounterVital.class);
+    private Query<Vital> getVitalQuery() {
+        return Ebean.find(Vital.class);
     }
 }

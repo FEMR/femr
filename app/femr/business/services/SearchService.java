@@ -78,44 +78,6 @@ public class SearchService implements ISearchService {
     }
 
     @Override
-    public ServiceResponse<PatientItem> findPatientItemById(Integer id) {
-        ServiceResponse<PatientItem> response = new ServiceResponse<>();
-        if (id == null) {
-            response.addError("id", "null");
-            return response;
-        }
-
-        ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
-        IPatient savedPatient = patientRepository.findOne(query);
-
-        if (savedPatient == null) {
-            response.addError("id", "id does not exist");
-        } else {
-            PatientItem patientItem = new PatientItem();
-
-            ExpressionList<Photo> photoQuery = Ebean.find(Photo.class).where().eq("id", savedPatient.getId());
-            IPhoto savedPhoto = photoRepository.findOne(photoQuery);
-            if (savedPhoto != null) {
-                patientItem.setPathToPhoto(ConfigFactory.load().getString("photos.path") + savedPhoto.getFilePath());
-            } else {
-                patientItem.setPathToPhoto("");
-            }
-            patientItem.setId(savedPatient.getId());
-            patientItem.setFirstName(savedPatient.getFirstName());
-            patientItem.setLastName(savedPatient.getLastName());
-            patientItem.setAddress(savedPatient.getAddress());
-            patientItem.setCity(savedPatient.getCity());
-            patientItem.setAge(dateUtils.getAge(savedPatient.getAge()));
-            patientItem.setBirth(savedPatient.getAge());
-            patientItem.setSex(savedPatient.getSex());
-            patientItem.setPhotoId(savedPatient.getPhotoId());
-
-            response.setResponseObject(patientItem);
-        }
-        return response;
-    }
-
-    @Override
     public ServiceResponse<IPatientEncounter> findPatientEncounterById(int id) {
         ExpressionList<PatientEncounter> query = getPatientEncounterQuery().where().eq("id", id);
         IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);

@@ -98,13 +98,9 @@ public class MedicalController extends Controller {
             }
             return ok(index.render(currentUserSession, message, id));
         } else {
-            ServiceResponse<String> dateResponseString = triageService.getDateOfTriageCheckIn(patientEncounter.getId());
-            if (dateResponseString.hasErrors()) {
-                message = "A fatal error has been encountered. Please try again.";
-                return ok(index.render(currentUserSession, message, 0));
-            }
 
-            String str = dateResponseString.getResponseObject();
+            String str = patientEncounter.getDateOfVisit();
+
             int year = Integer.parseInt(str.substring(0, 4));
             int month = Integer.parseInt(str.substring(5, 7));
             int day = Integer.parseInt(str.substring(8, 10));
@@ -284,7 +280,7 @@ public class MedicalController extends Controller {
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
 
         Map<String, Float> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel);
-        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalsServiceResponse = triageService.createPatientEncounterVitals(patientEncounterVitals, currentUser.getId(), patientEncounter.getId());
+        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalsServiceResponse = medicalService.createPatientEncounterVitals(patientEncounterVitals, currentUser.getId(), patientEncounter.getId());
         if (patientEncounterVitalsServiceResponse.hasErrors()){
             return internalServerError();
         }

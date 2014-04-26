@@ -91,7 +91,7 @@ public class TriageController extends Controller {
         //retrieve patient id from query string and search for the patient
         //error will be returned from business layer if there is anything
         //wrong with the query string and/or patient
-        ServiceResponse<PatientItem> patientServiceResponse = searchService.findPatientItemById(
+        ServiceResponse<PatientItem> patientServiceResponse = triageService.findPatientItemById(
                 Integer.valueOf(
                         request().getQueryString("id").trim()
                 )

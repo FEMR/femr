@@ -24,7 +24,7 @@ public interface IMedicalService {
     ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields);
     ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields);
     ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
-
+    ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String,Float> patientEncounterVital, int userId, int encounterId);
     ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions);
 
     boolean hasPatientBeenCheckedInByPhysician(int encounterId);

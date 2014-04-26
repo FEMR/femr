@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ISearchService {
-    ServiceResponse<PatientItem> findPatientItemById(Integer id);
+
     ServiceResponse<IPatient> findPatientById(int id);
 
     ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);

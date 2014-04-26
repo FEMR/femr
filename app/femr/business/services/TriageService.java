@@ -1,48 +1,51 @@
 package femr.business.services;
 
 import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
-import femr.data.models.Patient;
-import femr.data.models.PatientEncounter;
-import femr.data.models.PatientEncounterVital;
-import femr.data.models.Vital;
+import femr.data.models.*;
+import femr.ui.controllers.routes;
 import femr.ui.models.data.PatientEncounterItem;
 import femr.ui.models.data.PatientItem;
 import femr.ui.models.data.VitalItem;
-import femr.ui.models.triage.IndexViewModelPost;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Triage Service has been refactored alongside the Triage Controller
+ * in order to be exposed to UI elements and decrease the amount
+ * of business logic being performed in the Triage Controller.
+ */
 public class TriageService implements ITriageService {
 
+    //repositories
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounter> patientEncounterRepository;
     private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
+    private IRepository<IVital> vitalRepository;
+    private IRepository<IPhoto> photoRepository;
+    //providers
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private Provider<IVital> vitalProvider;
     private Provider<IPatient> patientProvider;
-    private IRepository<IVital> vitalRepository;
     private Provider<IPatientEncounter> patientEncounterProvider;
 
     @Inject
     public TriageService(IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitaRepository,
-                         Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                          IRepository<IVital> vitalRepository,
+                         IRepository<IPhoto> photoRepository,
+                         Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                          Provider<IVital> vitalProvider,
                          Provider<IPatient> patientProvider,
                          Provider<IPatientEncounter> patientEncounterProvider) {
@@ -54,8 +57,12 @@ public class TriageService implements ITriageService {
         this.vitalProvider = vitalProvider;
         this.patientProvider = patientProvider;
         this.patientEncounterProvider = patientEncounterProvider;
+        this.photoRepository = photoRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<PatientItem> findPatientAndUpdateSex(int id, String sex) {
         ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
@@ -78,9 +85,7 @@ public class TriageService implements ITriageService {
     }
 
     /**
-     * Gets vital items, but only the names
-     *
-     * @return Returns a list of all vitals without values
+     * {@inheritDoc}
      */
     @Override
     public ServiceResponse<List<VitalItem>> findAllVitalItems() {
@@ -101,6 +106,9 @@ public class TriageService implements ITriageService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<PatientItem> createPatient(PatientItem patient) {
         IPatient newPatient = populatePatient(patient);
@@ -119,6 +127,9 @@ public class TriageService implements ITriageService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<PatientEncounterItem> createPatientEncounter(PatientEncounterItem patientEncounterItem) {
         IPatientEncounter newPatientEncounter = populatePatientEncounter(patientEncounterItem);
@@ -134,42 +145,11 @@ public class TriageService implements ITriageService {
         return response;
     }
 
-    @Override
-    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        IPatientEncounterVital patientEncounterVital;
-        IVital vital;
 
-        ExpressionList<Vital> query;
-        String currentTime = dateUtils.getCurrentDateTimeString();
 
-        for (String key : patientEncounterVitalMap.keySet()) {
-            if (patientEncounterVitalMap.get(key) != null) {
-                query = getVitalQuery().where().eq("name", key);
-                vital = vitalRepository.findOne(query);
-
-                patientEncounterVital = patientEncounterVitalProvider.get();
-                patientEncounterVital.setPatientEncounterId(encounterId);
-                patientEncounterVital.setUserId(userId);
-                patientEncounterVital.setDateTaken(currentTime);
-                patientEncounterVital.setVital(vital);
-                patientEncounterVital.setVitalValue(patientEncounterVitalMap.get(key));
-                patientEncounterVitals.add(patientEncounterVital);
-            }
-        }
-
-        List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
-
-        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
-
-        if (newPatientEncounterVitals != null) {
-            response.setResponseObject(newPatientEncounterVitals);
-        } else {
-            response.addError("", "patient encounter vitals could not be saved to database");
-        }
-        return response;
-    }
-
+    /**
+     *  {@inheritDoc}
+     */
     @Override
     public ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
@@ -213,26 +193,48 @@ public class TriageService implements ITriageService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<String> getDateOfTriageCheckIn(int encounterId) {
-        ExpressionList<PatientEncounter> query1 = getPatientEncounter().where().eq("id", encounterId);
-        List<? extends IPatientEncounter> patientEncounter = patientEncounterRepository.find(query1);
+    public ServiceResponse<PatientItem> findPatientItemById(Integer id) {
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+        if (id == null) {
+            response.addError("id", "null");
+            return response;
+        }
 
-        ExpressionList<PatientEncounterVital> query2 = getPatientEncounterVital().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query2);
+        ExpressionList<Patient> query = getPatientQuery().where().eq("id", id);
+        IPatient savedPatient = patientRepository.findOne(query);
 
-        ServiceResponse<String> response = new ServiceResponse<>();
-
-        if (patientEncounter.size() > 0) {
-            response.setResponseObject(patientEncounter.get(0).getDateOfVisit());
-        } else if (patientEncounterVitals.size() > 0) {
-            response.setResponseObject(patientEncounterVitals.get(0).getDateTaken());
+        if (savedPatient == null) {
+            response.addError("id", "id does not exist");
         } else {
-            response.addError("values", "That patient has no triage record");
+            PatientItem patientItem = new PatientItem();
+
+            ExpressionList<Photo> photoQuery = Ebean.find(Photo.class).where().eq("id", savedPatient.getId());
+            IPhoto savedPhoto = photoRepository.findOne(photoQuery);
+            if (savedPhoto != null) {
+                patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(id, false).toString());
+            } else {
+                patientItem.setPathToPhoto("");
+            }
+            patientItem.setId(savedPatient.getId());
+            patientItem.setFirstName(savedPatient.getFirstName());
+            patientItem.setLastName(savedPatient.getLastName());
+            patientItem.setAddress(savedPatient.getAddress());
+            patientItem.setCity(savedPatient.getCity());
+            patientItem.setAge(dateUtils.getAge(savedPatient.getAge()));
+            patientItem.setBirth(savedPatient.getAge());
+            patientItem.setSex(savedPatient.getSex());
+            patientItem.setPhotoId(savedPatient.getPhotoId());
+
+            response.setResponseObject(patientItem);
         }
         return response;
     }
 
+    //region **ui <-> data converters**
     private IPatient populatePatient(PatientItem patient) {
         //create an IPatient from a PatientItem
         //everything except the ID
@@ -248,7 +250,6 @@ public class TriageService implements ITriageService {
 
         return newPatient;
     }
-
     private PatientItem populatePatientItem(IPatient patient) {
         PatientItem patientItem = new PatientItem();
         patientItem.setAddress(patient.getAddress());
@@ -264,7 +265,6 @@ public class TriageService implements ITriageService {
         //also set path to photo?
         return patientItem;
     }
-
     private IPatientEncounter populatePatientEncounter(PatientEncounterItem patientEncounterItem) {
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
         patientEncounter.setPatientId(patientEncounterItem.getPatientId());
@@ -275,22 +275,15 @@ public class TriageService implements ITriageService {
         patientEncounter.setIsPregnant(patientEncounterItem.getIsPregnant());
         return patientEncounter;
     }
+    //endregion
 
-
+    //region **Query providers**
     private Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
     }
-
-    private Query<PatientEncounter> getPatientEncounter() {
-        return Ebean.find(PatientEncounter.class);
-    }
-
-    private Query<PatientEncounterVital> getPatientEncounterVital() {
-        return Ebean.find(PatientEncounterVital.class);
-    }
-
     private Query<Vital> getVitalQuery() {
         return Ebean.find(Vital.class);
     }
+    //endregion
 
 }

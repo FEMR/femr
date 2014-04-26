@@ -27,4 +27,14 @@ public class MockTreatmentField implements ITreatmentField {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public Boolean getDeleted() {
+        return null;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+
+    }
 }

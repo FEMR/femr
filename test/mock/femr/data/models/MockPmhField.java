@@ -21,6 +21,16 @@ public class MockPmhField implements IPmhField {
 
     }
 
+    @Override
+    public Boolean getDeleted() {
+        return null;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+
+    }
+
     public void setId(int id) {
         this.id = id;
     }

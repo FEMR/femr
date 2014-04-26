@@ -2,6 +2,7 @@ package mock.femr.data.models;
 
 import femr.common.models.IRole;
 import femr.common.models.IUser;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -72,5 +73,35 @@ public class MockUser implements IUser {
     @Override
     public void addRole(IRole role) {
         roles.add(role);
+    }
+
+    @Override
+    public DateTime getLastLogin() {
+        return null;
+    }
+
+    @Override
+    public void setLastLogin(DateTime lastLogin) {
+
+    }
+
+    @Override
+    public Boolean getDeleted() {
+        return null;
+    }
+
+    @Override
+    public void setDeleted(Boolean deleted) {
+
+    }
+
+    @Override
+    public Boolean getPasswordReset() {
+        return null;
+    }
+
+    @Override
+    public void setPasswordReset(Boolean passwordReset) {
+
     }
 }

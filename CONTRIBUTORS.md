@@ -10,3 +10,6 @@ These people have contributed to fEMR's design and implementation:
 * [Nick Rushak](https://github.com/njr44)
 * [Evan Michaux](https://github.com/emichaux)
 * [Priyesh Pandya](https://github.com/priyeshp)
+* [Danny Reinheimer](https://github.com/codeitandloadit)
+* [Cohen Carlisle](https://github.com/Cohen-Carlisle)
+* [Brandon Dane](https://github.com/b6025)

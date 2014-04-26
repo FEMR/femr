@@ -93,4 +93,14 @@ public class MockPatient implements IPatient {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public Integer getPhotoId() {
+        return null;
+    }
+
+    @Override
+    public void setPhotoId(Integer id) {
+
+    }
 }

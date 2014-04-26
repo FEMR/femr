@@ -42,6 +42,11 @@ public class MockUserService implements IUserService {
     }
 
     @Override
+    public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword) {
+        return null;
+    }
+
+    @Override
     public List<? extends IRole> findRolesForUser(int id) {
         return null;
     }

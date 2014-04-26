@@ -38,36 +38,36 @@
 #### Create a branch to work on:
 
 #####1. features:
-    git checkout master
+    git checkout development
     git checkout -b feature-issue#-featureName
 
 #####2. bugs:
-    git checkout master
+    git checkout development
     git checkout -b bug-issue#-bugName
 
 
-#### Sync master branch (fork) with master branch (main repository):
+#### Sync development branch (fork) with development branch (main repository):
 
 #####1. make sure you have a remote pointing upstream:
     git remote
 
 #####2. if you don't, add one:
-    git remote add upstream https://github.com/kevinzurek/femr.git
+    git remote add upstream https://github.com/femr/femr.git
 
 #####3. sync:
-    git checkout master
-    git pull upstream master
-    git push origin master
+    git checkout development
+    git pull upstream development
+    git push origin development
 
 
 #### Prepare to send a pull request:
 
-    git checkout master
-    git pull upstream master
+    git checkout development
+    git pull upstream development
     git checkout branchName
-    git rebase master
+    git rebase development
 
-Rebasing will update your branch with the master branch.
+Rebasing will update your branch with the development branch.
 You can find more info on rebasing [here](http://git-scm.com/book/ch3-6.html).
 
 #### Sending a Pull Request from GitHub
@@ -76,15 +76,15 @@ Information on doing pull requests can be found [here](https://help.github.com/a
 
 #### If your Pull Request is Rejected
 
-    git checkout master
-    git pull upstream master
+    git checkout development
+    git pull upstream development
     git checkout branchName
-    git rebase master
+    git rebase development
     ~~~fix issues~~~
-    git checkout master
-    git pull upstream master
+    git checkout development
+    git pull upstream development
     git checkout branchName
-    git rebase master
+    git rebase development
     git push origin branchName
 
 #### Deleting your branch:

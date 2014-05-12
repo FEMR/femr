@@ -10,7 +10,6 @@ public class MockPatientEncounter implements IPatientEncounter {
     private String dateOfVisit = "";
     private String chiefComplaint = "";
     private Integer weeksPregnant = 0;
-    private Boolean isPregnant = false;
 
     @Override
     public int getId() {
@@ -65,16 +64,6 @@ public class MockPatientEncounter implements IPatientEncounter {
     @Override
     public void setWeeksPregnant(Integer weeksPregnant) {
         this.weeksPregnant = weeksPregnant;
-    }
-
-    @Override
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    @Override
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
     }
 }
 

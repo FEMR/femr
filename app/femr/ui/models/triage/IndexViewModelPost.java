@@ -29,7 +29,6 @@ public class IndexViewModelPost {
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
-    private Boolean isPregnant;
 
     public Boolean getDeletePhoto() { return deletePhoto; }
 
@@ -172,14 +171,6 @@ public class IndexViewModelPost {
 
     public void setWeeksPregnant(Integer weeksPregnant) {
         this.weeksPregnant = weeksPregnant;
-    }
-
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
     }
 
     public Integer getGlucose() {

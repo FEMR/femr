@@ -1,16 +1,46 @@
 package femr.business.services;
 
+import femr.business.dtos.PrescriptionItem;
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
+import femr.business.dtos.VitalItem;
+import femr.common.models.IMedication;
 import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterTreatmentField;
-import femr.common.models.IPatientPrescription;
 
 import java.util.List;
 
 public interface IPharmacyService {
 
-    ServiceResponse<IPatientPrescription> findPatientPrescription(int id, String name);
 
-    ServiceResponse<IPatientPrescription> updatePatientPrescription(IPatientPrescription patientPrescription);
+    /**
+     * Gets vitals necessary for pharmacy - heightFeet, heightInches, weight
+     *
+     * @param encounterId encounter id
+     * @return list of most recent vitals for pharmacy
+     */
+    public ServiceResponse<List<VitalItem>> findPharmacyVitalItems(int encounterId);
+
+    /**
+     * Checks a patient into pharmacy (updates date_of_pharmacy_visit and identifies the user)
+     *
+     * @param encounterId current encounter
+     * @param userId      id of the pharmacist
+     * @return updated patient encounter
+     */
+    ServiceResponse<IPatientEncounter> checkPatientIn(int encounterId, int userId);
+
+    /**
+     * Create a new prescription and replace an old one with it
+     *
+     * @param prescriptionItem new prescription to replace the old one
+     * @param oldScriptId      id of the old prescription that is being replaced
+     * @return updated new prescription
+     */
+    ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId);
+
+    /**
+     * Retrieve all medication names for typeahead
+     *
+     * @return
+     */
+    ServiceResponse<List<String>> findAllMedications();
 }

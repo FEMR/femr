@@ -1,6 +1,6 @@
 package femr.ui.models.superuser;
 
-import femr.ui.models.data.custom.CustomFieldItem;
+import femr.business.dtos.TabFieldItem;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class ContentViewModelGet {
     private String name;
-    private List<CustomFieldItem> currentCustomFieldItemList;
-    private List<CustomFieldItem> removedCustomFieldItemList;
+    private List<TabFieldItem> currentCustomFieldItemList;
+    private List<TabFieldItem> removedCustomFieldItemList;
     private List<String> customFieldTypes;
     private List<String> customFieldSizes;
 
@@ -22,22 +22,6 @@ public class ContentViewModelGet {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<CustomFieldItem> getCurrentCustomFieldItemList() {
-        return currentCustomFieldItemList;
-    }
-
-    public void setCurrentCustomFieldItemList(List<CustomFieldItem> currentCustomFieldItemList) {
-        this.currentCustomFieldItemList = currentCustomFieldItemList;
-    }
-
-    public List<CustomFieldItem> getRemovedCustomFieldItemList() {
-        return removedCustomFieldItemList;
-    }
-
-    public void setRemovedCustomFieldItemList(List<CustomFieldItem> removedCustomFieldItemList) {
-        this.removedCustomFieldItemList = removedCustomFieldItemList;
     }
 
     public List<String> getCustomFieldTypes() {
@@ -54,5 +38,21 @@ public class ContentViewModelGet {
 
     public void setCustomFieldSizes(List<String> customFieldSizes) {
         this.customFieldSizes = customFieldSizes;
+    }
+
+    public List<TabFieldItem> getCurrentCustomFieldItemList() {
+        return currentCustomFieldItemList;
+    }
+
+    public void setCurrentCustomFieldItemList(List<TabFieldItem> currentCustomFieldItemList) {
+        this.currentCustomFieldItemList = currentCustomFieldItemList;
+    }
+
+    public List<TabFieldItem> getRemovedCustomFieldItemList() {
+        return removedCustomFieldItemList;
+    }
+
+    public void setRemovedCustomFieldItemList(List<TabFieldItem> removedCustomFieldItemList) {
+        this.removedCustomFieldItemList = removedCustomFieldItemList;
     }
 }

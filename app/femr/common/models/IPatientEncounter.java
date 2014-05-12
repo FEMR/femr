@@ -1,5 +1,7 @@
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 public interface IPatientEncounter {
     int getId();
 
@@ -11,10 +13,6 @@ public interface IPatientEncounter {
 
     void setUserId(int userId);
 
-    String getDateOfVisit();
-
-    void setDateOfVisit(String dateOfVisit);
-
     String getChiefComplaint();
 
     void setChiefComplaint(String chiefComplaint);
@@ -23,7 +21,23 @@ public interface IPatientEncounter {
 
     void setWeeksPregnant(Integer weeksPregnant);
 
-    Boolean getIsPregnant();
+    DateTime getDateOfVisit();
 
-    void setIsPregnant(Boolean isPregnant);
+    void setDateOfVisit(DateTime dateOfVisit);
+
+    DateTime getDateOfMedicalVisit();
+
+    void setDateOfMedicalVisit(DateTime dateOfMedicalVisit);
+
+    DateTime getDateOfPharmacyVisit();
+
+    void setDateOfPharmacyVisit(DateTime dateOfPharmacyVisit);
+
+    IUser getDoctor();
+
+    void setDoctor(IUser doctor);
+
+    IUser getPharmacist();
+
+    void setPharmacist(IUser pharmacist);
 }

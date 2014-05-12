@@ -1,273 +1,262 @@
 package femr.ui.controllers;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
+import femr.business.dtos.*;
 import femr.business.services.*;
-import femr.common.models.*;
+import femr.common.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.pharmacy.CreateViewModelGet;
-import femr.ui.models.pharmacy.CreateViewModelPost;
+import femr.ui.models.pharmacy.*;
 import femr.ui.views.html.pharmacies.index;
-import femr.ui.views.html.pharmacies.populated;
-import femr.util.calculations.dateUtils;
+import femr.ui.views.html.pharmacies.edit;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 import play.data.Form;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PharmaciesController extends Controller {
-    private final Form<CreateViewModelPost> createViewModelPostForm = Form.form(CreateViewModelPost.class);
-    private Provider<IPatientPrescription> patientPrescriptionProvider;
+    private final Form<EditViewModelPost> populatedViewModelPostForm = Form.form(EditViewModelPost.class);
     private ISessionService sessionService;
     private ISearchService searchService;
     private IPharmacyService pharmacyService;
-    private IMedicalService medicalService;
 
     @Inject
     public PharmaciesController(IPharmacyService pharmacyService,
-                                IMedicalService medicalService,
                                 ISessionService sessionService,
-                                ISearchService searchService,
-                                Provider<IPatientPrescription> patientPrescriptionProvider) {
+                                ISearchService searchService) {
         this.pharmacyService = pharmacyService;
-        this.medicalService = medicalService;
         this.sessionService = sessionService;
         this.searchService = searchService;
-        this.patientPrescriptionProvider = patientPrescriptionProvider;
     }
 
-    public Result index() {
+    public Result indexGet() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
         return ok(index.render(currentUserSession, null, 0));
     }
 
-    public Result typeaheadJSONGet() {
-        ObjectNode result = Json.newObject();
-
-        ServiceResponse<List<? extends IMedication>> medicationServiceResponse = searchService.findAllMedications();
-        if (medicationServiceResponse.hasErrors()) {
-            return ok(result);
-        }
-        List<? extends IMedication> medications = medicationServiceResponse.getResponseObject();
-
-        for (int medication = 0; medication < medications.size(); medication++) {
-            result.put("medicine" + medication, medications.get(medication).getName());
-        }
-
-        return ok(result);
-    }
-
-    public Result createGet() {
-        String s_id = request().getQueryString("id");
-
-        //needs to validate an id was received from the query string
-        s_id = s_id.trim();
-
-        Integer id = Integer.parseInt(s_id);
-        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+    /**
+     * Validates the patient ID that the user entered
+     *
+     * @return redirect to editGet
+     */
+    public Result indexPost() {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-        String message;
 
-        //return to index if error finding a patient
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(id);
-        if (patientServiceResponse.hasErrors()) {
-            message = "That patient can not be found.";
-            return ok(index.render(currentUserSession, message, 0));
+        String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
+        ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
+        if (idQueryStringResponse.hasErrors()) {
+            return ok(index.render(currentUserSession, idQueryStringResponse.getErrors().get(""), 0));
         }
+        Integer patientId = idQueryStringResponse.getResponseObject();
 
-        IPatient patient = patientServiceResponse.getResponseObject();
-        viewModelGet.setpID(patient.getId());
-        viewModelGet.setFirstName(patient.getFirstName());
-        viewModelGet.setLastName(patient.getLastName());
-        viewModelGet.setAge(dateUtils.getAge(patient.getAge()));
-        viewModelGet.setSex(patient.getSex());
-
-        //return to index if error finding a patient encounter
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
-        if (patientEncounterServiceResponse.hasErrors()) {
-            message = "An error has occured.";
-            return ok(index.render(currentUserSession, message, 0));
+        //get the patient's encounter
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        if (patientEncounterItemServiceResponse.hasErrors()) {
+            return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
         }
-
-        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
-        viewModelGet.setWeeksPregnant(patientEncounter.getWeeksPregnant());
-
-
-        //set relevant vital information
-        ServiceResponse<List<? extends IPatientEncounterVital>> patientEncounterVitalServiceResponse;
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightFeet");
-        if (!patientEncounterVitalServiceResponse.hasErrors()) {
-            if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
-                viewModelGet.setHeightFeet(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue().intValue());
-            }
-        }
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "heightInches");
-        if (!patientEncounterServiceResponse.hasErrors()) {
-            if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
-                viewModelGet.setHeightinches(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue().intValue());
-            }
-        }
-        patientEncounterVitalServiceResponse = searchService.findPatientEncounterVitals(patientEncounter.getId(), "weight");
-        if (!patientEncounterServiceResponse.hasErrors()) {
-            if (patientEncounterVitalServiceResponse.getResponseObject() != null) {
-                viewModelGet.setWeight(patientEncounterVitalServiceResponse.getResponseObject().get(0).getVitalValue());
-            }
-        }
-
-
-        //find patient prescriptions
-        ServiceResponse<List<? extends IPatientPrescription>> patientPrescriptionsServiceResponse = searchService.findPrescriptionsByEncounterId(patientEncounter.getId());
-        if (patientPrescriptionsServiceResponse.hasErrors()) {
-            message = "No prescriptions exist for that patient.";
-            return ok(index.render(currentUserSession, message, 0));
-        }
+        PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
         //check for encounter closed
-        DateTime dateNow = dateUtils.getCurrentDateTime();
-        DateTime dateTaken;
-        ServiceResponse<DateTime> dateResponse = medicalService.getDateOfCheckIn(patientEncounter.getId());
-        if (dateResponse.hasErrors()) {
-            message = "A fatal error has been encountered. Please try again.";
-            return ok(index.render(currentUserSession, message, 0));
-        }
-        dateTaken = dateResponse.getResponseObject();
-        if (!(dateNow.dayOfYear().equals(dateTaken.dayOfYear()) && dateNow.year().equals(dateTaken.year()))) {
-            message = "That patient's encounter has been closed.";
-            return ok(index.render(currentUserSession, message, 0));
+        if (patientEncounterItem.getIsClosed()) {
+            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
         }
 
-        //continue find patient prescriptions
-        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
-        List<String> dynamicViewMedications = new ArrayList<>();
+        //ensure prescriptions exist for that patient
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItemServiceResponse.getResponseObject().getId());
+        if (prescriptionItemsResponse.hasErrors()) {
+            return internalServerError();
 
-        for (int filledPrescription = 0; filledPrescription < patientPrescriptions.size(); filledPrescription++) {
-            if (patientPrescriptions.get(filledPrescription).getReplaced() != true) {
-                dynamicViewMedications.add(patientPrescriptions.get(filledPrescription).getMedicationName());
-            }
-        }
-        //this should probably be left as a List or ArrayList
-        String[] viewMedications = new String[dynamicViewMedications.size()];
-        viewMedications = dynamicViewMedications.toArray(viewMedications);
-        viewModelGet.setMedications(viewMedications);
-
-        //find patient problems, they don't have to exist.
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> patientEncounterProblemsServiceResponse = searchService.findProblemsByEncounterId(patientEncounter.getId());
-        List<? extends IPatientEncounterTreatmentField> patientEncounterProblems = new ArrayList<>();
-        List<String> dynamicViewProblems = new ArrayList<>();
-
-        if (patientEncounterProblemsServiceResponse.hasErrors()) {
-            //error = true;
-        } else {
-            patientEncounterProblems = patientEncounterProblemsServiceResponse.getResponseObject();
+        } else if (prescriptionItemsResponse.getResponseObject().size() < 1) {
+            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
         }
 
-        if (patientEncounterProblems.size() > 0) {
-            for (int problem = 0; problem < patientEncounterProblems.size(); problem++) {
-                dynamicViewProblems.add(patientEncounterProblems.get(problem).getTreatmentFieldValue());
-            }
-        }
-
-        String[] viewProblems = new String[dynamicViewProblems.size()];
-        viewProblems = dynamicViewProblems.toArray(viewProblems);
-        viewModelGet.setProblems(viewProblems);
-
-        return ok(populated.render(currentUserSession, viewModelGet, false));
+        return redirect(routes.PharmaciesController.editGet(patientId));
     }
 
-    public Result createPost(int id) {
-        CreateViewModelPost createViewModelPost = createViewModelPostForm.bindFromRequest().get();
-        ServiceResponse<IPatientEncounter> patientEncounterServiceResponse = searchService.findCurrentEncounterByPatientId(id);
-        IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+    public Result editGet(int patientId) {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        EditViewModelGet viewModelGet = new EditViewModelGet();
+        String message;
 
-        ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientEncounter.getPatientId());
-        if (patientServiceResponse.hasErrors()) {
+        //get the patient item
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
+        if (patientItemServiceResponse.hasErrors()) {
+            message = patientItemServiceResponse.getErrors().get("");
+            return ok(index.render(currentUserSession, message, 0));
+        } else {
+            viewModelGet.setPatient(patientItemServiceResponse.getResponseObject());
+        }
+
+
+        //get the patient encounter item
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        if (patientEncounterItemServiceResponse.hasErrors()) {
+            message = patientEncounterItemServiceResponse.getErrors().get("");
+            return ok(index.render(currentUserSession, message, 0));
+        }
+        PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
+        viewModelGet.setPatientEncounterItem(patientEncounterItem);
+
+        //get vital items
+        ServiceResponse<List<VitalItem>> vitalItemsServiceResponse = pharmacyService.findPharmacyVitalItems(patientEncounterItem.getId());
+        if (vitalItemsServiceResponse.hasErrors()) {
+            return internalServerError();
+        } else {
+            for (VitalItem vi : vitalItemsServiceResponse.getResponseObject()) {
+                //consider using a command pattern?
+                switch (vi.getName()) {
+                    case "heightFeet":
+                        viewModelGet.setHeightFeet(vi.getValue().intValue());
+                        break;
+                    case "heightInches":
+                        viewModelGet.setHeightinches(vi.getValue().intValue());
+                        break;
+                    case "weight":
+                        viewModelGet.setWeight(vi.getValue());
+                        break;
+                }
+            }
+        }
+
+        //find patient prescriptions, they do have to exist
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItem.getId());
+        if (prescriptionItemServiceResponse.hasErrors()) {
             return internalServerError();
         }
-        IPatient patient = patientServiceResponse.getResponseObject();
+        viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
+
+        //find patient problems, they do not have to exist.
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = searchService.findProblemItems(patientEncounterItem.getId());
+        if (problemItemServiceResponse.hasErrors()) {
+            //no big deal
+        } else {
+            viewModelGet.setProblems(problemItemServiceResponse.getResponseObject());
+        }
+
+        return ok(edit.render(currentUserSession, viewModelGet, false));
+    }
+
+    public Result editPost(int id) {
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        EditViewModelPost createViewModelPost = populatedViewModelPostForm.bindFromRequest().get();
+
+        //get patient encounter
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(id);
+        if (patientEncounterItemServiceResponse.hasErrors()) {
+            return internalServerError();
+        }
+        PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
+
+        //get patient
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientEncounterItem.getPatientId());
+        if (patientItemServiceResponse.hasErrors()) {
+            return internalServerError();
+        }
+        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
         //replace prescription 1
+        PrescriptionItem prescriptionItem = new PrescriptionItem();
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())) {
-            IPatientPrescription newPatientPrescription = initializeNewPrescription(currentUserSession, patientEncounter, createViewModelPost.getReplacementMedication1());
-            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
-
-            IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription1());
-            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+            prescriptionItem.setName(createViewModelPost.getReplacementMedication1());
+            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+                    prescriptionItem,
+                    createViewModelPost.getId_prescription1(),
+                    currentUserSession.getId()
+            );
+            if (response.hasErrors()) {
+                return internalServerError();
+            }
         }
         //replace prescription 2
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication2())) {
-            IPatientPrescription newPatientPrescription = initializeNewPrescription(currentUserSession, patientEncounter, createViewModelPost.getReplacementMedication2());
-            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
-
-            IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription2());
-            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+            prescriptionItem.setName(createViewModelPost.getReplacementMedication2());
+            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+                    prescriptionItem,
+                    createViewModelPost.getId_prescription2(),
+                    currentUserSession.getId()
+            );
+            if (response.hasErrors()) {
+                return internalServerError();
+            }
         }
         //replace prescription 3
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication3())) {
-            IPatientPrescription newPatientPrescription = initializeNewPrescription(currentUserSession, patientEncounter, createViewModelPost.getReplacementMedication3());
-            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
-
-            IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription3());
-            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+            prescriptionItem.setName(createViewModelPost.getReplacementMedication3());
+            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+                    prescriptionItem,
+                    createViewModelPost.getId_prescription3(),
+                    currentUserSession.getId()
+            );
+            if (response.hasErrors()) {
+                return internalServerError();
+            }
         }
         //replace prescription 4
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication4())) {
-            IPatientPrescription newPatientPrescription = initializeNewPrescription(currentUserSession, patientEncounter, createViewModelPost.getReplacementMedication4());
-            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
-
-            IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription4());
-            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+            prescriptionItem.setName(createViewModelPost.getReplacementMedication4());
+            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+                    prescriptionItem,
+                    createViewModelPost.getId_prescription4(),
+                    currentUserSession.getId()
+            );
+            if (response.hasErrors()) {
+                return internalServerError();
+            }
         }
         //replace prescription 5
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication5())) {
-            IPatientPrescription newPatientPrescription = initializeNewPrescription(currentUserSession, patientEncounter, createViewModelPost.getReplacementMedication5());
-            ServiceResponse<IPatientPrescription> newPatientPrescriptionServiceResponse = medicalService.createPatientPrescription(newPatientPrescription);
-
-            IPatientPrescription oldPatientPrescription = updateOldPrescription(newPatientPrescriptionServiceResponse.getResponseObject().getId(), patientEncounter.getId(), createViewModelPost.getPrescription5());
-            ServiceResponse<IPatientPrescription> updatedOldPatientPrescription = pharmacyService.updatePatientPrescription(oldPatientPrescription);
+            prescriptionItem.setName(createViewModelPost.getReplacementMedication5());
+            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+                    prescriptionItem,
+                    createViewModelPost.getId_prescription5(),
+                    currentUserSession.getId()
+            );
+            if (response.hasErrors()) {
+                return internalServerError();
+            }
         }
 
-        String message = "Patient information for " + patient.getFirstName() + " " + patient.getLastName() + " (id: " + patient.getId() + ") was saved successfully.";
+        //check the patient in!
+        pharmacyService.checkPatientIn(patientEncounterItem.getId(), currentUserSession.getId());
+        String message = "Patient information for " +
+                patientItem.getFirstName() +
+                " " +
+                patientItem.getLastName() +
+                " (id: " +
+                patientItem.getId() +
+                ") was saved successfully.";
 
         return ok(index.render(currentUserSession, message, 0));
     }
 
-    private IPatientPrescription initializeNewPrescription(CurrentUser currentUserSession, IPatientEncounter patientEncounter, String medicationName) {
-        IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
-        patientPrescription.setEncounterId(patientEncounter.getId());
-        patientPrescription.setUserId(currentUserSession.getId());
-        patientPrescription.setReplaced(false);
-        patientPrescription.setReplacementId(null);
-        patientPrescription.setMedicationName(medicationName);
-        patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
-        return patientPrescription;
-    }
+    /**
+     * Used for typeahead in replacement prescription boxes
+     * Called via ajax
+     *
+     * @return JSON object of medications that exist in the medications table
+     */
+    public Result typeaheadJSONGet() {
+        JsonObject jsonObject = new JsonObject();
 
-    private IPatientPrescription updateOldPrescription(int replacementId, int encounterId, String name) {
-        ServiceResponse<IPatientPrescription> patientPrescriptionServiceResponse = pharmacyService.findPatientPrescription(encounterId, name);
-        IPatientPrescription patientPrescription = patientPrescriptionServiceResponse.getResponseObject();
-        patientPrescription.setReplaced(true);
-        patientPrescription.setReplacementId(replacementId);
-        return patientPrescription;
-    }
+        //get a list of medications in the medication table
+        //these medications are added by an administrator in the admin section
+        ServiceResponse<List<String>> medicationServiceResponse = pharmacyService.findAllMedications();
+        if (medicationServiceResponse.hasErrors()) {
+            return ok(jsonObject.toString());
+        }
 
-    private Float getVitalOrNull(IPatientEncounterVital patientEncounterVital) {
-        if (patientEncounterVital == null)
-            return null;
-        else
-            return patientEncounterVital.getVitalValue();
+        List<String> medications = medicationServiceResponse.getResponseObject();
+
+        //create a JsonObject to send back via AJAX
+        for (int medication = 0; medication < medications.size(); medication++) {
+            jsonObject.addProperty("medicine" + medication, medications.get(medication));
+        }
+        return ok(jsonObject.toString());
     }
 }

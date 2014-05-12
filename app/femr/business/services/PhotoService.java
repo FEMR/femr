@@ -13,13 +13,17 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import femr.business.DomainMapper;
+import femr.business.QueryProvider;
+import femr.business.dtos.PatientEncounterItem;
+import femr.business.dtos.PhotoItem;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import com.google.inject.Inject;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
-import femr.ui.models.data.PatientItem;
-import femr.ui.models.medical.CreateViewModelPost;
+import femr.business.dtos.PatientItem;
+import femr.ui.models.medical.EditViewModelPost;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 
@@ -29,17 +33,20 @@ public class PhotoService implements IPhotoService {
     private IRepository<IPhoto> patientPhotoRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
+    private DomainMapper domainMapper;
     private Provider<IPatient> patientProvider;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
+                        DomainMapper domainMapper,
                         Provider<IPatient> patientProvider)
     {
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
+        this.domainMapper = domainMapper;
         this.patientProvider = patientProvider;
 
         this.Init();
@@ -144,7 +151,7 @@ public class PhotoService implements IPhotoService {
     }
 
     @Override
-    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, IPatientEncounter patientEncounter, CreateViewModelPost mod)
+    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod)
     {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try
@@ -158,7 +165,7 @@ public class PhotoService implements IPhotoService {
                 {
                     //This is a new image, add it to the DB and filesystem:
                     fp = GetImageByIndex(encounterImages, i);
-                    saveNewEncounterImage(fp, patientEncounter, mod.getImageDescText().get(i));
+                    saveNewEncounterImage(fp, patientEncounterItem, mod.getImageDescText().get(i));
                 }
                 else
                 {
@@ -200,7 +207,27 @@ public class PhotoService implements IPhotoService {
         return sr;
     }
 
-    protected void saveNewEncounterImage(FilePart image, IPatientEncounter patientEncounter, String descriptionText)
+    @Override
+    public ServiceResponse<IPhoto> getPhotoById(int id)
+    {
+
+        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
+        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
+
+        ServiceResponse<IPhoto> response = new ServiceResponse<>();
+
+        if (savedPhoto != null){
+            response.setResponseObject(savedPhoto);
+        }
+        else
+        {
+            response.addError("photo","photo could not be fetched from the database");
+        }
+
+        return response;
+    }
+
+    protected void saveNewEncounterImage(FilePart image, PatientEncounterItem patientEncounter, String descriptionText)
     {
         try
         {
@@ -261,7 +288,7 @@ public class PhotoService implements IPhotoService {
     @Override
     public ServiceResponse<Boolean> HandlePatientPhoto(File img, PatientItem patientItem, String coords, Boolean deleteFlag)
     {
-        ExpressionList<Patient> query = getPatientQuery()
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", patientItem.getId());
 
@@ -388,25 +415,7 @@ public class PhotoService implements IPhotoService {
         return patientEncounterPhotoRepository.create(encPhoto);
     }
 
-    @Override
-    public ServiceResponse<IPhoto> getPhotoById(int id)
-    {
 
-        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
-        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
-
-        ServiceResponse<IPhoto> response = new ServiceResponse<>();
-
-        if (savedPhoto != null){
-            response.setResponseObject(savedPhoto);
-        }
-        else
-        {
-            response.addError("photo","photo could not be fetched from the database");
-        }
-
-        return response;
-    }
 
     protected void deleteImageFile(String path)
     {
@@ -449,6 +458,7 @@ public class PhotoService implements IPhotoService {
         return response;
     }
 
+    @Override
     public ServiceResponse<List<IPhoto>> GetEncounterPhotos(int encounterId)
     {
 
@@ -480,25 +490,6 @@ public class PhotoService implements IPhotoService {
         return srlst;
     }
 
-    private Query<Patient> getPatientQuery(){
-        return Ebean.find(Patient.class);
-    }
 
-    private IPatient populatePatient(PatientItem patient){
-        //create an IPatient from a PatientItem
-        //includes the ID
-        IPatient newPatient = patientProvider.get();
-        newPatient.setId(newPatient.getId());
-        newPatient.setUserId(patient.getUserId());
-        newPatient.setFirstName(patient.getFirstName());
-        newPatient.setLastName(patient.getLastName());
-        newPatient.setAge(patient.getBirth());
-        newPatient.setSex(patient.getSex());
-        newPatient.setAddress(patient.getAddress());
-        newPatient.setCity(patient.getCity());
-        newPatient.setPhotoId(patient.getPhotoId());
-
-        return newPatient;
-    }
 
 }

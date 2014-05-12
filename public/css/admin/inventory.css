@@ -1,0 +1,73 @@
+#addMed {
+    float: right;
+    margin-bottom: 20px;
+}
+
+#inventoryTable{
+    width: 100%;
+    border: 1px solid black;
+    table-layout: auto;
+}
+#inventoryTable th,td{
+    text-align: center;
+}
+
+/* Dialog styles */
+#inventoryPartial{
+    height: 100%;
+}
+#inputMedication{
+    overflow: hidden;
+}
+#addMedToList{
+    width: 100%;
+    margin-top: 25px;
+}
+#fieldMedicationWrap{
+    overflow: hidden;
+    border-top: 1px solid black;
+    margin-bottom: 20px;
+}
+.fieldMedication{
+    float: left;
+    width: 32%;
+    margin-right: 5px;
+}
+.fieldMedication input{
+    width: 100% !important;
+}
+#saveAllNewMeds{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+#cancelAllNewMeds{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-bottom: 10px;
+    margin-right: 80px;
+
+}
+#listMedication{
+    margin-top: 20px;
+    border-top: 1px solid black;
+}
+#listMedication input{
+    border: none;
+    background-color: transparent;
+}
+#listMedication input:hover{
+    cursor: default;
+}
+
+.remove span:hover{
+    cursor: pointer;
+
+}
+#removeMed{
+    background: transparent;
+    border: none !important;
+}

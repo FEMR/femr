@@ -17,10 +17,6 @@ public class PatientPrescription implements IPatientPrescription {
     private int userId;
     @Column(name = "amount", nullable = true)
     private  int amount;
-    @Column(name = "replaced", nullable = false)
-    private Boolean replaced;
-    @Column(name = "reason", nullable = true)
-    private String reason;
     @Column(name = "replacement_id", nullable = true)
     private Integer replacementId;
     @Column(name = "medication_name", nullable = false)
@@ -61,26 +57,6 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-
-    @Override
-    public Boolean getReplaced() {
-        return replaced;
-    }
-
-    @Override
-    public void setReplaced(Boolean replaced) {
-        this.replaced = replaced;
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    @Override
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     @Override

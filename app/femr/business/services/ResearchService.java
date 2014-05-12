@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class ResearchService implements IResearchService{
 
-    private IRepository<IPatientResearch> patientResearchRepository;
+    private final IRepository<IPatientResearch> patientResearchRepository;
     private IPatientResearch patientResearch;
 
     /**

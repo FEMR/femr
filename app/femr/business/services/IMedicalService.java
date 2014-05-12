@@ -1,39 +1,79 @@
 package femr.business.services;
 
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.*;
-import femr.ui.models.data.custom.CustomFieldItem;
-import femr.ui.models.data.custom.CustomTabItem;
-import org.joda.time.DateTime;
+import femr.business.dtos.*;
 
 import java.util.List;
 import java.util.Map;
 
 public interface IMedicalService {
-    /* Maps for HPI, Treatment, and PMH:
-     * Map<String, List<>>
-      *     Where string is the name value and list is a list of actual values sorted by time*/
-    ServiceResponse<Map<String, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int encounterId);
 
-    ServiceResponse<Map<String, List<? extends IPatientEncounterPmhField>>> findPmhFieldsByEncounterId(int encounterId);
+    /**
+     * Creates all patient encounter vitals
+     *
+     * @param patientEncounterVital list of vitals for saving
+     * @param userId                id of the user saving the vitals
+     * @param encounterId           id of the current encounter
+     * @return vitals that were saved
+     */
+    ServiceResponse<List<VitalItem>> createPatientEncounterVitals(Map<String, Float> patientEncounterVital, int userId, int encounterId);
 
-    ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int encounterId);
+    /**
+     * Checks to see if patient has been checked into medical. Does NOT currently check vitals.
+     *
+     * @param encounterId id of the encounter to check
+     * @return true if patient was seen, false if not
+     */
+    ServiceResponse<Boolean> hasPatientBeenCheckedInByPhysician(int encounterId);
 
+    /**
+     * creates multiple prescriptions
+     *
+     * @param prescriptionItems list of prescription items
+     * @param userId            id of the user saving the prescriptions
+     * @param encounterId       id of the current encounter
+     * @return updated prescription list
+     */
+    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId);
 
-    /* Create Actions */
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> createPatientEncounterTreatmentFields(List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields);
-    ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields);
-    ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields);
-    ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription);
-    ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String,Float> patientEncounterVital, int userId, int encounterId);
-    ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions);
+    /**
+     * Adds tab field items to the PatientEncounterTabField table
+     *
+     * @param tabFieldItems list of fields to be saved
+     * @param encounterId   id of the current encounter
+     * @param userId        id of the user saving the fields
+     * @return updated list of items
+     */
+    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
 
-    boolean hasPatientBeenCheckedInByPhysician(int encounterId);
+    /**
+     * Checks a patient into medical (updates date_of_medical_visit and the user checking them in)
+     *
+     * @param encounterId current encounter id
+     * @param userId      id of the physician
+     * @return updated patient encounter
+     */
+    ServiceResponse<PatientEncounterItem> checkPatientIn(int encounterId, int userId);
 
-    public ServiceResponse<DateTime> getDateOfCheckIn(int encounterId);
+    /**
+     * Finds non-custom current field values for medical tabs
+     *
+     * @param encounterId current encounter id
+     * @return Mapping of the field name to the fielditem
+     */
+    ServiceResponse<Map<String, TabFieldItem>> findCurrentTabFieldsByEncounterId(int encounterId);
 
-    ServiceResponse<Map<String, List<CustomFieldItem>>> getCustomFields(int encounterId);
-    ServiceResponse<List<CustomTabItem>> getCustomTabs();
+    /**
+     * Gets all available custom tabs for the medical page
+     *
+     * @return list of tabs
+     */
+    ServiceResponse<List<TabItem>> getCustomTabs();
 
-    ServiceResponse<List<CustomFieldItem>> createPatientEncounterCustomFields(List<CustomFieldItem> customFieldItems, int encounterId, int userId);
+    /**
+     * Matches a list of TabFieldItems to their respective tab
+     *
+     * @param encounterId current encounter id
+     * @return TabFieldItems mapped to their respective tab
+     */
+    ServiceResponse<Map<String, List<TabFieldItem>>> getCustomFields(int encounterId);
 }

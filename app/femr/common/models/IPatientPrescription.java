@@ -18,14 +18,6 @@ public interface IPatientPrescription {
 
     void setAmount(int amount);
 
-    Boolean getReplaced();
-
-    void setReplaced(Boolean replaced);
-
-    String getReason();
-
-    void setReason(String reason);
-
     Integer getReplacementId();
 
     void setReplacementId(Integer replacementId);

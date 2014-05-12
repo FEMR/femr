@@ -9,7 +9,7 @@
         <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
     }
     @searchById = {
-    @helper.form(action = SearchController.createGet()) {
+    @helper.form(action = SearchController.indexPatientGet()) {
         <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
             <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Patient ID">
         </div>

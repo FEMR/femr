@@ -1,0 +1,114 @@
+@(currentUser: femr.business.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: java.lang.Integer)
+
+@import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.controllers.routes.SearchController
+@import femr.ui.controllers.routes.TriageController
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/search.css")">
+    }
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
+    }
+    @searchById = {
+    @helper.form(action = SearchController.indexPatientGet()) {
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
+        @if(searchError) {
+            <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
+        } else {
+            <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Patient ID">
+            }
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
+            <button type="submit" id="idSearch" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
+        </div>
+    }
+    }
+@medicalPersonnel("search", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById) {
+    @if(viewModel.getPatientNameResult != null) {
+        @if(viewModel.getPatientNameResult.size() > 1) {
+            <div class="encounterInfoWrap backgroundForWrap">
+                <div class="row well well-sm">
+                    <h4 class="text-center">Duplicate Patient Search Results</h4>
+                    <div class="panel panel-default">
+                        <table class="table vert-align">
+                            <tr>
+                                <th>Photo</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Age</th>
+                                <th>City</th>
+                                <th>&nbsp;</th>
+                            </tr>
+
+                            @for(a <- 0 to viewModel.getPatientNameResult.size() - 1) {
+                                @viewModel.setDupList(a)
+                                <tr>
+                                    <td class="vert-align"><img class="thumbnail searchThumb" src="@viewModel.getPhotoURI" /></td>
+                                    <td class="vert-align">@viewModel.getPatientID</td>
+                                    <td class="vert-align">@viewModel.getFirstName @viewModel.getLastName</td>
+                                    <td class="vert-align">@viewModel.getSex</td>
+                                    <td class="vert-align">@viewModel.getAge</td>
+                                    <td class="vert-align">@viewModel.getCity</td>
+                                    <td class="vert-align"><button type="submit" onclick="setSearchResults ( @viewModel.getPatientID )"
+                                    id="selectPageFromRow" class="btn btn-default pull-right">Select</button>
+                                    </td>
+                                </tr>
+                            }
+                            @viewModel.setDupList(0)
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    <div class="encounterInfoWrap backgroundForWrap">
+        <h1 class="pull-left bold margin-top-zero">Patient Id: @id</h1>
+        <button type="submit" id="newPatientBtn" class="btn btn-default pull-right">New Patient</button>
+
+        @helper.form(action = TriageController.indexPopulatedGet()) {
+            <input type="text" class="hidden" value="@id" name="id">
+            <button type="submit" class="btn btn-default pull-right">New Encounter</button>
+        }
+
+        <div class="medicalHistoryLineDivide"></div>
+        <div class="row inputRow">
+            <div class="col-sm-6 col-xs-6 col-md-6">
+                <h3 class="pull-left bold margin-top-zero">General Info</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <div class="text-center">
+                    <label class="inputLabel">First Name:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="firstName" value="@viewModel.getFirstName" readonly/>
+                    <label class="inputLabel">Last Name:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="lastName" value="@viewModel.getLastName" readonly/>
+                    <label class="inputLabel">Address:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="address" value="@viewModel.getAddress" readonly/>
+                    <label class="inputLabel">City:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="city" value="@viewModel.getCity" readonly/>
+                    <label class="inputLabel">Age:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="age" value="@viewModel.getAge" readonly/>
+                    <label class="inputLabel">Sex:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="age" value="@viewModel.getSex" readonly/>
+                    @*display pregnancy?*@
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-6 col-md-6">
+                <h3 class="pull-left bold margin-top-zero">Previous Encounters</h3>
+
+                <div class="medicalHistoryLineDivide"></div>
+                <ol>
+                @for(patientEncounter <- patientEncounters) {
+                    <li><a href="/show/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block"
+                    role="button" type="button"><p class="date" id="date">@patientEncounter.getDateOfVisit</p> <p class ="chiefComplaint"><strong>Chief complaint: </strong>
+                        @patientEncounter.getChiefComplaint</p></a>
+                    </li>
+                    <div class="medicalHistoryLineDivide"></div>
+                }
+                </ol>
+                <div class="alert alert-info" id="encounterAlert">Click an encounter to view past history!</div>
+            </div>
+        </div>
+
+    </div>
+}

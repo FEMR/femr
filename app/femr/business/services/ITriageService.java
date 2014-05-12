@@ -1,13 +1,9 @@
 package femr.business.services;
 
 import femr.business.dtos.ServiceResponse;
-import femr.common.models.IPatient;
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IPhoto;
-import femr.ui.models.data.PatientEncounterItem;
-import femr.ui.models.data.PatientItem;
-import femr.ui.models.data.VitalItem;
+import femr.business.dtos.PatientEncounterItem;
+import femr.business.dtos.PatientItem;
+import femr.business.dtos.VitalItem;
 
 import java.util.List;
 import java.util.Map;
@@ -58,11 +54,4 @@ public interface ITriageService {
      * @return List of vitals that were created
      */
     ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String,Float> patientEncounterVitalMap, int userId, int encounterId);
-
-    /**
-     * Find a patient by id
-     * @param id id of the patient
-     * @return the patient
-     */
-    ServiceResponse<PatientItem> findPatientItemById(Integer id);
 }

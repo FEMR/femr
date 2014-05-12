@@ -1,14 +1,9 @@
 @(currentUser: femr.business.dtos.CurrentUser)
 
 @import femr.ui.views.html.layouts.admin
-@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.views.html.superuser.superuserMenu
 
-    @additionalMenuItems = {
-        <a href="@SuperuserController.tabsGet()" class="btn btn-default pull-left userBtns"><span class="glyphicon glyphicon-wrench"></span>
-            Manage Content</a>
-    }
-
-@admin("Admin Panel", currentUser, menu = additionalMenuItems) {
-
+@admin("SuperUser Panel", currentUser, menus = superuserMenu()) {
+    <h3>Welcome, SuperUser. Choose an option to get started.</h3>
 
 }

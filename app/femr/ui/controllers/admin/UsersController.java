@@ -11,15 +11,12 @@ import femr.business.services.IUserService;
 import femr.common.models.IRole;
 import femr.common.models.IUser;
 import femr.common.models.Roles;
-import femr.data.models.Role;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.users.CreateViewModelPost;
 import femr.ui.models.admin.users.CreateViewModelGet;
 import femr.ui.models.admin.users.EditUserViewModel;
-import femr.ui.views.html.admin.users.create;
-import femr.ui.views.html.admin.users.editUser;
-import femr.ui.views.html.admin.users.index;
+import femr.ui.views.html.admin.users.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
@@ -152,7 +149,6 @@ public class UsersController extends Controller {
             user.setRoles(userRoles);
         }
 
-
         ServiceResponse<IUser> updateResponse = userService.update(user, isNewPassword);
         if (updateResponse.hasErrors()) {
             return internalServerError();
@@ -161,8 +157,6 @@ public class UsersController extends Controller {
             return redirect(routes.UsersController.index());
 
         }
-
-
     }
 
     //  jQuery calls this when activating/deactivating a user

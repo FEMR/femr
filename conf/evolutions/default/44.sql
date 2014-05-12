@@ -6,3 +6,4 @@ INSERT INTO `roles` (`name`) VALUES ('SuperUser');
 
 DELETE FROM `roles`
 WHERE `name` = "SuperUser";
+

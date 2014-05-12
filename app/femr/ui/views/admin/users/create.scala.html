@@ -3,46 +3,38 @@
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.admin.routes.UsersController
 
-@admin("Create User", currentUser) {
-  <div class="">
-  @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal") {
-    <div class="form-group">
-      <label for="email" class="col-md-2 control-label">Email address</label>
-      <div class="col-md-7">
-        <input type="text" id="email" name="email" class="form-control" placeholder="Email Address" autofocus="" />
-      </div>
+@admin("Add User", currentUser) {
+    <div class="createWrap">
+    @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal") {
+        <div class="addUserGroup">
+            <label for="email">Email address</label>
+            <input type="text" id="email" name="email" class="fInput" placeholder="Email Address" autofocus="" />
+        </div>
+        <div class="addUserGroup">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="fInput" placeholder="Password"/>
+        </div>
+        <div class="addUserGroup">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" class="fInput" placeholder="First Name"/>
+        </div>
+        <div class="addUserGroup">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" class="fInput" placeholder="Last Name"/>
+        </div>
+
+        <div class="addUserGroupBtns">
+            <label for="roles">Roles</label>
+
+            <br/>
+            @for(role <- roles) {
+                <label class="btn btn-default">
+                    <input type="checkbox" name="roles" value="@role.getId"> @role.getName
+                </label>
+                <br/>
+            }
+        </div>
     </div>
-    <div class="form-group">
-      <label for="password" class="col-md-2 control-label">Password</label>
-      <div class="col-md-7">
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="firstName" class="col-md-2 control-label">First Name</label>
-      <div class="col-md-7">
-        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="lastName" class="col-md-2 control-label">Last Name</label>
-      <div class="col-md-7">
-        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name"/>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="roles" class="col-md-2 control-label">Groups</label>
-      <div class="col-md-7 btn-group" data-toggle="buttons">
-      @for(role <- roles) {
-        <label class="btn btn-default">
-          <input type="checkbox" name="roles" value="@role.getId"> @role.getName
-        </label>
-      }
-      </div>
-    </div>
-    <div class="col-md-offset-2 form-group-padding">
-      <button class="btn btn-primary" type="submit">Submit</button>
-    </div>
-  }
-  </div>
+    <button class="fButton fSubmitButton" id="addUserSubmitBtn" type="submit">Submit</button>
+}
 }

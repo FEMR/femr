@@ -78,11 +78,15 @@ CREATE TABLE `patient_encounter_custom_fields` (
     ON UPDATE NO ACTION);
 
 
+
+
 # --- !Downs
 
 DROP TABLE `patient_encounter_custom_fields`;
 DROP TABLE `custom_fields`;
 DROP TABLE `custom_tabs`;
 DROP TABLE `custom_field_types`;
+
+
 
 

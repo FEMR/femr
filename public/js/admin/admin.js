@@ -10,15 +10,17 @@ $(document).ready(function () {
         width: 600
 
     });
-    bindEditDialog();
+    bindEditUserDialog();
+
 });
 
 
 //on cancel click
 
 
-/*  on edit click events */
-function bindEditDialog() {
+
+/*  on edit user click events */
+function bindEditUserDialog() {
     $('.editBtn').click(function () {
         var id = $(this).attr('data-user_id');
         $.ajax({

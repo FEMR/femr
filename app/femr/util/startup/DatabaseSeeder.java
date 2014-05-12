@@ -1,18 +1,16 @@
 package femr.util.startup;
 
 import com.avaje.ebean.Ebean;
-import femr.common.models.custom.ICustomFieldSize;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.Role;
+import femr.data.models.TabFieldSize;
+import femr.data.models.TabFieldType;
 import femr.data.models.User;
-import femr.data.models.custom.CustomFieldSize;
-import femr.data.models.custom.CustomFieldType;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import play.Play;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,57 +18,57 @@ public class DatabaseSeeder {
 
     private final IRepository<User> userRepository;
     private final Repository<Role> roleRepository;
-    private final Repository<CustomFieldSize> customFieldSizeRepository;
-    private final Repository<CustomFieldType> customFieldTypeRepository;
+    private final Repository<TabFieldSize> tabFieldSizeRepository;
+    private final Repository<TabFieldType> tabFieldTypeRepository;
 
     public DatabaseSeeder() {
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
-        customFieldSizeRepository = new Repository<>();
-        customFieldTypeRepository = new Repository<>();
+        tabFieldSizeRepository = new Repository<>();
+        tabFieldTypeRepository = new Repository<>();
     }
 
     public void seed() {
         seedAdminUser();
-        seedCustomFields();
+        seedTabFields();
     }
 
     /**
-     * Seed initial custom field values
+     * Seed initial tab field values
      */
-    private void seedCustomFields() {
-        int sizeCount = customFieldSizeRepository.count(CustomFieldSize.class);
+    private void seedTabFields() {
+        int sizeCount = tabFieldSizeRepository.count(TabFieldSize.class);
         if (sizeCount == 0) {
-            List<CustomFieldSize> customFieldSizes = new ArrayList<>();
-            CustomFieldSize customFieldSize = new CustomFieldSize();
+            List<TabFieldSize> tabFieldSizes = new ArrayList<>();
+            TabFieldSize tabFieldSize = new TabFieldSize();
              //not using small right now
-//            customFieldSize.setName("small");
-//            customFieldSizes.add(customFieldSize);
+//            tabFieldSize.setName("small");
+//            tabFieldSizes.add(tabFieldSize);
 
-            customFieldSize = new CustomFieldSize();
-            customFieldSize.setName("medium");
-            customFieldSizes.add(customFieldSize);
+            tabFieldSize = new TabFieldSize();
+            tabFieldSize.setName("medium");
+            tabFieldSizes.add(tabFieldSize);
 
-            customFieldSize = new CustomFieldSize();
-            customFieldSize.setName("large");
-            customFieldSizes.add(customFieldSize);
+            tabFieldSize = new TabFieldSize();
+            tabFieldSize.setName("large");
+            tabFieldSizes.add(tabFieldSize);
 
-            customFieldSizeRepository.createAll(customFieldSizes);
+            tabFieldSizeRepository.createAll(tabFieldSizes);
         }
-        sizeCount = customFieldTypeRepository.count(CustomFieldType.class);
+        sizeCount = tabFieldTypeRepository.count(TabFieldType.class);
         if (sizeCount == 0){
-            List<CustomFieldType> customFieldTypes = new ArrayList<>();
+            List<TabFieldType> tabFieldTypes = new ArrayList<>();
 
-            CustomFieldType customFieldType = new CustomFieldType();
-            customFieldType.setName("text");
-            customFieldTypes.add(customFieldType);
+            TabFieldType tabFieldType = new TabFieldType();
+            tabFieldType.setName("text");
+            tabFieldTypes.add(tabFieldType);
 
             //not using numbers right now
-//            customFieldType = new CustomFieldType();
-//            customFieldType.setName("number");
-//            customFieldTypes.add(customFieldType);
+//            tabFieldType = new TabFieldType();
+//            tabFieldType.setName("number");
+//            tabFieldTypes.add(tabFieldType);
 
-            customFieldTypeRepository.createAll(customFieldTypes);
+            tabFieldTypeRepository.createAll(tabFieldTypes);
         }
 
     }

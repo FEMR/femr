@@ -13,7 +13,6 @@ object ApplicationBuild extends Build {
     javaJdbc,
     javaEbean,
     "com.google.inject" % "guice" % "3.0",
-    "com.fasterxml.jackson.core" % "jackson-databind" % "2.0.2",
     "mysql" % "mysql-connector-java" % "5.1.18",
     "org.mindrot" % "jbcrypt" % "0.3m",
     "commons-collections" % "commons-collections" % "3.2.1",

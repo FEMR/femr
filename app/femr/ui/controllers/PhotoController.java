@@ -2,6 +2,7 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
+import femr.business.dtos.PatientItem;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.IPhotoService;
 import femr.business.services.ISearchService;
@@ -42,11 +43,11 @@ public class PhotoController {
         {
             if(patientId != null)
             {
-                ServiceResponse<IPatient> patRsp = searchService.findPatientById(patientId);
+                ServiceResponse<PatientItem> patRsp = searchService.findPatientItemById(patientId);
                 //fetch patient:
                 if(!patRsp.hasErrors())
                 {
-                    IPatient pat = patRsp.getResponseObject();
+                    PatientItem pat = patRsp.getResponseObject();
                     if(pat.getPhotoId() != null)
                     {
                         //fetch photo record:

@@ -1,53 +1,79 @@
 package femr.business.services;
 
-import femr.business.dtos.ServiceResponse;
+import femr.business.dtos.*;
 import femr.common.models.*;
-import femr.ui.models.data.PatientItem;
-import femr.ui.models.data.VitalItem;
 import femr.util.DataStructure.VitalMultiMap;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface ISearchService {
 
-    ServiceResponse<IPatient> findPatientById(int id);
+
 
     ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
-
-    ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
-    ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
     ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
-    ServiceResponse<List<? extends IPatientPrescription>> findPrescriptionsByEncounterId(int id);
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
-
-    ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
-    ServiceResponse<IPatientEncounterTreatmentField> findRecentTreatmentField(int encounterId, String name);
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name);
-    ServiceResponse<IPatientEncounterHpiField> findRecentHpiField(int encounterId, String name);
-    ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name);
-    ServiceResponse<IPatientEncounterPmhField> findRecentPmhField(int encounterId, String name);
-    ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name);
-
-    ServiceResponse<IVital> findVital(String name);
-    ServiceResponse<ITreatmentField> findTreatmentField(String name);
-    ServiceResponse<IHpiField> findHpiField(String name);
-    ServiceResponse<IPmhField> findPmhField(String name);
+    ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id);
     ServiceResponse<List<? extends IVital>> findAllVitals();
+    ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
 
-    ServiceResponse<List<? extends ITreatmentField>> findAllTreatmentFields();
-    ServiceResponse<List<? extends IHpiField>> findAllHpiFields();
-    ServiceResponse<List<? extends IPmhField>> findAllPmhFields();
-    ServiceResponse<List<? extends IMedication>> findAllMedications();
+    /**
+     * Find a patient by id
+     * @param patientId id of the patient
+     * @return the patient
+     */
+    ServiceResponse<PatientItem> findPatientItemById(Integer patientId);
 
+    /**
+     * Find the most current patient encounter by id
+     *
+     * @param patientId id of the patient
+     * @return the patient's encounter with a field indicating whether or not it is open
+     */
+    ServiceResponse<PatientEncounterItem> findPatientEncounterItemById(int patientId);
+
+    /**
+     * Find all prescriptions that have not been replaced
+     *
+     * @param encounterId id of the encounter
+     * @return all prescriptions that have not been replaced
+     */
+    ServiceResponse<List<PrescriptionItem>> findUnreplacedPrescriptionItems(int encounterId);
+
+    /**
+     * Find all prescriptions, even ones that have been replaced
+     *
+     * @param encounterId id of the encounter
+     * @return a list of all prescription items for an encounter
+     */
+    ServiceResponse<List<PrescriptionItem>> findAllPrescriptionItemsByEncounterId(int encounterId);
+
+    /**
+     * Find all problems
+     *
+     * @param encounterId id of the encounter
+     * @return list of problems
+     */
+    ServiceResponse<List<ProblemItem>> findProblemItems(int encounterId);
+
+    /**
+     * Parses an integer from a query string
+     *
+     * @param query the query string
+     * @return the integer
+     */
+    ServiceResponse<Integer> parseIdFromQueryString(String query);
+
+    /**
+     * Create linked hash map of vitals where the key is the date as well as the name
+     *
+     * @param encounterId the id of the encounter to get vitals for
+     * @return vitals and dates related to encounter
+     */
     ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId);
 
 
 
 
-    ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id);
-    ServiceResponse<IPatientEncounterHpiField> findDoctorIdByEncounterIdInHpiField(int id);
-    ServiceResponse<IPatientEncounterPmhField> findDoctorIdByEncounterIdInPmhField(int id);
-    ServiceResponse<IPatientEncounterTreatmentField> findDoctorIdByEncounterIdInTreatmentField(int id);
+
+
 }

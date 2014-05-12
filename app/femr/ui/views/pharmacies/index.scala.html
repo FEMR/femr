@@ -10,7 +10,7 @@
 
 @main("Pharmacy", currentUser, scripts = additionalScripts) {
     <div class="container">
-    @helper.form(action = PharmaciesController.createGet()) {
+    @helper.form(action = PharmaciesController.indexPost()) {
         @searchBox("Pharmacy", patientId, message)
     }
     </div>

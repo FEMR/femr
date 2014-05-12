@@ -8,37 +8,52 @@ POST        /superuser/tabs/:name       @femr.ui.controllers.SuperuserController
 GET         /superuser/tabs             @femr.ui.controllers.SuperuserController.tabsGet()
 POST        /superuser/tabs             @femr.ui.controllers.SuperuserController.tabsPost()
 GET         /superuser                  @femr.ui.controllers.SuperuserController.indexGet()
+#Admin
 POST        /admin/users/create         @femr.ui.controllers.admin.UsersController.createPost()
 GET         /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()
 POST        /admin/users/edit           @femr.ui.controllers.admin.UsersController.editPost()
 GET         /admin/users/edit/:id       @femr.ui.controllers.admin.UsersController.editGet(id: Integer)
 POST        /admin/users/toggle/:id     @femr.ui.controllers.admin.UsersController.toggleUser(id: Integer)
 GET         /admin/users                @femr.ui.controllers.admin.UsersController.index()
+GET         /admin/inventory/add        @femr.ui.controllers.admin.InventoryController.inventoryGet()
+POST        /admin/inventory/add        @femr.ui.controllers.admin.InventoryController.inventoryPost()
+GET         /admin/inventory            @femr.ui.controllers.admin.InventoryController.indexGet()
+POST        /admin/inventory            @femr.ui.controllers.admin.InventoryController.indexPost(id: Integer)
 GET         /admin                      @femr.ui.controllers.admin.AdminController.index()
+#Pharmacy
 GET         /pharmacy/typeahead         @femr.ui.controllers.PharmaciesController.typeaheadJSONGet()
-GET         /pharmacy                   @femr.ui.controllers.PharmaciesController.index()
-GET         /pharmacy/find              @femr.ui.controllers.PharmaciesController.createGet()
-POST        /pharmacy/find              @femr.ui.controllers.PharmaciesController.createPost(id: Integer)
-GET         /show/encounter/:id         @femr.ui.controllers.SearchController.viewEncounter(id: Integer)
-GET         /show                       @femr.ui.controllers.SearchController.createGet()
+GET         /pharmacy/edit/:id          @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
+POST        /pharmacy/edit/:id          @femr.ui.controllers.PharmaciesController.editPost(id: Integer)
+GET         /pharmacy                   @femr.ui.controllers.PharmaciesController.indexGet()
+POST        /pharmacy                   @femr.ui.controllers.PharmaciesController.indexPost()
+#Search
+GET         /search/index/:id           @femr.ui.controllers.SearchController.indexEncounterGet(id: Integer)
+GET         /search/index               @femr.ui.controllers.SearchController.indexPatientGet()
+#Photo
 GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /photo/encounter/:id        @femr.ui.controllers.PhotoController.GetEncounterPhoto(id: Integer)
+#Triage
 GET         /triage/find                @femr.ui.controllers.TriageController.indexPopulatedGet()
 GET         /triage                     @femr.ui.controllers.TriageController.indexGet()
 POST        /triage                     @femr.ui.controllers.TriageController.indexPost(id: Integer)
+#Medical
+POST        /medical/updateVitals/:id   @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
 GET         /medical/newVitals          @femr.ui.controllers.MedicalController.newVitalsGet()
 GET         /medical/listVitals/:id     @femr.ui.controllers.MedicalController.listVitalsGet(id: Integer)
 GET         /medical/edit/:id           @femr.ui.controllers.MedicalController.editGet(id: Integer)
 POST        /medical/edit/:id           @femr.ui.controllers.MedicalController.editPost(id: Integer)
-POST        /medical/search             @femr.ui.controllers.MedicalController.searchPost()
-GET         /medical                    @femr.ui.controllers.MedicalController.indexGet(patientId: Integer ?= 0)
-POST        /medical/updateVitals/:id   @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
+GET         /medical                    @femr.ui.controllers.MedicalController.indexGet()
+POST        /medical                    @femr.ui.controllers.MedicalController.indexPost()
+
+#Research
 GET         /research                   @femr.ui.controllers.research.ResearchController.index()
 POST        /research                   @femr.ui.controllers.research.ResearchController.createPost()
+#Sessions
 GET         /logout                     @femr.ui.controllers.SessionsController.delete()
 POST        /login/reset                @femr.ui.controllers.SessionsController.editPasswordPost()
 POST        /login                      @femr.ui.controllers.SessionsController.createPost()
 GET         /login                      @femr.ui.controllers.SessionsController.createGet()
+
 GET         /                           @femr.ui.controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path

@@ -1,0 +1,83 @@
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
+
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.views.html.layouts.medicalPersonnel
+
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacyClientValidation.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/typeahead.min.js")"></script>
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
+    }
+    @searchById = {
+    @helper.form(action = PharmaciesController.indexPost()) {
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
+        @if(searchError) {
+            <input type="number" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
+        } else {
+            <input type="number" id="id" class="form-control idSearchForm" name="id" placeholder="Patient ID">
+            }
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
+            <button type="submit" id="pharmacySearch" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
+        </div>
+    }
+    }
+
+@medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById, styles = additionalStyles) {
+    <div id="pharmacyContentWrap">
+        <div id="patientOverviewWrap" class="backgroundForWrap">
+            <h3 class="text-center">Patient Overview - Pharmacy</h3>
+            <div id="generalInfoWrap">
+                <span><label>Name:</label>@viewModel.getPatient.getFirstName @viewModel.getPatient.getLastName</span>
+                <span><label for="">Age:</label>@viewModel.getPatient.getAge</span>
+                <span><label for="">Height:</label>@viewModel.getHeightFeet' @viewModel.getHeightinches"</span>
+                <span><label for="">Sex:</label>@viewModel.getPatient.getSex</span>
+                <span><label>Weight:</label>@viewModel.getWeight</span>
+                @if(viewModel.getPatientEncounterItem.getWeeksPregnant != null && viewModel.getPatientEncounterItem.getWeeksPregnant > 0) {
+                    <span><label>Weeks Pregnant:</label>@viewModel.getPatientEncounterItem.getWeeksPregnant</span>
+                }
+            </div>
+        </div>
+
+        <div id="mainWrap" class="backgroundForWrap">
+        @helper.form(action = PharmaciesController.editPost(viewModel.getPatient.getId)) {
+
+
+            <div id="diagnosisWrap">
+                <ol class="problems">
+                    <h4>List of Diagnoses</h4>
+                    @for(y <- 1 to viewModel.getProblems.size) {
+                        <li>@viewModel.getProblems.get(y - 1).getName</li>
+                    }
+                </ol>
+            </div>
+
+
+
+
+            <div id="medicationWrap">
+                <h4>Medications</h4>
+
+
+                @for(x <- 1 to viewModel.getMedications.size) {
+                    <div class="medication">
+                        <input type="text" id="medication@x" class="fInput" name="prescription@x" value="@viewModel.getMedications.get(x - 1).getName" placeholder="Medication" readonly/>
+                        <input type="text" class="hidden" name="id_prescription@x" value="@viewModel.getMedications.get(x - 1).getId"/>
+                        <button type="button" class="fButton replaceBtn">Replace?</button>
+                        <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
+                    </div>
+                }
+                <button type="submit" id="pharmacySubmitBtn" class="fButton pull-right fSubmitButton">Submit</button>
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+}
+}

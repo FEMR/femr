@@ -7,11 +7,13 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.common.models.custom.ICustomField;
 import femr.common.models.custom.ICustomTab;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 import femr.data.models.custom.CustomField;
 import femr.data.models.custom.CustomTab;
+import femr.ui.models.data.custom.CustomFieldItem;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 
@@ -23,6 +25,7 @@ public class MedicalService implements IMedicalService {
     private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
     private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
     private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
+    private IRepository<ICustomField> customFieldRepository;
     private IRepository<IPatientPrescription> patientPrescriptionRepository;
     private IRepository<IHpiField> hpiFieldRepository;
     private IRepository<IPmhField> pmhFieldRepository;
@@ -34,6 +37,7 @@ public class MedicalService implements IMedicalService {
 
     @Inject
     public MedicalService(IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
+                          IRepository<ICustomField> customFieldRepository,
                           IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
                           IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
                           IRepository<IPatientPrescription> patientPrescriptionRepository,
@@ -52,6 +56,7 @@ public class MedicalService implements IMedicalService {
         this.pmhFieldRepository = pmhFieldRepository;
         this.treatmentFieldRepository = treatmentFieldRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
+        this.customFieldRepository = customFieldRepository;
         this.vitalRepository = vitalRepository;
         this.customTabRepository = customTabRepository;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
@@ -281,7 +286,43 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
-    public ServiceResponse<List<String>> getCustomTabs(){
+    public ServiceResponse<Map<String, List<CustomFieldItem>>> getCustomFields() {
+        ServiceResponse<Map<String, List<CustomFieldItem>>> response = new ServiceResponse<>();
+        Map<String, List<CustomFieldItem>> customFieldMap = new HashMap<>();
+        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+                .where()
+                .eq("isDeleted", false);
+        try {
+            //O(n^2) because who gives a fuck
+            List<? extends ICustomTab> customTabs = customTabRepository.find(query);
+            for (ICustomTab ct : customTabs){
+                Query<CustomField> query2 = getCustomFieldQuery()
+                        .where()
+                        .eq("isDeleted", false)
+                        .order()
+                        .asc("sort_order");
+                List<? extends ICustomField> customFields = customFieldRepository.find(query2);
+                List<CustomFieldItem> customFieldItems = new ArrayList<>();
+                for (ICustomField cf : customFields){
+                    customFieldItems.add(getCustomFieldItem(cf));
+                }
+                customFieldMap.put(ct.getName(), customFieldItems);
+
+            }
+            response.setResponseObject(customFieldMap);
+        } catch (Exception ex) {
+            response.addError("", "error");
+            return response;
+        }
+
+        return response;
+
+
+
+    }
+
+    @Override
+    public ServiceResponse<List<String>> getCustomTabs() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
                 .where()
@@ -291,7 +332,7 @@ public class MedicalService implements IMedicalService {
         if (customTabs == null) {
             response.addError("", "error");
         } else {
-            for (ICustomTab ct : customTabs){
+            for (ICustomTab ct : customTabs) {
                 customTabNames.add(ct.getName());
 
             }
@@ -301,6 +342,16 @@ public class MedicalService implements IMedicalService {
     }
 
 
+    private CustomFieldItem getCustomFieldItem(ICustomField cf){
+        CustomFieldItem customFieldItem = new CustomFieldItem();
+        customFieldItem.setName(cf.getName());
+        customFieldItem.setType(cf.getCustomFieldType().getName());
+        customFieldItem.setSize(cf.getCustomFieldSize().getName());
+        customFieldItem.setOrder(cf.getOrder());
+        customFieldItem.setPlaceholder(cf.getPlaceholder());
+        return customFieldItem;
+    }
+
     private Query<CustomTab> getCustomMedicalTabQuery() {
         return Ebean.find(CustomTab.class);
     }
@@ -308,6 +359,7 @@ public class MedicalService implements IMedicalService {
     private Query<CustomField> getCustomFieldQuery() {
         return Ebean.find(CustomField.class);
     }
+
     private Query<PatientEncounterHpiField> getPatientEncounterHpiField() {
         return Ebean.find(PatientEncounterHpiField.class);
     }

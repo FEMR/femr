@@ -1,0 +1,19 @@
+@(number: Integer, fields: java.util.List[femr.ui.models.data.custom.CustomFieldItem])
+
+@for(f <- 1 to fields.size){
+
+    @defining(fields.get(f - 1)) { field =>
+
+        @if(field.getOrder == number){
+            <label for="@field.getName">@field.getName</label>
+            <input type="@field.getType" name="@field.getName" class="fInput" placeholder="@field.getPlaceholder"/>
+            <br/>
+        }
+
+    }
+
+
+
+
+
+}

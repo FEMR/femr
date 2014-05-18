@@ -7,9 +7,9 @@ public class ContentViewModelPost {
     private String addName;
     private String addType;
     private String addSize;
-    private String removeName;
-    private String removeType;
-    private String removeSize;
+    private Integer addOrder;
+    private String addPlaceholder;
+    private String toggleName;
 
     public String getAddName() {
         return addName;
@@ -35,27 +35,27 @@ public class ContentViewModelPost {
         this.addSize = addSize;
     }
 
-    public String getRemoveName() {
-        return removeName;
+    public String getToggleName() {
+        return toggleName;
     }
 
-    public void setRemoveName(String removeName) {
-        this.removeName = removeName;
+    public void setToggleName(String toggleName) {
+        this.toggleName = toggleName;
     }
 
-    public String getRemoveType() {
-        return removeType;
+    public Integer getAddOrder() {
+        return addOrder;
     }
 
-    public void setRemoveType(String removeType) {
-        this.removeType = removeType;
+    public void setAddOrder(Integer addOrder) {
+        this.addOrder = addOrder;
     }
 
-    public String getRemoveSize() {
-        return removeSize;
+    public String getAddPlaceholder() {
+        return addPlaceholder;
     }
 
-    public void setRemoveSize(String removeSize) {
-        this.removeSize = removeSize;
+    public void setAddPlaceholder(String addPlaceholder) {
+        this.addPlaceholder = addPlaceholder;
     }
 }

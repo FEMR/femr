@@ -1,0 +1,28 @@
+@(fields: java.util.List[femr.ui.models.data.custom.CustomFieldItem])
+
+@import femr.ui.views.html.helpers.medical.custom.dynamicField
+
+<div class="customWrap">
+    <div class="customLeft">
+        @for(i <- 1 to 5){
+            @dynamicField(i, fields)
+        }
+    </div>
+
+    <div class="customRight">
+    @for(i <- 6 to 10){
+        @dynamicField(i, fields)
+    }
+
+    </div>
+
+    <div class="customBottom">
+
+        @for(i <- 11 to fields.size){
+            @dynamicField(i, fields)
+        }
+
+    </div>
+</div>
+
+

@@ -11,10 +11,28 @@
 @admin("Admin Panel", currentUser, menu = additionalMenuItems) {
     <h3>Current Custom Medical Tabs:</h3>
     <ul>
-    @for(x <- 1 to viewModel.getCurrentTabNames.size) {
-        <li><a href="/superuser/tabs/@viewModel.getCurrentTabNames.get(x - 1)">@viewModel.getCurrentTabNames.get(x - 1)</a></li>
-    }
+
     </ul>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Left Size</th>
+                <th>Right Size</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(x <- 1 to viewModel.getCurrentTabNames.size) {
+            <tr>
+                <td><a href="/superuser/tabs/@viewModel.getCurrentTabNames.get(x - 1)">@viewModel.getCurrentTabNames.get(x - 1)</a></td>
+                <td>@viewModel.getCurrentTabNames.get(x - 1)</td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+
     <h3>Deleted Custom Medical Tabs:</h3>
     <ul>
     @for(x <- 1 to viewModel.getDeletedTabNames.size) {

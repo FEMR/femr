@@ -4,22 +4,19 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.custom.ICustomField;
 import femr.common.models.custom.ICustomFieldSize;
 import femr.common.models.custom.ICustomFieldType;
 import femr.common.models.custom.ICustomTab;
 import femr.data.daos.IRepository;
-import femr.data.models.PatientEncounterHpiField;
 import femr.data.models.custom.CustomField;
 import femr.data.models.custom.CustomFieldSize;
 import femr.data.models.custom.CustomFieldType;
 import femr.data.models.custom.CustomTab;
-import femr.ui.models.data.CustomFieldItem;
+import femr.ui.models.data.custom.CustomFieldItem;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
-import scalax.io.Line;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,17 +101,37 @@ public class SuperuserService implements ISuperuserService {
         return response;
     }
 
+//    @Override
+//    public ServiceResponse<ICustomTab> getCustomMedicalTab(String name) {
+//        ServiceResponse<ICustomTab> response = new ServiceResponse<>();
+//        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+//                .where()
+//                .eq("name", name);
+//        ICustomTab customTab = customTabRepository.findOne(query);
+//        if (customTab == null) {
+//            response.addError("", "error");
+//        } else {
+//            response.setResponseObject(customTab);
+//        }
+//        return response;
+//    }
+
     @Override
-    public ServiceResponse<ICustomTab> getCustomMedicalTab(String name) {
-        ServiceResponse<ICustomTab> response = new ServiceResponse<>();
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<Boolean> doesCustomFieldExist(String fieldName){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+        ExpressionList<CustomField> query = getCustomFieldQuery()
                 .where()
-                .eq("name", name);
-        ICustomTab customTab = customTabRepository.findOne(query);
-        if (customTab == null) {
-            response.addError("", "error");
-        } else {
-            response.setResponseObject(customTab);
+                .eq("name", fieldName);
+        try{
+            ICustomField customField = customFieldRepository.findOne(query);
+            if (customField == null){
+                response.setResponseObject(false);
+            }else{
+                response.setResponseObject(true);
+            }
+
+        }catch (Exception ex){
+            response.setResponseObject(false);
         }
         return response;
     }
@@ -122,19 +139,18 @@ public class SuperuserService implements ISuperuserService {
     @Override
     public ServiceResponse<List<CustomFieldItem>> getCustomFields(Boolean isDeleted) {
         ServiceResponse<List<CustomFieldItem>> response = new ServiceResponse<>();
-        ExpressionList<CustomField> query = getCustomFieldQuery()
+        Query<CustomField> query = getCustomFieldQuery()
                 .where()
-                .eq("isDeleted", isDeleted);
+                .eq("isDeleted", isDeleted)
+                .order()
+                .asc("sort_order");
         List<? extends ICustomField> customFields = customFieldRepository.find(query);
         List<CustomFieldItem> customFieldItems = new ArrayList<>();
         if (customFields == null) {
             response.addError("", "error");
         } else {
             for (ICustomField cf : customFields) {
-                CustomFieldItem customFieldItem = new CustomFieldItem();
-                customFieldItem.setName(cf.getName());
-                customFieldItem.setType(cf.getCustomFieldType().getName());
-                customFieldItem.setSize(cf.getCustomFieldSize().getName());
+                CustomFieldItem customFieldItem = getCustomFieldItem(cf);
                 customFieldItems.add(customFieldItem);
             }
             response.setResponseObject(customFieldItems);
@@ -143,7 +159,7 @@ public class SuperuserService implements ISuperuserService {
     }
 
     @Override
-    public ServiceResponse<CustomFieldItem> removeCustomField(String fieldName, String tabName){
+    public ServiceResponse<CustomFieldItem> toggleCustomField(String fieldName, String tabName){
         ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
         ExpressionList<CustomField> query = getCustomFieldQuery()
                 .fetch("customTab")
@@ -152,9 +168,12 @@ public class SuperuserService implements ISuperuserService {
                 .eq("customTab.name", tabName);
         ICustomField customField = customFieldRepository.findOne(query);
         if (customField == null){
-            response.addError("","error");
+            response.addError("", "error");
         }
-        customField.setIsDeleted(true);
+        customField.setIsDeleted(!customField.getIsDeleted());
+        if (customField.getIsDeleted() == true){
+            customField.setOrder(null);
+        }
         customField = customFieldRepository.update(customField);
         CustomFieldItem customFieldItem = new CustomFieldItem();
         customFieldItem.setName(customField.getName());
@@ -163,6 +182,47 @@ public class SuperuserService implements ISuperuserService {
         response.setResponseObject(customFieldItem);
         return response;
 
+    }
+
+    @Override
+    public ServiceResponse<CustomFieldItem> editCustomField(CustomFieldItem customFieldItem, int userId){
+        ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
+        if (customFieldItem.getName() == null){
+            response.addError("", "no item");
+            return response;
+        }
+
+        ExpressionList<CustomField> query = getCustomFieldQuery()
+                .where()
+                .eq("name", customFieldItem.getName());
+        ICustomField customField = customFieldRepository.findOne(query);
+        customField.setDateCreated(DateTime.now());
+        customField.setUserId(userId);
+        if (customFieldItem.getPlaceholder() != null){
+            customField.setPlaceholder(customFieldItem.getPlaceholder());
+        }
+        if (customFieldItem.getOrder() != null){
+            customField.setOrder(customFieldItem.getOrder());
+        }
+        //check size update
+        if (StringUtils.isNotNullOrWhiteSpace(customFieldItem.getSize())){
+            ExpressionList<CustomFieldSize> sizeQuery = getCustomFieldSizeQuery()
+                    .where()
+                    .eq("name", customFieldItem.getSize());
+            ICustomFieldSize customFieldSize = customFieldSizeRepository.findOne(sizeQuery);
+            customField.setCustomFieldSize((CustomFieldSize) customFieldSize);
+        }
+        //check type update
+        if (StringUtils.isNotNullOrWhiteSpace(customFieldItem.getType())){
+            ExpressionList<CustomFieldType> typeQuery = getCustomFieldTypeQuery()
+                    .where()
+                    .eq("name", customFieldItem.getType());
+            ICustomFieldType customFieldType = customFieldTypeRepository.findOne(typeQuery);
+            customField.setCustomFieldType((CustomFieldType) customFieldType);
+        }
+        customField = customFieldRepository.update(customField);
+        response.setResponseObject(customFieldItem);
+        return response;
     }
 
     @Override
@@ -203,8 +263,6 @@ public class SuperuserService implements ISuperuserService {
             return response;
         }
 
-        //check if the custom field id exists, if it does just switch isDeleted from false to true
-
         ICustomField customField = new CustomField();
         customField.setName(customFieldItem.getName());
         customField.setUserId(userId);
@@ -213,6 +271,8 @@ public class SuperuserService implements ISuperuserService {
         customField.setCustomFieldType((CustomFieldType) customFieldType);
         customField.setIsDeleted(false);
         customField.setCustomFieldSize((CustomFieldSize) customFieldSize);
+        customField.setOrder(customFieldItem.getOrder());
+        customField.setPlaceholder(customFieldItem.getPlaceholder());
 
         customField = customFieldRepository.create(customField);
         if (customField == null) {
@@ -221,6 +281,48 @@ public class SuperuserService implements ISuperuserService {
             response.setResponseObject(customFieldItem);
         }
         return response;
+    }
+
+    @Override
+    public ServiceResponse<List<String>> getTypes(){
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        List<String> fields = new ArrayList<>();
+        List<? extends ICustomFieldType> customFieldTypes = customFieldTypeRepository.findAll(CustomFieldType.class);
+        if (customFieldTypes == null){
+            response.addError("","error");
+        }else{
+            for (ICustomFieldType cft : customFieldTypes){
+                fields.add(cft.getName());
+            }
+            response.setResponseObject(fields);
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<String>> getSizes(){
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        List<String> fields = new ArrayList<>();
+        List<? extends ICustomFieldSize> customFieldSizes = customFieldSizeRepository.findAll(CustomFieldSize.class);
+        if (customFieldSizes == null){
+            response.addError("","error");
+        }else{
+            for (ICustomFieldSize cfs : customFieldSizes){
+                fields.add(cfs.getName());
+            }
+            response.setResponseObject(fields);
+        }
+        return response;
+    }
+
+    private CustomFieldItem getCustomFieldItem(ICustomField cf){
+        CustomFieldItem customFieldItem = new CustomFieldItem();
+        customFieldItem.setName(cf.getName());
+        customFieldItem.setType(cf.getCustomFieldType().getName());
+        customFieldItem.setSize(cf.getCustomFieldSize().getName());
+        customFieldItem.setOrder(cf.getOrder());
+        customFieldItem.setPlaceholder(cf.getPlaceholder());
+        return customFieldItem;
     }
 
     private Query<CustomTab> getCustomMedicalTabQuery() {

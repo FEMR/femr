@@ -89,6 +89,11 @@ hr {
     background-color: #e5e5e5;
     border: 1px solid #3f3f3d;
 }
+/* THE fEMR dropdown! */
+.fOption{
+    height: 33px;
+    width: 175px;
+}
 /* THE fEMR input(text)! */
 .fInput{
     border-radius: 5px;

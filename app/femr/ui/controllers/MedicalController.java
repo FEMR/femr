@@ -210,6 +210,7 @@ public class MedicalController extends Controller {
 
         //get custom tabs
         viewModelGet.setCustomTabs(medicalService.getCustomTabs().getResponseObject());
+        viewModelGet.setCustomFields(medicalService.getCustomFields().getResponseObject());
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }

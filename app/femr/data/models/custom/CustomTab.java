@@ -19,6 +19,10 @@ public class CustomTab implements ICustomTab {
     private DateTime dateCreated;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
+    @Column(name = "left_column_size", nullable = false)
+    private int leftColumnSize;
+    @Column(name = "right_column_size", nullable = false)
+    private int rightColumnSize;
 
 
     @Override
@@ -64,5 +68,25 @@ public class CustomTab implements ICustomTab {
     @Override
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    @Override
+    public int getLeftColumnSize() {
+        return leftColumnSize;
+    }
+
+    @Override
+    public void setLeftColumnSize(int leftColumnSize) {
+        this.leftColumnSize = leftColumnSize;
+    }
+
+    @Override
+    public int getRightColumnSize() {
+        return rightColumnSize;
+    }
+
+    @Override
+    public void setRightColumnSize(int rightColumnSize) {
+        this.rightColumnSize = rightColumnSize;
     }
 }

@@ -3,6 +3,7 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.views.html.helpers.medical._
+@import femr.ui.views.html.helpers.medical.custom._
 @import femr.ui.views.html.helpers.shared._
 @import femr.ui.views.html.medical.listVitals
     @additionalStyles = {
@@ -91,7 +92,6 @@
                 </div>
 
                 <div id="tabContentWrap">
-
                     <div class="controlWrap" id="hpiControl">
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6">
@@ -262,8 +262,10 @@
 
                         </div>
                     </div>
-                    @for(i <- 1 to viewModel.getCustomTabs.size){
-                        <div class="controlWrap hidden" id="@viewModel.getCustomTabs.get(i - 1).toLowerCase()Control"></div>
+                    @for(i <- 1 to viewModel.getCustomTabs.size) {
+                        <div class="controlWrap hidden" id="@viewModel.getCustomTabs.get(i - 1).toLowerCase()Control">
+                        @dynamicTab(viewModel.getCustomFields.get(viewModel.getCustomTabs.get(i - 1)))
+                        </div>
                     }
 
                     <div class="pull-left">

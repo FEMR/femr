@@ -1,6 +1,6 @@
 package femr.ui.models.superuser;
 
-import femr.ui.models.data.CustomFieldItem;
+import femr.ui.models.data.custom.CustomFieldItem;
 
 import java.util.List;
 
@@ -11,6 +11,8 @@ public class ContentViewModelGet {
     private String name;
     private List<CustomFieldItem> currentCustomFieldItemList;
     private List<CustomFieldItem> removedCustomFieldItemList;
+    private List<String> customFieldTypes;
+    private List<String> customFieldSizes;
 
 
 
@@ -36,5 +38,21 @@ public class ContentViewModelGet {
 
     public void setRemovedCustomFieldItemList(List<CustomFieldItem> removedCustomFieldItemList) {
         this.removedCustomFieldItemList = removedCustomFieldItemList;
+    }
+
+    public List<String> getCustomFieldTypes() {
+        return customFieldTypes;
+    }
+
+    public void setCustomFieldTypes(List<String> customFieldTypes) {
+        this.customFieldTypes = customFieldTypes;
+    }
+
+    public List<String> getCustomFieldSizes() {
+        return customFieldSizes;
+    }
+
+    public void setCustomFieldSizes(List<String> customFieldSizes) {
+        this.customFieldSizes = customFieldSizes;
     }
 }

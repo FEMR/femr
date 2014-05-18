@@ -2,7 +2,7 @@ package femr.business.services;
 
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.models.PatientEncounterHpiField;
+import femr.ui.models.data.custom.CustomFieldItem;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -31,5 +31,6 @@ public interface IMedicalService {
 
     public ServiceResponse<DateTime> getDateOfCheckIn(int encounterId);
 
+    ServiceResponse<Map<String, List<CustomFieldItem>>> getCustomFields();
     ServiceResponse<List<String>> getCustomTabs();
 }

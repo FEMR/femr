@@ -20,4 +20,12 @@ public interface ICustomTab {
     Boolean getIsDeleted();
 
     void setIsDeleted(Boolean isDeleted);
+
+    int getLeftColumnSize();
+
+    void setLeftColumnSize(int leftColumnSize);
+
+    int getRightColumnSize();
+
+    void setRightColumnSize(int rightColumnSize);
 }

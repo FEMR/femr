@@ -1,12 +1,11 @@
-package femr.ui.models.data;
+package femr.ui.models.data.custom;
 
-/**
- * Created by kevin on 5/18/14.
- */
 public class CustomFieldItem {
     private String name;
     private String type;
     private String size;
+    private Integer order;
+    private String placeholder;
 
     public String getName() {
         return name;
@@ -30,5 +29,21 @@ public class CustomFieldItem {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public String getPlaceholder() {
+        return placeholder;
+    }
+
+    public void setPlaceholder(String placeholder) {
+        this.placeholder = placeholder;
     }
 }

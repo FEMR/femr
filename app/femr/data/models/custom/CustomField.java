@@ -11,7 +11,7 @@ public class CustomField implements ICustomField {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
     @Column(name = "user_id", unique = false, nullable = false)
     private int userId;
@@ -24,10 +24,14 @@ public class CustomField implements ICustomField {
     @JoinColumn(name = "custom_type_id", nullable = false)
     private CustomFieldType customFieldType;
     @OneToOne
-    @JoinColumn(name="custom_size_id", nullable = false)
+    @JoinColumn(name = "custom_size_id", nullable = false)
     private CustomFieldSize customFieldSize;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
+    @Column(name = "sort_order", nullable = true, unique = true)
+    private Integer order;
+    @Column(name="placeholder", nullable = true, unique = false)
+    private String placeholder;
 
 
     @Override
@@ -108,5 +112,25 @@ public class CustomField implements ICustomField {
     @Override
     public void setCustomFieldSize(CustomFieldSize customFieldSize) {
         this.customFieldSize = customFieldSize;
+    }
+
+    @Override
+    public Integer getOrder() {
+        return order;
+    }
+
+    @Override
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    @Override
+    public String getPlaceholder() {
+        return placeholder;
+    }
+
+    @Override
+    public void setPlaceholder(String placeholder) {
+        this.placeholder = placeholder;
     }
 }

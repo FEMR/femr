@@ -37,4 +37,12 @@ public interface ICustomField {
     CustomFieldSize getCustomFieldSize();
 
     void setCustomFieldSize(CustomFieldSize customFieldSize);
+
+    Integer getOrder();
+
+    void setOrder(Integer order);
+
+    String getPlaceholder();
+
+    void setPlaceholder(String placeholder);
 }

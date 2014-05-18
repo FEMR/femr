@@ -6,34 +6,38 @@
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.controllers.routes.SuperuserController
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.research.routes.ResearchController
 <div class="navbar-header">
-  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a class="navbar-brand" href="@HomeController.index()">fEMR</a>
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="@HomeController.index()">fEMR</a>
 </div>
 <div class="navbar-collapse collapse">
-  <ul class="nav navbar-nav">
-    @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
-      <li><a href="@TriageController.indexGet()">Triage</a></li>
-      <li><a href="@MedicalController.indexGet()">Medical</a></li>
-      <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
-    }
-    @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
-      <li><a href="@ResearchController.index()">Research</a></li>
-    }
-    @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles)) {
-      <li><a href="@AdminController.index()">Admin</a></li>
-    }
-  </ul>
-  <p class="navbar-text navbar-right">
-    Signed in as @currentUser.getFirstName @currentUser.getLastName
-    <a class="navbar-link" href="@SessionsController.delete()">
-      <span class="glyphicon glyphicon-log-out"></span>
-    </a>
-  </p>
+    <ul class="nav navbar-nav">
+        @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
+            <li><a href="@TriageController.indexGet()">Triage</a></li>
+            <li><a href="@MedicalController.indexGet()">Medical</a></li>
+            <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
+            <li><a href="@ResearchController.index()">Research</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+            <li><a href="@AdminController.index()">Admin</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+            <li><a href="@SuperuserController.indexGet()">SuperUser</a></li>
+        }
+    </ul>
+    <p class="navbar-text navbar-right">
+        Signed in as @currentUser.getFirstName @currentUser.getLastName
+        <a class="navbar-link" href="@SessionsController.delete()">
+            <span class="glyphicon glyphicon-log-out"></span>
+        </a>
+    </p>
 </div>

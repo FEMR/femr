@@ -15,4 +15,5 @@ public interface ISuperuserService {
     ServiceResponse<ICustomTab> removeCustomMedicalTab(String name);
     ServiceResponse<List<CustomFieldItem>> getCustomFields(Boolean isDeleted);
     ServiceResponse<CustomFieldItem> createCustomField(CustomFieldItem customFieldItem, int userId, String tabName);
+    ServiceResponse<CustomFieldItem> removeCustomField(String fieldName, String tabName);
 }

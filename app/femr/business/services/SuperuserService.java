@@ -143,6 +143,29 @@ public class SuperuserService implements ISuperuserService {
     }
 
     @Override
+    public ServiceResponse<CustomFieldItem> removeCustomField(String fieldName, String tabName){
+        ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
+        ExpressionList<CustomField> query = getCustomFieldQuery()
+                .fetch("customTab")
+                .where()
+                .eq("name", fieldName)
+                .eq("customTab.name", tabName);
+        ICustomField customField = customFieldRepository.findOne(query);
+        if (customField == null){
+            response.addError("","error");
+        }
+        customField.setIsDeleted(true);
+        customField = customFieldRepository.update(customField);
+        CustomFieldItem customFieldItem = new CustomFieldItem();
+        customFieldItem.setName(customField.getName());
+        customFieldItem.setSize(customField.getCustomFieldSize().getName());
+        customFieldItem.setType(customField.getCustomFieldType().getName());
+        response.setResponseObject(customFieldItem);
+        return response;
+
+    }
+
+    @Override
     public ServiceResponse<CustomFieldItem> createCustomField(CustomFieldItem customFieldItem, int userId, String tabName) {
         ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
         if (StringUtils.isNullOrWhiteSpace(customFieldItem.getName()) || StringUtils.isNullOrWhiteSpace(customFieldItem.getSize()) || StringUtils.isNullOrWhiteSpace(customFieldItem.getType()) || StringUtils.isNullOrWhiteSpace(tabName)) {
@@ -179,6 +202,8 @@ public class SuperuserService implements ISuperuserService {
             response.addError("", "error");
             return response;
         }
+
+        //check if the custom field id exists, if it does just switch isDeleted from false to true
 
         ICustomField customField = new CustomField();
         customField.setName(customFieldItem.getName());

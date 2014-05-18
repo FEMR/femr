@@ -128,16 +128,28 @@ public class SuperuserController extends Controller {
 
         ContentViewModelPost viewModelPost = ContentViewModelForm.bindFromRequest().get();
 
-        //to do: determine if adding or removing shit
-        CustomFieldItem customFieldItem = new CustomFieldItem();
-        customFieldItem.setName(viewModelPost.getAddName().toLowerCase());
-        customFieldItem.setSize(viewModelPost.getAddSize().toLowerCase());
-        customFieldItem.setType(viewModelPost.getAddType().toLowerCase());
 
-        ServiceResponse<CustomFieldItem> response = superuserService.createCustomField(customFieldItem, currentUser.getId(), name);
-        if (response.hasErrors()){
-            return internalServerError();
+        //adding a field
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddName()) && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddSize()) && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddType())){
+            CustomFieldItem customFieldItem = new CustomFieldItem();
+            customFieldItem.setName(viewModelPost.getAddName().toLowerCase());
+            customFieldItem.setSize(viewModelPost.getAddSize().toLowerCase());
+            customFieldItem.setType(viewModelPost.getAddType().toLowerCase());
+            ServiceResponse<CustomFieldItem> response = superuserService.createCustomField(customFieldItem, currentUser.getId(), name);
+            if (response.hasErrors()){
+                return internalServerError();
+            }
         }
+        //removing a field
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRemoveName()) && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRemoveSize()) && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRemoveType())){
+            ServiceResponse<CustomFieldItem> response = superuserService.removeCustomField(viewModelPost.getRemoveName(), name);
+            if (response.hasErrors()){
+                return internalServerError();
+            }
+        }
+
+
+
 
 
         return redirect("/superuser/tabs/" + name);

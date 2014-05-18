@@ -20,13 +20,15 @@
             </tr>
         </thead>
         <tbody>
+
+        @for(f <- 1 to viewModel.getCurrentCustomFieldItemList.size) {
             <tr>
-                @for(f <- 1 to viewModel.getCurrentCustomFieldItemList.size){
-                    <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getName</td>
-                    <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getType</td>
-                    <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getSize</td>
-                }
+                <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getName</td>
+                <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getType</td>
+                <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getSize</td>
             </tr>
+        }
+
         </tbody>
     </table>
     <h3>Deleted Fields</h3>
@@ -39,13 +41,15 @@
             </tr>
         </thead>
         <tbody>
+
+        @for(f <- 1 to viewModel.getRemovedCustomFieldItemList.size) {
             <tr>
-            @for(f <- 1 to viewModel.getRemovedCustomFieldItemList.size){
                 <td>@viewModel.getRemovedCustomFieldItemList.get(f - 1).getName</td>
                 <td>@viewModel.getRemovedCustomFieldItemList.get(f - 1).getType</td>
                 <td>@viewModel.getRemovedCustomFieldItemList.get(f - 1).getSize</td>
-            }
             </tr>
+        }
+
         </tbody>
     </table>
     <br/>

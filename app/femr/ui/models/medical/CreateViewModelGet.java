@@ -9,6 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateViewModelGet {
+    public List<String> getCustomTabs() {
+        return customTabs;
+    }
+
+    public void setCustomTabs(List<String> customTabs) {
+        this.customTabs = customTabs;
+    }
+
     public static class PhotoModel
     {
         private String imageUrl;
@@ -92,6 +100,8 @@ public class CreateViewModelGet {
     private String medicalSurgicalHistory;
     private String socialHistory;
     private String currentMedication;
+
+    private List<String> customTabs;
 
     private List<PhotoModel> photos;
 

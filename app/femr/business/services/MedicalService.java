@@ -7,8 +7,11 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.common.models.custom.ICustomTab;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
+import femr.data.models.custom.CustomField;
+import femr.data.models.custom.CustomTab;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 
@@ -25,6 +28,7 @@ public class MedicalService implements IMedicalService {
     private IRepository<IPmhField> pmhFieldRepository;
     private IRepository<ITreatmentField> treatmentFieldRepository;
     private IRepository<IVital> vitalRepository;
+    private IRepository<ICustomTab> customTabRepository;
     private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
 
 
@@ -38,7 +42,8 @@ public class MedicalService implements IMedicalService {
                           IRepository<ITreatmentField> treatmentFieldRepository,
                           IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                           IRepository<IVital> vitalRepository,
-                          Provider<IPatientEncounterVital> patientEncounterVitalProvider) {
+                          Provider<IPatientEncounterVital> patientEncounterVitalProvider,
+                          IRepository<ICustomTab> customTabRepository) {
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
         this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
@@ -48,6 +53,7 @@ public class MedicalService implements IMedicalService {
         this.treatmentFieldRepository = treatmentFieldRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
+        this.customTabRepository = customTabRepository;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
     }
 
@@ -274,6 +280,34 @@ public class MedicalService implements IMedicalService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<List<String>> getCustomTabs(){
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+                .where()
+                .eq("isDeleted", false);
+        List<? extends ICustomTab> customTabs = customTabRepository.find(query);
+        List<String> customTabNames = new ArrayList<>();
+        if (customTabs == null) {
+            response.addError("", "error");
+        } else {
+            for (ICustomTab ct : customTabs){
+                customTabNames.add(ct.getName());
+
+            }
+            response.setResponseObject(customTabNames);
+        }
+        return response;
+    }
+
+
+    private Query<CustomTab> getCustomMedicalTabQuery() {
+        return Ebean.find(CustomTab.class);
+    }
+
+    private Query<CustomField> getCustomFieldQuery() {
+        return Ebean.find(CustomField.class);
+    }
     private Query<PatientEncounterHpiField> getPatientEncounterHpiField() {
         return Ebean.find(PatientEncounterHpiField.class);
     }

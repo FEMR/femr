@@ -3,6 +3,10 @@
 # ~~~~
 
 GET         /*path/                     femr.ui.controllers.ApplicationController.removeTrailingSlash(path: String)
+GET         /superuser/tabs/:name       @femr.ui.controllers.SuperuserController.contentGet(name: String)
+POST        /superuser/tabs/:name       @femr.ui.controllers.SuperuserController.contentPost(name: String)
+GET         /superuser/tabs             @femr.ui.controllers.SuperuserController.tabsGet()
+POST        /superuser/tabs             @femr.ui.controllers.SuperuserController.tabsPost()
 GET         /superuser                  @femr.ui.controllers.SuperuserController.indexGet()
 POST        /admin/users/create         @femr.ui.controllers.admin.UsersController.createPost()
 GET         /admin/users/create         @femr.ui.controllers.admin.UsersController.createGet()

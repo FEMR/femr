@@ -1,0 +1,35 @@
+@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TabsViewModelGet)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.routes.SuperuserController
+
+    @additionalMenuItems = {
+        <a href="@SuperuserController.tabsGet()" class="btn btn-default pull-left userBtns"><span class="glyphicon glyphicon-wrench"></span>
+            Manage Content</a>
+    }
+
+@admin("Admin Panel", currentUser, menu = additionalMenuItems) {
+    <h3>Current Custom Medical Tabs:</h3>
+    <ul>
+    @for(x <- 1 to viewModel.getCurrentTabNames.size) {
+        <li><a href="/superuser/tabs/@viewModel.getCurrentTabNames.get(x - 1)">@viewModel.getCurrentTabNames.get(x - 1)</a></li>
+    }
+    </ul>
+    <h3>Deleted Custom Medical Tabs:</h3>
+    <ul>
+    @for(x <- 1 to viewModel.getDeletedTabNames.size) {
+        <li>@viewModel.getDeletedTabNames.get(x - 1)</li>
+    }
+    </ul>
+    <br/>
+
+    @helper.form(action = SuperuserController.tabsPost()) {
+        <h4>Add/Activate Tab:</h4>
+        <input type="text" class="fInput" name="newTab"/>
+        <h4>Deactivate Tab:</h4>
+        <input type="text" class="fInput" name="deleteTab"/>
+        <br/>
+        <button type="submit" class="fButton">Submit</button>
+    }
+
+}

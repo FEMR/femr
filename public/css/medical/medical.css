@@ -130,6 +130,12 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     text-transform: uppercase;
     font-size: 20px;
 }
+@media (max-width: 1000px){
+    #medicalTabs a:link,
+    #medicalTabs a:visited{
+        font-size: 16px;
+    }
+}
 
 #medicalTabs a:hover,
 #medicalTabs a:focus {

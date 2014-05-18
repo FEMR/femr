@@ -208,6 +208,9 @@ public class MedicalController extends Controller {
                 patientPrescriptions, vitalMap, patientEncounterTreatmentMap,
                 patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
 
+        //get custom tabs
+        viewModelGet.setCustomTabs(medicalService.getCustomTabs().getResponseObject());
+
         return ok(edit.render(currentUserSession, viewModelGet));
     }
 

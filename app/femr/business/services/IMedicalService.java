@@ -30,4 +30,6 @@ public interface IMedicalService {
     boolean hasPatientBeenCheckedInByPhysician(int encounterId);
 
     public ServiceResponse<DateTime> getDateOfCheckIn(int encounterId);
+
+    ServiceResponse<List<String>> getCustomTabs();
 }

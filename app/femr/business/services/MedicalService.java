@@ -9,11 +9,14 @@ import femr.business.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.common.models.custom.ICustomField;
 import femr.common.models.custom.ICustomTab;
+import femr.common.models.custom.IPatientEncounterCustomField;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 import femr.data.models.custom.CustomField;
 import femr.data.models.custom.CustomTab;
+import femr.data.models.custom.PatientEncounterCustomField;
 import femr.ui.models.data.custom.CustomFieldItem;
+import femr.ui.models.data.custom.CustomTabItem;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 
@@ -26,6 +29,7 @@ public class MedicalService implements IMedicalService {
     private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
     private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private IRepository<ICustomField> customFieldRepository;
+    private IRepository<IPatientEncounterCustomField> patientEncounterCustomFieldRepository;
     private IRepository<IPatientPrescription> patientPrescriptionRepository;
     private IRepository<IHpiField> hpiFieldRepository;
     private IRepository<IPmhField> pmhFieldRepository;
@@ -47,7 +51,8 @@ public class MedicalService implements IMedicalService {
                           IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                           IRepository<IVital> vitalRepository,
                           Provider<IPatientEncounterVital> patientEncounterVitalProvider,
-                          IRepository<ICustomTab> customTabRepository) {
+                          IRepository<ICustomTab> customTabRepository,
+                          IRepository<IPatientEncounterCustomField> patientEncounterCustomFieldRepository) {
         this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
         this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
         this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
@@ -60,6 +65,7 @@ public class MedicalService implements IMedicalService {
         this.vitalRepository = vitalRepository;
         this.customTabRepository = customTabRepository;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
+        this.patientEncounterCustomFieldRepository = patientEncounterCustomFieldRepository;
     }
 
     @Override
@@ -286,7 +292,7 @@ public class MedicalService implements IMedicalService {
     }
 
     @Override
-    public ServiceResponse<Map<String, List<CustomFieldItem>>> getCustomFields() {
+    public ServiceResponse<Map<String, List<CustomFieldItem>>> getCustomFields(int encounterId) {
         ServiceResponse<Map<String, List<CustomFieldItem>>> response = new ServiceResponse<>();
         Map<String, List<CustomFieldItem>> customFieldMap = new HashMap<>();
         ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
@@ -295,15 +301,25 @@ public class MedicalService implements IMedicalService {
         try {
             //O(n^2) because who gives a fuck
             List<? extends ICustomTab> customTabs = customTabRepository.find(query);
-            for (ICustomTab ct : customTabs){
+            for (ICustomTab ct : customTabs) {
                 Query<CustomField> query2 = getCustomFieldQuery()
+                        .fetch("customTab")
                         .where()
                         .eq("isDeleted", false)
+                        .eq("customTab.name", ct.getName())
                         .order()
                         .asc("sort_order");
                 List<? extends ICustomField> customFields = customFieldRepository.find(query2);
                 List<CustomFieldItem> customFieldItems = new ArrayList<>();
-                for (ICustomField cf : customFields){
+                for (ICustomField cf : customFields) {
+                    Query<PatientEncounterCustomField> query3 = getPatientEncounterCustomFieldQuery()
+                            .where()
+                            .eq("custom_field_id", cf.getId())
+                            .eq("patient_encounter_id", encounterId)
+                            .order()
+                            .desc("date_taken");
+                    List<? extends IPatientEncounterCustomField> patientEncounterCustomField = patientEncounterCustomFieldRepository.find(query3);
+                    //see if the field its contained without turning this shit into O(n^3)
                     customFieldItems.add(getCustomFieldItem(cf));
                 }
                 customFieldMap.put(ct.getName(), customFieldItems);
@@ -318,31 +334,77 @@ public class MedicalService implements IMedicalService {
         return response;
 
 
-
     }
 
     @Override
-    public ServiceResponse<List<String>> getCustomTabs() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
+    public ServiceResponse<List<CustomTabItem>> getCustomTabs() {
+        ServiceResponse<List<CustomTabItem>> response = new ServiceResponse<>();
         ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
                 .where()
                 .eq("isDeleted", false);
-        List<? extends ICustomTab> customTabs = customTabRepository.find(query);
-        List<String> customTabNames = new ArrayList<>();
-        if (customTabs == null) {
-            response.addError("", "error");
-        } else {
-            for (ICustomTab ct : customTabs) {
-                customTabNames.add(ct.getName());
+        try {
+            List<? extends ICustomTab> customTabs = customTabRepository.find(query);
+            List<CustomTabItem> customTabNames = new ArrayList<>();
 
+            for (ICustomTab ct : customTabs) {
+                customTabNames.add(getCustomTabItem(ct));
             }
             response.setResponseObject(customTabNames);
+        } catch (Exception ex) {
+            response.addError("", "error");
         }
+
         return response;
     }
 
+    @Override
+    public ServiceResponse<List<CustomFieldItem>> createPatientEncounterCustomFields(List<CustomFieldItem> customFieldItems, int encounterId, int userId) {
+        ServiceResponse<List<CustomFieldItem>> response = new ServiceResponse<>();
+        List<IPatientEncounterCustomField> customFields = new ArrayList<>();
+        try {
 
-    private CustomFieldItem getCustomFieldItem(ICustomField cf){
+
+            for (CustomFieldItem cf : customFieldItems) {
+                ExpressionList<CustomField> query = getCustomFieldQuery()
+                        .where()
+                        .eq("name", cf.getName());
+                ICustomField customField = customFieldRepository.findOne(query);
+                IPatientEncounterCustomField patientEncounterCustomField = new PatientEncounterCustomField();
+                patientEncounterCustomField.setUserId(userId);
+                patientEncounterCustomField.setPatientEncounterId(encounterId);
+                patientEncounterCustomField.setDateTaken(DateTime.now());
+                patientEncounterCustomField.setCustomFieldValue(cf.getValue());
+                patientEncounterCustomField.setCustomFieldId(customField.getId());
+                ExpressionList<PatientEncounterCustomField> query2 = getPatientEncounterCustomFieldQuery()
+                        .where()
+                        .eq("custom_field_id", customField.getId())
+                        .eq("patient_encounter_id", encounterId)
+                        .eq("custom_field_value", cf.getValue());
+                if (patientEncounterCustomFieldRepository.findOne(query2) != null){
+                    //already exists
+                }else{
+                    customFields.add(patientEncounterCustomField);
+                }
+
+            }
+            patientEncounterCustomFieldRepository.createAll(customFields);
+            response.setResponseObject(customFieldItems);
+        } catch (Exception ex) {
+            response.addError("", "error");
+        }
+        return response;
+
+    }
+
+    private CustomTabItem getCustomTabItem(ICustomTab ct) {
+        CustomTabItem customTabItem = new CustomTabItem();
+        customTabItem.setLeftColumnSize(ct.getLeftColumnSize());
+        customTabItem.setRightColumnSize(ct.getRightColumnSize());
+        customTabItem.setName(ct.getName());
+        return customTabItem;
+    }
+
+    private CustomFieldItem getCustomFieldItem(ICustomField cf) {
         CustomFieldItem customFieldItem = new CustomFieldItem();
         customFieldItem.setName(cf.getName());
         customFieldItem.setType(cf.getCustomFieldType().getName());
@@ -350,6 +412,10 @@ public class MedicalService implements IMedicalService {
         customFieldItem.setOrder(cf.getOrder());
         customFieldItem.setPlaceholder(cf.getPlaceholder());
         return customFieldItem;
+    }
+
+    private Query<PatientEncounterCustomField> getPatientEncounterCustomFieldQuery(){
+        return Ebean.find(PatientEncounterCustomField.class);
     }
 
     private Query<CustomTab> getCustomMedicalTabQuery() {

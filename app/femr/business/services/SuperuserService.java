@@ -15,9 +15,11 @@ import femr.data.models.custom.CustomFieldSize;
 import femr.data.models.custom.CustomFieldType;
 import femr.data.models.custom.CustomTab;
 import femr.ui.models.data.custom.CustomFieldItem;
+import femr.ui.models.data.custom.CustomTabItem;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import javax.xml.ws.Service;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class SuperuserService implements ISuperuserService {
     }
 
     @Override
-    public ServiceResponse<ICustomTab> removeCustomMedicalTab(String name) {
+    public ServiceResponse<ICustomTab> toggleCustomMedicalTab(String name) {
 
         ServiceResponse<ICustomTab> response = new ServiceResponse<>();
         ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
@@ -50,7 +52,7 @@ public class SuperuserService implements ISuperuserService {
             response.addError("", "error");
             return response;
         }
-        customTab.setIsDeleted(true);
+        customTab.setIsDeleted(!customTab.getIsDeleted());
         customTab = customTabRepository.update(customTab);
         if (customTab == null) {
             response.addError("", "error");
@@ -85,36 +87,44 @@ public class SuperuserService implements ISuperuserService {
     }
 
     @Override
-    public ServiceResponse<List<? extends ICustomTab>> getCustomMedicalTabs(Boolean isDeleted) {
-        ServiceResponse<List<? extends ICustomTab>> response = new ServiceResponse<>();
+    public ServiceResponse<List<CustomTabItem>> getCustomMedicalTabs(Boolean isDeleted) {
+        ServiceResponse<List<CustomTabItem>> response = new ServiceResponse<>();
         //List<? extends ICustomTab> customTabs = customTabRepository.findAll(CustomTab.class);
         ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
                 .where()
                 .eq("isDeleted", isDeleted);
         List<? extends ICustomTab> customTabs = customTabRepository.find(query);
+        List<CustomTabItem> customTabItems = new ArrayList<>();
+        for (ICustomTab ct: customTabs){
+            customTabItems.add(getCustomTabItem(ct));
+        }
 
         if (customTabs == null) {
             response.addError("", "error");
         } else {
-            response.setResponseObject(customTabs);
+            response.setResponseObject(customTabItems);
         }
         return response;
     }
 
-//    @Override
-//    public ServiceResponse<ICustomTab> getCustomMedicalTab(String name) {
-//        ServiceResponse<ICustomTab> response = new ServiceResponse<>();
-//        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
-//                .where()
-//                .eq("name", name);
-//        ICustomTab customTab = customTabRepository.findOne(query);
-//        if (customTab == null) {
-//            response.addError("", "error");
-//        } else {
-//            response.setResponseObject(customTab);
-//        }
-//        return response;
-//    }
+    @Override
+    public ServiceResponse<Boolean> doesCustomTabExist(String tabName){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+                .where()
+                .eq("name", tabName);
+        try{
+            ICustomTab customTab = customTabRepository.findOne(query);
+            if (customTab == null){
+                response.setResponseObject(false);
+            }else{
+                response.setResponseObject(true);
+            }
+        }catch(Exception ex){
+            response.setResponseObject(false);
+        }
+        return response;
+    }
 
     @Override
     public ServiceResponse<Boolean> doesCustomFieldExist(String fieldName){
@@ -137,11 +147,13 @@ public class SuperuserService implements ISuperuserService {
     }
 
     @Override
-    public ServiceResponse<List<CustomFieldItem>> getCustomFields(Boolean isDeleted) {
+    public ServiceResponse<List<CustomFieldItem>> getCustomFields(Boolean isDeleted, String tabName) {
         ServiceResponse<List<CustomFieldItem>> response = new ServiceResponse<>();
         Query<CustomField> query = getCustomFieldQuery()
+                .fetch("customTab")
                 .where()
                 .eq("isDeleted", isDeleted)
+                .eq("customTab.name", tabName)
                 .order()
                 .asc("sort_order");
         List<? extends ICustomField> customFields = customFieldRepository.find(query);
@@ -180,6 +192,33 @@ public class SuperuserService implements ISuperuserService {
         customFieldItem.setSize(customField.getCustomFieldSize().getName());
         customFieldItem.setType(customField.getCustomFieldType().getName());
         response.setResponseObject(customFieldItem);
+        return response;
+
+    }
+
+    @Override
+    public ServiceResponse<CustomTabItem> editCustomTab(CustomTabItem customTabItem, int userId){
+        ServiceResponse<CustomTabItem> response = new ServiceResponse<>();
+        if (customTabItem.getName() == null){
+            response.addError("", "no item");
+            return response;
+        }
+
+        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+                .where()
+                .eq("name", customTabItem.getName());
+        try{
+            ICustomTab customTab = customTabRepository.findOne(query);
+            customTab.setDateCreated(DateTime.now());
+            customTab.setIsDeleted(customTab.getIsDeleted());
+            customTab.setLeftColumnSize(customTabItem.getLeftColumnSize());
+            customTab.setRightColumnSize(customTabItem.getRightColumnSize());
+            customTab.setUserId(userId);
+            customTab = customTabRepository.update(customTab);
+            response.setResponseObject(customTabItem);
+        }catch(Exception ex){
+            response.addError("", "error");
+        }
         return response;
 
     }
@@ -323,6 +362,14 @@ public class SuperuserService implements ISuperuserService {
         customFieldItem.setOrder(cf.getOrder());
         customFieldItem.setPlaceholder(cf.getPlaceholder());
         return customFieldItem;
+    }
+
+    private CustomTabItem getCustomTabItem(ICustomTab ct){
+        CustomTabItem customTabItem = new CustomTabItem();
+        customTabItem.setLeftColumnSize(ct.getLeftColumnSize());
+        customTabItem.setRightColumnSize(ct.getRightColumnSize());
+        customTabItem.setName(ct.getName());
+        return customTabItem;
     }
 
     private Query<CustomTab> getCustomMedicalTabQuery() {

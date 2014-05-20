@@ -2,6 +2,7 @@ package femr.ui.models.medical;
 
 
 import femr.ui.models.data.custom.CustomFieldItem;
+import femr.ui.models.data.custom.CustomTabItem;
 import femr.util.DataStructure.VitalMultiMap;
 
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateViewModelGet {
-    public List<String> getCustomTabs() {
+
+
+    public List<CustomTabItem> getCustomTabs() {
         return customTabs;
     }
 
-    public void setCustomTabs(List<String> customTabs) {
+    public void setCustomTabs(List<CustomTabItem> customTabs) {
         this.customTabs = customTabs;
     }
 
@@ -103,7 +106,7 @@ public class CreateViewModelGet {
 
     //because iterating over a Map that isnt a <string,string>
     //in scala sucks
-    private List<String> customTabs;
+    private List<CustomTabItem> customTabs;
     private Map<String, List<CustomFieldItem>> customFields;
 
     private List<PhotoModel> photos;

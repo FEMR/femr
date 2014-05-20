@@ -6,6 +6,7 @@ public class CustomFieldItem {
     private String size;
     private Integer order;
     private String placeholder;
+    private String value;
 
     public String getName() {
         return name;
@@ -45,5 +46,13 @@ public class CustomFieldItem {
 
     public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

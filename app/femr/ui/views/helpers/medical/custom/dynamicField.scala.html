@@ -1,19 +1,21 @@
 @(number: Integer, fields: java.util.List[femr.ui.models.data.custom.CustomFieldItem])
 
-@for(f <- 1 to fields.size){
+@for(f <- 1 to fields.size) {
 
     @defining(fields.get(f - 1)) { field =>
 
-        @if(field.getOrder == number){
-            <label for="@field.getName">@field.getName</label>
-            <input type="@field.getType" name="@field.getName" class="fInput" placeholder="@field.getPlaceholder"/>
-            <br/>
-        }
+
+            @if(field.getSize == "medium" && field.getOrder == number){
+                <label for="@field.getName">@field.getName</label>
+                <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder"/>
+                <br/>
+            }else{
+                @if(field.getSize == "large" && field.getOrder == number){
+                    <label for="@field.getName">@field.getName</label>
+                    <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder"></textarea>
+                    <br/>
+                }
+            }
 
     }
-
-
-
-
-
 }

@@ -96,9 +96,9 @@ $(document).ready(function () {
 
     });
 
-    $('#medicalSubmitBtn').click(function () {
-        return photoNameFixup();
-    });
+
+
+
 
 
     $('#newVitalsDialog').dialog({
@@ -134,7 +134,45 @@ $(document).ready(function () {
     });
 
 
+    $('#medicalSubmitBtn').click(function () {
+        JSONifyDynamicFields();
+        return photoNameFixup();
+    });
 });
+
+function JSONifyDynamicFields(){
+    var tabs = {};
+
+    //iterate over each tab
+    $(".customTab").each(function(){
+        var tabName = $(this).attr("id");
+
+        var fieldItem = [];
+        $("#" + tabName + "DynamicTab .customField").each(function(){
+            var fieldItems = {};
+            if ($(this).val() !== ""){
+                fieldItems["name"] = $(this).attr('id');
+                fieldItems["value"] = $(this).val();
+                fieldItem.push(fieldItems);
+            }
+            tabs[tabName] = fieldItem;
+
+        });
+
+
+    });
+
+    console.log(tabs);
+     var stringifiedJSON = JSON.stringify(tabs);
+    $('input[name=customFieldJSON]').val(stringifiedJSON);
+
+
+}
+
+
+
+
+
 
 /**
  * Generic tab showing function
@@ -353,3 +391,5 @@ function photoNameFixup() {
 
     return true;
 }
+
+

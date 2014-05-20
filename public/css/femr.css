@@ -94,6 +94,11 @@ hr {
     height: 33px;
     width: 175px;
 }
+/* THE fEMR textarea */
+.fTextArea{
+    width: 100%;
+    height: 75px;
+}
 /* THE fEMR input(text)! */
 .fInput{
     border-radius: 5px;

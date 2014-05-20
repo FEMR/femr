@@ -1,15 +1,19 @@
 package femr.ui.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+
 import femr.business.dtos.CurrentUser;
 import femr.business.dtos.ServiceResponse;
 import femr.business.services.*;
 import femr.common.models.*;
-import femr.data.models.PatientEncounterHpiField;
 import femr.ui.helpers.controller.MedicalHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.data.custom.CustomFieldItem;
 import femr.ui.models.medical.*;
+import femr.ui.models.medical.json.JCustomField;
 import femr.ui.views.html.medical.*;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
@@ -17,7 +21,6 @@ import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -53,7 +56,7 @@ public class MedicalController extends Controller {
     }
 
     public Result indexGet(Integer patientId) {
-
+                List<Map<String,List<String>>> test;
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         return ok(index.render(currentUserSession, null, patientId));
@@ -210,7 +213,7 @@ public class MedicalController extends Controller {
 
         //get custom tabs
         viewModelGet.setCustomTabs(medicalService.getCustomTabs().getResponseObject());
-        viewModelGet.setCustomFields(medicalService.getCustomFields().getResponseObject());
+        viewModelGet.setCustomFields(medicalService.getCustomFields(patientEncounter.getId()).getResponseObject());
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -225,6 +228,25 @@ public class MedicalController extends Controller {
             return internalServerError();
         }
         IPatientEncounter patientEncounter = patientEncounterServiceResponse.getResponseObject();
+
+        //Maps the dynamic tab name to the field list
+        Gson gson = new Gson();
+        Map<String, List<JCustomField>> customFieldInformation = gson.fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>(){}.getType());
+        List<CustomFieldItem> customFieldItems = new ArrayList<>();
+
+        for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()){
+            List<JCustomField> fields = entry.getValue();
+            for (JCustomField jcf : fields){
+                CustomFieldItem customFieldItem = new CustomFieldItem();
+                customFieldItem.setName(jcf.getName());
+                customFieldItem.setValue(jcf.getValue());
+                customFieldItems.add(customFieldItem);
+            }
+        }
+        ServiceResponse<List<CustomFieldItem>> customFieldItemResponse = medicalService.createPatientEncounterCustomFields(customFieldItems, patientEncounter.getId(), currentUserSession.getId());
+        if (customFieldItemResponse.hasErrors()){
+            return internalServerError();
+        }
 
         ServiceResponse<IPatient> patientServiceResponse = searchService.findPatientById(patientId);
         if (patientServiceResponse.hasErrors()) {

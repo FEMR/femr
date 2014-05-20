@@ -28,7 +28,7 @@ public class CustomField implements ICustomField {
     private CustomFieldSize customFieldSize;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
-    @Column(name = "sort_order", nullable = true, unique = true)
+    @Column(name = "sort_order", nullable = true, unique = false)
     private Integer order;
     @Column(name="placeholder", nullable = true, unique = false)
     private String placeholder;

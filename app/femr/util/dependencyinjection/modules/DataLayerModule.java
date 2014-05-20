@@ -61,5 +61,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<ICustomField>>(){}).to(new TypeLiteral<Repository<ICustomField>>(){});
         bind(new TypeLiteral<IRepository<ICustomFieldType>>(){}).to(new TypeLiteral<Repository<ICustomFieldType>>(){});
         bind(new TypeLiteral<IRepository<ICustomFieldSize>>(){}).to(new TypeLiteral<Repository<ICustomFieldSize>>(){});
+        bind(new TypeLiteral<IRepository<IPatientEncounterCustomField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterCustomField>>(){});
     }
 }

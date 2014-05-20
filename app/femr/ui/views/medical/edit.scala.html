@@ -85,7 +85,9 @@
                         <li><a href="#" id="treatment">Treatment</a></li>
                         <li><a href="#" id="photo">Photos - @viewModel.getPhotos.size()</a></li>
                         @for(x <- 1 to viewModel.getCustomTabs.size) {
-                            <li><a href="#" id="@viewModel.getCustomTabs.get(x - 1).toLowerCase()">@viewModel.getCustomTabs.get(x - 1)</a></li>
+                            @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
+                                <li><a href="#" id="@tabName" class="customTab">@tabName</a></li>
+                            }
                         }
                     </ul>
 
@@ -263,10 +265,14 @@
                         </div>
                     </div>
                     @for(i <- 1 to viewModel.getCustomTabs.size) {
-                        <div class="controlWrap hidden" id="@viewModel.getCustomTabs.get(i - 1).toLowerCase()Control">
-                        @dynamicTab(viewModel.getCustomFields.get(viewModel.getCustomTabs.get(i - 1)))
-                        </div>
+                        @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
+                            <div class="controlWrap hidden" id="@customTab.getName()Control">
+                            @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName)
+                            </div>
+                        }
+
                     }
+                    <input type="text" class="hidden" name="customFieldJSON"/>
 
                     <div class="pull-left">
                     @historyButton(viewModel.getpID())

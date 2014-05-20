@@ -31,13 +31,16 @@
                 <tbody>
 
                 @for(f <- 1 to viewModel.getCurrentCustomFieldItemList.size) {
-                    <tr>
-                        <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getName</td>
-                        <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getType</td>
-                        <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getSize</td>
-                        <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getOrder</td>
-                        <td>@viewModel.getCurrentCustomFieldItemList.get(f - 1).getPlaceholder</td>
-                    </tr>
+                    @defining(viewModel.getCurrentCustomFieldItemList.get(f - 1)) { currentField =>
+                        <tr>
+                            <td>@currentField.getName</td>
+                            <td>@currentField.getType</td>
+                            <td>@currentField.getSize</td>
+                            <td>@currentField.getOrder</td>
+                            <td>@currentField.getPlaceholder</td>
+                        </tr>
+                    }
+
                 }
 
                 </tbody>
@@ -56,11 +59,13 @@
                 <tbody>
 
                 @for(f <- 1 to viewModel.getRemovedCustomFieldItemList.size) {
-                    <tr>
-                        <td>@viewModel.getRemovedCustomFieldItemList.get(f - 1).getName</td>
-                        <td>@viewModel.getRemovedCustomFieldItemList.get(f - 1).getType</td>
-                        <td>@viewModel.getRemovedCustomFieldItemList.get(f - 1).getSize</td>
-                    </tr>
+                    @defining(viewModel.getRemovedCustomFieldItemList.get(f - 1)) { removedField =>
+                        <tr>
+                            <td>@removedField.getName</td>
+                            <td>@removedField.getType</td>
+                            <td>@removedField.getSize</td>
+                        </tr>
+                    }
                 }
 
                 </tbody>
@@ -107,18 +112,7 @@
             <input type="text" class="fInput" name="toggleName"/>
             <br/>
 
-            @*
-            <h4>Field Count</h4>
-            <label for="leftCount">Left</label>
-            <input type="number" class="fInput" name="leftCount"/>
-            <br/>
-            <label for="rightCount">Right</label>
-            <input type="number" class="fInput" name="rightCount"/>
-              *@
-
         </div>
-
-
 
     </div>
     <button type="submit" class="fButton" id="contentSubmit">Submit</button>

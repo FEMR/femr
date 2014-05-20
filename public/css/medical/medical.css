@@ -163,3 +163,11 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     float: left;
 }
 
+
+/* Dynamic shit */
+.customWrap label{
+    display: inline-block;
+    width: 100px;
+    text-align: left;
+}
+

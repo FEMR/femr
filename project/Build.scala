@@ -12,6 +12,7 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaEbean,
+    "com.google.code.gson" % "gson" % "2.2.4",
     "com.google.inject" % "guice" % "3.0",
     "mysql" % "mysql-connector-java" % "5.1.18",
     "org.mindrot" % "jbcrypt" % "0.3m",

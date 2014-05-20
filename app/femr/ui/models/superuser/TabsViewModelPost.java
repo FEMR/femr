@@ -4,15 +4,17 @@ package femr.ui.models.superuser;
  * Created by kevin on 5/18/14.
  */
 public class TabsViewModelPost {
-    private String newTab;
+    private String addTabName;
     private String deleteTab;
+    private Integer addTabLeft;
+    private Integer addTabRight;
 
-    public String getNewTab() {
-        return newTab;
+    public String getAddTabName() {
+        return addTabName;
     }
 
-    public void setNewTab(String newTab) {
-        this.newTab = newTab;
+    public void setAddTabName(String addTabName) {
+        this.addTabName = addTabName;
     }
 
     public String getDeleteTab() {
@@ -21,5 +23,21 @@ public class TabsViewModelPost {
 
     public void setDeleteTab(String deleteTab) {
         this.deleteTab = deleteTab;
+    }
+
+    public Integer getAddTabLeft() {
+        return addTabLeft;
+    }
+
+    public void setAddTabLeft(Integer addTabLeft) {
+        this.addTabLeft = addTabLeft;
+    }
+
+    public Integer getAddTabRight() {
+        return addTabRight;
+    }
+
+    public void setAddTabRight(Integer addTabRight) {
+        this.addTabRight = addTabRight;
     }
 }

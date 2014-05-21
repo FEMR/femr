@@ -12,11 +12,11 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaEbean,
-    "com.google.code.gson" % "gson" % "2.2.4",
     "com.google.inject" % "guice" % "3.0",
     "mysql" % "mysql-connector-java" % "5.1.18",
     "org.mindrot" % "jbcrypt" % "0.3m",
-    "commons-collections" % "commons-collections" % "3.2.1"
+    "commons-collections" % "commons-collections" % "3.2.1",
+    "com.google.code.gson" % "gson" % "2.2.4"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

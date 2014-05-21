@@ -1,4 +1,4 @@
-@(fields: java.util.List[femr.ui.models.data.custom.CustomFieldItem], leftColumnSize: Integer, rightColumnSize: Integer, tabName: String)
+@(fields: java.util.List[femr.ui.models.data.custom.CustomFieldItem], leftColumnSize: Integer, rightColumnSize: Integer, tabName: String, isReadOnly: Boolean)
 
 @import femr.ui.views.html.helpers.medical.custom.dynamicField
 
@@ -8,13 +8,13 @@
 <div class="customWrap" id="@tabName.toString()DynamicTab">
     <div class="customLeft">
     @for(i <- 1 to leftColumnSize) {
-        @dynamicField(i, fields)
+        @dynamicField(i, fields, isReadOnly)
     }
     </div>
 
     <div class="customRight">
     @for(i <- (leftColumnSize + 1) to (leftColumnSize + rightColumnSize)) {
-        @dynamicField(i, fields)
+        @dynamicField(i, fields, isReadOnly)
     }
 
     </div>
@@ -22,7 +22,7 @@
     <div class="customBottom">
 
     @for(i <- (rightColumnSize + leftColumnSize + 1) to fields.size) {
-        @dynamicField(i, fields)
+        @dynamicField(i, fields, isReadOnly)
     }
 
     </div>

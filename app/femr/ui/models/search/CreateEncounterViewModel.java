@@ -1,16 +1,37 @@
 package femr.ui.models.search;
 
 import femr.common.models.IPatientEncounterVital;
+import femr.ui.models.data.custom.CustomFieldItem;
+import femr.ui.models.data.custom.CustomTabItem;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.DataStructure.Pair;
 
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class CreateEncounterViewModel {
+
+    private List<CustomTabItem> customTabs;
+    private Map<String, List<CustomFieldItem>> customFields;
+
+    public List<CustomTabItem> getCustomTabs() {
+        return customTabs;
+    }
+
+    public void setCustomTabs(List<CustomTabItem> customTabs) {
+        this.customTabs = customTabs;
+    }
+
+    public Map<String, List<CustomFieldItem>> getCustomFields() {
+        return customFields;
+    }
+
+    public void setCustomFields(Map<String, List<CustomFieldItem>> customFields) {
+        this.customFields = customFields;
+    }
 
     public static class PhotoModel
     {

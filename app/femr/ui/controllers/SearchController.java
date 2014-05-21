@@ -27,10 +27,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// include the view model for medical
-import femr.ui.models.medical.CreateViewModelGet;
+
 import play.mvc.Security;
-import views.html.defaultpages.error;
+
 
 // include the view model for pharmacy
 //import femr.ui.models.pharmacy.CreateViewModelGet;
@@ -121,6 +120,9 @@ public class SearchController extends Controller {
         CreateEncounterViewModel viewModel = encounterHelper.populateViewModelGet(patient, patientEncounter,
                                 patientPrescriptions, patientEncounterVitalMap, patientEncounterTreatmentMap,
                                 patientEncounterHpiMap, patientEncounterPmhMap, photoLst);
+
+        viewModel.setCustomTabs(medicalService.getCustomTabs().getResponseObject());
+        viewModel.setCustomFields(medicalService.getCustomFields(patientEncounter.getId()).getResponseObject());
 
         return ok(showEncounter.render(currentUser, patientEncounter, viewModel));   // this is where the responce is returned to the encounter page
     }

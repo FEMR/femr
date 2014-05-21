@@ -2,6 +2,7 @@
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.helpers.encounter._
+@import femr.ui.views.html.helpers.medical.custom._
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
@@ -40,10 +41,9 @@
         </div>
 
     </div>
-
     @* Display multiple sets of vitals based on dates *@
     <div class="col-xs-3 col-sm-3 col-md-3 backgroundForWrap" id="vitalWrap">
-    @* Currently uses medicals vital helper *@
+        @* Currently uses medicals vital helper *@
         @femr.ui.views.html.medical.listVitals(viewModel.getVitalList)
 
     </div>
@@ -54,19 +54,24 @@
 
     <div class="col-xs-9 col-sm-9 col-md-9 backgroundForWrap">
         <ul id="encounterTabs">
-            <li class="active"><a href="#" id="hpiTab">HPI</a></li>
-            <li><a href="#" id="pmhTab">PMH</a></li>
-            <li><a href="#" id="treatmentTab">Treatment</a></li>
-            <li><a href="#" id="pharmacyTab">Pharmacy</a></li>
-            <li><a href="#" id="photoTab">Photos - @viewModel.getPhotos().size()</a></li>
+            <li class="active"><a href="#" id="hpi">HPI</a></li>
+            <li><a href="#" id="pmh">PMH</a></li>
+            <li><a href="#" id="treatment">Treatment</a></li>
+            <li><a href="#" id="pharmacy">Pharmacy</a></li>
+            <li><a href="#" id="photo">Photos - @viewModel.getPhotos().size()</a></li>
+            @for(x <- 1 to viewModel.getCustomTabs.size) {
+                @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
+                    <li><a href="#" id="@tabName" class="customTab">@tabName</a></li>
+                }
+            }
         </ul>
 
-        <div class="col-xs-12 col-sm-12 col-md-12 well well-sm">
+        <div class="col-xs-12 col-sm-12 col-md-12 well well-sm" id="tabContentWrap">
 
             @* <div class="col-xs-9 col-sm-9 col-md-9 well well-sm"> *@
 
                 <!-- This is the start of the HPI Tab -->
-            <div id="hpiControl">
+            <div class="controlWrap" id="hpiControl">
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <div class="form-group">
@@ -124,7 +129,7 @@
                 <!-- End of HPI Tab -->
 
                 <!-- This is the Start of the Treatment Tab -->
-            <div id="treatmentControl" class="hidden">
+            <div class="controlWrap hidden" id="treatmentControl">
                 <div class="form-group">
                     <label for="assessment">Assessment</label>
                     <textarea rows="3" name="assessment" class="form-control input-sm" readonly>@viewModel.getAssessment</textarea>
@@ -163,7 +168,7 @@
                 <!-- End of treatment tab -->
 
                 <!-- This is the start of the PMH tab -->
-            <div id="pmhControl" class="hidden">
+            <div class="controlWrap hidden" id="pmhControl">
                 <div class="form-group">
                     <label for="medicalSurgicalHistory">Medical/Surgical History</label>
                     <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" readonly> @viewModel.getMedicalSurgicalHistory </textarea>
@@ -184,7 +189,7 @@
                 <!-- End of the PMH tab -->
 
                 <!-- This is the start of the Pharmacy tab -->
-            <div id="pharmacyControl" class="hidden">
+            <div class="controlWrap hidden" id="pharmacyControl">
 
 
                 @* <div class="col-sm-9 col-md-9 col-xs-9 col-lg-9"> *@
@@ -229,8 +234,8 @@
                 </div>
             </div>
                 <!-- End of Pharmacy tab -->
-            <div id="photoControl" class="hidden">
-                @if(viewModel.getPhotos().size() > 0){
+            <div class="controlWrap hidden" id="photoControl">
+                @if(viewModel.getPhotos().size() > 0) {
                     <div id="photoCarousel" class="carousel slide col-sm-12 col-md-12 col-xs-12 col-lg-12" data-interval="false">
                         <ol class="carousel-indicators">
                         @for(index <- 0 until viewModel.getPhotos().size) {
@@ -244,18 +249,19 @@
                         </ol>
                         <div class="carousel-inner">
                             @for(index <- 0 until viewModel.getPhotos().size) {
-                                @if(index == 0){
+                                @if(index == 0) {
                                     <div class="item active">
-                                    }else {
+                                    } else {
                                     <div class="item">
                                     }
                                 <img src="@viewModel.getPhotos().get(index).getImageUrl()" alt="">
                                 <div class="label label-info carousel-caption">
-                                    <p>@viewModel.getPhotos().get(index).getImageDate():&nbsp;@viewModel.getPhotos().get(index).getImageDesc()</p>
+                                    <p>@viewModel.getPhotos().get(index).getImageDate()
+                                        :&nbsp;@viewModel.getPhotos().get(index).getImageDesc()</p>
                                 </div>
                             </div>
                             }
-                            </div>
+                        </div>
                             <a class="left carousel-control" href="#photoCarousel" data-slide="prev">
                                 <span class="glyphicon glyphicon-chevron-left"></span>
                             </a>
@@ -263,12 +269,21 @@
                                 <span class="glyphicon glyphicon-chevron-right"></span>
                             </a>
                         </div>
-                } @* End of 'if' block to render carousel block *@
-                </div>
-        </div>
-    </div>
+                        } @* End of 'if' block to render carousel block *@
+            </div>
 
-</div>
+
+            @for(i <- 1 to viewModel.getCustomTabs.size) {
+                @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
+                    <div class="controlWrap hidden" id="@customTab.getName()Control">
+                    @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, true)
+                    </div>
+                }
+
+            }
+        </div>
+
+    </div>
 
 }
 

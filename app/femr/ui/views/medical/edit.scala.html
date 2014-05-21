@@ -267,7 +267,7 @@
                     @for(i <- 1 to viewModel.getCustomTabs.size) {
                         @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
                             <div class="controlWrap hidden" id="@customTab.getName()Control">
-                            @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName)
+                            @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, false)
                             </div>
                         }
 

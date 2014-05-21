@@ -152,6 +152,9 @@ hr {
     text-align: center;
     margin: 0 auto;
 }
+.searchWrap p{
+    font-size: 20px;
+}
 
 /* fEMR's background with border */
 .backgroundForWrap{

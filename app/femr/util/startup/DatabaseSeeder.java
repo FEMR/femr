@@ -42,10 +42,10 @@ public class DatabaseSeeder {
         int sizeCount = customFieldSizeRepository.count(CustomFieldSize.class);
         if (sizeCount == 0) {
             List<CustomFieldSize> customFieldSizes = new ArrayList<>();
-
             CustomFieldSize customFieldSize = new CustomFieldSize();
-            customFieldSize.setName("small");
-            customFieldSizes.add(customFieldSize);
+             //not using small right now
+//            customFieldSize.setName("small");
+//            customFieldSizes.add(customFieldSize);
 
             customFieldSize = new CustomFieldSize();
             customFieldSize.setName("medium");
@@ -65,9 +65,10 @@ public class DatabaseSeeder {
             customFieldType.setName("text");
             customFieldTypes.add(customFieldType);
 
-            customFieldType = new CustomFieldType();
-            customFieldType.setName("number");
-            customFieldTypes.add(customFieldType);
+            //not using numbers right now
+//            customFieldType = new CustomFieldType();
+//            customFieldType.setName("number");
+//            customFieldTypes.add(customFieldType);
 
             customFieldTypeRepository.createAll(customFieldTypes);
         }

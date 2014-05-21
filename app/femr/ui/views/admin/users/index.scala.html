@@ -45,7 +45,10 @@
                     </td>
                     <td>@viewModelGet.getUser(y - 1).getLastLogin</td>
                     <td>
-                        <button type="button" class="btn btn-default editBtn" data-user_id="@viewModelGet.getUser(y - 1).getId">Edit</button>
+                    @if(viewModelGet.getUser(y - 1).getEmail != "admin") {
+                        <button type="button" class="btn btn-default editBtn" data-user_id="@viewModelGet.getUser(y - 1).getId">
+                            Edit</button>
+                    }
                     </td>
                     <td class="text-center">
                     @toggleButton(viewModelGet.getUser(y - 1))

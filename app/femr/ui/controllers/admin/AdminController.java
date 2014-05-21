@@ -13,7 +13,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 @Security.Authenticated(FEMRAuthenticated.class)
-@AllowedRoles({Roles.ADMINISTRATOR})
+@AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class AdminController extends Controller {
     private ISessionService sessionService;
 

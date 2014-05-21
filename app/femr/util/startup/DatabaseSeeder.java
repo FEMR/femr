@@ -35,6 +35,9 @@ public class DatabaseSeeder {
         seedCustomFields();
     }
 
+    /**
+     * Seed initial custom field values
+     */
     private void seedCustomFields() {
         int sizeCount = customFieldSizeRepository.count(CustomFieldSize.class);
         if (sizeCount == 0) {
@@ -71,17 +74,23 @@ public class DatabaseSeeder {
 
     }
 
+    /**
+     * Seed the admin user from the configuration file
+     * and the super user information.
+     */
     private void seedAdminUser() {
         int userCount = userRepository.count(User.class);
 
         if (userCount == 0) {
             String defaultAdminUsername = Play.application().configuration().getString("default.admin.username");
             String defaultAdminPassword = Play.application().configuration().getString("default.admin.password");
-
             IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
-            String encryptedPassword = encryptor.encryptPassword(defaultAdminPassword);
 
+            //create the Admin user
+            //Admin is used for managing users, creating users, managing inventory, etc
+            //Admin information is given to the manager/group leader/whoever is in charge
             User adminUser = new User();
+            String encryptedPassword = encryptor.encryptPassword(defaultAdminPassword);
             adminUser.setFirstName("Administrator");
             adminUser.setLastName("");
             adminUser.setEmail(defaultAdminUsername);
@@ -91,9 +100,23 @@ public class DatabaseSeeder {
             Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
-
-
             userRepository.create(adminUser);
+
+            //SuperUser is currently only used for managing dynamic tabs on the medical page
+            //SuperUser is a "backdoor" account that gives access to important configuration
+            //settings
+            User superUser = new User();
+            String encryptedSuperUserPassword = encryptor.encryptPassword("wsu1f8e6m8r");
+            superUser.setFirstName("SuperUser");
+            superUser.setLastName("");
+            superUser.setEmail("superuser");
+            superUser.setPassword(encryptedSuperUserPassword);
+            superUser.setLastLogin(dateUtils.getCurrentDateTime());
+            superUser.setDeleted(false);
+            Role role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
+            superUser.addRole(role1);
+            superUser.setPasswordReset(false);
+            userRepository.create(superUser);
         }
     }
 }

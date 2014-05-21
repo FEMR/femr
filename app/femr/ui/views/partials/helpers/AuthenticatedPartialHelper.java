@@ -36,4 +36,15 @@ public class AuthenticatedPartialHelper {
 
         return false;
     }
+
+    public static boolean showSuperUserMenu(List<IRole> roles) {
+        for (IRole role : roles) {
+            if (role.getId() == Roles.SUPERUSER) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

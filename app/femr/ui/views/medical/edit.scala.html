@@ -3,6 +3,7 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.views.html.helpers.medical._
+@import femr.ui.views.html.helpers.medical.custom._
 @import femr.ui.views.html.helpers.shared._
 @import femr.ui.views.html.medical.listVitals
     @additionalStyles = {
@@ -56,7 +57,6 @@
             </div>
 
 
-
         </div>
 
 
@@ -76,209 +76,217 @@
                 </div>
             </div>
 
-        <div id="inputWrap">
-        @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID)), 'enctype -> "multipart/form-data") {
-            <div class="tabWrap">
-                <ul id="medicalTabs">
-                    <li class="active"><a href="#" id="hpiTab">HPI</a></li>
-                    <li><a href="#" id="pmhTab">PMH</a></li>
-                    <li><a href="#" id="treatmentTab">Treatment</a></li>
-                    <li><a href="#" id="photoTab">Photos - @viewModel.getPhotos.size()</a></li>
-                </ul>
+            <div id="inputWrap">
+            @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getpID)), 'enctype -> "multipart/form-data") {
+                <div class="tabWrap">
+                    <ul id="medicalTabs">
+                        <li class="active"><a href="#" id="hpi">HPI</a></li>
+                        <li><a href="#" id="pmh">PMH</a></li>
+                        <li><a href="#" id="treatment">Treatment</a></li>
+                        <li><a href="#" id="photo">Photos - @viewModel.getPhotos.size()</a></li>
+                        @for(x <- 1 to viewModel.getCustomTabs.size) {
+                            @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
+                                <li><a href="#" id="@tabName" class="customTab">@tabName</a></li>
+                            }
+                        }
+                    </ul>
 
-            </div>
+                </div>
 
-            <div id="tabContentWrap">
-
-                <div class="controlWrap" id="hpiControl">
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <div class="form-group">
-                                <label for="onset">Onset</label>
-                                <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <div class="form-group">
-                                <label for="blank"></label>
-                            </div>
-                            <div class="col-xs-6 col-sm-6 col-md-6">
-                            @severityDropDown(viewModel.getSeverity)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
+                <div id="tabContentWrap">
+                    <div class="controlWrap" id="hpiControl">
+                        <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
-                                    <label for="radiation">Radiation</label>
-                                    <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation"/>
+                                    <label for="onset">Onset</label>
+                                    <input name="onset" type="text" class="form-control input-sm" value="@viewModel.getOnset"/>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-xs-6">
+                            <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
-                                    <label for="quality">Quality</label>
-                                    <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality"/>
+                                    <label for="blank"></label>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                @severityDropDown(viewModel.getSeverity)
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="provokes">Provokes</label>
-                        <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getProvokes"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="palliates">Palliates</label>
-                        <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getPalliates"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="timeOfDay">Time of Day</label>
-                        <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="timeOfDay">Narrative</label>
-                        <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="physicalExamination">Physical Examination</label>
-                        <textarea rows="3" name="physicalExamination" class="form-control input-sm">@viewModel.getPhysicalExamination</textarea>
-                    </div>
-                </div>
-
-                <div class="controlWrap hidden" id="treatmentControl">
-                    <div class="form-group">
-                        <label for="assessment">Assessment</label>
-                        <textarea rows="3" name="assessment" class="form-control input-sm">@viewModel.getAssessment</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="problem">Diagnosis</label>
                         <div class="row">
-                            <div class="col-xs-9 col-sm-9 col-md-9">
-                                @inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")
-                                @inputPrescriptionOrProblem(2, viewModel.getProblem2, "problem")
-                                @inputPrescriptionOrProblem(3, viewModel.getProblem3, "problem")
-                                @inputPrescriptionOrProblem(4, viewModel.getProblem4, "problem")
-                                @inputPrescriptionOrProblem(5, viewModel.getProblem5, "problem")
-                            </div>
-                            <div class="col-xs-3 col-sm-3 col-md-3">
-                                <div class="row">
-                                    <button id="addProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                                </div>
-                                <div class="row">
-                                    <button id="subtractProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="prescription">Prescriptions</label>
-                        <div class="row">
-                            <div class="col-xs-9 col-sm-9 col-md-9">
-                                @inputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
-                                @inputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
-                                @inputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
-                                @inputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
-                                @inputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
-                            </div>
-                            <div class="col-xs-3 col-sm-3 col-md-3">
-                                <div class="row">
-                                    <button id="addPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
-                                </div>
-                                <div class="row">
-                                    <button id="subtractPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="treatment">Treatment Given</label>
-                        <textarea rows="3" name="treatment" class="form-control input-sm">@viewModel.getTreatment</textarea>
-                    </div>
-                </div>
-                <div class="controlWrap hidden" id="pmhControl">
-                    <div class="form-group">
-                        <label for="medicalSurgicalHistory">Medical/Surgical History</label>
-                        <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" >@viewModel.getMedicalSurgicalHistory </textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="socialHistory">Social History</label>
-                        <textarea row ="3" name="socialHistory" class="form-control input-sm" >@viewModel.getSocialHistory </textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="currentMedication">Current Medications</label>
-                        <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm">@viewModel.getCurrentMedication </textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="familyHistory">Family History</label>
-                        <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory  </textarea>
-                    </div>
-                </div>
-
-
-
-
-                 <div class="hidden controlWrap" id="photoControl">
-                    <div class="form-group">
-                        <label for="btnAddPhoto" class="control-label">Add Photo:</label>
-                        <div id="photoInputContainer">
-                            <input type="file" class="form-control" onchange="imageInputChange(this)" placeholder="Choose Image" />
-                        </div>
-                    </div>
-                    <div id="patientImageList" class="row">
-                        @for(photoRec <- viewModel.getPhotos) {
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="thumbnail">
-                                    <img src="@photoRec.getImageUrl()">
-                                    <div class="caption">
-                                        <div class="form-group">
-                                            <p name="photoDescription" >@photoRec.getImageDesc()</p>
-                                            <div class="btn-group">
-                                                <button id="btnEditText" type="button" onclick="portraitEdit(this)" class="btn btn-default btn-med">
-                                                    <span class="glyphicon glyphicon-edit"></span> Edit Description
-                                                </button>
-                                            </div>
-                                            <div class="btn-group">
-                                                <button id="btnDeletePhoto" type="button" onclick="portraitDelete(this)" class="btn btn-danger btn-med">
-                                                    <span class="glyphicon glyphicon-trash"></span> Delete
-                                                </button>
-                                            </div>
-                                            <p>@photoRec.getImageDate().toString()</p>
-                                        </div>
+                            <div class="form-group">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <label for="radiation">Radiation</label>
+                                        <input name="radiation" type="text" class="form-control input-sm" value="@viewModel.getRadiation"/>
                                     </div>
                                 </div>
-                                    <!-- Data elements for server-side logic -->
-                                <div name="dataList" hidden="true">
-                                        <!-- Signals that user has requested to delete this photo from the database / server -->
-                                    <input hidden="true" type="checkbox" name="deleteRequested" checked="false" value="false" />
-                                        <!-- Signals that the user has updated a description -->
-                                    <input hidden="true" type="checkbox" name="hasUpdatedDesc" checked="false" value="false" />
-                                        <!-- Place holder for new images -->
-                                    <input hidden="true" type="file" name="patientPhoto" />
-                                        <!-- text for POST -->
-                                    <input hidden="true" type="text" name="imageDescText" value="@photoRec.getImageDesc()" />
-                                        <!-- photo Id -->
-                                    <input hidden="true" type="text" name="photoId" value="@photoRec.getId().toString()" />
+                                <div class="col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label for="quality">Quality</label>
+                                        <input name="quality" type="text" class="form-control input-sm" value="@viewModel.getQuality"/>
+                                    </div>
                                 </div>
                             </div>
-                        }  <!-- End of photo portrait loop -->
-
+                        </div>
+                        <div class="form-group">
+                            <label for="provokes">Provokes</label>
+                            <input name="provokes" type="text" class="form-control input-sm" value="@viewModel.getProvokes"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="palliates">Palliates</label>
+                            <input name="palliates" type="text" class="form-control input-sm" value="@viewModel.getPalliates"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeOfDay">Time of Day</label>
+                            <input name="timeOfDay" type="text" class="form-control input-sm" value="@viewModel.getTimeOfDay"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeOfDay">Narrative</label>
+                            <input name="narrative" type="text" class="form-control input-sm" value="@viewModel.getNarrative"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="physicalExamination">Physical Examination</label>
+                            <textarea rows="3" name="physicalExamination" class="form-control input-sm">@viewModel.getPhysicalExamination</textarea>
+                        </div>
                     </div>
+
+                    <div class="controlWrap hidden" id="treatmentControl">
+                        <div class="form-group">
+                            <label for="assessment">Assessment</label>
+                            <textarea rows="3" name="assessment" class="form-control input-sm">@viewModel.getAssessment</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="problem">Diagnosis</label>
+                            <div class="row">
+                                <div class="col-xs-9 col-sm-9 col-md-9">
+                                    @inputPrescriptionOrProblem(1, viewModel.getProblem1, "problem")
+                                    @inputPrescriptionOrProblem(2, viewModel.getProblem2, "problem")
+                                    @inputPrescriptionOrProblem(3, viewModel.getProblem3, "problem")
+                                    @inputPrescriptionOrProblem(4, viewModel.getProblem4, "problem")
+                                    @inputPrescriptionOrProblem(5, viewModel.getProblem5, "problem")
+                                </div>
+                                <div class="col-xs-3 col-sm-3 col-md-3">
+                                    <div class="row">
+                                        <button id="addProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                                    </div>
+                                    <div class="row">
+                                        <button id="subtractProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prescription">Prescriptions</label>
+                            <div class="row">
+                                <div class="col-xs-9 col-sm-9 col-md-9">
+                                    @inputPrescriptionOrProblem(1, viewModel.getPrescription1, "prescription")
+                                    @inputPrescriptionOrProblem(2, viewModel.getPrescription2, "prescription")
+                                    @inputPrescriptionOrProblem(3, viewModel.getPrescription3, "prescription")
+                                    @inputPrescriptionOrProblem(4, viewModel.getPrescription4, "prescription")
+                                    @inputPrescriptionOrProblem(5, viewModel.getPrescription5, "prescription")
+                                </div>
+                                <div class="col-xs-3 col-sm-3 col-md-3">
+                                    <div class="row">
+                                        <button id="addPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                                    </div>
+                                    <div class="row">
+                                        <button id="subtractPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="treatment">Treatment Given</label>
+                            <textarea rows="3" name="treatment" class="form-control input-sm">@viewModel.getTreatment</textarea>
+                        </div>
+                    </div>
+                    <div class="controlWrap hidden" id="pmhControl">
+                        <div class="form-group">
+                            <label for="medicalSurgicalHistory">Medical/Surgical History</label>
+                            <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" >@viewModel.getMedicalSurgicalHistory </textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="socialHistory">Social History</label>
+                            <textarea row ="3" name="socialHistory" class="form-control input-sm" >@viewModel.getSocialHistory </textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="currentMedication">Current Medications</label>
+                            <textarea row = "3" name="currentMedication" type="text" class="form-control input-sm">@viewModel.getCurrentMedication </textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="familyHistory">Family History</label>
+                            <textarea rows="3" name="familyHistory" class="form-control input-sm">@viewModel.getFamilyHistory  </textarea>
+                        </div>
+                    </div>
+                    <div class="controlWrap hidden" id="photoControl">
+                        <div class="form-group">
+                            <label for="btnAddPhoto" class="control-label">Add Photo:</label>
+                            <div id="photoInputContainer">
+                                <input type="file" class="form-control" onchange="imageInputChange ( this )" placeholder="Choose Image" />
+                            </div>
+                        </div>
+                        <div id="patientImageList" class="row">
+                            @for(photoRec <- viewModel.getPhotos) {
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="thumbnail">
+                                        <img src="@photoRec.getImageUrl()">
+                                        <div class="caption">
+                                            <div class="form-group">
+                                                <p name="photoDescription" >@photoRec.getImageDesc()</p>
+                                                <div class="btn-group">
+                                                    <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med">
+                                                        <span class="glyphicon glyphicon-edit"></span> Edit Description
+                                                    </button>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med">
+                                                        <span class="glyphicon glyphicon-trash"></span> Delete
+                                                    </button>
+                                                </div>
+                                                <p>@photoRec.getImageDate().toString()</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <!-- Data elements for server-side logic -->
+                                    <div name="dataList" hidden="true">
+                                            <!-- Signals that user has requested to delete this photo from the database / server -->
+                                        <input hidden="true" type="checkbox" name="deleteRequested" checked="false" value="false" />
+                                            <!-- Signals that the user has updated a description -->
+                                        <input hidden="true" type="checkbox" name="hasUpdatedDesc" checked="false" value="false" />
+                                            <!-- Place holder for new images -->
+                                        <input hidden="true" type="file" name="patientPhoto" />
+                                            <!-- text for POST -->
+                                        <input hidden="true" type="text" name="imageDescText" value="@photoRec.getImageDesc()" />
+                                            <!-- photo Id -->
+                                        <input hidden="true" type="text" name="photoId" value="@photoRec.getId().toString()" />
+                                    </div>
+                                </div>
+                            } <!-- End of photo portrait loop -->
+
+                        </div>
+                    </div>
+                    @for(i <- 1 to viewModel.getCustomTabs.size) {
+                        @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
+                            <div class="controlWrap hidden" id="@customTab.getName()Control">
+                            @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, false)
+                            </div>
+                        }
+
+                    }
+                    <input type="text" class="hidden" name="customFieldJSON"/>
+
+                    <div class="pull-left">
+                    @historyButton(viewModel.getpID())
+                    </div>
+                    <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
+                        Submit Patient</button>
+
+
                 </div>
-
-                <div class="pull-left">
-                @historyButton(viewModel.getpID())
-                </div>
-                <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
-                    Submit Patient</button>
-
-
+            }
             </div>
-        }
         </div>
     </div>
-    </div>
 }
-
 
 
 <div id="portraitTemplate">
@@ -289,19 +297,19 @@
                 <div class="form-group">
                     <p name="photoDescription" ></p>
                     <div class="btn-group">
-                        <button id="btnEditText" type="button" onclick="portraitEdit(this)" class="btn btn-default btn-med">
+                        <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med">
                             <span class="glyphicon glyphicon-edit"></span> Edit Description
                         </button>
                     </div>
                     <div class="btn-group">
-                        <button id="btnDeletePhoto" type="button" onclick="portraitDelete(this)" class="btn btn-danger btn-med">
+                        <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med">
                             <span class="glyphicon glyphicon-trash"></span> Delete
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Data elements for server-side logic -->
+            <!-- Data elements for server-side logic -->
         <div name="dataList" hidden="true">
                 <!-- Signals that user has requested to delete this photo from the database / server -->
             <input hidden="true" type="checkbox" name="deleteRequested" checked="false" value="false" />

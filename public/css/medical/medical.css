@@ -130,10 +130,45 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     text-transform: uppercase;
     font-size: 20px;
 }
+@media (max-width: 1200px){
+    #medicalTabs a:link,
+    #medicalTabs a:visited{
+        font-size: 16px;
+        padding: 10px 10px 5px 10px;
+    }
+}
 
 #medicalTabs a:hover,
 #medicalTabs a:focus {
     color: #000;
     background: url("../../img/paper_greyLightNoise.png") repeat;
+}
+
+
+/* CUSTOM TABS */
+.customWrap{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.customLeft{
+    width: 50%;
+    float: left;
+}
+.customRight{
+    width: 50%;
+    float: left;
+}
+.customBottom{
+    width: 100%;
+    float: left;
+}
+
+
+/* Dynamic shit */
+.customWrap label{
+    display: inline-block;
+    width: 100px;
+    text-align: left;
 }
 

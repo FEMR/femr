@@ -1,0 +1,31 @@
+@(number: Integer, fields: java.util.List[femr.ui.models.data.custom.CustomFieldItem], isReadOnly: Boolean)
+
+@for(f <- 1 to fields.size) {
+
+    @defining(fields.get(f - 1)) { field =>
+
+
+            @if(field.getSize == "medium" && field.getOrder == number){
+                <label for="@field.getName">@field.getName</label>
+                @if(isReadOnly == true){
+                    <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder" value="@field.getValue" readonly/>
+                }else{
+                    <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder" value="@field.getValue" />
+                }
+
+                <br/>
+            }else{
+                @if(field.getSize == "large" && field.getOrder == number){
+                    <label for="@field.getName">@field.getName</label>
+                    @if(isReadOnly == true){
+                        <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder" readonly>@field.getValue</textarea>
+                    }else{
+                        <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder">@field.getValue</textarea>
+                    }
+
+                    <br/>
+                }
+            }
+
+    }
+}

@@ -138,3 +138,27 @@ p {
 {
     vertical-align: middle;
 }
+/* CUSTOM TABS */
+.customWrap{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.customLeft{
+    width: 50%;
+    float: left;
+}
+.customRight{
+    width: 50%;
+    float: left;
+}
+.customBottom{
+    width: 100%;
+    float: left;
+}
+/* Dynamic shit */
+.customWrap label{
+    display: inline-block;
+    width: 100px;
+    text-align: left;
+}

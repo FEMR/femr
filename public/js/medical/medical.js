@@ -73,22 +73,12 @@ $(document).ready(function () {
 
     //controls the tabbed viewing of HPI and Treatment
     $('#medicalTabs a').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
-
+        e.preventDefault();
+        $(this).tab('show');
     });
 
     $('#medicalTabs a').click(function () {
-        if ($(this).attr('id') === "hpiTab") {
-            showHpi();
-        } else if ($(this).attr('id') === "treatmentTab") {
-            showTreatment();
-        } else if ($(this).attr('id') === "pmhTab") {
-            showPmh();
-        } else if ($(this).attr('id') === "photoTab") {
-            showPhotoTab();
-        }
-
+        showTab($(this).attr('id'));
     });
 
     //Shown event for Modal form
@@ -106,9 +96,9 @@ $(document).ready(function () {
 
     });
 
-    $('#medicalSubmitBtn').click(function () {
-        return photoNameFixup();
-    });
+
+
+
 
 
     $('#newVitalsDialog').dialog({
@@ -144,34 +134,59 @@ $(document).ready(function () {
     });
 
 
+    $('#medicalSubmitBtn').click(function () {
+        JSONifyDynamicFields();
+        return photoNameFixup();
+    });
 });
 
-function showTreatment() {
-    $('#hpiControl').addClass('hidden');
-    $('#pmhControl').addClass('hidden');
-    $('#photoControl').addClass('hidden');
-    $('#treatmentControl').removeClass('hidden');
-}
-function showHpi() {
-    $('#pmhControl').addClass('hidden');
-    $('#treatmentControl').addClass('hidden');
-    $('#photoControl').addClass('hidden');
-    $('#hpiControl').removeClass('hidden');
+function JSONifyDynamicFields(){
+    var tabs = {};
+
+    //iterate over each tab
+    $(".customTab").each(function(){
+        var tabName = $(this).attr("id");
+
+        var fieldItem = [];
+        $("#" + tabName + "DynamicTab .customField").each(function(){
+            var fieldItems = {};
+            if ($(this).val() !== ""){
+                fieldItems["name"] = $(this).attr('id');
+                fieldItems["value"] = $(this).val();
+                fieldItem.push(fieldItems);
+            }
+            tabs[tabName] = fieldItem;
+
+        });
+
+
+    });
+
+    console.log(tabs);
+     var stringifiedJSON = JSON.stringify(tabs);
+    $('input[name=customFieldJSON]').val(stringifiedJSON);
+
+
 }
 
-function showPmh() {
-    $('#treatmentControl').addClass('hidden');
-    $('#hpiControl').addClass('hidden');
-    $('#photoControl').addClass('hidden');
-    $('#pmhControl').removeClass('hidden');
-}
 
 
-function showPhotoTab() {
-    $('#treatmentControl').addClass('hidden');
-    $('#hpiControl').addClass('hidden');
-    $('#pmhControl').addClass('hidden');
-    $('#photoControl').removeClass('hidden');
+
+
+
+/**
+ * Generic tab showing function
+ *
+ * @param clickedTab tab that the user clicked
+ */
+function showTab(clickedTab){
+    $('#tabContentWrap > .controlWrap').each(function(){
+        if ($(this).is("#" + clickedTab + "Control")){
+            $(this).removeClass("hidden");
+        }else{
+            $(this).addClass("hidden");
+        }
+    });
 }
 
 function getNumberOfFilledScripts() {
@@ -376,3 +391,5 @@ function photoNameFixup() {
 
     return true;
 }
+
+

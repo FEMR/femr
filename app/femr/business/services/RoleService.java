@@ -21,7 +21,11 @@ public class RoleService implements IRoleService {
 
     @Override
     public List<? extends IRole> getAllRoles() {
-        List<? extends IRole> roles = roleRepository.findAll(Role.class);
+        ExpressionList<Role> query = getQuery()
+                .where()
+                .ne("name", "SuperUser")
+                .ne("name", "Researcher");
+        List<? extends IRole> roles = roleRepository.find(query);
         return roles;
     }
 

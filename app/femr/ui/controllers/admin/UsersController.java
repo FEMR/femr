@@ -36,7 +36,7 @@ import java.util.Map;
 import static femr.ui.controllers.routes.HomeController;
 
 @Security.Authenticated(FEMRAuthenticated.class)
-@AllowedRoles({Roles.ADMINISTRATOR})
+@AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class UsersController extends Controller {
     private final Form<CreateViewModelPost> createViewModelForm = Form.form(CreateViewModelPost.class);
     private ISessionService sessionService;

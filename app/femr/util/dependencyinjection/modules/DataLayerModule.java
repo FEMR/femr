@@ -3,9 +3,11 @@ package femr.util.dependencyinjection.modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import femr.common.models.*;
+import femr.common.models.custom.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.*;
+import femr.data.models.custom.*;
 import femr.util.dependencyinjection.providers.*;
 
 public class DataLayerModule extends AbstractModule {
@@ -28,6 +30,13 @@ public class DataLayerModule extends AbstractModule {
         bind(IPhoto.class).to(Photo.class);
         bind(IPatientResearch.class).toProvider(PatientResearchProvider.class);
         bind(IPatientEncounterPhoto.class).to(PatientEncounterPhoto.class);
+        bind(ICustomField.class).to(CustomField.class);
+        bind(ICustomFieldType.class).to(CustomFieldType.class);
+        bind(ICustomFieldSize.class).to(CustomFieldSize.class);
+        bind(ICustomTab.class).to(CustomTab.class);
+        bind(IPatientEncounterCustomField.class).to(PatientEncounterCustomField.class);
+
+
 
         bind(new TypeLiteral<IRepository<IHpiField>>() {
         }).to(new TypeLiteral<Repository<IHpiField>>() {
@@ -48,5 +57,10 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPhoto>>() {}).to(new TypeLiteral<Repository<IPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientResearch>>() {}).to(new TypeLiteral<Repository<IPatientResearch>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
+        bind(new TypeLiteral<IRepository<ICustomTab>>(){}).to(new TypeLiteral<Repository<ICustomTab>>(){});
+        bind(new TypeLiteral<IRepository<ICustomField>>(){}).to(new TypeLiteral<Repository<ICustomField>>(){});
+        bind(new TypeLiteral<IRepository<ICustomFieldType>>(){}).to(new TypeLiteral<Repository<ICustomFieldType>>(){});
+        bind(new TypeLiteral<IRepository<ICustomFieldSize>>(){}).to(new TypeLiteral<Repository<ICustomFieldSize>>(){});
+        bind(new TypeLiteral<IRepository<IPatientEncounterCustomField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterCustomField>>(){});
     }
 }

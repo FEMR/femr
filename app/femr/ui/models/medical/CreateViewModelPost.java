@@ -6,6 +6,10 @@ import play.api.mvc.MultipartFormData;
 import java.util.List;
 
 public class CreateViewModelPost {
+    private String customFieldJSON;
+
+
+
     //patient identifier
     private int id;
     //prescription fields
@@ -288,5 +292,13 @@ public class CreateViewModelPost {
 
     public void setFamilyHistory(String familyHistory) {
         this.familyHistory = familyHistory;
+    }
+
+    public String getCustomFieldJSON() {
+        return customFieldJSON;
+    }
+
+    public void setCustomFieldJSON(String customFieldJSON) {
+        this.customFieldJSON = customFieldJSON;
     }
 }

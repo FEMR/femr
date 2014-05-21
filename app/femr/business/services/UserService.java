@@ -54,7 +54,12 @@ public class UserService implements IUserService {
 
     @Override
     public ServiceResponse<List<? extends IUser>> findAllUsers(){
-        List<? extends IUser> users = Ebean.find(User.class).findList();
+
+        ExpressionList<User> query = getQuery()
+                .fetch("roles")
+                .where()
+                .ne("roles.name", "SuperUser");
+        List<? extends IUser> users = userRepository.find(query);
         ServiceResponse<List<? extends IUser>> response = new ServiceResponse<>();
         if (users.size() > 0){
             response.setResponseObject(users);

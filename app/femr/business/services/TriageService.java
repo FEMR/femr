@@ -211,8 +211,7 @@ public class TriageService implements ITriageService {
             response.addError("id", "id does not exist");
         } else {
             PatientItem patientItem = new PatientItem();
-
-            ExpressionList<Photo> photoQuery = Ebean.find(Photo.class).where().eq("id", savedPatient.getId());
+            ExpressionList<Photo> photoQuery = Ebean.find(Photo.class).where().eq("id", savedPatient.getPhotoId());
             IPhoto savedPhoto = photoRepository.findOne(photoQuery);
             if (savedPhoto != null) {
                 patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(id, false).toString());

@@ -2,6 +2,7 @@ package femr.business.services;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Provider;
 import com.typesafe.config.ConfigFactory;
 
@@ -260,7 +261,12 @@ public class PhotoService implements IPhotoService {
     @Override
     public ServiceResponse<Boolean> HandlePatientPhoto(File img, PatientItem patientItem, String coords, Boolean deleteFlag)
     {
-        IPatient patient = populatePatient(patientItem);
+        ExpressionList<Patient> query = getPatientQuery()
+                .where()
+                .eq("id", patientItem.getId());
+
+        //IPatient patient = populatePatient(patientItem);
+        IPatient patient = patientRepository.findOne(query);
 
         String sFileName = "Patient_" + patient.getId() + ".jpg";
         Integer photoId;
@@ -472,6 +478,10 @@ public class PhotoService implements IPhotoService {
         }
 
         return srlst;
+    }
+
+    private Query<Patient> getPatientQuery(){
+        return Ebean.find(Patient.class);
     }
 
     private IPatient populatePatient(PatientItem patient){

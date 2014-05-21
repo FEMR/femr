@@ -18,6 +18,7 @@ import femr.data.models.custom.PatientEncounterCustomField;
 import femr.ui.models.data.custom.CustomFieldItem;
 import femr.ui.models.data.custom.CustomTabItem;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -318,9 +319,15 @@ public class MedicalService implements IMedicalService {
                             .eq("patient_encounter_id", encounterId)
                             .order()
                             .desc("date_taken");
-                    List<? extends IPatientEncounterCustomField> patientEncounterCustomField = patientEncounterCustomFieldRepository.find(query3);
-                    //see if the field its contained without turning this shit into O(n^3)
-                    customFieldItems.add(getCustomFieldItem(cf));
+
+                        List<? extends IPatientEncounterCustomField> patientEncounterCustomField = patientEncounterCustomFieldRepository.find(query3);
+                    if (patientEncounterCustomField != null && patientEncounterCustomField.size() > 0){
+                        customFieldItems.add(getCustomFieldItem(cf, patientEncounterCustomField.get(0).getCustomFieldValue()));
+                    }else{
+                        customFieldItems.add(getCustomFieldItem(cf, null));
+                    }
+
+
                 }
                 customFieldMap.put(ct.getName(), customFieldItems);
 
@@ -404,13 +411,16 @@ public class MedicalService implements IMedicalService {
         return customTabItem;
     }
 
-    private CustomFieldItem getCustomFieldItem(ICustomField cf) {
+    private CustomFieldItem getCustomFieldItem(ICustomField cf, String value) {
         CustomFieldItem customFieldItem = new CustomFieldItem();
         customFieldItem.setName(cf.getName());
         customFieldItem.setType(cf.getCustomFieldType().getName());
         customFieldItem.setSize(cf.getCustomFieldSize().getName());
         customFieldItem.setOrder(cf.getOrder());
         customFieldItem.setPlaceholder(cf.getPlaceholder());
+        if (StringUtils.isNotNullOrWhiteSpace(value)){
+            customFieldItem.setValue(value);
+        }
         return customFieldItem;
     }
 

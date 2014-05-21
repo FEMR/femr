@@ -7,12 +7,12 @@
 
             @if(field.getSize == "medium" && field.getOrder == number){
                 <label for="@field.getName">@field.getName</label>
-                <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder"/>
+                <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder" value="@field.getValue"/>
                 <br/>
             }else{
                 @if(field.getSize == "large" && field.getOrder == number){
                     <label for="@field.getName">@field.getName</label>
-                    <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder"></textarea>
+                    <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder">@field.getValue</textarea>
                     <br/>
                 }
             }

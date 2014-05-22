@@ -8,13 +8,17 @@
 <div class="customWrap" id="@tabName.toString()DynamicTab">
     <div class="customLeft">
     @for(i <- 1 to leftColumnSize) {
+        <div class="customFieldWrap">
         @dynamicField(i, fields, isReadOnly)
+        </div>
     }
     </div>
 
     <div class="customRight">
     @for(i <- (leftColumnSize + 1) to (leftColumnSize + rightColumnSize)) {
+        <div class="customFieldWrap">
         @dynamicField(i, fields, isReadOnly)
+        </div>
     }
 
     </div>
@@ -22,7 +26,9 @@
     <div class="customBottom">
 
     @for(i <- (rightColumnSize + leftColumnSize + 1) to fields.size) {
+        <div class="customFieldWrap">
         @dynamicField(i, fields, isReadOnly)
+        </div>
     }
 
     </div>

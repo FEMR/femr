@@ -161,8 +161,6 @@ function JSONifyDynamicFields(){
 
 
     });
-
-    console.log(tabs);
      var stringifiedJSON = JSON.stringify(tabs);
     $('input[name=customFieldJSON]').val(stringifiedJSON);
 

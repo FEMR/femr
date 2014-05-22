@@ -168,7 +168,10 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 /* Dynamic shit */
 .customWrap label{
     display: inline-block;
-    width: 100px;
+    width: 150px;
     text-align: left;
+}
+.customFieldWrap{
+    margin-bottom: 12px;
 }
 

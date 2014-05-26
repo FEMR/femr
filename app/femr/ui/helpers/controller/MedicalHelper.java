@@ -1,21 +1,15 @@
 package femr.ui.helpers.controller;
 
-import akka.dispatch.Create;
+
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.dtos.CurrentUser;
 import femr.common.models.*;
 import femr.ui.controllers.routes;
-import femr.ui.models.medical.CreateViewModelPost;
 import femr.ui.models.medical.CreateViewModelGet;
-import femr.ui.models.medical.UpdateVitalsModel;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

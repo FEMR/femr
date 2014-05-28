@@ -19,7 +19,9 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import femr.ui.views.html.superuser.*;
+import femr.ui.views.html.superuser.index;
+import femr.ui.views.html.superuser.tabs;
+import femr.ui.views.html.superuser.fields;
 
 import java.util.List;
 

@@ -41,8 +41,6 @@ public class AllowedRolesAction extends Action<AllowedRoles> {
         }
 
         if (!isUserInAuthorizedRoleGroup) {
-
-//            return redirect(HomeController.index());
             return F.Promise.pure(redirect("/"));
         }
 

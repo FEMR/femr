@@ -14,7 +14,7 @@ import femr.ui.models.search.CreateViewModel;
 import femr.ui.views.html.pharmacies.index;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
-
+import femr.ui.controllers.routes;
 import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.search.show;
@@ -23,7 +23,6 @@ import femr.ui.views.html.search.showError;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 

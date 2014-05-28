@@ -1,7 +1,5 @@
 package femr.ui.models.medical;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import play.api.mvc.MultipartFormData;
 
 import java.util.List;
 

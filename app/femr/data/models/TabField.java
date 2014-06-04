@@ -1,10 +1,5 @@
 package femr.data.models;
 
-import femr.common.models.ITab;
-import femr.common.models.ITabField;
-import femr.common.models.ITabFieldSize;
-import femr.common.models.ITabFieldType;
-
 import javax.persistence.*;
 
 @Entity
@@ -20,10 +15,10 @@ public class TabField implements ITabField {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tab_id", nullable = false)
     private Tab tab;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_id", nullable = false)
     private TabFieldType tabFieldType;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "size_id", nullable = false)
     private TabFieldSize tabFieldSize;
     @Column(name = "sort_order", nullable = true, unique = false)

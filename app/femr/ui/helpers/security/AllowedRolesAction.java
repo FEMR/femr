@@ -2,11 +2,9 @@ package femr.ui.helpers.security;
 
 import com.google.inject.Inject;
 import femr.business.services.IUserService;
-import femr.common.models.IRole;
-import femr.ui.controllers.HomeController;
+import femr.data.models.IRole;
 import play.libs.F;
 import play.mvc.Action;
-import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.SimpleResult;
 

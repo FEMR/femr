@@ -1,7 +1,5 @@
 package femr.data.models;
 
-import femr.common.models.IPatientEncounter;
-import femr.common.models.IUser;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -12,8 +10,9 @@ public class PatientEncounter implements IPatientEncounter {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "patient_id", nullable = false)
-    private int patientId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id", nullable = false, referencedColumnName = "id")
+    private Patient patient;
     @Column(name = "user_id", nullable = false)
     private int userId;
     @Column(name = "date_of_visit", nullable = false)
@@ -26,9 +25,11 @@ public class PatientEncounter implements IPatientEncounter {
     private DateTime dateOfMedicalVisit;
     @Column(name = "date_of_pharmacy_visit", nullable = true)
     private DateTime dateOfPharmacyVisit;
-    @Column(name= "user_id_medical", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "user_id_medical", nullable = true)
     private User doctor;
-    @Column(name= "user_id_pharmacy", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "user_id_pharmacy", nullable = true)
     private User pharmacist;
 
     @Override
@@ -37,13 +38,13 @@ public class PatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public int getPatientId() {
-        return patientId;
+    public IPatient getPatient() {
+        return patient;
     }
 
     @Override
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public void setPatient(IPatient patient) {
+        this.patient = (Patient) patient;
     }
 
     @Override

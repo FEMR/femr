@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.IPatient;
+import femr.data.models.IPatient;
 
 import java.util.Date;
 

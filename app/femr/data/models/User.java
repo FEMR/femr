@@ -1,7 +1,5 @@
 package femr.data.models;
 
-import femr.common.models.IRole;
-import femr.common.models.IUser;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;

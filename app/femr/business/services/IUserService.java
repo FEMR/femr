@@ -1,8 +1,8 @@
 package femr.business.services;
 
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.IRole;
-import femr.common.models.IUser;
+import femr.common.dto.ServiceResponse;
+import femr.data.models.IRole;
+import femr.data.models.IUser;
 
 import java.util.List;
 

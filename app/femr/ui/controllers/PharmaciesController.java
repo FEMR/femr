@@ -2,9 +2,11 @@ package femr.ui.controllers;
 
 import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import femr.business.dtos.*;
 import femr.business.services.*;
-import femr.common.models.Roles;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.*;
+import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.pharmacy.*;
@@ -70,7 +72,7 @@ public class PharmaciesController extends Controller {
         //ensure prescriptions exist for that patient
         ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItemServiceResponse.getResponseObject().getId());
         if (prescriptionItemsResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
 
         } else if (prescriptionItemsResponse.getResponseObject().size() < 1) {
             return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
@@ -89,10 +91,8 @@ public class PharmaciesController extends Controller {
         if (patientItemServiceResponse.hasErrors()) {
             message = patientItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
-        } else {
-            viewModelGet.setPatient(patientItemServiceResponse.getResponseObject());
         }
-
+        PatientItem patient = patientItemServiceResponse.getResponseObject();
 
         //get the patient encounter item
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
@@ -106,37 +106,40 @@ public class PharmaciesController extends Controller {
         //get vital items
         ServiceResponse<List<VitalItem>> vitalItemsServiceResponse = pharmacyService.findPharmacyVitalItems(patientEncounterItem.getId());
         if (vitalItemsServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         } else {
             for (VitalItem vi : vitalItemsServiceResponse.getResponseObject()) {
                 //consider using a command pattern?
                 switch (vi.getName()) {
                     case "heightFeet":
-                        viewModelGet.setHeightFeet(vi.getValue().intValue());
+                        patient.setHeightFeet(vi.getValue().intValue());
                         break;
                     case "heightInches":
-                        viewModelGet.setHeightinches(vi.getValue().intValue());
+                        patient.setHeightInches(vi.getValue().intValue());
                         break;
                     case "weight":
-                        viewModelGet.setWeight(vi.getValue());
+                        patient.setWeight(vi.getValue());
                         break;
                 }
             }
         }
+        viewModelGet.setPatient(patientItemServiceResponse.getResponseObject());
 
         //find patient prescriptions, they do have to exist
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItem.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
         //find patient problems, they do not have to exist.
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = searchService.findProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
-            //no big deal
+            throw new RuntimeException();
         } else {
-            viewModelGet.setProblems(problemItemServiceResponse.getResponseObject());
+            if (problemItemServiceResponse.getResponseObject().size() > 0){
+                viewModelGet.setProblems(problemItemServiceResponse.getResponseObject());
+            }
         }
 
         return ok(edit.render(currentUserSession, viewModelGet, false));
@@ -149,14 +152,14 @@ public class PharmaciesController extends Controller {
         //get patient encounter
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(id);
         if (patientEncounterItemServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
         //get patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientEncounterItem.getPatientId());
         if (patientItemServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
@@ -170,7 +173,7 @@ public class PharmaciesController extends Controller {
                     currentUserSession.getId()
             );
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
         //replace prescription 2
@@ -182,7 +185,7 @@ public class PharmaciesController extends Controller {
                     currentUserSession.getId()
             );
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
         //replace prescription 3
@@ -194,7 +197,7 @@ public class PharmaciesController extends Controller {
                     currentUserSession.getId()
             );
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
         //replace prescription 4
@@ -206,7 +209,7 @@ public class PharmaciesController extends Controller {
                     currentUserSession.getId()
             );
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
         //replace prescription 5
@@ -218,7 +221,7 @@ public class PharmaciesController extends Controller {
                     currentUserSession.getId()
             );
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
 

@@ -2,11 +2,11 @@ package femr.ui.controllers.research;
 
 
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
+import femr.common.dto.CurrentUser;
 import femr.business.services.IResearchService;
 import femr.business.services.ISessionService;
 
-import femr.common.models.Roles;
+import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.CreateViewModelGet;
@@ -22,7 +22,8 @@ import play.mvc.Security;
 import java.util.*;
 
 /**
- * This is the controller for the research page
+ * This is the controller for the research page, it is currently not supported.
+ * Research was designed before combining of some tables in the database
  */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.RESEARCHER})

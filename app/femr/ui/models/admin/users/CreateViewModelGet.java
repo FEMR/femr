@@ -1,21 +1,27 @@
 package femr.ui.models.admin.users;
 
-import femr.common.models.IUser;
+import femr.data.models.IUser;
 
-import java.util.List;
-
+/**
+ * Created by kevin on 6/27/14.
+ */
 public class CreateViewModelGet {
-    private List<? extends IUser> users;
+    private IUser user;
+    private String error;
 
-    public IUser getUser(int i){
-        return users.get(i);
+    public IUser getUser() {
+        return user;
     }
 
-    public void setUsers(List<? extends IUser> users) {
-        this.users = users;
+    public void setUser(IUser user) {
+        this.user = user;
     }
 
-    public List<? extends IUser> getUsers() {
-        return users;
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }

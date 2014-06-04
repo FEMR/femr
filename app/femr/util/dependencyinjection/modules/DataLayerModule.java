@@ -2,7 +2,7 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.common.models.*;
+import femr.data.models.IUser;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.*;

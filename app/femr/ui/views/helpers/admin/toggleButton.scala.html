@@ -1,4 +1,4 @@
-@(user: femr.common.models.IUser)
+@(user: femr.data.models.IUser)
 
 @*Make sure you can't remove the master admin account*@
 @if(user.getEmail != "admin") {

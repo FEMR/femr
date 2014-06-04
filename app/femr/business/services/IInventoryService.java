@@ -1,7 +1,7 @@
 package femr.business.services;
 
-import femr.business.dtos.ServiceResponse;
-import femr.business.dtos.MedicationItem;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.MedicationItem;
 
 import java.util.List;
 

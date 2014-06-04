@@ -1,6 +1,8 @@
 package femr.business.services;
 
-import femr.business.dtos.*;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.*;
+import femr.data.models.IUser;
 
 import java.util.List;
 import java.util.Map;
@@ -18,12 +20,12 @@ public interface IMedicalService {
     ServiceResponse<List<VitalItem>> createPatientEncounterVitals(Map<String, Float> patientEncounterVital, int userId, int encounterId);
 
     /**
-     * Checks to see if patient has been checked into medical. Does NOT currently check vitals.
+     * Gets the physician that saw a patient in medical.
      *
      * @param encounterId id of the encounter to check
-     * @return true if patient was seen, false if not
+     * @return the physician or null
      */
-    ServiceResponse<Boolean> hasPatientBeenCheckedInByPhysician(int encounterId);
+    ServiceResponse<UserItem> getPhysicianThatCheckedInPatient(int encounterId);
 
     /**
      * creates multiple prescriptions

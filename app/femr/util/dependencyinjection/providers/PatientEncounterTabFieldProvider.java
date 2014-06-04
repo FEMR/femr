@@ -1,6 +1,6 @@
 package femr.util.dependencyinjection.providers;
 
-import femr.common.models.IPatientEncounterTabField;
+import femr.data.models.IPatientEncounterTabField;
 import femr.data.models.PatientEncounterTabField;
 
 import javax.inject.Provider;

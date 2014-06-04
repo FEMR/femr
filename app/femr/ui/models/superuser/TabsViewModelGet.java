@@ -1,6 +1,6 @@
 package femr.ui.models.superuser;
 
-import femr.business.dtos.TabItem;
+import femr.common.models.TabItem;
 
 import java.util.List;
 

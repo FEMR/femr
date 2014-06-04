@@ -1,6 +1,6 @@
 package femr.data.models;
 
-import femr.common.models.IRole;
+import femr.data.models.IRole;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

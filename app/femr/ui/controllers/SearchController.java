@@ -1,12 +1,14 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.dtos.*;
 import femr.business.services.*;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
 import femr.common.models.*;
+import femr.data.models.*;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.search.CreateEncounterViewModel;
+import femr.ui.models.search.EncounterViewModel;
 import femr.ui.models.search.CreateViewModel;
 import femr.util.DataStructure.Pair;
 import femr.ui.views.html.search.indexEncounter;
@@ -17,10 +19,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import femr.ui.views.html.search.showError;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import play.mvc.Security;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -31,7 +35,6 @@ public class SearchController extends Controller {
     private IMedicalService medicalService;
     private IPhotoService photoService;
 
-
     @Inject
     public SearchController(ISessionService sessionService,
                             ISearchService searchService,
@@ -41,7 +44,6 @@ public class SearchController extends Controller {
         this.searchService = searchService;
         this.medicalService = medicalService;
         this.photoService = photoService;
-
     }
 
     public Result indexPatientGet() {
@@ -50,91 +52,69 @@ public class SearchController extends Controller {
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
         String s_id = request().getQueryString("id");
-        ServiceResponse<List<? extends IPatient>> patientServiceResponse = null;
-        ServiceResponse<PatientItem> patientServiceResponseid = null;
-        List<String> photoURIs; //List to store all generated photo URIs.  Will pass into viewmodel object
 
-        Integer id;
+        Integer patientId = null;
+        if (StringUtils.isNotNullOrWhiteSpace(s_id)) {
+            patientId = Integer.parseInt(s_id);
+        }
 
-        if (!StringUtils.isNullOrWhiteSpace(s_id)) {
-            s_id = s_id.trim();
-            id = Integer.parseInt(s_id);
-            patientServiceResponseid = searchService.findPatientItemById(id);
-        } else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName) || !StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
-            firstName = firstName.trim();
-            lastName = lastName.trim();
-            patientServiceResponse = searchService.findPatientByName(firstName, lastName);
-            if (patientServiceResponse.getResponseObject() != null) {
-                id = patientServiceResponse.getResponseObject().get(0).getId();  //grab 1st index
-            } else {
-                id = 0;
-            }
-        } else {
-
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(firstName, lastName, patientId);
+        if (patientResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        List<PatientItem> patientItems = patientResponse.getResponseObject();
+        if (patientItems == null || patientItems.size() < 1) {
             return ok(showError.render(currentUser));
         }
-        if (patientServiceResponseid != null) {
-            if (patientServiceResponseid.hasErrors()) {
-                return ok(showError.render(currentUser));
-            }
-        }
-        ServiceResponse<List<? extends IPatientEncounter>> patientEncountersServiceResponse = searchService.findAllEncountersByPatientId(id);
+
+        ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.findPatientEncounterItemsById(patientItems.get(0).getId());
         if (patientEncountersServiceResponse.hasErrors()) {
-
+            throw new RuntimeException();
+        }
+        List<PatientEncounterItem> patientEncounterItems = patientEncountersServiceResponse.getResponseObject();
+        if (patientEncounterItems == null || patientEncounterItems.size() < 1) {
             return ok(showError.render(currentUser));
         }
 
-        photoURIs = new ArrayList<>();
-        if(patientServiceResponse != null)
-            if(patientServiceResponse.getResponseObject() != null)
-                for(int i = 0; i < patientServiceResponse.getResponseObject().size(); i++)
-                    photoURIs.add(routes.PhotoController.GetPatientPhoto(patientServiceResponse.getResponseObject().get(i).getId(), true).toString());
-
-
-        List<? extends IPatientEncounter> patientEncounters = patientEncountersServiceResponse.getResponseObject();
         CreateViewModel viewModel = new CreateViewModel();
-        if (patientServiceResponse != null) {
-            if (!patientServiceResponse.hasErrors()) {
-                IPatient patient = patientServiceResponse.getResponseObject().get(0);
-                viewModel.setPatientNameResult(patientServiceResponse.getResponseObject());
-                viewModel.setFirstName(patient.getFirstName());
-                viewModel.setLastName(patient.getLastName());
-                viewModel.setAddress(patient.getAddress());
-                viewModel.setCity(patient.getCity());
-                viewModel.setAge(dateUtils.getAge(patient.getAge()));
-                viewModel.setSex(patient.getSex());
-                viewModel.setPhotoURIList(photoURIs);
-            } else {
-                return ok(showError.render(currentUser));
-            }
 
-        } else {
-            if (!patientServiceResponseid.hasErrors()) {
-                PatientItem patient = patientServiceResponseid.getResponseObject();
-                viewModel.setFirstName(patient.getFirstName());
-                viewModel.setLastName(patient.getLastName());
-                viewModel.setAddress(patient.getAddress());
-                viewModel.setCity(patient.getCity());
-                viewModel.setAge(dateUtils.getAge(patient.getBirth()));
-                viewModel.setSex(patient.getSex());
-                viewModel.setPatientID(patient.getId());
-                viewModel.setPhotoURIList(photoURIs);
-            } else {
-                return ok(showError.render(currentUser));
-            }
+        //list of patients
+        if (patientItems.size() > 1) {
+            List<String> photoURIs; //List to store all generated photo URIs.  Will pass into viewmodel object
+            photoURIs = new ArrayList<>();
+            for (int i = 0; i < patientItems.size(); i++)
+                photoURIs.add(routes.PhotoController.GetPatientPhoto(patientItems.get(i).getId(), true).toString());
+            PatientItem patient = patientItems.get(0);
+            viewModel.setPatientNameResult(patientItems);
+            viewModel.setFirstName(patient.getFirstName());
+            viewModel.setLastName(patient.getLastName());
+            viewModel.setAddress(patient.getAddress());
+            viewModel.setCity(patient.getCity());
+            viewModel.setAge(dateUtils.getAge(patient.getBirth()));
+            viewModel.setSex(patient.getSex());
+            viewModel.setPhotoURIList(photoURIs);
+        } else { //one patient
+            PatientItem patient = patientItems.get(0);
+            viewModel.setFirstName(patient.getFirstName());
+            viewModel.setLastName(patient.getLastName());
+            viewModel.setAddress(patient.getAddress());
+            viewModel.setCity(patient.getCity());
+            viewModel.setAge(dateUtils.getAge(patient.getBirth()));
+            viewModel.setSex(patient.getSex());
+            viewModel.setPatientID(patient.getId());
         }
 
-        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounters, id));
+        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems, patientItems.get(0).getId()));
     }
 
     public Result indexEncounterGet(int id) {
 
-        CreateEncounterViewModel viewModel = new CreateEncounterViewModel();
+        EncounterViewModel viewModel = new EncounterViewModel();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findPatientEncounterItemById(id);
-        if (patientEncounterServiceResponse.hasErrors()){
-            return internalServerError();
+        if (patientEncounterServiceResponse.hasErrors()) {
+            throw new RuntimeException();
         }
         PatientEncounterItem patientEncounter = patientEncounterServiceResponse.getResponseObject();
         viewModel.setPatientEncounterItem(patientEncounter);
@@ -142,18 +122,18 @@ public class SearchController extends Controller {
         //Get Patient Name and other basic info
 
         ServiceResponse<PatientItem> patientServiceResponse = searchService.findPatientItemById(patientEncounter.getPatientId());
-        if (patientServiceResponse.hasErrors()){
-            return internalServerError();
+        if (patientServiceResponse.hasErrors()) {
+            throw new RuntimeException();
         }
         viewModel.setPatientItem(patientServiceResponse.getResponseObject());
 
         //prescriptions
         ServiceResponse<List<PrescriptionItem>> patientPrescriptionsServiceResponse = searchService.findAllPrescriptionItemsByEncounterId(patientEncounter.getId());
-        if (patientPrescriptionsServiceResponse.hasErrors()){
-            return internalServerError();
+        if (patientPrescriptionsServiceResponse.hasErrors()) {
+            throw new RuntimeException();
         }
         List<PrescriptionItem> patientPrescriptions = patientPrescriptionsServiceResponse.getResponseObject();
-        List<Pair<String,String>> medicationAndReplacement =getPrescriptions(patientPrescriptions);
+        List<Pair<String, String>> medicationAndReplacement = getPrescriptions(patientPrescriptions);
         viewModel.setMedicationAndReplacement(medicationAndReplacement);
         viewModel.setPrescription1(getOriginalPrescriptionOrNull(1, medicationAndReplacement));
         viewModel.setPrescription2(getOriginalPrescriptionOrNull(2, medicationAndReplacement));
@@ -164,27 +144,27 @@ public class SearchController extends Controller {
 
         //get vital map
         ServiceResponse<VitalMultiMap> vitalMapServiceResponse = searchService.getVitalMultiMap(patientEncounter.getId());
-        if (vitalMapServiceResponse.hasErrors()){
-            return internalServerError();
+        if (vitalMapServiceResponse.hasErrors()) {
+            throw new RuntimeException();
         }
         viewModel.setVitalList(vitalMapServiceResponse.getResponseObject());
 
         //get custom tabs/fields
         ServiceResponse<List<TabItem>> tabItemServiceResponse = medicalService.getCustomTabs();
-        if (tabItemServiceResponse.hasErrors()){
-            return internalServerError();
+        if (tabItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
         }
         viewModel.setCustomTabs(tabItemServiceResponse.getResponseObject());
         ServiceResponse<Map<String, List<TabFieldItem>>> tabFieldItemServiceResponse = medicalService.getCustomFields(patientEncounter.getId());
-        if (tabFieldItemServiceResponse.hasErrors()){
-            return internalServerError();
+        if (tabFieldItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
         }
         viewModel.setCustomFields(tabFieldItemServiceResponse.getResponseObject());
 
         //photos
-        ServiceResponse<List<IPhoto>> photoListSr =  photoService.GetEncounterPhotos(id);
+        ServiceResponse<List<IPhoto>> photoListSr = photoService.GetEncounterPhotos(id);
         List<IPhoto> photoLst = null;
-        if(!photoListSr.hasErrors())
+        if (!photoListSr.hasErrors())
             photoLst = photoListSr.getResponseObject()
                     ;
         viewModel.setPhotos(getPhotoModel(photoLst));
@@ -194,19 +174,18 @@ public class SearchController extends Controller {
 
     /**
      * Gets the photo list and adds them to the Photo Model or sets it to null if it is empty
+     *
      * @param photos the list of IPhoto to iterate over
      * @return A list of PhotoModel or null
      */
     private List<PhotoItem> getPhotoModel(List<IPhoto> photos) {
         List<PhotoItem> tempPhotoList = new ArrayList<>();
-        if(photos != null)
-        {
-            for(IPhoto p : photos)
-            {
+        if (photos != null) {
+            for (IPhoto p : photos) {
                 PhotoItem pm = new PhotoItem();
                 pm.setId(p.getId()); //set photo Id
                 pm.setImageDesc(p.getDescription()); //set description
-                pm.setImageUrl(routes.PhotoController.GetEncounterPhoto(p.getId()).toString()); //set image URL
+                pm.setImageUrl(routes.PhotoController.GetPhoto(p.getId()).toString()); //set image URL
                 pm.setImageDate(StringUtils.ToSimpleDate(p.getInsertTS()));
                 tempPhotoList.add(pm);
             }
@@ -214,9 +193,9 @@ public class SearchController extends Controller {
         return tempPhotoList;
     }
 
-    private List<Pair<String,String>> getPrescriptions(List<PrescriptionItem> prescriptionItems){
+    private List<Pair<String, String>> getPrescriptions(List<PrescriptionItem> prescriptionItems) {
 
-        List<Pair<String,String>> medicationAndReplacement = new LinkedList<>();
+        List<Pair<String, String>> medicationAndReplacement = new LinkedList<>();
         List<Integer> ignoreList = new ArrayList<>(); // list used to make sure we ignore duplicate entries
         for (PrescriptionItem patientPrescription : prescriptionItems) {
             // check if the medication was replaced if so save it and the replacement medications name
@@ -236,6 +215,7 @@ public class SearchController extends Controller {
     /**
      * given the id for a prescription the function will return its name.
      * used for getting the name of the replacement prescription
+     *
      * @param id the id of the prescription
      * @return The name of the Prescription as a string
      */
@@ -252,7 +232,6 @@ public class SearchController extends Controller {
             return null;
         }
     }
-
 
 
 }

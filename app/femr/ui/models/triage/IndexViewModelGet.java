@@ -1,7 +1,7 @@
 package femr.ui.models.triage;
 
-import femr.business.dtos.PatientItem;
-import femr.business.dtos.VitalItem;
+import femr.common.models.PatientItem;
+import femr.common.models.VitalItem;
 
 import java.util.List;
 

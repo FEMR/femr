@@ -1,6 +1,5 @@
 package femr.data.models;
 
-import femr.common.models.IPatientPrescription;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;

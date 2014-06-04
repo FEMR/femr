@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.IPmhField;
+import femr.data.models.IPmhField;
 
 public class MockPmhField implements IPmhField {
     private int id = 0;

@@ -1,5 +1,4 @@
 package femr.data.models;
-import femr.common.models.IPhoto;
 import javax.persistence.*;
 import java.util.Date;
 

@@ -1,7 +1,7 @@
 package mock.femr.data.models;
 
-import femr.common.models.IRole;
-import femr.common.models.IUser;
+import femr.data.models.IRole;
+import femr.data.models.IUser;
 import org.joda.time.DateTime;
 
 import java.util.List;

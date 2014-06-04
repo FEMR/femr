@@ -1,6 +1,6 @@
 package femr.util.dependencyinjection.providers;
 
-import femr.common.models.ITab;
+import femr.data.models.ITab;
 import femr.data.models.Tab;
 
 import javax.inject.Provider;

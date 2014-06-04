@@ -2,13 +2,13 @@ package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.DomainMapper;
-import femr.business.QueryProvider;
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.IMedication;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
+import femr.data.models.IMedication;
 import femr.data.daos.IRepository;
 import femr.data.models.Medication;
-import femr.business.dtos.MedicationItem;
+import femr.common.models.MedicationItem;
 
 import java.util.ArrayList;
 import java.util.List;

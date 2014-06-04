@@ -1,6 +1,6 @@
 package femr.ui.models.admin;
 
-import femr.business.dtos.MedicationItem;
+import femr.common.models.MedicationItem;
 
 import java.util.List;
 

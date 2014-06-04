@@ -2,9 +2,6 @@ package femr.data.models;
 
 
 
-import femr.common.models.IPatientResearch;
-
-import javax.persistence.*;
 import java.util.*;
 
 /**

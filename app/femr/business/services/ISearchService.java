@@ -1,17 +1,17 @@
 package femr.business.services;
 
-import femr.business.dtos.*;
-import femr.common.models.*;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.PrescriptionItem;
+import femr.common.models.ProblemItem;
+import femr.data.models.*;
 import femr.util.DataStructure.VitalMultiMap;
 
 import java.util.List;
 
 public interface ISearchService {
 
-
-
-    ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
-    ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
     ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id);
     ServiceResponse<List<? extends IVital>> findAllVitals();
     ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
@@ -24,12 +24,20 @@ public interface ISearchService {
     ServiceResponse<PatientItem> findPatientItemById(Integer patientId);
 
     /**
-     * Find the most current patient encounter by id
+     * Find the most current patient encounter by patient id
      *
      * @param patientId id of the patient
      * @return the patient's encounter with a field indicating whether or not it is open
      */
     ServiceResponse<PatientEncounterItem> findPatientEncounterItemById(int patientId);
+
+    /**
+     * Find all patient encounters by patient id
+     *
+     * @param patientId id of the patient
+     * @return all encounters of patient in descending order
+     */
+    ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsById(int patientId);
 
     /**
      * Find all prescriptions that have not been replaced
@@ -62,6 +70,17 @@ public interface ISearchService {
      * @return the integer
      */
     ServiceResponse<Integer> parseIdFromQueryString(String query);
+
+    /**
+     * Takes a query string with patient info and returns a list of matching patients
+     * based on id then first/last name
+     *
+     * @param firstName patient first name
+     * @param lastName patient last name
+     * @param id patient id
+     * @return list of patients
+     */
+    ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String firstName, String lastName, Integer id);
 
     /**
      * Create linked hash map of vitals where the key is the date as well as the name

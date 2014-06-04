@@ -1,16 +1,17 @@
 package femr.business.services;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.DomainMapper;
-import femr.business.QueryProvider;
-import femr.business.dtos.*;
-import femr.common.models.*;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.PrescriptionItem;
+import femr.common.models.ProblemItem;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
-import femr.ui.controllers.routes;
 import femr.util.DataStructure.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -26,7 +27,6 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IVital> vitalRepository;
-    private final IRepository<IPhoto> photoRepository;
     private final DomainMapper domainMapper;
 
     @Inject
@@ -37,7 +37,6 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<IVital> vitalRepository,
-                         IRepository<IPhoto> photoRepository,
                          DomainMapper domainMapper) {
 
         this.medicationRepository = medicationRepository;
@@ -47,28 +46,50 @@ public class SearchService implements ISearchService {
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.vitalRepository = vitalRepository;
-        this.photoRepository = photoRepository;
         this.domainMapper = domainMapper;
     }
 
     @Override
-    public ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName) {
-        ExpressionList<Patient> query;
-        if (!firstName.isEmpty() && lastName.isEmpty()) {
-            query = QueryProvider.getPatientQuery().where().eq("first_name", firstName);
-        } else if (firstName.isEmpty() && !lastName.isEmpty()) {
-            query = QueryProvider.getPatientQuery().where().eq("last_name", lastName);
+    public ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String firstName, String lastName, Integer id) {
+        ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
+        if (firstName == null && lastName == null && id == null) {
+            response.addError("", "bad parameters");
+            return response;
+        }
+        ExpressionList<Patient> query = null;
+
+        if (id != null) {
+            query = QueryProvider.getPatientQuery()
+                    .where()
+                    .eq("id", id);
+
+            //patientServiceResponseid = searchService.findPatientItemById(id);
+        } else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName) || !StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
+            firstName = firstName.trim();
+            lastName = lastName.trim();
+            if (!firstName.isEmpty() && lastName.isEmpty()) {
+                query = QueryProvider.getPatientQuery().where().eq("first_name", firstName);
+            } else if (firstName.isEmpty() && !lastName.isEmpty()) {
+                query = QueryProvider.getPatientQuery().where().eq("last_name", lastName);
+            } else {
+                query = QueryProvider.getPatientQuery().where().eq("first_name", firstName).eq("last_name", lastName);
+            }
+
         } else {
-            query = QueryProvider.getPatientQuery().where().eq("first_name", firstName).eq("last_name", lastName);
+            response.addError("", "error");
         }
 
-        List<? extends IPatient> savedPatients = patientRepository.find(query);
-        ServiceResponse<List<? extends IPatient>> response = new ServiceResponse<>();
-        if (savedPatients == null || savedPatients.size() == 0) {
-            response.addError("first name/last name", "patient could not be found by name");
-        } else {
-            response.setResponseObject(savedPatients);
+        try {
+            List<? extends IPatient> patients = patientRepository.find(query);
+            List<PatientItem> patientItems = new ArrayList<>();
+            for (IPatient p : patients) {
+                patientItems.add(domainMapper.createPatientItem(p, null));
+            }
+            response.setResponseObject(patientItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
         }
+
         return response;
     }
 
@@ -94,15 +115,24 @@ public class SearchService implements ISearchService {
 
 
     @Override
-    public ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id) {
-        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().eq("patient_id", id).order().desc("date_of_visit");
-        List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
-        ServiceResponse<List<? extends IPatientEncounter>> response = new ServiceResponse<>();
-        if (patientEncounters.size() > 0) {
-            response.setResponseObject(patientEncounters);
-        } else {
-            response.addError("encounters", "could not find any encounters");
+    public ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsById(int patientId) {
+        ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
+        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("patient_id", patientId)
+                .order()
+                .desc("date_of_visit");
+        try {
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+            List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
+            for (IPatientEncounter pe : patientEncounters) {
+                patientEncounterItems.add(domainMapper.createPatientEncounterItem(pe, null));
+            }
+            response.setResponseObject(patientEncounterItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
         }
+
         return response;
     }
 
@@ -168,9 +198,6 @@ public class SearchService implements ISearchService {
     }
 
 
-
-
-
     /**
      * {@inheritDoc}
      */
@@ -193,17 +220,30 @@ public class SearchService implements ISearchService {
                 return response;
             }
             IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
-            DateTime dateNow = dateUtils.getCurrentDateTime();
+
             DateTime dateOfMedicalVisit = currentPatientEncounter.getDateOfMedicalVisit();
             DateTime dateOfPharmacyVisit = currentPatientEncounter.getDateOfPharmacyVisit();
             Boolean isClosed = false;
+            DateTime dateNow = dateUtils.getCurrentDateTime();
+
             if (dateOfPharmacyVisit != null) {
                 isClosed = true;
-                //response.addError("", "That patient's encounter has been closed.");
-            } else if ((dateNow.dayOfYear().equals(dateOfMedicalVisit.dayOfYear()) && dateNow.year().equals(dateOfMedicalVisit.year())) == false) {
-                isClosed = true;
-                //response.addError("", "That patient's encounter has been closed.");
+
+            } else if (dateOfMedicalVisit != null) {
+                //give 1 day before closing
+                DateTime dayAfterTaken = dateOfMedicalVisit.plusDays(1);
+                if (dateNow.isAfter(dayAfterTaken)) {
+                    isClosed = true;
+                }
+
+            } else {
+                //give 2 days before closing
+                DateTime dayAfterAfterToday = dateNow.plusDays(2);
+                if (dateNow.isAfter(dayAfterAfterToday)) {
+                    isClosed = true;
+                }
             }
+
 
             PatientEncounterItem patientEncounterItem = domainMapper.createPatientEncounterItem(currentPatientEncounter, isClosed);
             response.setResponseObject(patientEncounterItem);
@@ -226,22 +266,26 @@ public class SearchService implements ISearchService {
             return response;
         }
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+        //get patient encounters so we can use the newest one
+        Query<PatientEncounter> peQuery = QueryProvider.getPatientEncounterQuery()
                 .where()
-                .eq("id", id);
+                .eq("patient_id", id)
+                .order()
+                .desc("date_of_visit");
         try {
-            IPatient savedPatient = patientRepository.findOne(query);
-            PatientItem patientItem = domainMapper.createPatientItem(savedPatient);
+            //IPatient savedPatient = patientRepository.findOne(query);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(peQuery);
+            if (patientEncounters.size() < 1) throw new Exception();
 
-            ExpressionList<Photo> photoQuery = QueryProvider.getPhotoQuery()
-                    .where()
-                    .eq("id", savedPatient.getId());
-            IPhoto savedPhoto = photoRepository.findOne(photoQuery);
-            if (savedPhoto != null) {
-                patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(id, false).toString());
-            } else {
-                patientItem.setPathToPhoto("");
+            IPatientEncounter recentEncounter = patientEncounters.get(0);
+            IPatient savedPatient = patientEncounters.get(0).getPatient();
+
+            PatientItem patientItem = domainMapper.createPatientItem(savedPatient, recentEncounter.getWeeksPregnant());
+
+            if(savedPatient.getPhoto() != null){
+                patientItem.setPathToPhoto("/photo/patient/" + id + "?showDefault=false");
             }
+
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -287,22 +331,27 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();
         List<ProblemItem> problemItems = new ArrayList<>();
         Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
-                .fetch("tab_field")
+                .fetch("tabField")
                 .where()
                 .eq("patient_encounter_id", encounterId)
-                .eq("tab_field.name", "problem")
+                .eq("tabField.name", "problem")
                 .order()
-                .desc("date_taken");
+                .asc("date_taken");
 
-        List<? extends IPatientEncounterTabField> patientEncounterTreatmentFields = patientEncounterTabFieldRepository.find(query);
-        if (patientEncounterTreatmentFields == null) {
-            response.addError("", "bad query");
-        } else {
-            for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
-                problemItems.add(domainMapper.createProblemItem(petf));
+        try {
+            List<? extends IPatientEncounterTabField> patientEncounterTreatmentFields = patientEncounterTabFieldRepository.find(query);
+            if (patientEncounterTreatmentFields == null) {
+                response.addError("", "bad query");
+            } else {
+                for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
+                    problemItems.add(domainMapper.createProblemItem(petf));
+                }
+                response.setResponseObject(problemItems);
             }
-            response.setResponseObject(problemItems);
+        } catch (Exception ex) {
+            response.addError("", "error");
         }
+
         return response;
     }
 

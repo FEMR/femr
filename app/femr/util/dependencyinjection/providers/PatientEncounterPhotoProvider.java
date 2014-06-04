@@ -1,6 +1,6 @@
 package femr.util.dependencyinjection.providers;
 
-import femr.common.models.IPatientEncounterPhoto;
+import femr.data.models.IPatientEncounterPhoto;
 import femr.data.models.PatientEncounterPhoto;
 
 import javax.inject.Provider;

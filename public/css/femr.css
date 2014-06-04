@@ -14,6 +14,10 @@ hr {
     border-top: 1px solid black;
 }
 
+#createUserError{
+    color: red;
+}
+
 .nameSearchForm {
     width: 100%;
     margin-top: 10px;
@@ -122,16 +126,34 @@ hr {
     padding: 20px;
 }
 
-/* The following 2 sections are used on both Medical and pharmacy */
-
+/* The following sections are used on both Medical and pharmacy */
+#patientOverviewWrap{
+    overflow: hidden;
+    min-height: 125px;
+}
 #patientOverviewWrap span {
     padding: 4px;
+}
+
+#portraitWrap img{
+    display: block;
+
+    margin: 15px auto 0;
+    border: 2px solid black;
+}
+#portraitWrap{
+    width: 15%;
+    height: 100%;
+    float: left;
+
 }
 
 #generalInfoWrap {
     overflow: hidden;
     text-align: center;
-    margin-bottom: 15px;
+    height: 100%;
+    width: 85%;
+    float: right;
 }
 
 /* Main section wrapper*/

@@ -1,7 +1,8 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
+@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
 
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.views.html.helpers.shared._
 
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
@@ -28,19 +29,10 @@
 
 @medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById, styles = additionalStyles) {
     <div id="pharmacyContentWrap">
-        <div id="patientOverviewWrap" class="backgroundForWrap">
-            <h3 class="text-center">Patient Overview - Pharmacy</h3>
-            <div id="generalInfoWrap">
-                <span><label>Name:</label>@viewModel.getPatient.getFirstName @viewModel.getPatient.getLastName</span>
-                <span><label for="">Age:</label>@viewModel.getPatient.getAge</span>
-                <span><label for="">Height:</label>@viewModel.getHeightFeet' @viewModel.getHeightinches"</span>
-                <span><label for="">Sex:</label>@viewModel.getPatient.getSex</span>
-                <span><label>Weight:</label>@viewModel.getWeight</span>
-                @if(viewModel.getPatientEncounterItem.getWeeksPregnant != null && viewModel.getPatientEncounterItem.getWeeksPregnant > 0) {
-                    <span><label>Weeks Pregnant:</label>@viewModel.getPatientEncounterItem.getWeeksPregnant</span>
-                }
-            </div>
-        </div>
+
+        @patientOverview(viewModel.getPatient, viewModel.getPatientEncounterItem, "Pharmacy")
+
+
 
         <div id="mainWrap" class="backgroundForWrap">
         @helper.form(action = PharmaciesController.editPost(viewModel.getPatient.getId)) {
@@ -49,8 +41,12 @@
             <div id="diagnosisWrap">
                 <ol class="problems">
                     <h4>List of Diagnoses</h4>
-                    @for(y <- 1 to viewModel.getProblems.size) {
-                        <li>@viewModel.getProblems.get(y - 1).getName</li>
+                    @if(viewModel.getProblems != null){
+                        @for(y <- 1 to viewModel.getProblems.size) {
+                            @if(viewModel.getProblems.get(y - 1) != null) {
+                                <li>@viewModel.getProblems.get(y - 1).getName</li>
+                            }
+                        }
                     }
                 </ol>
             </div>

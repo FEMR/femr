@@ -1,11 +1,6 @@
 package femr.data.models;
 
-import femr.common.models.IPatient;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -28,8 +23,11 @@ public class Patient implements IPatient {
     private String address;
     @Column(name = "city", nullable = false)
     private String city;
-    @Column(name = "photo_id", nullable = true)
-    private Integer photoId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name= "photo_id", nullable = true)
+    private Photo photo;
+//    @Column(name = "photo_id", nullable = true)
+//    private Integer photoId;
 
     @Override
     public int getId() {
@@ -112,8 +110,12 @@ public class Patient implements IPatient {
     }
 
     @Override
-    public Integer getPhotoId() { return this.photoId;  }
+    public IPhoto getPhoto() {
+        return photo;
+    }
 
     @Override
-    public void setPhotoId(Integer id) { this.photoId = id; }
+    public void setPhoto(IPhoto photo) {
+        this.photo = (Photo) photo;
+    }
 }

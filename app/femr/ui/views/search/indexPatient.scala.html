@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.IPatientEncounter], id: java.lang.Integer)
+@(currentUser: femr.common.dto.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.CreateViewModel, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem], id: java.lang.Integer)
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.SearchController
@@ -99,9 +99,11 @@
                 <div class="medicalHistoryLineDivide"></div>
                 <ol>
                 @for(patientEncounter <- patientEncounters) {
-                    <li><a href="/show/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block"
-                    role="button" type="button"><p class="date" id="date">@patientEncounter.getDateOfVisit</p> <p class ="chiefComplaint"><strong>Chief complaint: </strong>
-                        @patientEncounter.getChiefComplaint</p></a>
+                    <li>
+                        <a href="/search/index/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
+                            <p class="date">@patientEncounter.getFriendlyDateOfVisit</p>
+                            <p class ="chiefComplaint"><strong>Chief complaint: </strong>@patientEncounter.getChiefComplaint</p>
+                        </a>
                     </li>
                     <div class="medicalHistoryLineDivide"></div>
                 }

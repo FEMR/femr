@@ -4,9 +4,9 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.DomainMapper;
-import femr.business.QueryProvider;
-import femr.business.dtos.*;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
@@ -56,32 +56,26 @@ public class MedicalService implements IMedicalService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> hasPatientBeenCheckedInByPhysician(int encounterId) {
-        ServiceResponse<Boolean> response = new ServiceResponse<>();
+    public ServiceResponse<UserItem> getPhysicianThatCheckedInPatient(int encounterId) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
         if (encounterId < 1) {
             response.addError("", "encounter id must be greater than 0");
             return response;
         }
         try {
-            ExpressionList<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+            ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
                     .where()
-                    .eq("patient_encounter_id", encounterId);
-            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
-
-
-            ExpressionList<PatientPrescription> prescriptionQuery = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("encounter_id", encounterId);
-            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(prescriptionQuery);
-
-            if (patientEncounterTabFields.size() > 0 || patientPrescriptions.size() > 0) {
-                response.setResponseObject(true);
+                    .eq("id", encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+            if (patientEncounter.getDoctor() == null) {
+                response.setResponseObject(null);
+            } else {
+                UserItem userItem = domainMapper.createUserItem(patientEncounter.getDoctor());
+                response.setResponseObject(userItem);
             }
-
         } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
+            response.addError("", "error finding encounter");
         }
-
         return response;
     }
 
@@ -126,11 +120,24 @@ public class MedicalService implements IMedicalService {
             return response;
         }
         Map<String, TabFieldItem> fieldValueMap = new LinkedHashMap<>();
+
+
+        //query without problems
         Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
+                .fetch("tabField")
                 .where()
                 .eq("patient_encounter_id", encounterId)
+                .ne("tabField.name", "problem")
                 .order()
                 .desc("date_taken");
+        //query for problems
+        Query<PatientEncounterTabField> problemQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                .fetch("tabField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("tabField.name","problem")
+                .order()
+                .asc("date_taken");
         try {
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query);
             for (IPatientEncounterTabField petf : patientEncounterTabFields) {
@@ -140,11 +147,23 @@ public class MedicalService implements IMedicalService {
                     fieldValueMap.put(petf.getTabField().getName(), domainMapper.createTabFieldItem(petf));
                 }
             }
+
+            List<? extends IPatientEncounterTabField> problemFields = patientEncounterTabFieldRepository.find(problemQuery);
+            int problemNumber = 1;
+            for (IPatientEncounterTabField petf2 : problemFields){
+                fieldValueMap.put(petf2.getTabField().getName() + problemNumber, domainMapper.createTabFieldItem(petf2));
+                problemNumber++;
+            }
+
+
             response.setResponseObject(fieldValueMap);
 
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
+
+
+
 
         return response;
     }
@@ -166,7 +185,7 @@ public class MedicalService implements IMedicalService {
                 ITabField tabField = tabFieldRepository.findOne(query);
 
 
-                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue());
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue(), encounterId);
 
 
                 ExpressionList<PatientEncounterTabField> query2 = QueryProvider.getPatientEncounterTabFieldQuery()

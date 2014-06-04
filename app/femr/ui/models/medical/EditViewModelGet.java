@@ -1,6 +1,6 @@
 package femr.ui.models.medical;
 
-import femr.business.dtos.*;
+import femr.common.models.*;
 import femr.util.DataStructure.VitalMultiMap;
 
 import java.util.List;

@@ -1,11 +1,11 @@
 //package unit.app.femr.business.services;
 //
-//import femr.business.dtos.ServiceResponse;
+//import femr.common.dto.ServiceResponse;
 //import femr.business.services.ITriageService;
 //import femr.business.services.TriageService;
-//import femr.common.models.IPatient;
-//import femr.common.models.IPatientEncounter;
-//import femr.common.models.IPatientEncounterVital;
+//import femr.data.models.IPatient;
+//import femr.data.models.IPatientEncounter;
+//import femr.data.models.IPatientEncounterVital;
 //import mock.femr.data.daos.MockRepository;
 //import mock.femr.data.models.MockPatient;
 //import mock.femr.data.models.MockPatientEncounter;

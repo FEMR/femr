@@ -1,9 +1,9 @@
 package femr.business.services;
 
-import femr.business.dtos.ServiceResponse;
-import femr.business.dtos.PatientEncounterItem;
-import femr.business.dtos.PatientItem;
-import femr.business.dtos.VitalItem;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.VitalItem;
 
 import java.util.List;
 import java.util.Map;

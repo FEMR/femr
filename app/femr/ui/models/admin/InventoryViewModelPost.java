@@ -1,6 +1,6 @@
 package femr.ui.models.admin;
 
-import femr.business.dtos.MedicationItem;
+import femr.common.models.MedicationItem;
 import play.data.DynamicForm;
 
 import java.util.ArrayList;

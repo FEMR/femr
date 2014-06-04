@@ -1,6 +1,6 @@
 package femr.util.dependencyinjection.providers;
 
-import femr.common.models.IPhoto;
+import femr.data.models.IPhoto;
 import femr.data.models.Photo;
 
 import javax.inject.Provider;

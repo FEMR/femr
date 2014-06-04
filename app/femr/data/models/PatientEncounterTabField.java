@@ -1,13 +1,11 @@
 package femr.data.models;
 
-import femr.common.models.IPatientEncounterTabField;
-import femr.common.models.ITabField;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name="patient_encounter_tab_field")
+@Table(name="patient_encounter_tab_fields")
 public class PatientEncounterTabField implements IPatientEncounterTabField{
     @Id
     @Column(name = "id", unique = true, nullable = false)

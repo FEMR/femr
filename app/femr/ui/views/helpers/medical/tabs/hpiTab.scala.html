@@ -1,0 +1,63 @@
+@(viewModel: femr.ui.models.medical.EditViewModelGet)
+@import femr.ui.views.html.helpers.medical.severityDropDown;
+
+
+    <div class="controlWrap" id="hpiControl">
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="form-group">
+                    <label for="onset">Onset</label>
+                    <input name="onset" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("onset") != null){ @viewModel.getStaticFields.get("onset").getValue}"/>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="form-group">
+                    <label for="blank"></label>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                @if(viewModel.getStaticFields.get("severity") != null){
+                    @severityDropDown(viewModel.getStaticFields.get("severity").getValue)
+                }else{
+                    @severityDropDown(null)
+                }
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <label for="radiation">Radiation</label>
+                        <input name="radiation" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("radiation") != null){ @viewModel.getStaticFields.get("radiation").getValue}"/>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-6">
+                    <div class="form-group">
+                        <label for="quality">Quality</label>
+                        <input name="quality" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("quality") != null){ @viewModel.getStaticFields.get("quality").getValue}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="provokes">Provokes</label>
+            <input name="provokes" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("provokes") != null){ @viewModel.getStaticFields.get("provokes").getValue}"/>
+        </div>
+        <div class="form-group">
+            <label for="palliates">Palliates</label>
+            <input name="palliates" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("palliates") != null){ @viewModel.getStaticFields.get("palliates").getValue}"/>
+        </div>
+        <div class="form-group">
+            <label for="timeOfDay">Time of Day</label>
+            <input name="timeOfDay" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("timeOfDay") != null){ @viewModel.getStaticFields.get("timeOfDay").getValue}"/>
+        </div>
+        <div class="form-group">
+            <label for="timeOfDay">Narrative</label>
+            <input name="narrative" type="text" class="form-control input-sm" value="@if(viewModel.getStaticFields.get("narrative") != null){ @viewModel.getStaticFields.get("narrative").getValue}"/>
+        </div>
+        <div class="form-group">
+            <label for="physicalExamination">Physical Examination</label>
+            <textarea rows="3" name="physicalExamination" class="form-control input-sm">@if(viewModel.getStaticFields.get("physicalExamination") != null){ @viewModel.getStaticFields.get("physicalExamination").getValue}</textarea>
+        </div>
+    </div>

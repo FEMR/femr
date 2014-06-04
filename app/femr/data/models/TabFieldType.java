@@ -1,6 +1,5 @@
 package femr.data.models;
 
-import femr.common.models.ITabFieldType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

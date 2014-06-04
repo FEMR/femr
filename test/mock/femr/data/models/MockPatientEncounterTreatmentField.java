@@ -1,7 +1,7 @@
 package mock.femr.data.models;
 
 import femr.common.models.IPatientEncounterTreatmentField;
-import femr.common.models.ITreatmentField;
+import femr.data.models.ITreatmentField;
 import org.joda.time.DateTime;
 
 public class MockPatientEncounterTreatmentField implements IPatientEncounterTreatmentField{

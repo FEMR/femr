@@ -1,13 +1,13 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
-import femr.business.dtos.TabFieldItem;
-import femr.business.dtos.TabItem;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.TabFieldItem;
+import femr.common.models.TabItem;
 import femr.business.services.ISessionService;
 import femr.business.services.ISuperuserService;
-import femr.common.models.Roles;
+import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.superuser.*;
@@ -48,7 +48,7 @@ public class SuperuserController extends Controller {
 
         response = superuserService.getTabs(false);
         if (response.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
 
         TabsViewModelGet viewModelGet = new TabsViewModelGet();
@@ -57,7 +57,7 @@ public class SuperuserController extends Controller {
         //get deleted tabs
         response = superuserService.getTabs(true);
         if (response.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setDeletedTabs(response.getResponseObject());
 
@@ -78,7 +78,7 @@ public class SuperuserController extends Controller {
                 if (viewModelPost.getAddTabRight() != null) tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
                 ServiceResponse<TabItem> response = superuserService.createTab(tabItem, currentUser.getId());
                 if (response.hasErrors()) {
-                    return internalServerError();
+                    throw new RuntimeException();
                 }
             } else {//edit
                 if (viewModelPost.getAddTabLeft() == null) tabItem.setLeftColumnSize(0);
@@ -90,7 +90,7 @@ public class SuperuserController extends Controller {
                 tabItem.setName(viewModelPost.getAddTabName());
                 ServiceResponse<TabItem> response = superuserService.editTab(tabItem, currentUser.getId());
                 if (response.hasErrors()) {
-                    return internalServerError();
+                    throw new RuntimeException();
                 }
             }
         }
@@ -98,7 +98,7 @@ public class SuperuserController extends Controller {
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getDeleteTab())) {
             ServiceResponse<TabItem> response = superuserService.toggleTab(viewModelPost.getDeleteTab());
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
 
@@ -115,28 +115,28 @@ public class SuperuserController extends Controller {
         //get current custom fields
         ServiceResponse<List<TabFieldItem>> currentFieldItemsResponse = superuserService.getTabFields(name, false);
         if (currentFieldItemsResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setCurrentCustomFieldItemList(currentFieldItemsResponse.getResponseObject());
 
         //get removed custom fields
         ServiceResponse<List<TabFieldItem>> removedFieldItemsResponse = superuserService.getTabFields(name, true);
         if (currentFieldItemsResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setRemovedCustomFieldItemList(removedFieldItemsResponse.getResponseObject());
 
         //get available field types
         ServiceResponse<List<String>> fieldTypesResponse = superuserService.getTypes();
         if (fieldTypesResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setCustomFieldTypes(fieldTypesResponse.getResponseObject());
 
         //get available fields sizes
         ServiceResponse<List<String>> fieldSizesResponse = superuserService.getSizes();
         if (fieldSizesResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setCustomFieldSizes(fieldSizesResponse.getResponseObject());
 
@@ -163,7 +163,7 @@ public class SuperuserController extends Controller {
 
                 ServiceResponse<TabFieldItem> response = superuserService.createTabField(tabFieldItem, currentUser.getId(), name);
                 if (response.hasErrors()) {
-                    return internalServerError();
+                    throw new RuntimeException();
                 }
             }
         }
@@ -171,7 +171,7 @@ public class SuperuserController extends Controller {
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getToggleName())) {
             ServiceResponse<TabFieldItem> response = superuserService.toggleTabField(viewModelPost.getToggleName(), name);
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
 

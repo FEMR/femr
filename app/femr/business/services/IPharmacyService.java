@@ -1,10 +1,9 @@
 package femr.business.services;
 
-import femr.business.dtos.PrescriptionItem;
-import femr.business.dtos.ServiceResponse;
-import femr.business.dtos.VitalItem;
-import femr.common.models.IMedication;
-import femr.common.models.IPatientEncounter;
+import femr.common.models.PrescriptionItem;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.VitalItem;
+import femr.data.models.IPatientEncounter;
 
 import java.util.List;
 

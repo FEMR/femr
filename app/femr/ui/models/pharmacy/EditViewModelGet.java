@@ -1,48 +1,19 @@
 package femr.ui.models.pharmacy;
 
-import femr.business.dtos.PatientEncounterItem;
-import femr.business.dtos.PatientItem;
-import femr.business.dtos.PrescriptionItem;
-import femr.business.dtos.ProblemItem;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.PrescriptionItem;
+import femr.common.models.ProblemItem;
 
-import java.util.Date;
 import java.util.List;
 
 public class EditViewModelGet {
     private PatientItem patient;
     private PatientEncounterItem patientEncounterItem;
-    //Vital Information
-    private Float weight;
-    private Integer heightFeet;
-    private Integer heightinches;
     //Prescriptions
     private List<PrescriptionItem> medications;
     //Problems
     private List<ProblemItem> problems;
-
-    public void setWeight(Float weight) {
-        this.weight = weight;
-    }
-
-    public Float getWeight() {
-        return weight;
-    }
-
-    public void setHeightFeet(Integer heightFeet) {
-        this.heightFeet = heightFeet;
-    }
-
-    public Integer getHeightFeet() {
-        return heightFeet;
-    }
-
-    public void setHeightinches(Integer heightinches) {
-        this.heightinches = heightinches;
-    }
-
-    public Integer getHeightinches() {
-        return heightinches;
-    }
 
     public List<PrescriptionItem> getMedications() {
         return medications;

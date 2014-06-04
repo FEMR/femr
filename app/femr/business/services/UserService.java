@@ -2,10 +2,10 @@ package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.QueryProvider;
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.IRole;
-import femr.common.models.IUser;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
+import femr.data.models.IRole;
+import femr.data.models.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.User;
 import femr.util.encryptions.IPasswordEncryptor;

@@ -37,5 +37,12 @@ public class dateUtils {
         else
             return Integer.toString(monthsInt/12) + " YO";
     }
+
+    public static String getFriendlyDate(DateTime dateTime){
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - HH:mm:ss");
+        String dtStr = dateTime.toString(fmt);
+        return dtStr;
+
+    }
 }
 

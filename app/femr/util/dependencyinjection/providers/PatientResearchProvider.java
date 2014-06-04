@@ -1,7 +1,7 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.common.models.IPatientResearch;
+import femr.data.models.IPatientResearch;
 import femr.data.models.PatientResearch;
 
 /**

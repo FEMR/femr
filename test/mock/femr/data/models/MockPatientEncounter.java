@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.IPatientEncounter;
+import femr.data.models.IPatientEncounter;
 
 public class MockPatientEncounter implements IPatientEncounter {
 

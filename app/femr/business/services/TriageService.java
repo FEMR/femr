@@ -3,15 +3,14 @@ package femr.business.services;
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.DomainMapper;
-import femr.business.QueryProvider;
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.*;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
-import femr.business.dtos.PatientEncounterItem;
-import femr.business.dtos.PatientItem;
-import femr.business.dtos.VitalItem;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.VitalItem;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class TriageService implements ITriageService {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.update(savedPatient);
             }
-            PatientItem patientItem = domainMapper.createPatientItem(savedPatient);
+            PatientItem patientItem = domainMapper.createPatientItem(savedPatient, null);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -116,7 +115,7 @@ public class TriageService implements ITriageService {
         try {
             IPatient newPatient = domainMapper.createPatient(patient);
             newPatient = patientRepository.create(newPatient);
-            response.setResponseObject(domainMapper.createPatientItem(newPatient));
+            response.setResponseObject(domainMapper.createPatientItem(newPatient, null));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -136,7 +135,7 @@ public class TriageService implements ITriageService {
         }
 
         try {
-            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, null);
+            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, patientEncounterItem.getUserId());
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
             response.setResponseObject(domainMapper.createPatientEncounterItem(newPatientEncounter, false));
         } catch (Exception ex) {

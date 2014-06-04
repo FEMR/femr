@@ -31,7 +31,7 @@ GET         /search/index/:id           @femr.ui.controllers.SearchController.in
 GET         /search/index               @femr.ui.controllers.SearchController.indexPatientGet()
 #Photo
 GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
-GET         /photo/encounter/:id        @femr.ui.controllers.PhotoController.GetEncounterPhoto(id: Integer)
+GET         /photo/encounter/:id        @femr.ui.controllers.PhotoController.GetPhoto(id: Integer)
 #Triage
 GET         /triage/find                @femr.ui.controllers.TriageController.indexPopulatedGet()
 GET         /triage                     @femr.ui.controllers.TriageController.indexGet()

@@ -1,9 +1,9 @@
 package femr.business.services;
 
 
-import femr.business.dtos.ServiceResponse;
-import femr.business.dtos.TabFieldItem;
-import femr.business.dtos.TabItem;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.TabFieldItem;
+import femr.common.models.TabItem;
 
 import java.util.List;
 

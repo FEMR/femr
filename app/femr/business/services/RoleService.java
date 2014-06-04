@@ -2,8 +2,8 @@ package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.QueryProvider;
-import femr.common.models.IRole;
+import femr.business.helpers.QueryProvider;
+import femr.data.models.IRole;
 import femr.data.daos.IRepository;
 import femr.data.models.Role;
 

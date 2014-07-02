@@ -9,17 +9,18 @@ public class BusinessLayerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(IUserService.class).to(UserService.class);
-        bind(IRoleService.class).to(RoleService.class);
-        bind(ISessionService.class).to(SessionService.class);
-        bind(ITriageService.class).to(TriageService.class);
-        bind(ISessionHelper.class).to(SessionHelper.class);
-        bind(ISearchService.class).to(SearchService.class);
-        bind(IPharmacyService.class).to(PharmacyService.class);
+        //Business Service Injection
+        bind(IInventoryService.class).to(InventoryService.class);
         bind(IMedicalService.class).to(MedicalService.class);
+        bind(IPharmacyService.class).to(PharmacyService.class);
         bind(IPhotoService.class).to(PhotoService.class);
         bind(IResearchService.class).to(ResearchService.class);
+        bind(IRoleService.class).to(RoleService.class);
+        bind(ISearchService.class).to(SearchService.class);
+        bind(ISessionHelper.class).to(SessionHelper.class);
+        bind(ISessionService.class).to(SessionService.class);
         bind(ISuperuserService.class).to(SuperuserService.class);
-
+        bind(ITriageService.class).to(TriageService.class);
+        bind(IUserService.class).to(UserService.class);
     }
 }

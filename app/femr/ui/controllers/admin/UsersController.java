@@ -3,23 +3,22 @@ package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
 import femr.business.services.IRoleService;
 import femr.business.services.ISessionService;
 import femr.business.services.IUserService;
-import femr.common.models.IRole;
-import femr.common.models.IUser;
-import femr.common.models.Roles;
-import femr.data.models.Role;
+import femr.data.models.IRole;
+import femr.data.models.IUser;
+import femr.data.models.Roles;
+import femr.data.models.User;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.users.CreateViewModelPost;
 import femr.ui.models.admin.users.CreateViewModelGet;
+import femr.ui.models.admin.users.CreateViewModelPost;
+import femr.ui.models.admin.users.IndexViewModelGet;
 import femr.ui.models.admin.users.EditUserViewModel;
-import femr.ui.views.html.admin.users.create;
-import femr.ui.views.html.admin.users.editUser;
-import femr.ui.views.html.admin.users.index;
+import femr.ui.views.html.admin.users.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
@@ -33,6 +32,7 @@ import java.util.Map;
 
 import static femr.ui.controllers.routes.HomeController;
 
+//Note: Administrative controllers still interface with pure data models
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class UsersController extends Controller {
@@ -56,9 +56,9 @@ public class UsersController extends Controller {
 
         ServiceResponse<List<? extends IUser>> userServiceResponse = userService.findAllUsers();
         if (userServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
-        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
 
         viewModelGet.setUsers(userServiceResponse.getResponseObject());
 
@@ -70,33 +70,52 @@ public class UsersController extends Controller {
     public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         List<? extends IRole> roles = roleService.getAllRoles();
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
+        viewModelGet.setUser(new User());
 
-        return ok(create.render(currentUser, roles, createViewModelForm));
+        return ok(create.render(currentUser, roles, viewModelGet));
     }
 
     //  creating a user page
     //  /admin/users/create
     public Result createPost() {
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        List<? extends IRole> roles = roleService.getAllRoles();
+        CreateViewModelGet viewModelGet = new CreateViewModelGet();
         CreateViewModelPost viewModel = createViewModelForm.bindFromRequest().get();
         IUser user = createUser(viewModel);
+        String error;
 
-        Map<String, String[]> map = request().body().asFormUrlEncoded();
-        String[] checkedValues = map.get("roles");
-        List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
-        for (String checkedValue : checkedValues) {
-            checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
+        //make sure user entered an email address (username)
+        if (StringUtils.isNullOrWhiteSpace(user.getEmail())) {
+            error = "Please enter an email address.";
+        } else {
+            Map<String, String[]> map = request().body().asFormUrlEncoded();
+            String[] checkedValues = map.get("roles");
+
+            //make sure
+            if (checkedValues == null || checkedValues.length < 1) {
+                error = "Please select one or more roles.";
+            } else {
+                List<Integer> checkValuesAsIntegers = new ArrayList<Integer>();
+                for (String checkedValue : checkedValues) {
+                    checkValuesAsIntegers.add(Integer.parseInt(checkedValue));
+                }
+                user = assignRolesToUser(user, checkValuesAsIntegers);
+                ServiceResponse<IUser> response = userService.createUser(user);
+
+                if (!response.hasErrors()) {
+                    return redirect(HomeController.index());
+                } else {
+                    error = response.getErrors().get("");
+                }
+            }
         }
 
-        user = assignRolesToUser(user, checkValuesAsIntegers);
+        viewModelGet.setUser(user);
+        viewModelGet.setError(error);
 
-        ServiceResponse<IUser> response = userService.createUser(user);
-
-        if (!response.hasErrors()) {
-            return redirect(HomeController.index());
-        }
-
-
-        return TODO;
+        return ok(create.render(currentUser, roles, viewModelGet));
     }
 
     //  edit a user dialog
@@ -131,11 +150,11 @@ public class UsersController extends Controller {
         //password reset checkbox.
         if (StringUtils.isNotNullOrWhiteSpace(viewModel.getPasswordReset()) && viewModel.getPasswordReset().equals("on")) {
             user.setPasswordReset(true);
-        }else{
+        } else {
             user.setPasswordReset(false);
         }
         //manual password reset
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getNewPassword()) && viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())){
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getNewPassword()) && viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())) {
             user.setPassword(viewModel.getNewPassword());
             isNewPassword = true;
         }
@@ -152,17 +171,14 @@ public class UsersController extends Controller {
             user.setRoles(userRoles);
         }
 
-
         ServiceResponse<IUser> updateResponse = userService.update(user, isNewPassword);
         if (updateResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         } else {
             //return to manage user homepage
             return redirect(routes.UsersController.index());
 
         }
-
-
     }
 
     //  jQuery calls this when activating/deactivating a user
@@ -174,7 +190,7 @@ public class UsersController extends Controller {
         user.setDeleted(!user.getDeleted());
         ServiceResponse<IUser> updateResponse = userService.update(user, false);
         if (updateResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         } else {
             return ok(user.getDeleted().toString());
         }

@@ -1,7 +1,5 @@
 package femr.data.models;
 
-import femr.common.models.IPatientEncounterPhoto;
-
 import javax.persistence.*;
 
 @Entity

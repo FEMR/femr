@@ -1,33 +1,35 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
 import femr.business.services.IPhotoService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
-import femr.common.models.*;
+import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.data.PatientEncounterItem;
-import femr.ui.models.data.PatientItem;
-import femr.ui.models.data.VitalItem;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
-import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.*;
+import sun.misc.BASE64Decoder;
+
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * NOTE: The Triage Controller has had the majority of its business logic removed and
- * placed in the service layer. This is why it may seem to have a different "feel"
- * than other controllers.
- */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class TriageController extends Controller {
@@ -43,7 +45,6 @@ public class TriageController extends Controller {
                             ISessionService sessionService,
                             ISearchService searchService,
                             IPhotoService photoService) {
-
         this.triageService = triageService;
         this.sessionService = sessionService;
         this.searchService = searchService;
@@ -57,17 +58,16 @@ public class TriageController extends Controller {
         //the vitals in the view
         ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
 
         //initalize an empty patient
         PatientItem patientItem = new PatientItem();
 
-        IndexViewModelGet viewModelGet = populateViewModelGet(
-                vitalServiceResponse.getResponseObject(),
-                patientItem,
-                false
-        );
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+        viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
+        viewModelGet.setPatient(patientItem);
+        viewModelGet.setSearchError(false);
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -85,13 +85,13 @@ public class TriageController extends Controller {
         //retrieve vitals names for dynamic html element naming
         ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
 
         //retrieve patient id from query string and search for the patient
         //error will be returned from business layer if there is anything
         //wrong with the query string and/or patient
-        ServiceResponse<PatientItem> patientServiceResponse = triageService.findPatientItemById(
+        ServiceResponse<PatientItem> patientServiceResponse = searchService.findPatientItemById(
                 Integer.valueOf(
                         request().getQueryString("id").trim()
                 )
@@ -103,11 +103,10 @@ public class TriageController extends Controller {
         }
 
         //create the view model
-        IndexViewModelGet viewModelGet = populateViewModelGet(
-                vitalServiceResponse.getResponseObject(),
-                patient,
-                searchError
-        );
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+        viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
+        viewModelGet.setPatient(patient);
+        viewModelGet.setSearchError(searchError);
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -117,36 +116,47 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result indexPost(int id) {
+        Http.RequestBody requestBody = request().body();
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         //create a new patient
         //or get current patient for new encounter
         ServiceResponse<PatientItem> patientServiceResponse;
-        PatientItem patient;
+        PatientItem patientItem;
         if (id == 0) {
-            patient = populatePatientItem(viewModel, currentUser);
-            patientServiceResponse = triageService.createPatient(patient);
+            patientItem = populatePatientItem(viewModel, currentUser);
+            patientServiceResponse = triageService.createPatient(patientItem);
         } else {
             patientServiceResponse = triageService.findPatientAndUpdateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
+        patientItem = patientServiceResponse.getResponseObject();
 
-        //add or remove a patient photo
-        try {
-            Http.MultipartFormData.FilePart fpPhoto;
-            File photoFile = null;
-            fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
+        File photoFile = null;
+        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getPatientPhotoCropped())) {
+            //we have received a base64 encoded data URI for a picture
+            //parse the actual data URI
+            String parsedImage = viewModel.getPatientPhotoCropped().substring(viewModel.getPatientPhotoCropped().indexOf(",") + 1);
+            BufferedImage bufferedImage = decodeToImage(parsedImage);
+            photoFile = new File("image.jpg");
+            try {
+                ImageIO.write(bufferedImage, "jpg", photoFile);
+            } catch (Exception ex) {
+                //couldn't save the image
+            }
+        } else {
+            //this happens if we don't receieve a base64 encoded data URI
+            //it can be because there is no picture or because javascript is disabled.
+            Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
             if (fpPhoto != null)
                 photoFile = fpPhoto.getFile();
-
-            photoService.HandlePatientPhoto(photoFile,
-                    patientServiceResponse.getResponseObject(),
-                    viewModel.getImageCoords(), viewModel.getDeletePhoto());
-        } catch (Exception ex) {
         }
+
+        photoService.SavePatientPhotoAndUpdatePatient(photoFile, patientItem.getId(), viewModel.getDeletePhoto());
+
 
         //create and save a new encounter
         PatientEncounterItem patientEncounterItem = populatePatientEncounterItem(
@@ -156,7 +166,7 @@ public class TriageController extends Controller {
         );
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         } else {
             patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         }
@@ -198,19 +208,32 @@ public class TriageController extends Controller {
 
         ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
 
-        return redirect("/show?id=" + patientServiceResponse.getResponseObject().getId());
+        return redirect("/search/index?id=" + patientServiceResponse.getResponseObject().getId());
     }
 
+    /**
+     * Decodes a base64 encoded string to an image
+     *
+     * @param imageString base64 encoded string that has been parsed to only include imageBytes
+     * @return the decoded image
+     */
+    private static BufferedImage decodeToImage(String imageString) {
 
-    private IndexViewModelGet populateViewModelGet(List<VitalItem> vitals, PatientItem patient, Boolean searchError) {
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
-        viewModelGet.setVitalNames(vitals);
-        viewModelGet.setPatient(patient);
-        viewModelGet.setSearchError(searchError);
-        return viewModelGet;
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            BASE64Decoder decoder = new BASE64Decoder();
+            imageByte = decoder.decodeBuffer(imageString);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
@@ -230,10 +253,9 @@ public class TriageController extends Controller {
         PatientEncounterItem patientEncounter = new PatientEncounterItem();
         patientEncounter.setPatientId(patientId);
         patientEncounter.setUserId(currentUser.getId());
-        patientEncounter.setDateOfVisit(dateUtils.getCurrentDateTimeString());
+        patientEncounter.setDateOfVisit(DateTime.now());
         patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
         patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
-        patientEncounter.setIsPregnant(viewModelPost.getIsPregnant());
         return patientEncounter;
     }
 

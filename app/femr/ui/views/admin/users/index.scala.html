@@ -1,68 +1,60 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModelGet: femr.ui.models.admin.users.CreateViewModelGet)
+@(currentUser: femr.common.dto.CurrentUser, viewModelGet: femr.ui.models.admin.users.IndexViewModelGet)
 
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.views.html.helpers.admin._
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/users.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/admin/users.css")">
     }
 
     @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/admin/admin.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.at("js/jquery-ui.min.js")"></script>
+
     }
 
-
-@admin("Users", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-    <div id="userListWrap">
-        <table class="table table-bordered" id="userTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Last Login</th>
-                    <th>Edit</th>
-                    <th>Toggle</th>
-                </tr>
-            </thead>
-            <tbody>
-            @for(y <- 1 to viewModelGet.getUsers.size) {
-                <tr>
-                    <td>@y</td>
-                    <td>@viewModelGet.getUser(y - 1).getFirstName</td>
-                    <td>@viewModelGet.getUser(y - 1).getLastName</td>
-                    <td>@viewModelGet.getUser(y - 1).getEmail</td>
-                    <td>
-                    @for(role <- 0 to viewModelGet.getUser(y - 1).getRoles.size - 1) {
-                        <ul>
-                            <li>@viewModelGet.getUser(y - 1).getRoles.get(role).getName</li>
-                        </ul>
+@admin("Manage Users", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Last Login</th>
+                <th>Edit</th>
+                <th>Toggle</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(y <- 1 to viewModelGet.getUsers.size) {
+            <tr>
+                <td>@y</td>
+                <td>@viewModelGet.getUser(y - 1).getFirstName</td>
+                <td>@viewModelGet.getUser(y - 1).getLastName</td>
+                <td>@viewModelGet.getUser(y - 1).getEmail</td>
+                <td>
+                @for(role <- 0 to viewModelGet.getUser(y - 1).getRoles.size - 1) {
+                    <ul>
+                        <li>@viewModelGet.getUser(y - 1).getRoles.get(role).getName</li>
+                    </ul>
+                }
+                </td>
+                <td>@viewModelGet.getUser(y - 1).getLastLogin</td>
+                <td>
+                    @if(viewModelGet.getUser(y - 1).getEmail != "admin"){
+                        <button type="button" class="btn btn-default editBtn" data-user_id="@viewModelGet.getUser(y - 1).getId">Edit</button>
                     }
-                    </td>
-                    <td>@viewModelGet.getUser(y - 1).getLastLogin</td>
-                    <td>
-                    @if(viewModelGet.getUser(y - 1).getEmail != "admin") {
-                        <button type="button" class="btn btn-default editBtn" data-user_id="@viewModelGet.getUser(y - 1).getId">
-                            Edit</button>
-                    }
-                    </td>
-                    <td class="text-center">
-                    @toggleButton(viewModelGet.getUser(y - 1))
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        <div id="editDialog" title="Edit User">
-            <div id="editPartial">
-                @*load partial view for editing a user via admin.js*@
-            </div>
+                </td>
+                <td class="text-center">
+                @toggleButton(viewModelGet.getUser(y - 1))
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div id="editDialog" title="Edit User">
+        <div id="editPartial">
+            @*load partial view for editing a user via admin.js*@
         </div>
     </div>
-
-
 }

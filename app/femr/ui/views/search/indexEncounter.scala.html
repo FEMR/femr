@@ -1,0 +1,50 @@
+@(currentUser: femr.common.dto.CurrentUser,
+        viewModel: femr.ui.models.search.EncounterViewModel)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.helpers.medical.tabs._
+@import femr.ui.views.html.helpers.encounter._
+
+    @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+        <!-- adds the javascript bootstraps to this page -->
+        <script type="text/javascript" src="@routes.Assets.at("js/search/encounter.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery.tablescroll.js")"></script>
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/search.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
+    }
+
+
+@main("search", currentUser, scripts = additionalScripts, styles = additionalStyles) {
+    <div id="patientHistoryWrap" class="backgroundForWrap">
+        <div>
+            <label>Triage Personnel: </label> <span>N/A</span>
+            <label>Medical Personnel: </label> <span>@viewModel.getDoctorFirstName @viewModel.getDoctorLastName</span>
+            <label>Pharmacy Personnel: </label> <span>@viewModel.getPharmacistFirstName @viewModel.getPharmacistLastName</span>
+        </div>
+        <div id="patientInformation">
+            <h3>Patient Information</h3>
+            <label>Id: </label> <span>@viewModel.getPatientItem.getId</span>
+            <br/>
+            <label>Name: </label> <span>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName</span>
+            <br/>
+            <label>Address: </label> <span>@viewModel.getPatientItem.getAddress</span>
+            <br/>
+            <label>Age: </label> <span>@viewModel.getPatientItem.getAge</span>
+            <br/>
+            <label>Birthday: </label> <span>@viewModel.getPatientItem.getBirth</span>
+            <br/>
+            <label>City: </label> <span>@viewModel.getPatientItem.getCity</span>
+            <br/>
+            <label>Sex: </label> <span>@viewModel.getPatientItem.getSex</span>
+        </div>
+
+
+
+    </div>
+
+}
+

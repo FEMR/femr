@@ -1,6 +1,7 @@
 package femr.data.models;
 
-import femr.common.models.IPatientEncounter;
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,18 +10,27 @@ public class PatientEncounter implements IPatientEncounter {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "patient_id", nullable = false)
-    private int patientId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id", nullable = false, referencedColumnName = "id")
+    private Patient patient;
     @Column(name = "user_id", nullable = false)
     private int userId;
     @Column(name = "date_of_visit", nullable = false)
-    private String dateOfVisit;
+    private DateTime dateOfVisit;
     @Column(name = "chief_complaint", nullable = true)
     private String chiefComplaint;
     @Column(name = "weeks_pregnant", nullable = true)
     private Integer weeksPregnant;
-    @Column(name = "is_pregnant", nullable = true)
-    private Boolean isPregnant;
+    @Column(name = "date_of_medical_visit", nullable = true)
+    private DateTime dateOfMedicalVisit;
+    @Column(name = "date_of_pharmacy_visit", nullable = true)
+    private DateTime dateOfPharmacyVisit;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "user_id_medical", nullable = true)
+    private User doctor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "user_id_pharmacy", nullable = true)
+    private User pharmacist;
 
     @Override
     public int getId() {
@@ -28,13 +38,13 @@ public class PatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public int getPatientId() {
-        return patientId;
+    public IPatient getPatient() {
+        return patient;
     }
 
     @Override
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public void setPatient(IPatient patient) {
+        this.patient = (Patient) patient;
     }
 
     @Override
@@ -45,16 +55,6 @@ public class PatientEncounter implements IPatientEncounter {
     @Override
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    @Override
-    public String getDateOfVisit() {
-        return dateOfVisit;
-    }
-
-    @Override
-    public void setDateOfVisit(String dateOfVisit) {
-        this.dateOfVisit = dateOfVisit;
     }
 
     @Override
@@ -78,12 +78,52 @@ public class PatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public Boolean getIsPregnant() {
-        return isPregnant;
+    public DateTime getDateOfVisit() {
+        return dateOfVisit;
     }
 
     @Override
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
+    public void setDateOfVisit(DateTime dateOfVisit) {
+        this.dateOfVisit = dateOfVisit;
+    }
+
+    @Override
+    public DateTime getDateOfMedicalVisit() {
+        return dateOfMedicalVisit;
+    }
+
+    @Override
+    public void setDateOfMedicalVisit(DateTime dateOfMedicalVisit) {
+        this.dateOfMedicalVisit = dateOfMedicalVisit;
+    }
+
+    @Override
+    public DateTime getDateOfPharmacyVisit() {
+        return dateOfPharmacyVisit;
+    }
+
+    @Override
+    public void setDateOfPharmacyVisit(DateTime dateOfPharmacyVisit) {
+        this.dateOfPharmacyVisit = dateOfPharmacyVisit;
+    }
+
+    @Override
+    public IUser getDoctor() {
+        return doctor;
+    }
+
+    @Override
+    public void setDoctor(IUser doctor) {
+        this.doctor = (User) doctor;
+    }
+
+    @Override
+    public IUser getPharmacist() {
+        return pharmacist;
+    }
+
+    @Override
+    public void setPharmacist(IUser pharmacist) {
+        this.pharmacist = (User) pharmacist;
     }
 }

@@ -1,5 +1,10 @@
 package femr.ui.models.triage;
 
+import com.ning.http.util.Base64;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 //NOTE: the triage view sets the input element names dynamically
@@ -14,7 +19,6 @@ public class IndexViewModelPost {
     private Date age;
     private String sex;
     public Boolean deletePhoto; //flag to determine if user would like to delete image file
-    public String imageCoords; //Image crop coordinates
     //begin vitals
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
@@ -29,13 +33,18 @@ public class IndexViewModelPost {
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
-    private Boolean isPregnant;
+
+    private String patientPhotoCropped;
+    public String getPatientPhotoCropped() {
+        return patientPhotoCropped;
+    }
+
+    public void setPatientPhotoCropped(String patientPhotoCropped) {
+        this.patientPhotoCropped = patientPhotoCropped;
+    }
+
 
     public Boolean getDeletePhoto() { return deletePhoto; }
-
-    public String getImageCoords() { return imageCoords; }
-    public void   setImageCoord(String coords) { imageCoords = coords; }
-
     //begin general info
     public String getFirstName() {
         return firstName;
@@ -174,14 +183,6 @@ public class IndexViewModelPost {
         this.weeksPregnant = weeksPregnant;
     }
 
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
-    }
-
     public Integer getGlucose() {
         return glucose;
     }
@@ -189,4 +190,6 @@ public class IndexViewModelPost {
     public void setGlucose(Integer glucose) {
         this.glucose = glucose;
     }
+
+
 }

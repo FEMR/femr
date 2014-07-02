@@ -1,0 +1,50 @@
+@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.admin.InventoryViewModelGet)
+
+    @import femr.ui.views.html.layouts.admin
+    @import femr.ui.controllers.admin.routes.InventoryController
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/admin/inventory.css")">
+    }
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/admin/inventory.js")"></script>
+    }
+
+
+    @admin("Inventory Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+        <button class="fButton" id="addMed">Add Medication</button>
+
+        <table id="inventoryTable">
+            <thead>
+                <th>Name</th>
+                <th>Total Quantity</th>
+                <th>Current Quantity</th>
+                <th>Remove</th>
+            </thead>
+            <tbody>
+            @for(m <- 1 to viewModel.getMedications.size) {
+                <tr>
+                    <td class="name">@viewModel.getMedications.get(m - 1).getName</td>
+                    <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
+                    <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
+                    <td class="remove">
+                        @helper.form(action = InventoryController.indexPost(viewModel.getMedications.get(m - 1).getId)) {
+                         <button type="submit" id="removeMed">   <span class="glyphicon glyphicon-minus">
+                         @*<input type="text" value="@viewModel.getMedications.get(m - 1).getId" class="hidden"/>*@
+                            </span></button>
+                        }
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+
+        </table>
+        <div id="editDialog" title="Manage Inventory">
+            <div id="inventoryPartial">
+                @*load partial view for editing a user via admin.js*@
+            </div>
+        </div>
+
+
+    }

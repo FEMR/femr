@@ -1,16 +1,12 @@
 package femr.data.models.research;
 
-import femr.common.models.IPatientResearch;
-import femr.data.models.PatientResearch;
+import femr.data.models.IPatientResearch;
 import femr.util.DataStructure.Pair;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Builds the SQL WHERE BODY from the given input

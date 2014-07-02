@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, message: java.lang.String, patientId: java.lang.Integer)
+@(currentUser: femr.common.dto.CurrentUser, message: java.lang.String, patientId: java.lang.Integer)
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.views.html.layouts.main
@@ -10,7 +10,7 @@
 
 @main("Medical", currentUser, scripts = additionalScripts) {
     <div class="container">
-    @helper.form(action = MedicalController.searchPost()) {
+    @helper.form(action = MedicalController.indexPost()) {
         @searchBox("Medical", patientId, message)
     }
     </div>

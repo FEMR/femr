@@ -1,0 +1,51 @@
+
+/*User table*/
+#userTable{
+    border: 1px solid #ddd;
+    width: 100%;
+}
+#userTable ul{
+    list-style-type: none;
+}
+#userTable th{
+    border: 1px solid #ddd;
+    font-size: 14px;
+    text-align: center;
+    padding: 5px;
+}
+#userTable td{
+    padding: 5px;
+    border: 1px solid #ddd;
+    font-size: 11px;
+}
+#userTable ul{
+    padding: 0;
+}
+.badge:hover{
+    cursor: pointer;
+}
+
+
+
+/*jQuery UI Dialog*/
+#userInfoWrap label, #userRolesWrap label{
+    font-size: 18px;
+}
+#userInfoWrap input[type=text]{
+    width: 100%;
+    margin-bottom: 20px;
+}
+#userInfoWrap input[type=checkbox]{
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    padding: 10px;
+    margin-left: 15px;
+}
+#userInfoWrap p{
+    font-size: 10px;
+}
+
+
+

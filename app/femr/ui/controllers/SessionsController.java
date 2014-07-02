@@ -1,17 +1,15 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
 import femr.business.services.ISessionService;
 import femr.business.services.IUserService;
-import femr.common.models.IUser;
-import femr.ui.controllers.routes;
+import femr.data.models.IUser;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
 import femr.util.calculations.dateUtils;
-import org.h2.command.ddl.CreateView;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -48,7 +46,7 @@ public class SessionsController extends Controller {
             user.setLastLogin(dateUtils.getCurrentDateTime());
             ServiceResponse<IUser> userResponse = userService.update(user, false);
             if (userResponse.hasErrors()){
-                return internalServerError();
+                throw new RuntimeException();
             }
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
@@ -78,7 +76,7 @@ public class SessionsController extends Controller {
 
         ServiceResponse<IUser> userResponse = userService.update(user, isNewPassword);
         if (userResponse.hasErrors()){
-            return internalServerError();
+            throw new RuntimeException();
         }
         return redirect(routes.HomeController.index());
     }

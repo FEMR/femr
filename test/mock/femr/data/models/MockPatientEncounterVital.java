@@ -1,7 +1,7 @@
 package mock.femr.data.models;
 
-import femr.common.models.IPatientEncounterVital;
-import femr.common.models.IVital;
+import femr.data.models.IPatientEncounterVital;
+import femr.data.models.IVital;
 
 public class MockPatientEncounterVital implements IPatientEncounterVital{
 

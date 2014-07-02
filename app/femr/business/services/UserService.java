@@ -1,12 +1,11 @@
 package femr.business.services;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.IRole;
-import femr.common.models.IUser;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
+import femr.data.models.IRole;
+import femr.data.models.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.User;
 import femr.util.encryptions.IPasswordEncryptor;
@@ -15,8 +14,8 @@ import java.util.List;
 
 public class UserService implements IUserService {
 
-    private IRepository<IUser> userRepository;
-    private IPasswordEncryptor passwordEncryptor;
+    private final IRepository<IUser> userRepository;
+    private final IPasswordEncryptor passwordEncryptor;
 
     @Inject
     public UserService(IRepository<IUser> userRepository, IPasswordEncryptor passwordEncryptor) {
@@ -40,14 +39,14 @@ public class UserService implements IUserService {
 
     @Override
     public IUser findByEmail(String email) {
-        ExpressionList<User> query = getQuery().fetch("roles").where().eq("email", email);
+        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("email", email);
 
         return userRepository.findOne(query);
     }
 
     @Override
     public IUser findById(int id) {
-        ExpressionList<User> query = getQuery().fetch("roles").where().eq("id", id);
+        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
 
         return userRepository.findOne(query);
     }
@@ -55,7 +54,7 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<List<? extends IUser>> findAllUsers(){
 
-        ExpressionList<User> query = getQuery()
+        ExpressionList<User> query = QueryProvider.getUserQuery()
                 .fetch("roles")
                 .where()
                 .ne("roles.name", "SuperUser");
@@ -72,7 +71,7 @@ public class UserService implements IUserService {
 
     @Override
     public List<? extends IRole> findRolesForUser(int id) {
-        ExpressionList<User> query = getQuery().fetch("roles").where().eq("id", id);
+        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
         IUser user = userRepository.findOne(query);
         return user.getRoles();
     }
@@ -92,10 +91,6 @@ public class UserService implements IUserService {
             response.addError("","Could not update user");
         }
         return response;
-    }
-
-    private Query<User> getQuery() {
-        return Ebean.find(User.class);
     }
 
     private void encryptAndSetUserPassword(IUser user) {

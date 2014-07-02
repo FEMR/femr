@@ -1,330 +1,259 @@
 package femr.business.services;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import femr.business.dtos.ServiceResponse;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
 import femr.common.models.*;
-import femr.common.models.custom.ICustomField;
-import femr.common.models.custom.ICustomTab;
-import femr.common.models.custom.IPatientEncounterCustomField;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
-import femr.data.models.custom.CustomField;
-import femr.data.models.custom.CustomTab;
-import femr.data.models.custom.PatientEncounterCustomField;
-import femr.ui.models.data.custom.CustomFieldItem;
-import femr.ui.models.data.custom.CustomTabItem;
 import femr.util.calculations.dateUtils;
-import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
 import java.util.*;
 
 public class MedicalService implements IMedicalService {
 
-    private IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository;
-    private IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository;
-    private IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository;
-    private IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private IRepository<ICustomField> customFieldRepository;
-    private IRepository<IPatientEncounterCustomField> patientEncounterCustomFieldRepository;
-    private IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private IRepository<IHpiField> hpiFieldRepository;
-    private IRepository<IPmhField> pmhFieldRepository;
-    private IRepository<ITreatmentField> treatmentFieldRepository;
-    private IRepository<IVital> vitalRepository;
-    private IRepository<ICustomTab> customTabRepository;
-    private Provider<IPatientEncounterVital> patientEncounterVitalProvider;
-
+    private final IRepository<IPatientEncounter> patientEncounterRepository;
+    private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
+    private final IRepository<ITabField> tabFieldRepository;
+    private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
+    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private final IRepository<IVital> vitalRepository;
+    private final IRepository<ITab> customTabRepository;
+    private final IRepository<IUser> userRepository;
+    private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+    private final DomainMapper domainMapper;
 
     @Inject
-    public MedicalService(IRepository<IPatientEncounterTreatmentField> patientEncounterTreatmentFieldRepository,
-                          IRepository<ICustomField> customFieldRepository,
-                          IRepository<IPatientEncounterHpiField> patientEncounterHpiFieldRepository,
-                          IRepository<IPatientEncounterPmhField> patientEncounterPmhFieldRepository,
-                          IRepository<IPatientPrescription> patientPrescriptionRepository,
-                          IRepository<IHpiField> hpiFieldRepository,
-                          IRepository<IPmhField> pmhFieldRepository,
-                          IRepository<ITreatmentField> treatmentFieldRepository,
+    public MedicalService(IRepository<IPatientEncounter> patientEncounterRepository,
                           IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
+                          IRepository<ITabField> tabFieldRepository,
+                          IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
+                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                           IRepository<IVital> vitalRepository,
+                          IRepository<ITab> customTabRepository,
+                          IRepository<IUser> userRepository,
                           Provider<IPatientEncounterVital> patientEncounterVitalProvider,
-                          IRepository<ICustomTab> customTabRepository,
-                          IRepository<IPatientEncounterCustomField> patientEncounterCustomFieldRepository) {
-        this.patientEncounterTreatmentFieldRepository = patientEncounterTreatmentFieldRepository;
-        this.patientEncounterHpiFieldRepository = patientEncounterHpiFieldRepository;
-        this.patientEncounterPmhFieldRepository = patientEncounterPmhFieldRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
-        this.hpiFieldRepository = hpiFieldRepository;
-        this.pmhFieldRepository = pmhFieldRepository;
-        this.treatmentFieldRepository = treatmentFieldRepository;
+                          DomainMapper domainMapper) {
+
+        this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
-        this.customFieldRepository = customFieldRepository;
+        this.tabFieldRepository = tabFieldRepository;
+        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
+        this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.vitalRepository = vitalRepository;
         this.customTabRepository = customTabRepository;
+        this.userRepository = userRepository;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
-        this.patientEncounterCustomFieldRepository = patientEncounterCustomFieldRepository;
+        this.domainMapper = domainMapper;
     }
 
-    @Override
-    public ServiceResponse<List<? extends IPatientEncounterTreatmentField>> createPatientEncounterTreatmentFields(List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields) {
-        List<? extends IPatientEncounterTreatmentField> newPatientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.createAll(patientEncounterTreatmentFields);
-        ServiceResponse<List<? extends IPatientEncounterTreatmentField>> response = new ServiceResponse<>();
-
-        if (newPatientEncounterTreatmentFields != null) {
-            response.setResponseObject(newPatientEncounterTreatmentFields);
-        } else {
-            response.addError("patientEncounterTreatmentField", "Failed to save");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<List<? extends IPatientPrescription>> createPatientPrescriptions(List<? extends IPatientPrescription> patientPrescriptions) {
-        List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
-        ServiceResponse<List<? extends IPatientPrescription>> response = new ServiceResponse<>();
-
-        if (newPatientPrescriptions != null) {
-            response.setResponseObject(newPatientPrescriptions);
-        } else {
-            response.addError("patientPrescription", "failed to save");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<IPatientPrescription> createPatientPrescription(IPatientPrescription patientPrescription) {
-        IPatientPrescription newPatientPrescription = patientPrescriptionRepository.create(patientPrescription);
-        ServiceResponse<IPatientPrescription> response = new ServiceResponse<>();
-
-        if (newPatientPrescription != null) {
-            response.setResponseObject(newPatientPrescription);
-        } else {
-            response.addError("patientPrescription", "failed to save");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<List<? extends IPatientEncounterHpiField>> createPatientEncounterHpiFields(List<? extends IPatientEncounterHpiField> patientEncounterHpiFields) {
-        List<? extends IPatientEncounterHpiField> newPatientEncounterHpiFields = patientEncounterHpiFieldRepository.createAll(patientEncounterHpiFields);
-        ServiceResponse<List<? extends IPatientEncounterHpiField>> response = new ServiceResponse<>();
-
-        if (newPatientEncounterHpiFields != null) {
-            response.setResponseObject(newPatientEncounterHpiFields);
-        } else {
-            response.addError("patientEncounterHpiField", "Failed to save");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<List<? extends IPatientEncounterPmhField>> createPatientEncounterPmhFields(List<? extends IPatientEncounterPmhField> patientEncounterPmhFields) {
-        List<? extends IPatientEncounterPmhField> newPatientEncounterPmhFields = patientEncounterPmhFieldRepository.createAll(patientEncounterPmhFields);
-        ServiceResponse<List<? extends IPatientEncounterPmhField>> response = new ServiceResponse<>();
-
-        if (newPatientEncounterPmhFields != null) {
-            response.setResponseObject(newPatientEncounterPmhFields);
-        } else {
-            response.addError("patientEncounterPmhField", "Failed to save");
-        }
-        return response;
-    }
-
-    /*
-    Determines if a patient has been seen by a doctor by checking for filled out
-    fields in Hpi, Treatment, Prescription, or Pmh.
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public boolean hasPatientBeenCheckedInByPhysician(int encounterId) {
-        ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiField().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
-
-        ExpressionList<PatientEncounterTreatmentField> query2 = getPatientEncounterTreatmentField().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query2);
-
-        ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id", encounterId);
-        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
-
-        ExpressionList<PatientEncounterPmhField> query4 = getPatientEncounterPmhField().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query4);
-
-        if (patientEncounterHpiFields.size() > 0) {
-            return true;
+    public ServiceResponse<UserItem> getPhysicianThatCheckedInPatient(int encounterId) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
+        if (encounterId < 1) {
+            response.addError("", "encounter id must be greater than 0");
+            return response;
         }
-        if (patientEncounterPmhFields.size() > 0) {
-            return true;
-        }
-        if (patientEncounterTreatmentFields.size() > 0) {
-            return true;
-        }
-        if (patientPrescriptions.size() > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public ServiceResponse<DateTime> getDateOfCheckIn(int encounterId) {
-        ExpressionList<PatientEncounterHpiField> query = getPatientEncounterHpiField().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterHpiField> patientEncounterHpiFields = patientEncounterHpiFieldRepository.find(query);
-
-        ExpressionList<PatientEncounterTreatmentField> query2 = getPatientEncounterTreatmentField().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterTreatmentField> patientEncounterTreatmentFields = patientEncounterTreatmentFieldRepository.find(query2);
-
-        ExpressionList<PatientPrescription> query3 = getPatientPrescription().where().eq("encounter_id", encounterId);
-        List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query3);
-
-        ExpressionList<PatientEncounterPmhField> query4 = getPatientEncounterPmhField().where().eq("patient_encounter_id", encounterId);
-        List<? extends IPatientEncounterPmhField> patientEncounterPmhFields = patientEncounterPmhFieldRepository.find(query4);
-
-        ServiceResponse<DateTime> response = new ServiceResponse<>();
-
-        if (patientEncounterHpiFields.size() > 0) {
-            response.setResponseObject(patientEncounterHpiFields.get(0).getDateTaken());
-        } else if (patientEncounterPmhFields.size() > 0) {
-            response.setResponseObject(patientEncounterPmhFields.get(0).getDateTaken());
-        } else if (patientEncounterTreatmentFields.size() > 0) {
-            response.setResponseObject(patientEncounterTreatmentFields.get(0).getDateTaken());
-        } else if (patientPrescriptions.size() > 0) {
-            response.setResponseObject(patientPrescriptions.get(0).getDateTaken());
-        } else {
-            response.addError("values", "That patient has not yet been seen");
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<Map<String, List<? extends IPatientEncounterPmhField>>> findPmhFieldsByEncounterId(int encounterId) {
-        ServiceResponse<Map<String, List<? extends IPatientEncounterPmhField>>> response = new ServiceResponse<>();
-        Map<String, List<? extends IPatientEncounterPmhField>> pmhValueMap = new LinkedHashMap<>();
-        Query<PatientEncounterPmhField> query;
-
-        List<? extends IPmhField> pmhFields = pmhFieldRepository.findAll(PmhField.class);
-        List<? extends IPatientEncounterPmhField> patientPmh;
-        String pmhFieldName;
-        for (int pmhFieldIndex = 0; pmhFieldIndex < pmhFields.size(); pmhFieldIndex++) {
-            pmhFieldName = pmhFields.get(pmhFieldIndex).getName().trim();
-            query = getPatientEncounterPmhFieldQuery().fetch("pmhField").where().eq("patient_encounter_id", encounterId).eq("pmhField.name", pmhFieldName).order().desc("date_taken");
-            patientPmh = patientEncounterPmhFieldRepository.find(query);
-            pmhValueMap.put(pmhFieldName, patientPmh);
-        }
-        response.setResponseObject(pmhValueMap);
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> findTreatmentFieldsByEncounterId(int encounterId) {
-        ServiceResponse<Map<String, List<? extends IPatientEncounterTreatmentField>>> response = new ServiceResponse<>();
-        Map<String, List<? extends IPatientEncounterTreatmentField>> treatmentFieldMap = new LinkedHashMap<>();
-        Query<PatientEncounterTreatmentField> query;
-
-        List<? extends ITreatmentField> treatmentFields = treatmentFieldRepository.findAll(TreatmentField.class);
-        List<? extends IPatientEncounterTreatmentField> patientTreatment;
-        String treatmentFieldName;
-        //loop through each available treatment field and build the map
-        for (int treatmentFieldIndex = 0; treatmentFieldIndex < treatmentFields.size(); treatmentFieldIndex++) {
-            treatmentFieldName = treatmentFields.get(treatmentFieldIndex).getName().trim();
-
-            query = getPatientEncounterTreatmentFieldQuery().fetch("treatmentField").where().eq("patient_encounter_id", encounterId).eq("treatmentField.name", treatmentFieldName).order().desc("date_taken");
-            patientTreatment = patientEncounterTreatmentFieldRepository.find(query);
-            treatmentFieldMap.put(treatmentFieldName, patientTreatment);
-        }
-        response.setResponseObject(treatmentFieldMap);
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<Map<String, List<? extends IPatientEncounterHpiField>>> findHpiFieldsByEncounterId(int encounterId) {
-        ServiceResponse<Map<String, List<? extends IPatientEncounterHpiField>>> response = new ServiceResponse<>();
-        Query<PatientEncounterHpiField> query;
-        Map<String, List<? extends IPatientEncounterHpiField>> hpiValueMap = new LinkedHashMap<>();
-
-        List<? extends IHpiField> hpiFields = hpiFieldRepository.findAll(HpiField.class);
-        List<? extends IPatientEncounterHpiField> patientHpi;
-        String hpiFieldName;
-        for (int hpiFieldIndex = 0; hpiFieldIndex < hpiFields.size(); hpiFieldIndex++) {
-            hpiFieldName = hpiFields.get(hpiFieldIndex).getName().trim();
-            query = getPatientEncounterHpiFieldQuery().fetch("hpiField").where().eq("patient_encounter_id", encounterId).eq("hpiField.name", hpiFieldName).order().desc("date_taken");
-            patientHpi = patientEncounterHpiFieldRepository.find(query);
-            hpiValueMap.put(hpiFieldName, patientHpi);
-        }
-        response.setResponseObject(hpiValueMap);
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<List<? extends IPatientEncounterVital>> createPatientEncounterVitals(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
-        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        IPatientEncounterVital patientEncounterVital;
-        IVital vital;
-
-        ExpressionList<Vital> query;
-        String currentTime = dateUtils.getCurrentDateTimeString();
-
-        for (String key : patientEncounterVitalMap.keySet()) {
-            if (patientEncounterVitalMap.get(key) != null) {
-                query = getVitalQuery().where().eq("name", key);
-                vital = vitalRepository.findOne(query);
-
-                patientEncounterVital = patientEncounterVitalProvider.get();
-                patientEncounterVital.setPatientEncounterId(encounterId);
-                patientEncounterVital.setUserId(userId);
-                patientEncounterVital.setDateTaken(currentTime);
-                patientEncounterVital.setVital(vital);
-                patientEncounterVital.setVitalValue(patientEncounterVitalMap.get(key));
-                patientEncounterVitals.add(patientEncounterVital);
+        try {
+            ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
+                    .where()
+                    .eq("id", encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+            if (patientEncounter.getDoctor() == null) {
+                response.setResponseObject(null);
+            } else {
+                UserItem userItem = domainMapper.createUserItem(patientEncounter.getDoctor());
+                response.setResponseObject(userItem);
             }
-        }
-
-        List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
-
-        ServiceResponse<List<? extends IPatientEncounterVital>> response = new ServiceResponse<>();
-
-        if (newPatientEncounterVitals != null) {
-            response.setResponseObject(newPatientEncounterVitals);
-        } else {
-            response.addError("", "patient encounter vitals could not be saved to database");
+        } catch (Exception ex) {
+            response.addError("", "error finding encounter");
         }
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<Map<String, List<CustomFieldItem>>> getCustomFields(int encounterId) {
-        ServiceResponse<Map<String, List<CustomFieldItem>>> response = new ServiceResponse<>();
-        Map<String, List<CustomFieldItem>> customFieldMap = new HashMap<>();
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId) {
+        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+        if (prescriptionItems == null || userId < 1 || encounterId < 1) {
+            response.addError("", "invalid parameters");
+            return response;
+        }
+
+        List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
+        for (PrescriptionItem pi : prescriptionItems) {
+            patientPrescriptions.add(domainMapper.createPatientPrescription(pi, userId, encounterId, null));
+        }
+
+        try {
+            List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
+            List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
+            for (IPatientPrescription pp : newPatientPrescriptions) {
+                newPrescriptionItems.add(domainMapper.createPatientPrescriptionItem(pp));
+            }
+            response.setResponseObject(newPrescriptionItems);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Map<String, TabFieldItem>> findCurrentTabFieldsByEncounterId(int encounterId) {
+        ServiceResponse<Map<String, TabFieldItem>> response = new ServiceResponse<>();
+        if (encounterId < 1) {
+            response.addError("", "encounter id invalid");
+            return response;
+        }
+        Map<String, TabFieldItem> fieldValueMap = new LinkedHashMap<>();
+
+
+        //query without problems
+        Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
+                .fetch("tabField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .ne("tabField.name", "problem")
+                .order()
+                .desc("date_taken");
+        //query for problems
+        Query<PatientEncounterTabField> problemQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                .fetch("tabField")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("tabField.name","problem")
+                .order()
+                .asc("date_taken");
+        try {
+            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query);
+            for (IPatientEncounterTabField petf : patientEncounterTabFields) {
+                //since the fields were sorted by date in the query, this if statement
+                //ensures that only the up-to-date field values are inserted into the map
+                if (!fieldValueMap.containsKey(petf.getTabField().getName())) {
+                    fieldValueMap.put(petf.getTabField().getName(), domainMapper.createTabFieldItem(petf));
+                }
+            }
+
+            List<? extends IPatientEncounterTabField> problemFields = patientEncounterTabFieldRepository.find(problemQuery);
+            int problemNumber = 1;
+            for (IPatientEncounterTabField petf2 : problemFields){
+                fieldValueMap.put(petf2.getTabField().getName() + problemNumber, domainMapper.createTabFieldItem(petf2));
+                problemNumber++;
+            }
+
+
+            response.setResponseObject(fieldValueMap);
+
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+
+
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
+        ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
+
+        //list of values to insert into database
+        List<IPatientEncounterTabField> tabFields = new ArrayList<>();
+        try {
+            for (TabFieldItem tf : tabFieldItems) {
+                ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
+                        .where()
+                        .eq("name", tf.getName());
+                ITabField tabField = tabFieldRepository.findOne(query);
+
+
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue(), encounterId);
+
+
+                ExpressionList<PatientEncounterTabField> query2 = QueryProvider.getPatientEncounterTabFieldQuery()
+                        .where()
+                        .eq("tabField", tabField)
+                        .eq("patient_encounter_id", encounterId)
+                        .eq("tab_field_value", tf.getValue());
+                if (patientEncounterTabFieldRepository.findOne(query2) != null) {
+                    //already exists - field wasn't changed
+                } else {
+                    tabFields.add(patientEncounterTabField);
+                }
+            }
+            List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
+            List<TabFieldItem> tabFieldItemsToReturn = new ArrayList<>();
+            for (IPatientEncounterTabField petf : savedTabFields) {
+                tabFieldItemsToReturn.add(domainMapper.createTabFieldItem(petf));
+            }
+            response.setResponseObject(tabFieldItemsToReturn);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Map<String, List<TabFieldItem>>> getCustomFields(int encounterId) {
+        ServiceResponse<Map<String, List<TabFieldItem>>> response = new ServiceResponse<>();
+        if (encounterId < 1) {
+            response.addError("", "encounterId must be greater than 0");
+            return response;
+        }
+        Map<String, List<TabFieldItem>> customFieldMap = new HashMap<>();
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
                 .eq("isDeleted", false);
         try {
             //O(n^2) because who gives a fuck
-            List<? extends ICustomTab> customTabs = customTabRepository.find(query);
-            for (ICustomTab ct : customTabs) {
-                Query<CustomField> query2 = getCustomFieldQuery()
-                        .fetch("customTab")
+            List<? extends ITab> customTabs = customTabRepository.find(query);
+            for (ITab ct : customTabs) {
+                Query<TabField> query2 = QueryProvider.getTabFieldQuery()
+                        .fetch("tab")
                         .where()
                         .eq("isDeleted", false)
-                        .eq("customTab.name", ct.getName())
+                        .eq("tab.name", ct.getName())
                         .order()
                         .asc("sort_order");
-                List<? extends ICustomField> customFields = customFieldRepository.find(query2);
-                List<CustomFieldItem> customFieldItems = new ArrayList<>();
-                for (ICustomField cf : customFields) {
-                    Query<PatientEncounterCustomField> query3 = getPatientEncounterCustomFieldQuery()
+
+
+                List<? extends ITabField> customFields = tabFieldRepository.find(query2);
+                List<TabFieldItem> customFieldItems = new ArrayList<>();
+                for (ITabField cf : customFields) {
+                    Query<PatientEncounterTabField> query3 = QueryProvider.getPatientEncounterTabFieldQuery()
                             .where()
-                            .eq("custom_field_id", cf.getId())
+                            .eq("tabField", cf)//somethings fucky
                             .eq("patient_encounter_id", encounterId)
                             .order()
                             .desc("date_taken");
 
-                        List<? extends IPatientEncounterCustomField> patientEncounterCustomField = patientEncounterCustomFieldRepository.find(query3);
-                    if (patientEncounterCustomField != null && patientEncounterCustomField.size() > 0){
-                        customFieldItems.add(getCustomFieldItem(cf, patientEncounterCustomField.get(0).getCustomFieldValue()));
-                    }else{
-                        customFieldItems.add(getCustomFieldItem(cf, null));
+                    List<? extends IPatientEncounterTabField> patientEncounterCustomField = patientEncounterTabFieldRepository.find(query3);
+                    if (patientEncounterCustomField != null && patientEncounterCustomField.size() > 0) {
+                        customFieldItems.add(domainMapper.createTabFieldItem(patientEncounterCustomField.get(0)));
+                    } else {
+                        customFieldItems.add(domainMapper.createTabFieldItem(cf));
                     }
 
 
@@ -339,22 +268,69 @@ public class MedicalService implements IMedicalService {
         }
 
         return response;
-
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<List<CustomTabItem>> getCustomTabs() {
-        ServiceResponse<List<CustomTabItem>> response = new ServiceResponse<>();
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<List<VitalItem>> createPatientEncounterVitals(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
+        ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
+        if (patientEncounterVitalMap == null || userId < 1 || encounterId < 1) {
+            response.addError("", "invalid parameters");
+            return response;
+        }
+        List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
+        IPatientEncounterVital patientEncounterVital;
+        IVital vital;
+
+        ExpressionList<Vital> query;
+        String currentTime = dateUtils.getCurrentDateTimeString();
+
+        for (String key : patientEncounterVitalMap.keySet()) {
+            if (patientEncounterVitalMap.get(key) != null) {
+                query = QueryProvider.getVitalQuery().where().eq("name", key);
+                vital = vitalRepository.findOne(query);
+
+                patientEncounterVital = patientEncounterVitalProvider.get();
+                patientEncounterVital.setPatientEncounterId(encounterId);
+                patientEncounterVital.setUserId(userId);
+                patientEncounterVital.setDateTaken(currentTime);
+                patientEncounterVital.setVital(vital);
+                patientEncounterVital.setVitalValue(patientEncounterVitalMap.get(key));
+                patientEncounterVitals.add(patientEncounterVital);
+            }
+        }
+
+        try {
+            List<VitalItem> vitalItems = new ArrayList<>();
+            List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
+            for (IPatientEncounterVital pev : newPatientEncounterVitals) {
+                vitalItems.add(domainMapper.createVitalItem(pev));
+            }
+            response.setResponseObject(vitalItems);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<TabItem>> getCustomTabs() {
+        ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
                 .eq("isDeleted", false);
         try {
-            List<? extends ICustomTab> customTabs = customTabRepository.find(query);
-            List<CustomTabItem> customTabNames = new ArrayList<>();
+            List<? extends ITab> customTabs = customTabRepository.find(query);
+            List<TabItem> customTabNames = new ArrayList<>();
 
-            for (ICustomTab ct : customTabs) {
-                customTabNames.add(getCustomTabItem(ct));
+            for (ITab t : customTabs) {
+                customTabNames.add(domainMapper.createTabItem(t));
             }
             response.setResponseObject(customTabNames);
         } catch (Exception ex) {
@@ -364,107 +340,38 @@ public class MedicalService implements IMedicalService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<List<CustomFieldItem>> createPatientEncounterCustomFields(List<CustomFieldItem> customFieldItems, int encounterId, int userId) {
-        ServiceResponse<List<CustomFieldItem>> response = new ServiceResponse<>();
-        List<IPatientEncounterCustomField> customFields = new ArrayList<>();
+    public ServiceResponse<PatientEncounterItem> checkPatientIn(int encounterId, int userId) {
+        ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
+        if (encounterId < 1) {
+            response.addError("", "encounterId must be greater than 0");
+            return response;
+        }
+
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("id", encounterId);
+
         try {
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
+            patientEncounter.setDateOfMedicalVisit(DateTime.now());
+            ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
+                    .where()
+                    .eq("id", userId);
+            IUser user = userRepository.findOne(getUserQuery);
+            patientEncounter.setDoctor(user);
+
+            patientEncounter = patientEncounterRepository.update(patientEncounter);
 
 
-            for (CustomFieldItem cf : customFieldItems) {
-                ExpressionList<CustomField> query = getCustomFieldQuery()
-                        .where()
-                        .eq("name", cf.getName());
-                ICustomField customField = customFieldRepository.findOne(query);
-                IPatientEncounterCustomField patientEncounterCustomField = new PatientEncounterCustomField();
-                patientEncounterCustomField.setUserId(userId);
-                patientEncounterCustomField.setPatientEncounterId(encounterId);
-                patientEncounterCustomField.setDateTaken(DateTime.now());
-                patientEncounterCustomField.setCustomFieldValue(cf.getValue());
-                patientEncounterCustomField.setCustomFieldId(customField.getId());
-                ExpressionList<PatientEncounterCustomField> query2 = getPatientEncounterCustomFieldQuery()
-                        .where()
-                        .eq("custom_field_id", customField.getId())
-                        .eq("patient_encounter_id", encounterId)
-                        .eq("custom_field_value", cf.getValue());
-                if (patientEncounterCustomFieldRepository.findOne(query2) != null){
-                    //already exists
-                }else{
-                    customFields.add(patientEncounterCustomField);
-                }
-
-            }
-            patientEncounterCustomFieldRepository.createAll(customFields);
-            response.setResponseObject(customFieldItems);
+            response.setResponseObject(domainMapper.createPatientEncounterItem(patientEncounter, false));
         } catch (Exception ex) {
-            response.addError("", "error");
+            response.addError("exception", ex.getMessage());
         }
+
         return response;
-
-    }
-
-    private CustomTabItem getCustomTabItem(ICustomTab ct) {
-        CustomTabItem customTabItem = new CustomTabItem();
-        customTabItem.setLeftColumnSize(ct.getLeftColumnSize());
-        customTabItem.setRightColumnSize(ct.getRightColumnSize());
-        customTabItem.setName(ct.getName());
-        return customTabItem;
-    }
-
-    private CustomFieldItem getCustomFieldItem(ICustomField cf, String value) {
-        CustomFieldItem customFieldItem = new CustomFieldItem();
-        customFieldItem.setName(cf.getName());
-        customFieldItem.setType(cf.getCustomFieldType().getName());
-        customFieldItem.setSize(cf.getCustomFieldSize().getName());
-        customFieldItem.setOrder(cf.getOrder());
-        customFieldItem.setPlaceholder(cf.getPlaceholder());
-        if (StringUtils.isNotNullOrWhiteSpace(value)){
-            customFieldItem.setValue(value);
-        }
-        return customFieldItem;
-    }
-
-    private Query<PatientEncounterCustomField> getPatientEncounterCustomFieldQuery(){
-        return Ebean.find(PatientEncounterCustomField.class);
-    }
-
-    private Query<CustomTab> getCustomMedicalTabQuery() {
-        return Ebean.find(CustomTab.class);
-    }
-
-    private Query<CustomField> getCustomFieldQuery() {
-        return Ebean.find(CustomField.class);
-    }
-
-    private Query<PatientEncounterHpiField> getPatientEncounterHpiField() {
-        return Ebean.find(PatientEncounterHpiField.class);
-    }
-
-    private Query<PatientEncounterPmhField> getPatientEncounterPmhField() {
-        return Ebean.find(PatientEncounterPmhField.class);
-    }
-
-    private Query<PatientEncounterTreatmentField> getPatientEncounterTreatmentField() {
-        return Ebean.find(PatientEncounterTreatmentField.class);
-    }
-
-    private Query<PatientPrescription> getPatientPrescription() {
-        return Ebean.find(PatientPrescription.class);
-    }
-
-    private Query<PatientEncounterTreatmentField> getPatientEncounterTreatmentFieldQuery() {
-        return Ebean.find(PatientEncounterTreatmentField.class);
-    }
-
-    private Query<PatientEncounterHpiField> getPatientEncounterHpiFieldQuery() {
-        return Ebean.find(PatientEncounterHpiField.class);
-    }
-
-    private Query<PatientEncounterPmhField> getPatientEncounterPmhFieldQuery() {
-        return Ebean.find(PatientEncounterPmhField.class);
-    }
-
-    private Query<Vital> getVitalQuery() {
-        return Ebean.find(Vital.class);
     }
 }

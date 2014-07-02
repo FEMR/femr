@@ -161,9 +161,26 @@
         padding: 0px;
     }
 }
+@media (max-width: 735px){
+    #genderBtns{
+        float: left;
+    }
+    #photoInput{
+        width: 100%;
+    }
+    .generalInfoInput label{
+        /*float: left;*/
+        display: block;
+    }
+    .generalInfoInput input{
+        float: left;
+        display: block;
+    }
+}
 @media (max-width: 620px){
     .vitalWrap input {
         float: none;
+        width: 100%;
     }
     #weeksPregnant{
         margin: 0;
@@ -173,6 +190,9 @@
 @media (max-width: 495px) {
     #genInfoWrap input {
         float: none;
+    }
+    .fInput{
+        width: 100%;
     }
 
 

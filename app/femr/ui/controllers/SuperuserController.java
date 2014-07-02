@@ -1,20 +1,17 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.TabFieldItem;
+import femr.common.models.TabItem;
 import femr.business.services.ISessionService;
 import femr.business.services.ISuperuserService;
-import femr.common.models.Roles;
-import femr.common.models.custom.ICustomTab;
-import femr.data.models.custom.CustomTab;
+import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.data.custom.CustomFieldItem;
-import femr.ui.models.data.custom.CustomTabItem;
 import femr.ui.models.superuser.*;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -41,30 +38,28 @@ public class SuperuserController extends Controller {
     }
 
     public Result indexGet() {
-
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         return ok(index.render(currentUser));
     }
 
     public Result tabsGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
+        ServiceResponse<List<TabItem>> response;
 
-        ServiceResponse<List<CustomTabItem>> response;
-        response = superuserService.getCustomMedicalTabs(false);
+        response = superuserService.getTabs(false);
         if (response.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
 
         TabsViewModelGet viewModelGet = new TabsViewModelGet();
         viewModelGet.setCurrentTabs(response.getResponseObject());
 
         //get deleted tabs
-        response = superuserService.getCustomMedicalTabs(true);
+        response = superuserService.getTabs(true);
         if (response.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setDeletedTabs(response.getResponseObject());
-
 
         return ok(tabs.render(currentUser, viewModelGet));
     }
@@ -73,47 +68,37 @@ public class SuperuserController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         TabsViewModelPost viewModelPost = TabsViewModelForm.bindFromRequest().get();
 
-        //becomes new tab
+        //becomes new or edit
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddTabName())) {
-            if (superuserService.doesCustomTabExist(viewModelPost.getAddTabName()).getResponseObject() == false) {
-                ICustomTab customTab = new CustomTab();
-                customTab.setDateCreated(DateTime.now());
-                customTab.setName(viewModelPost.getAddTabName());
-                customTab.setUserId(currentUser.getId());
-                customTab.setIsDeleted(false);
-                if (viewModelPost.getAddTabLeft() != null)
-                    customTab.setLeftColumnSize(viewModelPost.getAddTabLeft());
-                if (viewModelPost.getAddTabRight() != null)
-                    customTab.setRightColumnSize(viewModelPost.getAddTabRight());
-                ServiceResponse<ICustomTab> response = superuserService.createCustomMedicalTab(customTab);
+            TabItem tabItem = new TabItem();
+            //new
+            if (superuserService.doesTabExist(viewModelPost.getAddTabName()).getResponseObject() == false) {
+                tabItem.setName(viewModelPost.getAddTabName());
+                if (viewModelPost.getAddTabLeft() != null) tabItem.setLeftColumnSize(viewModelPost.getAddTabLeft());
+                if (viewModelPost.getAddTabRight() != null) tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
+                ServiceResponse<TabItem> response = superuserService.createTab(tabItem, currentUser.getId());
                 if (response.hasErrors()) {
-                    return internalServerError();
+                    throw new RuntimeException();
                 }
-            } else {
-                CustomTabItem customTabItem = new CustomTabItem();
-                if (viewModelPost.getAddTabLeft() == null) {
-                    customTabItem.setLeftColumnSize(0);
-                } else {
-                    customTabItem.setLeftColumnSize(viewModelPost.getAddTabLeft());
+            } else {//edit
+                if (viewModelPost.getAddTabLeft() == null) tabItem.setLeftColumnSize(0);
+                else tabItem.setLeftColumnSize(viewModelPost.getAddTabLeft());
+
+                if (viewModelPost.getAddTabRight() == null) tabItem.setRightColumnSize(0);
+                else tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
+
+                tabItem.setName(viewModelPost.getAddTabName());
+                ServiceResponse<TabItem> response = superuserService.editTab(tabItem, currentUser.getId());
+                if (response.hasErrors()) {
+                    throw new RuntimeException();
                 }
-                if (viewModelPost.getAddTabRight() == null) {
-                    customTabItem.setRightColumnSize(0);
-
-                } else {
-                    customTabItem.setRightColumnSize(viewModelPost.getAddTabRight());
-                }
-
-                customTabItem.setName(viewModelPost.getAddTabName());
-                superuserService.editCustomTab(customTabItem, currentUser.getId());
-
             }
-
         }
         //becomes toggle
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getDeleteTab())) {
-            ServiceResponse<ICustomTab> response = superuserService.toggleCustomMedicalTab(viewModelPost.getDeleteTab());
+            ServiceResponse<TabItem> response = superuserService.toggleTab(viewModelPost.getDeleteTab());
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
 
@@ -123,77 +108,72 @@ public class SuperuserController extends Controller {
     //name = tab name
     public Result contentGet(String name) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-
         ContentViewModelGet viewModelGet = new ContentViewModelGet();
+
         viewModelGet.setName(name);
 
         //get current custom fields
-        ServiceResponse<List<CustomFieldItem>> currentFieldItemsResponse = superuserService.getCustomFields(false, name);
+        ServiceResponse<List<TabFieldItem>> currentFieldItemsResponse = superuserService.getTabFields(name, false);
         if (currentFieldItemsResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setCurrentCustomFieldItemList(currentFieldItemsResponse.getResponseObject());
 
         //get removed custom fields
-        ServiceResponse<List<CustomFieldItem>> removedFieldItemsResponse = superuserService.getCustomFields(true, name);
+        ServiceResponse<List<TabFieldItem>> removedFieldItemsResponse = superuserService.getTabFields(name, true);
         if (currentFieldItemsResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setRemovedCustomFieldItemList(removedFieldItemsResponse.getResponseObject());
 
         //get available field types
         ServiceResponse<List<String>> fieldTypesResponse = superuserService.getTypes();
         if (fieldTypesResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setCustomFieldTypes(fieldTypesResponse.getResponseObject());
 
         //get available fields sizes
         ServiceResponse<List<String>> fieldSizesResponse = superuserService.getSizes();
         if (fieldSizesResponse.hasErrors()) {
-            return internalServerError();
+            throw new RuntimeException();
         }
         viewModelGet.setCustomFieldSizes(fieldSizesResponse.getResponseObject());
 
-
         return ok(fields.render(currentUser, viewModelGet));
-
     }
 
     //name = tab name
     public Result contentPost(String name) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
-
         ContentViewModelPost viewModelPost = ContentViewModelForm.bindFromRequest().get();
-
 
         //adding/editing a field
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddName()) && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddSize()) && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddType())) {
-            CustomFieldItem customFieldItem = new CustomFieldItem();
-            customFieldItem.setName(viewModelPost.getAddName());
-            customFieldItem.setSize(viewModelPost.getAddSize().toLowerCase());
-            customFieldItem.setType(viewModelPost.getAddType().toLowerCase());
-            customFieldItem.setOrder(viewModelPost.getAddOrder());
-            customFieldItem.setPlaceholder(viewModelPost.getAddPlaceholder());
+            TabFieldItem tabFieldItem = new TabFieldItem();
+            tabFieldItem.setName(viewModelPost.getAddName());
+            tabFieldItem.setSize(viewModelPost.getAddSize().toLowerCase());
+            tabFieldItem.setType(viewModelPost.getAddType().toLowerCase());
+            tabFieldItem.setOrder(viewModelPost.getAddOrder());
+            tabFieldItem.setPlaceholder(viewModelPost.getAddPlaceholder());
             //edit
-            if (superuserService.doesCustomFieldExist(viewModelPost.getAddName()).getResponseObject() == true) {
-                superuserService.editCustomField(customFieldItem, currentUser.getId());
+            if (superuserService.doesTabFieldExist(viewModelPost.getAddName()).getResponseObject() == true) {
+                superuserService.editTabField(tabFieldItem);
             } else {
 
-                ServiceResponse<CustomFieldItem> response = superuserService.createCustomField(customFieldItem, currentUser.getId(), name);
+                ServiceResponse<TabFieldItem> response = superuserService.createTabField(tabFieldItem, currentUser.getId(), name);
                 if (response.hasErrors()) {
-                    return internalServerError();
+                    throw new RuntimeException();
                 }
             }
         }
         //deactivating a field
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getToggleName())) {
-            ServiceResponse<CustomFieldItem> response = superuserService.toggleCustomField(viewModelPost.getToggleName(), name);
+            ServiceResponse<TabFieldItem> response = superuserService.toggleTabField(viewModelPost.getToggleName(), name);
             if (response.hasErrors()) {
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
-
 
         return redirect("/superuser/tabs/" + name);
     }

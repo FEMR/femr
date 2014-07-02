@@ -1,6 +1,6 @@
 package femr.ui.models.search;
 
-import femr.common.models.IPatient;
+import femr.common.models.PatientItem;
 import femr.util.calculations.dateUtils;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class CreateViewModel {
     private String age;
     private String sex;
     private int userID;
-    private List<IPatient> patientNameResult;
+    private List<PatientItem> patientNameResult;
     private List<String>   photoURIs;
     private String photoURI;
 
@@ -70,14 +70,14 @@ public class CreateViewModel {
     }
 
     public void setDupList(int index){
-        IPatient patient = patientNameResult.get(index);
+        PatientItem patient = patientNameResult.get(index);
         setFirstName(patient.getFirstName());
         setLastName(patient.getLastName());
         setAddress(patient.getAddress());
         setCity(patient.getCity());
         setSex(patient.getSex());
         setPatientID(patient.getId());
-        setAge(dateUtils.getAge(patient.getAge()));
+        setAge(dateUtils.getAge(patient.getBirth()));
         setPhotoURI(this.photoURIs.get(index));
     }
 

@@ -1,13 +1,12 @@
 package femr.business.services;
 
 import com.google.inject.Inject;
-import femr.business.dtos.CurrentUser;
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.CurrentUser;
+import femr.common.dto.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
-import femr.common.models.IUser;
+import femr.data.models.IUser;
 import femr.data.daos.IRepository;
 import femr.util.encryptions.IPasswordEncryptor;
-import org.joda.time.DateTime;
 
 //import static play.mvc.Controller.session;
 

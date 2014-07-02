@@ -1,6 +1,6 @@
 package femr.business.services;
 
-import femr.common.models.IRole;
+import femr.data.models.IRole;
 
 import java.util.List;
 

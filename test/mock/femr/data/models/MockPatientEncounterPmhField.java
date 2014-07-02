@@ -1,7 +1,7 @@
 package mock.femr.data.models;
 
 import femr.common.models.IPatientEncounterPmhField;
-import femr.common.models.IPmhField;
+import femr.data.models.IPmhField;
 import org.joda.time.DateTime;
 
 public class MockPatientEncounterPmhField implements IPatientEncounterPmhField {

@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.IHpiField;
+import femr.data.models.IHpiField;
 import femr.common.models.IPatientEncounterHpiField;
 import org.joda.time.DateTime;
 

@@ -1,9 +1,9 @@
 //package unit.app.femr.business.services;
 //
-//import femr.business.dtos.ServiceResponse;
+//import femr.common.dto.ServiceResponse;
 //import femr.business.services.IPharmacyService;
 //import femr.business.services.PharmacyService;
-//import femr.common.models.IPatientPrescription;
+//import femr.data.models.IPatientPrescription;
 //import mock.femr.data.daos.MockRepository;
 //import mock.femr.data.models.MockPatientPrescription;
 //import org.junit.Before;

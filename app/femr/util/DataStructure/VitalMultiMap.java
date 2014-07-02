@@ -5,8 +5,6 @@ package femr.util.DataStructure;
  */
 
 import java.util.*;
-
-import com.google.common.collect.Lists;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
 

@@ -14,6 +14,10 @@ hr {
     border-top: 1px solid black;
 }
 
+#createUserError{
+    color: red;
+}
+
 .nameSearchForm {
     width: 100%;
     margin-top: 10px;
@@ -35,14 +39,6 @@ hr {
     height: 34px;
 }
 
-.admin-left-panel {
-    margin-top: 100px;
-}
-
-.admin-right-panel {
-    margin-top: 100px;
-}
-
 .form-group-padding {
     padding-left: 5px;
 }
@@ -54,26 +50,23 @@ hr {
 .remove-padding {
     padding: 0 !important;
 }
-.width-100{
+
+.width-100 {
     width: 100%;
 }
-.width-50{
+
+.width-50 {
     width: 50%;
 }
 
+.createWrap{
+
+
+}
 /* Bootstrap won't offset for xs columns, but i want to */
-.col-xs-offset-4{
+.col-xs-offset-4 {
     margin-left: 33%;
 }
-
-/*Admin*/
-.userBtns{
-     margin: 5px !important;
- }
-.listUserBtn{
-    margin-top: 0px !important;
-}
-
 
 /* THE fEMR button! */
 .fButton {
@@ -89,6 +82,7 @@ hr {
     background-color: #e5e5e5;
     border: 1px solid #3f3f3d;
 }
+
 /* THE fEMR dropdown! */
 .fOption{
     height: 33px;
@@ -100,7 +94,7 @@ hr {
     height: 75px;
 }
 /* THE fEMR input(text)! */
-.fInput{
+.fInput {
     border-radius: 5px;
     height: 33px;
     width: 175px;
@@ -110,35 +104,58 @@ hr {
     color: #555;
 
 }
-.fInput:focus{
+
+.fInput:focus {
     box-shadow: 0 0 5px #3f3f3d
 }
+
 /* THE fEMR submit button! */
-.fSubmitButton{
+.fSubmitButton {
     background-color: #51a1ba;
 }
+
 /* THE fEMR patient history button! */
-#historyButton:hover{
+#historyButton:hover {
     cursor: pointer;
     text-decoration: none;
     color: black;
 }
+
 /* THE fEMR input(checkbox) */
-.fCheckbox{
+.fCheckbox {
     padding: 20px;
 }
 
-/* The following 2 sections are used on both Medical and pharmacy */
-
+/* The following sections are used on both Medical and pharmacy */
+#patientOverviewWrap{
+    overflow: hidden;
+    min-height: 125px;
+}
 #patientOverviewWrap span {
     padding: 4px;
 }
 
-#generalInfoWrap{
+#portraitWrap img{
+    display: block;
+
+    margin: 15px auto 0;
+    border: 2px solid black;
+}
+#portraitWrap{
+    width: 15%;
+    height: 100%;
+    float: left;
+
+}
+
+#generalInfoWrap {
     overflow: hidden;
     text-align: center;
-    margin-bottom: 15px;
+    height: 100%;
+    width: 85%;
+    float: right;
 }
+
 /* Main section wrapper*/
 #mainWrap {
     margin-top: 15px;
@@ -146,8 +163,9 @@ hr {
     padding: 10px;
     height: 100%;
 }
+
 /* Medical and Pharmacy landing pages */
-.searchWrap{
+.searchWrap {
     width: 300px;
     text-align: center;
     margin: 0 auto;
@@ -157,7 +175,7 @@ hr {
 }
 
 /* fEMR's background with border */
-.backgroundForWrap{
+.backgroundForWrap {
     border-radius: 10px;
     background: url("../img/paper_greyLightNoise.png") repeat;
     border: 3px solid #3f3f3d;

@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)
+@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)
 
 @import femr.ui.views.html.layouts.medicalPersonnel
 @import femr.ui.controllers.routes.TriageController
@@ -7,7 +7,7 @@
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/triage.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/datepicker.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/datepicker.css")">
     }
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
@@ -53,13 +53,20 @@
 
 
                 <div class="generalInfoInput">
+
+
+
+
+
                     <label for="photo">Patient Photo</label>
                     <div id="photoInputFormDiv">
                         <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
+                        <textarea id="photoInputCropped" class="hidden" name="patientPhotoCropped"></textarea>
                     </div>
                     <div id="patientPhotoDiv" hidden="true">
                         <div class="btn-group" >
                             <img id="patientPhoto" class="crop_me" alt="" src="@viewModel.getPatient.getPathToPhoto" />
+
                             <div class="btn-toolbar" role="buttons">
                                 <div class="btn-group" id="zoomControls">
                                     <button id="btnZoomIn" class="btn btn-default btn-lg">
@@ -75,10 +82,14 @@
                                     </button>
                                 </div>
                             </div>
+                            <canvas id="patientPhotoCanvas" class="hidden"></canvas>
                         </div>
                     </div>
-                    <input hidden="true" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
-                    <input hidden="true" type="text" name="imageCoords" value="{0,0,0,0}" id="imageCoords" />
+                    <input class="hidden" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
+
+
+
+
                 </div>
                 <div class="historyInput">
                 @historyButton(if(viewModel.getPatient.getId != 0) viewModel.getPatient.getId else null)

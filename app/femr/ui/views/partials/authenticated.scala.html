@@ -1,4 +1,4 @@
-@(currentUser: femr.business.dtos.CurrentUser, showSearchButton: Boolean)
+@(currentUser: femr.common.dto.CurrentUser, showSearchButton: Boolean)
 
 @import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
 @import femr.ui.controllers.routes.HomeController
@@ -22,7 +22,7 @@
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
             <li><a href="@TriageController.indexGet()">Triage</a></li>
             <li><a href="@MedicalController.indexGet()">Medical</a></li>
-            <li><a href="@PharmaciesController.index()">Pharmacy</a></li>
+            <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
         }
         @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
             <li><a href="@ResearchController.index()">Research</a></li>

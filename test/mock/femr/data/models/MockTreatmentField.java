@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.ITreatmentField;
+import femr.data.models.ITreatmentField;
 
 /**
  * Created by Kevin on 2/9/14.

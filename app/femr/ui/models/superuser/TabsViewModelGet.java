@@ -1,26 +1,26 @@
 package femr.ui.models.superuser;
 
-import femr.ui.models.data.custom.CustomTabItem;
+import femr.common.models.TabItem;
 
 import java.util.List;
 
 public class TabsViewModelGet {
-    private List<CustomTabItem> currentTabs;
-    private List<CustomTabItem> deletedTabs;
+    private List<TabItem> currentTabs;
+    private List<TabItem> deletedTabs;
 
-    public List<CustomTabItem> getCurrentTabs() {
+    public List<TabItem> getCurrentTabs() {
         return currentTabs;
     }
 
-    public void setCurrentTabs(List<CustomTabItem> currentTabs) {
+    public void setCurrentTabs(List<TabItem> currentTabs) {
         this.currentTabs = currentTabs;
     }
 
-    public List<CustomTabItem> getDeletedTabs() {
+    public List<TabItem> getDeletedTabs() {
         return deletedTabs;
     }
 
-    public void setDeletedTabs(List<CustomTabItem> deletedTabs) {
+    public void setDeletedTabs(List<TabItem> deletedTabs) {
         this.deletedTabs = deletedTabs;
     }
 }

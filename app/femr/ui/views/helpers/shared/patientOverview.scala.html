@@ -1,0 +1,46 @@
+@(patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem, pageName: java.lang.String)
+
+<div id="patientOverviewWrap" class="backgroundForWrap">
+@*DO NOT SHOW PORTRAIT IF NONE EXISTS*@
+    <div id="portraitWrap">
+        <img src="@patient.getPathToPhoto" height="90" width="90">
+    </div>
+
+    <div id="generalInfoWrap">
+        <h3>Patient Overview - @pageName</h3>
+        <label>Name: </label><span>@patient.getFirstName @patient.getLastName</span>
+        <label for="">Age: </label><span>@patient.getAge</span>
+        <label for="">Sex: </label><span>@patient.getSex</span>
+        <label for="">City: </label><span>@patient.getCity</span>
+        @if(pageName == "Medical") {
+            <label for="">BMI: </label><span id="bmi"></span>
+        }else {
+            @if(patient.getHeightFeet != null || patient.getHeightInches != null) {
+                <label>Weeks Pregnant: </label><span>x@patient.getHeightFeet' @patient.getHeightInches"</span>
+            }
+            @if(patient.getHeightFeet == null && patient.getHeightInches == null) {
+                <label for="">Height: </label><span>N/A</span>
+            }
+            @if(patient.getWeight != null && !patient.getWeight.isNaN) {
+                <label>Weight: </label><span>@patient.getWeight</span>
+            }
+            @if(patient.getWeight == null) {
+                <label>Weight: </label><span>N/A</span>
+            }
+        }
+
+        @* Weeks Pregnant *@
+        @if(patient.getWeeksPregnant != null && patient.getWeeksPregnant > 0) {
+            <label>Weeks Pregnant: </label><span>@patient.getWeeksPregnant</span>
+        } else {
+            <label>Weeks Pregnant: </label><span>N/A</span>
+        }
+
+        @* Chief Complaint*@
+        @if(patientEncounter.getChiefComplaint != null && !patientEncounter.getChiefComplaint.isEmpty) {
+            <label>Complaint: </label><span>@patientEncounter.getChiefComplaint</span>
+        } else {
+            <label>Complaint: </label><span>N/A</span>
+        }
+    </div>
+</div>

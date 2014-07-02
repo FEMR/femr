@@ -2,8 +2,8 @@ package femr.business.services;
 
 
 import com.google.inject.Inject;
-import femr.common.models.*;
 import femr.data.daos.IRepository;
+import femr.data.models.IPatientResearch;
 import femr.data.models.PatientResearch;
 import femr.data.models.research.ResearchModelBuilder;
 import femr.data.models.research.ResearchSQLBuilder;
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class ResearchService implements IResearchService{
 
-    private IRepository<IPatientResearch> patientResearchRepository;
+    private final IRepository<IPatientResearch> patientResearchRepository;
     private IPatientResearch patientResearch;
 
     /**

@@ -271,24 +271,11 @@ $(document).ready(function () {
     });
     //gen info and vitals shit
     $('#femaleBtn').change(function () {
-        $('#pregnancyBtn').removeClass('disabled');
+        $('#weeksPregnant').attr('disabled', false);
     });
     $('#maleBtn').change(function () {
-        $('#pregnancyBtn').removeClass('active');
-        $('#pregnancyBtn').addClass('disabled');
         $('#weeksPregnant').val('');
-        $('#weeksPregnant').attr('disabled', 'disabled');
-    });
-    $('#pregnancyBtn').change(function () {
-        if (typeof $("#weeksPregnant").attr('disabled') === "undefined") {
-            $('#weeksPregnant').val('');
-            $('#weeksPregnant').attr('disabled', 'disabled');
-        }
-        else {
-            $('#weeksPregnant').removeAttr('disabled');
-        }
-
-
+        $('#weeksPregnant').attr('disabled', true);
     });
     //birthday shit
     $('#age').change(function () {

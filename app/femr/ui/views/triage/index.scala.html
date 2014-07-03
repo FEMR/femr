@@ -56,9 +56,6 @@
                 <div class="generalInfoInput">
 
 
-
-
-
                     <label for="photo">Patient Photo</label>
                     <div id="photoInputFormDiv">
                         <input type="file" class="fInput" id="photoInput" name="patientPhoto" placeholder="Choose Image" />
@@ -89,8 +86,6 @@
                     <input class="hidden" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
 
 
-
-
                 </div>
                 <div class="historyInput">
                 @historyButton(if(viewModel.getPatient.getId != 0) viewModel.getPatient.getId else null)
@@ -99,19 +94,12 @@
 
             <div id="vitalsWrap" class="sectionBackground backgroundForWrap">
                 <h2>Vitals</h2>
-                <h5 id="errorMessageDecimal" class="red hidden">Boxes in red must be whole numbers</h5>
-                <h5 id="errorMessageHeight" class="red hidden">
-                    Inches for height must be less than 12 and a whole number</h5>
-
-
                 <div id="leftVitalsWrap">
-
 
                     <div class="vitalWrap">
                         <label for="temperature">Temperature</label>
                         <input type="number" step="any" min="0" class="fInput fVital" id="@viewModel.getVitalNames.get(2).getName" name="@viewModel.getVitalNames.get(2).getName" placeholder="&#176;F"/>
                     </div>
-
 
                     <div class="vitalWrap">
                         <label for="bloodPressureSystolic">Blood Pressure</label>
@@ -131,22 +119,15 @@
                     </div>
 
                     <div class="vitalWrap">
-                        <label for="weeksPregnant">
-                            <div data-toggle="buttons">
-                            @if(viewModel.getPatient.getSex() == "Female") {
-                                <label class="btn btn-default" id="pregnancyBtn">
-                                    <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
-                                </label>
-                            } else {
-                                <label class="btn btn-default disabled" id="pregnancyBtn">
-                                    <input type="checkbox" value="true" name="isPregnant" id="isPregnant">Pregnant?
-                                </label>
-                            }
-                            </div>
-                        </label>
+                        <label for="weeksPregnant">Weeks Pregnant</label>
 
 
-                        <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+                        @if(viewModel.getPatient.getSex == "Female") {
+                            <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks"/>
+                        } else {
+                            <input type="number" step="number" min="0" class="fInput" id="weeksPregnant" name="weeksPregnant" placeholder="Weeks" disabled/>
+                        }
+
 
                     </div>
                     <label for="chiefComplaint"> Chief Complaint</label>

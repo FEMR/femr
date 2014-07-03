@@ -3,67 +3,73 @@ $(document).ready(function () {
         closeDialog("newVitalsDialog");
     });
 
-
     $('#saveVitalsBtn').on('click', function () {
         var newVitals = {};
 
-        var bloodPressureSystolic = $('#bpSystolic');
-        var bloodPressureDiastolic = $('#bpDiastolic');
-        var heartRate = $('#heartRate');
-        var temperature = $('#temperature');
-        var respiratoryRate = $('#respRate');
-        var oxygen = $('#oxygen');
-        var heightFeet = $('#heightFt');
-        var heightInches = $('#heightIn');
-        var weight = $('#newWeight');
-        var glucose = $('#newGlucose');
+        var patientVitals = {
+            //this object is sent to the vital validator which uses
+            //the names of these fields
+            respiratoryRate: $('#respRate'),
+            bloodPressureSystolic: $('#bpSystolic'),
+            bloodPressureDiastolic: $('#bpDiastolic'),
+            heartRate: $('#heartRate'),
+            oxygenSaturation: $('#oxygen'),
+            temperature: $('#temperature'),
+            weight: $('#newWeight'),
+            heightFeet: $('#heightFt'),
+            heightInches: $('#heightIn'),
+            glucose: $('#newGlucose')
+        };
 
-        if (bloodPressureSystolic.val() !== '') {
-            newVitals.bloodPressureSystolic = bloodPressureSystolic.val();
-        }
+        var isValid = vitalClientValidator(patientVitals);
 
-        if (bloodPressureDiastolic.val() !== '') {
-            newVitals.bloodPressureDiastolic = bloodPressureDiastolic.val();
-        }
+        if (isValid === true) {
+            if (patientVitals.bloodPressureSystolic.val() !== '') {
+                newVitals.bloodPressureSystolic = patientVitals.bloodPressureSystolic.val();
+            }
 
-        if (heartRate.val() !== '') {
-            newVitals.heartRate = heartRate.val();
-        }
+            if (patientVitals.bloodPressureDiastolic.val() !== '') {
+                newVitals.bloodPressureDiastolic = patientVitals.bloodPressureDiastolic.val();
+            }
 
-        if (temperature.val() !== '') {
-            newVitals.temperature = temperature.val();
-        }
+            if (patientVitals.heartRate.val() !== '') {
+                newVitals.heartRate = patientVitals.heartRate.val();
+            }
 
-        if (oxygen.val() !== '') {
-            newVitals.oxygenSaturation = oxygen.val();
-        }
+            if (patientVitals.temperature.val() !== '') {
+                newVitals.temperature = patientVitals.temperature.val();
+            }
 
-        if (respiratoryRate.val() !== '') {
-            newVitals.respiratoryRate = respiratoryRate.val();
-        }
+            if (patientVitals.oxygenSaturation.val() !== '') {
+                newVitals.oxygenSaturation = patientVitals.oxygenSaturation.val();
+            }
 
-        if (heightFeet.val() !== '') {
-            newVitals.heightFeet = heightFeet.val();
-        }
+            if (patientVitals.respiratoryRate.val() !== '') {
+                newVitals.respiratoryRate = patientVitals.respiratoryRate.val();
+            }
 
-        if (heightInches.val() !== '') {
-            newVitals.heightInches = heightInches.val();
-        }
+            if (patientVitals.heightFeet.val() !== '') {
+                newVitals.heightFeet = patientVitals.heightFeet.val();
+            }
 
-        if (weight.val() !== '') {
-            newVitals.weight = weight.val();
-        }
+            if (patientVitals.heightInches.val() !== '') {
+                newVitals.heightInches = patientVitals.heightInches.val();
+            }
 
-        if (glucose.val() !== '') {
-            newVitals.glucose = glucose.val();
-        }
+            if (patientVitals.weight.val() !== '') {
+                newVitals.weight = patientVitals.weight.val();
+            }
 
-        $.ajax({
-            url: '/medical/updateVitals/' + $("#patientId").val(),
-            type: 'POST',
-            data: newVitals,
-            dataType: 'json'
-        }).done(function () {
+            if (patientVitals.glucose.val() !== '') {
+                newVitals.glucose = patientVitals.glucose.val();
+            }
+
+            $.ajax({
+                url: '/medical/updateVitals/' + $("#patientId").val(),
+                type: 'POST',
+                data: newVitals,
+                dataType: 'json'
+            }).done(function () {
                 closeDialog("newVitalsDialog");
                 $.ajax({
                     url: '/medical/listVitals/' + $('#patientId').val(),
@@ -73,6 +79,7 @@ $(document).ready(function () {
                     }
                 })
             });
+        }
     });
 });
 

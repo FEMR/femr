@@ -10,11 +10,12 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/libraries/datepicker.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/shared/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/touchit-1.0.0.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/shared/vitalClientValidation.js")"></script>
     }
     @searchById = {
     @helper.form(action = TriageController.indexPopulatedGet()) {
@@ -69,10 +70,10 @@
 
                             <div class="btn-toolbar" role="buttons">
                                 <div class="btn-group" id="zoomControls">
-                                    <button id="btnZoomIn" class="btn btn-default btn-lg">
+                                    <button type="button" id="btnZoomIn" class="btn btn-default btn-lg">
                                         <span class="glyphicon glyphicon-zoom-in"></span>
                                     </button>
-                                    <button id="btnZoomOut" class="btn btn-default btn-lg">
+                                    <button type="button" id="btnZoomOut" class="btn btn-default btn-lg">
                                         <span class="glyphicon glyphicon-zoom-out"></span>
                                     </button>
                                 </div>

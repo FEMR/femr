@@ -1,4 +1,12 @@
-//BMI auto- calculator
+
+var medicalFields = {
+    prescription1 : $('#prescription1'),
+    prescription2 : $('#prescription2'),
+    prescription3 : $('#prescription3'),
+    prescription4 : $('#prescription4'),
+    prescription5 : $('#prescription5')
+};
+
 
 $(document).ready(function () {
     //set a global variable to track browser compatibility with image previews
@@ -136,7 +144,7 @@ $(document).ready(function () {
 
     $('#medicalSubmitBtn').click(function () {
         JSONifyDynamicFields();
-        return photoNameFixup();
+        return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 });
 

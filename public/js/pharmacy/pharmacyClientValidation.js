@@ -11,18 +11,16 @@ $(document).ready(function () {
 
 function checkReplacementPrescriptions() {
     var medications = [];
-    medications.push($('#medication1').val());
-    medications.push($('#medication2').val());
-    medications.push($('#medication3').val());
-    medications.push($('#medication4').val());
-    medications.push($('#medication5').val());
-
     var replacementMedications = [];
-    replacementMedications.push($('#replacementMedication1').val());
-    replacementMedications.push($('#replacementMedication2').val());
-    replacementMedications.push($('#replacementMedication3').val());
-    replacementMedications.push($('#replacementMedication4').val());
-    replacementMedications.push($('#replacementMedication5').val());
+    for (var m = 1; m <= 5; m++){
+        if (typeof($('#medication' + m).val()) !== 'undefined'){
+            medications.push($('#medication' + m).val());
+            if (typeof($('#replacementMedication' + m).val()) !== 'undefined') {
+                replacementMedications.push($('#replacementMedication' + m).val());
+            }
+        }
+    }
+
     replacementMedications.sort();
 
     var last = replacementMedications[0];

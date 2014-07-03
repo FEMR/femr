@@ -1,13 +1,14 @@
-@font-face {
-    font-family: "dejavu";
-    src: url("../fonts/DejaVuSansCondensed.ttf");
-}
+/*@font-face {*/
+    /*font-family: "dejavu";*/
+    /*src: url("../fonts/DejaVuSansCondensed.ttf");*/
+/*}*/
 
 body {
     padding-top: 50px;
-    /*http://api.thumbr.it/whitenoise-361x370.png?background=a8a699ff&noise=626262&density=15&opacity=75*/
     background: url("../img/paper_greyNoise.png") repeat;
-    font-family: dejavu;
+    /* Removed because of the insane amount of time required to load (especially on networks where the connection speed is iffy */
+    /*font-family: dejavu;*/
+    font-family: sans-serif;
 }
 
 hr {

@@ -16,16 +16,15 @@ import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.*;
-import sun.misc.BASE64Decoder;
-
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +115,6 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result indexPost(int id) {
-        Http.RequestBody requestBody = request().body();
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
@@ -225,8 +223,9 @@ public class TriageController extends Controller {
         BufferedImage image = null;
         byte[] imageByte;
         try {
-            BASE64Decoder decoder = new BASE64Decoder();
-            imageByte = decoder.decodeBuffer(imageString);
+            Base64 newDecoder = new Base64();
+            byte[] bytes = imageString.getBytes(Charset.forName("UTF-8"));
+            imageByte = newDecoder.decode(bytes);
             ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
             bis.close();

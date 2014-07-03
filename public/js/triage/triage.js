@@ -1,13 +1,12 @@
-
 var patientPhotoFeature = {
 
-    config : {
-        windowWidth : 250,
-        windowHeight : 250,
-        imageElement : $('#patientPhoto')
+    config: {
+        windowWidth: 250,
+        windowHeight: 250,
+        imageElement: $('#patientPhoto')
     },
 
-    photo : {
+    photo: {
         x: 0,
         y: 0,
         width: 0,
@@ -76,7 +75,7 @@ var patientPhotoFeature = {
         $('#deletePhoto').prop('checked', true);  //set hidden element to true so that the image will be deleted server-side
 
     },
-    loadPhotoIntoFrame : function(evt){
+    loadPhotoIntoFrame: function (evt) {
         //  Load the photo into the image frame at which point the user
         //  may drag / crop the photo
 
@@ -111,29 +110,153 @@ var patientPhotoFeature = {
         }
 
     },
-    cropAndReplace : function(){
-        var canvas = document.getElementById('patientPhotoCanvas'),
-            context = canvas.getContext('2d');
+    cropAndReplace: function () {
+        if (patientPhotoFeature.config.imageElement.attr('src') !== ''){
+            var canvas = document.getElementById('patientPhotoCanvas'),
+                context = canvas.getContext('2d');
 
-        canvas.height = 255;
-        canvas.width = 255;
+            canvas.height = 255;
+            canvas.width = 255;
 
-        var img = document.getElementById('patientPhoto');
-        var sx = patientPhotoFeature.photo.x;
-        var sy = patientPhotoFeature.photo.y;
-        var sw = patientPhotoFeature.photo.width;
-        var sh = patientPhotoFeature.photo.height;
+            var img = document.getElementById('patientPhoto');
+            var sx = patientPhotoFeature.photo.x;
+            var sy = patientPhotoFeature.photo.y;
+            var sw = patientPhotoFeature.photo.width;
+            var sh = patientPhotoFeature.photo.height;
 
-        context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+            context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
 
-        //specify the quality downgrade, but how much?!??!?
-        var dataURL = canvas.toDataURL("image/jpeg", 0.5);
-        $('#photoInputCropped').val(dataURL);
-        $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+            //specify the quality downgrade, but how much?!??!?
+            var dataURL = canvas.toDataURL("image/jpeg", 0.5);
+            $('#photoInputCropped').val(dataURL);
+            $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+        }
     }
-
 };
 
+var triageFields = {
+    patientInformation: {
+        firstName: $('#firstName'),
+        lastName: $('#lastName'),
+        age: $('#age'),
+        years: $('#years'),
+        months: $('#months'),
+        city: $('#city')
+    },
+    patientVitals: {
+        respiratoryRate: $('#respiratoryRate'),
+        bloodPressureSystolic: $('#bloodPressureSystolic'),
+        bloodPressureDiastolic: $('#bloodPressureDiastolic'),
+        heartRate: $('#heartRate'),
+        oxygenSaturation: $('#oxygenSaturation'),
+        temperature: $('#temperature'),
+        weight: $('#weight'),
+        heightFeet: $('#heightFeet'),
+        heightInches: $('#heightInches'),
+        glucose: $('#glucose'),
+        weeksPregnant: $('#weeksPregnant')
+
+    }
+};
+
+var birthdayAgeAutoCalculateFeature = {
+
+    ageChangeCheck: function () {
+        var patientInfo = triageFields.patientInformation;
+
+        if (!patientInfo.years.val() && !patientInfo.months.val()) {
+            patientInfo.age.val(null);
+            patientInfo.years.css('border', '');
+            patientInfo.months.css('border', '');
+            return false;
+        }
+        var checkYears = Math.round(patientInfo.years.val());
+        var checkMonths = Math.round(patientInfo.months.val());
+        var pass = true;
+        if (patientInfo.years.val()) {
+            if (checkYears < 0 || isNaN(checkYears)) {
+                patientInfo.years.css('border-color', 'red');
+                patientInfo.age.val(null);
+                pass = false;
+            }
+            else {
+                patientInfo.years.val(checkYears);
+                patientInfo.years.css('border', '');
+            }
+        }
+        else {
+            patientInfo.years.css('border', '');
+        }
+        if (patientInfo.months.val()) {
+            if (checkMonths < 0 || isNaN(checkMonths)) {
+                patientInfo.months.css('border-color', 'red');
+                patientInfo.age.val(null);
+                pass = false;
+            }
+            else {
+                patientInfo.months.val(checkMonths);
+                patientInfo.months.css('border', '');
+            }
+        }
+        else {
+            patientInfo.months.css('border', '');
+        }
+        return (pass)
+    },
+    calculateBirthdayFromAge: function () {
+        var patientInfo = triageFields.patientInformation;
+
+        var inputYears;
+        var inputMonths;
+        if (!patientInfo.years.val()) {
+            inputYears = 0;
+        }
+        else {
+            inputYears = $('#years').val();
+        }
+        if (!patientInfo.months.val()) {
+            inputMonths = 0;
+        }
+        else {
+            inputMonths = $('#months').val();
+        }
+        var birthDate = new Date();
+        var birthMonth = birthDate.getMonth();
+        var birthDay = birthDate.getDate();
+        var birthYear = birthDate.getFullYear();
+        if (birthMonth < inputMonths) {
+            inputMonths = inputMonths - birthMonth - 1;
+            birthMonth = 11;
+            birthYear = birthYear - 1;
+        }
+        if (birthMonth < inputMonths) {
+            var yearsFromMonths = Math.floor(inputMonths / 12);
+            inputMonths = inputMonths - yearsFromMonths * 12;
+            birthYear = birthYear - yearsFromMonths;
+        }
+        birthMonth = birthMonth - inputMonths;
+        birthYear = birthYear - inputYears;
+        if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
+            birthDay = 30;
+        }
+        else if (birthDay > 28 && birthMonth == 1) {
+            if (birthYear % 400 == 0) {
+                birthDay = 29;
+            }
+            else if (birthYear % 100 == 0) {
+                birthDay = 28;
+            }
+            else if (birthYear % 4 == 0) {
+                birthDay = 29;
+            }
+            else {
+                birthDay = 28;
+            }
+        }
+        birthDate.setFullYear(birthYear, birthMonth, birthDay);
+        return birthDate;
+    }
+};
 
 
 $(document).ready(function () {
@@ -166,7 +289,7 @@ $(document).ready(function () {
         }
 
 
-    })
+    });
     //birthday shit
     $('#age').change(function () {
         var inputYear = $('#age').val().split('-')[0];
@@ -205,8 +328,8 @@ $(document).ready(function () {
         }
     });
     $('#years').change(function () {
-        if (_ageChangeCheck()) {
-            var birthDate = _calcBirthdateFromAge();
+        if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
+            var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -218,8 +341,8 @@ $(document).ready(function () {
         }
     });
     $('#months').change(function () {
-        if (_ageChangeCheck()) {
-            var birthDate = _calcBirthdateFromAge();
+        if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
+            var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -248,7 +371,7 @@ $(document).ready(function () {
 
     $('#triageSubmitBtn').click(function () {
         patientPhotoFeature.cropAndReplace();
-        return true;
+        return validate(); //located in triageClientValidation.js
     });
 
     patientPhotoFeature.init();
@@ -259,18 +382,6 @@ $(document).ready(function () {
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $(function () {
@@ -310,96 +421,4 @@ window.setInterval(function () {
     }
 }, 500);
 
-/* Birthday shit */
-function _ageChangeCheck() {
-    if (!$('#years').val() && !$('#months').val()) {
-        $('#age').val(null);
-        $('#years').css('border', '');
-        $('#months').css('border', '');
-        return false;
-    }
-    var checkYears = Math.round($('#years').val());
-    var checkMonths = Math.round($('#months').val());
-    var pass = true;
-    if ($('#years').val()) {
-        if (checkYears < 0 || isNaN(checkYears)) {
-            $('#years').css('border-color', 'red');
-            $('#age').val(null);
-            pass = false;
-        }
-        else {
-            $('#years').val(checkYears);
-            $('#years').css('border', '');
-        }
-    }
-    else {
-        $('#years').css('border', '');
-    }
-    if ($('#months').val()) {
-        if (checkMonths < 0 || isNaN(checkMonths)) {
-            $('#months').css('border-color', 'red');
-            $('#age').val(null);
-            pass = false;
-        }
-        else {
-            $('#months').val(checkMonths);
-            $('#months').css('border', '');
-        }
-    }
-    else {
-        $('#months').css('border', '');
-    }
-    return (pass)
-}
-function _calcBirthdateFromAge() {
-    var inputYears;
-    var inputMonths;
-    if (!$('#years').val()) {
-        inputYears = 0;
-    }
-    else {
-        inputYears = $('#years').val();
-    }
-    if (!$('#months').val()) {
-        inputMonths = 0;
-    }
-    else {
-        inputMonths = $('#months').val();
-    }
-    var birthDate = new Date();
-    var birthMonth = birthDate.getMonth();
-    var birthDay = birthDate.getDate();
-    var birthYear = birthDate.getFullYear();
-    if (birthMonth < inputMonths) {
-        inputMonths = inputMonths - birthMonth - 1;
-        birthMonth = 11;
-        birthYear = birthYear - 1;
-    }
-    if (birthMonth < inputMonths) {
-        var yearsFromMonths = Math.floor(inputMonths / 12);
-        inputMonths = inputMonths - yearsFromMonths * 12;
-        birthYear = birthYear - yearsFromMonths;
-    }
-    birthMonth = birthMonth - inputMonths;
-    birthYear = birthYear - inputYears;
-    if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
-        birthDay = 30;
-    }
-    else if (birthDay > 28 && birthMonth == 1) {
-        if (birthYear % 400 == 0) {
-            birthDay = 29;
-        }
-        else if (birthYear % 100 == 0) {
-            birthDay = 28;
-        }
-        else if (birthYear % 4 == 0) {
-            birthDay = 29;
-        }
-        else {
-            birthDay = 28;
-        }
-    }
-    birthDate.setFullYear(birthYear, birthMonth, birthDay);
-    return birthDate;
-}
 

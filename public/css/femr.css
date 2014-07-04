@@ -127,19 +127,48 @@ hr {
     padding: 20px;
 }
 
+
+
+
 /* The following sections are used on both Medical and pharmacy */
 #patientOverviewWrap{
     overflow: hidden;
+
     min-height: 125px;
 }
+#patientOverviewWrap img{
+    float: left;
+    border: 2px solid black;
+    margin: -41px 5px 0px 14px;
+
+}
+#patientOverviewWrap h3{
+    text-align: center;
+
+
+}
+
+
+#patientOverViewInfoPhoto{
+    margin-left: 120px; /*  if photo */
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+#patientOverViewInfo{
+    text-align: center; /*  if no photo */
+    padding: 10px;
+}
+
+
+
 #patientOverviewWrap span {
     padding: 4px;
 }
-
+        /*
 #portraitWrap img{
     display: block;
 
-    margin: 15px auto 0;
+    margin: 15px auto 0 15px;
     border: 2px solid black;
 }
 #portraitWrap{
@@ -153,9 +182,26 @@ hr {
     overflow: hidden;
     text-align: center;
     height: 100%;
-    width: 85%;
-    float: right;
+    width: 100%;
+
 }
+#generalInfoWrap img{
+    display: block;
+    border: 2px solid black;
+    margin: 10px 5px 0px 10px;
+    float: left;
+}
+
+#generalInfoWrapPicture{
+    widtH: 100%;
+    float: right;
+
+} */
+
+
+
+
+
 
 /* Main section wrapper*/
 #mainWrap {

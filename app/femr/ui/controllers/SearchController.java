@@ -161,13 +161,14 @@ public class SearchController extends Controller {
         }
         viewModel.setCustomFields(tabFieldItemServiceResponse.getResponseObject());
 
-        //photos
+        /*photos
         ServiceResponse<List<IPhoto>> photoListSr = photoService.GetEncounterPhotos(id);
         List<IPhoto> photoLst = null;
         if (!photoListSr.hasErrors())
             photoLst = photoListSr.getResponseObject()
                     ;
         viewModel.setPhotos(getPhotoModel(photoLst));
+        */
 
         return ok(indexEncounter.render(currentUser, viewModel));
     }

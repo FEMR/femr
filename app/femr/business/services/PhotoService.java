@@ -1,17 +1,19 @@
 package femr.business.services;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.typesafe.config.ConfigFactory;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dto.ServiceResponse;
 import com.google.inject.Inject;
+import femr.common.models.PhotoItem;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 import femr.ui.models.medical.EditViewModelPost;
@@ -30,8 +32,7 @@ public class PhotoService implements IPhotoService {
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
-                        DomainMapper domainMapper)
-    {
+                        DomainMapper domainMapper) {
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
@@ -40,43 +41,36 @@ public class PhotoService implements IPhotoService {
         this.Init();
     }
 
-    protected void Init()
-    {
+    protected void Init() {
         File f;
-        try
-        {
+        try {
             _profilePhotoPath = ConfigFactory.load().getString("photos.path");
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             //If config doesn't exist, default to "photos"
             _profilePhotoPath = "./Upload/Pictures/Patients";
         }
 
-        try
-        {
+        try {
             _encounterPhotoPath = ConfigFactory.load().getString("photos.encounterPath");
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             _encounterPhotoPath = "./Upload/Pictures/PatientEncounters";
         }
 
         //Append ending slash if needed
-        if(!_profilePhotoPath.endsWith(File.separator))
+        if (!_profilePhotoPath.endsWith(File.separator))
             _profilePhotoPath += File.separator;
 
-        if(!_encounterPhotoPath.endsWith(File.separator))
+        if (!_encounterPhotoPath.endsWith(File.separator))
             _encounterPhotoPath += File.separator;
 
 
         //Ensure folder exists, if not, create it
         f = new File(_profilePhotoPath);
-        if(!f.exists())
+        if (!f.exists())
             f.mkdirs();
 
         f = new File(_encounterPhotoPath);
-        if(!f.exists())
+        if (!f.exists())
             f.mkdirs();
     }
 
@@ -84,31 +78,25 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(File img, int patientId, Boolean deleteFlag)
-    {
+    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(File img, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
 
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", patientId);
 
-        try
-        {
+        try {
             IPatient patient = patientRepository.findOne(query);
             String imageFileName = "Patient_" + patient.getId() + ".jpg";
 
-            if(img != null)
-            {
-                if(patient.getPhoto() == null)
-                {
+            if (img != null) {
+                if (patient.getPhoto() == null) {
                     //Create new photo Id record
                     IPhoto pPhoto = domainMapper.createPhoto("", imageFileName);
                     pPhoto = patientPhotoRepository.create(pPhoto);
                     patient.setPhoto(pPhoto);
                     patientRepository.update(patient);
-                }
-                else
-                {
+                } else {
                     //Record already exists:
                     //photoId = patient.getPhoto().getId();
                 }
@@ -118,12 +106,9 @@ public class PhotoService implements IPhotoService {
                 Path dest = FileSystems.getDefault().getPath(_profilePhotoPath + imageFileName);
                 java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
 
-            }
-            else
-            {
-                if(deleteFlag != null)
-                    if(deleteFlag && patient.getPhoto() != null)
-                    {
+            } else {
+                if (deleteFlag != null)
+                    if (deleteFlag && patient.getPhoto() != null) {
                         //delete photo
                         //First make sure the photoId is null in the patient record
                         Integer id = patient.getPhoto().getId();
@@ -134,9 +119,7 @@ public class PhotoService implements IPhotoService {
                     }
             }
             response.setResponseObject(true);
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             response.setResponseObject(false);
             response.addError("HandlePatientPhoto", ex.getMessage());
         }
@@ -147,19 +130,19 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getPhotoPathForPatient(int patientId){
+    public ServiceResponse<String> getPhotoPathForPatient(int patientId) {
         ServiceResponse<String> response = new ServiceResponse<>();
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", patientId);
-        try{
+        try {
             IPatient patient = patientRepository.findOne(query);
-            if (patient.getPhoto() == null){
+            if (patient.getPhoto() == null) {
                 response.setResponseObject(null);
-            }else{
+            } else {
                 response.setResponseObject(_profilePhotoPath + patient.getPhoto().getFilePath());
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             response.addError("", ex.getMessage());
             return response;
         }
@@ -170,60 +153,80 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getPhotoPath(int photoId){
+    public ServiceResponse<String> getPhotoPath(int photoId) {
         ServiceResponse<String> response = new ServiceResponse<>();
         ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
                 .where()
                 .eq("id", photoId);
-        try{
+        try {
             IPhoto photo = patientPhotoRepository.findOne(query);
             response.setResponseObject(_encounterPhotoPath + photo.getFilePath());
-        }catch(Exception ex){
+        } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod)
-    {
+    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
-        try
-        {
+        try {
             int count = mod.getPhotoId().size();
             FilePart fp;
-            for(int i = 0; i < count; i++)
-            {
+            for (Integer i = 0; i < count; i++) {
                 Integer id = mod.getPhotoId().get(i);
-                if(id == null)
-                {
+                if (id == null) {
                     //This is a new image, add it to the DB and filesystem:
-                    fp = GetImageByIndex(encounterImages, i);
-                    saveNewEncounterImage(fp, patientEncounterItem, mod.getImageDescText().get(i));
-                }
-                else
-                {
+                    for (FilePart fp_iterator : encounterImages) {
+                        String keyName = fp_iterator.getKey();
+                        int leftBracket = keyName.indexOf("[");
+                        int rightBracket = keyName.indexOf("]");
+                        if (leftBracket >= 0 && rightBracket >= 0) {
+                            keyName = keyName.substring(leftBracket + 1, rightBracket);
+                            String tempindex = i.toString();
+
+                            if (keyName.equalsIgnoreCase(tempindex)) {
+                                saveNewEncounterImage(fp_iterator, patientEncounterItem, mod.getImageDescText().get(i));
+                                break;
+                            }
+                        }
+                    }
+
+                } else {
                     Boolean bDelete = mod.getDeleteRequested().get(i);
-                    if(bDelete == null)
+                    if (bDelete == null)
                         bDelete = false;
 
-                    if(bDelete)
-                    {
+                    if (bDelete) {
                         //Delete image
-                        if(mod.getPhotoId().get(i) != null)
+                        if (mod.getPhotoId().get(i) != null)
                             this.deletePhotoById(mod.getPhotoId().get(i), _encounterPhotoPath);
-                    }
-                    else
-                    {
+                    } else {
                         //Possibly update the image
                         Boolean bisUpdate = mod.getHasUpdatedDesc().get(i);
-                        if(bisUpdate != null)
-                        {
-                            if(bisUpdate)
-                            {
+                        if (bisUpdate != null) {
+                            if (bisUpdate) {
                                 Integer photoId = mod.getPhotoId().get(i);
-                                if(photoId != null)
-                                    updateImageDescription(photoId, mod.getImageDescText().get(i));
+                                if (photoId != null) {
+                                    //updateImageDescription(photoId, mod.getImageDescText().get(i));
+
+                                    ExpressionList<Photo> photoUpdateQuery = QueryProvider.getPhotoQuery()
+                                            .where()
+                                            .eq("id", photoId);
+                                    try {
+                                        IPhoto savedPhoto = patientPhotoRepository.findOne(photoUpdateQuery);
+                                        savedPhoto.setDescription(mod.getImageDescText().get(i));
+                                        patientPhotoRepository.update(savedPhoto);
+                                    } catch (Exception ex) {
+                                        sr.addError("", "error updating description: " + ex.getMessage());
+
+                                    }
+                                }
+
+
                             }
                         }
                     }
@@ -231,9 +234,7 @@ public class PhotoService implements IPhotoService {
                 }
             }
             sr.setResponseObject(true);
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             sr.setResponseObject(false);
             sr.addError("HandleEncounterPhotos()", ex.getMessage());
         }
@@ -242,130 +243,74 @@ public class PhotoService implements IPhotoService {
     }
 
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<List<IPhoto>> GetEncounterPhotos(int encounterId)
-    {
+    public ServiceResponse<List<PhotoItem>> GetEncounterPhotos(int encounterId) {
 
-        ServiceResponse<List<IPhoto>> srlst = new ServiceResponse<>();
-        try
-        {
-            ExpressionList<PatientEncounterPhoto> query = Ebean.find(PatientEncounterPhoto.class)
-                    .where().eq("patient_encounter_id", encounterId);
+        ServiceResponse<List<PhotoItem>> response = new ServiceResponse<>();
+        try {
+            ExpressionList<PatientEncounterPhoto> query = QueryProvider.getPatientEncounterPhotoQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId);
 
             List<? extends IPatientEncounterPhoto> photoList = patientEncounterPhotoRepository.find(query);
-            if(photoList != null)
-            {
-                List<IPhoto> returnList = new ArrayList<IPhoto>();
-                for(IPatientEncounterPhoto pep : photoList)
-                {
-                    ServiceResponse<IPhoto> srp = getPhotoById(pep.getPhotoId());
-                    if(!srp.hasErrors())
-                        returnList.add(srp.getResponseObject());
+            if (photoList != null) {
+                List<PhotoItem> returnList = new ArrayList<>();
+                for (IPatientEncounterPhoto pep : photoList) {
+
+                    ExpressionList<Photo> photoQuery = QueryProvider.getPhotoQuery()
+                            .where()
+                            .eq("id", pep.getPhotoId());
+                    try {
+                        IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
+                        returnList.add(domainMapper.createPhotoItem(savedPhoto, femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                    } catch (Exception ex) {
+                        response.addError("", ex.getMessage());
+                        return response;
+                    }
                 }
 
-                srlst.setResponseObject(returnList);
+                response.setResponseObject(returnList);
             }
-        }
-        catch(Exception ex)
-        {
-            srlst.addError("photo", ex.getMessage());
-        }
-
-        return srlst;
-    }
-
-
-
-    /***
-     * Helper function to fetch image by named index
-     * @param encounterImages
-     * @param index
-     * @return
-     */
-    protected FilePart GetImageByIndex(List<FilePart> encounterImages, Integer index)
-    {
-        for(FilePart fp : encounterImages)
-        {
-            String keyName = fp.getKey();
-            int leftBracket = keyName.indexOf("[");
-            int rightBracket = keyName.indexOf("]");
-            if(leftBracket >= 0 && rightBracket >= 0)
-            {
-                keyName = keyName.substring(leftBracket + 1, rightBracket);
-                String tempindex = index.toString();
-
-                if(keyName.equalsIgnoreCase(tempindex))
-                {
-                    return fp;
-                }
-            }
-        }
-        return null;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Override
-    public ServiceResponse<IPhoto> getPhotoById(int id)
-    {
-
-        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
-        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
-
-        ServiceResponse<IPhoto> response = new ServiceResponse<>();
-
-        if (savedPhoto != null){
-            response.setResponseObject(savedPhoto);
-        }
-        else
-        {
-            response.addError("photo","photo could not be fetched from the database");
+        } catch (Exception ex) {
+            response.addError("photo", ex.getMessage());
         }
 
         return response;
     }
 
-    protected void saveNewEncounterImage(FilePart image, PatientEncounterItem patientEncounter, String descriptionText)
-    {
-        try
-        {
+
+    private void saveNewEncounterImage(FilePart image, PatientEncounterItem patientEncounter, String descriptionText) {
+        try {
             String imageFileName;
-            int photoId;
 
             //Create photo record:
             IPhoto pPhoto = new Photo();
             pPhoto.setDescription(descriptionText);
             pPhoto.setFilePath("");
             pPhoto = patientPhotoRepository.create(pPhoto);
-            photoId = pPhoto.getId();
+
+            ExpressionList<Photo> findPhotoQuery =
+                    QueryProvider.getPhotoQuery()
+                            .where()
+                            .eq("id", pPhoto.getId());
+            IPhoto editPhoto = patientPhotoRepository.findOne(findPhotoQuery);
+
 
             imageFileName = "Patient_" + patientEncounter.getPatientId()
-                + "_Enc_" + patientEncounter.getId() + "_Photo_" + photoId;
-            pPhoto.setFilePath(imageFileName);
+                    + "_Enc_" + patientEncounter.getId() + "_Photo_" + editPhoto.getId();
+            editPhoto.setFilePath(imageFileName);
 
             //Since the record ID is part of the file name
             //  I am setting the filePath field after the record is created
-            this.UpdatePhotoRecord(pPhoto);
+            patientPhotoRepository.update(editPhoto);
+
 
             //Link photo record in photoEncounter table
             IPatientEncounterPhoto pep = new PatientEncounterPhoto();
-            pep.setPhotoId(photoId);
+            pep.setPhotoId(editPhoto.getId());
             pep.setPatientEncounterId(patientEncounter.getId());
             patientEncounterPhotoRepository.create(pep);
 
@@ -373,90 +318,43 @@ public class PhotoService implements IPhotoService {
             Path src = FileSystems.getDefault().getPath(image.getFile().getAbsolutePath());
             Path dest = FileSystems.getDefault().getPath(this._encounterPhotoPath + imageFileName);
             java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
+            String test = "uh oh";
 
         }
     }
 
-    protected void updateImageDescription(int photoId, String descriptionText)
-    {
-        ServiceResponse<IPhoto> srPhoto = this.getPhotoById(photoId);
-        if(!srPhoto.hasErrors())
-        {
-            IPhoto photo = srPhoto.getResponseObject();
-            photo.setDescription(descriptionText);
-            this.UpdatePhotoRecord(photo);
-        }
-    }
 
-    /**
-     * Handles all things related to the patient photo. If img is null and
-     *  deleteFlag == true, this method will delete the photo. Else,
-     *  it will update/create the patient photo
-     * @param img
-     * @param patientId
-     * @param deleteFlag
-     * @return Returns the new image Id on Save/Update, else null
-     */
-
-
-
-
-    protected void UpdatePhotoRecord(IPhoto photoRecord)
-    {
-        ExpressionList<Photo> query =
-                Ebean.find(Photo.class).where().eq("id", photoRecord.getId());
-        IPhoto editPhoto = patientPhotoRepository.findOne(query);
-
-        if (editPhoto != null){
-            editPhoto.setFilePath(photoRecord.getFilePath());
-            editPhoto.setDescription(photoRecord.getDescription());
-            patientPhotoRepository.update(editPhoto);
-        }
-    }
-
-
-
-
-
-
-
-    protected ServiceResponse<IPhoto> deletePhotoById(int id, String imagePath)
-    {
-        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
+    private ServiceResponse<IPhoto> deletePhotoById(int id, String imagePath) {
+        ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
+                .where()
+                .eq("id", id);
         IPhoto savedPhoto = patientPhotoRepository.findOne(query);
-        if(savedPhoto != null)
-        {
+        if (savedPhoto != null) {
             //Delete any references from the patientencounterphotos table
-            ExpressionList<PatientEncounterPhoto> peQuery =
-                       Ebean.find(PatientEncounterPhoto.class).where().eq("photo_id", id);
+            ExpressionList<PatientEncounterPhoto> peQuery = QueryProvider.getPatientEncounterPhotoQuery()
+                    .where().eq("photo_id", id);
             List<? extends IPatientEncounterPhoto> pep = patientEncounterPhotoRepository.find(peQuery);
-            if(pep != null)
-                Ebean.delete(pep);
+            if (pep != null)
+                patientEncounterPhotoRepository.delete(pep);
 
             File photo = new File(imagePath + savedPhoto.getFilePath());
             photo.delete();
 
 
-            Ebean.delete(savedPhoto);
+            patientPhotoRepository.delete(savedPhoto);
 
         }
         ServiceResponse<IPhoto> response = new ServiceResponse<>();
 
-        if (savedPhoto != null){
+        if (savedPhoto != null) {
             response.setResponseObject(savedPhoto);
-        }
-        else{
-            response.addError("photo","photo could not be deleted from the database");
+        } else {
+            response.addError("photo", "photo could not be deleted from the database");
         }
 
         return response;
     }
-
-
-
 
 
 }

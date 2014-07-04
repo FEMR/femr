@@ -13,19 +13,23 @@ import play.mvc.Http.MultipartFormData.FilePart;
 
 public interface IPhotoService {
 
+    /**
+     * Retrieve all photos for the medical page
+     *
+     * @param encounterId
+     * @return
+     */
+    ServiceResponse<List<PhotoItem>> GetEncounterPhotos(int encounterId);
 
-    ServiceResponse<IPhoto> getPhotoById(int id);
-
-    ServiceResponse<List<IPhoto>> GetEncounterPhotos(int encounterId);
-
-
-
-
-
-
-
+    /**
+     * Saves photos from the medical page
+     *
+     * @param encounterImages
+     * @param patientEncounterItem
+     * @param mod
+     * @return
+     */
     ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod);
-
 
     /**
      * Saves a patient's photo and updates the patients photoId field to point

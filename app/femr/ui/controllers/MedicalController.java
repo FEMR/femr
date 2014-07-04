@@ -7,7 +7,6 @@ import femr.business.services.*;
 import femr.common.dto.CurrentUser;
 import femr.common.dto.ServiceResponse;
 import femr.common.models.*;
-import femr.data.models.IPhoto;
 import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -153,11 +152,11 @@ public class MedicalController extends Controller {
         }
 
         //store this in view model somehow
-        ServiceResponse<List<IPhoto>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
+        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
-            viewModelGet.setPhotos(getPhotoModel(photoListResponse.getResponseObject()));
+            viewModelGet.setPhotos(photoListResponse.getResponseObject());
         }
 
         return ok(edit.render(currentUserSession, viewModelGet));
@@ -394,27 +393,5 @@ public class MedicalController extends Controller {
         tabFieldItem.setType(null);
         tabFieldItem.setValue(value.trim());
         return tabFieldItem;
-    }
-
-    /**
-     * Gets the photo list and adds them to the Photo Model or sets it to null if it is empty
-     * @param photos the list of IPhoto to iterate over
-     * @return A list of PhotoModel or null
-     */
-    private List<PhotoItem> getPhotoModel(List<IPhoto> photos) {
-        List<PhotoItem> tempPhotoList = new ArrayList<>();
-        if(photos != null)
-        {
-            for(IPhoto p : photos)
-            {
-                PhotoItem pm = new PhotoItem();
-                pm.setId(p.getId()); //set photo Id
-                pm.setImageDesc(p.getDescription()); //set description
-                pm.setImageUrl(routes.PhotoController.GetPhoto(p.getId()).toString()); //set image URL
-                pm.setImageDate(StringUtils.ToSimpleDate(p.getInsertTS()));
-                tempPhotoList.add(pm);
-            }
-        }
-        return tempPhotoList;
     }
 }

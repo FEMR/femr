@@ -1,10 +1,35 @@
 
 
 
+#viewPatientHeader{
+    overflow: hidden;
+    margin-bottom: 5px;
+    border-bottom: 1px solid black;
+}
+#patientPhoto{
+    float: left;
+    width: 15%;
+
+}
+#patientInformation{
+    float: left;
+    width: 85%;
+}
+#patientInformation button{
 
 
+}
 
 
+#viewPatientHeader img{
+    border: 2px solid black;
+    margin-bottom: 20px;
+}
+
+#viewPatientHeader h1{
+
+    margin-top: 30px;
+}
 
 
 

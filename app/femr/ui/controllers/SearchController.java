@@ -9,7 +9,7 @@ import femr.data.models.*;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.search.EncounterViewModel;
-import femr.ui.models.search.CreateViewModel;
+import femr.ui.models.search.IndexPatientViewModelGet;
 import femr.util.DataStructure.Pair;
 import femr.ui.views.html.search.indexEncounter;
 import femr.ui.views.html.search.indexPatient;
@@ -52,6 +52,7 @@ public class SearchController extends Controller {
         String firstName = request().getQueryString("searchFirstName");
         String lastName = request().getQueryString("searchLastName");
         String s_id = request().getQueryString("id");
+        IndexPatientViewModelGet viewModel = new IndexPatientViewModelGet();
 
         Integer patientId = null;
         if (StringUtils.isNotNullOrWhiteSpace(s_id)) {
@@ -67,6 +68,13 @@ public class SearchController extends Controller {
             return ok(showError.render(currentUser));
         }
 
+        if (patientItems.size() > 0){
+            for (PatientItem patientItem : patientItems)
+                patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
+            viewModel.setPatientItems(patientItems);
+            viewModel.setPatientItem(patientItems.get(0));
+        }
+
         ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.findPatientEncounterItemsById(patientItems.get(0).getId());
         if (patientEncountersServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -75,36 +83,13 @@ public class SearchController extends Controller {
         if (patientEncounterItems == null || patientEncounterItems.size() < 1) {
             return ok(showError.render(currentUser));
         }
+        viewModel.setPatientEncounterItems(patientEncounterItems);
 
-        CreateViewModel viewModel = new CreateViewModel();
 
-        //list of patients
-        if (patientItems.size() > 1) {
-            List<String> photoURIs; //List to store all generated photo URIs.  Will pass into viewmodel object
-            photoURIs = new ArrayList<>();
-            for (int i = 0; i < patientItems.size(); i++)
-                photoURIs.add(routes.PhotoController.GetPatientPhoto(patientItems.get(i).getId(), true).toString());
-            PatientItem patient = patientItems.get(0);
-            viewModel.setPatientNameResult(patientItems);
-            viewModel.setFirstName(patient.getFirstName());
-            viewModel.setLastName(patient.getLastName());
-            viewModel.setAddress(patient.getAddress());
-            viewModel.setCity(patient.getCity());
-            viewModel.setAge(dateUtils.getAge(patient.getBirth()));
-            viewModel.setSex(patient.getSex());
-            viewModel.setPhotoURIList(photoURIs);
-        } else { //one patient
-            PatientItem patient = patientItems.get(0);
-            viewModel.setFirstName(patient.getFirstName());
-            viewModel.setLastName(patient.getLastName());
-            viewModel.setAddress(patient.getAddress());
-            viewModel.setCity(patient.getCity());
-            viewModel.setAge(dateUtils.getAge(patient.getBirth()));
-            viewModel.setSex(patient.getSex());
-            viewModel.setPatientID(patient.getId());
-        }
 
-        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems, patientItems.get(0).getId()));
+
+
+        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems));
     }
 
     public Result indexEncounterGet(int id) {

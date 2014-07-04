@@ -9,11 +9,13 @@ $(document).ready(function ()
         window.location= "/triage";
     });
 
+    $('.selectPageFromRow').click(function(){
+        var id = $.trim($(this).parent().parent().find('.patientId').html());
+        document.getElementById("id").value = id;
+        document.getElementById("idSearch").click();
+    });
+
 });
 
-function setSearchResults(idx){
-    document.getElementById("id").value = idx;
-    document.getElementById("idSearch").click();
-}
 
 

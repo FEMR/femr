@@ -6,17 +6,19 @@
 
 .sectionBackground {
     min-height: 638px;
-    padding: 10px;
+    padding: 5px;
 }
 
 #genInfoWrap {
     float: left;
     width: 40%;
+    padding: 5px;
 }
 
 #vitalsWrap {
     float: left;
     width: 60%;
+    padding: 10px;
 }
 
 #leftVitalsWrap {
@@ -30,7 +32,7 @@
 }
 
 .vitalWrap {
-    padding: 5px 15px 5px 15px;
+    padding: 5px 15px 5px 0px;
     overflow: hidden;
 }
 
@@ -51,11 +53,6 @@
     /*margin-bottom: 10px;*/
 }
 
-#weeksPregnant {
-    margin: 0px 0px 0px 45px;
-    float: left;
-}
-
 #pregnancyBtn {
     margin-top: -6px;
     width: 100px;
@@ -63,6 +60,9 @@
 
 .doubleVital {
     overflow: hidden;
+}
+.doubleVital input{
+    margin-bottom: 1px;
 }
 
 #chiefComplaint {
@@ -97,6 +97,7 @@
 
 /* Photo stuff */
 #photoInputFormDiv {
+    width: 100%;
     overflow: hidden;
 }
 
@@ -152,6 +153,7 @@
         margin-right: 0px;
     }
     .vitalWrap input{
+        width: 75%;
         float: right;
     }
 }

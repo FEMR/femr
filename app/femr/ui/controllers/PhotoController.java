@@ -16,6 +16,9 @@ import static play.mvc.Results.ok;
 /**
  * This controller is required to retrieve and
  * return files(photos) in the Upload folder.
+ * Therefore it is used all over the god damn
+ * place. (In the service layer and probably in
+ * the UI layer). :( :( :( :( :( <-NOT HAPPY
  */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -72,8 +75,8 @@ public class PhotoController {
      * @param photoId id of the image
      * @return
      */
-    public Result GetPhoto(Integer photoId) {
-        if (photoId != null) {
+    public Result GetPhoto(int photoId) {
+        if (photoId > 0) {
             ServiceResponse<String> pathToPhotoResponse = photoService.getPhotoPath(photoId);
             if (pathToPhotoResponse.hasErrors()) {
                 throw new RuntimeException();

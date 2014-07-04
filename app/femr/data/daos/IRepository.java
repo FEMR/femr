@@ -8,6 +8,10 @@ import java.util.List;
 public interface IRepository<T> {
     int count(Class<? extends T> clazz);
 
+    void delete(T entity);
+
+    void delete(List<? extends T> entities);
+
     T create(T entity);
 
     List<? extends T> createAll(List<? extends T> entities);

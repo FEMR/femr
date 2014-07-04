@@ -3,7 +3,8 @@ var patientPhotoFeature = {
     config: {
         windowWidth: 250,
         windowHeight: 250,
-        imageElement: $('#patientPhoto')
+        imageElement: $('#patientPhoto'),
+        isNewPhoto: false
     },
 
     photo: {
@@ -105,13 +106,14 @@ var patientPhotoFeature = {
 
                 // Read in the image file as a data URL.
                 reader.readAsDataURL(f);
+                patientPhotoFeature.config.isNewPhoto = true;
             }
             return;
         }
 
     },
     cropAndReplace: function () {
-        if (patientPhotoFeature.config.imageElement.attr('src') !== ''){
+        if (patientPhotoFeature.config.isNewPhoto === true){
             var canvas = document.getElementById('patientPhotoCanvas'),
                 context = canvas.getContext('2d');
 

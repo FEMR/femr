@@ -209,7 +209,7 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        return redirect("/search/index?id=" + patientServiceResponse.getResponseObject().getId());
+        return redirect("/history/patient?id=" + patientServiceResponse.getResponseObject().getId());
     }
 
     /**

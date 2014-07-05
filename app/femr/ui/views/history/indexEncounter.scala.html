@@ -2,24 +2,20 @@
         viewModel: femr.ui.models.search.EncounterViewModel)
 
 @import femr.ui.views.html.layouts.main
-@import femr.ui.views.html.helpers.medical.tabs._
-@import femr.ui.views.html.helpers.encounter._
 
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/shared/femr.js")"></script>
-        <!-- adds the javascript bootstraps to this page -->
-        <script type="text/javascript" src="@routes.Assets.at("js/search/encounter.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
     }
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/search.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
     }
 
 
 @main("search", currentUser, scripts = additionalScripts, styles = additionalStyles) {
-    <div id="patientHistoryWrap" class="backgroundForWrap">
+<h3>Viewing encounter history is temporarily unavailable. Good things are coming soon!</h3>
+    @*
+        <div id="patientHistoryWrap" class="backgroundForWrap">
         <div>
             <label>Triage Personnel: </label> <span>N/A</span>
             <label>Medical Personnel: </label> <span>@viewModel.getDoctorFirstName @viewModel.getDoctorLastName</span>
@@ -45,6 +41,6 @@
 
 
     </div>
-
+                       *@
 }
 

@@ -26,9 +26,9 @@ GET         /pharmacy/edit/:id          @femr.ui.controllers.PharmaciesControlle
 POST        /pharmacy/edit/:id          @femr.ui.controllers.PharmaciesController.editPost(id: Integer)
 GET         /pharmacy                   @femr.ui.controllers.PharmaciesController.indexGet()
 POST        /pharmacy                   @femr.ui.controllers.PharmaciesController.indexPost()
-#Search
-GET         /search/index/:id           @femr.ui.controllers.SearchController.indexEncounterGet(id: Integer)
-GET         /search/index               @femr.ui.controllers.SearchController.indexPatientGet()
+#History
+GET         /history/encounter/:id      @femr.ui.controllers.HistoryController.indexEncounterGet(id: Integer)
+GET         /history/patient            @femr.ui.controllers.HistoryController.indexPatientGet()
 #Photo
 GET         /photo/patient/:id          @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /photo/encounter/:id        @femr.ui.controllers.PhotoController.GetPhoto(id: Int)

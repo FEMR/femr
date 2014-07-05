@@ -3,7 +3,7 @@
   outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""), showSearchBtn: Boolean = false)(content: Html)
 
 @import femr.ui.views.html.layouts.main
-@import femr.ui.controllers.routes.SearchController
+@import femr.ui.controllers.routes.HistoryController
   @searchTemplate = {
     <div id="searchContainer">
       <div class="row">
@@ -13,7 +13,7 @@
         </div>
         <div class="col-sm-6 col-xs-6">
           @*Provide a uniform first/last name search option for each page*@
-          @helper.form(action = SearchController.indexPatientGet()) {
+          @helper.form(action = HistoryController.indexPatientGet()) {
             <div class="col-lg-5 col-sm-5 col-md-5 col-xs-5 remove-padding">
               @*<label for="searchFirstName" class="pull-left">First Name:</label>*@
               <input type="text" id="searchFirstName" class="form-control nameSearchForm" name="searchFirstName" placeholder="First Name">

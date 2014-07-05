@@ -1,15 +1,14 @@
 @(currentUser: femr.common.dto.CurrentUser)
 
 @import femr.ui.views.html.layouts.medicalPersonnel
-@import femr.ui.controllers.routes.SearchController
+@import femr.ui.controllers.routes.HistoryController
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("../../../../../public/css/triage.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
     }
     @searchById = {
-    @helper.form(action = SearchController.indexPatientGet()) {
+    @helper.form(action = HistoryController.indexPatientGet()) {
         <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
             <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Patient ID">
         </div>

@@ -1,17 +1,17 @@
 @(currentUser: femr.common.dto.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
 
 @import femr.ui.views.html.layouts.medicalPersonnel
-@import femr.ui.controllers.routes.SearchController
+@import femr.ui.controllers.routes.HistoryController
 @import femr.ui.controllers.routes.TriageController
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/search.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
     }
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/shared/femr.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/search/search.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
     }
     @searchById = {
-    @helper.form(action = SearchController.indexPatientGet()) {
+    @helper.form(action = HistoryController.indexPatientGet()) {
         <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
         @if(searchError) {
             <input type="text" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
@@ -115,7 +115,7 @@
                 <ol>
                 @for(patientEncounter <- patientEncounters) {
                     <li>
-                        <a href="/search/index/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
+                        <a href="/history/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
                             <p class="date">@patientEncounter.getFriendlyDateOfVisit</p>
                             <p class ="chiefComplaint"><strong>Chief complaint: </strong> @patientEncounter.getChiefComplaint</p>
                         </a>

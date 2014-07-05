@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.min.css")">
     }
 
-@main(title, currentUser, adminStyles, adminScripts, search = null, showSearchButton = false) {
+@main(title, currentUser, adminStyles, adminScripts) {
     <div id="admin-panels">
         <div id="admin-left-panel">
             <a href="@UsersController.index()" class="fButton userBtns"><span class="glyphicon glyphicon-user"></span>

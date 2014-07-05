@@ -47,13 +47,14 @@ public class Global extends GlobalSettings {
         ));
     }
 
+    /*
     //used for any route that doesn't match an entry in the routes file
     @Override
     public Promise<SimpleResult> onHandlerNotFound(RequestHeader request) {
         return Promise.<SimpleResult>pure(internalServerError(
                 femr.ui.views.html.errors.global.render()
         ));
-    }
+    } */
 
     private static Injector createInjector() {
         return Guice.createInjector(new BusinessLayerModule(), new DataLayerModule(), new UtilitiesModule());

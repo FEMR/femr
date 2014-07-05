@@ -1,5 +1,6 @@
 package femr.business.services;
 
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
@@ -49,36 +50,80 @@ public class SearchService implements ISearchService {
         this.domainMapper = domainMapper;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String firstName, String lastName, Integer id) {
+    public ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
-        if (firstName == null && lastName == null && id == null) {
+        if (StringUtils.isNullOrWhiteSpace(patientSearchQuery)) {
             response.addError("", "bad parameters");
             return response;
         }
-        ExpressionList<Patient> query = null;
 
-        if (id != null) {
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("id", id);
-
-            //patientServiceResponseid = searchService.findPatientItemById(id);
-        } else if (!StringUtils.isNullOrWhiteSpace(firstName) && StringUtils.isNullOrWhiteSpace(lastName) || !StringUtils.isNullOrWhiteSpace(lastName) && StringUtils.isNullOrWhiteSpace(firstName) || !StringUtils.isNullOrWhiteSpace(firstName) && !StringUtils.isNullOrWhiteSpace(lastName)) {
-            firstName = firstName.trim();
-            lastName = lastName.trim();
-            if (!firstName.isEmpty() && lastName.isEmpty()) {
-                query = QueryProvider.getPatientQuery().where().eq("first_name", firstName);
-            } else if (firstName.isEmpty() && !lastName.isEmpty()) {
-                query = QueryProvider.getPatientQuery().where().eq("last_name", lastName);
-            } else {
-                query = QueryProvider.getPatientQuery().where().eq("first_name", firstName).eq("last_name", lastName);
+        String[] words = patientSearchQuery.trim().split(" ");
+        Integer id = null;
+        String firstName = null;
+        String lastName = null;
+        String firstOrLastName = null;
+        if (words.length == 0) {
+            //nothing was in the query
+            response.addError("", "query string empty");
+            return response;
+        } else if (words.length == 1) {
+            //could be an ID or a name
+            try {
+                //see if it is a number
+                id = Integer.parseInt(words[0]);
+            } catch (NumberFormatException ex) {
+                //see if it it a string
+                firstOrLastName = words[0];
             }
-
+        } else if (words.length == 2) {
+            firstName = words[0];
+            lastName = words[1];
         } else {
-            response.addError("", "error");
+            response.addError("", "too many words in query string");
+            return response;
         }
 
+
+        //Build the Query
+        Query<Patient> query = null;
+        if (id != null) {
+            //if we have an id, that is all we need.
+            //this is the most ideal scenario
+            query = QueryProvider.getPatientQuery()
+                    .where()
+                    .eq("id", id)
+                    .order()
+                    .desc("id");
+
+        } else if (StringUtils.isNotNullOrWhiteSpace(firstName) && StringUtils.isNotNullOrWhiteSpace(lastName)) {
+            //if we have a first and last name
+            //this is the second most ideal scenario
+            query = QueryProvider.getPatientQuery()
+                    .where()
+                    .eq("first_name", firstName)
+                    .eq("last_name", lastName)
+                    .order()
+                    .desc("id");
+
+        } else if (StringUtils.isNotNullOrWhiteSpace(firstOrLastName)) {
+            //if we have a word that could either be a first name or a last name
+            query = QueryProvider.getPatientQuery()
+                    .where()
+                    .or(
+                            Expr.eq("first_name", firstOrLastName),
+                            Expr.eq("last_name", firstOrLastName))
+                    .order()
+                    .desc("id");
+
+        } else {
+            response.addError("", "too many parameters in query");
+        }
+
+        //Execute the query
         try {
             List<? extends IPatient> patients = patientRepository.find(query);
             List<PatientItem> patientItems = new ArrayList<>();
@@ -231,15 +276,15 @@ public class SearchService implements ISearchService {
 
             } else if (dateOfMedicalVisit != null) {
                 //give 1 day before closing
-                DateTime dayAfterTaken = dateOfMedicalVisit.plusDays(1);
-                if (dateNow.isAfter(dayAfterTaken)) {
+                DateTime dayAfterMedicalVisit = dateOfMedicalVisit.plusDays(1);
+                if (dateNow.isAfter(dayAfterMedicalVisit)) {
                     isClosed = true;
                 }
 
             } else {
                 //give 2 days before closing
-                DateTime dayAfterAfterToday = dateNow.plusDays(2);
-                if (dateNow.isAfter(dayAfterAfterToday)) {
+                DateTime dayAfterAfterEncounter = currentPatientEncounter.getDateOfVisit().plusDays(2);
+                if (dateNow.isAfter(dayAfterAfterEncounter)) {
                     isClosed = true;
                 }
             }
@@ -282,7 +327,7 @@ public class SearchService implements ISearchService {
 
             PatientItem patientItem = domainMapper.createPatientItem(savedPatient, recentEncounter.getWeeksPregnant());
 
-            if(savedPatient.getPhoto() != null){
+            if (savedPatient.getPhoto() != null) {
                 patientItem.setPathToPhoto("/photo/patient/" + id + "?showDefault=false");
             }
 

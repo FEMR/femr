@@ -1,7 +1,8 @@
 @(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
 
 @import femr.ui.controllers.routes.PharmaciesController
-@import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
 @import femr.ui.views.html.helpers.shared._
 
     @additionalScripts = {
@@ -12,22 +13,8 @@
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
     }
-    @searchById = {
-    @helper.form(action = PharmaciesController.indexPost()) {
-        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
-        @if(searchError) {
-            <input type="number" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
-        } else {
-            <input type="number" id="id" class="form-control idSearchForm" name="id" placeholder="Patient ID">
-            }
-        </div>
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
-            <button type="submit" id="pharmacySearch" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
-        </div>
-    }
-    }
 
-@medicalPersonnel("Pharmacy", currentUser, scripts = additionalScripts, customSearch = searchById, styles = additionalStyles) {
+@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
     <div id="pharmacyContentWrap">
 
         @patientOverview(viewModel.getPatient, viewModel.getPatientEncounterItem, "Pharmacy")

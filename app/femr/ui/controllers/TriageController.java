@@ -75,9 +75,10 @@ public class TriageController extends Controller {
     Used when user has searched for an existing patient
     and wants to create a new encounter
      */
-    public Result indexPopulatedGet() {
-        boolean searchError = false;
-        PatientItem patient = new PatientItem();
+    public Result indexPopulatedGet(int patientId) {
+
+        PatientItem patient;
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
 
         //get user that is currently logged in
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -87,25 +88,18 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        //retrieve patient id from query string and search for the patient
-        //error will be returned from business layer if there is anything
-        //wrong with the query string and/or patient
-        ServiceResponse<PatientItem> patientServiceResponse = searchService.findPatientItemById(
-                Integer.valueOf(
-                        request().getQueryString("id").trim()
-                )
-        );
-        if (patientServiceResponse.hasErrors()) {
-            searchError = true;
-        } else {
-            patient = patientServiceResponse.getResponseObject();
+
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
+        if (patientItemServiceResponse.hasErrors()){
+            throw new RuntimeException();
         }
+        patient = patientItemServiceResponse.getResponseObject();
+        viewModelGet.setPatient(patient);
 
         //create the view model
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
-        viewModelGet.setPatient(patient);
-        viewModelGet.setSearchError(searchError);
+
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -209,7 +203,7 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        return redirect("/history/patient?id=" + patientServiceResponse.getResponseObject().getId());
+        return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
 
     /**

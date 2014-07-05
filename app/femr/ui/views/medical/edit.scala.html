@@ -1,7 +1,9 @@
 @(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.medical.EditViewModelGet)
 
+
 @import femr.ui.controllers.routes.MedicalController
-@import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
 @import femr.ui.views.html.helpers.medical.tabs._
 @import femr.ui.views.html.helpers.shared._
 @import femr.ui.views.html.medical.listVitals
@@ -19,17 +21,7 @@
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
     }
 
-    @searchById = {
-    @helper.form(action = MedicalController.indexPost()) {
-        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
-            <input type="number" class="form-control idSearchForm" id="id" name="id" placeholder="Patient ID">
-        </div>
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
-            <button type="submit" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
-        </div>
-    }
-    }
-@medicalPersonnel("Medical", currentUser, customSearch = searchById, scripts = additionalScripts, styles = additionalStyles, showSearchBtn = true) {
+@main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical")) {
     <input type="hidden" value="@viewModel.getPatientItem.getId" id="patientId"/>
 
     <div id="medicalContentWrap">

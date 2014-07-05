@@ -1,16 +1,7 @@
 @(patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem, pageName: java.lang.String)
 
 <div id="patientOverviewWrap" class="backgroundForWrap">
-    @*
-    @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
-        <div id="portraitWrap">
-            <img src="@patient.getPathToPhoto" height="90" width="90">
-        </div>
 
-        <div id="generalInfoWrapPicture">
-    }else{
-        <div id="generalInfoWrap">
-    }     *@
     <h3>Patient Overview - @pageName</h3>
 
             @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {

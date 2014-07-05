@@ -75,12 +75,10 @@ public interface ISearchService {
      * Takes a query string with patient info and returns a list of matching patients
      * based on id then first/last name
      *
-     * @param firstName patient first name
-     * @param lastName patient last name
-     * @param id patient id
+     * @param patientSearchQuery search query for a patient
      * @return list of patients
      */
-    ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String firstName, String lastName, Integer id);
+    ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery);
 
     /**
      * Create linked hash map of vitals where the key is the date as well as the name
@@ -89,6 +87,8 @@ public interface ISearchService {
      * @return vitals and dates related to encounter
      */
     ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId);
+
+
 
 
 

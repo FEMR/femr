@@ -24,6 +24,37 @@ $(document).ready(function () {
       return false;
     }
   });
+
+    $('#searchBtn').click(function(){
+        var searchValue = $('#nameOrIdSearchForm').val().trim();
+        var isValid = true;
+
+        if (!searchValue){
+            $('#nameOrIdSearchForm').css('border', '1px solid red');
+            return false;
+        }else{
+
+            $.ajax({
+                url: '/search/check/' + searchValue,
+                type: 'GET',
+                dataType: 'text',
+                async: false,
+                success: function (test) {
+                    if (test === "false"){
+                        isValid = false;
+                        $('#nameOrIdSearchForm').css('border', '1px solid red');
+                        $('#nameOrIdSearchForm').val("");
+                        $('#nameOrIdSearchForm').attr("placeholder", "Invalid Patient");
+                    }
+                },
+                error: function (response) {
+                    isValid = false;
+                }
+            });
+
+        }
+        return isValid;
+    });
 });
 
 /*

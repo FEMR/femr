@@ -26,7 +26,7 @@ public class SearchController extends Controller {
 
     @Inject
     public SearchController(ISessionService sessionService,
-                             ISearchService searchService) {
+                            ISearchService searchService) {
         this.sessionService = sessionService;
         this.searchService = searchService;
     }
@@ -52,11 +52,37 @@ public class SearchController extends Controller {
             } else if (StringUtils.equals(page, "history")) {
                 return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientItem.getId())));
             }
-        }else if(patientItems.size() > 1){
+        } else if (patientItems.size() > 1) {
             return redirect(routes.HistoryController.indexPatientGet(patientSearchQuery.replace(" ", "-")));
+        } else if (patientItems.size() == 0) {
+            //if the patient ends up not being found, go back to the index of the page where the search was called from.
+            //AJAX should prevent this from happening.
+            if (StringUtils.equals(page, "medical")) {
+                return redirect(routes.MedicalController.indexGet());
+            } else if (StringUtils.equals(page, "pharmacy")) {
+                return redirect(routes.PharmaciesController.indexGet());
+            } else if (StringUtils.equals(page, "triage")) {
+                return redirect(routes.TriageController.indexGet());
+            } else if (StringUtils.equals(page, "history")) {
+                return redirect(routes.HistoryController.indexPatientGet(patientSearchQuery.replace(" ", "-")));
+            }
         }
 
         throw new RuntimeException();
+    }
+
+    /**
+     * AJAX call to check if a patient actually exists before submission of a search
+     *
+     * @param query
+     * @return
+     */
+    public Result doesPatientExist(String query){
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(query);
+        if (patientResponse.hasErrors() || patientResponse.getResponseObject().size() == 0) {
+            return ok("false");
+        }
+        return ok("true");
     }
 
 

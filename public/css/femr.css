@@ -20,7 +20,7 @@ hr {
 }
 
 #nameOrIdSearchForm {
-    border: 1px solid black !important;
+    border: 1px solid black;
     width: 200px;
     margin-top: 10px;
 }

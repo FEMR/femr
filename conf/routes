@@ -28,9 +28,10 @@ GET         /pharmacy                        @femr.ui.controllers.PharmaciesCont
 POST        /pharmacy                        @femr.ui.controllers.PharmaciesController.indexPost()
 #History
 GET         /history/encounter/:id           @femr.ui.controllers.HistoryController.indexEncounterGet(id: Integer)
-GET         /history/patient/:query           @femr.ui.controllers.HistoryController.indexPatientGet(query: String)
+GET         /history/patient/:query          @femr.ui.controllers.HistoryController.indexPatientGet(query: String)
 #Search
 GET         /search/:page                    @femr.ui.controllers.SearchController.handleSearch(page: String)
+GET         /search/check/:query             @femr.ui.controllers.SearchController.doesPatientExist(query: String)
 #Photo
 GET         /photo/patient/:id               @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /photo/encounter/:id             @femr.ui.controllers.PhotoController.GetPhoto(id: Int)
@@ -46,7 +47,6 @@ GET         /medical/edit/:id                @femr.ui.controllers.MedicalControl
 POST        /medical/edit/:id                @femr.ui.controllers.MedicalController.editPost(id: Integer)
 GET         /medical                         @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                         @femr.ui.controllers.MedicalController.indexPost()
-
 #Research
 GET         /research                        @femr.ui.controllers.research.ResearchController.index()
 POST        /research                        @femr.ui.controllers.research.ResearchController.createPost()

@@ -1,7 +1,7 @@
 @(currentUser: femr.common.dto.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
 
 @import femr.ui.views.html.layouts.main
-@import femr.ui.controllers.routes.HistoryController
+@import femr.ui.views.html.partials.search
 @import femr.ui.controllers.routes.TriageController
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
@@ -11,7 +11,7 @@
         <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
     }
 
-@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history")) {
 
     @if(viewModel.getPatientItems.size > 1) {
         <div class="encounterInfoWrap backgroundForWrap">

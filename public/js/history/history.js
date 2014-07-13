@@ -11,8 +11,8 @@ $(document).ready(function ()
 
     $('.selectPageFromRow').click(function(){
         var id = $.trim($(this).parent().parent().find('.patientId').html());
-        document.getElementById("id").value = id;
-        document.getElementById("idSearch").click();
+        document.getElementById("nameOrIdSearchForm").value = id;
+        document.getElementById("searchBtn").click();
     });
 
 });

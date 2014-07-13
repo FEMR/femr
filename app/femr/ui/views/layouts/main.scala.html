@@ -1,10 +1,10 @@
 @(title: String, currentUser: femr.common.dto.CurrentUser = null,
-        styles: Html = Html(""), scripts: Html = Html(""), search: Html = Html(""),
-        outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""),
-        showSearchButton: Boolean = false)(content: Html)
+        styles: Html = Html(""), scripts: Html = Html(""),
+        outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""), search: Html = Html(""))(content: Html)
 
 @import femr.ui.views.html.partials.footer
 @import femr.ui.views.html.partials.header
+
 <!DOCTYPE html>
 <html class="no-js" xmlns="http://www.w3.org/1999/html">
     <head>
@@ -19,7 +19,7 @@
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/modernizr-2.6.2.min.js")"></script>
     </head>
     <body>
-        @header(currentUser, showSearchButton)
+        @header(currentUser)
 
         @outsideContainerTop
 

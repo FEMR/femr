@@ -83,24 +83,30 @@ public class PharmaciesController extends Controller {
 
     public Result editGet(int patientId) {
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
         EditViewModelGet viewModelGet = new EditViewModelGet();
         String message;
 
-        //get the patient item
+        //Get Patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             message = patientItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
         }
         PatientItem patient = patientItemServiceResponse.getResponseObject();
+        viewModelGet.setPatient(patient);
 
         //get the patient encounter item
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patient.getId());
         if (patientEncounterItemServiceResponse.hasErrors()) {
             message = patientEncounterItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
+        //check for encounter closed
+        if (patientEncounterItem.getIsClosed()) {
+            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
+        }
         viewModelGet.setPatientEncounterItem(patientEncounterItem);
 
         //get vital items
@@ -123,12 +129,14 @@ public class PharmaciesController extends Controller {
                 }
             }
         }
-        viewModelGet.setPatient(patientItemServiceResponse.getResponseObject());
+
 
         //find patient prescriptions, they do have to exist
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItem.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
+        } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
+            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
         }
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
@@ -137,7 +145,7 @@ public class PharmaciesController extends Controller {
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
-            if (problemItemServiceResponse.getResponseObject().size() > 0){
+            if (problemItemServiceResponse.getResponseObject().size() > 0) {
                 viewModelGet.setProblems(problemItemServiceResponse.getResponseObject());
             }
         }

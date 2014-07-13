@@ -23,6 +23,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.mvc.Http.MultipartFormData.FilePart;
+
 import java.util.*;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -77,10 +78,10 @@ public class MedicalController extends Controller {
 
         //check if the doc has already seen the patient today
         ServiceResponse<UserItem> userItemServiceResponse = medicalService.getPhysicianThatCheckedInPatient(patientEncounterItem.getId());
-        if (userItemServiceResponse.hasErrors()){
+        if (userItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
-        }else{
-            if (userItemServiceResponse.getResponseObject() != null){
+        } else {
+            if (userItemServiceResponse.getResponseObject() != null) {
                 return ok(index.render(currentUserSession, "That patient has already been seen today. Would you like to edit their encounter?", patientId));
             }
         }
@@ -109,6 +110,11 @@ public class MedicalController extends Controller {
         } else {
             patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
             viewModelGet.setPatientEncounterItem(patientEncounter);
+        }
+
+        //verify encounter is still open
+        if (patientEncounter.getIsClosed()) {
+            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
         }
 
         //find patient prescriptions, if they exist
@@ -194,7 +200,7 @@ public class MedicalController extends Controller {
         }
 
         //save the custom fields, if any
-        if (customFieldItems.size() > 0){
+        if (customFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> customFieldItemResponse =
                     medicalService.createPatientEncounterTabFields(customFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
             if (customFieldItemResponse.hasErrors()) {
@@ -204,10 +210,10 @@ public class MedicalController extends Controller {
 
         //save the non-custom fields
         List<TabFieldItem> nonCustomFieldItems = mapTabFieldItems(viewModelPost);
-        if (nonCustomFieldItems.size() > 0){
+        if (nonCustomFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
                     medicalService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
-            if (nonCustomFieldItemResponse.hasErrors()){
+            if (nonCustomFieldItemResponse.hasErrors()) {
                 throw new RuntimeException();
             }
         }
@@ -225,8 +231,6 @@ public class MedicalController extends Controller {
         photoService.HandleEncounterPhotos(fps, patientEncounterItem, viewModelPost);
 
 
-
-
         //save prescriptions
         List<PrescriptionItem> prescriptionItems = new ArrayList<>();
         if (viewModelPost.getPrescription1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription1()))
@@ -242,7 +246,7 @@ public class MedicalController extends Controller {
         if (prescriptionItems.size() > 0) {
             ServiceResponse<List<PrescriptionItem>> prescriptionResponse =
                     medicalService.createPatientPrescriptions(prescriptionItems, currentUserSession.getId(), patientEncounterItem.getId());
-            if (prescriptionResponse.hasErrors()){
+            if (prescriptionResponse.hasErrors()) {
                 throw new RuntimeException();
             }
         }
@@ -343,35 +347,56 @@ public class MedicalController extends Controller {
      * @param viewModelPost view model POST from edit.scala.html
      * @return a list of values the user entered
      */
-    private List<TabFieldItem> mapTabFieldItems(EditViewModelPost viewModelPost){
+    private List<TabFieldItem> mapTabFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
 
         //treatment fields
-        if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment())) tabFieldItems.add(createTabFieldItem("assessment", viewModelPost.getAssessment()));
-        if (viewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem1())) tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem1()));
-        if (viewModelPost.getProblem2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem2())) tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem2()));
-        if (viewModelPost.getProblem3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem3())) tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem3()));
-        if (viewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem4())) tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem4()));
-        if (viewModelPost.getProblem5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem5())) tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem5()));
-        if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment())) tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));
+        if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment()))
+            tabFieldItems.add(createTabFieldItem("assessment", viewModelPost.getAssessment()));
+        if (viewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem1()))
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem1()));
+        if (viewModelPost.getProblem2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem2()))
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem2()));
+        if (viewModelPost.getProblem3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem3()))
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem3()));
+        if (viewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem4()))
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem4()));
+        if (viewModelPost.getProblem5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem5()))
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem5()));
+        if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment()))
+            tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));
 
         //hpi fields
-        if (viewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset())) tabFieldItems.add(createTabFieldItem("onset", viewModelPost.getOnset()));
-        if (viewModelPost.getOnsetTime() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnsetTime())) tabFieldItems.add(createTabFieldItem("onsetTime", viewModelPost.getOnsetTime()));
-        if (viewModelPost.getSeverity() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSeverity())) tabFieldItems.add(createTabFieldItem("severity", viewModelPost.getSeverity()));
-        if (viewModelPost.getRadiation() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRadiation())) tabFieldItems.add(createTabFieldItem("radiation", viewModelPost.getRadiation()));
-        if (viewModelPost.getQuality() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getQuality())) tabFieldItems.add(createTabFieldItem("quality", viewModelPost.getQuality()));
-        if (viewModelPost.getProvokes() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProvokes())) tabFieldItems.add(createTabFieldItem("provokes", viewModelPost.getProvokes()));
-        if (viewModelPost.getPalliates() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPalliates())) tabFieldItems.add(createTabFieldItem("palliates", viewModelPost.getPalliates()));
-        if (viewModelPost.getTimeOfDay() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTimeOfDay())) tabFieldItems.add(createTabFieldItem("timeOfDay", viewModelPost.getTimeOfDay()));
-        if (viewModelPost.getPhysicalExamination() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPhysicalExamination())) tabFieldItems.add(createTabFieldItem("physicalExamination", viewModelPost.getPhysicalExamination()));
-        if (viewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getNarrative())) tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));
+        if (viewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset()))
+            tabFieldItems.add(createTabFieldItem("onset", viewModelPost.getOnset()));
+        if (viewModelPost.getOnsetTime() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnsetTime()))
+            tabFieldItems.add(createTabFieldItem("onsetTime", viewModelPost.getOnsetTime()));
+        if (viewModelPost.getSeverity() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSeverity()))
+            tabFieldItems.add(createTabFieldItem("severity", viewModelPost.getSeverity()));
+        if (viewModelPost.getRadiation() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRadiation()))
+            tabFieldItems.add(createTabFieldItem("radiation", viewModelPost.getRadiation()));
+        if (viewModelPost.getQuality() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getQuality()))
+            tabFieldItems.add(createTabFieldItem("quality", viewModelPost.getQuality()));
+        if (viewModelPost.getProvokes() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProvokes()))
+            tabFieldItems.add(createTabFieldItem("provokes", viewModelPost.getProvokes()));
+        if (viewModelPost.getPalliates() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPalliates()))
+            tabFieldItems.add(createTabFieldItem("palliates", viewModelPost.getPalliates()));
+        if (viewModelPost.getTimeOfDay() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTimeOfDay()))
+            tabFieldItems.add(createTabFieldItem("timeOfDay", viewModelPost.getTimeOfDay()));
+        if (viewModelPost.getPhysicalExamination() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPhysicalExamination()))
+            tabFieldItems.add(createTabFieldItem("physicalExamination", viewModelPost.getPhysicalExamination()));
+        if (viewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getNarrative()))
+            tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));
 
         //Pmh_fields
-        if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory())) tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", viewModelPost.getMedicalSurgicalHistory()));
-        if (viewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory())) tabFieldItems.add(createTabFieldItem("socialHistory", viewModelPost.getSocialHistory()));
-        if (viewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication())) tabFieldItems.add(createTabFieldItem("currentMedication", viewModelPost.getCurrentMedication()));
-        if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory())) tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));
+        if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory()))
+            tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", viewModelPost.getMedicalSurgicalHistory()));
+        if (viewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory()))
+            tabFieldItems.add(createTabFieldItem("socialHistory", viewModelPost.getSocialHistory()));
+        if (viewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication()))
+            tabFieldItems.add(createTabFieldItem("currentMedication", viewModelPost.getCurrentMedication()));
+        if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory()))
+            tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));
 
         return tabFieldItems;
     }
@@ -379,11 +404,11 @@ public class MedicalController extends Controller {
     /**
      * Creates a non-custom tabfielditem
      *
-     * @param name name of the field
+     * @param name  name of the field
      * @param value value of the field
      * @return a non custom tab field item
      */
-    private TabFieldItem createTabFieldItem(String name, String value){
+    private TabFieldItem createTabFieldItem(String name, String value) {
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setIsCustom(false);
         tabFieldItem.setName(name);

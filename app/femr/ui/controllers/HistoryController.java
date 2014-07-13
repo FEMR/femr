@@ -12,12 +12,10 @@ import femr.ui.models.search.EncounterViewModel;
 import femr.ui.models.search.IndexPatientViewModelGet;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
-import femr.ui.views.html.history.showError;
-
+import org.h2.util.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import femr.util.stringhelpers.StringUtils;
 import java.util.List;
 
 import play.mvc.Security;
@@ -30,39 +28,36 @@ public class HistoryController extends Controller {
 
     @Inject
     public HistoryController(ISessionService sessionService,
-                            ISearchService searchService) {
+                             ISearchService searchService) {
         this.sessionService = sessionService;
         this.searchService = searchService;
     }
 
-    public Result indexPatientGet() {
+    public Result indexPatientGet(String query) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         boolean error = false;
-        String firstName = request().getQueryString("searchFirstName");
-        String lastName = request().getQueryString("searchLastName");
-        String s_id = request().getQueryString("id");
+
+
         IndexPatientViewModelGet viewModel = new IndexPatientViewModelGet();
 
-        Integer patientId = null;
-        if (StringUtils.isNotNullOrWhiteSpace(s_id)) {
-            patientId = Integer.parseInt(s_id);
-        }
-
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(firstName, lastName, patientId);
+        //how do we show more than one?
+        query = query.replace("-", " ");
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(query);
         if (patientResponse.hasErrors()) {
             throw new RuntimeException();
         }
         List<PatientItem> patientItems = patientResponse.getResponseObject();
+
+
         if (patientItems == null || patientItems.size() < 1) {
-            return ok(showError.render(currentUser));
+//            return ok(showError.render(currentUser));
+            //return an error near the search box
         }
 
-        if (patientItems.size() > 0){
-            for (PatientItem patientItem : patientItems)
-                patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
-            viewModel.setPatientItems(patientItems);
-            viewModel.setPatientItem(patientItems.get(0));
-        }
+        for (PatientItem patientItem : patientItems)
+            patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
+        viewModel.setPatientItems(patientItems);
+        viewModel.setPatientItem(patientItems.get(0));
 
         ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.findPatientEncounterItemsById(patientItems.get(0).getId());
         if (patientEncountersServiceResponse.hasErrors()) {
@@ -70,12 +65,10 @@ public class HistoryController extends Controller {
         }
         List<PatientEncounterItem> patientEncounterItems = patientEncountersServiceResponse.getResponseObject();
         if (patientEncounterItems == null || patientEncounterItems.size() < 1) {
-            return ok(showError.render(currentUser));
+            //return ok(showError.render(currentUser));
+            //return an error near the search box
         }
         viewModel.setPatientEncounterItems(patientEncounterItems);
-
-
-
 
 
         return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems));
@@ -87,9 +80,5 @@ public class HistoryController extends Controller {
 
         return ok(indexEncounter.render(currentUser, viewModel));
     }
-
-
-
-
 
 }

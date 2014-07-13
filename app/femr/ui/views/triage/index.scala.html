@@ -1,6 +1,7 @@
 @(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)
 
-@import femr.ui.views.html.layouts.medicalPersonnel
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.views.html.helpers.triage._
 @import femr.ui.views.html.helpers.shared._
@@ -17,24 +18,14 @@
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/shared/vitalClientValidation.js")"></script>
     }
-    @searchById = {
-    @helper.form(action = TriageController.indexPopulatedGet()) {
-        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 remove-padding">
-        @if(viewModel.isSearchError) {
-            <input type="number" id="id" class="form-control idSearchForm" name="id" placeholder="Invalid Id">
-        } else {
-            <input type="number" id="id" class="form-control idSearchForm" name="id" placeholder="Patient ID">
-            }
-        </div>
-        <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 remove-padding">
-            <button type="submit" class="buttonSearchForm idSearch btn btn-default btn-sm">Search</button>
-        </div>
-    }
-    }
 
-@medicalPersonnel("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, customSearch = searchById, showSearchBtn = true) {
+
+@main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
     <div id="triageContentWrap">
+        @if(viewModel.isSearchError){
+            <p>That patient could not be found.</p>
+        }
         <h2 class="text-center">Check In - Triage</h2>
 
 
@@ -87,9 +78,7 @@
 
 
                 </div>
-                <div class="historyInput">
-                @historyButton(if(viewModel.getPatient.getId != 0) viewModel.getPatient.getId else null)
-                </div>
+
             </div>
 
             <div id="vitalsWrap" class="sectionBackground backgroundForWrap">
@@ -178,9 +167,15 @@
                         Submit Patient</button>
                     <button type="button" class="newPatientBtn fButton pull-right">Reset Fields</button>
                 </div>
+                }
+
+                <div class="historyInput">
+                @historyButton(if(viewModel.getPatient.getId != 0) viewModel.getPatient.getId else null)
+                </div>
+
 
             </div>
         </div>
-}
+
 }
 

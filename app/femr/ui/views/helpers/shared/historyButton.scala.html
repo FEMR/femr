@@ -1,7 +1,15 @@
 @(value: java.lang.Integer)
+
+@import femr.ui.controllers.routes.SearchController
+
     @inputBlock = {
+
+
     @if(value != null) {
-        <a class="fButton" id="historyButton" href="/history/patient?id=@value">Patient History</a>
+        @helper.form(action = SearchController.handleSearch("history")) {
+            <input type="text" class="hidden" name="patientSearchQuery" value="@value"/>
+            <button type="submit" id="historyButton" class="fButton pull-right">Patient History</button>
+        }
     }
     }
 @inputBlock

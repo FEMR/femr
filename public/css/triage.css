@@ -4,6 +4,12 @@
     overflow: hidden;
 }
 
+#triageContentWrap > p{
+    color: red;
+    text-align: center;
+    font-weight: bold
+}
+
 .sectionBackground {
     min-height: 638px;
     padding: 5px;
@@ -18,7 +24,7 @@
 #vitalsWrap {
     float: left;
     width: 60%;
-    padding: 10px;
+    padding: 5px;
 }
 
 #leftVitalsWrap {
@@ -77,6 +83,7 @@
 .generalInfoInput input {
     float: right;
     margin-right: 120px;
+    width: 180px;
 }
 
 #historyButton {
@@ -92,7 +99,6 @@
 
 .historyInput {
     padding-top: 20px;
-    overflow: hidden;
 }
 
 /* Photo stuff */
@@ -162,6 +168,9 @@
     .sectionBackground {
         padding: 0px;
     }
+    .generalInfoInput input{
+        width: 175px;
+    }
 }
 @media (max-width: 735px){
     #genderBtns{
@@ -180,6 +189,16 @@
     }
 }
 @media (max-width: 620px){
+
+    #vitalsWrap{
+        width: 100%;
+    }
+    #genInfoWrap{
+        width: 100%;
+    }
+
+
+
     .vitalWrap input {
         float: none;
         width: 100%;

@@ -86,15 +86,17 @@
                     @* Use for "POSTing" JSON (dynamic tab data) *@
                     <input type="text" class="hidden" name="customFieldJSON"/>
 
-                    <div class="pull-left">
-                    @historyButton(viewModel.getPatientItem.getId)
-                    </div>
+
 
                     <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
                         Submit Patient</button>
+                }
+                <div class="pull-left">
+                @historyButton(viewModel.getPatientItem.getId)
+                </div>
 
                 </div>
-            }
+
             </div>
         </div>
     </div>

@@ -38,7 +38,7 @@
 }
 
 .vitalWrap {
-    padding: 5px 15px 5px 0px;
+    /*padding: 5px 15px 5px 0px;*/
     overflow: hidden;
 }
 
@@ -196,6 +196,7 @@
     #genInfoWrap{
         width: 100%;
     }
+
 
 
 

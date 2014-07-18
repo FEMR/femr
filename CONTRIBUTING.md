@@ -2,8 +2,8 @@
 
 ### Required downloads
 1. [MySQL](http://www.mysql.com/)
-2. [Play Framework](http://www.playframework.com/)
-3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+2. [Play Framework](http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip)
+3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 4. [IntelliJ IDEA](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 

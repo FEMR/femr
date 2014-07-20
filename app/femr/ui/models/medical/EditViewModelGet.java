@@ -13,6 +13,8 @@ public class EditViewModelGet {
     private VitalMultiMap vitalMap;
     //The current encounter of the patient
     private PatientEncounterItem patientEncounterItem;
+    //tracks the number of hpi tabs to generate
+    private int numberOfHpiTabs;
     //List of problems for the patient
     private List<ProblemItem> problemItems;
     //List of prescriptions for the patient
@@ -20,6 +22,8 @@ public class EditViewModelGet {
 
     //photos for the medical tab
     private List<PhotoItem> photos;
+
+    private SettingItem settings;
 
 
 
@@ -53,6 +57,11 @@ public class EditViewModelGet {
 
     public void setPatientEncounterItem(PatientEncounterItem patientEncounterItem) {
         this.patientEncounterItem = patientEncounterItem;
+        Integer numberOfHpiTabs = patientEncounterItem.getChiefComplaints().size();
+        if (numberOfHpiTabs == null || numberOfHpiTabs == 0){
+            numberOfHpiTabs = 1;
+        }
+        this.numberOfHpiTabs = numberOfHpiTabs;
     }
 
     public List<ProblemItem> getProblemItems() {
@@ -103,4 +112,19 @@ public class EditViewModelGet {
         this.photos = photos;
     }
 
+    public int getNumberOfHpiTabs() {
+        return numberOfHpiTabs;
+    }
+
+    public void setNumberOfHpiTabs(int numberOfHpiTabs) {
+        this.numberOfHpiTabs = numberOfHpiTabs;
+    }
+
+    public SettingItem getSettings() {
+        return settings;
+    }
+
+    public void setSettings(SettingItem settings) {
+        this.settings = settings;
+    }
 }

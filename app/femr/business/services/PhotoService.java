@@ -3,7 +3,9 @@ package femr.business.services;
 import com.avaje.ebean.ExpressionList;
 import com.typesafe.config.ConfigFactory;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,11 @@ import femr.common.models.PhotoItem;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 import femr.ui.models.medical.EditViewModelPost;
+import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.codec.binary.Base64;
 import play.mvc.Http.MultipartFormData.FilePart;
+
+import javax.imageio.ImageIO;
 
 
 public class PhotoService implements IPhotoService {
@@ -47,13 +53,13 @@ public class PhotoService implements IPhotoService {
             _profilePhotoPath = ConfigFactory.load().getString("photos.path");
         } catch (Exception ex) {
             //If config doesn't exist, default to "photos"
-            _profilePhotoPath = "./Upload/Pictures/Patients";
+            _profilePhotoPath = "../Upload/Pictures/Patients";
         }
 
         try {
             _encounterPhotoPath = ConfigFactory.load().getString("photos.encounterPath");
         } catch (Exception ex) {
-            _encounterPhotoPath = "./Upload/Pictures/PatientEncounters";
+            _encounterPhotoPath = "../Upload/Pictures/PatientEncounters";
         }
 
         //Append ending slash if needed
@@ -78,8 +84,9 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(File img, int patientId, Boolean deleteFlag) {
+    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
+
 
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
@@ -87,9 +94,9 @@ public class PhotoService implements IPhotoService {
 
         try {
             IPatient patient = patientRepository.findOne(query);
-            String imageFileName = "Patient_" + patient.getId() + ".jpg";
+            String imageFileName = "/Patient_" + patient.getId() + ".jpg";
 
-            if (img != null) {
+            if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
                 if (patient.getPhoto() == null) {
                     //Create new photo Id record
                     IPhoto pPhoto = domainMapper.createPhoto("", imageFileName);
@@ -102,9 +109,10 @@ public class PhotoService implements IPhotoService {
                 }
 
                 //save image to disk
-                Path src = FileSystems.getDefault().getPath(img.getAbsolutePath());
-                Path dest = FileSystems.getDefault().getPath(_profilePhotoPath + imageFileName);
-                java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
+                BufferedImage bufferedImage = decodeToImage(parsedImage);
+                File photoFile = new File(_profilePhotoPath + imageFileName);
+                ImageIO.write(bufferedImage, "jpg", photoFile);
 
             } else {
                 if (deleteFlag != null)
@@ -354,6 +362,29 @@ public class PhotoService implements IPhotoService {
         }
 
         return response;
+    }
+
+    /**
+     * Decodes a base64 encoded string to an image
+     *
+     * @param imageString base64 encoded string that has been parsed to only include imageBytes
+     * @return the decoded image
+     */
+    private static BufferedImage decodeToImage(String imageString) {
+
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            Base64 newDecoder = new Base64();
+            byte[] bytes = imageString.getBytes(Charset.forName("UTF-8"));
+            imageByte = newDecoder.decode(bytes);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
 

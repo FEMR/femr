@@ -113,7 +113,7 @@ var patientPhotoFeature = {
 
     },
     cropAndReplace: function () {
-        if (patientPhotoFeature.config.isNewPhoto === true){
+        if (patientPhotoFeature.config.isNewPhoto === true) {
             var canvas = document.getElementById('patientPhotoCanvas'),
                 context = canvas.getContext('2d');
 
@@ -133,6 +133,47 @@ var patientPhotoFeature = {
             $('#photoInputCropped').val(dataURL);
             $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
         }
+    }
+};
+
+var multipleChiefComplaintFeature = {
+    isActive: ($("#addChiefComplaint").length > 0),
+    chiefComplaintsJSON: [],
+    addChiefComplaintInput: function () {
+        var value = triageFields.chiefComplaint.chiefComplaint.val().trim();
+        //make sure a value exists in the chief complaint box and make sure it doesn't
+        //already exist in the chief complaint array
+        if (value === "" || $.inArray(value, multipleChiefComplaintFeature.chiefComplaintsJSON) > -1) {
+            return;
+        }
+        //add to visual list
+        triageFields.chiefComplaint.chiefComplaintList.append("<li><span class=removeChiefComplaint>X</span>" + value + "</li>");
+        //add to JSON list
+        multipleChiefComplaintFeature.chiefComplaintsJSON.push(value);
+        //clear chief complaint textarea
+        triageFields.chiefComplaint.chiefComplaint.val("");
+        //bind chief complaint removal
+        $('.removeChiefComplaint').unbind();
+        $('.removeChiefComplaint').click(function (evt) {
+            multipleChiefComplaintFeature.removeChiefComplaint(evt);
+        });
+    },
+    removeChiefComplaint: function (evt) {
+        var chiefComplaintText = $(evt.target).parent().text();
+        chiefComplaintText = chiefComplaintText.substring(1, chiefComplaintText.length);
+        var index = multipleChiefComplaintFeature.chiefComplaintsJSON.indexOf(chiefComplaintText);
+        if (index > -1){
+           multipleChiefComplaintFeature.chiefComplaintsJSON.splice(index,1);
+        }
+        $(evt.target).parent().remove();
+    },
+    JSONifyChiefComplaints: function () {
+        var chiefComplaintBox = $('#chiefComplaint').val().trim();
+        //add the value in the box currently (if it exists and if it doesn't already exist in the current list)
+        if (chiefComplaintBox && $.inArray(chiefComplaintBox, multipleChiefComplaintFeature.chiefComplaintsJSON) === -1){
+            multipleChiefComplaintFeature.chiefComplaintsJSON.push(chiefComplaintBox);
+        }
+        $('input[name=chiefComplaintsJSON]').val(JSON.stringify(multipleChiefComplaintFeature.chiefComplaintsJSON));
     }
 };
 
@@ -157,7 +198,11 @@ var triageFields = {
         heightInches: $('#heightInches'),
         glucose: $('#glucose'),
         weeksPregnant: $('#weeksPregnant')
+    },
+    chiefComplaint: {
 
+        chiefComplaint: $('#chiefComplaint'),
+        chiefComplaintList: $('#chiefComplaintList')
     }
 };
 
@@ -360,6 +405,10 @@ $(document).ready(function () {
 
     $('#triageSubmitBtn').click(function () {
         patientPhotoFeature.cropAndReplace();
+        //make sure the feature is turned on before JSONifying
+        if (multipleChiefComplaintFeature.isActive == true){
+            multipleChiefComplaintFeature.JSONifyChiefComplaints();
+        }
         return validate(); //located in triageClientValidation.js
     });
 
@@ -367,6 +416,10 @@ $(document).ready(function () {
 
     $('#photoInput').change(function (evt) {
         patientPhotoFeature.loadPhotoIntoFrame(evt);
+    });
+
+    $('#addChiefComplaint').click(function () {
+        multipleChiefComplaintFeature.addChiefComplaintInput();
     });
 
 

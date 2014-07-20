@@ -9,6 +9,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.admin.routes.ConfigureController
 
         @* Add scripts to script variable, how? *@
     @adminScripts = {
@@ -31,6 +32,8 @@
                 Add User</a>
             <a href="@InventoryController.indexGet()" class="fButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
                 Inventory Tracking</a>
+            <a href="@ConfigureController.indexGet()" class="fButton userBtns"><span class="glyphicon glyphicon-cog"></span>
+                Configure</a>
             @menus
         </div>
         <div id="admin-right-panel">

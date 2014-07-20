@@ -7,10 +7,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.common.dto.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.PatientItem;
-import femr.common.models.PrescriptionItem;
-import femr.common.models.ProblemItem;
+import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 import femr.util.DataStructure.VitalMultiMap;
@@ -27,6 +24,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<IVital> vitalRepository;
     private final DomainMapper domainMapper;
 
@@ -38,6 +36,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<IVital> vitalRepository,
+                         IRepository<ISystemSetting> systemSettingRepository,
                          DomainMapper domainMapper) {
 
         this.medicationRepository = medicationRepository;
@@ -47,6 +46,7 @@ public class SearchService implements ISearchService {
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.vitalRepository = vitalRepository;
+        this.systemSettingRepository = systemSettingRepository;
         this.domainMapper = domainMapper;
     }
 
@@ -446,6 +446,41 @@ public class SearchService implements ISearchService {
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    public ServiceResponse<SettingItem> getSystemSettings() {
+        ServiceResponse<SettingItem> response = new ServiceResponse<>();
+        try {
+            List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
+            SettingItem settingItem = new SettingItem();
+            if (systemSettings == null || systemSettings.size() == 0) {
+                response.addError("", "error");
+            } else {
+                //uhhh lol
+                if (systemSettings.get(0).isActive()) {
+                    settingItem.setMultipleChiefComplaint(true);
+                } else {
+                    settingItem.setMultipleChiefComplaint(false);
+                }
+
+                if (systemSettings.get(1).isActive()) {
+                    settingItem.setPmhTab(true);
+                } else {
+                    settingItem.setPmhTab(false);
+                }
+
+                if (systemSettings.get(2).isActive()) {
+                    settingItem.setPhotoTab(true);
+                } else {
+                    settingItem.setPhotoTab(false);
+                }
+            }
+            response.setResponseObject(settingItem);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
         }
 
         return response;

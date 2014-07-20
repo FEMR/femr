@@ -11,25 +11,29 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
 import java.util.*;
 
 public class MedicalService implements IMedicalService {
 
+    private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
-    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private final IRepository<IVital> vitalRepository;
-    private final IRepository<ITab> customTabRepository;
-    private final IRepository<IUser> userRepository;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private final IRepository<ITab> customTabRepository;
+    private final IRepository<ITabField> tabFieldRepository;
+    private final IRepository<IUser> userRepository;
+    private final IRepository<IVital> vitalRepository;
+
     private final DomainMapper domainMapper;
 
     @Inject
-    public MedicalService(IRepository<IPatientEncounter> patientEncounterRepository,
+    public MedicalService(IRepository<IChiefComplaint> chiefComplaintRepository,
+                          IRepository<IPatientEncounter> patientEncounterRepository,
                           IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                           IRepository<ITabField> tabFieldRepository,
                           IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
@@ -40,6 +44,7 @@ public class MedicalService implements IMedicalService {
                           Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                           DomainMapper domainMapper) {
 
+        this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.tabFieldRepository = tabFieldRepository;
@@ -122,6 +127,11 @@ public class MedicalService implements IMedicalService {
         Map<String, TabFieldItem> fieldValueMap = new LinkedHashMap<>();
 
 
+        //get patient encounter
+        ExpressionList<PatientEncounter> patientEncounterExpressionList = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("id", encounterId);
+        IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterExpressionList);
         //query without problems
         Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
                 .fetch("tabField")
@@ -135,22 +145,31 @@ public class MedicalService implements IMedicalService {
                 .fetch("tabField")
                 .where()
                 .eq("patient_encounter_id", encounterId)
-                .eq("tabField.name","problem")
+                .eq("tabField.name", "problem")
                 .order()
                 .asc("date_taken");
         try {
+            //map non-problems
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query);
             for (IPatientEncounterTabField petf : patientEncounterTabFields) {
+
+               String key = petf.getTabField().getName();
+
+                if (petf.getChiefComplaint() != null){
+                    int index = patientEncounter.getChiefComplaints().indexOf(petf.getChiefComplaint());
+                    key = key + index;
+                }
                 //since the fields were sorted by date in the query, this if statement
                 //ensures that only the up-to-date field values are inserted into the map
-                if (!fieldValueMap.containsKey(petf.getTabField().getName())) {
-                    fieldValueMap.put(petf.getTabField().getName(), domainMapper.createTabFieldItem(petf));
+                if (!fieldValueMap.containsKey(key)) {
+                    fieldValueMap.put(key, domainMapper.createTabFieldItem(petf));
                 }
             }
 
+            //map problems
             List<? extends IPatientEncounterTabField> problemFields = patientEncounterTabFieldRepository.find(problemQuery);
             int problemNumber = 1;
-            for (IPatientEncounterTabField petf2 : problemFields){
+            for (IPatientEncounterTabField petf2 : problemFields) {
                 fieldValueMap.put(petf2.getTabField().getName() + problemNumber, domainMapper.createTabFieldItem(petf2));
                 problemNumber++;
             }
@@ -161,8 +180,6 @@ public class MedicalService implements IMedicalService {
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
-
-
 
 
         return response;
@@ -179,27 +196,42 @@ public class MedicalService implements IMedicalService {
         List<IPatientEncounterTabField> tabFields = new ArrayList<>();
         try {
             for (TabFieldItem tf : tabFieldItems) {
+                //get the current tab field item
                 ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
                         .where()
                         .eq("name", tf.getName());
                 ITabField tabField = tabFieldRepository.findOne(query);
 
-
+                //create a patientEncounterTabField for saving
                 IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue(), encounterId);
+                if (StringUtils.isNotNullOrWhiteSpace(tf.getChiefComplaint())) {
+                    ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
+                            .where()
+                            .eq("value", tf.getChiefComplaint().trim())
+                            .eq("patient_encounter_id", encounterId);
+                    IChiefComplaint chiefComplaint = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
+                    if (chiefComplaint != null) {
+                        patientEncounterTabField.setChiefComplaint(chiefComplaint);
+                    }
+                }
 
 
+                //check to see if the tab field item already exists (updating will result in a duplicate)
                 ExpressionList<PatientEncounterTabField> query2 = QueryProvider.getPatientEncounterTabFieldQuery()
                         .where()
                         .eq("tabField", tabField)
                         .eq("patient_encounter_id", encounterId)
                         .eq("tab_field_value", tf.getValue());
-                if (patientEncounterTabFieldRepository.findOne(query2) != null) {
+                List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
+                if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
                     //already exists - field wasn't changed
                 } else {
                     tabFields.add(patientEncounterTabField);
                 }
             }
             List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
+
+
             List<TabFieldItem> tabFieldItemsToReturn = new ArrayList<>();
             for (IPatientEncounterTabField petf : savedTabFields) {
                 tabFieldItemsToReturn.add(domainMapper.createTabFieldItem(petf));

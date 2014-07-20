@@ -1,10 +1,7 @@
 package femr.business.services;
 
 import femr.common.dto.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.PatientItem;
-import femr.common.models.PrescriptionItem;
-import femr.common.models.ProblemItem;
+import femr.common.models.*;
 import femr.data.models.*;
 import femr.util.DataStructure.VitalMultiMap;
 
@@ -87,6 +84,13 @@ public interface ISearchService {
      * @return vitals and dates related to encounter
      */
     ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId);
+
+    /**
+     * Get all current system setting values, only works for one right now.
+     * Will need to be expanded later
+     * @return
+     */
+    ServiceResponse<SettingItem> getSystemSettings();
 
 
 

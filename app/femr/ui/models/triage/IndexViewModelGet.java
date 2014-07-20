@@ -1,6 +1,7 @@
 package femr.ui.models.triage;
 
 import femr.common.models.PatientItem;
+import femr.common.models.SettingItem;
 import femr.common.models.VitalItem;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public class IndexViewModelGet {
     private boolean searchError = false;
     //vital names
     private List<VitalItem> vitalNames;
+    //system settings
+    private SettingItem settings;
 
     public boolean isSearchError() {
         return searchError;
@@ -39,5 +42,13 @@ public class IndexViewModelGet {
 
     public void setVitalNames(List<VitalItem> vitalNames) {
         this.vitalNames = vitalNames;
+    }
+
+    public SettingItem getSettings() {
+        return settings;
+    }
+
+    public void setSettings(SettingItem settings) {
+        this.settings = settings;
     }
 }

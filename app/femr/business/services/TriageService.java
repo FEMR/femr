@@ -17,14 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * The Triage Service has been refactored alongside the Triage Controller
- * in order to be exposed to UI elements and decrease the amount
- * of business logic being performed in the Triage Controller.
- */
 public class TriageService implements ITriageService {
 
     //repositories
+    private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
@@ -33,12 +29,14 @@ public class TriageService implements ITriageService {
     private final DomainMapper domainMapper;
 
     @Inject
-    public TriageService(IRepository<IPatient> patientRepository,
+    public TriageService(IRepository<IChiefComplaint> chiefComplaintRepository,
+                         IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitaRepository,
                          IRepository<IVital> vitalRepository,
                          Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                          DomainMapper domainMapper) {
+        this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitaRepository;
@@ -137,6 +135,16 @@ public class TriageService implements ITriageService {
         try {
             IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, patientEncounterItem.getUserId());
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
+
+            List<IChiefComplaint> chiefComplaints = new ArrayList<>();
+            for (String cc : patientEncounterItem.getChiefComplaints()){
+                chiefComplaints.add(domainMapper.createChiefComplaint(cc, newPatientEncounter.getId()));
+            }
+            if (chiefComplaints != null && chiefComplaints.size() > 0){
+                chiefComplaintRepository.createAll(chiefComplaints);
+            }
+
+
             response.setResponseObject(domainMapper.createPatientEncounterItem(newPatientEncounter, false));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

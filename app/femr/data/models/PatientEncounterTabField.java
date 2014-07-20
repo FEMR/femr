@@ -21,6 +21,9 @@ public class PatientEncounterTabField implements IPatientEncounterTabField{
     private String tabFieldValue;
     @Column(name = "date_taken", nullable = false)
     private DateTime dateTaken;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "chief_complaint_id", nullable = true)
+    private ChiefComplaint chiefComplaint;
 
     @Override
     public int getId() {
@@ -80,5 +83,15 @@ public class PatientEncounterTabField implements IPatientEncounterTabField{
     @Override
     public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
+    }
+
+    @Override
+    public ChiefComplaint getChiefComplaint() {
+        return chiefComplaint;
+    }
+
+    @Override
+    public void setChiefComplaint(IChiefComplaint chiefComplaint) {
+        this.chiefComplaint = (ChiefComplaint) chiefComplaint;
     }
 }

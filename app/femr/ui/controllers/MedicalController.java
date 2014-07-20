@@ -133,6 +133,8 @@ public class MedicalController extends Controller {
             viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
         }
 
+
+
         //get non-custom fields
         ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse = medicalService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
         Map<String, TabFieldItem> tabFieldItemMap;
@@ -142,6 +144,10 @@ public class MedicalController extends Controller {
             tabFieldItemMap = patientEncounterTabFieldResponse.getResponseObject();
             viewModelGet.setStaticFields(tabFieldItemMap);
         }
+
+
+
+
 
         //get custom tabs/fields
         ServiceResponse<List<TabItem>> tabItemResponse = medicalService.getCustomTabs();
@@ -164,6 +170,9 @@ public class MedicalController extends Controller {
         } else {
             viewModelGet.setPhotos(photoListResponse.getResponseObject());
         }
+
+        ServiceResponse<SettingItem> response = searchService.getSystemSettings();
+        viewModelGet.setSettings(response.getResponseObject());
 
         return ok(edit.render(currentUserSession, viewModelGet));
     }
@@ -208,8 +217,22 @@ public class MedicalController extends Controller {
             }
         }
 
-        //save the non-custom fields
-        List<TabFieldItem> nonCustomFieldItems = mapTabFieldItems(viewModelPost);
+        //saving hpi tabs with 1 complaint works,
+        //need to implement having 2 complaints
+        List<TabFieldItem> nonCustomFieldItems = new ArrayList<>();
+
+        //multiple chief complaints
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMultipleHpiJSON())) {
+            //iterate over all values, adding them to the list with the respective chief complaint
+            nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(viewModelPost.getMultipleHpiJSON()));
+
+        } else {//one or less chief complaints
+            nonCustomFieldItems.addAll(mapHpiFieldItems(viewModelPost));
+        }
+
+        nonCustomFieldItems.addAll(mapPmhFieldItems(viewModelPost));
+        nonCustomFieldItems.addAll(mapTreatmentFieldItems(viewModelPost));
+
         if (nonCustomFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
                     medicalService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
@@ -217,6 +240,7 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
+
 
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
         if (patientItemServiceResponse.hasErrors()) {
@@ -342,14 +366,33 @@ public class MedicalController extends Controller {
     }
 
     /**
-     * Creates a list of non-custom tab field items
+     * Creates a list of available pmh fields in the viewmodel
      *
      * @param viewModelPost view model POST from edit.scala.html
      * @return a list of values the user entered
      */
-    private List<TabFieldItem> mapTabFieldItems(EditViewModelPost viewModelPost) {
+    private List<TabFieldItem> mapPmhFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
+        //Pmh_fields
+        if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory()))
+            tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", viewModelPost.getMedicalSurgicalHistory()));
+        if (viewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory()))
+            tabFieldItems.add(createTabFieldItem("socialHistory", viewModelPost.getSocialHistory()));
+        if (viewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication()))
+            tabFieldItems.add(createTabFieldItem("currentMedication", viewModelPost.getCurrentMedication()));
+        if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory()))
+            tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));
+        return tabFieldItems;
+    }
 
+    /**
+     * Creates a list of available treatment fields in the viewmodel
+     *
+     * @param viewModelPost view model POST from edit.scala.html
+     * @return a list of values the user entered
+     */
+    private List<TabFieldItem> mapTreatmentFieldItems(EditViewModelPost viewModelPost) {
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //treatment fields
         if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment()))
             tabFieldItems.add(createTabFieldItem("assessment", viewModelPost.getAssessment()));
@@ -365,7 +408,17 @@ public class MedicalController extends Controller {
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem5()));
         if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment()))
             tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));
+        return tabFieldItems;
+    }
 
+    /**
+     * Creates a list of available hpi fields in the viewmodel
+     *
+     * @param viewModelPost view model POST from edit.scala.html
+     * @return a list of values the user entered
+     */
+    private List<TabFieldItem> mapHpiFieldItems(EditViewModelPost viewModelPost) {
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //hpi fields
         if (viewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset()))
             tabFieldItems.add(createTabFieldItem("onset", viewModelPost.getOnset()));
@@ -387,17 +440,27 @@ public class MedicalController extends Controller {
             tabFieldItems.add(createTabFieldItem("physicalExamination", viewModelPost.getPhysicalExamination()));
         if (viewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getNarrative()))
             tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));
+        return tabFieldItems;
+    }
 
-        //Pmh_fields
-        if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory()))
-            tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", viewModelPost.getMedicalSurgicalHistory()));
-        if (viewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory()))
-            tabFieldItems.add(createTabFieldItem("socialHistory", viewModelPost.getSocialHistory()));
-        if (viewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication()))
-            tabFieldItems.add(createTabFieldItem("currentMedication", viewModelPost.getCurrentMedication()));
-        if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory()))
-            tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));
+    private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON){
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
+        Gson gson = new Gson();
+        //get values from JSON, assign list of values to chief complaint
+        Map<String, List<JCustomField>> hpiTabInformation = gson.fromJson(JSON, new TypeToken<Map<String, List<JCustomField>>>() {}.getType());
 
+        for (Map.Entry<String, List<JCustomField>> entry : hpiTabInformation.entrySet()){
+            List<JCustomField> fields = entry.getValue();
+
+            for (JCustomField jcf : fields){
+                TabFieldItem tabFieldItem = new TabFieldItem();
+                tabFieldItem.setName(jcf.getName());
+                tabFieldItem.setChiefComplaint(entry.getKey().trim());
+                tabFieldItem.setIsCustom(false);
+                tabFieldItem.setValue(jcf.getValue());
+                tabFieldItems.add(tabFieldItem);
+            }
+        }
         return tabFieldItems;
     }
 

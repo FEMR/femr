@@ -16,6 +16,7 @@ import femr.util.stringhelpers.StringUtils;
  */
 public class DomainMapper {
 
+    private final Provider<IChiefComplaint> chiefComplaintProvider;
     private final Provider<IMedication> medicationProvider;
     private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
@@ -33,7 +34,8 @@ public class DomainMapper {
     private final Provider<IVital> vitalProvider;
 
     @Inject
-    public DomainMapper(Provider<IMedication> medicationProvider,
+    public DomainMapper(Provider<IChiefComplaint> chiefComplaintProvider,
+                        Provider<IMedication> medicationProvider,
                         Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
                         Provider<IPatientEncounter> patientEncounterProvider,
                         Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
@@ -48,6 +50,7 @@ public class DomainMapper {
                         Provider<ITab> tabProvider,
                         Provider<IUser> userProvider,
                         Provider<IVital> vitalProvider) {
+        this.chiefComplaintProvider = chiefComplaintProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
@@ -84,6 +87,7 @@ public class DomainMapper {
         tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
         if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
         else tabFieldItem.setIsCustom(true);
+        if (patientEncounterTabField.getChiefComplaint() != null) tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
 
         return tabFieldItem;
     }
@@ -202,7 +206,9 @@ public class DomainMapper {
             return null;
         }
         PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
-        patientEncounterItem.setChiefComplaint(patientEncounter.getChiefComplaint());
+        for (IChiefComplaint cc : patientEncounter.getChiefComplaints()) {
+            patientEncounterItem.addChiefComplaint(cc.getValue());
+        }
         patientEncounterItem.setId(patientEncounter.getId());
         patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
         patientEncounterItem.setWeeksPregnant(patientEncounter.getWeeksPregnant());
@@ -229,13 +235,22 @@ public class DomainMapper {
             return null;
         }
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
-        patientEncounter.setChiefComplaint(patientEncounterItem.getChiefComplaint());
         patientEncounter.setDateOfVisit(patientEncounterItem.getDateOfVisit());
         //provide a proxy patient for the encounter
         patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientEncounterItem.getPatientId()));
         patientEncounter.setUserId(userId);
         patientEncounter.setWeeksPregnant(patientEncounterItem.getWeeksPregnant());
         return patientEncounter;
+    }
+
+    public IChiefComplaint createChiefComplaint(String value, int patientEncounterId){
+        if (StringUtils.isNullOrWhiteSpace(value)){
+            return null;
+        }
+        IChiefComplaint chiefComplaint = chiefComplaintProvider.get();
+        chiefComplaint.setValue(value);
+        chiefComplaint.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), patientEncounterId));
+        return chiefComplaint;
     }
 
     public static MedicationItem createMedicationItem(IMedication medication) {

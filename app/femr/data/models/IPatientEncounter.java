@@ -2,6 +2,8 @@ package femr.data.models;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 public interface IPatientEncounter {
     int getId();
 
@@ -13,9 +15,9 @@ public interface IPatientEncounter {
 
     void setUserId(int userId);
 
-    String getChiefComplaint();
+    List<IChiefComplaint> getChiefComplaints();
 
-    void setChiefComplaint(String chiefComplaint);
+    void setChiefComplaints(List<IChiefComplaint> chiefComplaints);
 
     Integer getWeeksPregnant();
 

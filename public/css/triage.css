@@ -124,14 +124,8 @@
     width: 180px;
 }
 
-#historyButton {
-    width: 100%;
-    float: right;
-    text-align: center;
-
-}
-
 .submitResetWrap {
+    margin-top: 15px;
     margin-bottom: 5px;
     overflow: hidden;
 }
@@ -166,9 +160,7 @@
     margin-top: 25px !important;
 }
 
-.floatButtonOffset {
-    margin-left: 10px;
-}
+
 
 .medicalHistoryLineDivide {
     background: #000000;

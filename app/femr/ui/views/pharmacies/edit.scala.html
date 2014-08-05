@@ -49,12 +49,13 @@
                     <div class="medication">
                         <input type="text" id="medication@x" class="fInput" name="prescription@x" value="@viewModel.getMedications.get(x - 1).getName" placeholder="Medication" readonly/>
                         <input type="text" class="hidden" name="id_prescription@x" value="@viewModel.getMedications.get(x - 1).getId"/>
-                        <button type="button" class="fButton replaceBtn">Replace?</button>
+                        <button type="button" class="fButton fOtherButton replaceBtn">Replace?</button>
                         <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
                     </div>
                 }
-                <button type="submit" id="pharmacySubmitBtn" class="fButton pull-right fSubmitButton">Submit</button>
+
             </div>
+            <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">Submit</button>
 
 
 

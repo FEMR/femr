@@ -1,7 +1,7 @@
 @(currentUser: femr.common.dto.CurrentUser = null)
 
 @import femr.ui.views.html.partials
-<header class="navbar navbar-inverse navbar-fixed-top">
+<div class="navigation">
     <div class="container">
     @if(currentUser != null) {
         @partials.authenticated(currentUser)
@@ -9,4 +9,5 @@
         @partials.anonymous()
     }
     </div>
-</header>
+</div>
+

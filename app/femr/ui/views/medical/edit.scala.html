@@ -2,6 +2,7 @@
 
 
 @import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.SearchController
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.views.html.helpers.medical.tabs._
@@ -14,7 +15,6 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.min.css")">
     }
     @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/shared/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
@@ -39,7 +39,7 @@
                     @listVitals(viewModel.getVitalMap)
                 </div>
 
-                <button type="button" id="newVitalsBtn" class="fButton">Record New Vitals</button>
+                <button type="button" id="newVitalsBtn" class="fButton fOtherButton">Record New Vitals</button>
 
                 <div id="newVitalsDialog" title="Record New Vitals">
                     <div id="newVitalsPartial">
@@ -53,12 +53,12 @@
                     <div class="tabWrap">
                         <ul id="medicalTabs" class="tabrow">
                             <li class="active" id="hpi">HPI</li>
-                            @if(viewModel.getSettings.isPmhTab){
+                            @if(viewModel.getSettings.isPmhTab) {
                                 <li id="pmh">PMH</li>
                             }
 
                             <li id="treatment">Treatment</li>
-                            @if(viewModel.getSettings.isPhotoTab){
+                            @if(viewModel.getSettings.isPhotoTab) {
                                 <li id="photo">Photos (@viewModel.getPhotos.size)</li>
                             }
 
@@ -74,17 +74,15 @@
                     <div id="tabContentWrap">
                         @hpiTab(viewModel)
 
-
                         @treatmentTab(viewModel)
 
-                        @if(viewModel.getSettings.isPmhTab){
+                        @if(viewModel.getSettings.isPmhTab) {
                             @pmhTab(viewModel)
                         }
 
-                        @if(viewModel.getSettings.isPhotoTab){
+                        @if(viewModel.getSettings.isPhotoTab) {
                             @photoTab(viewModel)
                         }
-
 
                         @for(i <- 1 to viewModel.getCustomTabs.size) {
                             @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
@@ -101,13 +99,16 @@
                         <input type="text" class="hidden" name="multipleHpiJSON"/>
 
 
-
-                        <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
+                        <div class="historySubmitWrap">
+                        <button type="submit" id="medicalSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                             Submit Patient</button>
                     }
-                <div class="pull-left">
-                @historyButton(viewModel.getPatientItem.getId)
-                </div>
+
+                @helper.form(action = SearchController.handleSearch("history")) {
+                    <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatientItem.getId"/>
+                    <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
+                }
+            </div>
 
             </div>
 

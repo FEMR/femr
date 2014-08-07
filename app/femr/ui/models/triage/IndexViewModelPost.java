@@ -1,10 +1,5 @@
 package femr.ui.models.triage;
 
-import com.ning.http.util.Base64;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 //NOTE: the triage view sets the input element names dynamically
@@ -34,7 +29,12 @@ public class IndexViewModelPost {
     private String chiefComplaint;
     private Integer weeksPregnant;
 
+    //multiple chief complaints if they exist
+    private String chiefComplaintsJSON;
+
+
     private String patientPhotoCropped;
+
     public String getPatientPhotoCropped() {
         return patientPhotoCropped;
     }
@@ -44,7 +44,10 @@ public class IndexViewModelPost {
     }
 
 
-    public Boolean getDeletePhoto() { return deletePhoto; }
+    public Boolean getDeletePhoto() {
+        return deletePhoto;
+    }
+
     //begin general info
     public String getFirstName() {
         return firstName;
@@ -192,4 +195,11 @@ public class IndexViewModelPost {
     }
 
 
+    public String getChiefComplaintsJSON() {
+        return chiefComplaintsJSON;
+    }
+
+    public void setChiefComplaintsJSON(String chiefComplaintsJSON) {
+        this.chiefComplaintsJSON = chiefComplaintsJSON;
+    }
 }

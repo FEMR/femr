@@ -49,53 +49,67 @@
             </div>
 
             <div id="inputWrap">
-            @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getPatientItem.getId)), 'enctype -> "multipart/form-data") {
-                <div class="tabWrap">
-                    <ul id="medicalTabs">
-                        <li class="active"><a href="#" id="hpi">HPI</a></li>
-                        <li><a href="#" id="pmh">PMH</a></li>
-                        <li><a href="#" id="treatment">Treatment</a></li>
-                        <li><a href="#" id="photo">Photos - @viewModel.getPhotos.size()</a></li>
-                        @for(x <- 1 to viewModel.getCustomTabs.size) {
-                            @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
-                                <li><a href="#" id="@tabName" class="customTab">@tabName</a></li>
+                @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getPatientItem.getId)), 'enctype -> "multipart/form-data") {
+                    <div class="tabWrap">
+                        <ul id="medicalTabs" class="tabrow">
+                            <li class="active" id="hpi">HPI</li>
+                            @if(viewModel.getSettings.isPmhTab){
+                                <li id="pmh">PMH</li>
+                            }
+
+                            <li id="treatment">Treatment</li>
+                            @if(viewModel.getSettings.isPhotoTab){
+                                <li id="photo">Photos (@viewModel.getPhotos.size)</li>
+                            }
+
+                            @for(x <- 1 to viewModel.getCustomTabs.size) {
+                                @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
+                                    <li id="@tabName" class="customTab">@tabName</li>
+                                }
+                            }
+                        </ul>
+
+                    </div>
+
+                    <div id="tabContentWrap">
+                        @hpiTab(viewModel)
+
+
+                        @treatmentTab(viewModel)
+
+                        @if(viewModel.getSettings.isPmhTab){
+                            @pmhTab(viewModel)
+                        }
+
+                        @if(viewModel.getSettings.isPhotoTab){
+                            @photoTab(viewModel)
+                        }
+
+
+                        @for(i <- 1 to viewModel.getCustomTabs.size) {
+                            @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
+                                @* Move the div wrapper into dynamicTab *@
+                                <div class="controlWrap hidden" id="@customTab.getName()Control">
+                                @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, false)
+                                </div>
+
                             }
                         }
-                    </ul>
+                        @* Use for "POSTing" JSON (dynamic tab data) *@
+                        <input type="text" class="hidden" name="customFieldJSON"/>
+                        @* Use for "POSTing" JSON (multiple chief complaint data) *@
+                        <input type="text" class="hidden" name="multipleHpiJSON"/>
 
-                </div>
 
-                <div id="tabContentWrap">
-                    @hpiTab(viewModel)
 
-                    @treatmentTab(viewModel)
-
-                    @pmhTab(viewModel)
-
-                    @photoTab(viewModel)
-
-                    @for(i <- 1 to viewModel.getCustomTabs.size) {
-                        @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
-                            @* Move the div wrapper into dynamicTab *@
-                            <div class="controlWrap hidden" id="@customTab.getName()Control">
-                            @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, false)
-                            </div>
-
-                        }
+                        <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
+                            Submit Patient</button>
                     }
-                    @* Use for "POSTing" JSON (dynamic tab data) *@
-                    <input type="text" class="hidden" name="customFieldJSON"/>
-
-
-
-                    <button type="submit" id="medicalSubmitBtn" class="fButton fSubmitButton pull-right">
-                        Submit Patient</button>
-                }
                 <div class="pull-left">
                 @historyButton(viewModel.getPatientItem.getId)
                 </div>
 
-                </div>
+            </div>
 
             </div>
         </div>

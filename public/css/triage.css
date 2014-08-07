@@ -4,7 +4,7 @@
     overflow: hidden;
 }
 
-#triageContentWrap > p{
+#triageContentWrap > p {
     color: red;
     text-align: center;
     font-weight: bold
@@ -37,6 +37,44 @@
     float: left;
 }
 
+#vitalContainer {
+    overflow: hidden;
+}
+
+#chiefComplaintWrap {
+    margin-top: 20px;
+}
+
+#addChiefComplaint {
+    padding: 2px 10px 2px 10px;
+    font-size: 20px;
+}
+
+.removeChiefComplaint {
+    padding: 2px 8px 2px 2px;
+    font-size: 12px;
+    margin-right: 10px;
+
+}
+
+#addChiefComplaint, .removeChiefComplaint:hover {
+    cursor: default;
+}
+
+#newChiefComplaintInput {
+
+    margin-bottom: 10px;
+}
+
+#chiefComplaintList {
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+#chiefComplaintList li {
+    margin-bottom: 20px;
+}
+
 .vitalWrap {
     /*padding: 5px 15px 5px 0px;*/
     overflow: hidden;
@@ -48,7 +86,6 @@
 }
 
 .vitalWrap input {
-    width: 100px;
     float: left;
     margin-right: 40px;
     /*display: inline-block;*/
@@ -67,7 +104,8 @@
 .doubleVital {
     overflow: hidden;
 }
-.doubleVital input{
+
+.doubleVital input {
     margin-bottom: 1px;
 }
 
@@ -94,11 +132,12 @@
 }
 
 .submitResetWrap {
-    padding: 20px;
+    margin-bottom: 5px;
+    overflow: hidden;
 }
 
 .historyInput {
-    padding-top: 20px;
+    overflow: hidden;
 }
 
 /* Photo stuff */
@@ -158,7 +197,8 @@
     .generalInfoInput input {
         margin-right: 0px;
     }
-    .vitalWrap input{
+
+    .vitalWrap input {
         width: 75%;
         float: right;
     }
@@ -168,43 +208,48 @@
     .sectionBackground {
         padding: 0px;
     }
-    .generalInfoInput input{
+
+    .generalInfoInput input {
         width: 175px;
     }
 }
-@media (max-width: 735px){
-    #genderBtns{
+
+@media (max-width: 735px) {
+    #genderBtns {
         float: left;
     }
-    #photoInput{
+
+    #photoInput {
         width: 100%;
     }
-    .generalInfoInput label{
+
+    .generalInfoInput label {
         /*float: left;*/
         display: block;
     }
-    .generalInfoInput input{
+
+    .generalInfoInput input {
         float: left;
         display: block;
     }
 }
-@media (max-width: 620px){
 
-    #vitalsWrap{
+@media (max-width: 620px) {
+
+    #vitalsWrap {
         width: 100%;
     }
-    #genInfoWrap{
+
+    #genInfoWrap {
         width: 100%;
     }
-
-
-
 
     .vitalWrap input {
         float: none;
         width: 100%;
     }
-    #weeksPregnant{
+
+    #weeksPregnant {
         margin: 0;
     }
 }
@@ -213,10 +258,13 @@
     #genInfoWrap input {
         float: none;
     }
-    .fInput{
+
+    .fInput {
         width: 100%;
     }
 
-
 }
+
+
+
 

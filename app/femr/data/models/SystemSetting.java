@@ -6,14 +6,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "roles")
-public class Role implements IRole {
+@Table(name = "system_settings")
+public class SystemSetting implements ISystemSetting {
 
     @Id
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "name", nullable = false, unique = true)
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "isActive")
+    private boolean isActive;
 
     @Override
     public int getId() {
@@ -33,5 +37,15 @@ public class Role implements IRole {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean isActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

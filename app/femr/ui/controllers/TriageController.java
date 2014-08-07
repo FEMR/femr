@@ -1,5 +1,7 @@
 package femr.ui.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import femr.common.dto.CurrentUser;
 import femr.common.dto.ServiceResponse;
@@ -7,6 +9,7 @@ import femr.business.services.IPhotoService;
 import femr.business.services.ISearchService;
 import femr.business.services.ISessionService;
 import femr.business.services.ITriageService;
+import femr.common.models.SettingItem;
 import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -16,15 +19,10 @@ import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
-import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.*;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.nio.charset.Charset;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,10 +61,17 @@ public class TriageController extends Controller {
         //initalize an empty patient
         PatientItem patientItem = new PatientItem();
 
+        //get settings
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        if (settingItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
         IndexViewModelGet viewModelGet = new IndexViewModelGet();
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPatient(patientItem);
         viewModelGet.setSearchError(false);
+        viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -90,15 +95,20 @@ public class TriageController extends Controller {
 
 
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
-        if (patientItemServiceResponse.hasErrors()){
+        if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         patient = patientItemServiceResponse.getResponseObject();
         viewModelGet.setPatient(patient);
 
         //create the view model
-
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
+
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        if (settingItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
 
 
         return ok(index.render(currentUser, viewModelGet));
@@ -127,35 +137,15 @@ public class TriageController extends Controller {
         }
         patientItem = patientServiceResponse.getResponseObject();
 
-        File photoFile = null;
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getPatientPhotoCropped())) {
-            //we have received a base64 encoded data URI for a picture
-            //parse the actual data URI
-            String parsedImage = viewModel.getPatientPhotoCropped().substring(viewModel.getPatientPhotoCropped().indexOf(",") + 1);
-            BufferedImage bufferedImage = decodeToImage(parsedImage);
-            photoFile = new File("image.jpg");
-            try {
-                ImageIO.write(bufferedImage, "jpg", photoFile);
-            } catch (Exception ex) {
-                //couldn't save the image
-            }
-        } else {
-            //this happens if we don't receieve a base64 encoded data URI
-            //it can be because there is no picture or because javascript is disabled.
-            Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
-            if (fpPhoto != null)
-                photoFile = fpPhoto.getFile();
-        }
 
-        photoService.SavePatientPhotoAndUpdatePatient(photoFile, patientItem.getId(), viewModel.getDeletePhoto());
+        photoService.SavePatientPhotoAndUpdatePatient(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
+        //V code for saving photo without javascript
+        //currently javascript is required
+        //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
 
 
         //create and save a new encounter
-        PatientEncounterItem patientEncounterItem = populatePatientEncounterItem(
-                viewModel,
-                currentUser,
-                patientServiceResponse.getResponseObject().getId()
-        );
+        PatientEncounterItem patientEncounterItem = populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -206,28 +196,6 @@ public class TriageController extends Controller {
         return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
 
-    /**
-     * Decodes a base64 encoded string to an image
-     *
-     * @param imageString base64 encoded string that has been parsed to only include imageBytes
-     * @return the decoded image
-     */
-    private static BufferedImage decodeToImage(String imageString) {
-
-        BufferedImage image = null;
-        byte[] imageByte;
-        try {
-            Base64 newDecoder = new Base64();
-            byte[] bytes = imageString.getBytes(Charset.forName("UTF-8"));
-            imageByte = newDecoder.decode(bytes);
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
-            image = ImageIO.read(bis);
-            bis.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
         PatientItem patient = new PatientItem();
@@ -242,14 +210,28 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private PatientEncounterItem populatePatientEncounterItem(IndexViewModelPost viewModelPost, CurrentUser currentUser, int patientId) {
-        PatientEncounterItem patientEncounter = new PatientEncounterItem();
-        patientEncounter.setPatientId(patientId);
-        patientEncounter.setUserId(currentUser.getId());
-        patientEncounter.setDateOfVisit(DateTime.now());
-        patientEncounter.setChiefComplaint(viewModelPost.getChiefComplaint());
-        patientEncounter.setWeeksPregnant(viewModelPost.getWeeksPregnant());
-        return patientEncounter;
-    }
+    private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, Integer weeksPregnant, CurrentUser currentUser, int patientId) {
+        PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
+        patientEncounterItem.setPatientId(patientId);
+        patientEncounterItem.setUserId(currentUser.getId());
+        patientEncounterItem.setDateOfVisit(DateTime.now());
+        //JSON chief complaints (multiple chief complaints - requires javascript)
+        //this won't happen if the multiple chief complaint
+        // feature is turned off (chiefComplaintJSON will be null)
+        if (StringUtils.isNotNullOrWhiteSpace(chiefComplaintJSON)) {
+            Gson gson = new Gson();
+            List<String> multipleChiefComplaints = gson.fromJson(chiefComplaintJSON, new TypeToken<List<String>>() {
+            }.getType());
+            for (String mcc : multipleChiefComplaints) {
+                patientEncounterItem.addChiefComplaint(mcc);
+            }
+        } else {
+            if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                patientEncounterItem.addChiefComplaint(chiefComplaint);
+            }
+        }
 
+        patientEncounterItem.setWeeksPregnant(weeksPregnant);
+        return patientEncounterItem;
+    }
 }

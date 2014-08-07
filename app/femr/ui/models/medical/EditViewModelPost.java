@@ -5,6 +5,7 @@ import java.util.List;
 
 public class EditViewModelPost {
     private String customFieldJSON;
+    private String multipleHpiJSON;
 
 
 
@@ -298,5 +299,13 @@ public class EditViewModelPost {
 
     public void setCustomFieldJSON(String customFieldJSON) {
         this.customFieldJSON = customFieldJSON;
+    }
+
+    public String getMultipleHpiJSON() {
+        return multipleHpiJSON;
+    }
+
+    public void setMultipleHpiJSON(String multipleHpiJSON) {
+        this.multipleHpiJSON = multipleHpiJSON;
     }
 }

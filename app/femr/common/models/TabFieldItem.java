@@ -8,6 +8,9 @@ public class TabFieldItem {
     private String placeholder;
     private String value;
     private Boolean isCustom;
+    //chief complaint is used to identify which chief complaint the tab field falls under.
+    //this is not always relevant (sometimes they fall under all chief complaints)
+    private String chiefComplaint;
 
     public String getName() {
         return name;
@@ -63,5 +66,13 @@ public class TabFieldItem {
 
     public void setIsCustom(Boolean isCustom) {
         this.isCustom = isCustom;
+    }
+
+    public String getChiefComplaint() {
+        return chiefComplaint;
+    }
+
+    public void setChiefComplaint(String chiefComplaint) {
+        this.chiefComplaint = chiefComplaint;
     }
 }

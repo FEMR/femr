@@ -1,6 +1,5 @@
 package femr.data.models;
 
-import femr.data.models.IRole;
 import org.joda.time.DateTime;
 
 import java.util.List;

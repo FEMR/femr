@@ -3,10 +3,7 @@ package femr.util.startup;
 import com.avaje.ebean.Ebean;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.models.Role;
-import femr.data.models.TabFieldSize;
-import femr.data.models.TabFieldType;
-import femr.data.models.User;
+import femr.data.models.*;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
@@ -18,19 +15,42 @@ public class DatabaseSeeder {
 
     private final IRepository<User> userRepository;
     private final Repository<Role> roleRepository;
+    private final Repository<SystemSetting> systemSettingRepository;
     private final Repository<TabFieldSize> tabFieldSizeRepository;
     private final Repository<TabFieldType> tabFieldTypeRepository;
 
     public DatabaseSeeder() {
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
+        systemSettingRepository = new Repository<>();
         tabFieldSizeRepository = new Repository<>();
         tabFieldTypeRepository = new Repository<>();
     }
 
     public void seed() {
+        seedSystemSettings();
         seedAdminUser();
         seedTabFields();
+    }
+
+    /**
+     * Seed available system settings
+     */
+    private void seedSystemSettings(){
+        int settingsCount = systemSettingRepository.count(SystemSetting.class);
+        if (settingsCount == 0){
+            SystemSetting systemSetting = new SystemSetting();
+            systemSetting.setActive(false);
+            systemSetting.setName("Multiple chief complaints");
+            systemSettingRepository.create(systemSetting);
+            systemSetting = new SystemSetting();
+            systemSetting.setActive(true);
+            systemSetting.setName("Medical PMH Tab");
+            systemSettingRepository.create(systemSetting);
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Medical Photo Tab");
+            systemSettingRepository.create(systemSetting);
+        }
     }
 
     /**

@@ -12,6 +12,10 @@ import femr.data.models.*;
  */
 public class QueryProvider {
 
+    public static Query<ChiefComplaint> getChiefComplaintQuery() {
+        return Ebean.find(ChiefComplaint.class);
+    }
+
     public static Query<Medication> getMedicationQuery() {
         return Ebean.find(Medication.class);
     }
@@ -46,6 +50,10 @@ public class QueryProvider {
 
     public static Query<Photo> getPhotoQuery() {
         return Ebean.find(Photo.class);
+    }
+
+    public static Query<SystemSetting> getSystemSettingQuery() {
+        return Ebean.find(SystemSetting.class);
     }
 
     public static Query<Tab> getTabQuery() {

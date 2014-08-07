@@ -4,50 +4,49 @@
 
     <h3>Patient Overview - @pageName</h3>
 
-            @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
+    @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
 
-                    <img src="@patient.getPathToPhoto" height="90" width="90">
-                <div id= "patientOverViewInfoPhoto">
-            }else{
-                <div id= "patientOverViewInfo">
-            }
+        <img src="@patient.getPathToPhoto" height="90" width="90">
+        <div id= "patientOverViewInfoPhoto">
+        } else {
+        <div id= "patientOverViewInfo">
+        }
 
 
+    <label>Name: </label><span>@patient.getFirstName @patient.getLastName</span>
+    <label for="">Age: </label><span>@patient.getAge</span>
+    <label for="">Sex: </label><span>@patient.getSex</span>
+    <label for="">City: </label><span>@patient.getCity</span>
+    @if(pageName == "Medical") {
+        <label for="">BMI: </label> <span id="bmi"></span>
+    } else {
+        @if(patient.getHeightFeet != null || patient.getHeightInches != null) {
+            <label>Weeks Pregnant: </label> <span>x@patient.getHeightFeet' @patient.getHeightInches"</span>
+        }
+        @if(patient.getHeightFeet == null && patient.getHeightInches == null) {
+            <label for="">Height: </label> <span>N/A</span>
+        }
+        @if(patient.getWeight != null && !patient.getWeight.isNaN) {
+            <label>Weight: </label> <span>@patient.getWeight</span>
+        }
+        @if(patient.getWeight == null) {
+            <label>Weight: </label> <span>N/A</span>
+        }
+    }
 
-            <label>Name: </label><span>@patient.getFirstName @patient.getLastName</span>
-            <label for="">Age: </label><span>@patient.getAge</span>
-            <label for="">Sex: </label><span>@patient.getSex</span>
-            <label for="">City: </label><span>@patient.getCity</span>
-            @if(pageName == "Medical") {
-                <label for="">BMI: </label> <span id="bmi"></span>
-            } else {
-                @if(patient.getHeightFeet != null || patient.getHeightInches != null) {
-                    <label>Weeks Pregnant: </label> <span>x@patient.getHeightFeet' @patient.getHeightInches"</span>
-                }
-                @if(patient.getHeightFeet == null && patient.getHeightInches == null) {
-                    <label for="">Height: </label> <span>N/A</span>
-                }
-                @if(patient.getWeight != null && !patient.getWeight.isNaN) {
-                    <label>Weight: </label> <span>@patient.getWeight</span>
-                }
-                @if(patient.getWeight == null) {
-                    <label>Weight: </label> <span>N/A</span>
-                }
-            }
+    @* Weeks Pregnant *@
+    @if(patient.getWeeksPregnant != null && patient.getWeeksPregnant > 0) {
+        <label>Weeks Pregnant: </label> <span>@patient.getWeeksPregnant</span>
+    } else {
+        <label>Weeks Pregnant: </label> <span>N/A</span>
+    }
 
-            @* Weeks Pregnant *@
-            @if(patient.getWeeksPregnant != null && patient.getWeeksPregnant > 0) {
-                <label>Weeks Pregnant: </label> <span>@patient.getWeeksPregnant</span>
-            } else {
-                <label>Weeks Pregnant: </label> <span>N/A</span>
-            }
-
-            @* Chief Complaint*@
-            @if(patientEncounter.getChiefComplaint != null && !patientEncounter.getChiefComplaint.isEmpty) {
-                <label>Complaint: </label> <span>@patientEncounter.getChiefComplaint</span>
-            } else {
-                <label>Complaint: </label> <span>N/A</span>
-            }
-            </div>
-    </div>
+    @* Chief Complaint*@
+    @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
+        <label>Complaint: </label> <span>@for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1) @if(x < patientEncounter.getChiefComplaints.size){ | }}</span>
+    } else {
+        <label>Complaint: </label> <span>N/A</span>
+    }
+</div>
+</div>
 

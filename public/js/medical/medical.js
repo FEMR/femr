@@ -1,10 +1,111 @@
-
 var medicalFields = {
-    prescription1 : $('#prescription1'),
-    prescription2 : $('#prescription2'),
-    prescription3 : $('#prescription3'),
-    prescription4 : $('#prescription4'),
-    prescription5 : $('#prescription5')
+    prescription1: $('#prescription1'),
+    prescription2: $('#prescription2'),
+    prescription3: $('#prescription3'),
+    prescription4: $('#prescription4'),
+    prescription5: $('#prescription5')
+};
+
+var multipleChiefComplaintFeature = {
+    numberOfChiefComplaints: $(".chiefComplaintText").length,
+    currentChiefComplaintNumber: 1,
+    getCurrentChiefComplaintObject: function () {
+        return $('#cc' + multipleChiefComplaintFeature.currentChiefComplaintNumber);
+    },
+    getCurrentHpiObject: function () {
+        return $('#hpi' + multipleChiefComplaintFeature.currentChiefComplaintNumber);
+    },
+    slideChiefComplaintRight: function () {
+        if ($('#cc' + (multipleChiefComplaintFeature.currentChiefComplaintNumber + 1)).length !== 0) {
+            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().addClass("hidden");
+            multipleChiefComplaintFeature.getCurrentHpiObject().addClass("hidden");
+            multipleChiefComplaintFeature.currentChiefComplaintNumber++;
+            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().removeClass("hidden");
+            multipleChiefComplaintFeature.getCurrentHpiObject().removeClass("hidden");
+            return true;
+        } else {
+            return false;
+        }
+
+    },
+    slideChiefComplaintLeft: function () {
+        if ($('#cc' + (multipleChiefComplaintFeature.currentChiefComplaintNumber - 1)).length !== 0) {
+            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().addClass("hidden");
+            multipleChiefComplaintFeature.getCurrentHpiObject().addClass("hidden");
+            multipleChiefComplaintFeature.currentChiefComplaintNumber--;
+            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().removeClass("hidden");
+            multipleChiefComplaintFeature.getCurrentHpiObject().removeClass("hidden");
+            return true;
+        } else {
+            return false;
+        }
+    },
+    JSONifyHpiFields: function () {
+        var hpiStuff = {};
+
+        $(".hpiWraps").each(function (index) {
+
+            var hpiFields = [];
+            var hpiField = {};
+            hpiField["name"] = "onset";
+            hpiField["value"] = $(this).find("[name=onset]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "quality";
+            hpiField["value"] = $(this).find("[name=quality]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "radiation";
+            hpiField["value"] = $(this).find("[name=radiation]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "severity";
+            hpiField["value"] = $(this).find("[name=severity]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "provokes";
+            hpiField["value"] = $(this).find("[name=provokes]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "palliates";
+            hpiField["value"] = $(this).find("[name=palliates]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "timeOfDay";
+            hpiField["value"] = $(this).find("[name=timeOfDay]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "narrative";
+            hpiField["value"] = $(this).find("[name=narrative]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+            hpiField = {};
+            hpiField["name"] = "physicalExamination";
+            hpiField["value"] = $(this).find("[name=physicalExamination]").val();
+            if (hpiField["value"]) {
+                hpiFields.push(hpiField);
+            }
+
+            hpiStuff[$("#cc" + (index + 1) + " span").text()] = hpiFields;
+        });
+        var stringifiedHpiFields = JSON.stringify(hpiStuff);
+        $("input[name=multipleHpiJSON]").val(stringifiedHpiFields);
+    }
 };
 
 
@@ -79,13 +180,7 @@ $(document).ready(function () {
         return;
     });
 
-    //controls the tabbed viewing of HPI and Treatment
-    $('#medicalTabs a').click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-    });
-
-    $('#medicalTabs a').click(function () {
+    $('#medicalTabs li').click(function () {
         showTab($(this).attr('id'));
     });
 
@@ -103,10 +198,6 @@ $(document).ready(function () {
         $('#modalSavePortrait').unbind(); //unbind any events associated to the save button
 
     });
-
-
-
-
 
 
     $('#newVitalsDialog').dialog({
@@ -142,23 +233,34 @@ $(document).ready(function () {
     });
 
 
+    $('#chiefComplaintRightArrow').click(function () {
+        multipleChiefComplaintFeature.slideChiefComplaintRight();
+    });
+    $('#chiefComplaintLeftArrow').click(function () {
+        multipleChiefComplaintFeature.slideChiefComplaintLeft();
+    });
+
+
     $('#medicalSubmitBtn').click(function () {
         JSONifyDynamicFields();
+        if (multipleChiefComplaintFeature.numberOfChiefComplaints > 1){
+            multipleChiefComplaintFeature.JSONifyHpiFields();
+        }
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 });
 
-function JSONifyDynamicFields(){
+function JSONifyDynamicFields() {
     var tabs = {};
 
     //iterate over each tab
-    $(".customTab").each(function(){
+    $(".customTab").each(function () {
         var tabName = $(this).attr("id");
 
         var fieldItem = [];
-        $("#" + tabName + "DynamicTab .customField").each(function(){
+        $("#" + tabName + "DynamicTab .customField").each(function () {
             var fieldItems = {};
-            if ($(this).val() !== ""){
+            if ($(this).val() !== "") {
                 fieldItems["name"] = $(this).attr('id');
                 fieldItems["value"] = $(this).val();
                 fieldItem.push(fieldItems);
@@ -169,28 +271,32 @@ function JSONifyDynamicFields(){
 
 
     });
-     var stringifiedJSON = JSON.stringify(tabs);
+    var stringifiedJSON = JSON.stringify(tabs);
     $('input[name=customFieldJSON]').val(stringifiedJSON);
 
 
 }
 
 
-
-
-
-
 /**
- * Generic tab showing function
+ * Generic tab showing function. Also takes care of identifying active tab.
  *
  * @param clickedTab tab that the user clicked
  */
-function showTab(clickedTab){
-    $('#tabContentWrap > .controlWrap').each(function(){
-        if ($(this).is("#" + clickedTab + "Control")){
+function showTab(clickedTab) {
+    $('#tabContentWrap').find('> .controlWrap').each(function () {
+        if ($(this).is("#" + clickedTab + "Control")) {
             $(this).removeClass("hidden");
-        }else{
+        } else {
             $(this).addClass("hidden");
+        }
+    });
+
+    $('#medicalTabs').find("li").each(function () {
+        if ($(this).is("#" + clickedTab)) {
+            $(this).addClass("active");
+        } else {
+            $(this).removeClass("active");
         }
     });
 }
@@ -274,9 +380,9 @@ function addNewPortrait() {
     //Get description text from modal
     var descriptionText = $('#modalTextEntry').val();
     //copy image preview from Modal dialog to new frame
-    if (window.isFileReader){
+    if (window.isFileReader) {
         newPortrait.find('> div > img').replaceWith($('#modalImg').clone(true));
-    }else{
+    } else {
         newPortrait.find('> div > img').remove();
         newPortrait.find('> div').append("<p>Image Preview is not supported in your browser.</p>")
     }

@@ -13,6 +13,7 @@ public class DataLayerModule extends AbstractModule {
     @Override
     protected void configure() {
         //Model Injection
+        bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IPatient.class).toProvider(PatientProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
@@ -22,6 +23,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientPrescription.class).toProvider(PatientPrescriptionProvider.class);
         bind(IPatientResearch.class).toProvider(PatientResearchProvider.class);
         bind(IPhoto.class).toProvider(PhotoProvider.class);
+        bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
         bind(ITab.class).toProvider(TabProvider.class);
         bind(ITabField.class).toProvider(TabFieldProvider.class);
         bind(ITabFieldType.class).toProvider(TabFieldTypeProvider.class);
@@ -31,6 +33,7 @@ public class DataLayerModule extends AbstractModule {
 
 
         //Repository Injection
+        bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
@@ -41,6 +44,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientResearch>>() {}).to(new TypeLiteral<Repository<IPatientResearch>>() {});
         bind(new TypeLiteral<IRepository<IPhoto>>() {}).to(new TypeLiteral<Repository<IPhoto>>() {});
         bind(new TypeLiteral<IRepository<IRole>>() {}).to(new TypeLiteral<Repository<IRole>>() {});
+        bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});
         bind(new TypeLiteral<IRepository<ITab>>(){}).to(new TypeLiteral<Repository<ITab>>(){});
         bind(new TypeLiteral<IRepository<ITabField>>(){}).to(new TypeLiteral<Repository<ITabField>>(){});
         bind(new TypeLiteral<IRepository<ITabFieldType>>(){}).to(new TypeLiteral<Repository<ITabFieldType>>(){});

@@ -29,4 +29,8 @@ public interface IPatientEncounterTabField {
     DateTime getDateTaken();
 
     void setDateTaken(DateTime dateTaken);
+
+    ChiefComplaint getChiefComplaint();
+
+    void setChiefComplaint(IChiefComplaint chiefComplaint);
 }

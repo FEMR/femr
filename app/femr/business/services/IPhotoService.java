@@ -1,13 +1,9 @@
 package femr.business.services;
 
-import java.io.*;
 import java.util.List;
-
 import femr.common.models.PatientEncounterItem;
 import femr.common.dto.ServiceResponse;
 import femr.common.models.PhotoItem;
-import femr.data.models.IPhoto;
-import femr.common.models.PatientItem;
 import femr.ui.models.medical.EditViewModelPost;
 import play.mvc.Http.MultipartFormData.FilePart;
 
@@ -40,7 +36,7 @@ public interface IPhotoService {
      * @param deleteFlag true if photo is being deleted instead of saved
      * @return i have no idea
      */
-    ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(File img, int patientId, Boolean deleteFlag);
+    ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(String imageString, int patientId, Boolean deleteFlag);
 
     /**
      * Gets the path to a patients photo

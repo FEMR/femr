@@ -2,17 +2,24 @@ package femr.common.models;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PatientEncounterItem {
     private int id;
     private int patientId;
     private int userId;
-    private String chiefComplaint;
+    private List<String> chiefComplaints;
     private Integer weeksPregnant;
     private Boolean isClosed;
     private DateTime dateOfVisit;
     private String friendlyDateOfVisit;
     private String doctorName;
     private String pharmacistName;
+
+    public PatientEncounterItem(){
+        this.chiefComplaints = new ArrayList<>();
+    }
 
 
     public int getId() {
@@ -31,12 +38,16 @@ public class PatientEncounterItem {
         this.patientId = patientId;
     }
 
-    public String getChiefComplaint() {
-        return chiefComplaint;
+    public List<String> getChiefComplaints() {
+        return chiefComplaints;
     }
 
-    public void setChiefComplaint(String chiefComplaint) {
-        this.chiefComplaint = chiefComplaint;
+    public void setChiefComplaints(List<String> chiefComplaints) {
+        this.chiefComplaints = chiefComplaints;
+    }
+
+    public void addChiefComplaint(String chiefComplaint){
+        chiefComplaints.add(chiefComplaint);
     }
 
     public Integer getWeeksPregnant() {

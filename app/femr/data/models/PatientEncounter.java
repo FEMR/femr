@@ -3,6 +3,8 @@ package femr.data.models;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "patient_encounters")
@@ -17,8 +19,9 @@ public class PatientEncounter implements IPatientEncounter {
     private int userId;
     @Column(name = "date_of_visit", nullable = false)
     private DateTime dateOfVisit;
-    @Column(name = "chief_complaint", nullable = true)
-    private String chiefComplaint;
+    @OneToMany(fetch = FetchType.LAZY,
+                mappedBy = "patientEncounter")
+    private List<ChiefComplaint> chiefComplaints;
     @Column(name = "weeks_pregnant", nullable = true)
     private Integer weeksPregnant;
     @Column(name = "date_of_medical_visit", nullable = true)
@@ -57,15 +60,30 @@ public class PatientEncounter implements IPatientEncounter {
         this.userId = userId;
     }
 
+
+
+
     @Override
-    public String getChiefComplaint() {
-        return chiefComplaint;
+    public List<IChiefComplaint> getChiefComplaints() {
+        List<IChiefComplaint> temp = new ArrayList<>();
+        for (ChiefComplaint cc : chiefComplaints){
+            temp.add(cc);
+        }
+        return temp;
     }
 
     @Override
-    public void setChiefComplaint(String chiefComplaint) {
-        this.chiefComplaint = chiefComplaint;
+    public void setChiefComplaints(List<IChiefComplaint> chiefComplaints) {
+        for (IChiefComplaint cc: chiefComplaints){
+            this.chiefComplaints.add((ChiefComplaint) cc);
+        }
+
     }
+
+
+
+
+
 
     @Override
     public Integer getWeeksPregnant() {

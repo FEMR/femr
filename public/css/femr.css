@@ -1,6 +1,6 @@
 /*@font-face {*/
-    /*font-family: "dejavu";*/
-    /*src: url("../fonts/DejaVuSansCondensed.ttf");*/
+/*font-family: "dejavu";*/
+/*src: url("../fonts/DejaVuSansCondensed.ttf");*/
 /*}*/
 
 body {
@@ -15,8 +15,8 @@ hr {
     border-top: 1px solid black;
 }
 
-#createUserError{
-    color: red;
+#createUserError {
+    color: rgb(198, 0, 0);
 }
 
 #nameOrIdSearchForm {
@@ -24,11 +24,13 @@ hr {
     width: 200px;
     margin-top: 10px;
 }
-
-.buttonSearchForm {
-    margin-top: 10px;
-    height: 34px;
+#nameOrIdSearchForm:focus, .fButtonSearch:focus{
+    outline: 0;
+    border: 1px solid rgb(198, 0, 0);
+    box-shadow: 0 0 3px rgb(250, 0, 0);
 }
+
+
 
 .idSearchForm {
     margin-top: 10px;
@@ -40,8 +42,6 @@ hr {
     margin-top: 6px;
     font-size: 25px;
 }
-
-
 
 .form-group-padding {
     padding-left: 5px;
@@ -63,43 +63,96 @@ hr {
     width: 50%;
 }
 
-.createWrap{
-
+.createWrap {
 
 }
+
 /* Bootstrap won't offset for xs columns, but i want to */
 .col-xs-offset-4 {
     margin-left: 33%;
 }
 
-/* THE fEMR button! */
-.fButton {
-    background-color: #ffffff;
-    color: black;
-    border: 1px solid #3f3f3d;
-
-    padding: 6px 12px;
+/* THE fEMR button heirarchy*/
+.fButton{
     border-radius: 4px;
+    border: 1px solid #3f3f3d;
+    padding: 5px 12px;
+}
+.fOtherButton{
+    background-color: #d3d3d3;
+    width: 150px;
+
+}
+.fOtherButton:hover{
+    background-color: #bdbdbd;
+}
+.fRedButton{
+    /*background-color: rgb(198, 0, 0);*/
+    background-color: #ad0000;
+}
+.fRedButton:hover{
+    background-color: rgb(250, 0, 0);
+}
+.fLandingSearchButton{
+    width: 100%;
+    height: 38px;
+    font-size: 18px;
+}
+.fSubmitButton{
+    width: 150px;
+}
+.fGlobalSearchButton{
+    width: 80px;
+    height: 33px;
+}
+.fAdminButton{
+    color: black;
 }
 
-.fButton:hover {
-    background-color: #e5e5e5;
-    border: 1px solid #3f3f3d;
+/*yes and no button are separate because i'm done with css*/
+.fYesButton{
+    color: black;
+    padding: 8px 25px 8px 25px;
+    font-size: 20px;
+}
+.fNoButton{
+    color: black;
+    padding: 8px 30px 8px 30px;
+    font-size: 20px;
+}
+.fYesButton:hover, .fNoButton:hover{
+    text-decoration: none;
+    color: black;
+}
+
+/*this isn't even a button*/
+.fButtonSearch{
+    width: 100%;
+    background: #fff;
+    margin-bottom: 4%;
+    border: 1px solid #ccc;
+    padding: 4%;
+    font-size: 95%;
+    color: #555;
+    border-radius: 5px;
+    text-align: center;
 }
 
 /* THE fEMR dropdown! */
-.fOption{
+.fOption {
     height: 33px;
     width: 175px;
 }
+
 /* THE fEMR textarea */
-.fTextArea{
+.fTextArea {
     width: 100%;
     height: 75px;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
 }
+
 /* THE fEMR input(text)! */
 .fInput {
     border-radius: 5px;
@@ -116,98 +169,78 @@ hr {
     box-shadow: 0 0 5px #3f3f3d
 }
 
-/* THE fEMR submit button! */
-.fSubmitButton {
-    background-color: #51a1ba;
-}
-
-/* THE fEMR patient history button! */
-#historyButton:hover {
-    cursor: pointer;
-    text-decoration: none;
-    color: black;
-}
-
 /* THE fEMR input(checkbox) */
 .fCheckbox {
     padding: 20px;
 }
 
-
-
-
 /* The following sections are used on both Medical and pharmacy */
-#patientOverviewWrap{
+#patientOverviewWrap {
     overflow: hidden;
 
     min-height: 125px;
 }
-#patientOverviewWrap img{
+
+#patientOverviewWrap img {
     float: left;
     border: 2px solid black;
-    margin: -41px 5px 0px 14px;
+    margin: -41px 5px 0 14px;
 
 }
-#patientOverviewWrap h3{
+
+#patientOverviewWrap h3 {
     text-align: center;
 
-
 }
 
-
-#patientOverViewInfoPhoto{
+#patientOverViewInfoPhoto {
     margin-left: 120px; /*  if photo */
     padding-right: 10px;
     padding-bottom: 10px;
 }
-#patientOverViewInfo{
+
+#patientOverViewInfo {
     text-align: center; /*  if no photo */
     padding: 10px;
 }
 
-
-
 #patientOverviewWrap span {
     padding: 4px;
 }
-        /*
-#portraitWrap img{
-    display: block;
 
-    margin: 15px auto 0 15px;
-    border: 2px solid black;
+/*
+#portraitWrap img{
+display: block;
+
+margin: 15px auto 0 15px;
+border: 2px solid black;
 }
 #portraitWrap{
-    width: 15%;
-    height: 100%;
-    float: left;
+width: 15%;
+height: 100%;
+float: left;
 
 }
 
 #generalInfoWrap {
-    overflow: hidden;
-    text-align: center;
-    height: 100%;
-    width: 100%;
+overflow: hidden;
+text-align: center;
+height: 100%;
+width: 100%;
 
 }
 #generalInfoWrap img{
-    display: block;
-    border: 2px solid black;
-    margin: 10px 5px 0px 10px;
-    float: left;
+display: block;
+border: 2px solid black;
+margin: 10px 5px 0px 10px;
+float: left;
 }
 
 #generalInfoWrapPicture{
-    widtH: 100%;
-    float: right;
+widtH: 100%;
+float: right;
 
 } */
-
-
-
-
-
 
 /* Main section wrapper*/
 #mainWrap {
@@ -217,8 +250,9 @@ hr {
     height: 100%;
 }
 
-#searchContainer{
+#searchContainer {
     text-align: center;
+    margin-bottom: 8px;
 }
 
 /* Medical and Pharmacy landing pages */
@@ -227,7 +261,8 @@ hr {
     text-align: center;
     margin: 0 auto;
 }
-.searchWrap p{
+
+.searchWrap p {
     font-size: 20px;
 }
 
@@ -236,4 +271,193 @@ hr {
     border-radius: 10px;
     background: url("../img/paper_greyLightNoise.png") repeat;
     border: 3px solid #3f3f3d;
+}
+
+/*The universal Navigation bar*/
+.navigation {
+    top: 0;
+    z-index: 1030;
+    right: 0;
+    left: 0;
+    position: fixed;
+    min-height: 50px;
+    background: black;
+    margin-bottom: 20px;
+}
+
+.navigationContainer {
+    width: 100%;
+    padding-right: 30px;
+    padding-left: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    float: left;
+    height: 50px;
+}
+
+.navigationLogo {
+    width: 10%;
+    height: 50px;
+    float: left;
+}
+
+.navigationLogo img {
+    display: block;
+    margin-right: auto;
+    margin-top: 11px;
+
+}
+
+.navigationItemsWrap {
+    float: left;
+    width: 90%;
+    height: 50px;
+}
+
+.navigationItems {
+    margin-bottom: 0;
+    float: left;
+    height: 50px;
+    width: 75%;
+    padding: 0;
+}
+
+@media (max-width: 1100px) {
+    .navigationItems li:first-child a {
+        padding-left: 20px !important;
+    }
+
+    .navigationItems {
+        width: 70% !important;
+    }
+
+    .userStatus {
+        width: 30% !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .navigationItems a {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+}
+
+@media (min-width: 768px){
+    /* Since closing the menu via hamburger sets an inline display: none style via jQuery,
+    this ensures the menu comes back if the screen widens*/
+    .navigationItemsWrap{
+        display: block !important;
+    }
+}
+@media (max-width: 767px) {
+    .navigationItems li:first-child a {
+        padding-left: 10px !important;
+    }
+    .navigationItemsWrap {
+        display: none;
+        height: auto;
+        width: 100%;
+    }
+    .navigationItems{
+        overflow: hidden;
+        height: auto;
+        padding-bottom: 5px;
+        width: 100% !important;
+    }
+
+    .navigationItems a{
+        padding-bottom: 10px;
+    }
+
+    .navigationItems li {
+
+        display: block !important;
+
+    }
+
+    .smallNavigationItemsWrap {
+        display: block !important;
+        width: 90%;
+        overflow: hidden;
+        height: 50px;
+    }
+    .userStatus{
+        float: left !important;
+        text-align: left !important;
+        width: 100% !important;
+        padding-left: 10px;
+    }
+
+
+}
+
+.navigationItems a {
+    width: 100%;
+    text-decoration: none;
+    color: grey;
+    height: 100%;
+    display: block;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 14px;
+}
+
+.navigationItems a:hover {
+    color: rgb(198, 0, 0);
+}
+
+.navigationItems li {
+    height: 100%;
+    list-style: none;
+    display: inline-block;
+    position: relative;
+}
+
+.userStatus {
+    float: right;
+    color: grey;
+    margin: 14px 0 14px 0;
+    width: 25%;
+    text-align: right;
+}
+
+.glyphicon-log-out {
+    color: rgb(198, 0, 0);
+}
+
+.smallNavigationItemsWrap {
+    display: none;
+}
+
+
+
+
+/*
+The hamburger button
+*/
+.hamburger {
+    border: 1px solid grey;
+    border-radius: 3px 3px 3px 3px;
+    cursor: pointer;
+    display: block;
+    height: 24px;
+    padding: 3px 4px 3px;
+    position: relative;
+    width: 25px;
+    float: right;
+    margin-top: 13px;
+    margin-right: 5px;
+}
+.hamburger div:first-child{
+    margin-top: 2px;
+}
+.hamburger div {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 2px 2px 2px 2px;
+    height: 2px;
+    margin-top: 3px;
+    width: 100%;
 }

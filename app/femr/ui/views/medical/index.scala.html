@@ -4,11 +4,8 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.helpers.shared._
 
-    @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/shared/femr.js")"></script>
-    }
 
-@main("Medical", currentUser, scripts = additionalScripts) {
+@main("Medical", currentUser) {
     <div class="container">
     @helper.form(action = MedicalController.indexPost()) {
         @searchBox("Medical", patientId, message)

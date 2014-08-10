@@ -26,13 +26,13 @@
 @main(title, currentUser, adminStyles, adminScripts) {
     <div id="admin-panels">
         <div id="admin-left-panel">
-            <a href="@UsersController.index()" class="fButton userBtns"><span class="glyphicon glyphicon-user"></span>
+            <a href="@UsersController.index()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
                 Manage Users</a>
-            <a href="@UsersController.createGet()" class="fButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+            <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
                 Add User</a>
-            <a href="@InventoryController.indexGet()" class="fButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
+            <a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
                 Inventory Tracking</a>
-            <a href="@ConfigureController.indexGet()" class="fButton userBtns"><span class="glyphicon glyphicon-cog"></span>
+            <a href="@ConfigureController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
             @menus
         </div>

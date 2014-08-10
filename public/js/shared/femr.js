@@ -1,4 +1,14 @@
 $(document).ready(function () {
+    $('.hamburger').click(function(){
+        var navMenu = $('.navigationItemsWrap');
+        if ($(navMenu).css("display") == "none"){
+            //$('.navigationItemsWrap').css("display", "block");
+            $(navMenu).slideDown();
+        }else{
+            $(navMenu).slideUp();
+        }
+
+    });
   var $id = $('#id');
   $id.change(function () {
     var idString = $id.val();

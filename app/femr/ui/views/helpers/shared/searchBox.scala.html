@@ -3,25 +3,24 @@
 <div class="searchWrap">
     <h2>@page Search</h2>
     @if(patientId > 0) {
-        <div class="form-group form-horizontal">
-            <label for="id" class="sr-only">Patient ID</label>
-            <input type="number" class="form-control" id="id" name="id" value="@patientId" readonly>
-        </div>
+
+        <label for="id" class="hidden">Patient ID</label>
+        <input type="number" class="fButtonSearch" id="id" name="id" value="@patientId" readonly/>
+
 
         <p>@message</p>
-        <div class="btn-group btn-group-justified">
-            <a href="/medical/edit/@patientId" class="btn btn-default">Yes</a>
-            <a href="/medical" class="btn btn-default">No</a>
-        </div>
+
+            <a href="/medical/edit/@patientId" class="fButton fOtherButton fYesButton">Yes</a>
+            <a href="/medical" class="fButton fOtherButton fNoButton">No</a>
+
 
     } else {
-        <div class="form-group form-horizontal">
-            <label for="id" class="sr-only">Patient ID</label>
-            <input type="number" class="form-control" id="id" name="id" placeholder="Patient ID">
-        </div>
+
+        <label for="id" class="hidden">Patient ID</label>
+        <input type="number" class="fButtonSearch" id="id" name="id" placeholder="Patient ID">
 
         <p>@message</p>
         @*idSearch used to validate id via client*@
-        <button type="submit" class="idSearch fSubmitButton fButton width-100">Search</button>
+        <button type="submit" class="idSearch fButton fRedButton fLandingSearchButton">Search</button>
     }
 </div>

@@ -1,57 +1,71 @@
-#passwordsWrap{
+#passwordsWrap {
     overflow: hidden;
     min-width: 350px;
 }
-#passwordsWrap div{
+
+#passwordsWrap div {
     overflow: hidden;
     padding: 10px 0px 10px 0px;
 }
-#passwordsWrap input{
+
+#passwordsWrap input {
     float: right;
 }
-#passwordsWrap label{
+
+#passwordsWrap label {
     margin-top: 5px;
     text-align: right;
     display: inline-block;
 }
 
 .form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
+    max-width: 500px;
+    padding: 15px;
+    margin: 0 auto;
 }
 
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-  margin-bottom: 10px;
+/*New login*/
+#login img {
+    margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
 }
 
-.form-signin .checkbox {
-  font-weight: normal;
+#login {
+    width: 400px;
+    margin: 0px auto;
+
+    /*background:#f0f0f0;*/
+    padding: 6% 4%;
+}
+#login input:focus{
+    outline: 0;
+    border: 1px solid rgb(198, 0, 0);
+    box-shadow: 0 0 3px rgb(250, 0, 0);
 }
 
-.form-signin .form-control {
-  position: relative;
-  font-size: 16px;
-  height: auto;
-  padding: 10px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+input[type="text"], input[type="password"] {
+    width: 100%;
+    background: #fff;
+    margin-bottom: 4%;
+    border: 1px solid #ccc;
+    padding: 4%;
+    font-size: 95%;
+    color: #555;
 }
 
-.form-signin .form-control:focus {
-  z-index: 2;
+input[type="submit"] {
+    width: 100%;
+    background: rgb(198, 0, 0);
+    border: 0;
+    padding: 4%;
+    font-size: 100%;
+    color: #fff;
+    cursor: pointer;
 }
 
-.form-signin input[type="text"] {
-  margin-bottom: -1px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+input[type="submit"]:hover {
+    background: #f90000;
 }

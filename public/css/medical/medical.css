@@ -11,12 +11,6 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 }
 
 
-
-#historyButton{
-    margin-top: 15px;
-}
-
-
 /* Vitals (part of main section) wrapper*/
 
     #vitalsWrap {
@@ -57,21 +51,17 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     overflow: hidden;
 }
 
+.historySubmitWrap{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
 /* Buttons */
 .addSubtractBtn {
     float: left;
     border: 1px solid #4577d4;
     background-color: #e1e8f6;
-}
-
-#medicalSubmitBtn {
-    margin: 15px 0px 5px 15px;
-    width: 175px;
-}
-
-#historyButton{
-    float: right;
-    margin-bottom: -30px;
 }
 
 /* Tabs */

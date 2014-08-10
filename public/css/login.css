@@ -40,6 +40,20 @@
     /*background:#f0f0f0;*/
     padding: 6% 4%;
 }
+@media (max-width: 410px){
+    #login{
+        width: auto;
+    }
+    #login img{
+        width: 100%;
+    }
+}
+@media (max-width: 305px){
+    #login h1{
+        font-size: 26px;
+    }
+
+}
 #login input:focus{
     outline: 0;
     border: 1px solid rgb(198, 0, 0);

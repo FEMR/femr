@@ -247,10 +247,23 @@
 }
 
 @media (max-width: 495px) {
+    #genInfoWrap{
+        text-align: center;
+    }
+    #genderBtns{
+        float: none;
+    }
+    .generalInfoInput input{
+        float: none;
+        display: inline;
+
+    }
     #genInfoWrap input {
         float: none;
     }
-
+    #vitalsWrap h2{
+        text-align: center;
+    }
     .fInput {
         width: 100%;
     }

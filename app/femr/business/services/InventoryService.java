@@ -75,7 +75,7 @@ public class InventoryService implements IInventoryService {
         } else {
             medication.setIsDeleted(true);
             medication = medicationRepository.update(medication);
-            if (medication != null && medication.getIsDeleted() == true) {
+            if (medication != null && medication.getIsDeleted()) {
                 response.setResponseObject(true);
             }
         }
@@ -101,7 +101,7 @@ public class InventoryService implements IInventoryService {
             return response;
         }
 
-        List<MedicationItem> medicationItems = new ArrayList();
+        List<MedicationItem> medicationItems = new ArrayList<>();
         for (IMedication m : medications) {
             medicationItems.add(domainMapper.createMedicationItem(m));
         }

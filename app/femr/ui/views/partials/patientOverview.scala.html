@@ -21,7 +21,7 @@
         <label for="">BMI: </label> <span id="bmi"></span>
     } else {
         @if(patient.getHeightFeet != null || patient.getHeightInches != null) {
-            <label>Weeks Pregnant: </label> <span>x@patient.getHeightFeet' @patient.getHeightInches"</span>
+            <label>Height: </label> <span>@patient.getHeightFeet' @patient.getHeightInches"</span>
         }
         @if(patient.getHeightFeet == null && patient.getHeightInches == null) {
             <label for="">Height: </label> <span>N/A</span>

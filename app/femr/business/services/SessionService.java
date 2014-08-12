@@ -51,6 +51,9 @@ public class SessionService implements ISessionService {
 
         if (currentUserId > 0) {
             IUser userFoundById = userService.findById(currentUserId);
+            if (userFoundById == null){
+                return null;
+            }
 
             return createCurrentUser(userFoundById);
         }

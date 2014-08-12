@@ -12,17 +12,24 @@ $(document).ready(function () {
 
 
 function replaceClick(btn){
-    if ($(btn).next().hasClass('hidden')){
-        $(btn).next().removeClass('hidden');
+    console.log();
+    var medicationListElementId = $(btn).parent().attr("id");
+    var medicationNumber = medicationListElementId.substr(medicationListElementId.length - 1);
+    var replacementInputBox = $("#replacementMedication" + medicationNumber);
+
+
+    if ($(replacementInputBox).hasClass('hidden')){
+        $(replacementInputBox).removeClass('hidden');
         //initalize typeahead
-        $(btn).next().typeahead({
+        $(replacementInputBox).typeahead({
             name: 'medication',
             local: meds
         });
     }else{
-        $(btn).next().addClass('hidden');
+        $(replacementInputBox).addClass('hidden');
+        $(replacementInputBox).val("");
         //eliminate typeahead
-        $(btn).next().typeahead('destroy');
+        $(replacementInputBox).typeahead('destroy');
     }
 }
 

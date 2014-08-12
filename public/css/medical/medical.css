@@ -185,15 +185,6 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     float: right;
 }
 
-@media (max-width: 1200px){
-    /*
-    #medicalTabs a:link,
-    #medicalTabs a:visited{
-        font-size: 16px;
-        padding: 10px 10px 5px 10px;
-    } */
-}
-
 
 /* HPI TAB */
 .leftHPI{
@@ -261,5 +252,20 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 }
 .customFieldWrap{
     margin-bottom: 12px;
+}
+
+@media (max-width: 720px){
+    #vitalsWrap{
+        width: 100%;
+        min-height: 0;
+        border-bottom: 1px solid #b2b2b0;
+    }
+    #inputWrap{
+        width: 100%;
+        margin-top: 15px;
+    }
+    #vitalTable{
+        width: 100% !important;
+    }
 }
 

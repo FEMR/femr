@@ -3,7 +3,7 @@
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
-@import femr.ui.views.html.helpers.shared._
+@import femr.ui.views.html.partials.patientOverview
 
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
@@ -26,9 +26,11 @@
 
 
             <div id="diagnosisWrap">
+                <h4>List of Diagnoses</h4>
+
                 <ol class="problems">
-                    <h4>List of Diagnoses</h4>
-                    @if(viewModel.getProblems != null){
+
+                    @if(viewModel.getProblems != null) {
                         @for(y <- 1 to viewModel.getProblems.size) {
                             @if(viewModel.getProblems.get(y - 1) != null) {
                                 <li>@viewModel.getProblems.get(y - 1).getName</li>
@@ -42,22 +44,20 @@
 
 
             <div id="medicationWrap">
-                <h4>Medications</h4>
-
-
+                <h4>List of Medications</h4>
+                <ol id="medicationList">
                 @for(x <- 1 to viewModel.getMedications.size) {
-                    <div class="medication">
-                        <input type="text" id="medication@x" class="fInput" name="prescription@x" value="@viewModel.getMedications.get(x - 1).getName" placeholder="Medication" readonly/>
+                    <li class="medication" id="med@x">
+                        <button type="button" class="fButton fOtherButton replaceBtn">R</button>
+                        <span>@viewModel.getMedications.get(x - 1).getName</span>
+                        <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement"/>
                         <input type="text" class="hidden" name="id_prescription@x" value="@viewModel.getMedications.get(x - 1).getId"/>
-                        <button type="button" class="fButton fOtherButton replaceBtn">Replace?</button>
-                        <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement" />
-                    </div>
+                    </li>
                 }
+                </ol>
 
             </div>
             <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">Submit</button>
-
-
 
         </div>
 

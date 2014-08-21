@@ -94,7 +94,7 @@ public class TriageController extends Controller {
         }
 
 
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -145,7 +145,8 @@ public class TriageController extends Controller {
 
 
         //create and save a new encounter
-        PatientEncounterItem patientEncounterItem = populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId());
+        PatientEncounterItem patientEncounterItem =
+                populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -213,8 +214,7 @@ public class TriageController extends Controller {
     private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, Integer weeksPregnant, CurrentUser currentUser, int patientId) {
         PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
         patientEncounterItem.setPatientId(patientId);
-        patientEncounterItem.setUserId(currentUser.getId());
-        patientEncounterItem.setDateOfVisit(DateTime.now());
+        patientEncounterItem.setNurseEmailAddress(currentUser.getEmail());
         //JSON chief complaints (multiple chief complaints - requires javascript)
         //this won't happen if the multiple chief complaint
         // feature is turned off (chiefComplaintJSON will be null)

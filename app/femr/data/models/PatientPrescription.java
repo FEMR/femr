@@ -10,10 +10,12 @@ public class PatientPrescription implements IPatientPrescription {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "encounter_id", nullable = false)
-    private int encounterId;
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "encounter_id", nullable = false)
+    private PatientEncounter patientEncounter;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User physician;
     @Column(name = "amount", nullable = true)
     private  int amount;
     @Column(name = "replacement_id", nullable = true)
@@ -28,24 +30,16 @@ public class PatientPrescription implements IPatientPrescription {
         return id;
     }
 
+
+
     @Override
-    public int getEncounterId() {
-        return encounterId;
+    public IUser getPhysician() {
+        return physician;
     }
 
     @Override
-    public void setEncounterId(int encounterId) {
-        this.encounterId = encounterId;
-    }
-
-    @Override
-    public int getUserId() {
-        return userId;
-    }
-
-    @Override
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setPhysician(IUser physician) {
+        this.physician = (User) physician;
     }
 
     @Override
@@ -86,5 +80,16 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
+    }
+
+
+    @Override
+    public IPatientEncounter getPatientEncounter() {
+        return patientEncounter;
+    }
+
+    @Override
+    public void setPatientEncounter(IPatientEncounter patientEncounter) {
+        this.patientEncounter = (PatientEncounter) patientEncounter;
     }
 }

@@ -46,7 +46,7 @@ public class SuperuserController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<List<TabItem>> response;
 
-        response = superuserService.getTabs(false);
+        response = superuserService.getCustomTabs(false);
         if (response.hasErrors()) {
             throw new RuntimeException();
         }
@@ -55,7 +55,7 @@ public class SuperuserController extends Controller {
         viewModelGet.setCurrentTabs(response.getResponseObject());
 
         //get deleted tabs
-        response = superuserService.getTabs(true);
+        response = superuserService.getCustomTabs(true);
         if (response.hasErrors()) {
             throw new RuntimeException();
         }
@@ -72,7 +72,7 @@ public class SuperuserController extends Controller {
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddTabName())) {
             TabItem tabItem = new TabItem();
             //new
-            if (superuserService.doesTabExist(viewModelPost.getAddTabName()).getResponseObject() == false) {
+            if (!superuserService.doesTabExist(viewModelPost.getAddTabName()).getResponseObject()) {
                 tabItem.setName(viewModelPost.getAddTabName());
                 if (viewModelPost.getAddTabLeft() != null) tabItem.setLeftColumnSize(viewModelPost.getAddTabLeft());
                 if (viewModelPost.getAddTabRight() != null) tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
@@ -157,7 +157,7 @@ public class SuperuserController extends Controller {
             tabFieldItem.setOrder(viewModelPost.getAddOrder());
             tabFieldItem.setPlaceholder(viewModelPost.getAddPlaceholder());
             //edit
-            if (superuserService.doesTabFieldExist(viewModelPost.getAddName()).getResponseObject() == true) {
+            if (superuserService.doesTabFieldExist(viewModelPost.getAddName()).getResponseObject()) {
                 superuserService.editTabField(tabFieldItem);
             } else {
 

@@ -69,7 +69,7 @@ public interface ISuperuserService {
      * @param isDeleted whether or not the tabs are deleted
      * @return a list of all TabItems with possible exceptions
      */
-    ServiceResponse<List<TabItem>> getTabs(Boolean isDeleted);
+    ServiceResponse<List<TabItem>> getCustomTabs(Boolean isDeleted);
 
     /**
      * Get all fields for one tab

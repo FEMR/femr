@@ -14,16 +14,18 @@ public class Tab implements ITab {
     private int id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+    @Column(name = "user_id", nullable = true)
+    private Integer userId;
     @Column(name = "date_created", nullable = false)
     private DateTime dateCreated;
     @Column(name = "isDeleted", nullable = false)
-    private Boolean isDeleted;
+    private boolean isDeleted;
     @Column(name = "left_column_size", nullable = false)
     private int leftColumnSize;
     @Column(name = "right_column_size", nullable = false)
     private int rightColumnSize;
+    @Column(name = "isCustom", nullable = false)
+    private boolean isCustom;
 
     @Override
     public int getId() {
@@ -46,12 +48,12 @@ public class Tab implements ITab {
     }
 
     @Override
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
     @Override
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -66,12 +68,12 @@ public class Tab implements ITab {
     }
 
     @Override
-    public Boolean getIsDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
     @Override
-    public void setIsDeleted(Boolean isDeleted) {
+    public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 
@@ -93,5 +95,15 @@ public class Tab implements ITab {
     @Override
     public void setRightColumnSize(int rightColumnSize) {
         this.rightColumnSize = rightColumnSize;
+    }
+
+    @Override
+    public boolean getIsCustom() {
+        return isCustom;
+    }
+
+    @Override
+    public void setIsCustom(boolean isCustom) {
+        this.isCustom = isCustom;
     }
 }

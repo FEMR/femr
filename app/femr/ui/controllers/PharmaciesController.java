@@ -58,7 +58,7 @@ public class PharmaciesController extends Controller {
         Integer patientId = idQueryStringResponse.getResponseObject();
 
         //get the patient's encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
         }
@@ -88,7 +88,7 @@ public class PharmaciesController extends Controller {
         String message;
 
         //Get Patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             message = patientItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
@@ -97,7 +97,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setPatient(patient);
 
         //get the patient encounter item
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patient.getId());
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patient.getId());
         if (patientEncounterItemServiceResponse.hasErrors()) {
             message = patientEncounterItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
@@ -108,27 +108,6 @@ public class PharmaciesController extends Controller {
             return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
         }
         viewModelGet.setPatientEncounterItem(patientEncounterItem);
-
-        //get vital items
-        ServiceResponse<List<VitalItem>> vitalItemsServiceResponse = pharmacyService.findPharmacyVitalItems(patientEncounterItem.getId());
-        if (vitalItemsServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        } else {
-            for (VitalItem vi : vitalItemsServiceResponse.getResponseObject()) {
-                //consider using a command pattern?
-                switch (vi.getName()) {
-                    case "heightFeet":
-                        patient.setHeightFeet(vi.getValue().intValue());
-                        break;
-                    case "heightInches":
-                        patient.setHeightInches(vi.getValue().intValue());
-                        break;
-                    case "weight":
-                        patient.setWeight(vi.getValue());
-                        break;
-                }
-            }
-        }
 
 
         //find patient prescriptions, they do have to exist
@@ -141,7 +120,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
         //find patient problems, they do not have to exist.
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = searchService.findProblemItems(patientEncounterItem.getId());
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = pharmacyService.findProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -158,14 +137,14 @@ public class PharmaciesController extends Controller {
         EditViewModelPost createViewModelPost = populatedViewModelPostForm.bindFromRequest().get();
 
         //get patient encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(id);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(id);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
         //get patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientEncounterItem.getPatientId());
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientEncounterItem.getPatientId());
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

@@ -3,22 +3,36 @@ package femr.business.services;
 import femr.common.dto.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.*;
-import femr.util.DataStructure.VitalMultiMap;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 
 import java.util.List;
 
 public interface ISearchService {
 
-    ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id);
-    ServiceResponse<List<? extends IVital>> findAllVitals();
-    ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
-
     /**
-     * Find a patient by id
+     * Find a patient by patient id
+     *
      * @param patientId id of the patient
      * @return the patient
      */
-    ServiceResponse<PatientItem> findPatientItemById(Integer patientId);
+    ServiceResponse<PatientItem> findPatientItemByPatientId(int patientId);
+
+    /**
+     * Find a patient by encounter id
+     *
+     * @param encounterId id of an encounter
+     * @return the patient
+     */
+    ServiceResponse<PatientItem> findPatientItemByEncounterId(int encounterId);
+
+    /**
+     * Find an encounter by its ID
+     *
+     * @param encounterId the id of the encounter
+     * @return the encounter
+     */
+    ServiceResponse<PatientEncounterItem> findPatientEncounterItemByEncounterId(int encounterId);
 
     /**
      * Find the most current patient encounter by patient id
@@ -26,7 +40,7 @@ public interface ISearchService {
      * @param patientId id of the patient
      * @return the patient's encounter with a field indicating whether or not it is open
      */
-    ServiceResponse<PatientEncounterItem> findPatientEncounterItemById(int patientId);
+    ServiceResponse<PatientEncounterItem> findRecentPatientEncounterItemByPatientId(int patientId);
 
     /**
      * Find all patient encounters by patient id
@@ -34,10 +48,10 @@ public interface ISearchService {
      * @param patientId id of the patient
      * @return all encounters of patient in descending order
      */
-    ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsById(int patientId);
+    ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsByPatientId(int patientId);
 
     /**
-     * Find all prescriptions that have not been replaced
+     * Find all prescriptions that have not been replaced. This does not imply they have been dispensed.
      *
      * @param encounterId id of the encounter
      * @return all prescriptions that have not been replaced
@@ -45,20 +59,12 @@ public interface ISearchService {
     ServiceResponse<List<PrescriptionItem>> findUnreplacedPrescriptionItems(int encounterId);
 
     /**
-     * Find all prescriptions, even ones that have been replaced
+     * Find all prescriptions that have been dispensed to the patient.
      *
      * @param encounterId id of the encounter
-     * @return a list of all prescription items for an encounter
+     * @return all prescriptions that have been dispensed
      */
-    ServiceResponse<List<PrescriptionItem>> findAllPrescriptionItemsByEncounterId(int encounterId);
-
-    /**
-     * Find all problems
-     *
-     * @param encounterId id of the encounter
-     * @return list of problems
-     */
-    ServiceResponse<List<ProblemItem>> findProblemItems(int encounterId);
+    ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId);
 
     /**
      * Parses an integer from a query string
@@ -78,6 +84,15 @@ public interface ISearchService {
     ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery);
 
     /**
+     * Create a map of tabs and their fields where the key can be the name of the tab
+     * or the date
+     *
+     * @param encounterId id of the encounter
+     * @return
+     */
+    ServiceResponse<TabFieldMultiMap> getTabFieldMultiMap(int encounterId);
+
+    /**
      * Create linked hash map of vitals where the key is the date as well as the name
      *
      * @param encounterId the id of the encounter to get vitals for
@@ -92,11 +107,9 @@ public interface ISearchService {
      */
     ServiceResponse<SettingItem> getSystemSettings();
 
-
-
-
-
-
-
-
+    /**
+     * Get all custom fields that exist in the system
+     * @return list of their names
+     */
+    ServiceResponse<List<String>> getCustomFieldList();
 }

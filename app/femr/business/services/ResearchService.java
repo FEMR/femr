@@ -85,7 +85,7 @@ public class ResearchService implements IResearchService{
         }
 
         String sqlSelect = " SELECT p.id as \"patient_id\", pe.id as \"encounter_id\", p.age, p.city, p.sex," +
-                " pe.date_of_visit, pp.medication_name, petf_problem.problems, petf_treatment.treatments ";
+                " pe.date_of_triage_visit, pp.medication_name, petf_problem.problems, petf_treatment.treatments ";
 
         String sqlFrom = " FROM patient_encounters pe " +
                 " JOIN patients p on pe.patient_id = p.id " +

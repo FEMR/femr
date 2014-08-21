@@ -4,6 +4,8 @@ import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class dateUtils {
@@ -42,7 +44,11 @@ public class dateUtils {
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - HH:mm:ss");
         String dtStr = dateTime.toString(fmt);
         return dtStr;
-
+    }
+    public static String getFriendlyDate(Date date){
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        String dStr = df.format(date);
+        return dStr;
     }
 }
 

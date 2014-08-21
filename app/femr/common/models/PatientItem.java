@@ -10,6 +10,7 @@ public class PatientItem {
     private String city;
     private String age;//age (int)
     private Date birth;//date of birth (Date)
+    private String friendlyDateOfBirth;
     private String sex;
     private Integer photoId;
     private String pathToPhoto;
@@ -143,5 +144,13 @@ public class PatientItem {
 
     public void setWeight(Float weight) {
         this.weight = weight;
+    }
+
+    public String getFriendlyDateOfBirth() {
+        return friendlyDateOfBirth;
+    }
+
+    public void setFriendlyDateOfBirth(String friendlyDateOfBirth) {
+        this.friendlyDateOfBirth = friendlyDateOfBirth;
     }
 }

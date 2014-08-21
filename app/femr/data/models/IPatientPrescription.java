@@ -6,13 +6,10 @@ public interface IPatientPrescription {
 
     int getId();
 
-    int getEncounterId();
 
-    void setEncounterId(int encounterId);
+    IUser getPhysician();
 
-    int getUserId();
-
-    void setUserId(int userId);
+    void setPhysician(IUser physician);
 
     int getAmount();
 
@@ -29,4 +26,8 @@ public interface IPatientPrescription {
     DateTime getDateTaken();
 
     void setDateTaken(DateTime dateTaken);
+
+    IPatientEncounter getPatientEncounter();
+
+    void setPatientEncounter(IPatientEncounter patientEncounter);
 }

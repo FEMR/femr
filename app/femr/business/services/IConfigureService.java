@@ -5,9 +5,6 @@ import femr.data.models.ISystemSetting;
 
 import java.util.List;
 
-/**
- * Created by kevin on 7/28/14.
- */
 public interface IConfigureService {
     /**
      * Get all user settings

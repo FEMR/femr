@@ -41,8 +41,8 @@ public class Global extends GlobalSettings {
 
     //used when a resource is not found
     @Override
-    public Promise<SimpleResult> onBadRequest(RequestHeader request, String error) {
-        return Promise.<SimpleResult>pure(internalServerError(
+    public Promise<Result> onBadRequest(RequestHeader request, String error) {
+        return Promise.<Result>pure(internalServerError(
                 femr.ui.views.html.errors.global.render()
         ));
     }

@@ -119,12 +119,13 @@ public class SuperuserService implements ISuperuserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabItem>> getTabs(Boolean isDeleted) {
+    public ServiceResponse<List<TabItem>> getCustomTabs(Boolean isDeleted) {
         ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
 
         ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
-                .eq("isDeleted", isDeleted);
+                .eq("isDeleted", isDeleted)
+                .eq("isCustom", true);
 
         List<? extends ITab> tabs = new ArrayList<>();
         try {

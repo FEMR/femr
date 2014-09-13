@@ -13,13 +13,6 @@ import java.io.File;
 import static play.mvc.Results.ok;
 
 
-/**
- * This controller is required to retrieve and
- * return files(photos) in the Upload folder.
- * Therefore it is used all over the god damn
- * place. (In the service layer and probably in
- * the UI layer). :( :( :( :( :( <-NOT HAPPY
- */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PhotoController {

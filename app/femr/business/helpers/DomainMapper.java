@@ -8,8 +8,8 @@ import javax.inject.Provider;
 import femr.common.models.*;
 import femr.data.models.*;
 import femr.util.calculations.dateUtils;
-import femr.util.dependencyinjection.providers.PatientProvider;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 /**
  * Responsible for mapping Domain objects.
@@ -191,6 +191,8 @@ public class DomainMapper {
         tab.setRightColumnSize(tabItem.getRightColumnSize());
         tab.setName(tabItem.getName());
         tab.setUserId(userId);
+        //this will always be true if a tab is being programatically created by a user
+        tab.setIsCustom(true);
         return tab;
     }
 
@@ -198,10 +200,9 @@ public class DomainMapper {
      * Create a new PatientEncounterItem (DTO)
      *
      * @param patientEncounter patient encounter info
-     * @param isClosed         whether or not the encounter is open
      * @return a new PatientEncounterItem
      */
-    public static PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter, Boolean isClosed) {
+    public static PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter) {
         if (patientEncounter == null || patientEncounter.getPatient() == null) {
             return null;
         }
@@ -212,14 +213,18 @@ public class DomainMapper {
         patientEncounterItem.setId(patientEncounter.getId());
         patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
         patientEncounterItem.setWeeksPregnant(patientEncounter.getWeeksPregnant());
-        patientEncounterItem.setDateOfVisit(patientEncounter.getDateOfVisit());
-        patientEncounterItem.setFriendlyDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfVisit()));
-        if (isClosed != null) patientEncounterItem.setIsClosed(isClosed);
-        patientEncounterItem.setUserId(patientEncounter.getUserId());
+        patientEncounterItem.setTriageDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfTriageVisit()));
+        if (patientEncounter.getDateOfMedicalVisit() != null)
+            patientEncounterItem.setMedicalDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfMedicalVisit()));
+        if (patientEncounter.getDateOfPharmacyVisit() != null)
+            patientEncounterItem.setPharmacyDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfPharmacyVisit()));
+        patientEncounterItem.setIsClosed(LogicDoer.isEncounterClosed(patientEncounter));
+
+        patientEncounterItem.setNurseEmailAddress(patientEncounter.getNurse().getEmail());
         if (patientEncounter.getDoctor() != null)
-            patientEncounterItem.setDoctorName(patientEncounter.getDoctor().getFirstName() + patientEncounter.getDoctor().getLastName());
+            patientEncounterItem.setPhysicianEmailAddress(patientEncounter.getDoctor().getEmail());
         if (patientEncounter.getPharmacist() != null)
-            patientEncounterItem.setPharmacistName(patientEncounter.getPharmacist().getFirstName() + patientEncounter.getPharmacist().getLastName());
+            patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
         return patientEncounterItem;
     }
 
@@ -235,10 +240,10 @@ public class DomainMapper {
             return null;
         }
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
-        patientEncounter.setDateOfVisit(patientEncounterItem.getDateOfVisit());
+        patientEncounter.setDateOfTriageVisit(DateTime.now());
         //provide a proxy patient for the encounter
         patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientEncounterItem.getPatientId()));
-        patientEncounter.setUserId(userId);
+        patientEncounter.setNurse(Ebean.getReference(userProvider.get().getClass(), userId));
         patientEncounter.setWeeksPregnant(patientEncounterItem.getWeeksPregnant());
         return patientEncounter;
     }
@@ -294,10 +299,10 @@ public class DomainMapper {
         IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
         newPatientPrescription.setAmount(amount);
         newPatientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
-        newPatientPrescription.setEncounterId(encounterId);
+        newPatientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
         newPatientPrescription.setMedicationName(prescriptionItem.getName());
         newPatientPrescription.setReplacementId(replacementId);
-        newPatientPrescription.setUserId(userId);
+        newPatientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         return newPatientPrescription;
     }
 
@@ -328,7 +333,7 @@ public class DomainMapper {
         return patient;
     }
 
-    public static PatientItem createPatientItem(IPatient patient, Integer weeksPregnant){//}, Float heightFeet, Float heightInches, Float weight){
+    public static PatientItem createPatientItem(IPatient patient, Integer weeksPregnant, Integer heightFeet, Integer heightInches, Float weight){
         if (patient == null) {
             return null;
         }
@@ -336,6 +341,7 @@ public class DomainMapper {
         patientItem.setAddress(patient.getAddress());
         patientItem.setAge(dateUtils.getAge(patient.getAge()));//age (int)
         patientItem.setBirth(patient.getAge());//date of birth(date)
+        patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(patient.getAge()));
         patientItem.setCity(patient.getCity());
         patientItem.setFirstName(patient.getFirstName());
         patientItem.setId(patient.getId());
@@ -348,9 +354,10 @@ public class DomainMapper {
         }
         if (weeksPregnant != null) patientItem.setWeeksPregnant(weeksPregnant);
 
-        //not currently mapping heightFeet, heightInches, or weight because
-        //they are technically considered vitals and added as needed in the
-        //controllers
+        //heightFeet, heightInches, and weight should all be the most recent value
+        if (heightFeet != null) patientItem.setHeightFeet(heightFeet);
+        if (heightInches != null) patientItem.setHeightInches(heightInches);
+        if (weight != null) patientItem.setWeight(weight);
 
         return patientItem;
     }
@@ -446,9 +453,9 @@ public class DomainMapper {
         patientPrescription.setAmount(0);//to be changed later
         patientPrescription.setReplacementId(replacementId);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
-        patientPrescription.setEncounterId(encounterId);
+        patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
         patientPrescription.setMedicationName(prescriptionItem.getName());
-        patientPrescription.setUserId(userId);
+        patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         return patientPrescription;
     }
 

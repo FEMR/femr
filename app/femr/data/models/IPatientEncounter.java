@@ -11,10 +11,6 @@ public interface IPatientEncounter {
 
     void setPatient(IPatient patient);
 
-    int getUserId();
-
-    void setUserId(int userId);
-
     List<IChiefComplaint> getChiefComplaints();
 
     void setChiefComplaints(List<IChiefComplaint> chiefComplaints);
@@ -23,9 +19,9 @@ public interface IPatientEncounter {
 
     void setWeeksPregnant(Integer weeksPregnant);
 
-    DateTime getDateOfVisit();
+    DateTime getDateOfTriageVisit();
 
-    void setDateOfVisit(DateTime dateOfVisit);
+    void setDateOfTriageVisit(DateTime dateOfVisit);
 
     DateTime getDateOfMedicalVisit();
 
@@ -42,4 +38,8 @@ public interface IPatientEncounter {
     IUser getPharmacist();
 
     void setPharmacist(IUser pharmacist);
+
+    IUser getNurse();
+
+    void setNurse(IUser nurse);
 }

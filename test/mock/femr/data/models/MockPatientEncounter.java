@@ -37,7 +37,7 @@ public class MockPatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public String getDateOfVisit() {
+    public String getDateOfTriageVisit() {
         return dateOfVisit;
     }
 

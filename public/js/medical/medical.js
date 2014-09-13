@@ -181,7 +181,8 @@ $(document).ready(function () {
     });
 
     $('#medicalTabs li').click(function () {
-        showTab($(this).attr('id'));
+        //remove the spaces before sending the id
+        showTab($(this).attr('id').replace(/\s/g, ''));
     });
 
     //Shown event for Modal form
@@ -243,7 +244,7 @@ $(document).ready(function () {
 
     $('#medicalSubmitBtn').click(function () {
         JSONifyDynamicFields();
-        if (multipleChiefComplaintFeature.numberOfChiefComplaints > 1){
+        if (multipleChiefComplaintFeature.numberOfChiefComplaints > 1) {
             multipleChiefComplaintFeature.JSONifyHpiFields();
         }
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
@@ -285,7 +286,7 @@ function JSONifyDynamicFields() {
  */
 function showTab(clickedTab) {
     $('#tabContentWrap').find('> .controlWrap').each(function () {
-        if ($(this).is("#" + clickedTab + "Control")) {
+        if ($(this).attr("id").replace(/\s+/g, '') === clickedTab + "Control") {
             $(this).removeClass("hidden");
         } else {
             $(this).addClass("hidden");

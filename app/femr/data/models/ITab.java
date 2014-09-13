@@ -14,17 +14,17 @@ public interface ITab {
 
     void setName(String name);
 
-    int getUserId();
+    Integer getUserId();
 
-    void setUserId(int userId);
+    void setUserId(Integer userId);
 
     DateTime getDateCreated();
 
     void setDateCreated(DateTime dateCreated);
 
-    Boolean getIsDeleted();
+    boolean getIsDeleted();
 
-    void setIsDeleted(Boolean isDeleted);
+    void setIsDeleted(boolean isDeleted);
 
     int getLeftColumnSize();
 
@@ -33,4 +33,8 @@ public interface ITab {
     int getRightColumnSize();
 
     void setRightColumnSize(int rightColumnSize);
+
+    boolean getIsCustom();
+
+    void setIsCustom(boolean isCustom);
 }

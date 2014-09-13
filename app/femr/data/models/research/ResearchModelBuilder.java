@@ -45,7 +45,7 @@ public class ResearchModelBuilder {
                 tempModel.setAge(resultSet.getString("age"));
                 tempModel.setSex(resultSet.getString("sex"));
                 tempModel.setCity(resultSet.getString("city"));
-                tempModel.setDateTaken(resultSet.getString("date_of_visit"));
+                tempModel.setDateTaken(resultSet.getString("date_of_triage_visit"));
                 tempModel.setProblems(ProblemList);
                 tempModel.setMedication(MedList);
                 tempModel.setTreatments(TreatmentList);

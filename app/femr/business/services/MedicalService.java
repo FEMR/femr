@@ -153,17 +153,27 @@ public class MedicalService implements IMedicalService {
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query);
             for (IPatientEncounterTabField petf : patientEncounterTabFields) {
 
-               String key = petf.getTabField().getName();
+                String fieldName = petf.getTabField().getName();
 
-                if (petf.getChiefComplaint() != null){
-                    int index = patientEncounter.getChiefComplaints().indexOf(petf.getChiefComplaint());
-                    key = key + index;
+                //if the field is from the HPI tab
+                if (petf.getTabField().getTab().getName().equals("HPI")) {
+
+                    if (petf.getChiefComplaint() != null) {
+                        int index = patientEncounter.getChiefComplaints().indexOf(petf.getChiefComplaint());
+                        fieldName = fieldName + index;
+                    } else {
+                        fieldName = fieldName + "0";
+                    }
+
                 }
-                //since the fields were sorted by date in the query, this if statement
-                //ensures that only the up-to-date field values are inserted into the map
-                if (!fieldValueMap.containsKey(key)) {
-                    fieldValueMap.put(key, domainMapper.createTabFieldItem(petf));
+
+                //adds the field and its value to the map if it doesnt already exist.
+                //query was sorted in desc order of date to ensure only the newest entries
+                //get put in the map
+                if (!fieldValueMap.containsKey(fieldName)) {
+                    fieldValueMap.put(fieldName, domainMapper.createTabFieldItem(petf));
                 }
+
             }
 
             //map problems
@@ -356,7 +366,8 @@ public class MedicalService implements IMedicalService {
         ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
         ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
-                .eq("isDeleted", false);
+                .eq("isDeleted", false)
+                .eq("isCustom", true);
         try {
             List<? extends ITab> customTabs = customTabRepository.find(query);
             List<TabItem> customTabNames = new ArrayList<>();
@@ -399,7 +410,7 @@ public class MedicalService implements IMedicalService {
             patientEncounter = patientEncounterRepository.update(patientEncounter);
 
 
-            response.setResponseObject(domainMapper.createPatientEncounterItem(patientEncounter, false));
+            response.setResponseObject(DomainMapper.createPatientEncounterItem(patientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

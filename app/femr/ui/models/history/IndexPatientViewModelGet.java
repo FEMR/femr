@@ -1,4 +1,4 @@
-package femr.ui.models.search;
+package femr.ui.models.history;
 
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;

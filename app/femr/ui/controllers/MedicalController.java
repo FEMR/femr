@@ -16,7 +16,7 @@ import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
-import femr.util.DataStructure.VitalMultiMap;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -65,7 +65,7 @@ public class MedicalController extends Controller {
         Integer patientId = idQueryStringResponse.getResponseObject();
 
         //get the patient's encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
         }
@@ -94,48 +94,45 @@ public class MedicalController extends Controller {
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
 
-        //Get Patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
-        if (patientItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        } else {
-            viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
-        }
-
         //Get Patient Encounter
         PatientEncounterItem patientEncounter;
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
-        } else {
-            patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
-            viewModelGet.setPatientEncounterItem(patientEncounter);
         }
+        patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+        viewModelGet.setPatientEncounterItem(patientEncounter);
 
         //verify encounter is still open
         if (patientEncounter.getIsClosed()) {
             return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
         }
 
-        //find patient prescriptions, if they exist
+        //get patient
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        if (patientItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
+
+        //get prescriptions
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounter.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
-        } else {
-            viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
         }
+        viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
 
-        //create a vital multi map
+        //get vitals
         ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = searchService.getVitalMultiMap(patientEncounter.getId());
         if (patientEncounterVitalMapResponse.hasErrors()) {
             throw new RuntimeException();
-        } else {
-            viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
         }
-
-
+        viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
 
         //get non-custom fields
+        //Map<String, TabFieldItem>
+        // String = tab field name
+        // TabFieldItem contains value
         ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse = medicalService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
         Map<String, TabFieldItem> tabFieldItemMap;
         if (patientEncounterTabFieldResponse.hasErrors()) {
@@ -144,9 +141,6 @@ public class MedicalController extends Controller {
             tabFieldItemMap = patientEncounterTabFieldResponse.getResponseObject();
             viewModelGet.setStaticFields(tabFieldItemMap);
         }
-
-
-
 
 
         //get custom tabs/fields
@@ -163,7 +157,7 @@ public class MedicalController extends Controller {
             viewModelGet.setCustomFields(tabFieldResponse.getResponseObject());
         }
 
-        //store this in view model somehow
+
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {
             throw new RuntimeException();
@@ -183,7 +177,7 @@ public class MedicalController extends Controller {
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
         //get current encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findPatientEncounterItemById(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -217,8 +211,6 @@ public class MedicalController extends Controller {
             }
         }
 
-        //saving hpi tabs with 1 complaint works,
-        //need to implement having 2 complaints
         List<TabFieldItem> nonCustomFieldItems = new ArrayList<>();
 
         //multiple chief complaints
@@ -242,7 +234,7 @@ public class MedicalController extends Controller {
         }
 
 
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemById(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -283,7 +275,7 @@ public class MedicalController extends Controller {
     public Result updateVitalsPost(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.findPatientEncounterItemById(id);
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.findRecentPatientEncounterItemByPatientId(id);
         if (currentEncounterByPatientId.hasErrors()) {
             throw new RuntimeException();
         }
@@ -312,7 +304,7 @@ public class MedicalController extends Controller {
     public Result listVitalsGet(Integer id) {
 
 
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findPatientEncounterItemById(id);
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(id);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -443,16 +435,17 @@ public class MedicalController extends Controller {
         return tabFieldItems;
     }
 
-    private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON){
+    private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         Gson gson = new Gson();
         //get values from JSON, assign list of values to chief complaint
-        Map<String, List<JCustomField>> hpiTabInformation = gson.fromJson(JSON, new TypeToken<Map<String, List<JCustomField>>>() {}.getType());
+        Map<String, List<JCustomField>> hpiTabInformation = gson.fromJson(JSON, new TypeToken<Map<String, List<JCustomField>>>() {
+        }.getType());
 
-        for (Map.Entry<String, List<JCustomField>> entry : hpiTabInformation.entrySet()){
+        for (Map.Entry<String, List<JCustomField>> entry : hpiTabInformation.entrySet()) {
             List<JCustomField> fields = entry.getValue();
 
-            for (JCustomField jcf : fields){
+            for (JCustomField jcf : fields) {
                 TabFieldItem tabFieldItem = new TabFieldItem();
                 tabFieldItem.setName(jcf.getName());
                 tabFieldItem.setChiefComplaint(entry.getKey().trim());

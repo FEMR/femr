@@ -1,21 +1,23 @@
 package femr.common.models;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class PatientEncounterItem {
     private int id;
     private int patientId;
-    private int userId;
     private List<String> chiefComplaints;
     private Integer weeksPregnant;
     private Boolean isClosed;
-    private DateTime dateOfVisit;
-    private String friendlyDateOfVisit;
-    private String doctorName;
-    private String pharmacistName;
+
+    private String triageDateOfVisit;
+    private String nurseEmailAddress;
+
+    private String medicalDateOfVisit;
+    private String physicianEmailAddress;
+
+    private String pharmacyDateOfVisit;
+    private String pharmacistEmailAddress;
 
     public PatientEncounterItem(){
         this.chiefComplaints = new ArrayList<>();
@@ -66,43 +68,51 @@ public class PatientEncounterItem {
         this.isClosed = isClosed;
     }
 
-    public DateTime getDateOfVisit() {
-        return dateOfVisit;
+    public String getTriageDateOfVisit() {
+        return triageDateOfVisit;
     }
 
-    public void setDateOfVisit(DateTime dateOfVisit) {
-        this.dateOfVisit = dateOfVisit;
+    public void setTriageDateOfVisit(String triageDateOfVisit) {
+        this.triageDateOfVisit = triageDateOfVisit;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getNurseEmailAddress() {
+        return nurseEmailAddress;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setNurseEmailAddress(String nurseEmailAddress) {
+        this.nurseEmailAddress = nurseEmailAddress;
     }
 
-    public String getDoctorName() {
-        return doctorName;
+    public String getPhysicianEmailAddress() {
+        return physicianEmailAddress;
     }
 
-    public void setDoctorName(String doctorName) {
-        this.doctorName = doctorName;
+    public void setPhysicianEmailAddress(String physicianEmailAddress) {
+        this.physicianEmailAddress = physicianEmailAddress;
     }
 
-    public String getPharmacistName() {
-        return pharmacistName;
+    public String getPharmacistEmailAddress() {
+        return pharmacistEmailAddress;
     }
 
-    public void setPharmacistName(String pharmacistName) {
-        this.pharmacistName = pharmacistName;
+    public void setPharmacistEmailAddress(String pharmacistEmailAddress) {
+        this.pharmacistEmailAddress = pharmacistEmailAddress;
     }
 
-    public String getFriendlyDateOfVisit() {
-        return friendlyDateOfVisit;
+    public String getMedicalDateOfVisit() {
+        return medicalDateOfVisit;
     }
 
-    public void setFriendlyDateOfVisit(String friendlyDateOfVisit) {
-        this.friendlyDateOfVisit = friendlyDateOfVisit;
+    public void setMedicalDateOfVisit(String medicalDateOfVisit) {
+        this.medicalDateOfVisit = medicalDateOfVisit;
+    }
+
+    public String getPharmacyDateOfVisit() {
+        return pharmacyDateOfVisit;
+    }
+
+    public void setPharmacyDateOfVisit(String pharmacyDateOfVisit) {
+        this.pharmacyDateOfVisit = pharmacyDateOfVisit;
     }
 }

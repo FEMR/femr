@@ -15,12 +15,13 @@ public class PatientEncounter implements IPatientEncounter {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id", nullable = false, referencedColumnName = "id")
     private Patient patient;
-    @Column(name = "user_id", nullable = false)
-    private int userId;
-    @Column(name = "date_of_visit", nullable = false)
-    private DateTime dateOfVisit;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id_triage", nullable = false)
+    private User nurse;
+    @Column(name = "date_of_triage_visit", nullable = false)
+    private DateTime dateOfTriageVisit;
     @OneToMany(fetch = FetchType.LAZY,
-                mappedBy = "patientEncounter")
+            mappedBy = "patientEncounter")
     private List<ChiefComplaint> chiefComplaints;
     @Column(name = "weeks_pregnant", nullable = true)
     private Integer weeksPregnant;
@@ -29,10 +30,10 @@ public class PatientEncounter implements IPatientEncounter {
     @Column(name = "date_of_pharmacy_visit", nullable = true)
     private DateTime dateOfPharmacyVisit;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "user_id_medical", nullable = true)
+    @JoinColumn(name = "user_id_medical", nullable = true)
     private User doctor;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "user_id_pharmacy", nullable = true)
+    @JoinColumn(name = "user_id_pharmacy", nullable = true)
     private User pharmacist;
 
     @Override
@@ -50,23 +51,11 @@ public class PatientEncounter implements IPatientEncounter {
         this.patient = (Patient) patient;
     }
 
-    @Override
-    public int getUserId() {
-        return userId;
-    }
-
-    @Override
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-
-
 
     @Override
     public List<IChiefComplaint> getChiefComplaints() {
         List<IChiefComplaint> temp = new ArrayList<>();
-        for (ChiefComplaint cc : chiefComplaints){
+        for (ChiefComplaint cc : chiefComplaints) {
             temp.add(cc);
         }
         return temp;
@@ -74,15 +63,11 @@ public class PatientEncounter implements IPatientEncounter {
 
     @Override
     public void setChiefComplaints(List<IChiefComplaint> chiefComplaints) {
-        for (IChiefComplaint cc: chiefComplaints){
+        for (IChiefComplaint cc : chiefComplaints) {
             this.chiefComplaints.add((ChiefComplaint) cc);
         }
 
     }
-
-
-
-
 
 
     @Override
@@ -96,13 +81,13 @@ public class PatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public DateTime getDateOfVisit() {
-        return dateOfVisit;
+    public DateTime getDateOfTriageVisit() {
+        return dateOfTriageVisit;
     }
 
     @Override
-    public void setDateOfVisit(DateTime dateOfVisit) {
-        this.dateOfVisit = dateOfVisit;
+    public void setDateOfTriageVisit(DateTime dateOfTriageVisit) {
+        this.dateOfTriageVisit = dateOfTriageVisit;
     }
 
     @Override
@@ -143,5 +128,15 @@ public class PatientEncounter implements IPatientEncounter {
     @Override
     public void setPharmacist(IUser pharmacist) {
         this.pharmacist = (User) pharmacist;
+    }
+
+    @Override
+    public IUser getNurse() {
+        return nurse;
+    }
+
+    @Override
+    public void setNurse(IUser nurse) {
+        this.nurse = (User) nurse;
     }
 }

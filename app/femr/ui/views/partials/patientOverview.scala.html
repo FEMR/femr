@@ -1,5 +1,9 @@
 @(patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem, pageName: java.lang.String)
 
+@import femr.ui.views.html.partials.helpers.outputHeightOrNA
+@import femr.ui.views.html.partials.helpers.outputFloatOrNA
+@import femr.ui.views.html.partials.helpers.outputIntOrNA
+
 <div id="patientOverviewWrap" class="backgroundForWrap">
 
     <h3>Patient Overview - @pageName</h3>
@@ -20,30 +24,19 @@
     @if(pageName == "Medical") {
         <label for="">BMI: </label> <span id="bmi"></span>
     } else {
-        @if(patient.getHeightFeet != null || patient.getHeightInches != null) {
-            <label>Height: </label> <span>@patient.getHeightFeet' @patient.getHeightInches"</span>
-        }
-        @if(patient.getHeightFeet == null && patient.getHeightInches == null) {
-            <label for="">Height: </label> <span>N/A</span>
-        }
-        @if(patient.getWeight != null && !patient.getWeight.isNaN) {
-            <label>Weight: </label> <span>@patient.getWeight</span>
-        }
-        @if(patient.getWeight == null) {
-            <label>Weight: </label> <span>N/A</span>
-        }
+        <label>Height: </label> <span>@outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches)</span>
+        <label>Weight: </label> <span>@outputFloatOrNA(patient.getWeight)</span>
     }
 
     @* Weeks Pregnant *@
-    @if(patient.getWeeksPregnant != null && patient.getWeeksPregnant > 0) {
-        <label>Weeks Pregnant: </label> <span>@patient.getWeeksPregnant</span>
-    } else {
-        <label>Weeks Pregnant: </label> <span>N/A</span>
-    }
+
+    <label>Weeks Pregnant: </label> <span>@outputIntOrNA(patient.getWeeksPregnant)</span>
 
     @* Chief Complaint*@
     @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
-        <label>Complaint: </label> <span>@for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1) @if(x < patientEncounter.getChiefComplaints.size){ | }}</span>
+        <label>Complaint: </label> <span>@for(x <- 1 to patientEncounter.getChiefComplaints.size) {
+            @patientEncounter.getChiefComplaints.get(x - 1) @if(x < patientEncounter.getChiefComplaints.size) { | }
+        }</span>
     } else {
         <label>Complaint: </label> <span>N/A</span>
     }

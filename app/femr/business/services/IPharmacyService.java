@@ -2,21 +2,13 @@ package femr.business.services;
 
 import femr.common.models.PrescriptionItem;
 import femr.common.dto.ServiceResponse;
+import femr.common.models.ProblemItem;
 import femr.common.models.VitalItem;
 import femr.data.models.IPatientEncounter;
 
 import java.util.List;
 
 public interface IPharmacyService {
-
-
-    /**
-     * Gets vitals necessary for pharmacy - heightFeet, heightInches, weight
-     *
-     * @param encounterId encounter id
-     * @return list of most recent vitals for pharmacy
-     */
-    public ServiceResponse<List<VitalItem>> findPharmacyVitalItems(int encounterId);
 
     /**
      * Checks a patient into pharmacy (updates date_of_pharmacy_visit and identifies the user)
@@ -35,6 +27,14 @@ public interface IPharmacyService {
      * @return updated new prescription
      */
     ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId);
+
+    /**
+     * Find all problems
+     *
+     * @param encounterId id of the encounter
+     * @return list of problems
+     */
+    ServiceResponse<List<ProblemItem>> findProblemItems(int encounterId);
 
     /**
      * Retrieve all medication names for typeahead

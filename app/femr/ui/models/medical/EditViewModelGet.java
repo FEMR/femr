@@ -1,7 +1,7 @@
 package femr.ui.models.medical;
 
 import femr.common.models.*;
-import femr.util.DataStructure.VitalMultiMap;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 
 import java.util.List;
 import java.util.Map;

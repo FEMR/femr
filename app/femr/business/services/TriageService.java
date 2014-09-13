@@ -4,6 +4,7 @@ import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.common.dto.ServiceResponse;
 import femr.data.daos.IRepository;
@@ -24,8 +25,10 @@ public class TriageService implements ITriageService {
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
+    private final IRepository<IUser> userRepository;
     private final IRepository<IVital> vitalRepository;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
+
     private final DomainMapper domainMapper;
 
     @Inject
@@ -33,13 +36,16 @@ public class TriageService implements ITriageService {
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitaRepository,
+                         IRepository<IUser> userRepository,
                          IRepository<IVital> vitalRepository,
                          Provider<IPatientEncounterVital> patientEncounterVitalProvider,
+
                          DomainMapper domainMapper) {
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitaRepository;
+        this.userRepository = userRepository;
         this.vitalRepository = vitalRepository;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.domainMapper = domainMapper;
@@ -68,7 +74,7 @@ public class TriageService implements ITriageService {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.update(savedPatient);
             }
-            PatientItem patientItem = domainMapper.createPatientItem(savedPatient, null);
+            PatientItem patientItem = domainMapper.createPatientItem(savedPatient, null, null, null, null);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -113,7 +119,7 @@ public class TriageService implements ITriageService {
         try {
             IPatient newPatient = domainMapper.createPatient(patient);
             newPatient = patientRepository.create(newPatient);
-            response.setResponseObject(domainMapper.createPatientItem(newPatient, null));
+            response.setResponseObject(domainMapper.createPatientItem(newPatient, null, null, null, null));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -133,7 +139,14 @@ public class TriageService implements ITriageService {
         }
 
         try {
-            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, patientEncounterItem.getUserId());
+            ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
+                    .where()
+                    .eq("email", patientEncounterItem.getNurseEmailAddress());
+
+            IUser user = userRepository.findOne(nurseQuery);
+
+
+            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, user.getId());
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
 
             List<IChiefComplaint> chiefComplaints = new ArrayList<>();
@@ -145,7 +158,7 @@ public class TriageService implements ITriageService {
             }
 
 
-            response.setResponseObject(domainMapper.createPatientEncounterItem(newPatientEncounter, false));
+            response.setResponseObject(DomainMapper.createPatientEncounterItem(newPatientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

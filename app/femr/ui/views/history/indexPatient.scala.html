@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dto.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.search.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
+@(currentUser: femr.common.dto.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.history.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
@@ -31,7 +31,7 @@
                         @for(a <- 1 to viewModel.getPatientItems.size) {
                             @defining(viewModel.getPatientItems.get(a - 1)) { patient =>
                                 <tr>
-                                    <td class="vert-align"><img class="thumbnail searchThumb" src="@patient.getPathToPhoto" /></td>
+                                    <td class="vert-align"><img class="thumbnail searchThumb" src="@patient.getPathToPhoto" width="90" height="90"/></td>
                                     <td class="vert-align patientId">@patient.getId</td>
                                     <td class="vert-align">@patient.getFirstName @patient.getLastName</td>
                                     <td class="vert-align">@patient.getSex</td>
@@ -97,7 +97,7 @@
                 @for(patientEncounter <- patientEncounters) {
                     <li>
                         <a href="/history/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
-                            <p class="date">@patientEncounter.getFriendlyDateOfVisit</p>
+                            <p class="date">@patientEncounter.getTriageDateOfVisit</p>
                             @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0){
                                 <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1) @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
                             }else{

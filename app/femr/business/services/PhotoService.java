@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import femr.business.helpers.DomainMapper;
+import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dto.ServiceResponse;
@@ -49,25 +50,9 @@ public class PhotoService implements IPhotoService {
 
     protected void Init() {
         File f;
-        try {
-            _profilePhotoPath = ConfigFactory.load().getString("photos.path");
-        } catch (Exception ex) {
-            //If config doesn't exist, default to "photos"
-            _profilePhotoPath = "../Upload/Pictures/Patients";
-        }
+        _profilePhotoPath = LogicDoer.getPatientPhotoPath();
 
-        try {
-            _encounterPhotoPath = ConfigFactory.load().getString("photos.encounterPath");
-        } catch (Exception ex) {
-            _encounterPhotoPath = "../Upload/Pictures/PatientEncounters";
-        }
-
-        //Append ending slash if needed
-        if (!_profilePhotoPath.endsWith(File.separator))
-            _profilePhotoPath += File.separator;
-
-        if (!_encounterPhotoPath.endsWith(File.separator))
-            _encounterPhotoPath += File.separator;
+        _encounterPhotoPath = LogicDoer.getMedicalPhotoPath();
 
 
         //Ensure folder exists, if not, create it

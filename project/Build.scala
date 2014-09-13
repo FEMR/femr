@@ -1,11 +1,12 @@
 import sbt._
 import Keys._
-import play.Project._
+import play.Play.autoImport._
 
 object ApplicationBuild extends Build {
 
   val appName = "fEMR"
-  val appVersion = "2.0.0"
+  val appVersion = "2.1.0"
+  val currentScalaVersion = "2.11.2"
 
   val appDependencies = Seq(
     // Add your project dependencies here,
@@ -19,7 +20,13 @@ object ApplicationBuild extends Build {
     "com.google.code.gson" % "gson" % "2.2.4"
   )
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(
+
+
+  val main = Project(appName, file(".")).enablePlugins(play.PlayJava).settings(
+    /*javacOptions += "-Xlint:deprecation",*/   //use when searching for deprecated API usage
+    version := appVersion,
+    scalaVersion := currentScalaVersion,
+    libraryDependencies ++= appDependencies,
     // Add your own project settings here
     testOptions in Test ~= {
       args =>

@@ -2,7 +2,7 @@
 
 ### Required downloads
 1. [MySQL](http://www.mysql.com/)
-2. [Play Framework](http://downloads.typesafe.com/play/2.2.3/play-2.2.3.zip)
+2. [Play Framework](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
 3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 4. [IntelliJ IDEA](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
@@ -16,10 +16,10 @@
     git clone https://github.com/yourusername/femr.git
 
 ####4. convert the project to an IDEA module
-    play idea
+    activator idea
 
 ####5. clean and compile the project
-    play clean compile
+    activator clean compile
 
 ### Setting up IntelliJ IDEA
 1. Install Plugins: Play 2.0 Support/Scala

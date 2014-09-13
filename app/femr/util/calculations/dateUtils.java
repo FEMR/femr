@@ -30,8 +30,8 @@ public class dateUtils {
     }
 
     public static String getAge(Date born) {
-        DateMidnight birthdate = new DateMidnight(born);
-        DateTime now = new DateTime();
+        LocalDate birthdate = new LocalDate(born);
+        LocalDate now = new LocalDate();
         Months months = Months.monthsBetween(birthdate, now);
         int monthsInt = months.getMonths();
         if (monthsInt < 24)

@@ -117,9 +117,42 @@
 
 }
 
+@media(max-width: 700px){
+    #patientInformation h1{
+        float: right;
+        margin-top: 0 !important;
+        width: 100%;
+        text-align: right;
+    }
+    #patientInformation form{
+        overflow: hidden;
+        float: right;
+        margin: 0 !important;
+    }
+}
+
+@media(max-width: 608px){
+    h3{
+        font-size: 16px;
+    }
+}
+
 @media(max-width: 550px){
     .encounterViewBodyLeft, .encounterViewBodyMiddle, .encounterViewBodyRight{
         width: 100%;
+    }
+}
+
+@media(max-width: 390px){
+    #patientPhoto, #patientInformation{
+        width: 100% !important;
+    }
+    #patientInformation h1{
+        float: left;
+        text-align: left;
+    }
+    #patientInformation form{
+        float: left;
     }
 }
 

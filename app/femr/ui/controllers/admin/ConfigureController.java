@@ -1,14 +1,12 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.IConfigureService;
 import femr.business.services.ISessionService;
 import femr.common.dto.CurrentUser;
 import femr.common.dto.ServiceResponse;
 import femr.data.models.ISystemSetting;
 import femr.data.models.Roles;
-import femr.data.models.SystemSetting;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.configure.ConfigureViewModelPost;
@@ -17,7 +15,7 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import femr.ui.views.html.admin.configure.*;
+import femr.ui.views.html.admin.configure.index;
 
 import java.util.List;
 

@@ -24,7 +24,6 @@ public class DomainMapper {
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
     private final Provider<IPatient> patientProvider;
-    private final Provider<IPatientResearch> patientResearchProvider;
     private final Provider<IPhoto> photoProvider;
     private final Provider<ITabField> tabFieldProvider;
     private final Provider<ITabFieldSize> tabFieldSizeProvider;
@@ -42,7 +41,6 @@ public class DomainMapper {
                         Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                         Provider<IPatientPrescription> patientPrescriptionProvider,
                         Provider<IPatient> patientProvider,
-                        Provider<IPatientResearch> patientResearchProvider,
                         Provider<IPhoto> photoProvider,
                         Provider<ITabField> tabFieldProvider,
                         Provider<ITabFieldSize> tabFieldSizeProvider,
@@ -58,7 +56,6 @@ public class DomainMapper {
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
         this.patientProvider = patientProvider;
-        this.patientResearchProvider = patientResearchProvider;
         this.photoProvider = photoProvider;
         this.tabFieldProvider = tabFieldProvider;
         this.tabFieldSizeProvider = tabFieldSizeProvider;

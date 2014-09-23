@@ -6,7 +6,7 @@ import femr.business.services.ISessionService;
 import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.views.html.admin.*;
+import femr.ui.views.html.admin.index;
 import play.mvc.*;
 
 //Note: Administrative controllers still interface with pure data models

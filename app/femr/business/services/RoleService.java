@@ -22,8 +22,7 @@ public class RoleService implements IRoleService {
     public List<? extends IRole> getAllRoles() {
         ExpressionList<Role> query = QueryProvider.getRoleQuery()
                 .where()
-                .ne("name", "SuperUser")
-                .ne("name", "Researcher");
+                .ne("name", "SuperUser");
         List<? extends IRole> roles = roleRepository.find(query);
         return roles;
     }

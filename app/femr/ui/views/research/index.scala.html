@@ -1,6 +1,5 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.research.CreateViewModelGet)
+@(currentUser: femr.common.dto.CurrentUser)
 
-@import femr.ui.controllers.research.routes.ResearchController
 @import femr.ui.views.html.layouts.main
 
     @additionalStyles = {
@@ -11,55 +10,5 @@
     }
 
 @main("Research", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-    @helper.form(action = ResearchController.createPost()) {
-        <div class="selectWrap">
-            <div class="selectGroup">
-                <h4>Properties</h4>
-                <select id="expressionProperty">
-                    <option value="">Select...</option>
-                    @for(prop <- 1 to viewModel.getPatientModel.getPatientProperties.size) {
-                        <option value="@viewModel.getPatientModel.getPatientProperties.get(prop - 1)">@viewModel.getPatientModel.getPatientProperties.get(prop - 1)</option>
-                    }
-                </select>
-            </div>
-            <div class="selectGroup">
-                <h4>Operators</h4>
-                <select id="expressionOperator">
-                    <option value="">Select...</option>
-                    @for(oper <- 1 to viewModel.getPatientModel.getComparisonList.size) {
-                        <option value="@viewModel.getPatientModel.getComparisonList.get(oper - 1)">@viewModel.getPatientModel.getComparisonList.get(oper - 1)</option>
-                    }
-                </select>
-            </div>
-            <div class="selectGroup">
-                <h4>Value</h4>
-                <input type="text" id="expressionValue" />
-            </div>
-            <div class="selectGroup hidden">
-                <h4>Boolean</h4>
-                <select id="expressionBool">
-                    <option value="">Select...</option>
-                    @for(bool <- 1 to viewModel.getPatientModel.getLogicList.size) {
-                        <option value="@viewModel.getPatientModel.getLogicList.get(bool - 1)">@viewModel.getPatientModel.getLogicList.get(bool - 1)</option>
-                    }
-                </select>
-            </div>
-            <div class="selectGroup">
-                <button type="button" id="addExpressionBtn">Add</button>
-            </div>
-            <div class="selectGroup hidden">
-                <button type="button" id="addBoolBtn">Add</button>
-            </div>
-        </div>
-        <div class="queryWrap">
-            @* Looks like shit *@
-            <ol class="expressions">
-
-            </ol>
-
-        </div>
-
-        <input type="text" class="hidden" id="submitString" name="QueryString"/>
-        <button type="submit" class="btn btn-default" id="submitBtn">Submit</button>
-    }
+    <h1>Future Research Stuff</h1>
 }

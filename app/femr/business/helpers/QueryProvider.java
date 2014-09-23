@@ -44,10 +44,6 @@ public class QueryProvider {
         return Ebean.find(PatientPrescription.class);
     }
 
-    public static Query<PatientResearch> getPatientResearchQuery() {
-        return Ebean.find(PatientResearch.class);
-    }
-
     public static Query<Photo> getPhotoQuery() {
         return Ebean.find(Photo.class);
     }

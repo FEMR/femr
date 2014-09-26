@@ -1,26 +1,48 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.business.services;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
-import com.google.inject.Provider;
 import com.typesafe.config.ConfigFactory;
 
-import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.awt.image.*;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.*;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.LogicDoer;
+import femr.business.helpers.QueryProvider;
+import femr.common.models.PatientEncounterItem;
+import femr.common.dto.ServiceResponse;
 import com.google.inject.Inject;
+import femr.common.models.PhotoItem;
 import femr.data.daos.IRepository;
 import femr.data.models.*;
-import femr.ui.models.data.PatientItem;
-import femr.ui.models.medical.CreateViewModelPost;
+import femr.ui.models.medical.EditViewModelPost;
+import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.codec.binary.Base64;
 import play.mvc.Http.MultipartFormData.FilePart;
+
+import javax.imageio.ImageIO;
 
 
 public class PhotoService implements IPhotoService {
@@ -29,160 +51,193 @@ public class PhotoService implements IPhotoService {
     private IRepository<IPhoto> patientPhotoRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
-    private Provider<IPatient> patientProvider;
+    private DomainMapper domainMapper;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
-                        Provider<IPatient> patientProvider)
-    {
+                        DomainMapper domainMapper) {
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
-        this.patientProvider = patientProvider;
+        this.domainMapper = domainMapper;
 
         this.Init();
     }
 
-    protected void Init()
-    {
+    protected void Init() {
         File f;
-        try
-        {
-            _profilePhotoPath = ConfigFactory.load().getString("photos.path");
-        }
-        catch(Exception ex)
-        {
-            //If config doesn't exist, default to "photos"
-            _profilePhotoPath = "./Upload/Pictures/Patients";
-        }
+        _profilePhotoPath = LogicDoer.getPatientPhotoPath();
 
-        try
-        {
-            _encounterPhotoPath = ConfigFactory.load().getString("photos.encounterPath");
-        }
-        catch(Exception ex)
-        {
-            _encounterPhotoPath = "./Upload/Pictures/PatientEncounters";
-        }
-
-        //Append ending slash if needed
-        if(!_profilePhotoPath.endsWith(File.separator))
-            _profilePhotoPath += File.separator;
-
-        if(!_encounterPhotoPath.endsWith(File.separator))
-            _encounterPhotoPath += File.separator;
+        _encounterPhotoPath = LogicDoer.getMedicalPhotoPath();
 
 
         //Ensure folder exists, if not, create it
         f = new File(_profilePhotoPath);
-        if(!f.exists())
+        if (!f.exists())
             f.mkdirs();
 
         f = new File(_encounterPhotoPath);
-        if(!f.exists())
+        if (!f.exists())
             f.mkdirs();
     }
 
-    @Override
-    public String GetRootPhotoPath()
-    {
-        return _profilePhotoPath;
-    }
-
-    @Override
-    public String GetRootEncounterPhotoPath()
-    {
-        return _encounterPhotoPath;
-    }
-
-    protected int[] parseCoords(String s)
-    {
-        int[] iout = {0,0,0,0};
-        String[] sVals;
-        if(s == null)
-            return null;
-        s = s.replace("{", "");
-        s = s.replace("}", "");
-        sVals = s.split(",");
-
-        if(sVals.length == 4)
-        {
-            for(int i = 0; i < 4; i++)
-                iout[i] = Integer.parseInt(sVals[i]);
-            return iout;
-        }
-        return iout;
-    }
-
-    /***
-     * Helper function to fetch image by named index
-     * @param encounterImages
-     * @param index
-     * @return
+    /**
+     * {@inheritDoc}
      */
-    protected FilePart GetImageByIndex(List<FilePart> encounterImages, Integer index)
-    {
-        for(FilePart fp : encounterImages)
-        {
-            String keyName = fp.getKey();
-            int leftBracket = keyName.indexOf("[");
-            int rightBracket = keyName.indexOf("]");
-            if(leftBracket >= 0 && rightBracket >= 0)
-            {
-                keyName = keyName.substring(leftBracket + 1, rightBracket);
-                String tempindex = index.toString();
+    @Override
+    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(String imageString, int patientId, Boolean deleteFlag) {
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
 
-                if(keyName.equalsIgnoreCase(tempindex))
-                {
-                    return fp;
+
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                .where()
+                .eq("id", patientId);
+
+        try {
+            IPatient patient = patientRepository.findOne(query);
+            String imageFileName = "/Patient_" + patient.getId() + ".jpg";
+
+            if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
+                if (patient.getPhoto() == null) {
+                    //Create new photo Id record
+                    IPhoto pPhoto = domainMapper.createPhoto("", imageFileName);
+                    pPhoto = patientPhotoRepository.create(pPhoto);
+                    patient.setPhoto(pPhoto);
+                    patientRepository.update(patient);
+                } else {
+                    //Record already exists:
+                    //photoId = patient.getPhoto().getId();
                 }
+
+                //save image to disk
+                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
+                BufferedImage bufferedImage = decodeToImage(parsedImage);
+                File photoFile = new File(_profilePhotoPath + imageFileName);
+                ImageIO.write(bufferedImage, "jpg", photoFile);
+
+            } else {
+                if (deleteFlag != null)
+                    if (deleteFlag && patient.getPhoto() != null) {
+                        //delete photo
+                        //First make sure the photoId is null in the patient record
+                        Integer id = patient.getPhoto().getId();
+                        patient.setPhoto(null);
+                        patientRepository.update(patient);
+                        //Now remove the photo record:
+                        this.deletePhotoById(id, _profilePhotoPath);
+                    }
             }
+            response.setResponseObject(true);
+        } catch (Exception ex) {
+            response.setResponseObject(false);
+            response.addError("HandlePatientPhoto", ex.getMessage());
         }
-        return null;
+        return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, IPatientEncounter patientEncounter, CreateViewModelPost mod)
-    {
+    public ServiceResponse<String> getPhotoPathForPatient(int patientId) {
+        ServiceResponse<String> response = new ServiceResponse<>();
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                .where()
+                .eq("id", patientId);
+        try {
+            IPatient patient = patientRepository.findOne(query);
+            if (patient.getPhoto() == null) {
+                response.setResponseObject(null);
+            } else {
+                response.setResponseObject(_profilePhotoPath + patient.getPhoto().getFilePath());
+            }
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+            return response;
+        }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<String> getPhotoPath(int photoId) {
+        ServiceResponse<String> response = new ServiceResponse<>();
+        ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
+                .where()
+                .eq("id", photoId);
+        try {
+            IPhoto photo = patientPhotoRepository.findOne(query);
+            response.setResponseObject(_encounterPhotoPath + photo.getFilePath());
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
-        try
-        {
+        try {
             int count = mod.getPhotoId().size();
             FilePart fp;
-            for(int i = 0; i < count; i++)
-            {
+            for (Integer i = 0; i < count; i++) {
                 Integer id = mod.getPhotoId().get(i);
-                if(id == null)
-                {
+                if (id == null) {
                     //This is a new image, add it to the DB and filesystem:
-                    fp = GetImageByIndex(encounterImages, i);
-                    saveNewEncounterImage(fp, patientEncounter, mod.getImageDescText().get(i));
-                }
-                else
-                {
+                    for (FilePart fp_iterator : encounterImages) {
+                        String keyName = fp_iterator.getKey();
+                        int leftBracket = keyName.indexOf("[");
+                        int rightBracket = keyName.indexOf("]");
+                        if (leftBracket >= 0 && rightBracket >= 0) {
+                            keyName = keyName.substring(leftBracket + 1, rightBracket);
+                            String tempindex = i.toString();
+
+                            if (keyName.equalsIgnoreCase(tempindex)) {
+                                saveNewEncounterImage(fp_iterator, patientEncounterItem, mod.getImageDescText().get(i));
+                                break;
+                            }
+                        }
+                    }
+
+                } else {
                     Boolean bDelete = mod.getDeleteRequested().get(i);
-                    if(bDelete == null)
+                    if (bDelete == null)
                         bDelete = false;
 
-                    if(bDelete)
-                    {
+                    if (bDelete) {
                         //Delete image
-                        if(mod.getPhotoId().get(i) != null)
+                        if (mod.getPhotoId().get(i) != null)
                             this.deletePhotoById(mod.getPhotoId().get(i), _encounterPhotoPath);
-                    }
-                    else
-                    {
+                    } else {
                         //Possibly update the image
                         Boolean bisUpdate = mod.getHasUpdatedDesc().get(i);
-                        if(bisUpdate != null)
-                        {
-                            if(bisUpdate)
-                            {
+                        if (bisUpdate != null) {
+                            if (bisUpdate) {
                                 Integer photoId = mod.getPhotoId().get(i);
-                                if(photoId != null)
-                                    updateImageDescription(photoId, mod.getImageDescText().get(i));
+                                if (photoId != null) {
+                                    //updateImageDescription(photoId, mod.getImageDescText().get(i));
+
+                                    ExpressionList<Photo> photoUpdateQuery = QueryProvider.getPhotoQuery()
+                                            .where()
+                                            .eq("id", photoId);
+                                    try {
+                                        IPhoto savedPhoto = patientPhotoRepository.findOne(photoUpdateQuery);
+                                        savedPhoto.setDescription(mod.getImageDescText().get(i));
+                                        patientPhotoRepository.update(savedPhoto);
+                                    } catch (Exception ex) {
+                                        sr.addError("", "error updating description: " + ex.getMessage());
+
+                                    }
+                                }
+
+
                             }
                         }
                     }
@@ -190,9 +245,7 @@ public class PhotoService implements IPhotoService {
                 }
             }
             sr.setResponseObject(true);
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             sr.setResponseObject(false);
             sr.addError("HandleEncounterPhotos()", ex.getMessage());
         }
@@ -200,305 +253,142 @@ public class PhotoService implements IPhotoService {
         return sr;
     }
 
-    protected void saveNewEncounterImage(FilePart image, IPatientEncounter patientEncounter, String descriptionText)
-    {
-        try
-        {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PhotoItem>> GetEncounterPhotos(int encounterId) {
+
+        ServiceResponse<List<PhotoItem>> response = new ServiceResponse<>();
+        try {
+            ExpressionList<PatientEncounterPhoto> query = QueryProvider.getPatientEncounterPhotoQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId);
+
+            List<? extends IPatientEncounterPhoto> photoList = patientEncounterPhotoRepository.find(query);
+            if (photoList != null) {
+                List<PhotoItem> returnList = new ArrayList<>();
+                for (IPatientEncounterPhoto pep : photoList) {
+
+                    ExpressionList<Photo> photoQuery = QueryProvider.getPhotoQuery()
+                            .where()
+                            .eq("id", pep.getPhotoId());
+                    try {
+                        IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
+                        returnList.add(domainMapper.createPhotoItem(savedPhoto, femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                    } catch (Exception ex) {
+                        response.addError("", ex.getMessage());
+                        return response;
+                    }
+                }
+
+                response.setResponseObject(returnList);
+            }
+        } catch (Exception ex) {
+            response.addError("photo", ex.getMessage());
+        }
+
+        return response;
+    }
+
+
+    private void saveNewEncounterImage(FilePart image, PatientEncounterItem patientEncounter, String descriptionText) {
+        try {
             String imageFileName;
-            int photoId;
 
             //Create photo record:
             IPhoto pPhoto = new Photo();
             pPhoto.setDescription(descriptionText);
             pPhoto.setFilePath("");
-            pPhoto = createPhoto(pPhoto);
-            photoId = pPhoto.getId();
+            pPhoto = patientPhotoRepository.create(pPhoto);
+
+            ExpressionList<Photo> findPhotoQuery =
+                    QueryProvider.getPhotoQuery()
+                            .where()
+                            .eq("id", pPhoto.getId());
+            IPhoto editPhoto = patientPhotoRepository.findOne(findPhotoQuery);
+
 
             imageFileName = "Patient_" + patientEncounter.getPatientId()
-                + "_Enc_" + patientEncounter.getId() + "_Photo_" + photoId;
-            pPhoto.setFilePath(imageFileName);
+                    + "_Enc_" + patientEncounter.getId() + "_Photo_" + editPhoto.getId();
+            editPhoto.setFilePath(imageFileName);
 
             //Since the record ID is part of the file name
             //  I am setting the filePath field after the record is created
-            this.UpdatePhotoRecord(pPhoto);
+            patientPhotoRepository.update(editPhoto);
+
 
             //Link photo record in photoEncounter table
             IPatientEncounterPhoto pep = new PatientEncounterPhoto();
-            pep.setPhotoId(photoId);
+            pep.setPhotoId(editPhoto.getId());
             pep.setPatientEncounterId(patientEncounter.getId());
-            this.createEncounterPhoto(pep);
+            patientEncounterPhotoRepository.create(pep);
 
             //Save image to disk
-            SavePhoto(image.getFile(), this._encounterPhotoPath + imageFileName);
-        }
-        catch(Exception ex)
-        {
-            throw ex;
+            Path src = FileSystems.getDefault().getPath(image.getFile().getAbsolutePath());
+            Path dest = FileSystems.getDefault().getPath(this._encounterPhotoPath + imageFileName);
+            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+        } catch (Exception ex) {
+            String test = "uh oh";
+
         }
     }
 
-    protected void updateImageDescription(int photoId, String descriptionText)
-    {
-        ServiceResponse<IPhoto> srPhoto = this.getPhotoById(photoId);
-        if(!srPhoto.hasErrors())
-        {
-            IPhoto photo = srPhoto.getResponseObject();
-            photo.setDescription(descriptionText);
-            this.UpdatePhotoRecord(photo);
+
+    private ServiceResponse<IPhoto> deletePhotoById(int id, String imagePath) {
+        ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
+                .where()
+                .eq("id", id);
+        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
+        if (savedPhoto != null) {
+            //Delete any references from the patientencounterphotos table
+            ExpressionList<PatientEncounterPhoto> peQuery = QueryProvider.getPatientEncounterPhotoQuery()
+                    .where().eq("photo_id", id);
+            List<? extends IPatientEncounterPhoto> pep = patientEncounterPhotoRepository.find(peQuery);
+            if (pep != null)
+                patientEncounterPhotoRepository.delete(pep);
+
+            File photo = new File(imagePath + savedPhoto.getFilePath());
+            photo.delete();
+
+
+            patientPhotoRepository.delete(savedPhoto);
+
         }
+        ServiceResponse<IPhoto> response = new ServiceResponse<>();
+
+        if (savedPhoto != null) {
+            response.setResponseObject(savedPhoto);
+        } else {
+            response.addError("photo", "photo could not be deleted from the database");
+        }
+
+        return response;
     }
 
     /**
-     * Handles all things related to the patient photo. If img is null and
-     *  deleteFlag == true, this method will delete the photo. Else,
-     *  it will update/create the patient photo
-     * @param img
-     * @param patientItem
-     * @param coords
-     * @param deleteFlag
-     * @return Returns the new image Id on Save/Update, else null
+     * Decodes a base64 encoded string to an image
+     *
+     * @param imageString base64 encoded string that has been parsed to only include imageBytes
+     * @return the decoded image
      */
-    @Override
-    public ServiceResponse<Boolean> HandlePatientPhoto(File img, PatientItem patientItem, String coords, Boolean deleteFlag)
-    {
-        ExpressionList<Patient> query = getPatientQuery()
-                .where()
-                .eq("id", patientItem.getId());
+    private static BufferedImage decodeToImage(String imageString) {
 
-        //IPatient patient = populatePatient(patientItem);
-        IPatient patient = patientRepository.findOne(query);
-
-        String sFileName = "Patient_" + patient.getId() + ".jpg";
-        Integer photoId;
-
-        ServiceResponse<Boolean> sr = new ServiceResponse<>();
-        try
-        {
-            if(img != null)
-            {
-                if(patient.getPhotoId() == null)
-                {
-                    //Create new photo Id record
-                    IPhoto pPhoto = new Photo();
-                    pPhoto.setDescription("");
-                    pPhoto.setFilePath(sFileName);
-                    pPhoto = createPhoto(pPhoto);
-                    photoId = pPhoto.getId();
-                }
-                else
-                {
-                    //Record already exists:
-                    photoId = patient.getPhotoId();
-                }
-
-                CropImage(img, coords); //Crop image
-                SavePhoto(img, _profilePhotoPath + sFileName);  //Save to disk
-
-
-                //Update patient photoId
-                patient.setPhotoId(photoId);
-                patientRepository.update(patient);
-            }
-            else
-            {
-                if(deleteFlag != null)
-                    if(deleteFlag && patient.getPhotoId() != null)
-                    {
-                        //delete photo
-                        //First make sure the photoId is null in the patient record
-                        Integer id = patient.getPhotoId();
-                        patient.setPhotoId(null);
-                        patientRepository.update(patient);
-                        //Now remove the photo record:
-                        this.deletePhotoById(id, _profilePhotoPath);
-                    }
-            }
-            sr.setResponseObject(true);
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            Base64 newDecoder = new Base64();
+            byte[] bytes = imageString.getBytes(Charset.forName("UTF-8"));
+            imageByte = newDecoder.decode(bytes);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch(Exception ex)
-        {
-            sr.setResponseObject(false);
-            sr.addError("HandlePatientPhoto", ex.getMessage());
-        }
-        return sr;
+        return image;
     }
 
-    protected void SavePhoto(File imgFile, String fileName)
-    {
-        try
-        {
-            Path src = FileSystems.getDefault().getPath(imgFile.getAbsolutePath());
-            Path dest = FileSystems.getDefault().getPath(fileName);
-            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
-        }catch(Exception ex)
-        {
-        }
-    }
-
-    protected void UpdatePhotoRecord(IPhoto photoRecord)
-    {
-        ExpressionList<Photo> query =
-                Ebean.find(Photo.class).where().eq("id", photoRecord.getId());
-        IPhoto editPhoto = patientPhotoRepository.findOne(query);
-
-        if (editPhoto != null){
-            editPhoto.setFilePath(photoRecord.getFilePath());
-            editPhoto.setDescription(photoRecord.getDescription());
-            patientPhotoRepository.update(editPhoto);
-        }
-    }
-
-    protected void CropImage(File imgFile, String coords)
-    {
-        int[] vals = this.parseCoords(coords);
-        if(vals != null)
-            CropImage(imgFile, vals[0], vals[1], vals[2], vals[3]);
-    }
-
-    protected void CropImage(File imgFile, int offset_x, int offset_y, int width, int height)
-    {
-        try
-        {
-            BufferedImage destImg;
-            BufferedImage imgIn = ImageIO.read(imgFile);
-            destImg = imgIn.getSubimage(offset_x, offset_y, width, height);
-
-            //File outFile = new File(imgFile.getAbsolutePath());
-            //outFile.createNewFile();
-            ImageIO.write(destImg, "jpg", imgFile);
-        }
-        catch(Exception ex)
-        {
-        }
-    }
-
-    protected IPhoto createPhoto(IPhoto photo)
-    {
-        IPhoto newPhoto = patientPhotoRepository.create(photo);
-
-        if (newPhoto != null){
-            return newPhoto;
-        }
-
-        return null;
-    }
-
-    protected IPatientEncounterPhoto createEncounterPhoto(IPatientEncounterPhoto encPhoto)
-    {
-        return patientEncounterPhotoRepository.create(encPhoto);
-    }
-
-    @Override
-    public ServiceResponse<IPhoto> getPhotoById(int id)
-    {
-
-        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
-        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
-
-        ServiceResponse<IPhoto> response = new ServiceResponse<>();
-
-        if (savedPhoto != null){
-            response.setResponseObject(savedPhoto);
-        }
-        else
-        {
-            response.addError("photo","photo could not be fetched from the database");
-        }
-
-        return response;
-    }
-
-    protected void deleteImageFile(String path)
-    {
-        try
-        {
-            File photo = new File(path);
-            photo.delete();
-        }
-        catch(Exception ex)
-        {
-        }
-    }
-
-    protected ServiceResponse<IPhoto> deletePhotoById(int id, String imagePath)
-    {
-        ExpressionList<Photo> query = Ebean.find(Photo.class).where().eq("id", id);
-        IPhoto savedPhoto = patientPhotoRepository.findOne(query);
-        if(savedPhoto != null)
-        {
-            //Delete any references from the patientencounterphotos table
-            ExpressionList<PatientEncounterPhoto> peQuery =
-                       Ebean.find(PatientEncounterPhoto.class).where().eq("photo_id", id);
-            List<? extends IPatientEncounterPhoto> pep = patientEncounterPhotoRepository.find(peQuery);
-            if(pep != null)
-                Ebean.delete(pep);
-
-            deleteImageFile(imagePath + savedPhoto.getFilePath()); //Delete file
-            Ebean.delete(savedPhoto);
-
-        }
-        ServiceResponse<IPhoto> response = new ServiceResponse<>();
-
-        if (savedPhoto != null){
-            response.setResponseObject(savedPhoto);
-        }
-        else{
-            response.addError("photo","photo could not be deleted from the database");
-        }
-
-        return response;
-    }
-
-    public ServiceResponse<List<IPhoto>> GetEncounterPhotos(int encounterId)
-    {
-
-        ServiceResponse<List<IPhoto>> srlst = new ServiceResponse<>();
-        try
-        {
-            ExpressionList<PatientEncounterPhoto> query = Ebean.find(PatientEncounterPhoto.class)
-                    .where().eq("patient_encounter_id", encounterId);
-
-            List<? extends IPatientEncounterPhoto> photoList = patientEncounterPhotoRepository.find(query);
-            if(photoList != null)
-            {
-                List<IPhoto> returnList = new ArrayList<IPhoto>();
-                for(IPatientEncounterPhoto pep : photoList)
-                {
-                    ServiceResponse<IPhoto> srp = getPhotoById(pep.getPhotoId());
-                    if(!srp.hasErrors())
-                        returnList.add(srp.getResponseObject());
-                }
-
-                srlst.setResponseObject(returnList);
-            }
-        }
-        catch(Exception ex)
-        {
-            srlst.addError("photo", ex.getMessage());
-        }
-
-        return srlst;
-    }
-
-    private Query<Patient> getPatientQuery(){
-        return Ebean.find(Patient.class);
-    }
-
-    private IPatient populatePatient(PatientItem patient){
-        //create an IPatient from a PatientItem
-        //includes the ID
-        IPatient newPatient = patientProvider.get();
-        newPatient.setId(newPatient.getId());
-        newPatient.setUserId(patient.getUserId());
-        newPatient.setFirstName(patient.getFirstName());
-        newPatient.setLastName(patient.getLastName());
-        newPatient.setAge(patient.getBirth());
-        newPatient.setSex(patient.getSex());
-        newPatient.setAddress(patient.getAddress());
-        newPatient.setCity(patient.getCity());
-        newPatient.setPhotoId(patient.getPhotoId());
-
-        return newPatient;
-    }
 
 }

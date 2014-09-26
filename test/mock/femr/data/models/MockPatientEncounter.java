@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.IPatientEncounter;
+import femr.data.models.IPatientEncounter;
 
 public class MockPatientEncounter implements IPatientEncounter {
 
@@ -10,7 +10,6 @@ public class MockPatientEncounter implements IPatientEncounter {
     private String dateOfVisit = "";
     private String chiefComplaint = "";
     private Integer weeksPregnant = 0;
-    private Boolean isPregnant = false;
 
     @Override
     public int getId() {
@@ -38,7 +37,7 @@ public class MockPatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public String getDateOfVisit() {
+    public String getDateOfTriageVisit() {
         return dateOfVisit;
     }
 
@@ -65,16 +64,6 @@ public class MockPatientEncounter implements IPatientEncounter {
     @Override
     public void setWeeksPregnant(Integer weeksPregnant) {
         this.weeksPregnant = weeksPregnant;
-    }
-
-    @Override
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    @Override
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
     }
 }
 

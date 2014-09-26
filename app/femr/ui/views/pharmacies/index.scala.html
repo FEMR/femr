@@ -1,16 +1,13 @@
-@(currentUser: femr.business.dtos.CurrentUser, message: java.lang.String, patientId: java.lang.Integer)
+@(currentUser: femr.common.dto.CurrentUser, message: java.lang.String, patientId: java.lang.Integer)
 
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
-@import femr.ui.views.html.helpers.shared._
+@import femr.ui.views.html.partials.shared._
 
-    @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/femr.js")"></script>
-    }
 
-@main("Pharmacy", currentUser, scripts = additionalScripts) {
+@main("Pharmacy", currentUser) {
     <div class="container">
-    @helper.form(action = PharmaciesController.createGet()) {
+    @helper.form(action = PharmaciesController.indexPost()) {
         @searchBox("Pharmacy", patientId, message)
     }
     </div>

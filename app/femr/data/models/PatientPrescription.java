@@ -1,6 +1,23 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.data.models;
 
-import femr.common.models.IPatientPrescription;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
@@ -11,16 +28,14 @@ public class PatientPrescription implements IPatientPrescription {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "encounter_id", nullable = false)
-    private int encounterId;
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "encounter_id", nullable = false)
+    private PatientEncounter patientEncounter;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User physician;
     @Column(name = "amount", nullable = true)
     private  int amount;
-    @Column(name = "replaced", nullable = false)
-    private Boolean replaced;
-    @Column(name = "reason", nullable = true)
-    private String reason;
     @Column(name = "replacement_id", nullable = true)
     private Integer replacementId;
     @Column(name = "medication_name", nullable = false)
@@ -33,24 +48,16 @@ public class PatientPrescription implements IPatientPrescription {
         return id;
     }
 
+
+
     @Override
-    public int getEncounterId() {
-        return encounterId;
+    public IUser getPhysician() {
+        return physician;
     }
 
     @Override
-    public void setEncounterId(int encounterId) {
-        this.encounterId = encounterId;
-    }
-
-    @Override
-    public int getUserId() {
-        return userId;
-    }
-
-    @Override
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setPhysician(IUser physician) {
+        this.physician = (User) physician;
     }
 
     @Override
@@ -61,26 +68,6 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-
-    @Override
-    public Boolean getReplaced() {
-        return replaced;
-    }
-
-    @Override
-    public void setReplaced(Boolean replaced) {
-        this.replaced = replaced;
-    }
-
-    @Override
-    public String getReason() {
-        return reason;
-    }
-
-    @Override
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     @Override
@@ -111,5 +98,16 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setDateTaken(DateTime dateTaken) {
         this.dateTaken = dateTaken;
+    }
+
+
+    @Override
+    public IPatientEncounter getPatientEncounter() {
+        return patientEncounter;
+    }
+
+    @Override
+    public void setPatientEncounter(IPatientEncounter patientEncounter) {
+        this.patientEncounter = (PatientEncounter) patientEncounter;
     }
 }

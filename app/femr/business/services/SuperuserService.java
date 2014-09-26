@@ -1,139 +1,430 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.business.services;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.dtos.ServiceResponse;
-import femr.common.models.custom.ICustomField;
-import femr.common.models.custom.ICustomFieldSize;
-import femr.common.models.custom.ICustomFieldType;
-import femr.common.models.custom.ICustomTab;
+import femr.business.helpers.DomainMapper;
+import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
+import femr.common.models.TabFieldItem;
+import femr.common.models.TabItem;
+import femr.data.models.ITab;
+import femr.data.models.ITabField;
+import femr.data.models.ITabFieldSize;
+import femr.data.models.ITabFieldType;
 import femr.data.daos.IRepository;
-import femr.data.models.custom.CustomField;
-import femr.data.models.custom.CustomFieldSize;
-import femr.data.models.custom.CustomFieldType;
-import femr.data.models.custom.CustomTab;
-import femr.ui.models.data.custom.CustomFieldItem;
-import femr.ui.models.data.custom.CustomTabItem;
+import femr.data.models.Tab;
+import femr.data.models.TabField;
+import femr.data.models.TabFieldSize;
+import femr.data.models.TabFieldType;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
-import javax.xml.ws.Service;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SuperuserService implements ISuperuserService {
-    private IRepository<ICustomTab> customTabRepository;
-    private IRepository<ICustomField> customFieldRepository;
-    private IRepository<ICustomFieldType> customFieldTypeRepository;
-    private IRepository<ICustomFieldSize> customFieldSizeRepository;
+    private final IRepository<ITab> tabRepository;
+    private final IRepository<ITabField> tabFieldRepository;
+    private final IRepository<ITabFieldType> tabFieldTypeRepository;
+    private final IRepository<ITabFieldSize> tabFieldSizeRepository;
+    private final DomainMapper domainMapper;
 
     @Inject
-    public SuperuserService(IRepository<ICustomTab> customTabRepository,
-                            IRepository<ICustomField> customFieldRepository,
-                            IRepository<ICustomFieldType> customFieldTypeRepository,
-                            IRepository<ICustomFieldSize> customFieldSizeRepository) {
-        this.customTabRepository = customTabRepository;
-        this.customFieldRepository = customFieldRepository;
-        this.customFieldTypeRepository = customFieldTypeRepository;
-        this.customFieldSizeRepository = customFieldSizeRepository;
+    public SuperuserService(IRepository<ITab> tabRepository,
+                            IRepository<ITabField> tabFieldRepository,
+                            IRepository<ITabFieldType> tabFieldTypeRepository,
+                            IRepository<ITabFieldSize> tabFieldSizeRepository,
+                            DomainMapper domainMapper) {
+        this.tabRepository = tabRepository;
+        this.tabFieldRepository = tabFieldRepository;
+        this.tabFieldTypeRepository = tabFieldTypeRepository;
+        this.tabFieldSizeRepository = tabFieldSizeRepository;
+        this.domainMapper = domainMapper;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<ICustomTab> toggleCustomMedicalTab(String name) {
-
-        ServiceResponse<ICustomTab> response = new ServiceResponse<>();
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<TabItem> toggleTab(String name) {
+        ServiceResponse<TabItem> response = new ServiceResponse<>();
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+            response.addError("", "bad parameters, wtf are you doing?");
+            return response;
+        }
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
                 .eq("name", name);
-        ICustomTab customTab = customTabRepository.findOne(query);
-        if (customTab == null) {
-            response.addError("", "error");
+        ITab tab;
+        try {
+            tab = tabRepository.findOne(query);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
             return response;
         }
-        customTab.setIsDeleted(!customTab.getIsDeleted());
-        customTab = customTabRepository.update(customTab);
-        if (customTab == null) {
-            response.addError("", "error");
+
+        tab.setIsDeleted(!tab.getIsDeleted());
+        try {
+            tab = tabRepository.update(tab);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
             return response;
         }
-        response.setResponseObject(customTab);
+
+        TabItem tabItem = domainMapper.createTabItem(tab);
+        response.setResponseObject(tabItem);
         return response;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<ICustomTab> createCustomMedicalTab(ICustomTab newTab) {
-        ServiceResponse<ICustomTab> response = new ServiceResponse<>();
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<TabItem> createTab(TabItem newTab, int userId) {
+        ServiceResponse<TabItem> response = new ServiceResponse<>();
+        if (newTab == null || StringUtils.isNullOrWhiteSpace(newTab.getName()) || userId < 1) {
+            response.addError("", "bad parameters, wtf are you doing?");
+            return response;
+        }
+        ITab tab = domainMapper.createTab(newTab, false, userId);
+
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
-                .eq("name", newTab.getName());
-        ICustomTab dupilicateTab = customTabRepository.findOne(query);
-        if (dupilicateTab == null) {//create new
-            newTab = customTabRepository.create(newTab);
-            if (newTab == null) {
-                response.addError("", "error");
-            } else {
-                response.setResponseObject(newTab);
+                .eq("name", tab.getName());
+
+        //verify the tab doesn't already exist
+        try {
+            ITab doesTabExist = tabRepository.findOne(query);
+            if (doesTabExist != null) {
+                response.addError("", "tab already exists");
+                return response;
             }
-        } else {//activate old
-            dupilicateTab.setIsDeleted(false);
-            dupilicateTab = customTabRepository.update(dupilicateTab);
-            response.setResponseObject(dupilicateTab);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        //create the tab
+        try {
+            tabRepository.create(tab);
+            response.setResponseObject(newTab);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
         }
 
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<List<CustomTabItem>> getCustomMedicalTabs(Boolean isDeleted) {
-        ServiceResponse<List<CustomTabItem>> response = new ServiceResponse<>();
-        //List<? extends ICustomTab> customTabs = customTabRepository.findAll(CustomTab.class);
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<List<TabItem>> getCustomTabs(Boolean isDeleted) {
+        ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
+
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
-                .eq("isDeleted", isDeleted);
-        List<? extends ICustomTab> customTabs = customTabRepository.find(query);
-        List<CustomTabItem> customTabItems = new ArrayList<>();
-        for (ICustomTab ct: customTabs){
-            customTabItems.add(getCustomTabItem(ct));
+                .eq("isDeleted", isDeleted)
+                .eq("isCustom", true);
+
+        List<? extends ITab> tabs = new ArrayList<>();
+        try {
+            tabs = tabRepository.find(query);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
         }
 
-        if (customTabs == null) {
-            response.addError("", "error");
-        } else {
-            response.setResponseObject(customTabItems);
+        List<TabItem> tabItems = new ArrayList<>();
+        for (ITab t : tabs) {
+            tabItems.add(domainMapper.createTabItem(t));
         }
+        response.setResponseObject(tabItems);
+
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<Boolean> doesCustomTabExist(String tabName){
-        ServiceResponse<Boolean> response = new ServiceResponse<>();
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
+    public ServiceResponse<List<TabFieldItem>> getTabFields(String tabName, Boolean isDeleted) {
+        ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
+        if (StringUtils.isNullOrWhiteSpace(tabName)) {
+            response.addError("", "bad parameters, wtf are you doing?");
+            return response;
+        }
+        Query<TabField> query = QueryProvider.getTabFieldQuery()
+                .fetch("tab")
+                .where()
+                .eq("isDeleted", isDeleted)
+                .eq("tab.name", tabName)
+                .order()
+                .asc("sort_order");
+
+        try {
+            List<? extends ITabField> tabFields = tabFieldRepository.find(query);
+            List<TabFieldItem> customFieldItems = new ArrayList<>();
+            for (ITabField tf : tabFields) {
+                customFieldItems.add(domainMapper.createTabFieldItem(tf));
+            }
+            response.setResponseObject(customFieldItems);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabFieldItem> toggleTabField(String fieldName, String tabName) {
+        ServiceResponse<TabFieldItem> response = new ServiceResponse<>();
+        if (StringUtils.isNullOrWhiteSpace(fieldName) || StringUtils.isNullOrWhiteSpace(tabName)) {
+            response.addError("", "bad parameters, wtf are you doing?");
+            return response;
+        }
+        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
+                .fetch("tab")
+                .where()
+                .eq("name", fieldName)
+                .eq("tab.name", tabName);
+
+        try {
+            ITabField tabField = tabFieldRepository.findOne(query);
+            tabField.setIsDeleted(!tabField.getIsDeleted());
+            //delete the sort order when the tab gets deactivated
+            if (tabField.getIsDeleted() == true) tabField.setOrder(null);
+            tabField = tabFieldRepository.update(tabField);
+            TabFieldItem tabFieldItem = domainMapper.createTabFieldItem(tabField);
+            response.setResponseObject(tabFieldItem);
+
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabItem> editTab(TabItem tabItem, int userId) {
+        ServiceResponse<TabItem> response = new ServiceResponse<>();
+        if (tabItem == null || StringUtils.isNullOrWhiteSpace(tabItem.getName()) || userId < 1) {
+            response.addError("", "bad parameters, wtf are you doing?");
+            return response;
+        }
+
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
+                .where()
+                .eq("name", tabItem.getName());
+        try {
+            ITab newTab = tabRepository.findOne(query);
+            newTab.setDateCreated(DateTime.now());
+            newTab.setLeftColumnSize(tabItem.getLeftColumnSize());
+            newTab.setRightColumnSize(tabItem.getRightColumnSize());
+            newTab.setUserId(userId);
+            newTab = tabRepository.update(newTab);
+            TabItem newTabItem = domainMapper.createTabItem(newTab);
+            response.setResponseObject(newTabItem);
+        } catch (Exception ex) {
+            response.addError("", "error");
+        }
+        return response;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabFieldItem> editTabField(TabFieldItem tabFieldItem) {
+        ServiceResponse<TabFieldItem> response = new ServiceResponse<>();
+        if (tabFieldItem == null || tabFieldItem.getName() == null) {
+            response.addError("", "bad parameters, wtf are you doing?");
+            return response;
+        }
+
+        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
+                .where()
+                .eq("name", tabFieldItem.getName());
+
+        try {
+            ITabField tabField = tabFieldRepository.findOne(query);
+            if (tabFieldItem.getPlaceholder() != null) tabField.setPlaceholder(tabFieldItem.getPlaceholder());
+            if (tabFieldItem.getOrder() != null) tabField.setOrder(tabFieldItem.getOrder());
+            //check size update
+            if (StringUtils.isNotNullOrWhiteSpace(tabFieldItem.getSize())) {
+                ExpressionList<TabFieldSize> sizeQuery = QueryProvider.getTabFieldSizeQuery()
+                        .where()
+                        .eq("name", tabFieldItem.getSize());
+                ITabFieldSize tabFieldSize = tabFieldSizeRepository.findOne(sizeQuery);
+                tabField.setTabFieldSize(tabFieldSize);
+            }
+            //check type update
+            if (StringUtils.isNotNullOrWhiteSpace(tabFieldItem.getType())) {
+                ExpressionList<TabFieldType> typeQuery = QueryProvider.getTabFieldTypeQuery()
+                        .where()
+                        .eq("name", tabFieldItem.getType());
+                ITabFieldType tabFieldType = tabFieldTypeRepository.findOne(typeQuery);
+                tabField.setTabFieldType(tabFieldType);
+            }
+            tabField = tabFieldRepository.update(tabField);
+
+            TabFieldItem newTabFieldItem = domainMapper.createTabFieldItem(tabField);
+            response.setResponseObject(newTabFieldItem);
+
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabFieldItem> createTabField(TabFieldItem tabFieldItem, int userId, String tabName) {
+        ServiceResponse<TabFieldItem> response = new ServiceResponse<>();
+        if (tabFieldItem == null ||
+                StringUtils.isNullOrWhiteSpace(tabFieldItem.getName()) ||
+                StringUtils.isNullOrWhiteSpace(tabFieldItem.getSize()) ||
+                StringUtils.isNullOrWhiteSpace(tabFieldItem.getType()) ||
+                StringUtils.isNullOrWhiteSpace(tabName)) {
+            response.addError("", "you're TabFieldItem sucks, fix it up and try again");
+            return response;
+        }
+
+        //get tabs
+        ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
                 .where()
                 .eq("name", tabName);
-        try{
-            ICustomTab customTab = customTabRepository.findOne(query);
-            if (customTab == null){
-                response.setResponseObject(false);
-            }else{
-                response.setResponseObject(true);
-            }
-        }catch(Exception ex){
-            response.setResponseObject(false);
+
+        //verify the tab exists?
+        ITab tab;
+        try {
+            tab = tabRepository.findOne(tabQuery);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+            return response;
         }
+
+
+        //get field type
+        ExpressionList<TabFieldType> typeQuery = QueryProvider.getTabFieldTypeQuery()
+                .where()
+                .eq("name", tabFieldItem.getType());
+
+        ITabFieldType tabFieldType;
+        try {
+            tabFieldType = tabFieldTypeRepository.findOne(typeQuery);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+            return response;
+        }
+
+
+        //get field size
+        ExpressionList<TabFieldSize> sizeQuery = QueryProvider.getTabFieldSizeQuery()
+                .where()
+                .eq("name", tabFieldItem.getSize());
+
+        ITabFieldSize tabFieldSize;
+        try {
+            tabFieldSize = tabFieldSizeRepository.findOne(sizeQuery);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+            return response;
+        }
+
+        ITabField customField = domainMapper.createTabField(tabFieldItem, false, tabFieldSize, tabFieldType, tab);
+
+        try {
+            customField = tabFieldRepository.create(customField);
+            TabFieldItem newTabFieldItem = domainMapper.createTabFieldItem(customField);
+            response.setResponseObject(newTabFieldItem);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<Boolean> doesCustomFieldExist(String fieldName){
+    public ServiceResponse<List<String>> getTypes() {
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        List<String> fields = new ArrayList<>();
+
+        try {
+            List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
+            for (ITabFieldType cft : tabFieldTypes) {
+                fields.add(cft.getName());
+            }
+            response.setResponseObject(fields);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<String>> getSizes() {
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        List<String> fields = new ArrayList<>();
+
+        try {
+            List<? extends ITabFieldSize> tabFieldSizes = tabFieldSizeRepository.findAll(TabFieldSize.class);
+            for (ITabFieldSize cfs : tabFieldSizes) {
+                fields.add(cfs.getName());
+            }
+            response.setResponseObject(fields);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Boolean> doesTabFieldExist(String fieldName){
         ServiceResponse<Boolean> response = new ServiceResponse<>();
-        ExpressionList<CustomField> query = getCustomFieldQuery()
+        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
                 .where()
                 .eq("name", fieldName);
         try{
-            ICustomField customField = customFieldRepository.findOne(query);
+            ITabField customField = tabFieldRepository.findOne(query);
             if (customField == null){
                 response.setResponseObject(false);
             }else{
@@ -146,247 +437,26 @@ public class SuperuserService implements ISuperuserService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public ServiceResponse<List<CustomFieldItem>> getCustomFields(Boolean isDeleted, String tabName) {
-        ServiceResponse<List<CustomFieldItem>> response = new ServiceResponse<>();
-        Query<CustomField> query = getCustomFieldQuery()
-                .fetch("customTab")
-                .where()
-                .eq("isDeleted", isDeleted)
-                .eq("customTab.name", tabName)
-                .order()
-                .asc("sort_order");
-        List<? extends ICustomField> customFields = customFieldRepository.find(query);
-        List<CustomFieldItem> customFieldItems = new ArrayList<>();
-        if (customFields == null) {
-            response.addError("", "error");
-        } else {
-            for (ICustomField cf : customFields) {
-                CustomFieldItem customFieldItem = getCustomFieldItem(cf);
-                customFieldItems.add(customFieldItem);
-            }
-            response.setResponseObject(customFieldItems);
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<CustomFieldItem> toggleCustomField(String fieldName, String tabName){
-        ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
-        ExpressionList<CustomField> query = getCustomFieldQuery()
-                .fetch("customTab")
-                .where()
-                .eq("name", fieldName)
-                .eq("customTab.name", tabName);
-        ICustomField customField = customFieldRepository.findOne(query);
-        if (customField == null){
-            response.addError("", "error");
-        }
-        customField.setIsDeleted(!customField.getIsDeleted());
-        if (customField.getIsDeleted() == true){
-            customField.setOrder(null);
-        }
-        customField = customFieldRepository.update(customField);
-        CustomFieldItem customFieldItem = new CustomFieldItem();
-        customFieldItem.setName(customField.getName());
-        customFieldItem.setSize(customField.getCustomFieldSize().getName());
-        customFieldItem.setType(customField.getCustomFieldType().getName());
-        response.setResponseObject(customFieldItem);
-        return response;
-
-    }
-
-    @Override
-    public ServiceResponse<CustomTabItem> editCustomTab(CustomTabItem customTabItem, int userId){
-        ServiceResponse<CustomTabItem> response = new ServiceResponse<>();
-        if (customTabItem.getName() == null){
-            response.addError("", "no item");
-            return response;
-        }
-
-        ExpressionList<CustomTab> query = getCustomMedicalTabQuery()
-                .where()
-                .eq("name", customTabItem.getName());
-        try{
-            ICustomTab customTab = customTabRepository.findOne(query);
-            customTab.setDateCreated(DateTime.now());
-            customTab.setIsDeleted(customTab.getIsDeleted());
-            customTab.setLeftColumnSize(customTabItem.getLeftColumnSize());
-            customTab.setRightColumnSize(customTabItem.getRightColumnSize());
-            customTab.setUserId(userId);
-            customTab = customTabRepository.update(customTab);
-            response.setResponseObject(customTabItem);
-        }catch(Exception ex){
-            response.addError("", "error");
-        }
-        return response;
-
-    }
-
-    @Override
-    public ServiceResponse<CustomFieldItem> editCustomField(CustomFieldItem customFieldItem, int userId){
-        ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
-        if (customFieldItem.getName() == null){
-            response.addError("", "no item");
-            return response;
-        }
-
-        ExpressionList<CustomField> query = getCustomFieldQuery()
-                .where()
-                .eq("name", customFieldItem.getName());
-        ICustomField customField = customFieldRepository.findOne(query);
-        customField.setDateCreated(DateTime.now());
-        customField.setUserId(userId);
-        if (customFieldItem.getPlaceholder() != null){
-            customField.setPlaceholder(customFieldItem.getPlaceholder());
-        }
-        if (customFieldItem.getOrder() != null){
-            customField.setOrder(customFieldItem.getOrder());
-        }
-        //check size update
-        if (StringUtils.isNotNullOrWhiteSpace(customFieldItem.getSize())){
-            ExpressionList<CustomFieldSize> sizeQuery = getCustomFieldSizeQuery()
-                    .where()
-                    .eq("name", customFieldItem.getSize());
-            ICustomFieldSize customFieldSize = customFieldSizeRepository.findOne(sizeQuery);
-            customField.setCustomFieldSize((CustomFieldSize) customFieldSize);
-        }
-        //check type update
-        if (StringUtils.isNotNullOrWhiteSpace(customFieldItem.getType())){
-            ExpressionList<CustomFieldType> typeQuery = getCustomFieldTypeQuery()
-                    .where()
-                    .eq("name", customFieldItem.getType());
-            ICustomFieldType customFieldType = customFieldTypeRepository.findOne(typeQuery);
-            customField.setCustomFieldType((CustomFieldType) customFieldType);
-        }
-        customField = customFieldRepository.update(customField);
-        response.setResponseObject(customFieldItem);
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<CustomFieldItem> createCustomField(CustomFieldItem customFieldItem, int userId, String tabName) {
-        ServiceResponse<CustomFieldItem> response = new ServiceResponse<>();
-        if (StringUtils.isNullOrWhiteSpace(customFieldItem.getName()) || StringUtils.isNullOrWhiteSpace(customFieldItem.getSize()) || StringUtils.isNullOrWhiteSpace(customFieldItem.getType()) || StringUtils.isNullOrWhiteSpace(tabName)) {
-            response.addError("", "error");
-            return response;
-        }
-
-        //get tabs
-        ExpressionList<CustomTab> tabQuery = getCustomMedicalTabQuery()
+    public ServiceResponse<Boolean> doesTabExist(String tabName){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+        ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
                 .eq("name", tabName);
-        ICustomTab customTab = customTabRepository.findOne(tabQuery);
-        if (customTab == null) {
-            response.addError("", "error");
-            return response;
-        }
-
-        //get field type
-        ExpressionList<CustomFieldType> typeQuery = getCustomFieldTypeQuery()
-                .where()
-                .eq("name", customFieldItem.getType());
-        ICustomFieldType customFieldType = customFieldTypeRepository.findOne(typeQuery);
-        if (customFieldType == null) {
-            response.addError("", "error");
-            return response;
-        }
-
-        //get field size
-        ExpressionList<CustomFieldSize> sizeQuery = getCustomFieldSizeQuery()
-                .where()
-                .eq("name", customFieldItem.getSize());
-        ICustomFieldSize customFieldSize = customFieldSizeRepository.findOne(sizeQuery);
-        if (customFieldSize == null) {
-            response.addError("", "error");
-            return response;
-        }
-
-        ICustomField customField = new CustomField();
-        customField.setName(customFieldItem.getName());
-        customField.setUserId(userId);
-        customField.setDateCreated(DateTime.now());
-        customField.setCustomTab((CustomTab) customTab);
-        customField.setCustomFieldType((CustomFieldType) customFieldType);
-        customField.setIsDeleted(false);
-        customField.setCustomFieldSize((CustomFieldSize) customFieldSize);
-        customField.setOrder(customFieldItem.getOrder());
-        customField.setPlaceholder(customFieldItem.getPlaceholder());
-
-        customField = customFieldRepository.create(customField);
-        if (customField == null) {
-            response.addError("", "error creating field");
-        } else {
-            response.setResponseObject(customFieldItem);
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<List<String>> getTypes(){
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> fields = new ArrayList<>();
-        List<? extends ICustomFieldType> customFieldTypes = customFieldTypeRepository.findAll(CustomFieldType.class);
-        if (customFieldTypes == null){
-            response.addError("","error");
-        }else{
-            for (ICustomFieldType cft : customFieldTypes){
-                fields.add(cft.getName());
+        try{
+            ITab customTab = tabRepository.findOne(query);
+            if (customTab == null){
+                response.setResponseObject(false);
+            }else{
+                response.setResponseObject(true);
             }
-            response.setResponseObject(fields);
+        }catch(Exception ex){
+            response.setResponseObject(false);
         }
         return response;
     }
-
-    @Override
-    public ServiceResponse<List<String>> getSizes(){
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> fields = new ArrayList<>();
-        List<? extends ICustomFieldSize> customFieldSizes = customFieldSizeRepository.findAll(CustomFieldSize.class);
-        if (customFieldSizes == null){
-            response.addError("","error");
-        }else{
-            for (ICustomFieldSize cfs : customFieldSizes){
-                fields.add(cfs.getName());
-            }
-            response.setResponseObject(fields);
-        }
-        return response;
-    }
-
-    private CustomFieldItem getCustomFieldItem(ICustomField cf){
-        CustomFieldItem customFieldItem = new CustomFieldItem();
-        customFieldItem.setName(cf.getName());
-        customFieldItem.setType(cf.getCustomFieldType().getName());
-        customFieldItem.setSize(cf.getCustomFieldSize().getName());
-        customFieldItem.setOrder(cf.getOrder());
-        customFieldItem.setPlaceholder(cf.getPlaceholder());
-        return customFieldItem;
-    }
-
-    private CustomTabItem getCustomTabItem(ICustomTab ct){
-        CustomTabItem customTabItem = new CustomTabItem();
-        customTabItem.setLeftColumnSize(ct.getLeftColumnSize());
-        customTabItem.setRightColumnSize(ct.getRightColumnSize());
-        customTabItem.setName(ct.getName());
-        return customTabItem;
-    }
-
-    private Query<CustomTab> getCustomMedicalTabQuery() {
-        return Ebean.find(CustomTab.class);
-    }
-
-    private Query<CustomField> getCustomFieldQuery() {
-        return Ebean.find(CustomField.class);
-    }
-
-    private Query<CustomFieldSize> getCustomFieldSizeQuery() {
-        return Ebean.find(CustomFieldSize.class);
-    }
-
-    private Query<CustomFieldType> getCustomFieldTypeQuery() {
-        return Ebean.find(CustomFieldType.class);
-    }
-
 
 }

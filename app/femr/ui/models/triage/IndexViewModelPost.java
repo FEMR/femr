@@ -14,7 +14,6 @@ public class IndexViewModelPost {
     private Date age;
     private String sex;
     public Boolean deletePhoto; //flag to determine if user would like to delete image file
-    public String imageCoords; //Image crop coordinates
     //begin vitals
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
@@ -29,12 +28,25 @@ public class IndexViewModelPost {
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
-    private Boolean isPregnant;
 
-    public Boolean getDeletePhoto() { return deletePhoto; }
+    //multiple chief complaints if they exist
+    private String chiefComplaintsJSON;
 
-    public String getImageCoords() { return imageCoords; }
-    public void   setImageCoord(String coords) { imageCoords = coords; }
+
+    private String patientPhotoCropped;
+
+    public String getPatientPhotoCropped() {
+        return patientPhotoCropped;
+    }
+
+    public void setPatientPhotoCropped(String patientPhotoCropped) {
+        this.patientPhotoCropped = patientPhotoCropped;
+    }
+
+
+    public Boolean getDeletePhoto() {
+        return deletePhoto;
+    }
 
     //begin general info
     public String getFirstName() {
@@ -174,19 +186,20 @@ public class IndexViewModelPost {
         this.weeksPregnant = weeksPregnant;
     }
 
-    public Boolean getIsPregnant() {
-        return isPregnant;
-    }
-
-    public void setIsPregnant(Boolean isPregnant) {
-        this.isPregnant = isPregnant;
-    }
-
     public Integer getGlucose() {
         return glucose;
     }
 
     public void setGlucose(Integer glucose) {
         this.glucose = glucose;
+    }
+
+
+    public String getChiefComplaintsJSON() {
+        return chiefComplaintsJSON;
+    }
+
+    public void setChiefComplaintsJSON(String chiefComplaintsJSON) {
+        this.chiefComplaintsJSON = chiefComplaintsJSON;
     }
 }

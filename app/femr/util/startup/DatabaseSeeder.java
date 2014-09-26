@@ -1,18 +1,31 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.util.startup;
 
 import com.avaje.ebean.Ebean;
-import femr.common.models.custom.ICustomFieldSize;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.models.Role;
-import femr.data.models.User;
-import femr.data.models.custom.CustomFieldSize;
-import femr.data.models.custom.CustomFieldType;
+import femr.data.models.*;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import play.Play;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,57 +33,263 @@ public class DatabaseSeeder {
 
     private final IRepository<User> userRepository;
     private final Repository<Role> roleRepository;
-    private final Repository<CustomFieldSize> customFieldSizeRepository;
-    private final Repository<CustomFieldType> customFieldTypeRepository;
+    private final Repository<SystemSetting> systemSettingRepository;
+    private final Repository<TabField> tabFieldRepository;
+    private final Repository<TabFieldSize> tabFieldSizeRepository;
+    private final Repository<TabFieldType> tabFieldTypeRepository;
+    private final Repository<Tab> tabRepository;
 
     public DatabaseSeeder() {
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
-        customFieldSizeRepository = new Repository<>();
-        customFieldTypeRepository = new Repository<>();
+        systemSettingRepository = new Repository<>();
+        tabFieldRepository = new Repository<>();
+        tabFieldSizeRepository = new Repository<>();
+        tabFieldTypeRepository = new Repository<>();
+        tabRepository = new Repository<>();
     }
 
     public void seed() {
+        seedSystemSettings();
         seedAdminUser();
-        seedCustomFields();
+        seedDefaultTabNames();
+        seedTabFieldTypesAndSizes();
+        seedDefaultTabFields();
     }
 
     /**
-     * Seed initial custom field values
+     * Seed available system settings
      */
-    private void seedCustomFields() {
-        int sizeCount = customFieldSizeRepository.count(CustomFieldSize.class);
-        if (sizeCount == 0) {
-            List<CustomFieldSize> customFieldSizes = new ArrayList<>();
-            CustomFieldSize customFieldSize = new CustomFieldSize();
-             //not using small right now
-//            customFieldSize.setName("small");
-//            customFieldSizes.add(customFieldSize);
-
-            customFieldSize = new CustomFieldSize();
-            customFieldSize.setName("medium");
-            customFieldSizes.add(customFieldSize);
-
-            customFieldSize = new CustomFieldSize();
-            customFieldSize.setName("large");
-            customFieldSizes.add(customFieldSize);
-
-            customFieldSizeRepository.createAll(customFieldSizes);
+    private void seedSystemSettings(){
+        int settingsCount = systemSettingRepository.count(SystemSetting.class);
+        if (settingsCount == 0){
+            SystemSetting systemSetting = new SystemSetting();
+            systemSetting.setActive(false);
+            systemSetting.setName("Multiple chief complaints");
+            systemSettingRepository.create(systemSetting);
+            systemSetting = new SystemSetting();
+            systemSetting.setActive(true);
+            systemSetting.setName("Medical PMH Tab");
+            systemSettingRepository.create(systemSetting);
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Medical Photo Tab");
+            systemSettingRepository.create(systemSetting);
         }
-        sizeCount = customFieldTypeRepository.count(CustomFieldType.class);
+    }
+
+
+    private void seedDefaultTabFields(){
+        int sizeCount = tabFieldRepository.count(TabField.class);
         if (sizeCount == 0){
-            List<CustomFieldType> customFieldTypes = new ArrayList<>();
+            List<TabField> tabFields = new ArrayList<>();
+            TabField tabField = new TabField();
+            tabField.setName("onset");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
 
-            CustomFieldType customFieldType = new CustomFieldType();
-            customFieldType.setName("text");
-            customFieldTypes.add(customFieldType);
+            tabField = new TabField();
+            tabField.setName("severity");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 2));
+            tabFields.add(tabField);
 
-            //not using numbers right now
-//            customFieldType = new CustomFieldType();
-//            customFieldType.setName("number");
-//            customFieldTypes.add(customFieldType);
+            tabField = new TabField();
+            tabField.setName("radiation");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
 
-            customFieldTypeRepository.createAll(customFieldTypes);
+            tabField = new TabField();
+            tabField.setName("quality");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("provokes");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("palliates");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("timeOfDay");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("physicalExamination");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("narrative");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 1));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("assessment");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 3));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("problem");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 3));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("treatment");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 3));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("medicalSurgicalHistory");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 2));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("socialHistory");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 2));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("currentMedication");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 2));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabField = new TabField();
+            tabField.setName("familyHistory");
+            tabField.setIsDeleted(false);
+            tabField.setTab(Ebean.getReference(Tab.class, 2));
+            tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+            tabFields.add(tabField);
+
+            tabFieldRepository.createAll(tabFields);
+        }
+
+    }
+
+
+    private void seedDefaultTabNames(){
+        int sizeCount = tabRepository.count(Tab.class);
+        if (sizeCount == 0){
+            List<Tab> tabs = new ArrayList<>();
+            Tab tab = new Tab();
+            tab.setName("HPI");
+            tab.setId(1);
+            tab.setIsDeleted(false);
+            tab.setDateCreated(dateUtils.getCurrentDateTime());
+            tab.setUserId(null);
+            tab.setLeftColumnSize(2);
+            tab.setRightColumnSize(2);
+            tab.setIsCustom(false);
+            tabs.add(tab);
+
+            tab = new Tab();
+            tab.setName("PMH");
+            tab.setId(2);
+            tab.setIsDeleted(false);
+            tab.setDateCreated(dateUtils.getCurrentDateTime());
+            tab.setUserId(null);
+            tab.setLeftColumnSize(0);
+            tab.setRightColumnSize(0);
+            tab.setIsCustom(false);
+            tabs.add(tab);
+
+            tab = new Tab();
+            tab.setName("Treatment");
+            tab.setId(3);
+            tab.setIsDeleted(false);
+            tab.setDateCreated(dateUtils.getCurrentDateTime());
+            tab.setUserId(null);
+            tab.setLeftColumnSize(0);
+            tab.setRightColumnSize(0);
+            tab.setIsCustom(false);
+            tabs.add(tab);
+
+            tab = new Tab();
+            tab.setName("Photos");
+            tab.setId(4);
+            tab.setIsDeleted(false);
+            tab.setDateCreated(dateUtils.getCurrentDateTime());
+            tab.setUserId(null);
+            tab.setLeftColumnSize(0);
+            tab.setRightColumnSize(0);
+            tab.setIsCustom(false);
+            tabs.add(tab);
+
+            tabRepository.createAll(tabs);
+        }
+
+    }
+
+    /**
+     * Seed initial tab field values
+     */
+    private void seedTabFieldTypesAndSizes() {
+        int sizeCount = tabFieldSizeRepository.count(TabFieldSize.class);
+        if (sizeCount == 0) {
+            List<TabFieldSize> tabFieldSizes = new ArrayList<>();
+            TabFieldSize tabFieldSize = new TabFieldSize();
+             //not using small right now
+//            tabFieldSize.setName("small");
+//            tabFieldSizes.add(tabFieldSize);
+
+            tabFieldSize = new TabFieldSize();
+            tabFieldSize.setName("medium");
+            tabFieldSizes.add(tabFieldSize);
+
+            tabFieldSize = new TabFieldSize();
+            tabFieldSize.setName("large");
+            tabFieldSizes.add(tabFieldSize);
+
+            tabFieldSizeRepository.createAll(tabFieldSizes);
+        }
+        sizeCount = tabFieldTypeRepository.count(TabFieldType.class);
+        if (sizeCount == 0){
+            List<TabFieldType> tabFieldTypes = new ArrayList<>();
+
+            TabFieldType tabFieldType = new TabFieldType();
+            tabFieldType.setName("text");
+            tabFieldType.setId(1);
+            tabFieldTypes.add(tabFieldType);
+
+            tabFieldType = new TabFieldType();
+            tabFieldType.setName("number");
+            tabFieldType.setId(2);
+            tabFieldTypes.add(tabFieldType);
+
+            tabFieldTypeRepository.createAll(tabFieldTypes);
         }
 
     }

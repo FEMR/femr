@@ -25,7 +25,7 @@ DROP FOREIGN KEY `fk_custom_fields_custom_size_id`;
 ALTER TABLE `custom_fields`
 DROP INDEX `fk_custom_fields_custom_size_id_idx` ;
 
-ALTER TABLE `femr`.`custom_fields`
+ALTER TABLE `custom_fields`
 DROP COLUMN `custom_size_id`;
 
 DROP TABLE `custom_field_sizes`;

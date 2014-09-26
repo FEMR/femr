@@ -2,16 +2,14 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.ServiceResponse;
 import femr.business.services.IPhotoService;
-import femr.business.services.ISearchService;
-import femr.common.models.*;
+import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.util.stringhelpers.StringUtils;
 import play.mvc.*;
-
 import java.io.File;
-
 import static play.mvc.Results.ok;
 
 
@@ -19,88 +17,65 @@ import static play.mvc.Results.ok;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PhotoController {
 
-    private ISearchService searchService;
     private IPhotoService photoService;
 
     @Inject
-    public PhotoController(ISearchService searchService, IPhotoService photoService)
-    {
-        this.searchService = searchService;
+    public PhotoController(IPhotoService photoService) {
         this.photoService = photoService;
     }
 
-
     /**
-     * Returns patient image file
-     * @param patientId Patient Primary Key Value
+     * Returns an image file from the Upload folder for a patient
+     *
+     * @param patientId   Patient Primary Key Value
      * @param showDefault If True, return default image when patient photo is not found, else return nothing
      * @return
      */
-    public Result GetPatientPhoto(Integer patientId, Boolean showDefault)
-    {
-        try
-        {
-            if(patientId != null)
-            {
-                ServiceResponse<IPatient> patRsp = searchService.findPatientById(patientId);
-                //fetch patient:
-                if(!patRsp.hasErrors())
-                {
-                    IPatient pat = patRsp.getResponseObject();
-                    if(pat.getPhotoId() != null)
-                    {
-                        //fetch photo record:
-                        ServiceResponse<IPhoto> photoRsp = photoService.getPhotoById(pat.getPhotoId());
-                        if(!photoRsp.hasErrors())
-                        {
-                            IPhoto photo = photoRsp.getResponseObject();
-                            //photoService.g
-                            return ok(new File(photoService.GetRootPhotoPath() + photo.getFilePath())).as("image/jpg");
-                        }
-                    }
+    public Result GetPatientPhoto(Integer patientId, Boolean showDefault) {
+        String pathToPhoto = "";
+
+        if (patientId != null) {
+            ServiceResponse<String> pathToPhotoResponse = photoService.getPhotoPathForPatient(patientId);
+            if (pathToPhotoResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+            if (pathToPhotoResponse.getResponseObject() != null) {
+                pathToPhoto = pathToPhotoResponse.getResponseObject();
+                File photo = new File(pathToPhoto);
+                if (photo.canRead())
+                    return ok(photo).as("image/jpg");
+                else{
+                    //need to be able to tell the difference between Triage and Search
+                    //if Triage, do not show default
+                    //if Search, show default
+                    pathToPhoto = null;
+                    showDefault = true;
                 }
-            }
-        }
-        catch(Exception ex)
-        {
-        }
 
-        //If there is no photo, then attempt to return the default image from config file
-        if(showDefault)
-        {
-            try
-            {
-                String path = ConfigFactory.load().getString("photos.defaultProfilePhoto");
-                return ok(new File(path)).as("image/jpg");
-            }
-            catch(Exception ex)
-            {
-                String temp = ex.getMessage();
             }
         }
 
-        //No luck, return nothing
-        return ok("");
+        if (StringUtils.isNullOrWhiteSpace(pathToPhoto) && showDefault) {
+            pathToPhoto = ConfigFactory.load().getString("photos.defaultProfilePhoto");
+        }
+
+        return ok(new File(pathToPhoto)).as("image/jpg");
     }
 
-    public Result GetEncounterPhoto(Integer photoId)
-    {
-        try
-        {
-            if(photoId != null)
-            {
-                ServiceResponse<IPhoto> srPhoto = photoService.getPhotoById(photoId);
-                if(!srPhoto.hasErrors())
-                {
-                    IPhoto photo = srPhoto.getResponseObject();
-                    return ok(new File(photoService.GetRootEncounterPhotoPath() + photo.getFilePath())).as("image/jpg");
-                }
+    /**
+     * Returns any image file from the Upload folder
+     *
+     * @param photoId id of the image
+     * @return
+     */
+    public Result GetPhoto(int photoId) {
+        if (photoId > 0) {
+            ServiceResponse<String> pathToPhotoResponse = photoService.getPhotoPath(photoId);
+            if (pathToPhotoResponse.hasErrors()) {
+                throw new RuntimeException();
             }
+            return ok(new File(pathToPhotoResponse.getResponseObject())).as("image/jpg");
         }
-        catch(Exception ex)
-        {
-        }
-
         //No luck, return nothing
         return ok("");
     }

@@ -1,12 +1,310 @@
-var _imgInfo = {
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    imgData: null,
-    deletePhoto: false,
-    jWinCrop: null
+var patientPhotoFeature = {
+
+    config: {
+        windowWidth: 250,
+        windowHeight: 250,
+        imageElement: $('#patientPhoto'),
+        isNewPhoto: false
+    },
+
+    photo: {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        imgData: null,
+        deletePhoto: false,
+        jWinCrop: null
+    },
+
+    init: function () {
+        //destroy crop window if it already exists:
+        var jwc = $(patientPhotoFeature.config.imageElement).getjWindowCrop();
+        if (jwc != undefined)
+            jwc.destroyCrop();
+
+        //Create new crop window
+        jwc = $(patientPhotoFeature.config.imageElement).jWindowCrop({
+            targetWidth: patientPhotoFeature.config.windowWidth,
+            targetHeight: patientPhotoFeature.config.windowHeight,
+            loadingText: '',
+            zoomInId: 'btnZoomIn',
+            zoomOutId: 'btnZoomOut',
+
+            onChange: function (result) {
+                patientPhotoFeature.photo.x = result.cropX;
+                patientPhotoFeature.photo.y = result.cropY;
+                patientPhotoFeature.photo.width = result.cropW;
+                patientPhotoFeature.photo.height = result.cropH;
+            }
+        });
+        jwc.touchit(); //This invokes the "touchit" module which translates mouse/click
+        //events into touch/drag events
+        patientPhotoFeature.photo.jWinCrop = $(patientPhotoFeature.config.imageElement).getjWindowCrop();
+
+        if ($(patientPhotoFeature.config.imageElement).attr('src') == "") {
+            //If picture is empty, then let's hide the jCrop window
+            //  and show the upload button instead
+            $('#patientPhotoDiv').hide();
+            $('#photoInputFormDiv').show();
+            $(patientPhotoFeature.config.imageElement).show();
+        }
+        else {
+            $('#patientPhotoDiv').show();
+            $('#photoInputFormDiv').hide();
+            $(patientPhotoFeature.config.imageElement).show();
+            /*
+             At the moment, we will only support
+             the delete functionality if the photo was
+             pulled down from the server, thus we will
+             disable the zooming controls
+             */
+            $('#zoomControls').hide();
+        }
+    },
+    resetFileUploadBox: function () {
+        var control = $("#photoInput");
+        control.replaceWith(control = control.clone(true));
+    },
+    flagForDeletion: function () {
+        $(patientPhotoFeature.config.imageElement).attr('src', '');
+        // _photoInit();
+        patientPhotoFeature.init();
+        //_photoResetFileUpload();
+        patientPhotoFeature.resetFileUploadBox();
+        patientPhotoFeature.photo.deletePhoto = true;
+        $('#deletePhoto').prop('checked', true);  //set hidden element to true so that the image will be deleted server-side
+
+    },
+    loadPhotoIntoFrame: function (evt) {
+        //  Load the photo into the image frame at which point the user
+        //  may drag / crop the photo
+
+        // Filelist (the files that have been selected by the user to be uploaded
+        var files = evt.target.files;
+
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+            // Only process image files.
+            if (!f.type.match('image.*')) {
+                continue;
+            }
+
+            //Older web browsers won't recognize FileReader
+            if (typeof FileReader !== 'undefined') {
+                $('#patientPhotoDiv').show();
+                $('#photoInputFormDiv').hide();
+
+                var reader = new FileReader();
+
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        $('#patientPhoto').attr('src', e.target.result);
+                    };
+                })(f);
+
+                // Read in the image file as a data URL.
+                reader.readAsDataURL(f);
+                patientPhotoFeature.config.isNewPhoto = true;
+            }
+            return;
+        }
+
+    },
+    cropAndReplace: function () {
+        if (patientPhotoFeature.config.isNewPhoto === true) {
+            var canvas = document.getElementById('patientPhotoCanvas'),
+                context = canvas.getContext('2d');
+
+            canvas.height = 255;
+            canvas.width = 255;
+
+            var img = document.getElementById('patientPhoto');
+            var sx = patientPhotoFeature.photo.x;
+            var sy = patientPhotoFeature.photo.y;
+            var sw = patientPhotoFeature.photo.width;
+            var sh = patientPhotoFeature.photo.height;
+
+            context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+
+            //specify the quality downgrade, but how much?!??!?
+            var dataURL = canvas.toDataURL("image/jpeg", 0.5);
+            $('#photoInputCropped').val(dataURL);
+            $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+        }
+    }
 };
+
+var multipleChiefComplaintFeature = {
+    isActive: ($("#addChiefComplaint").length > 0),
+    chiefComplaintsJSON: [],
+    addChiefComplaintInput: function () {
+        var value = triageFields.chiefComplaint.chiefComplaint.val().trim();
+        //make sure a value exists in the chief complaint box and make sure it doesn't
+        //already exist in the chief complaint array
+        if (value === "" || $.inArray(value, multipleChiefComplaintFeature.chiefComplaintsJSON) > -1) {
+            return;
+        }
+        //add to visual list
+        triageFields.chiefComplaint.chiefComplaintList.append("<li><span class=removeChiefComplaint>X</span>" + value + "</li>");
+        //add to JSON list
+        multipleChiefComplaintFeature.chiefComplaintsJSON.push(value);
+        //clear chief complaint textarea
+        triageFields.chiefComplaint.chiefComplaint.val("");
+        //bind chief complaint removal
+        $('.removeChiefComplaint').unbind();
+        $('.removeChiefComplaint').click(function (evt) {
+            multipleChiefComplaintFeature.removeChiefComplaint(evt);
+        });
+    },
+    removeChiefComplaint: function (evt) {
+        var chiefComplaintText = $(evt.target).parent().text();
+        chiefComplaintText = chiefComplaintText.substring(1, chiefComplaintText.length);
+        var index = multipleChiefComplaintFeature.chiefComplaintsJSON.indexOf(chiefComplaintText);
+        if (index > -1){
+           multipleChiefComplaintFeature.chiefComplaintsJSON.splice(index,1);
+        }
+        $(evt.target).parent().remove();
+    },
+    JSONifyChiefComplaints: function () {
+        var chiefComplaintBox = $('#chiefComplaint').val().trim();
+        //add the value in the box currently (if it exists and if it doesn't already exist in the current list)
+        if (chiefComplaintBox && $.inArray(chiefComplaintBox, multipleChiefComplaintFeature.chiefComplaintsJSON) === -1){
+            multipleChiefComplaintFeature.chiefComplaintsJSON.push(chiefComplaintBox);
+        }
+        $('input[name=chiefComplaintsJSON]').val(JSON.stringify(multipleChiefComplaintFeature.chiefComplaintsJSON));
+    }
+};
+
+var triageFields = {
+    patientInformation: {
+        firstName: $('#firstName'),
+        lastName: $('#lastName'),
+        age: $('#age'),
+        years: $('#years'),
+        months: $('#months'),
+        city: $('#city')
+    },
+    patientVitals: {
+        respiratoryRate: $('#respiratoryRate'),
+        bloodPressureSystolic: $('#bloodPressureSystolic'),
+        bloodPressureDiastolic: $('#bloodPressureDiastolic'),
+        heartRate: $('#heartRate'),
+        oxygenSaturation: $('#oxygenSaturation'),
+        temperature: $('#temperature'),
+        weight: $('#weight'),
+        heightFeet: $('#heightFeet'),
+        heightInches: $('#heightInches'),
+        glucose: $('#glucose'),
+        weeksPregnant: $('#weeksPregnant')
+    },
+    chiefComplaint: {
+
+        chiefComplaint: $('#chiefComplaint'),
+        chiefComplaintList: $('#chiefComplaintList')
+    }
+};
+
+var birthdayAgeAutoCalculateFeature = {
+
+    ageChangeCheck: function () {
+        var patientInfo = triageFields.patientInformation;
+
+        if (!patientInfo.years.val() && !patientInfo.months.val()) {
+            patientInfo.age.val(null);
+            patientInfo.years.css('border', '');
+            patientInfo.months.css('border', '');
+            return false;
+        }
+        var checkYears = Math.round(patientInfo.years.val());
+        var checkMonths = Math.round(patientInfo.months.val());
+        var pass = true;
+        if (patientInfo.years.val()) {
+            if (checkYears < 0 || isNaN(checkYears)) {
+                patientInfo.years.css('border-color', 'red');
+                patientInfo.age.val(null);
+                pass = false;
+            }
+            else {
+                patientInfo.years.val(checkYears);
+                patientInfo.years.css('border', '');
+            }
+        }
+        else {
+            patientInfo.years.css('border', '');
+        }
+        if (patientInfo.months.val()) {
+            if (checkMonths < 0 || isNaN(checkMonths)) {
+                patientInfo.months.css('border-color', 'red');
+                patientInfo.age.val(null);
+                pass = false;
+            }
+            else {
+                patientInfo.months.val(checkMonths);
+                patientInfo.months.css('border', '');
+            }
+        }
+        else {
+            patientInfo.months.css('border', '');
+        }
+        return (pass)
+    },
+    calculateBirthdayFromAge: function () {
+        var patientInfo = triageFields.patientInformation;
+
+        var inputYears;
+        var inputMonths;
+        if (!patientInfo.years.val()) {
+            inputYears = 0;
+        }
+        else {
+            inputYears = $('#years').val();
+        }
+        if (!patientInfo.months.val()) {
+            inputMonths = 0;
+        }
+        else {
+            inputMonths = $('#months').val();
+        }
+        var birthDate = new Date();
+        var birthMonth = birthDate.getMonth();
+        var birthDay = birthDate.getDate();
+        var birthYear = birthDate.getFullYear();
+        if (birthMonth < inputMonths) {
+            inputMonths = inputMonths - birthMonth - 1;
+            birthMonth = 11;
+            birthYear = birthYear - 1;
+        }
+        if (birthMonth < inputMonths) {
+            var yearsFromMonths = Math.floor(inputMonths / 12);
+            inputMonths = inputMonths - yearsFromMonths * 12;
+            birthYear = birthYear - yearsFromMonths;
+        }
+        birthMonth = birthMonth - inputMonths;
+        birthYear = birthYear - inputYears;
+        if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
+            birthDay = 30;
+        }
+        else if (birthDay > 28 && birthMonth == 1) {
+            if (birthYear % 400 == 0) {
+                birthDay = 29;
+            }
+            else if (birthYear % 100 == 0) {
+                birthDay = 28;
+            }
+            else if (birthYear % 4 == 0) {
+                birthDay = 29;
+            }
+            else {
+                birthDay = 28;
+            }
+        }
+        birthDate.setFullYear(birthYear, birthMonth, birthDay);
+        return birthDate;
+    }
+};
+
 
 $(document).ready(function () {
 
@@ -20,25 +318,12 @@ $(document).ready(function () {
     });
     //gen info and vitals shit
     $('#femaleBtn').change(function () {
-        $('#pregnancyBtn').removeClass('disabled');
+        $('#weeksPregnant').attr('disabled', false);
     });
     $('#maleBtn').change(function () {
-        $('#pregnancyBtn').removeClass('active');
-        $('#pregnancyBtn').addClass('disabled');
         $('#weeksPregnant').val('');
-        $('#weeksPregnant').attr('disabled', 'disabled');
+        $('#weeksPregnant').attr('disabled', true);
     });
-    $('#pregnancyBtn').change(function () {
-        if (typeof $("#weeksPregnant").attr('disabled') === "undefined") {
-            $('#weeksPregnant').val('');
-            $('#weeksPregnant').attr('disabled', 'disabled');
-        }
-        else {
-            $('#weeksPregnant').removeAttr('disabled');
-        }
-
-
-    })
     //birthday shit
     $('#age').change(function () {
         var inputYear = $('#age').val().split('-')[0];
@@ -77,8 +362,8 @@ $(document).ready(function () {
         }
     });
     $('#years').change(function () {
-        if (_ageChangeCheck()) {
-            var birthDate = _calcBirthdateFromAge();
+        if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
+            var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -90,8 +375,8 @@ $(document).ready(function () {
         }
     });
     $('#months').change(function () {
-        if (_ageChangeCheck()) {
-            var birthDate = _calcBirthdateFromAge();
+        if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
+            var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
             if (nan == false) {
@@ -112,142 +397,52 @@ $(document).ready(function () {
     $('#city').change(function () {
         $('#city').css('border', '');
     });
-
-
-    //PHOTO LOGIC ::START::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
-    //Kick off jWindowCrop library
-    //  This also keeps the _imgInfo object up to date
-    _photoInit();
-    //When the user chooses a photo, this function will
-    //  Load the photo into the image frame at which point the user
-    //  may drag / crop the photo
-    $('#photoInput').change(function (evt) {
-        var files = evt.target.files; // FileList object
-        // Loop through the FileList and render image files as thumbnails.
-        for (var i = 0, f; f = files[i]; i++) {
-
-            // Only process image files.
-            if (!f.type.match('image.*')) {
-                continue;
-            }
-
-            //Older web browsers won't recognize FileReader
-            if (typeof FileReader !== 'undefined'){
-                $('#patientPhotoDiv').show();
-                $('#photoInputFormDiv').hide();
-
-
-                var reader = new FileReader();
-
-                // Closure to capture the file information.
-                reader.onload = (function (theFile) {
-                    return function (e) {
-                        $('#patientPhoto').attr('src', e.target.result);
-                    };
-                })(f);
-
-                // Read in the image file as a data URL.
-                reader.readAsDataURL(f);
-            }
-
-            return;
-        }
-
-    });
-    //Notes:  on post, I can create a temporary canvas, crop the image,
-    // and then place data into upload section
     $('#btnDeletePhoto').click(function () {
         var b = confirm("Are you sure you would like to delete this photo?");
         if (b == true)
-            _photoDeleteImage();
+            patientPhotoFeature.flagForDeletion();
     });
-    //PHOTO LOGIC ::END::  =~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
-    $(function () {
-        Date.prototype.toYMD = Date_toYMD;
-        function Date_toYMD() {
-            var year, month, day;
-            year = String(this.getFullYear());
-            month = String(this.getMonth() + 1);
-            if (month.length == 1) {
-                month = "0" + month;
-            }
-            day = String(this.getDate());
-            if (day.length == 1) {
-                day = "0" + day;
-            }
-            return year + "-" + month + "-" + day;
+
+    $('#triageSubmitBtn').click(function () {
+        patientPhotoFeature.cropAndReplace();
+        //make sure the feature is turned on before JSONifying
+        if (multipleChiefComplaintFeature.isActive == true){
+            multipleChiefComplaintFeature.JSONifyChiefComplaints();
         }
+        return validate(); //located in triageClientValidation.js
     });
+
+    patientPhotoFeature.init();
+
+    $('#photoInput').change(function (evt) {
+        patientPhotoFeature.loadPhotoIntoFrame(evt);
+    });
+
+    $('#addChiefComplaint').click(function () {
+        multipleChiefComplaintFeature.addChiefComplaintInput();
+    });
+
 
 });
 
 
-/* Photo shit */
-//Handle photo delete operation
-function _photoDeleteImage() {
-    $('#patientPhoto').attr('src', '');
-    _photoInit();
-    _photoResetFileUpload();
-    _imgInfo.deletePhoto = true;
-    $('#deletePhoto').prop('checked', true);  //set hidden element to true so that the image will be deleted server-side
-}
-//Initialize controls, shows or hides
-//  patient photo or upload control depending on if image
-//  has been loaded already
-function _photoInit() {
-    //destroy crop window if it already exists:
-    var jwc = $('#patientPhoto').getjWindowCrop();
-    if (jwc != undefined)
-        jwc.destroyCrop();
-
-
-    //Create new crop window
-    jwc = $('#patientPhoto').jWindowCrop({
-        targetWidth: 250,
-        targetHeight: 250,
-        loadingText: '',
-        zoomInId: 'btnZoomIn',
-        zoomOutId: 'btnZoomOut',
-
-        onChange: function (result) {
-            _imgInfo.x = result.cropX;
-            _imgInfo.y = result.cropY;
-            _imgInfo.width = result.cropW;
-            _imgInfo.height = result.cropH;
-            $('#imageCoords').val("{" + result.cropX + "," + result.cropY +
-                "," + result.cropW + "," + result.cropH + "}");
-            var temp = $('#imageCoords').val();
+$(function () {
+    Date.prototype.toYMD = Date_toYMD;
+    function Date_toYMD() {
+        var year, month, day;
+        year = String(this.getFullYear());
+        month = String(this.getMonth() + 1);
+        if (month.length == 1) {
+            month = "0" + month;
         }
-    });
-    jwc.touchit(); //This invokes the "touchit" module which translates mouse/click
-    //events into touch/drag events
-    _imgInfo.jWinCrop = $('#patientPhoto').getjWindowCrop();
+        day = String(this.getDate());
+        if (day.length == 1) {
+            day = "0" + day;
+        }
+        return year + "-" + month + "-" + day;
+    }
+});
 
-    if ($('#patientPhoto').attr('src') == "") {
-        //If picture is empty, then let's hide the jCrop window
-        //  and show the upload button instead
-        $('#patientPhotoDiv').hide();
-        $('#photoInputFormDiv').show();
-        $('#patientPhoto').show();
-    }
-    else {
-        $('#patientPhotoDiv').show();
-        $('#photoInputFormDiv').hide();
-        $('#patientPhoto').show();
-        /*
-         At the moment, we will only support
-         the delete functionality if the photo was
-         pulled down from the server, thus we will
-         disable the zooming controls
-         */
-        $('#zoomControls').hide();
-    }
-}
-//Reset the file upload box
-function _photoResetFileUpload() {
-    var control = $("#photoInput");
-    control.replaceWith(control = control.clone(true));
-}
 
 /* BMI auto- calculator */
 window.setInterval(function () {
@@ -268,96 +463,4 @@ window.setInterval(function () {
     }
 }, 500);
 
-/* Birthday shit */
-function _ageChangeCheck() {
-    if (!$('#years').val() && !$('#months').val()) {
-        $('#age').val(null);
-        $('#years').css('border', '');
-        $('#months').css('border', '');
-        return false;
-    }
-    var checkYears = Math.round($('#years').val());
-    var checkMonths = Math.round($('#months').val());
-    var pass = true;
-    if ($('#years').val()) {
-        if (checkYears < 0 || isNaN(checkYears)) {
-            $('#years').css('border-color', 'red');
-            $('#age').val(null);
-            pass = false;
-        }
-        else {
-            $('#years').val(checkYears);
-            $('#years').css('border', '');
-        }
-    }
-    else {
-        $('#years').css('border', '');
-    }
-    if ($('#months').val()) {
-        if (checkMonths < 0 || isNaN(checkMonths)) {
-            $('#months').css('border-color', 'red');
-            $('#age').val(null);
-            pass = false;
-        }
-        else {
-            $('#months').val(checkMonths);
-            $('#months').css('border', '');
-        }
-    }
-    else {
-        $('#months').css('border', '');
-    }
-    return (pass)
-}
-function _calcBirthdateFromAge() {
-    var inputYears;
-    var inputMonths;
-    if (!$('#years').val()) {
-        inputYears = 0;
-    }
-    else {
-        inputYears = $('#years').val();
-    }
-    if (!$('#months').val()) {
-        inputMonths = 0;
-    }
-    else {
-        inputMonths = $('#months').val();
-    }
-    var birthDate = new Date();
-    var birthMonth = birthDate.getMonth();
-    var birthDay = birthDate.getDate();
-    var birthYear = birthDate.getFullYear();
-    if (birthMonth < inputMonths) {
-        inputMonths = inputMonths - birthMonth - 1;
-        birthMonth = 11;
-        birthYear = birthYear - 1;
-    }
-    if (birthMonth < inputMonths) {
-        var yearsFromMonths = Math.floor(inputMonths / 12);
-        inputMonths = inputMonths - yearsFromMonths * 12;
-        birthYear = birthYear - yearsFromMonths;
-    }
-    birthMonth = birthMonth - inputMonths;
-    birthYear = birthYear - inputYears;
-    if (birthDay == 31 && (birthMonth == 3 || birthMonth == 5 || birthMonth == 8 || birthMonth == 10)) {
-        birthDay = 30;
-    }
-    else if (birthDay > 28 && birthMonth == 1) {
-        if (birthYear % 400 == 0) {
-            birthDay = 29;
-        }
-        else if (birthYear % 100 == 0) {
-            birthDay = 28;
-        }
-        else if (birthYear % 4 == 0) {
-            birthDay = 29;
-        }
-        else {
-            birthDay = 28;
-        }
-    }
-    birthDate.setFullYear(birthYear, birthMonth, birthDay);
-    return birthDate;
-}
 

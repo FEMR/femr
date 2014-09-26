@@ -1,6 +1,6 @@
 package mock.femr.data.models;
 
-import femr.common.models.IHpiField;
+import femr.data.models.IHpiField;
 
 public class MockHpiField implements IHpiField{
     private int id = 0;

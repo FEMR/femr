@@ -1,28 +1,50 @@
 /* General page styles */
-
+#mainWrap form{
+    overflow: hidden;
+}
 #diagnosisWrap {
     width: 30%;
     float: left;
-    border-right: 1px solid #b2b2b0;
     padding: 5px;
+
 }
 
 #medicationWrap {
     width: 70%;
     float: left;
     padding: 5px;
-    height: inherit;
+    border-left: 1px solid #b2b2b0;
+}
+
+#pharmacySubmitBtn{
+    margin-top: 15px;
+}
+
+#medicationList{
+    padding-left: 80px;
 }
 
 .medication {
-    padding: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #b2b2b0;
+}
+.medication button{
+    position: absolute;
+    margin-left: -80px;
+    margin-top: -6px;
+}
+.medication span{
+    width: 100%;
+}
+.medication input{
+    width: 100%;
+    margin-top: 10px;
 }
 
 /* Override the overflow style so the user can see the full drop down
  in medication typeahead list*/
 #mainWrap{
     min-height: 300px;
-
 }
 
 .problems li {
@@ -30,7 +52,17 @@
     margin-bottom: 35px;
 }
 
-/*typeahead     */
+@media (max-width: 620px) {
+    #diagnosisWrap{
+        width: 100%;
+    }
+
+    #medicationWrap{
+        width: 100%;
+        border-left: none;
+    }
+}
+/*typeahead           */
 
 input[style] {
     vertical-align: middle !important;
@@ -79,7 +111,6 @@ input[style] {
     box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-
 }
 
 .tt-suggestion {
@@ -105,4 +136,9 @@ input[style] {
 
 .tt-suggestion p {
     margin: 0;
+}
+.replaceBtn{
+    width: auto !important;
+    padding: 6px 12px 6px 12px;
+
 }

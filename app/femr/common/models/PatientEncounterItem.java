@@ -1,0 +1,136 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
+package femr.common.models;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PatientEncounterItem {
+    private int id;
+    private int patientId;
+    private List<String> chiefComplaints;
+    private Integer weeksPregnant;
+    private Boolean isClosed;
+
+    private String triageDateOfVisit;
+    private String nurseEmailAddress;
+
+    private String medicalDateOfVisit;
+    private String physicianEmailAddress;
+
+    private String pharmacyDateOfVisit;
+    private String pharmacistEmailAddress;
+
+    public PatientEncounterItem(){
+        this.chiefComplaints = new ArrayList<>();
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
+    }
+
+    public List<String> getChiefComplaints() {
+        return chiefComplaints;
+    }
+
+    public void setChiefComplaints(List<String> chiefComplaints) {
+        this.chiefComplaints = chiefComplaints;
+    }
+
+    public void addChiefComplaint(String chiefComplaint){
+        chiefComplaints.add(chiefComplaint);
+    }
+
+    public Integer getWeeksPregnant() {
+        return weeksPregnant;
+    }
+
+    public void setWeeksPregnant(Integer weeksPregnant) {
+        this.weeksPregnant = weeksPregnant;
+    }
+
+    public Boolean getIsClosed() {
+        return isClosed;
+    }
+
+    public void setIsClosed(Boolean isClosed) {
+        this.isClosed = isClosed;
+    }
+
+    public String getTriageDateOfVisit() {
+        return triageDateOfVisit;
+    }
+
+    public void setTriageDateOfVisit(String triageDateOfVisit) {
+        this.triageDateOfVisit = triageDateOfVisit;
+    }
+
+    public String getNurseEmailAddress() {
+        return nurseEmailAddress;
+    }
+
+    public void setNurseEmailAddress(String nurseEmailAddress) {
+        this.nurseEmailAddress = nurseEmailAddress;
+    }
+
+    public String getPhysicianEmailAddress() {
+        return physicianEmailAddress;
+    }
+
+    public void setPhysicianEmailAddress(String physicianEmailAddress) {
+        this.physicianEmailAddress = physicianEmailAddress;
+    }
+
+    public String getPharmacistEmailAddress() {
+        return pharmacistEmailAddress;
+    }
+
+    public void setPharmacistEmailAddress(String pharmacistEmailAddress) {
+        this.pharmacistEmailAddress = pharmacistEmailAddress;
+    }
+
+    public String getMedicalDateOfVisit() {
+        return medicalDateOfVisit;
+    }
+
+    public void setMedicalDateOfVisit(String medicalDateOfVisit) {
+        this.medicalDateOfVisit = medicalDateOfVisit;
+    }
+
+    public String getPharmacyDateOfVisit() {
+        return pharmacyDateOfVisit;
+    }
+
+    public void setPharmacyDateOfVisit(String pharmacyDateOfVisit) {
+        this.pharmacyDateOfVisit = pharmacyDateOfVisit;
+    }
+}

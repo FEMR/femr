@@ -1,0 +1,36 @@
+@(currentUser: femr.common.dto.CurrentUser, settings: java.util.List[_ <: femr.data.models.ISystemSetting])
+@import femr.ui.controllers.admin.routes.ConfigureController
+
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/admin/configure.css")">
+    }
+
+@admin("Configure", currentUser, styles = additionalStyles) {
+    @helper.form(action = ConfigureController.indexPost()) {
+        <table id="configurationTable">
+            <tr>
+                <th>Feature</th>
+                <th>Toggle</th>
+            </tr>
+
+            @for(x <- 1 to settings.size) {
+                <tr>
+                    <td class="name">@settings.get(x - 1).getName</td>
+                    <td class="isActive">
+                    @if(settings.get(x - 1).isActive) {
+                        <input type="checkbox" name="ss@x" value="@settings.get(x - 1).getName" checked/>
+                    } else {
+                        <input type="checkbox" name="ss@x" value="@settings.get(x - 1).getName"/>
+                    }
+                    </td>
+                </tr>
+            }
+
+
+        </table>
+        <input type="submit" class="fButton" value="Save"/>
+    }
+
+}

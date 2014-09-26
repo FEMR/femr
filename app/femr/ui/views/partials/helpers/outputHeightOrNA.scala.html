@@ -1,0 +1,12 @@
+@(feet: java.lang.Integer, inches: java.lang.Integer)
+
+@if(feet == null && inches == null){
+    N/A
+}else{
+    @if(feet != null){
+        @feet'
+    }
+    @if(inches != null){
+        @inches"
+    }
+}

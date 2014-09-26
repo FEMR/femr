@@ -1,24 +1,49 @@
-@(title: String, currentUser: femr.business.dtos.CurrentUser,menu: Html = Html(""),
-        styles: Html = Html(""), scripts: Html = Html(""),
-        outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""))(content: Html)
+@(title: String,
+        currentUser: femr.common.dto.CurrentUser,
+        menus: Html = Html(""),
+        styles: Html = Html(""),
+        scripts: Html = Html(""),
+        outsideContainerTop: Html = Html(""),
+        outsideContainerBottom: Html = Html(""))(content: Html)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.UsersController
+@import femr.ui.controllers.admin.routes.ConfigureController
 
-@main(title, currentUser, styles, scripts, search = null, showSearchButton = false) {
-    <div class="row">
-        <div class="col-md-2 admin-left-panel">
-            <div class="btn-group-vertical">
-                <a href="@UsersController.index()" class="btn btn-default pull-left userBtns listUserBtn"><span class="glyphicon glyphicon-user"></span>
-                    Manage Users</a>
-                <a href="@UsersController.createGet()" class="btn btn-default pull-left userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
-                    Add User</a>
-                @menu
+        @* Add scripts to script variable, how? *@
+    @adminScripts = {
+        @scripts
+        <script type = "text/javascript" src="@routes.Assets.at("js/admin/admin.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
+    }
+    @adminStyles = {
+        @styles
+        <link rel="stylesheet" href="@routes.Assets.at("css/admin/admin.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.min.css")">
+    }
+
+@main(title, currentUser, adminStyles, adminScripts) {
+    <div id="admin-panels">
+        <div id="admin-left-panel">
+            <a href="@UsersController.index()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
+                Manage Users</a>
+            <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+                Add User</a>
+            @*<a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
+                Inventory Tracking</a>*@
+            <a href="@ConfigureController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
+                Configure</a>
+            @menus
+        </div>
+        <div id="admin-right-panel">
+            <div id="title">
+                <h2>@title</h2>
+            </div>
+            <div id="adminContent">
+            @content
             </div>
 
         </div>
-        <div class="col-md-10 admin-right-panel">
-        @content
-        </div>
     </div>
+
 }

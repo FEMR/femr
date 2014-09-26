@@ -11,21 +11,6 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 }
 
 
-
-
-#patientInfo{
-
-}
-#chiefComplaint{
-
-}
-
-
-#historyButton{
-    margin-top: 15px;
-}
-
-
 /* Vitals (part of main section) wrapper*/
 
     #vitalsWrap {
@@ -63,6 +48,13 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     border: solid #b2b2b0;
     border-width: 0px 1px 1px 1px;
     padding: 10px;
+    overflow: hidden;
+}
+
+.historySubmitWrap{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
 }
 
 /* Buttons */
@@ -72,77 +64,164 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     background-color: #e1e8f6;
 }
 
-#medicalSubmitBtn {
-    margin: 15px 0px 5px 15px;
-    width: 175px;
-}
-
-#historyButton{
-    float: right;
-    margin-bottom: -30px;
-}
-
 /* Tabs */
 .tabWrap {
     float: left;
     width: 100%;
 }
-
-#medicalTabs {
+.tabrow {
     margin-bottom: 0;
-    padding: 15px 0 0 0;
-    overflow: hidden;
-    width: 100%;
-    border-bottom: 1px solid #b2b2b0;
-}
-
-
-#medicalTabs li {
-    display: inline;
+    text-align: center;
+    list-style: none;
     padding: 0;
-    margin: 0;
-
+    line-height: 24px;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: verdana;
+    position: relative;
 }
-
-#medicalTabs li.active a {
+.tabrow li {
+    border: 1px solid #AAA;
+    background: #D1D1D1;
+    background: -o-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -ms-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -moz-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -webkit-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    display: inline-block;
+    position: relative;
+    z-index: 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 #FFF;
+    text-shadow: 0 1px #FFF;
+    margin: 0 -5px;
+    padding: 5px 30px;
+}
+.tabrow li.active {
     background: url("../../img/paper_greyLightNoise.png") repeat;
+    color: #333;
+    z-index: 2;
+    border-bottom-color: #FFF;
+}
+.tabrow:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid #AAA;
+    z-index: 1;
+}
+.tabrow li:before,
+.tabrow li:after {
+    border: 1px solid #AAA;
+    position: absolute;
+    bottom: -1px;
+    width: 5px;
+    height: 5px;
+    content: " ";
+}
+.tabrow li:before {
+    left: -6px;
+    border-bottom-right-radius: 6px;
+    border-width: 0 1px 1px 0;
+    box-shadow: 2px 2px 0 #D1D1D1;
+}
+.tabrow li:after {
+    right: -6px;
+    border-bottom-left-radius: 6px;
+    border-width: 0 0 1px 1px;
+    box-shadow: -2px 2px 0 #D1D1D1;
+}
+.tabrow li.active:before {
+    box-shadow: 2px 2px 0 #FFF;
+}
+.tabrow li.active:after {
+    box-shadow: -2px 2px 0 #FFF;
+}
+.tabrow li:hover{
+    cursor: default;
 }
 
-#medicalTabs li:first-child a {
-    /* first-child not supported in IE, but who cares */
-    margin-left: 0;
+/* hpi chief complaint slider wrap */
+#chiefComplaintSliderWrap{
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
 }
 
-#medicalTabs a:link,
-#medicalTabs a:visited {
 
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border: 1px solid #b2b2b0;
-    border-bottom: none;
-    margin-left: 5px;
-    color: #000;
-    background: #d4d3cc;
-    padding: 10px 20px 5px 20px;
+
+#chiefComplaintLeftArrow span, #chiefComplaintRightArrow span{
+    font-size: 25px;
+}
+#chiefComplaintLeftArrow span, #chiefComplaintRightArrow span:hover{
+    cursor: default;
+}
+
+#chiefComplaintLeftArrow, #chiefComplaintRightArrow, #chiefComplaintText{
+    height: 40px;
+}
+
+.chiefComplaintText{
+    width: 90%;
     float: left;
-    width: auto;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 20px;
+    text-align: center;
+    font-size: 18px;
+    padding-top: 5px;
 }
-@media (max-width: 1200px){
-    #medicalTabs a:link,
-    #medicalTabs a:visited{
-        font-size: 16px;
-        padding: 10px 10px 5px 10px;
-    }
+.chiefComplaintText span{
+    height: 40px;
+    cursor: default;
+}
+#chiefComplaintLeftArrow{
+    width: 5%;
+    float: left;
+}
+#chiefComplaintRightArrow{
+    width: 5%;
+    float: right;
 }
 
-#medicalTabs a:hover,
-#medicalTabs a:focus {
-    color: #000;
-    background: url("../../img/paper_greyLightNoise.png") repeat;
+
+/* HPI TAB */
+.leftHPI{
+    width: 50%;
+    float: left;
+    padding-right: 10px;
+
 }
+
+.rightHPI{
+    width: 50%;
+    float: left;
+    padding-left: 10px;
+}
+.bottomHPI{
+    width: 100%;
+    float: left;
+}
+
+.hpiWraps{
+    overflow: hidden;
+}
+.hpiWraps input{
+    width: 100%;
+}
+.staticField{
+    margin-bottom: 10px;
+}
+#severityDropDown{
+    border: 1px solid #ccc;
+    background-color: white;
+    height: 33px;
+    width: 100%;
+    padding: 2px;
+    border-radius: 5px;
+}
+
 
 
 /* CUSTOM TABS */
@@ -173,5 +252,20 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 }
 .customFieldWrap{
     margin-bottom: 12px;
+}
+
+@media (max-width: 720px){
+    #vitalsWrap{
+        width: 100%;
+        min-height: 0;
+        border-bottom: 1px solid #b2b2b0;
+    }
+    #inputWrap{
+        width: 100%;
+        margin-top: 15px;
+    }
+    #vitalTable{
+        width: 100% !important;
+    }
 }
 

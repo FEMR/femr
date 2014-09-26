@@ -1,7 +1,7 @@
 //package unit.app.femr.business.services;
 //
-//import femr.business.dtos.CurrentUser;
-//import femr.business.dtos.ServiceResponse;
+//import femr.common.dto.CurrentUser;
+//import femr.common.dto.ServiceResponse;
 //import femr.business.services.ISessionService;
 //import femr.business.services.SessionService;
 //import mock.femr.business.services.MockUserService;

@@ -2,8 +2,8 @@
 
 ### Required downloads
 1. [MySQL](http://www.mysql.com/)
-2. [Play Framework](http://www.playframework.com/)
-3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+2. [Play Framework](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
+3. [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 4. [IntelliJ IDEA](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 
@@ -16,17 +16,17 @@
     git clone https://github.com/yourusername/femr.git
 
 ####4. convert the project to an IDEA module
-    play idea
+    activator idea
 
 ####5. clean and compile the project
-    play clean compile
+    activator clean compile
 
 ### Setting up IntelliJ IDEA
 1. Install Plugins: Play 2.0 Support/Scala
 2. Open FEMR
 3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your username and password.
 4. Create a database in mySQL with the same name as the database in the connection string inside of application.conf
-5. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // conf/application.dev.conf to the enviroment variables.
+5. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // /absolute/location/to/conf/application.dev.conf to the enviroment variables.
 6. Run!
 
 

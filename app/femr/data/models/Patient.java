@@ -1,11 +1,24 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.data.models;
 
-import femr.common.models.IPatient;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -28,8 +41,11 @@ public class Patient implements IPatient {
     private String address;
     @Column(name = "city", nullable = false)
     private String city;
-    @Column(name = "photo_id", nullable = true)
-    private Integer photoId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name= "photo_id", nullable = true)
+    private Photo photo;
+//    @Column(name = "photo_id", nullable = true)
+//    private Integer photoId;
 
     @Override
     public int getId() {
@@ -112,8 +128,12 @@ public class Patient implements IPatient {
     }
 
     @Override
-    public Integer getPhotoId() { return this.photoId;  }
+    public IPhoto getPhoto() {
+        return photo;
+    }
 
     @Override
-    public void setPhotoId(Integer id) { this.photoId = id; }
+    public void setPhoto(IPhoto photo) {
+        this.photo = (Photo) photo;
+    }
 }

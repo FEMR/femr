@@ -1,0 +1,67 @@
+@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
+
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
+@import femr.ui.views.html.partials.patientOverview
+
+    @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacyClientValidation.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.min.js")"></script>
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
+    }
+
+@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
+    <div id="pharmacyContentWrap">
+
+        @patientOverview(viewModel.getPatient, viewModel.getPatientEncounterItem, "Pharmacy")
+
+
+
+        <div id="mainWrap" class="backgroundForWrap">
+        @helper.form(action = PharmaciesController.editPost(viewModel.getPatient.getId)) {
+
+
+            <div id="diagnosisWrap">
+                <h4>List of Diagnoses</h4>
+
+                <ol class="problems">
+
+                    @if(viewModel.getProblems != null) {
+                        @for(y <- 1 to viewModel.getProblems.size) {
+                            @if(viewModel.getProblems.get(y - 1) != null) {
+                                <li>@viewModel.getProblems.get(y - 1).getName</li>
+                            }
+                        }
+                    }
+                </ol>
+            </div>
+
+
+
+
+            <div id="medicationWrap">
+                <h4>List of Medications</h4>
+                <ol id="medicationList">
+                @for(x <- 1 to viewModel.getMedications.size) {
+                    <li class="medication" id="med@x">
+                        <button type="button" class="fButton fOtherButton replaceBtn">R</button>
+                        <span>@viewModel.getMedications.get(x - 1).getName</span>
+                        <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement"/>
+                        <input type="text" class="hidden" name="id_prescription@x" value="@viewModel.getMedications.get(x - 1).getId"/>
+                    </li>
+                }
+                </ol>
+
+            </div>
+            <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">Submit</button>
+
+        </div>
+
+
+    </div>
+}
+}

@@ -2,15 +2,13 @@ package femr.ui.helpers.security;
 
 import com.google.inject.Inject;
 import femr.business.services.IUserService;
-import femr.common.models.IRole;
+import femr.data.models.IRole;
+import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
-import play.mvc.Result;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static femr.ui.controllers.routes.HomeController;
 
 public class AllowedRolesAction extends Action<AllowedRoles> {
 
@@ -22,7 +20,7 @@ public class AllowedRolesAction extends Action<AllowedRoles> {
     }
 
     @Override
-    public Result call(Http.Context context) throws Throwable {
+    public F.Promise<play.mvc.Result> call(Http.Context context) throws Throwable {
         String currentUser = context.session().get("currentUser");
         int currentUserId = Integer.parseInt(currentUser);
         int[] roleIds = configuration.value();
@@ -40,7 +38,7 @@ public class AllowedRolesAction extends Action<AllowedRoles> {
         }
 
         if (!isUserInAuthorizedRoleGroup) {
-            return redirect(HomeController.index());
+            return F.Promise.pure(redirect("/"));
         }
 
         return delegate.call(context);

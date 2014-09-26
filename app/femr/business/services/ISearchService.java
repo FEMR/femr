@@ -1,53 +1,133 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.business.services;
 
-import femr.business.dtos.ServiceResponse;
+import femr.common.dto.ServiceResponse;
 import femr.common.models.*;
-import femr.ui.models.data.PatientItem;
-import femr.ui.models.data.VitalItem;
-import femr.util.DataStructure.VitalMultiMap;
+import femr.data.models.*;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface ISearchService {
 
-    ServiceResponse<IPatient> findPatientById(int id);
+    /**
+     * Find a patient by patient id
+     *
+     * @param patientId id of the patient
+     * @return the patient
+     */
+    ServiceResponse<PatientItem> findPatientItemByPatientId(int patientId);
 
-    ServiceResponse<List<? extends IPatient>> findPatientByName(String firstName, String lastName);
+    /**
+     * Find a patient by encounter id
+     *
+     * @param encounterId id of an encounter
+     * @return the patient
+     */
+    ServiceResponse<PatientItem> findPatientItemByEncounterId(int encounterId);
 
-    ServiceResponse<IPatientEncounter> findPatientEncounterById(int id);
-    ServiceResponse<IPatientEncounter> findCurrentEncounterByPatientId(int id);
-    ServiceResponse<List<? extends IPatientEncounter>> findAllEncountersByPatientId(int id);
-    ServiceResponse<List<? extends IPatientPrescription>> findPrescriptionsByEncounterId(int id);
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findProblemsByEncounterId(int id);
+    /**
+     * Find an encounter by its ID
+     *
+     * @param encounterId the id of the encounter
+     * @return the encounter
+     */
+    ServiceResponse<PatientEncounterItem> findPatientEncounterItemByEncounterId(int encounterId);
 
-    ServiceResponse<List<? extends IPatientEncounterVital>> findPatientEncounterVitals(int encounterId, String name);
-    ServiceResponse<IPatientEncounterTreatmentField> findRecentTreatmentField(int encounterId, String name);
-    ServiceResponse<List<? extends IPatientEncounterTreatmentField>> findTreatmentFields(int encounterId, String name);
-    ServiceResponse<IPatientEncounterHpiField> findRecentHpiField(int encounterId, String name);
-    ServiceResponse<List<? extends IPatientEncounterHpiField>> findHpiFields(int encounterId, String name);
-    ServiceResponse<IPatientEncounterPmhField> findRecentPmhField(int encounterId, String name);
-    ServiceResponse<List<? extends IPatientEncounterPmhField>> findPmhFields(int encounterId, String name);
+    /**
+     * Find the most current patient encounter by patient id
+     *
+     * @param patientId id of the patient
+     * @return the patient's encounter with a field indicating whether or not it is open
+     */
+    ServiceResponse<PatientEncounterItem> findRecentPatientEncounterItemByPatientId(int patientId);
 
-    ServiceResponse<IVital> findVital(String name);
-    ServiceResponse<ITreatmentField> findTreatmentField(String name);
-    ServiceResponse<IHpiField> findHpiField(String name);
-    ServiceResponse<IPmhField> findPmhField(String name);
-    ServiceResponse<List<? extends IVital>> findAllVitals();
+    /**
+     * Find all patient encounters by patient id
+     *
+     * @param patientId id of the patient
+     * @return all encounters of patient in descending order
+     */
+    ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsByPatientId(int patientId);
 
-    ServiceResponse<List<? extends ITreatmentField>> findAllTreatmentFields();
-    ServiceResponse<List<? extends IHpiField>> findAllHpiFields();
-    ServiceResponse<List<? extends IPmhField>> findAllPmhFields();
-    ServiceResponse<List<? extends IMedication>> findAllMedications();
+    /**
+     * Find all prescriptions that have not been replaced. This does not imply they have been dispensed.
+     *
+     * @param encounterId id of the encounter
+     * @return all prescriptions that have not been replaced
+     */
+    ServiceResponse<List<PrescriptionItem>> findUnreplacedPrescriptionItems(int encounterId);
 
+    /**
+     * Find all prescriptions that have been dispensed to the patient.
+     *
+     * @param encounterId id of the encounter
+     * @return all prescriptions that have been dispensed
+     */
+    ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId);
+
+    /**
+     * Parses an integer from a query string
+     *
+     * @param query the query string
+     * @return the integer
+     */
+    ServiceResponse<Integer> parseIdFromQueryString(String query);
+
+    /**
+     * Takes a query string with patient info and returns a list of matching patients
+     * based on id then first/last name
+     *
+     * @param patientSearchQuery search query for a patient
+     * @return list of patients
+     */
+    ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery);
+
+    /**
+     * Create a map of tabs and their fields where the key can be the name of the tab
+     * or the date
+     *
+     * @param encounterId id of the encounter
+     * @return
+     */
+    ServiceResponse<TabFieldMultiMap> getTabFieldMultiMap(int encounterId);
+
+    /**
+     * Create linked hash map of vitals where the key is the date as well as the name
+     *
+     * @param encounterId the id of the encounter to get vitals for
+     * @return vitals and dates related to encounter
+     */
     ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId);
 
+    /**
+     * Get all current system setting values, only works for one right now.
+     * Will need to be expanded later
+     * @return
+     */
+    ServiceResponse<SettingItem> getSystemSettings();
 
-
-
-    ServiceResponse<IPatientPrescription> findPatientPrescriptionById(int id);
-    ServiceResponse<IPatientEncounterHpiField> findDoctorIdByEncounterIdInHpiField(int id);
-    ServiceResponse<IPatientEncounterPmhField> findDoctorIdByEncounterIdInPmhField(int id);
-    ServiceResponse<IPatientEncounterTreatmentField> findDoctorIdByEncounterIdInTreatmentField(int id);
+    /**
+     * Get all custom fields that exist in the system
+     * @return list of their names
+     */
+    ServiceResponse<List<String>> getCustomFieldList();
 }

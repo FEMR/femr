@@ -2,16 +2,18 @@
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SessionsController
-  @styles = {
-    <link rel="stylesheet" href="@routes.Assets.at("css/login.css")">
-  }
+    @styles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/login.css")">
+    }
 @main("Login", styles = styles) {
-  <div class="container">
-  @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <input type="text" id="email" name="email" class="form-control" placeholder="Email Address" autofocus="" />
-    <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-  }
-  </div>
+
+    @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
+        <div id="login">
+            <h1>Please sign in</h1>
+            <input type="text" name="email" placeholder="Email" />
+            <input type="password" name="password" placeholder="Password" />
+            <input type="submit" value="Log in" />
+            <img src="@routes.Assets.at("img/logo_color_sm.png")" />
+        </div>
+    }
 }

@@ -1,11 +1,11 @@
-@(currentUser: femr.business.dtos.CurrentUser)
+@(currentUser: femr.common.dto.CurrentUser)
 
 @import femr.ui.views.html.layouts.main
 
   @top = {
     <div class="jumbotron">
     <div class="container">
-        <h2>Welcome to fEMR, @currentUser.getFirstName!</h2>
+        <h2>Welcome to fEMR 2.1.0, @currentUser.getFirstName!</h2>
         @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
         <p>Please select a tab at the top to get started!</p>
       </div>

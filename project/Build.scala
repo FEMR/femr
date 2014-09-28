@@ -22,6 +22,7 @@ object ApplicationBuild extends Build {
 
 
 
+
   val main = Project(appName, file(".")).enablePlugins(play.PlayJava).settings(
     /*javacOptions += "-Xlint:deprecation",*/   //use when searching for deprecated API usage
     version := appVersion,
@@ -36,6 +37,7 @@ object ApplicationBuild extends Build {
           newArg = if (ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
         } yield newArg
     },
-    sbt.Keys.fork in Test := false
+    sbt.Keys.fork in Test := false,
+    doc in Compile <<= target.map(_ / "none")
   )
 }

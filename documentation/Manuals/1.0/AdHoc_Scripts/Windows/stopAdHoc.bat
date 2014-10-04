@@ -1,1 +1,0 @@
-START cmd.exe /C "netsh wlan stop hostednetwork"

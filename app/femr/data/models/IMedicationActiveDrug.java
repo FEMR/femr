@@ -18,27 +18,26 @@
 */
 package femr.data.models;
 
-
-public interface IMedication {
+/**
+ * MedicationActiveDrug represents the active ingrediant inside a medication,
+ * e.g. 500mg Acetominophen (medication = Tylenol)
+ */
+public interface IMedicationActiveDrug {
     int getId();
 
-    String getName();
+    IMedicationMeasurementUnit getMedicationMeasurementUnit();
 
-    void setName(String name);
+    void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit);
 
-    Integer getQuantity_current();
+    IMedicationActiveDrugName getMedicationActiveDrugName();
 
-    void setQuantity_current(Integer quantity_current);
+    void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName);
 
-    Integer getQuantity_total();
+    boolean isDenominator();
 
-    void setQuantity_total(Integer quantity_initial);
+    void setDenominator(boolean isDenominator);
 
-    Boolean getIsDeleted();
+    int getValue();
 
-    void setIsDeleted(Boolean isDeleted);
-
-    IMedicationForm getMedicationForm();
-
-    void setMedicationForm(IMedicationForm medicationForm);
+    void setValue(int value);
 }

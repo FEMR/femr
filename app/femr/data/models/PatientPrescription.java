@@ -19,7 +19,6 @@
 package femr.data.models;
 
 import org.joda.time.DateTime;
-
 import javax.persistence.*;
 
 @Entity
@@ -31,24 +30,59 @@ public class PatientPrescription implements IPatientPrescription {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "encounter_id", nullable = false)
     private PatientEncounter patientEncounter;
+    @ManyToOne
+    @JoinColumn(name = "medication_id", nullable = false)
+    private Medication medication;
+    @ManyToOne
+    @JoinColumn(name = "medication_administrations_id", nullable = true)
+    private MedicationAdministration medicationAdministration;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User physician;
     @Column(name = "amount", nullable = true)
     private  int amount;
-    @Column(name = "replacement_id", nullable = true)
-    private Integer replacementId;
-    @Column(name = "medication_name", nullable = false)
-    private String medicationName;
     @Column(name = "date_taken", nullable = false)
     private DateTime dateTaken;
+    //not sure if eBean can handle self referencing fields (some ORMs freak out with infinite loops)
+    @Column(name = "replacement_id", nullable = true)
+    private Integer replacementId;
+    @Column(name = "special_instructions", nullable = true)
+    private String specialInstructions;
 
     @Override
     public int getId() {
         return id;
     }
 
+    @Override
+    public IPatientEncounter getPatientEncounter() {
+        return patientEncounter;
+    }
 
+    @Override
+    public void setPatientEncounter(IPatientEncounter patientEncounter) {
+        this.patientEncounter = (PatientEncounter) patientEncounter;
+    }
+
+    @Override
+    public IMedication getMedication() {
+        return medication;
+    }
+
+    @Override
+    public void setMedication(IMedication medication) {
+        this.medication = (Medication) medication;
+    }
+
+    @Override
+    public IMedicationAdministration getMedicationAdministration() {
+        return medicationAdministration;
+    }
+
+    @Override
+    public void setMedicationAdministration(IMedicationAdministration medicationAdministration) {
+        this.medicationAdministration = (MedicationAdministration) medicationAdministration;
+    }
 
     @Override
     public IUser getPhysician() {
@@ -81,16 +115,6 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public String getMedicationName() {
-        return medicationName;
-    }
-
-    @Override
-    public void setMedicationName(String medicationName) {
-        this.medicationName = medicationName;
-    }
-
-    @Override
     public DateTime getDateTaken() {
         return dateTaken;
     }
@@ -100,14 +124,13 @@ public class PatientPrescription implements IPatientPrescription {
         this.dateTaken = dateTaken;
     }
 
-
     @Override
-    public IPatientEncounter getPatientEncounter() {
-        return patientEncounter;
+    public String getSpecialInstructions() {
+        return specialInstructions;
     }
 
     @Override
-    public void setPatientEncounter(IPatientEncounter patientEncounter) {
-        this.patientEncounter = (PatientEncounter) patientEncounter;
+    public void setSpecialInstructions(String specialInstructions) {
+        this.specialInstructions = specialInstructions;
     }
 }

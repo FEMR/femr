@@ -18,10 +18,7 @@
 */
 package femr.data.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "medications")
@@ -37,6 +34,9 @@ public class Medication implements IMedication {
     private Integer quantity_initial;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
+    @ManyToOne
+    @JoinColumn(name = "medication_forms_id")
+    private MedicationForm medicationForm;
 
     @Override
     public int getId() {
@@ -81,5 +81,15 @@ public class Medication implements IMedication {
     @Override
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    @Override
+    public IMedicationForm getMedicationForm() {
+        return medicationForm;
+    }
+
+    @Override
+    public void setMedicationForm(IMedicationForm medicationForm) {
+        this.medicationForm = (MedicationForm) medicationForm;
     }
 }

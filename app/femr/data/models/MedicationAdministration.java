@@ -18,27 +18,35 @@
 */
 package femr.data.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-public interface IMedication {
-    int getId();
+/**
+ * See interface description for more details.
+ */
+@Entity
+@Table(name = "medication_administrations")
+public class MedicationAdministration implements IMedicationAdministration{
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "name", unique = true, nullable = false)
+    private String name;
 
-    String getName();
+    @Override
+    public int getId() {
+        return id;
+    }
 
-    void setName(String name);
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    Integer getQuantity_current();
-
-    void setQuantity_current(Integer quantity_current);
-
-    Integer getQuantity_total();
-
-    void setQuantity_total(Integer quantity_initial);
-
-    Boolean getIsDeleted();
-
-    void setIsDeleted(Boolean isDeleted);
-
-    IMedicationForm getMedicationForm();
-
-    void setMedicationForm(IMedicationForm medicationForm);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

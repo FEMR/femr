@@ -9,12 +9,8 @@ import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.InventoryViewModelGet;
-import femr.ui.models.admin.InventoryViewModelPost;
 import femr.common.models.MedicationItem;
 import femr.ui.views.html.admin.inventory.index;
-import femr.ui.views.html.admin.inventory.inventory;
-import play.data.DynamicForm;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -56,26 +52,6 @@ public class InventoryController extends Controller {
         }else{
             return redirect("/admin/inventory");
         }
-    }
-
-    public Result inventoryGet() {
-
-        return ok(inventory.render());
-    }
-
-    public Result inventoryPost() {
-        DynamicForm requestData = Form.form().bindFromRequest();
-        if (requestData.data().size() % 2 != 0) {
-            throw new RuntimeException();
-        }
-
-        //constructor for InventoryViewModelPost
-        //takes care of the dynamic form binding.
-        InventoryViewModelPost viewModelPost = new InventoryViewModelPost(requestData);
-
-        inventoryService.createMedicationInventory(viewModelPost.getMedications());
-
-        return redirect("/admin/inventory");
     }
 
 }

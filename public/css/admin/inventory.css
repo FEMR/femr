@@ -1,5 +1,5 @@
 #addMed {
-    float: right;
+
     margin-bottom: 20px;
 }
 
@@ -23,14 +23,17 @@
     width: 100%;
     margin-top: 25px;
 }
-#fieldMedicationWrap{
-    overflow: hidden;
+#inputMedicationWrap, #currentMedicationsWrap{
     border-top: 1px solid black;
-    margin-bottom: 20px;
+    padding: 20px;
+}
+#inputMedicationWrap{
+    margin: 0 auto;
+    width: 30%;
+    border: 1px solid grey;
 }
 .fieldMedication{
-    float: left;
-    width: 32%;
+
     margin-right: 5px;
 }
 .fieldMedication input{

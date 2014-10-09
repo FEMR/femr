@@ -29,10 +29,10 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "medication_measurement_units_id")
     private MedicationMeasurementUnit medicationMeasurementUnit;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "medication_active_drug_names_id")
     private MedicationActiveDrugName medicationActiveDrugName;
     @Column(name = "isDenominator", nullable = false)

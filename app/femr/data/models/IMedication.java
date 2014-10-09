@@ -19,6 +19,8 @@
 package femr.data.models;
 
 
+import java.util.List;
+
 public interface IMedication {
     int getId();
 
@@ -41,4 +43,8 @@ public interface IMedication {
     IMedicationForm getMedicationForm();
 
     void setMedicationForm(IMedicationForm medicationForm);
+
+    List<IMedicationActiveDrug> getMedicationActiveDrugs();
+
+    void setMedicationActiveDrugs(List<IMedicationActiveDrug> medicationActiveDrugs);
 }

@@ -18,5 +18,16 @@
 */
 package femr.data.models;
 
+/**
+ * MedicationMeasurementUnit represents the unit of
+ * measurement for a medication. e.g. g/mg/mL
+ */
 public interface IMedicationMeasurementUnit {
+    int getId();
+
+    void setId(int id);
+
+    String getName();
+
+    void setName(String name);
 }

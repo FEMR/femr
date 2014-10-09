@@ -18,5 +18,40 @@
 */
 package femr.data.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * See interface description for more details.
+ */
+@Entity
+@Table(name = "medication_measurement_units")
 public class MedicationMeasurementUnit implements IMedicationMeasurementUnit{
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "unit_name", unique = true, nullable = false)
+    private String name;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

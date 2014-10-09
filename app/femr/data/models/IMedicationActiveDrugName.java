@@ -18,5 +18,16 @@
 */
 package femr.data.models;
 
+/**
+ * MedicationActiveDrugName is the name of the active drug inside
+ * a medication. e.g. acetominophen/hydrocodone/etc
+ */
 public interface IMedicationActiveDrugName {
+    int getId();
+
+    void setId(int id);
+
+    String getName();
+
+    void setName(String name);
 }

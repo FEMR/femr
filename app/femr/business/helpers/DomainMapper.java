@@ -302,20 +302,20 @@ public class DomainMapper {
      *
      * @param amount           amount of the prescription
      * @param encounterId      encounter id of the prescription
-     * @param prescriptionItem name of the prescription
+     * @param medicationId     id of the medication
      * @param replacementId    replacementid of the new prescription
      * @param userId           id of the user creating the prescription
      * @return the new prescription
      */
-    public IPatientPrescription createPatientPrescription(int amount, int encounterId, PrescriptionItem prescriptionItem, Integer replacementId, int userId) {
-        if (prescriptionItem == null || encounterId < 1 || StringUtils.isNullOrWhiteSpace(prescriptionItem.getName()) || userId < 1) {
+    public IPatientPrescription createPatientPrescription(int amount, int encounterId, int medicationId, Integer replacementId, int userId) {
+        if (medicationId < 1 || encounterId < 1 || userId < 1) {
             return null;
         }
         IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
         newPatientPrescription.setAmount(amount);
         newPatientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         newPatientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        newPatientPrescription.setMedicationName(prescriptionItem.getName());
+        newPatientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
         newPatientPrescription.setReplacementId(replacementId);
         newPatientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         return newPatientPrescription;
@@ -327,7 +327,7 @@ public class DomainMapper {
         }
         PrescriptionItem prescriptionItem = new PrescriptionItem();
         prescriptionItem.setId(patientPrescription.getId());
-        prescriptionItem.setName(patientPrescription.getMedicationName());
+        prescriptionItem.setName(patientPrescription.getMedication().getName());
         prescriptionItem.setReplacementId(patientPrescription.getReplacementId());
         return prescriptionItem;
     }
@@ -454,14 +454,14 @@ public class DomainMapper {
     /**
      * Creates a new IPatientPrescription
      *
-     * @param prescriptionItem the prescription item
+     * @param medicationId     id of the medication
      * @param userId           id of the user creating the prescription
      * @param encounterId      encounter id of the prescription
      * @param replacementId    id of the prescription being replaced OR null
      * @return a new IPatientPrescription
      */
-    public IPatientPrescription createPatientPrescription(PrescriptionItem prescriptionItem, int userId, int encounterId, Integer replacementId) {
-        if (prescriptionItem == null) {
+    public IPatientPrescription createPatientPrescription(int medicationId, int userId, int encounterId, Integer replacementId) {
+        if (medicationId < 1 || userId < 1 || encounterId < 1) {
             return null;
         }
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
@@ -469,7 +469,8 @@ public class DomainMapper {
         patientPrescription.setReplacementId(replacementId);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        patientPrescription.setMedicationName(prescriptionItem.getName());
+        //patientPrescription.setMedicationName(prescriptionItem.getName());
+        patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         return patientPrescription;
     }
@@ -485,7 +486,7 @@ public class DomainMapper {
             return null;
         }
 
-        return new PrescriptionItem(patientPrescription.getMedicationName());
+        return new PrescriptionItem(patientPrescription.getMedication().getName());
     }
 
     /**

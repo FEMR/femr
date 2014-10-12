@@ -19,6 +19,7 @@
 package femr.common.models;
 
 public class PrescriptionItem {
+    //TODO: remove the knowledge of ID in the UI
     private int id;
     private String name;
     private Integer replacementId;

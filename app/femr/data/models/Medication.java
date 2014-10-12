@@ -39,11 +39,11 @@ public class Medication implements IMedication {
     @JoinColumn(name = "medication_forms_id")
     private MedicationForm medicationForm;
     @ManyToMany(fetch = FetchType.EAGER,
-                targetEntity = MedicationActiveDrug.class,
-                cascade = CascadeType.ALL)
+            targetEntity = MedicationActiveDrug.class,
+            cascade = CascadeType.ALL)
     @JoinTable(name = "medication_medication_active_drugs",
-                joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
-                inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
     private List<IMedicationActiveDrug> medicationActiveDrugs;
 
     @Override

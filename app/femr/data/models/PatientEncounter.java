@@ -19,7 +19,6 @@
 package femr.data.models;
 
 import org.joda.time.DateTime;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +68,6 @@ public class PatientEncounter implements IPatientEncounter {
         this.patient = (Patient) patient;
     }
 
-
     @Override
     public List<IChiefComplaint> getChiefComplaints() {
         List<IChiefComplaint> temp = new ArrayList<>();
@@ -84,9 +82,7 @@ public class PatientEncounter implements IPatientEncounter {
         for (IChiefComplaint cc : chiefComplaints) {
             this.chiefComplaints.add((ChiefComplaint) cc);
         }
-
     }
-
 
     @Override
     public Integer getWeeksPregnant() {

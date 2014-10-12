@@ -23,9 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * See interface description for more details.
- */
 @Entity
 @Table(name = "medication_active_drug_names")
 public class MedicationActiveDrugName implements IMedicationActiveDrugName{

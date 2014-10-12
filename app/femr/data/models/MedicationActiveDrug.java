@@ -20,9 +20,6 @@ package femr.data.models;
 
 import javax.persistence.*;
 
-/**
- * See interface description for more details.
- */
 @Entity
 @Table(name = "medication_forms")
 public class MedicationActiveDrug implements IMedicationActiveDrug {

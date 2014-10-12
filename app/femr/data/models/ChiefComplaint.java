@@ -23,14 +23,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "chief_complaints")
 public class ChiefComplaint implements IChiefComplaint{
-
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-
     @Column(name = "value")
     private String value;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_encounter_id")
     private PatientEncounter patientEncounter;

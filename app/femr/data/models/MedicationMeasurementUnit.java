@@ -23,9 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * See interface description for more details.
- */
 @Entity
 @Table(name = "medication_measurement_units")
 public class MedicationMeasurementUnit implements IMedicationMeasurementUnit{
@@ -38,11 +35,6 @@ public class MedicationMeasurementUnit implements IMedicationMeasurementUnit{
     @Override
     public int getId() {
         return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

@@ -23,9 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * See interface description for more details.
- */
 @Entity
 @Table(name = "medication_forms")
 public class MedicationForm implements IMedicationForm{
@@ -38,11 +35,6 @@ public class MedicationForm implements IMedicationForm{
     @Override
     public int getId() {
         return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

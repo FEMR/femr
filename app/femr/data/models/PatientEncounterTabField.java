@@ -19,7 +19,6 @@
 package femr.data.models;
 
 import org.joda.time.DateTime;
-
 import javax.persistence.*;
 
 @Entity

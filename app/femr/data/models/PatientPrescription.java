@@ -30,8 +30,8 @@ public class PatientPrescription implements IPatientPrescription {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "encounter_id", nullable = false)
     private PatientEncounter patientEncounter;
-    @ManyToOne
-    @JoinColumn(name = "medication_id", nullable = false)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "medication_id", nullable = false, insertable = true, updatable = true)
     private Medication medication;
     @ManyToOne
     @JoinColumn(name = "medication_administrations_id", nullable = true)

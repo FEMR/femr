@@ -251,6 +251,7 @@ public class DomainMapper {
     public IMedication createMedication(String name){
         IMedication medication = medicationProvider.get();
         medication.setName(name);
+        medication.setIsDeleted(false);
         return medication;
     }
 

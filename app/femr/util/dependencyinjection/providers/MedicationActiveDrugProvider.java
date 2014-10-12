@@ -19,12 +19,11 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.IMedication;
-import femr.data.models.Medication;
+import femr.data.models.MedicationActiveDrug;
 
-public class MedicationProvider implements Provider<IMedication> {
+public class MedicationActiveDrugProvider implements Provider<MedicationActiveDrug> {
     @Override
-    public IMedication get() {
-        return new Medication();
+    public MedicationActiveDrug get() {
+        return new MedicationActiveDrug();
     }
 }

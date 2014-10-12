@@ -93,7 +93,7 @@ public class MedicalService implements IMedicalService {
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
-                UserItem userItem = domainMapper.createUserItem(patientEncounter.getDoctor());
+                UserItem userItem = DomainMapper.createUserItem(patientEncounter.getDoctor());
                 response.setResponseObject(userItem);
             }
         } catch (Exception ex) {

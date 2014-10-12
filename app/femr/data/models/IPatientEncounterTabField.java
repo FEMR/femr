@@ -21,7 +21,7 @@ package femr.data.models;
 import org.joda.time.DateTime;
 
 /**
- * Created by kevin on 5/31/14.
+ * Represents fields that are on each tab on the medical screen
  */
 public interface IPatientEncounterTabField {
     int getId();

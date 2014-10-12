@@ -19,8 +19,8 @@
 package femr.data.models;
 
 /**
- * MedicationActiveDrug represents the active ingrediant inside a medication,
- * e.g. 500mg Acetominophen (medication = Tylenol)
+ * MedicationActiveDrug represents the active ingredient inside a medication,
+ * e.g. 500mg Acetominophen
  */
 public interface IMedicationActiveDrug {
     int getId();

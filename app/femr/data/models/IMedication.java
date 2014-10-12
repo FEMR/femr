@@ -18,9 +18,13 @@
 */
 package femr.data.models;
 
-
 import java.util.List;
 
+/**
+ * Represents a medication by name (not active/inactive ingrediant).
+ * Also keeps track of inventory - current quantity should be altered
+ * when creating a prescription.
+ */
 public interface IMedication {
     int getId();
 

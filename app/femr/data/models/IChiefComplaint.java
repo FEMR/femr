@@ -19,7 +19,10 @@
 package femr.data.models;
 
 /**
- *
+ *  Tracks chief complaints. Important when trying to
+ *  identify which tab fields belong to which chief complaint.
+ *  (for example, a patient can have a 'severity' for one chief complaint and a another severity
+ *  for another chief complaint)
  */
 public interface IChiefComplaint {
     int getId();

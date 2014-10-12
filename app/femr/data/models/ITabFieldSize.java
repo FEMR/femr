@@ -18,6 +18,9 @@
 */
 package femr.data.models;
 
+/**
+ * Used to identify a dynamic tab fields size
+ */
 public interface ITabFieldSize {
     int getId();
 

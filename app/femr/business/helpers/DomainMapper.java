@@ -206,9 +206,52 @@ public class DomainMapper {
         tab.setRightColumnSize(tabItem.getRightColumnSize());
         tab.setName(tabItem.getName());
         tab.setUserId(userId);
-        //this will always be true if a tab is being programatically created by a user
+        //this will always be true if a tab is being programmatically created by a user
         tab.setIsCustom(true);
         return tab;
+    }
+
+    public static MedicationItem createMedicationItem(IMedication medication) {
+        if (medication == null) {
+            return null;
+        }
+        MedicationItem medicationItem = new MedicationItem();
+        medicationItem.setId(medication.getId());
+        medicationItem.setName(medication.getName());
+        medicationItem.setQuantity_current(medication.getQuantity_current());
+        medicationItem.setQuantity_total(medication.getQuantity_total());
+        return medicationItem;
+    }
+
+    /**
+     * Creates the initial medication for inventory
+     * TODO: properly save new medication in the inventory
+     *
+     * @param medicationItem the medication item from the UI
+     * @return a new MedicationItem
+     */
+    public IMedication createMedication(MedicationItem medicationItem) {
+        if (medicationItem == null) {
+            return null;
+        }
+        IMedication medication = medicationProvider.get();
+        medication.setName(medicationItem.getName());
+        medication.setQuantity_total(medicationItem.getQuantity_total());
+        medication.setQuantity_current(medicationItem.getQuantity_current());
+        medication.setIsDeleted(false);
+        return medication;
+    }
+
+    /**
+     * Creates an IMedication
+     *
+     * @param name name of the medication
+     * @return a new IMedication
+     */
+    public IMedication createMedication(String name){
+        IMedication medication = medicationProvider.get();
+        medication.setName(name);
+        return medication;
     }
 
     /**
@@ -271,54 +314,6 @@ public class DomainMapper {
         chiefComplaint.setValue(value);
         chiefComplaint.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), patientEncounterId));
         return chiefComplaint;
-    }
-
-    public static MedicationItem createMedicationItem(IMedication medication) {
-        if (medication == null) {
-            return null;
-        }
-        MedicationItem medicationItem = new MedicationItem();
-        medicationItem.setId(medication.getId());
-        medicationItem.setName(medication.getName());
-        medicationItem.setQuantity_current(medication.getQuantity_current());
-        medicationItem.setQuantity_total(medication.getQuantity_total());
-        return medicationItem;
-    }
-
-    public IMedication createMedication(MedicationItem medicationItem) {
-        if (medicationItem == null) {
-            return null;
-        }
-        IMedication medication = medicationProvider.get();
-        medication.setName(medicationItem.getName());
-        medication.setQuantity_total(medicationItem.getQuantity_total());
-        medication.setQuantity_current(medicationItem.getQuantity_current());
-        medication.setIsDeleted(false);
-        return medication;
-    }
-
-    /**
-     * Creates a patient prescription without mapping from a prescriptionitem
-     *
-     * @param amount           amount of the prescription
-     * @param encounterId      encounter id of the prescription
-     * @param medicationId     id of the medication
-     * @param replacementId    replacementid of the new prescription
-     * @param userId           id of the user creating the prescription
-     * @return the new prescription
-     */
-    public IPatientPrescription createPatientPrescription(int amount, int encounterId, int medicationId, Integer replacementId, int userId) {
-        if (medicationId < 1 || encounterId < 1 || userId < 1) {
-            return null;
-        }
-        IPatientPrescription newPatientPrescription = patientPrescriptionProvider.get();
-        newPatientPrescription.setAmount(amount);
-        newPatientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
-        newPatientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        newPatientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
-        newPatientPrescription.setReplacementId(replacementId);
-        newPatientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
-        return newPatientPrescription;
     }
 
     public PrescriptionItem createPrescriptionItem(IPatientPrescription patientPrescription) {
@@ -413,7 +408,7 @@ public class DomainMapper {
      *
      * @param photo    the photo
      * @param imageURL url to the image
-     * @return a photoitem
+     * @return a new PhotoItem
      */
     public PhotoItem createPhotoItem(IPhoto photo, String imageURL) {
         PhotoItem photoItem = new PhotoItem();
@@ -454,23 +449,23 @@ public class DomainMapper {
     /**
      * Creates a new IPatientPrescription
      *
-     * @param medicationId     id of the medication
+     * @param amount           amount of medication dispensed
+     * @param medication       the medication
      * @param userId           id of the user creating the prescription
      * @param encounterId      encounter id of the prescription
      * @param replacementId    id of the prescription being replaced OR null
      * @return a new IPatientPrescription
      */
-    public IPatientPrescription createPatientPrescription(int medicationId, int userId, int encounterId, Integer replacementId) {
-        if (medicationId < 1 || userId < 1 || encounterId < 1) {
+    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId) {
+        if (medication == null || StringUtils.isNullOrWhiteSpace(medication.getName()) || userId < 1 || encounterId < 1) {
             return null;
         }
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
-        patientPrescription.setAmount(0);//to be changed later
-        patientPrescription.setReplacementId(replacementId);
+        patientPrescription.setAmount(amount);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        //patientPrescription.setMedicationName(prescriptionItem.getName());
-        patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
+        patientPrescription.setMedication(medication);
+        patientPrescription.setReplacementId(replacementId);
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         return patientPrescription;
     }

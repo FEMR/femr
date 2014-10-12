@@ -111,7 +111,8 @@ public class PharmacyService implements IPharmacyService {
             IPatientPrescription oldPatientPrescription = patientPrescriptionRepository.findOne(query);
 
             //create new prescription
-            IPatientPrescription newPatientPrescription = domainMapper.createPatientPrescription(0, oldPatientPrescription.getPatientEncounter().getId(), prescriptionItem, null, userId);
+            IMedication medication = domainMapper.createMedication(prescriptionItem.getName());
+            IPatientPrescription newPatientPrescription = domainMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null);
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
             //replace the old prescription

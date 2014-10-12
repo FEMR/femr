@@ -16,6 +16,10 @@ REFERENCES `medications` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+INSERT INTO `medications` (`name`)
+  SELECT `medication_name`
+  FROM `patient_prescriptions`;
+
 UPDATE `patient_prescriptions` as pp
   JOIN `medications` as m ON pp.`medication_name` = m.`name`
 SET pp.`medication_id` = m.`id`;

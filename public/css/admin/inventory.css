@@ -12,25 +12,30 @@
     text-align: center;
 }
 
-/* Dialog styles */
-#inventoryPartial{
-    height: 100%;
+
+#addMedToList{
+    width: 25%;
+    float: right;
+}
+#inputMedication, #currentMedicationsWrap{
+    border-top: 1px solid black;
+    padding: 12px;
 }
 #inputMedication{
     overflow: hidden;
-}
-#addMedToList{
-    width: 100%;
-    margin-top: 25px;
-}
-#inputMedicationWrap, #currentMedicationsWrap{
-    border-top: 1px solid black;
-    padding: 20px;
-}
-#inputMedicationWrap{
     margin: 0 auto;
-    width: 30%;
+    width: 80%;
     border: 1px solid grey;
+}
+#inputMedicationLeft, #inputMedicationRight{
+    float: left;
+    width: 50%;
+}
+#inputMedicationLeft{
+    padding: 5px 5px 5px 2px;
+}
+#inputMedicationRight{
+    padding: 5px 2px 5px 5px;
 }
 .fieldMedication{
 

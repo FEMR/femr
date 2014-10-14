@@ -26,14 +26,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "system_settings")
 public class SystemSetting implements ISystemSetting {
-
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-
     @Column(name = "name")
     private String name;
-
     @Column(name = "isActive")
     private boolean isActive;
 

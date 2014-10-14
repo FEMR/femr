@@ -16,39 +16,14 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models;
+package femr.util.dependencyinjection.providers;
 
-import org.joda.time.DateTime;
+import com.google.inject.Provider;
+import femr.data.models.MedicationActiveDrug;
 
-/**
- * Represents fields that are on each tab on the medical screen
- */
-public interface IPatientEncounterTabField {
-    int getId();
-
-    void setId(int id);
-
-    int getUserId();
-
-    void setUserId(int userId);
-
-    int getPatientEncounterId();
-
-    void setPatientEncounterId(int patientEncounterId);
-
-    ITabField getTabField();
-
-    void setTabField(ITabField tabField);
-
-    String getTabFieldValue();
-
-    void setTabFieldValue(String tabFieldValue);
-
-    DateTime getDateTaken();
-
-    void setDateTaken(DateTime dateTaken);
-
-    ChiefComplaint getChiefComplaint();
-
-    void setChiefComplaint(IChiefComplaint chiefComplaint);
+public class MedicationActiveDrugProvider implements Provider<MedicationActiveDrug> {
+    @Override
+    public MedicationActiveDrug get() {
+        return new MedicationActiveDrug();
+    }
 }

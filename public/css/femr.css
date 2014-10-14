@@ -131,8 +131,9 @@ hr {
     background: #fff;
     margin-bottom: 4%;
     border: 1px solid #ccc;
-    padding: 4%;
-    font-size: 95%;
+    padding: 2%;
+    /*font-size: 95%;*/
+    font-size: 26px;
     color: #555;
     border-radius: 5px;
     text-align: center;

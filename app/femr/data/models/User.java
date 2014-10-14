@@ -50,15 +50,9 @@ public class User implements IUser {
     @Column(name = "isPasswordReset", nullable = false)
     private Boolean passwordReset;
 
-
-
     @Override
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

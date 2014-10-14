@@ -18,14 +18,32 @@
 */
 package femr.data.models;
 
-public interface IHpiField {
-    int getId();
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-    String getName();
+@Entity
+@Table(name = "medication_measurement_units")
+public class MedicationMeasurementUnit implements IMedicationMeasurementUnit{
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "unit_name", unique = true, nullable = false)
+    private String name;
 
-    void setName(String name);
+    @Override
+    public int getId() {
+        return id;
+    }
 
-    Boolean getDeleted();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void setDeleted(Boolean deleted);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

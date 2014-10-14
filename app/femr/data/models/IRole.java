@@ -18,6 +18,9 @@
 */
 package femr.data.models;
 
+/**
+ * User roles - nurse, physician, pharmacist, researcher, etc
+ */
 public interface IRole {
     int getId();
 

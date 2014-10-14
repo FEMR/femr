@@ -18,10 +18,11 @@
 */
 package femr.data.models;
 
-import java.util.Collection;
-
 /**
- * Created by kevin on 7/20/14.
+ *  Tracks chief complaints. Important when trying to
+ *  identify which tab fields belong to which chief complaint.
+ *  (for example, a patient can have a 'severity' for one chief complaint and a another severity
+ *  for another chief complaint)
  */
 public interface IChiefComplaint {
     int getId();
@@ -33,8 +34,4 @@ public interface IChiefComplaint {
     IPatientEncounter getPatientEncounter();
 
     void setPatientEncounter(IPatientEncounter patientEncounter);
-
-//    Collection<PatientEncounterTabField> getPatientEncounterTabFields();
-//
-//    void setPatientEncounterTabFields(Collection<PatientEncounterTabField> patientEncounterTabFields);
 }

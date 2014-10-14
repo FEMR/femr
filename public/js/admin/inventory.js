@@ -1,5 +1,7 @@
 $(document).ready(function () {
-
+    $('#addNewIngredient').click(function(){
+        medicationInventoryFeature.addIngredient();
+    });
 
 });
 
@@ -12,13 +14,18 @@ var inventoryFields = {
         unit: $('#unitInput'),
         form: $('#formInput')
     }
-
 };
 
 var medicationInventoryFeature = {
-    ingredientsList: $('#ingredientsForMedication'),
     addIngredient: function () {
-
+        $('#newMedication').after('<div class="newIngredient">' +
+            '<input type="text" class="fInput" placeholder="X" />' +
+            '<select class="fOption">' +
+            '<option value="" disabled selected>Unit</option>' +
+            '<option>mg</option>' +
+            '</select>' +
+            '<input type="text" class="fInput" placeholder="ingredient"/>' +
+            '</div>');
     },
     submitMedication: function () {
 

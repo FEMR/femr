@@ -67,6 +67,12 @@ public class LogicDoer {
         }
     }
 
+    /**
+     * I wonder what this method does
+     *
+     * @param patientEncounter patient encounter
+     * @return probably returns true if the encounter is closed
+     */
     public static boolean isEncounterClosed(IPatientEncounter patientEncounter) {
         DateTime dateOfMedicalVisit = patientEncounter.getDateOfMedicalVisit();
         DateTime dateOfPharmacyVisit = patientEncounter.getDateOfPharmacyVisit();

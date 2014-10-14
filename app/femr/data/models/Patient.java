@@ -44,8 +44,6 @@ public class Patient implements IPatient {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "photo_id", nullable = true)
     private Photo photo;
-//    @Column(name = "photo_id", nullable = true)
-//    private Integer photoId;
 
     @Override
     public int getId() {

@@ -15,8 +15,6 @@ POST        /admin/users/edit                @femr.ui.controllers.admin.UsersCon
 GET         /admin/users/edit/:id            @femr.ui.controllers.admin.UsersController.editGet(id: Integer)
 POST        /admin/users/toggle/:id          @femr.ui.controllers.admin.UsersController.toggleUser(id: Integer)
 GET         /admin/users                     @femr.ui.controllers.admin.UsersController.index()
-GET         /admin/inventory/add             @femr.ui.controllers.admin.InventoryController.inventoryGet()
-POST        /admin/inventory/add             @femr.ui.controllers.admin.InventoryController.inventoryPost()
 GET         /admin/inventory                 @femr.ui.controllers.admin.InventoryController.indexGet()
 POST        /admin/inventory                 @femr.ui.controllers.admin.InventoryController.indexPost(id: Integer)
 GET         /admin/configure                 @femr.ui.controllers.admin.ConfigureController.indexGet()

@@ -23,9 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * Created by kevin on 5/18/14.
- */
 @Entity
 @Table(name = "tab_field_sizes")
 public class TabFieldSize implements ITabFieldSize {

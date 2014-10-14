@@ -19,7 +19,7 @@
 package femr.data.models;
 
 /**
- * Created by kevin on 5/18/14.
+ * Used to identify a tab fields type - number, text, etc
  */
 public interface ITabFieldType {
     int getId();

@@ -26,7 +26,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "roles")
 public class Role implements IRole {
-
     @Id
     @Column(name = "id", nullable = false, unique = true)
     private int id;

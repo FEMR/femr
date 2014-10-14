@@ -93,7 +93,7 @@ public class MedicalService implements IMedicalService {
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
-                UserItem userItem = domainMapper.createUserItem(patientEncounter.getDoctor());
+                UserItem userItem = DomainMapper.createUserItem(patientEncounter.getDoctor());
                 response.setResponseObject(userItem);
             }
         } catch (Exception ex) {
@@ -115,7 +115,8 @@ public class MedicalService implements IMedicalService {
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         for (PrescriptionItem pi : prescriptionItems) {
-            patientPrescriptions.add(domainMapper.createPatientPrescription(pi, userId, encounterId, null));
+            IMedication medication = domainMapper.createMedication(pi.getName());
+            patientPrescriptions.add(domainMapper.createPatientPrescription(0, medication, userId, encounterId, null));
         }
 
         try {

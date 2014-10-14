@@ -18,37 +18,32 @@
 */
 package femr.data.models;
 
-import org.joda.time.DateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-/**
- * Represents fields that are on each tab on the medical screen
- */
-public interface IPatientEncounterTabField {
-    int getId();
+@Entity
+@Table(name = "medication_forms")
+public class MedicationForm implements IMedicationForm{
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "form_name", unique = true, nullable = false)
+    private String name;
 
-    void setId(int id);
+    @Override
+    public int getId() {
+        return id;
+    }
 
-    int getUserId();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void setUserId(int userId);
-
-    int getPatientEncounterId();
-
-    void setPatientEncounterId(int patientEncounterId);
-
-    ITabField getTabField();
-
-    void setTabField(ITabField tabField);
-
-    String getTabFieldValue();
-
-    void setTabFieldValue(String tabFieldValue);
-
-    DateTime getDateTaken();
-
-    void setDateTaken(DateTime dateTaken);
-
-    ChiefComplaint getChiefComplaint();
-
-    void setChiefComplaint(IChiefComplaint chiefComplaint);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

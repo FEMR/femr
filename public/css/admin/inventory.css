@@ -1,5 +1,5 @@
 #addMed {
-    float: right;
+
     margin-bottom: 20px;
 }
 
@@ -12,62 +12,79 @@
     text-align: center;
 }
 
-/* Dialog styles */
-#inventoryPartial{
-    height: 100%;
+
+#addMedToList{
+    width: 25%;
+    float: right;
+}
+#inputMedication, #currentMedicationsWrap{
+    border-top: 1px solid black;
+    padding: 12px;
 }
 #inputMedication{
     overflow: hidden;
+    margin: 0 auto;
+    width: 60%;
+    border: 1px solid grey;
 }
-#addMedToList{
-    width: 100%;
-    margin-top: 25px;
-}
-#fieldMedicationWrap{
-    overflow: hidden;
-    border-top: 1px solid black;
-    margin-bottom: 20px;
-}
-.fieldMedication{
+#inputMedicationLeft, #inputMedicationRight{
     float: left;
-    width: 32%;
-    margin-right: 5px;
+    width: 50%;
+}
+
+.fieldMedication{
+    padding: 2px;
+
 }
 .fieldMedication input{
     width: 100% !important;
 }
-#saveAllNewMeds{
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin-bottom: 10px;
-    margin-right: 10px;
-}
-#cancelAllNewMeds{
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin-bottom: 10px;
-    margin-right: 80px;
 
+#nameAndQuantityWrap{
+    overflow: hidden;
 }
-#listMedication{
-    margin-top: 20px;
-    border-top: 1px solid black;
+#nameFieldMedication{
+    width: 80%;
+    float: right;
 }
-#listMedication input{
-    border: none;
-    background-color: transparent;
+#quantityFieldMedication{
+    width: 20%;
+    float: left;
 }
-#listMedication input:hover{
+#strengthAndUnitAndIngredientWrap{
+    overflow: hidden;
+}
+#strengthFieldMedication{
+    width: 20%;
+    float: left;
+}
+#ingredientFieldMedication{
+    width: 70%;
+    float: left;
+}
+#addIngredientPlusSign{
+    float: left;
+    margin-top: 15px;
+    width: 10%;
+}
+#addIngredientPlusSign span{
+    padding: 0 10px 0 10px;
+    margin-left: -5px;
+    font-size: 36px;
+}
+#addIngredientPlusSign span:hover{
     cursor: default;
+}
+#formAndUnitWrap{
+    overflow: hidden;
+}
+#unitFieldMedication{
+    float: left;
+}
+#formFieldMedication{
+    float: left;
 }
 
 .remove span:hover{
     cursor: pointer;
-
-}
-#removeMed{
-    background: transparent;
-    border: none !important;
 }

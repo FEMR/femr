@@ -18,37 +18,14 @@
 */
 package femr.data.models;
 
-import org.joda.time.DateTime;
-
 /**
- * Represents fields that are on each tab on the medical screen
+ * MedicationMeasurementUnit represents the unit of
+ * measurement for a medication. e.g. g/mg/mL
  */
-public interface IPatientEncounterTabField {
+public interface IMedicationMeasurementUnit {
     int getId();
 
-    void setId(int id);
+    String getName();
 
-    int getUserId();
-
-    void setUserId(int userId);
-
-    int getPatientEncounterId();
-
-    void setPatientEncounterId(int patientEncounterId);
-
-    ITabField getTabField();
-
-    void setTabField(ITabField tabField);
-
-    String getTabFieldValue();
-
-    void setTabFieldValue(String tabFieldValue);
-
-    DateTime getDateTaken();
-
-    void setDateTaken(DateTime dateTaken);
-
-    ChiefComplaint getChiefComplaint();
-
-    void setChiefComplaint(IChiefComplaint chiefComplaint);
+    void setName(String name);
 }

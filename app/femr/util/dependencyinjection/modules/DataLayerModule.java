@@ -30,9 +30,13 @@ public class DataLayerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        //Model Injection
+        //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
+        bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
+        bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
+        bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
+        bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
         bind(IPatient.class).toProvider(PatientProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
         bind(IPatientEncounterPhoto.class).toProvider(PatientEncounterPhotoProvider.class);
@@ -52,6 +56,10 @@ public class DataLayerModule extends AbstractModule {
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<Repository<IMedicationAdministration>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});

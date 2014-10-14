@@ -1,7 +1,6 @@
 @(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.admin.InventoryViewModelGet)
 
-    @import femr.ui.views.html.layouts.admin
-    @import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/admin/inventory.css")">
@@ -11,40 +10,91 @@
     }
 
 
-    @admin("Inventory Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-        <button class="fButton" id="addMed">Add Medication</button>
+@admin("Inventory Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+    <div id="inputMedication">
+        <div id="nameAndQuantityWrap">
+            <div class="fieldMedication" id="quantityFieldMedication">
+                <label for="amountInput">Quantity</label>
+                <input type="number" class="fInput" id="amountInput" placeholder="X"/>
+            </div>
+            <div class="fieldMedication" id="nameFieldMedication">
+                <label for="nameInput">Name</label>
+                <input type="text" class="fInput" id="nameInput" placeholder="name"/>
+            </div>
+            <ol id="ingredientsForMedication"></ol>
+        </div>
+        <div id="strengthAndUnitAndIngredientWrap">
 
-        <table id="inventoryTable">
-            <thead>
-                <th>Name</th>
-                <th>Total Quantity</th>
-                <th>Current Quantity</th>
-                <th>Remove</th>
-            </thead>
-            <tbody>
-            @for(m <- 1 to viewModel.getMedications.size) {
-                <tr>
-                    <td class="name">@viewModel.getMedications.get(m - 1).getName</td>
-                    <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
-                    <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
-                    <td class="remove">
-                        @helper.form(action = InventoryController.indexPost(viewModel.getMedications.get(m - 1).getId)) {
-                         <button type="submit" id="removeMed">   <span class="glyphicon glyphicon-minus">
-                         @*<input type="text" value="@viewModel.getMedications.get(m - 1).getId" class="hidden"/>*@
-                            </span></button>
-                        }
-                    </td>
-                </tr>
-            }
+            <div class="fieldMedication" id="strengthFieldMedication">
+                <label for="strengthInput">Strength:</label>
+                <input type="number" class="fInput" id="strengthInput" placeholder="X"/>
+            </div>
 
-            </tbody>
+            <div class="fieldMedication" id="ingredientFieldMedication">
+                <label for="ingredientInput">Ingredient</label>
+                <input type="text" class="fInput" id="ingredientInput" placeholder="ingredient"/>
+            </div>
+            <div class="fieldMedication" id="addIngredientPlusSign">
+                <span>+</span>
+            </div>
 
-        </table>
-        <div id="editDialog" title="Manage Inventory">
-            <div id="inventoryPartial">
-                @*load partial view for editing a user via admin.js*@
+
+        </div>
+        <div id="formAndUnitWrap">
+            <div class="fieldMedication" id="unitFieldMedication">
+                <label for="unitInput"></label>
+                <select name="form" id="unitInput">
+                    <option value="" disabled selected>Unit</option>
+                    <option value="mg">mg</option>
+                    <option value="g">g</option>
+                    <option value="ml">mL</option>
+                    <option value="l">L</option>
+                </select>
+            </div>
+            <div class="fieldMedication" id="formFieldMedication">
+                <label for="formInput"></label>
+                <select name="form" id="formInput">
+                    <option value="" disabled selected>Form</option>
+                    <option>pill</option>
+                    <option>cream</option>
+                    <option>chewable</option>
+                </select>
             </div>
         </div>
 
+        <div class="fieldMedication">
+            <button class="fButton" id="addMedToList">Add</button>
+        </div>
+    </div>
 
-    }
+    <div id="currentMedication">
+        <h3>Current Medications:</h3>
+        <div id="currentMedicationsWrap">
+            <table id="inventoryTable">
+                <thead>
+                    <th>Name</th>
+                    <th>Total Quantity</th>
+                    <th>Current Quantity</th>
+                    <th>Remove</th>
+                </thead>
+                <tbody>
+                @for(m <- 1 to viewModel.getMedications.size) {
+                    <tr>
+                        <td class="name">@viewModel.getMedications.get(m - 1).getName</td>
+                        <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
+                        <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
+                        <td class="remove">
+                        </td>
+                    </tr>
+                }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+}

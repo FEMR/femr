@@ -241,7 +241,7 @@ public class SearchService implements ISearchService {
 
             for (IPatientPrescription pp : patientPrescriptions) {
                 PrescriptionItem prescriptionItem = new PrescriptionItem();
-                prescriptionItem.setName(pp.getMedicationName());
+                prescriptionItem.setName(pp.getMedication().getName());
                 prescriptionItem.setId(pp.getId());
                 prescriptionItems.add(prescriptionItem);
             }
@@ -272,7 +272,7 @@ public class SearchService implements ISearchService {
 
             for (IPatientPrescription pp : patientPrescriptions) {
                 PrescriptionItem prescriptionItem = new PrescriptionItem();
-                prescriptionItem.setName(pp.getMedicationName());
+                prescriptionItem.setName(pp.getMedication().getName());
                 prescriptionItem.setId(pp.getId());
                 prescriptionItems.add(prescriptionItem);
             }

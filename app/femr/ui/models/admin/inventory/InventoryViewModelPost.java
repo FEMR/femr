@@ -18,43 +18,59 @@
 */
 package femr.ui.models.admin.inventory;
 
-import femr.common.models.MedicationItem;
-import play.data.DynamicForm;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * This model is not "dumb" like the others. The constructor contains
- * the logic for dynamic form binding.
- */
 public class InventoryViewModelPost {
-    private List<MedicationItem> medications;
+    private Integer medicationQuantity;
+    private String medicationForm;
+    private String medicationName;
+    private Integer medicationStrength;
+    private String medicationUnit;
+    private String medicationIngredient;
 
-    public InventoryViewModelPost(DynamicForm requestData){
-        int size = requestData.data().size() / 2;
-        //make sure user has provided a medication and an amount
-
-        medications = new ArrayList<>();
-        for (int index = 0; index < size; index++) {
-            MedicationItem medicationItem = new MedicationItem();
-            medicationItem.setName(requestData.get("name" + index));
-            //check to make sure parsing went as planned
-            Integer amount = Integer.parseInt(requestData.get("quantity" + index));
-            if (amount == null) {
-                continue;
-            } else {
-                medicationItem.setQuantity_total(amount);
-            }
-
-            medications.add(medicationItem);
-        }
+    public Integer getMedicationQuantity() {
+        return medicationQuantity;
     }
 
-    public List<MedicationItem> getMedications() {
-        return medications;
+    public void setMedicationQuantity(Integer medicationQuantity) {
+        this.medicationQuantity = medicationQuantity;
     }
 
-    public void setMedications(List<MedicationItem> medications) {
-        this.medications = medications;
+    public String getMedicationForm() {
+        return medicationForm;
+    }
+
+    public void setMedicationForm(String medicationForm) {
+        this.medicationForm = medicationForm;
+    }
+
+    public String getMedicationName() {
+        return medicationName;
+    }
+
+    public void setMedicationName(String medicationName) {
+        this.medicationName = medicationName;
+    }
+
+    public Integer getMedicationStrength() {
+        return medicationStrength;
+    }
+
+    public void setMedicationStrength(Integer medicationStrength) {
+        this.medicationStrength = medicationStrength;
+    }
+
+    public String getMedicationUnit() {
+        return medicationUnit;
+    }
+
+    public void setMedicationUnit(String medicationUnit) {
+        this.medicationUnit = medicationUnit;
+    }
+
+    public String getMedicationIngredient() {
+        return medicationIngredient;
+    }
+
+    public void setMedicationIngredient(String medicationIngredient) {
+        this.medicationIngredient = medicationIngredient;
     }
 }

@@ -33,15 +33,16 @@ public interface IInventoryService {
     ServiceResponse<List<MedicationItem>> createMedicationInventory(List<MedicationItem> medicationItems);
 
     /**
-     * Removes a medicine from the inventory
+     * Removes a medicine from the inventory - set the isDeleted
+     * flag to true so it doesn't show up anymore
      *
      * @param id id of medication to remove
      * @return true if successful, false if failed
      */
-    ServiceResponse<Boolean> removeMedicationFromInventory(int id);
+    ServiceResponse<Boolean> deleteMedicationFromInventory(int id);
 
     /**
-     * Gets all medicine in the inventory
+     * Gets all medicine that is currently not deleted
      *
      * @return list of MedicationItems for use by controller
      */

@@ -268,11 +268,20 @@ public class DomainMapper {
         medicationItem.setName(medication.getName());
         medicationItem.setQuantity_current(medication.getQuantity_current());
         medicationItem.setQuantity_total(medication.getQuantity_total());
+        medicationItem.setForm(medication.getMedicationForm().getName());
+        for(IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()){
+            medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
+                    medicationActiveDrug.getMedicationMeasurementUnit().getName(),
+                    medicationActiveDrug.getValue(),
+                    medicationActiveDrug.isDenominator()
+            );
+        }
+
         return medicationItem;
     }
 
     /**
-     * Creates the initial medication for inventory
+     * Creates a brand new medication that is being added to the inventory
      * TODO: properly save new medication in the inventory
      *
      * @param medicationItem the medication item from the UI
@@ -292,6 +301,7 @@ public class DomainMapper {
 
     /**
      * Creates an IMedication
+     * TODO: this should be a prescription, not a medication
      *
      * @param name name of the medication
      * @return a new IMedication

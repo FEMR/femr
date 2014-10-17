@@ -10,7 +10,9 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.InventoryViewModelGet;
 import femr.common.models.MedicationItem;
+import femr.ui.models.admin.inventory.InventoryViewModelPost;
 import femr.ui.views.html.admin.inventory.index;
+import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -21,8 +23,9 @@ import java.util.List;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
-    private ISessionService sessionService;
-    private IInventoryService inventoryService;
+    private final Form<InventoryViewModelPost> inventoryViewModelPostForm = Form.form(InventoryViewModelPost.class);
+    private final ISessionService sessionService;
+    private final IInventoryService inventoryService;
 
     @Inject
     public InventoryController(ISessionService sessionService,
@@ -45,13 +48,9 @@ public class InventoryController extends Controller {
         return ok(index.render(currentUser, viewModel));
     }
 
-    public Result indexPost(Integer id){
-        ServiceResponse isDeletedServiceResponse =inventoryService.removeMedicationFromInventory(id);
-        if (isDeletedServiceResponse.hasErrors()){
-            throw new RuntimeException();
-        }else{
-            return redirect("/admin/inventory");
-        }
+    public Result indexPost(){
+        InventoryViewModelPost inventoryViewModelPost = inventoryViewModelPostForm.bindFromRequest().get();
+        return redirect("/admin/inventory");
     }
 
 }

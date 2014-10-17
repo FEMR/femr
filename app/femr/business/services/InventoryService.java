@@ -78,10 +78,10 @@ public class InventoryService implements IInventoryService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> removeMedicationFromInventory(int id) {
+    public ServiceResponse<Boolean> deleteMedicationFromInventory(int id) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
         if (id < 1){
-            response.addError("", "i cannot be less than 0");
+            response.addError("", "i cannot be less than 1");
             return response;
         }
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery().where().eq("id", id);
@@ -121,7 +121,7 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
         for (IMedication m : medications) {
-            medicationItems.add(domainMapper.createMedicationItem(m));
+            medicationItems.add(DomainMapper.createMedicationItem(m));
         }
         response.setResponseObject(medicationItems);
 

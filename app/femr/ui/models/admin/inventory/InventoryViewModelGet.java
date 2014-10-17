@@ -16,21 +16,19 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.medical.json;
+package femr.ui.models.admin.inventory;
 
-/**
- * Used to get custom tab fields in addition to hpi fields
- * when multiple chief complaints exist
- */
-public class JCustomField {
-    String name;
-    String value;
+import femr.common.models.MedicationItem;
+import java.util.List;
 
-    public String getName() {
-        return name;
+public class InventoryViewModelGet {
+    private List<MedicationItem> medications;
+
+    public List<MedicationItem> getMedications() {
+        return medications;
     }
 
-    public String getValue() {
-        return value;
+    public void setMedications(List<MedicationItem> medications) {
+        this.medications = medications;
     }
 }

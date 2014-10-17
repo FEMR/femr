@@ -16,21 +16,23 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.medical.json;
+package femr.ui.models.admin.users;
 
-/**
- * Used to get custom tab fields in addition to hpi fields
- * when multiple chief complaints exist
- */
-public class JCustomField {
-    String name;
-    String value;
+import femr.data.models.IUser;
+import java.util.List;
 
-    public String getName() {
-        return name;
+public class IndexViewModelGet {
+    private List<? extends IUser> users;
+
+    public IUser getUser(int i){
+        return users.get(i);
     }
 
-    public String getValue() {
-        return value;
+    public void setUsers(List<? extends IUser> users) {
+        this.users = users;
+    }
+
+    public List<? extends IUser> getUsers() {
+        return users;
     }
 }

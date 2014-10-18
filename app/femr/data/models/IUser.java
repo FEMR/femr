@@ -44,7 +44,7 @@ public interface IUser {
 
     List<IRole> getRoles();
 
-    void setRoles(List<IRole> roles);
+    void setRoles(List<? extends IRole> roles);
 
     void addRole(IRole role);
 
@@ -59,4 +59,12 @@ public interface IUser {
     Boolean getPasswordReset();
 
     void setPasswordReset(Boolean passwordReset);
+
+    /**
+     * special remarks that help identify the user
+     * @return
+     */
+    String getNotes();
+
+    void setNotes(String notes);
 }

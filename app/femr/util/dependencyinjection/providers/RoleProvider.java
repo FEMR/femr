@@ -16,43 +16,15 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.common.models;
+package femr.util.dependencyinjection.providers;
 
-public class PrescriptionItem {
-    private int id;
-    private String name;
-    private Integer replacementId;
+import com.google.inject.Provider;
+import femr.data.models.IRole;
+import femr.data.models.Role;
 
-
-    public PrescriptionItem(String name){
-        this.name = name;
-    }
-
-    public PrescriptionItem() {
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Integer getReplacementId() {
-        return replacementId;
-    }
-
-    public void setReplacementId(Integer replacementId) {
-        this.replacementId = replacementId;
+public class RoleProvider implements Provider<IRole> {
+    @Override
+    public IRole get() {
+        return new Role();
     }
 }

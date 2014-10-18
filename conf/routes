@@ -11,10 +11,10 @@ GET         /superuser                       @femr.ui.controllers.SuperuserContr
 #Admin
 POST        /admin/users/create              @femr.ui.controllers.admin.UsersController.createPost()
 GET         /admin/users/create              @femr.ui.controllers.admin.UsersController.createGet()
-POST        /admin/users/edit                @femr.ui.controllers.admin.UsersController.editPost()
+POST        /admin/users/edit                @femr.ui.controllers.admin.UsersController.editPost(id: Integer)
 GET         /admin/users/edit/:id            @femr.ui.controllers.admin.UsersController.editGet(id: Integer)
 POST        /admin/users/toggle/:id          @femr.ui.controllers.admin.UsersController.toggleUser(id: Integer)
-GET         /admin/users                     @femr.ui.controllers.admin.UsersController.index()
+GET         /admin/users                     @femr.ui.controllers.admin.UsersController.manageGet()
 GET         /admin/inventory                 @femr.ui.controllers.admin.InventoryController.indexGet()
 POST        /admin/inventory                 @femr.ui.controllers.admin.InventoryController.indexPost(id: Integer)
 GET         /admin/configure                 @femr.ui.controllers.admin.ConfigureController.indexGet()

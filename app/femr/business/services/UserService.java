@@ -20,38 +20,170 @@ package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
+import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.common.dto.ServiceResponse;
+import femr.common.models.UserItem;
 import femr.data.models.IRole;
 import femr.data.models.IUser;
 import femr.data.daos.IRepository;
+import femr.data.models.Role;
 import femr.data.models.User;
 import femr.util.encryptions.IPasswordEncryptor;
+import femr.util.stringhelpers.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserService implements IUserService {
 
     private final IRepository<IUser> userRepository;
     private final IPasswordEncryptor passwordEncryptor;
+    private final IRepository<IRole> roleRepository;
+    private final DomainMapper domainMapper;
 
     @Inject
-    public UserService(IRepository<IUser> userRepository, IPasswordEncryptor passwordEncryptor) {
+    public UserService(IRepository<IUser> userRepository, IPasswordEncryptor passwordEncryptor, IRepository<IRole> roleRepository, DomainMapper domainMapper) {
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
+        this.roleRepository = roleRepository;
+        this.domainMapper = domainMapper;
     }
-    @Override
-    public ServiceResponse<IUser> createUser(IUser user) {
-        ServiceResponse<IUser> response = new ServiceResponse<>();
-        encryptAndSetUserPassword(user);
 
-        if (userExistsWithEmail(user.getEmail(), response)) {
-            return response;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<UserItem> createUser(UserItem user, String password) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
+        try {
+
+            ExpressionList<Role> query = QueryProvider.getRoleQuery()
+                    .where()
+                    .in("name", user.getRoles());
+            List<? extends IRole> roles = roleRepository.find(query);
+
+
+            IUser newUser = domainMapper.createUser(user, password, false, false, roles);
+            encryptAndSetUserPassword(newUser);
+
+
+            if (userExistsWithEmail(user.getEmail())) {
+                response.addError("", "A user already exists with that email address.");
+                return response;
+            }
+
+            newUser = userRepository.create(newUser);
+            response.setResponseObject(DomainMapper.createUserItem(newUser));
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
         }
 
-        IUser newUser = userRepository.create(user);
-        response.setResponseObject(newUser);
 
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<UserItem>> findAllUsers() {
+
+        ExpressionList<User> query = QueryProvider.getUserQuery()
+                .fetch("roles")
+                .where()
+                .ne("roles.name", "SuperUser");
+        List<? extends IUser> users = userRepository.find(query);
+
+        ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
+        List<UserItem> userItems = new ArrayList<>();
+        if (users.size() > 0) {
+            for (IUser user : users) {
+                userItems.add(DomainMapper.createUserItem(user));
+            }
+            response.setResponseObject(userItems);
+        } else {
+            response.addError("users", "could not find any users");
+        }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<UserItem> toggleUser(int id) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
+        ExpressionList<User> query = QueryProvider.getUserQuery().where().eq("id", id);
+        try {
+            IUser user = userRepository.findOne(query);
+            user.setDeleted(!user.getDeleted());
+            user = userRepository.update(user);
+            response.setResponseObject(DomainMapper.createUserItem(user));
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<UserItem> findUser(int id) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
+        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
+        try {
+            IUser user = userRepository.findOne(query);
+            UserItem userItem;
+            userItem = DomainMapper.createUserItem(user);
+            response.setResponseObject(userItem);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<UserItem> updateUser(UserItem userItem, String newPassword) {
+        ServiceResponse<UserItem> response = new ServiceResponse<>();
+        if (userItem == null) {
+            response.addError("", "send a user");
+            return response;
+        }
+        ExpressionList<User> query = QueryProvider.getUserQuery().where().eq("id", userItem.getId());
+        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
+                .where()
+                .ne("name", "SuperUser");
+
+        List<? extends IRole> allRoles = roleRepository.find(roleQuery);
+
+        try {
+            IUser user = userRepository.findOne(query);
+            if (StringUtils.isNotNullOrWhiteSpace(newPassword)) {
+                user.setPassword(newPassword);
+                encryptAndSetUserPassword(user);
+            }
+            user.setFirstName(userItem.getFirstName());
+            user.setLastName(userItem.getLastName());
+            user.setNotes(userItem.getNotes());
+            List<IRole> newRoles = new ArrayList<>();
+            for (IRole role : allRoles){
+                if (userItem.getRoles().contains(role.getName()))
+                    newRoles.add(role);
+                }
+            user.setRoles(newRoles);
+            user.setPasswordReset(userItem.isPasswordReset());
+            user = userRepository.update(user);
+            response.setResponseObject(DomainMapper.createUserItem(user));
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
         return response;
     }
 
@@ -70,24 +202,6 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ServiceResponse<List<? extends IUser>> findAllUsers(){
-
-        ExpressionList<User> query = QueryProvider.getUserQuery()
-                .fetch("roles")
-                .where()
-                .ne("roles.name", "SuperUser");
-        List<? extends IUser> users = userRepository.find(query);
-        ServiceResponse<List<? extends IUser>> response = new ServiceResponse<>();
-        if (users.size() > 0){
-            response.setResponseObject(users);
-        }
-        else{
-            response.addError("users","could not find any users");
-        }
-        return response;
-    }
-
-    @Override
     public List<? extends IRole> findRolesForUser(int id) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
         IUser user = userRepository.findOne(query);
@@ -95,18 +209,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword){
+    public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword) {
         ServiceResponse<IUser> response = new ServiceResponse<>();
-        if (isNewPassword){
+        if (isNewPassword) {
             encryptAndSetUserPassword(currentUser);
         }
 
         currentUser = userRepository.update(currentUser);
-        if (currentUser != null){
+        if (currentUser != null) {
             response.setResponseObject(currentUser);
-        }
-        else{
-            response.addError("","Could not update user");
+        } else {
+            response.addError("", "Could not update user");
         }
         return response;
     }
@@ -117,13 +230,8 @@ public class UserService implements IUserService {
         user.setPassword(encryptedPassword);
     }
 
-    private boolean userExistsWithEmail(String email, ServiceResponse<IUser> response) {
+    private boolean userExistsWithEmail(String email) {
         IUser existingUser = findByEmail(email);
-
-        if (existingUser != null) {
-            response.addError("", "User with email exists.");
-            return true;
-        }
-        return false;
+        return existingUser != null;
     }
 }

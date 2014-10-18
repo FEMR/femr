@@ -15,10 +15,6 @@ hr {
     border-top: 1px solid black;
 }
 
-#createUserError {
-    color: rgb(198, 0, 0);
-}
-
 #nameOrIdSearchForm {
     border: 1px solid black;
     width: 200px;
@@ -61,10 +57,6 @@ hr {
 
 .width-50 {
     width: 50%;
-}
-
-.createWrap {
-
 }
 
 /* Bootstrap won't offset for xs columns, but i want to */
@@ -216,6 +208,10 @@ hr {
     padding: 4px;
 }
 
+
+.red {
+    color: red;
+}
 /*
 #portraitWrap img{
 display: block;

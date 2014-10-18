@@ -21,6 +21,7 @@ package femr.data.models;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,6 +50,8 @@ public class User implements IUser {
     private Boolean deleted;
     @Column(name = "isPasswordReset", nullable = false)
     private Boolean passwordReset;
+    @Column(name ="notes")
+    private String notes;
 
     @Override
     public int getId() {
@@ -101,8 +104,11 @@ public class User implements IUser {
     }
 
     @Override
-    public void setRoles(List<IRole> roles) {
-        this.roles = roles;
+    public void setRoles(List<? extends IRole> roles) {
+        this.roles = new ArrayList<>();
+        for (IRole role : roles){
+            this.roles.add(role);
+        }
     }
 
     @Override
@@ -138,5 +144,18 @@ public class User implements IUser {
     @Override
     public void setPasswordReset(Boolean passwordReset) {
         this.passwordReset = passwordReset;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getNotes() {
+        return notes;
+    }
+
+    @Override
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

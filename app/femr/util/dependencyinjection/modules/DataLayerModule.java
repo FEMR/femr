@@ -44,6 +44,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientEncounterVital.class).toProvider(PatientEncounterVitalProvider.class);
         bind(IPatientPrescription.class).toProvider(PatientPrescriptionProvider.class);
         bind(IPhoto.class).toProvider(PhotoProvider.class);
+        bind(IRole.class).toProvider(RoleProvider.class);
         bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
         bind(ITab.class).toProvider(TabProvider.class);
         bind(ITabField.class).toProvider(TabFieldProvider.class);

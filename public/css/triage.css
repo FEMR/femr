@@ -176,10 +176,6 @@
     float: left !important;
 }
 
-.red {
-    color: red;
-}
-
 /* Shrinking of General Info section */
 @media (max-width: 1199px) {
     #genderBtns {

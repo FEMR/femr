@@ -25,26 +25,68 @@
     cursor: pointer;
 }
 
+/*User form response*/
+.createUserError {
+    color: rgb(198, 0, 0);
+}
+.adminMessage{
+    color: #577A3A;
+    font-weight: bold;
+}
+.errors{
+    color: rgb(198, 0, 0);
+}
+.fieldWrap{
+    margin-bottom: 15px;
+}
+.fieldWrap input{
+    width: 50% !important;
+}
 
 
-/*jQuery UI Dialog*/
-#userInfoWrap label, #userRolesWrap label{
+
+/*Edit user*/
+#editWrapLeft{
+    width: 65%;
+    float: left;
+    padding: 5px;
+}
+#editWrapRight{
+    width: 35%;
+    float: left;
+    padding: 5px;
+}
+.editWrapBoth label{
     font-size: 18px;
 }
-#userInfoWrap input[type=text]{
-    width: 100%;
-    margin-bottom: 20px;
+.editWrapBoth input[type=text], .editWrapBoth input[type=password]{
+    width: 100% !important;
 }
+label[for=newPassword], label[for=newPasswordVerify]{
+    display: none;
+}
+
 #userInfoWrap input[type=checkbox]{
-    -ms-transform: scale(2); /* IE */
-    -moz-transform: scale(2); /* FF */
-    -webkit-transform: scale(2); /* Safari and Chrome */
-    -o-transform: scale(2); /* Opera */
     padding: 10px;
     margin-left: 15px;
 }
-#userInfoWrap p{
+.editWrapBoth p{
     font-size: 10px;
+}
+.editWrapBoth .fieldWrap{
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+#newPassword_field, #newPasswordVerify_field{
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 665px) {
+    #addUserSubmitBtn{
+        float: left !important;
+    }
 }
 
 

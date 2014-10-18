@@ -268,7 +268,10 @@ public class DomainMapper {
         medicationItem.setName(medication.getName());
         medicationItem.setQuantity_current(medication.getQuantity_current());
         medicationItem.setQuantity_total(medication.getQuantity_total());
-        medicationItem.setForm(medication.getMedicationForm().getName());
+        if (medication.getMedicationForm() != null){
+            medicationItem.setForm(medication.getMedicationForm().getName());
+        }
+        /*
         for(IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()){
             medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
                     medicationActiveDrug.getMedicationMeasurementUnit().getName(),
@@ -276,7 +279,7 @@ public class DomainMapper {
                     medicationActiveDrug.isDenominator()
             );
         }
-
+          */
         return medicationItem;
     }
 

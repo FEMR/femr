@@ -1,38 +1,77 @@
-@(currentUser: femr.common.dto.CurrentUser, roles: List[_ <: femr.data.models.IRole], viewModel: femr.ui.models.admin.users.CreateViewModelGet)
+@(currentUser: femr.common.dto.CurrentUser, form: play.data.Form[femr.ui.models.admin.users.CreateViewModel], messages: java.util.List[_ <: java.lang.String], availableRoles: java.util.List[_ <: java.lang.String])
 
+@import views.html.helper.FieldConstructor
+@import femr.ui.views.html.partials.admin.inputFieldConstructor
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.admin.routes.UsersController
+    @implicitField = @{
+        FieldConstructor(inputFieldConstructor.f)
+    }
 
-@admin("Add User", currentUser) {
-    <div class="createWrap">
-    @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal") {
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/admin/users.css")">
+    }
+    @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/admin/users.js")"></script>
+    }
+    @additionalMessages = {
+    @for(message <- messages) {
+        <p class="adminMessage">@message</p>
+    }
+    }
 
-         <p id="createUserError">@viewModel.getError</p>
+@admin("Add User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages) {
+    <div id="createWrap">
+    @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal", 'name -> "createForm") {
 
-        <div class="addUserGroup">
-            <label for="email">Email address</label>
-            <input type="text" id="email" name="email" class="fInput" placeholder="Email Address" value="@viewModel.getUser.getEmail" autofocus="" />
-        </div>
-        <div class="addUserGroup">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="fInput" placeholder="Password"/>
-        </div>
-        <div class="addUserGroup">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" name="firstName" class="fInput" value="@viewModel.getUser.getFirstName" placeholder="First Name"/>
-        </div>
-        <div class="addUserGroup">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" name="lastName" class="fInput" value="@viewModel.getUser.getLastName" placeholder="Last Name"/>
-        </div>
+        @helper.inputText(form("email"),
+            'class -> "fInput",
+            'placeholder -> "Email Address",
+            '_label -> "Email Address",
+            '_isRequired -> true
+        )
 
-        <div class="addUserGroupBtns">
-            <label for="roles">Roles</label>
+        @helper.inputPassword(form("password"),
+            'class -> "fInput",
+            'placeholder -> "Password",
+            '_label -> "Password",
+            '_isRequired -> true
+        )
+
+        @helper.inputText(form("firstName"),
+            'class -> "fInput",
+            'placeholder -> "First Name",
+            '_label -> "First Name",
+            '_isRequired -> true
+        )
+
+        @helper.inputText(form("lastName"),
+            'class -> "fInput",
+            'placeholder -> "Last Name",
+            '_label -> "Last Name",
+            '_isRequired -> false
+        )
+
+        @helper.inputText(form("notes"),
+            'class -> "fInput",
+            'placeholder -> "About User",
+            '_label -> "About User",
+            '_isRequired -> false
+        )
+
+            <!--TODO: figure out how to use the inputCheckboxGroup helper-->
+
+        <div id="roleWrap">
+            <label for="roles">Roles<span id="roles" class="red bold">*</span></label>
+            <span class="errors"></span>
+            @for(error <- form("roles").errors) {
+                <p class="createUserError"> @error.message</p>
+            }
 
             <br/>
-            @for(role <- roles) {
+            @for(role <- availableRoles) {
                 <label class="btn btn-default">
-                    <input type="checkbox" name="roles" value="@role.getId"> @role.getName
+                    <input type="checkbox" name="roles[]" value="@role"> @role
                 </label>
                 <br/>
             }

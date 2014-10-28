@@ -1,4 +1,5 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModelGet: femr.ui.models.admin.users.IndexViewModelGet)
+@(currentUser: femr.common.dto.CurrentUser, viewModelGet: femr.ui.models.admin.users.ManageViewModelGet)
+@import femr.ui.controllers.admin.routes.UsersController
 
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.views.html.partials.admin._
@@ -8,43 +9,46 @@
     }
 
     @additionalScripts = {
-
+        <script type="text/javascript" src="@routes.Assets.at("js/admin/users.js")"></script>
     }
 
 @admin("Manage Users", currentUser, styles = additionalStyles, scripts = additionalScripts) {
     <table id="userTable">
         <thead>
             <tr>
-                <th>#</th>
+                <th>Edit</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
+                <th>About</th>
                 <th>Role</th>
                 <th>Last Login</th>
-                <th>Edit</th>
                 <th>Toggle</th>
             </tr>
         </thead>
         <tbody>
         @for(y <- 1 to viewModelGet.getUsers.size) {
             <tr>
-                <td>@y</td>
+                <td>
+                @helper.form(action = UsersController.editGet(viewModelGet.getUser(y - 1).getId)) {
+                    @if(viewModelGet.getUser(y - 1).getEmail != "admin") {
+                        <button type="submit" class="btn btn-default editBtn">@y</button>
+                    }
+                }
+
+                </td>
                 <td>@viewModelGet.getUser(y - 1).getFirstName</td>
                 <td>@viewModelGet.getUser(y - 1).getLastName</td>
                 <td>@viewModelGet.getUser(y - 1).getEmail</td>
+                <td>@viewModelGet.getUser(y - 1).getNotes</td>
                 <td>
                 @for(role <- 0 to viewModelGet.getUser(y - 1).getRoles.size - 1) {
                     <ul>
-                        <li>@viewModelGet.getUser(y - 1).getRoles.get(role).getName</li>
+                        <li>@viewModelGet.getUser(y - 1).getRoles.get(role)</li>
                     </ul>
                 }
                 </td>
-                <td>@viewModelGet.getUser(y - 1).getLastLogin</td>
-                <td>
-                    @if(viewModelGet.getUser(y - 1).getEmail != "admin"){
-                        <button type="button" class="btn btn-default editBtn" data-user_id="@viewModelGet.getUser(y - 1).getId">Edit</button>
-                    }
-                </td>
+                <td>@viewModelGet.getUser(y - 1).getLastLoginDate</td>
                 <td class="text-center">
                 @toggleButton(viewModelGet.getUser(y - 1))
                 </td>

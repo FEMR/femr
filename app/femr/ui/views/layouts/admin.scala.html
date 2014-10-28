@@ -3,6 +3,7 @@
         menus: Html = Html(""),
         styles: Html = Html(""),
         scripts: Html = Html(""),
+        message: Html = Html(""),
         outsideContainerTop: Html = Html(""),
         outsideContainerBottom: Html = Html(""))(content: Html)
 
@@ -26,7 +27,7 @@
 @main(title, currentUser, adminStyles, adminScripts) {
     <div id="admin-panels">
         <div id="admin-left-panel">
-            <a href="@UsersController.index()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
+            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
                 Manage Users</a>
             <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
                 Add User</a>
@@ -40,6 +41,7 @@
             <div id="title">
                 <h2>@title</h2>
             </div>
+            @message
             <div id="adminContent">
             @content
             </div>

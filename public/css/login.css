@@ -64,10 +64,18 @@ input[type="text"], input[type="password"] {
     width: 100%;
     background: #fff;
     margin-bottom: 4%;
-    border: 1px solid #ccc;
     padding: 4%;
+    border: 1px solid #ccc;
     font-size: 95%;
     color: #555;
+}
+.fInputChangePassword{
+    padding: 2% !important;
+    width: 50% !important;
+    float: left !important;
+}
+.labelChangePassword{
+    float: left;
 }
 
 input[type="submit"] {

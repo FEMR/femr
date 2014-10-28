@@ -21,10 +21,12 @@ package femr.business.services;
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
+import femr.common.dto.ServiceResponse;
 import femr.data.models.IRole;
 import femr.data.daos.IRepository;
 import femr.data.models.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RoleService implements IRoleService {
@@ -43,6 +45,27 @@ public class RoleService implements IRoleService {
                 .ne("name", "SuperUser");
         List<? extends IRole> roles = roleRepository.find(query);
         return roles;
+    }
+
+    @Override
+    public ServiceResponse<List<String>> getAllRolesString() {
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        ExpressionList<Role> query = QueryProvider.getRoleQuery()
+                .where()
+                .ne("name", "SuperUser");
+        try {
+            List<? extends IRole> roles = roleRepository.find(query);
+            List<String> stringRoles = new ArrayList<>();
+            for (IRole role : roles) {
+                stringRoles.add(role.getName());
+            }
+            response.setResponseObject(stringRoles);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+
+        return response;
     }
 
     @Override

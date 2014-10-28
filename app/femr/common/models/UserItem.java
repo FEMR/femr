@@ -18,12 +18,23 @@
 */
 package femr.common.models;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserItem {
-
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
+    private List<String> roles;
+    private String lastLoginDate;
+    private String notes;
+    private boolean isDeleted;
+    private boolean isPasswordReset;
+
+    public UserItem(){
+        this.roles = new ArrayList<>();
+    }
 
     public String getFirstName() {
         return firstName;
@@ -47,5 +58,60 @@ public class UserItem {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Roles the user currently has
+     */
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(String role){
+        this.roles.add(role);
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isPasswordReset() {
+        return isPasswordReset;
+    }
+
+    public void setPasswordReset(boolean isPasswordReset) {
+        this.isPasswordReset = isPasswordReset;
     }
 }

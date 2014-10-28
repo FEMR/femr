@@ -268,4 +268,8 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
         width: 100% !important;
     }
 }
+.fNarrativeTextArea{
+    width: 100%;
+    height: 300px;
+}
 

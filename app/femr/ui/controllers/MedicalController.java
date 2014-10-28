@@ -142,7 +142,6 @@ public class MedicalController extends Controller {
             viewModelGet.setStaticFields(tabFieldItemMap);
         }
 
-
         //get custom tabs/fields
         ServiceResponse<List<TabItem>> tabItemResponse = medicalService.getCustomTabs();
         if (tabItemResponse.hasErrors()) {
@@ -156,7 +155,6 @@ public class MedicalController extends Controller {
         } else {
             viewModelGet.setCustomFields(tabFieldResponse.getResponseObject());
         }
-
 
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {

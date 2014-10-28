@@ -26,6 +26,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import play.Play;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,27 +61,50 @@ public class DatabaseSeeder {
     /**
      * Seed available system settings
      */
-    private void seedSystemSettings(){
-        int settingsCount = systemSettingRepository.count(SystemSetting.class);
-        if (settingsCount == 0){
-            SystemSetting systemSetting = new SystemSetting();
-            systemSetting.setActive(false);
+    private void seedSystemSettings() {
+        List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
+
+        SystemSetting systemSetting;
+        if (systemSettings != null && !containsName(systemSettings, "Multiple chief complaints")) {
+            systemSetting = new SystemSetting();
             systemSetting.setName("Multiple chief complaints");
-            systemSettingRepository.create(systemSetting);
-            systemSetting = new SystemSetting();
-            systemSetting.setActive(true);
-            systemSetting.setName("Medical PMH Tab");
-            systemSettingRepository.create(systemSetting);
-            systemSetting = new SystemSetting();
-            systemSetting.setName("Medical Photo Tab");
+            systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }
+        if (systemSettings != null && !containsName(systemSettings, "Medical PMH Tab")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Medical PMH Tab");
+            systemSetting.setActive(true);
+            systemSettingRepository.create(systemSetting);
+        }
+        if (systemSettings != null && !containsName(systemSettings, "Medical Photo Tab")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Medical Photo Tab");
+            systemSetting.setActive(true);
+            systemSettingRepository.create(systemSetting);
+        }
+        if (systemSettings != null && !containsName(systemSettings, "Medical HPI Consolidate")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Medical HPI Consolidate");
+            systemSetting.setActive(false);
+            systemSettingRepository.create(systemSetting);
+        }
+
+    }
+
+    private static boolean containsName(List<? extends ISystemSetting> systemSettings, String name) {
+        for (ISystemSetting ss : systemSettings) {
+            if (ss.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
-    private void seedDefaultTabFields(){
+    private void seedDefaultTabFields() {
         int sizeCount = tabFieldRepository.count(TabField.class);
-        if (sizeCount == 0){
+        if (sizeCount == 0) {
             List<TabField> tabFields = new ArrayList<>();
             TabField tabField = new TabField();
             tabField.setName("onset");
@@ -200,9 +224,9 @@ public class DatabaseSeeder {
     }
 
 
-    private void seedDefaultTabNames(){
+    private void seedDefaultTabNames() {
         int sizeCount = tabRepository.count(Tab.class);
-        if (sizeCount == 0){
+        if (sizeCount == 0) {
             List<Tab> tabs = new ArrayList<>();
             Tab tab = new Tab();
             tab.setName("HPI");
@@ -261,7 +285,7 @@ public class DatabaseSeeder {
         if (sizeCount == 0) {
             List<TabFieldSize> tabFieldSizes = new ArrayList<>();
             TabFieldSize tabFieldSize = new TabFieldSize();
-             //not using small right now
+            //not using small right now
 //            tabFieldSize.setName("small");
 //            tabFieldSizes.add(tabFieldSize);
 
@@ -276,7 +300,7 @@ public class DatabaseSeeder {
             tabFieldSizeRepository.createAll(tabFieldSizes);
         }
         sizeCount = tabFieldTypeRepository.count(TabFieldType.class);
-        if (sizeCount == 0){
+        if (sizeCount == 0) {
             List<TabFieldType> tabFieldTypes = new ArrayList<>();
 
             TabFieldType tabFieldType = new TabFieldType();

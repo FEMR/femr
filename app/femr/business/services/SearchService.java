@@ -258,7 +258,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId){
+    public ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .fetch("patientEncounter")
@@ -473,25 +473,23 @@ public class SearchService implements ISearchService {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
             SettingItem settingItem = new SettingItem();
             if (systemSettings == null || systemSettings.size() == 0) {
-                response.addError("", "error");
+                response.addError("", "no settings exist at this time");
             } else {
-                //uhhh lol
-                if (systemSettings.get(0).isActive()) {
-                    settingItem.setMultipleChiefComplaint(true);
-                } else {
-                    settingItem.setMultipleChiefComplaint(false);
-                }
-
-                if (systemSettings.get(1).isActive()) {
-                    settingItem.setPmhTab(true);
-                } else {
-                    settingItem.setPmhTab(false);
-                }
-
-                if (systemSettings.get(2).isActive()) {
-                    settingItem.setPhotoTab(true);
-                } else {
-                    settingItem.setPhotoTab(false);
+                for (ISystemSetting ss : systemSettings) {
+                    switch (ss.getName()) {
+                        case "Multiple chief complaints":
+                            settingItem.setMultipleChiefComplaint(ss.isActive());
+                            break;
+                        case "Medical PMH Tab":
+                            settingItem.setPmhTab(ss.isActive());
+                            break;
+                        case "Medical Photo Tab":
+                            settingItem.setPhotoTab(ss.isActive());
+                            break;
+                        case "Medical HPI Consolidate":
+                            settingItem.setConsolidateHPI(ss.isActive());
+                            break;
+                    }
                 }
             }
             response.setResponseObject(settingItem);

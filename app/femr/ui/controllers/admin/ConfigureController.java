@@ -9,8 +9,8 @@ import femr.data.models.ISystemSetting;
 import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.configure.ConfigureViewModelPost;
-import femr.util.stringhelpers.StringUtils;
+import femr.ui.models.admin.configure.IndexViewModelGet;
+import femr.ui.models.admin.configure.IndexViewModelPost;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -23,7 +23,7 @@ import java.util.List;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class ConfigureController extends Controller {
 
-    private final Form<ConfigureViewModelPost> ConfigureViewModelForm = Form.form(ConfigureViewModelPost.class);
+    private final Form<IndexViewModelPost> indexViewModelForm = Form.form(IndexViewModelPost.class);
     private ISessionService sessionService;
     private IConfigureService configureService;
 
@@ -36,53 +36,28 @@ public class ConfigureController extends Controller {
 
     public Result indexGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
+        IndexViewModelGet indexViewModel = new IndexViewModelGet();
+
+
         ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.getCurrentSettings();
         if (systemSettingsResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        List<? extends ISystemSetting> systemSettings = systemSettingsResponse.getResponseObject();
+        for (ISystemSetting ss : systemSettingsResponse.getResponseObject()) {
+            indexViewModel.setSetting(ss.getName(), ss.isActive());
+        }
 
-        return ok(index.render(currentUser, systemSettings));
+
+        return ok(index.render(currentUser, indexViewModel));
     }
 
-    /**
-     * Only updates one system setting right now,
-     * the service is designed to updated more than one
-     * when the time comes
-     *
-     * @return
-     */
     public Result indexPost() {
-        ConfigureViewModelPost viewModel = ConfigureViewModelForm.bindFromRequest().get();
+        IndexViewModelPost viewModel = indexViewModelForm.bindFromRequest().get();
 
-        ServiceResponse<ISystemSetting> response = configureService.getSystemSetting("Multiple chief complaints");
-        ISystemSetting systemSetting = response.getResponseObject();
-
-
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getSs1()))
-            systemSetting.setActive(true);
-        else
-            systemSetting.setActive(false);
-
-        configureService.updateSystemSetting(systemSetting);
-
-        response = configureService.getSystemSetting("Medical PMH Tab");
-        systemSetting = response.getResponseObject();
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getSs2()))
-            systemSetting.setActive(true);
-        else
-            systemSetting.setActive(false);
-        configureService.updateSystemSetting(systemSetting);
-
-        response = configureService.getSystemSetting("Medical Photo Tab");
-        systemSetting = response.getResponseObject();
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getSs3()))
-            systemSetting.setActive(true);
-        else
-            systemSetting.setActive(false);
-        configureService.updateSystemSetting(systemSetting);
-
-
+        ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.updateSystemSettings(viewModel.getSettings());
+        if (systemSettingsResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
 
         return redirect(routes.AdminController.index());
     }

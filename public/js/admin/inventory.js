@@ -7,12 +7,12 @@ $(document).ready(function () {
 
 var inventoryFields = {
     newMedications: {
-        quantity: $('#quantityInput'),
-        name: $('#nameInput'),
-        strength: $('#strengthInput'),
-        ingredient: $('#ingredientInput'),
-        unit: $('#unitInput'),
-        form: $('#formInput')
+        quantity: $('#quantityFieldMedication input'),
+        form: $('#formFieldMedication select'),
+        name: $('#nameFieldMedication input'),
+        strength: $('.strengthFieldMedication input'),
+        ingredient: $('.ingredientFieldMedication input'),
+        unit: $('.unitFieldMedication select')
     }
 };
 

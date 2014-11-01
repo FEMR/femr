@@ -1,5 +1,4 @@
 #addMed {
-
     margin-bottom: 20px;
 }
 
@@ -13,17 +12,31 @@
 }
 
 
-#addMedToList{
+#submitMedicationButton{
     width: 20%;
     float: right;
     margin-top: 10px;
 }
-#newMedication{
+
+#newMedicationWrap{
     border-top: 1px solid black;
     padding: 12px 12px 2px 12px;
     overflow: hidden;
     margin: 0 auto;
     width: 100%;
+}
+#primaryMedicationRow{
+    overflow: hidden;
+}
+#quantityFormName_Wrap, #strengthUnitIngredient_Wrap{
+    width: 46%;
+    overflow: hidden;
+    float: left;
+}
+#addIngredientPlusSignWrap{
+    float: left;
+    width: 8%;
+    margin-top: 16px;
 }
 .newIngredientRow{
 
@@ -33,11 +46,21 @@
 .newIngredientRow div{
     float: right !important;
 }
+.newIngredientWrap{
+    width: 46%;
+}
+.newIngredientWrap select{
+    margin-top: 0 !important;
+}
+.newInvisiblePlusSignWrap{
+    width: 8%;
+    float: right;
+    overflow: hidden;
+}
 
 
 .fieldMedication{
     padding: 2px;
-    height: 62px;
 
 }
 .fieldMedication input{
@@ -47,11 +70,11 @@
 
 
 #quantityFieldMedication{
-    width: 12%;
+    width: 25%;
     float: left;
 }
 #formFieldMedication{
-    width: 12%;
+    width: 25%;
     float: left;
 }
 #formFieldMedication select, .unitFieldMedication select{
@@ -59,34 +82,35 @@
     margin-top: 5px;
 }
 #nameFieldMedication{
-    width: 24%;
+    width: 50%;
     float: left;
 }
 
 .strengthFieldMedication{
-    width: 12%;
+    width: 27%;
     float: left;
 }
 .unitFieldMedication{
-    width: 10%;
+    width: 23%;
     float: left;
 }
 .ingredientFieldMedication{
-    width: 22%;
+    width: 50%;
     float: left;
 }
 
-#addIngredientPlusSign{
-    float: left;
-    width: 8%;
-    margin-top: 16px;
+#invisibleShit{
+    width: 4%;
+    float: right;
+    overflow: hidden;
+
 }
-#addIngredientPlusSign span{
+#addIngredientPlusSignWrap span{
     padding: 0 10px 0 10px;
     font-size: 36px;
     margin: 0 auto;
 }
-#addIngredientPlusSign span:hover{
+#addIngredientPlusSignWrap span:hover{
     cursor: default;
 }
 

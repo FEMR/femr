@@ -18,13 +18,15 @@
 */
 package femr.ui.models.admin.inventory;
 
+import java.util.List;
+
 public class InventoryViewModelPost {
     private Integer medicationQuantity;
     private String medicationForm;
     private String medicationName;
-    private Integer medicationStrength;
-    private String medicationUnit;
-    private String medicationIngredient;
+    private List<Integer> medicationStrength;
+    private List<String> medicationUnit;
+    private List<String> medicationIngredient;
 
     public Integer getMedicationQuantity() {
         return medicationQuantity;
@@ -50,27 +52,28 @@ public class InventoryViewModelPost {
         this.medicationName = medicationName;
     }
 
-    public Integer getMedicationStrength() {
+
+    public List<Integer> getMedicationStrength() {
         return medicationStrength;
     }
 
-    public void setMedicationStrength(Integer medicationStrength) {
+    public void setMedicationStrength(List<Integer> medicationStrength) {
         this.medicationStrength = medicationStrength;
     }
 
-    public String getMedicationUnit() {
+    public List<String> getMedicationUnit() {
         return medicationUnit;
     }
 
-    public void setMedicationUnit(String medicationUnit) {
+    public void setMedicationUnit(List<String> medicationUnit) {
         this.medicationUnit = medicationUnit;
     }
 
-    public String getMedicationIngredient() {
+    public List<String> getMedicationIngredient() {
         return medicationIngredient;
     }
 
-    public void setMedicationIngredient(String medicationIngredient) {
+    public void setMedicationIngredient(List<String> medicationIngredient) {
         this.medicationIngredient = medicationIngredient;
     }
 }

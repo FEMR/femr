@@ -50,6 +50,7 @@ public class InventoryController extends Controller {
 
     public Result indexPost(){
         InventoryViewModelPost inventoryViewModelPost = inventoryViewModelPostForm.bindFromRequest().get();
+        Integer test = inventoryViewModelPost.getMedicationQuantity();
         return redirect("/admin/inventory");
     }
 

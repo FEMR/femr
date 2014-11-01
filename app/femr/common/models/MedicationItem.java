@@ -22,10 +22,10 @@ import java.util.List;
 
 public class MedicationItem {
     private int id;
-    private String name;
     private Integer quantity_current;
     private Integer quantity_total;
     private String form;
+    private String name;
     //active ingredients uses an inner class because
     //a medication can have more than one active ingredient.
     private List<ActiveIngredient> activeIngredients;
@@ -92,7 +92,7 @@ public class MedicationItem {
         this.form = form;
     }
 
-    private class ActiveIngredient{
+    public class ActiveIngredient{
         private String name;
         private String unit;
         private int value;

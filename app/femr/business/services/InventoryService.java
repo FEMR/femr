@@ -46,64 +46,6 @@ public class InventoryService implements IInventoryService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MedicationItem>> createMedicationInventory(List<MedicationItem> medicationItems) {
-        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
-        if (medicationItems == null) {
-            response.addError("", "bad parameter");
-            return response;
-        }
-
-        List<IMedication> medications = new ArrayList<>();
-        for (MedicationItem mi : medicationItems) {
-            medications.add(domainMapper.createMedication(mi));
-        }
-
-        List<? extends IMedication> newMedications = new ArrayList<>();
-        try {
-            newMedications = medicationRepository.createAll(medications);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
-
-        List<MedicationItem> medicationItemsForResponse = new ArrayList<>();
-        for (IMedication m : newMedications) {
-            medicationItemsForResponse.add(domainMapper.createMedicationItem(m));
-        }
-        response.setResponseObject(medicationItemsForResponse);
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<Boolean> deleteMedicationFromInventory(int id) {
-        ServiceResponse<Boolean> response = new ServiceResponse<>();
-        if (id < 1){
-            response.addError("", "i cannot be less than 1");
-            return response;
-        }
-        ExpressionList<Medication> query = QueryProvider.getMedicationQuery().where().eq("id", id);
-
-        IMedication medication = medicationRepository.findOne(query);
-        if (medication == null) {
-            response.addError("", "couldn't find medication");
-            return response;
-        } else {
-            medication.setIsDeleted(true);
-            medication = medicationRepository.update(medication);
-            if (medication != null && medication.getIsDeleted()) {
-                response.setResponseObject(true);
-            }
-        }
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ServiceResponse<List<MedicationItem>> getMedicationInventory() {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
@@ -124,6 +66,24 @@ public class InventoryService implements IInventoryService {
             medicationItems.add(DomainMapper.createMedicationItem(m));
         }
         response.setResponseObject(medicationItems);
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem) {
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        try {
+            IMedication medication = domainMapper.createMedication(medicationItem);
+            medication = medicationRepository.create(medication);
+            MedicationItem newMedicationItem = DomainMapper.createMedicationItem(medication);
+            response.setResponseObject(newMedicationItem);
+        } catch (Exception ex) {
+            response.addError("", "error creating medication");
+        }
 
         return response;
     }

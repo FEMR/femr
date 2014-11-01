@@ -24,22 +24,6 @@ import femr.common.models.MedicationItem;
 import java.util.List;
 
 public interface IInventoryService {
-    /**
-     * Adds a list of medicine to the inventory
-     *
-     * @param medicationItems list of MedicationItems to save
-     * @return the same list of MedicationItems WITHOUT primary key (id)
-     */
-    ServiceResponse<List<MedicationItem>> createMedicationInventory(List<MedicationItem> medicationItems);
-
-    /**
-     * Removes a medicine from the inventory - set the isDeleted
-     * flag to true so it doesn't show up anymore
-     *
-     * @param id id of medication to remove
-     * @return true if successful, false if failed
-     */
-    ServiceResponse<Boolean> deleteMedicationFromInventory(int id);
 
     /**
      * Gets all medicine that is currently not deleted
@@ -47,4 +31,12 @@ public interface IInventoryService {
      * @return list of MedicationItems for use by controller
      */
     ServiceResponse<List<MedicationItem>> getMedicationInventory();
+
+    /**
+     * Add a new medication to the inventory
+     *
+     * @param medicationItem the medication
+     * @return
+     */
+    ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem);
 }

@@ -29,6 +29,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +39,8 @@ public class DomainMapper {
 
     private final Provider<IChiefComplaint> chiefComplaintProvider;
     private final Provider<IMedication> medicationProvider;
+    private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
+    private final Provider<IMedicationForm> medicationFormProvider;
     private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
@@ -56,6 +59,8 @@ public class DomainMapper {
     @Inject
     public DomainMapper(Provider<IChiefComplaint> chiefComplaintProvider,
                         Provider<IMedication> medicationProvider,
+                        Provider<IMedicationForm> medicationFormProvider,
+                        Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                         Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
                         Provider<IPatientEncounter> patientEncounterProvider,
                         Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
@@ -73,6 +78,8 @@ public class DomainMapper {
         this.chiefComplaintProvider = chiefComplaintProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
+        this.medicationFormProvider = medicationFormProvider;
+        this.medicationActiveDrugProvider = medicationActiveDrugProvider;
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
@@ -179,7 +186,7 @@ public class DomainMapper {
         return tabItem;
     }
 
-    public IRole createRole(String name){
+    public IRole createRole(String name) {
         IRole role = roleProvider.get();
         role.setName(name);
         return role;
@@ -188,13 +195,13 @@ public class DomainMapper {
     /**
      * Create a new user - MAKE SURE YOU ENCRYPT THE PASSWORD
      *
-     * @param userItem useritem from the UI
-     * @param password unencrypted password
-     * @param isDeleted is the user deleted
+     * @param userItem        useritem from the UI
+     * @param password        unencrypted password
+     * @param isDeleted       is the user deleted
      * @param isPasswordReset does the user need to do a password reset
      * @return
      */
-    public IUser createUser(UserItem userItem, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles){
+    public IUser createUser(UserItem userItem, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles) {
         IUser user = userProvider.get();
         user.setFirstName(userItem.getFirstName());
         user.setLastName(userItem.getLastName());
@@ -268,7 +275,7 @@ public class DomainMapper {
         medicationItem.setName(medication.getName());
         medicationItem.setQuantity_current(medication.getQuantity_current());
         medicationItem.setQuantity_total(medication.getQuantity_total());
-        if (medication.getMedicationForm() != null){
+        if (medication.getMedicationForm() != null) {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }
         /*
@@ -285,7 +292,6 @@ public class DomainMapper {
 
     /**
      * Creates a brand new medication that is being added to the inventory
-     * TODO: properly save new medication in the inventory
      *
      * @param medicationItem the medication item from the UI
      * @return a new MedicationItem
@@ -299,6 +305,22 @@ public class DomainMapper {
         medication.setQuantity_total(medicationItem.getQuantity_total());
         medication.setQuantity_current(medicationItem.getQuantity_current());
         medication.setIsDeleted(false);
+
+        List<? extends IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
+        if (medicationItem.getActiveIngredients() != null) {
+
+            for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()){
+                IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
+                medicationActiveDrug.setValue(miac.getValue());
+                medicationActiveDrug.setDenominator(false);
+                medication.setMedicationActiveDrugs();
+            }
+        }
+
+
+        IMedicationForm medicationForm = medicationFormProvider.get();
+        medicationForm.setName(medicationItem.getName());
+        medication.setMedicationForm(medicationForm);
         return medication;
     }
 

@@ -35,9 +35,6 @@ public class EditViewModel {
     private String notes;
     private List<String> roles;
 
-    //check for duplicate roles
-    //check for password equality
-    //TODO: Validate
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
         if (StringUtils.isNullOrWhiteSpace(firstName))

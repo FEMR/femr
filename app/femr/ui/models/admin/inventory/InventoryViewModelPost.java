@@ -18,6 +18,10 @@
 */
 package femr.ui.models.admin.inventory;
 
+import femr.util.stringhelpers.StringUtils;
+import play.data.validation.ValidationError;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryViewModelPost {
@@ -27,6 +31,14 @@ public class InventoryViewModelPost {
     private List<Integer> medicationStrength;
     private List<String> medicationUnit;
     private List<String> medicationIngredient;
+
+    public List<ValidationError> validate(){
+        List<ValidationError> errors = new ArrayList<>();
+        if (StringUtils.isNullOrWhiteSpace(medicationName))
+            errors.add(new ValidationError("medicationName", "name is a required field"));
+
+        return errors.isEmpty() ? null : errors;
+    }
 
     public Integer getMedicationQuantity() {
         return medicationQuantity;

@@ -19,26 +19,32 @@
 package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.common.dto.ServiceResponse;
-import femr.data.models.IMedication;
+import femr.data.models.*;
 import femr.data.daos.IRepository;
-import femr.data.models.Medication;
 import femr.common.models.MedicationItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryService implements IInventoryService {
-    private IRepository<IMedication> medicationRepository;
+    private final IRepository<IMedication> medicationRepository;
+    private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
+    private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private DomainMapper domainMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
+                            IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
+                            IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
                             DomainMapper domainMapper) {
         this.medicationRepository = medicationRepository;
+        this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
+        this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.domainMapper = domainMapper;
     }
 
@@ -77,7 +83,40 @@ public class InventoryService implements IInventoryService {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
         try {
-            IMedication medication = domainMapper.createMedication(medicationItem);
+
+            //set each active drug
+            List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
+            ExpressionList<MedicationMeasurementUnit> medicationMeasurementUnitExpressionList;
+            ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
+            if (medicationItem.getActiveIngredients() != null) {
+
+                for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()){
+                    medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
+                            .where()
+                            .eq("unit_name", miac.getUnit());
+                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationActiveDrugNameQuery()
+                            .where()
+                            .eq("name", miac.getName());
+                    //get the measurement unit ID (they are pre recorded)
+                    IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
+                    IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
+                    if (medicationActiveDrugName == null){
+                        //it's a new active drug name, were going to cascade(save) the bean
+                        domainMapper.createMedicationActiveDrugName(miac.getName());
+                    }
+                    if (medicationMeasurementUnit != null){
+                        IMedicationActiveDrug medicationActiveDrug = domainMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
+                        medicationActiveDrugs.add(medicationActiveDrug);
+                    }
+
+                }
+            }
+
+
+
+
+
+            IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs);
             medication = medicationRepository.create(medication);
             MedicationItem newMedicationItem = DomainMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);

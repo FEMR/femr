@@ -20,16 +20,12 @@ package femr.business.helpers;
 
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
-
 import javax.inject.Provider;
-
 import femr.common.models.*;
 import femr.data.models.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +35,9 @@ public class DomainMapper {
 
     private final Provider<IChiefComplaint> chiefComplaintProvider;
     private final Provider<IMedication> medicationProvider;
+    private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
+    private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
     private final Provider<IMedicationForm> medicationFormProvider;
     private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
@@ -59,8 +57,10 @@ public class DomainMapper {
     @Inject
     public DomainMapper(Provider<IChiefComplaint> chiefComplaintProvider,
                         Provider<IMedication> medicationProvider,
+                        Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
                         Provider<IMedicationForm> medicationFormProvider,
                         Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
+                        Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
                         Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
                         Provider<IPatientEncounter> patientEncounterProvider,
                         Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
@@ -78,8 +78,10 @@ public class DomainMapper {
         this.chiefComplaintProvider = chiefComplaintProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
+        this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
         this.medicationFormProvider = medicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
+        this.medicationMeasurementUnitProvider  = medicationMeasurementUnitProvider;
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
@@ -293,35 +295,51 @@ public class DomainMapper {
     /**
      * Creates a brand new medication that is being added to the inventory
      *
-     * @param medicationItem the medication item from the UI
+     * @param medicationItem medication item without active ingredients, separate active ingredients in the service
      * @return a new MedicationItem
      */
-    public IMedication createMedication(MedicationItem medicationItem) {
+    public IMedication createMedication(MedicationItem medicationItem, List<IMedicationActiveDrug> medicationActiveDrugs) {
         if (medicationItem == null) {
             return null;
         }
+        //set medication information that doesn't have any foreign keys
         IMedication medication = medicationProvider.get();
         medication.setName(medicationItem.getName());
         medication.setQuantity_total(medicationItem.getQuantity_total());
         medication.setQuantity_current(medicationItem.getQuantity_current());
         medication.setIsDeleted(false);
 
-        List<? extends IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
-        if (medicationItem.getActiveIngredients() != null) {
+        medication.setMedicationActiveDrugs(medicationActiveDrugs);
 
-            for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()){
-                IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
-                medicationActiveDrug.setValue(miac.getValue());
-                medicationActiveDrug.setDenominator(false);
-                medication.setMedicationActiveDrugs();
-            }
-        }
-
-
+        //set the medication's form
         IMedicationForm medicationForm = medicationFormProvider.get();
         medicationForm.setName(medicationItem.getName());
         medication.setMedicationForm(medicationForm);
         return medication;
+    }
+
+    /**
+     * Creates a new active drug
+     *
+     * @param value strength of the drug
+     * @param isDenominator is the drug a denominator
+     * @param activeDrugUnitId id of the unit for measurement of the drug
+     * @param medicationActiveDrugName the drug name
+     * @return new active drug
+     */
+    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName){
+        IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
+        medicationActiveDrug.setValue(value);
+        medicationActiveDrug.setDenominator(isDenominator);
+        medicationActiveDrug.setMedicationMeasurementUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
+        medicationActiveDrug.setMedicationActiveDrugName(medicationActiveDrugName);
+        return medicationActiveDrug;
+    }
+
+    public IMedicationActiveDrugName createMedicationActiveDrugName(String name){
+        IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameProvider.get();
+        medicationActiveDrugName.setName(name);
+        return medicationActiveDrugName;
     }
 
     /**

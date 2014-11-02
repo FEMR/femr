@@ -34,8 +34,12 @@ public class InventoryViewModelPost {
 
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
+        if (medicationQuantity == null)
+            errors.add(new ValidationError("medicationQuantity", "quantity is a required field"));
         if (StringUtils.isNullOrWhiteSpace(medicationName))
             errors.add(new ValidationError("medicationName", "name is a required field"));
+        if (StringUtils.isNullOrWhiteSpace(medicationForm))
+            errors.add(new ValidationError("medicationForm", "a form is required"));
 
         return errors.isEmpty() ? null : errors;
     }

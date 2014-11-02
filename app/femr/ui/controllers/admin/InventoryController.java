@@ -29,6 +29,7 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.InventoryViewModelGet;
 import femr.common.models.MedicationItem;
 import femr.ui.models.admin.inventory.InventoryViewModelPost;
+import femr.ui.models.admin.users.CreateViewModel;
 import femr.ui.views.html.admin.inventory.index;
 import play.data.Form;
 import play.mvc.Controller;
@@ -84,7 +85,12 @@ public class InventoryController extends Controller {
     }
 
     public Result indexPost() {
-        InventoryViewModelPost inventoryViewModelPost = inventoryViewModelPostForm.bindFromRequest().get();
+        Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
+        if (form.hasErrors()){
+            throw new RuntimeException();
+        }
+
+        InventoryViewModelPost inventoryViewModelPost = form.bindFromRequest().get();
 
         MedicationItem medicationItem = new MedicationItem();
         medicationItem.setName(inventoryViewModelPost.getMedicationName());

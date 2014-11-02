@@ -24,6 +24,7 @@ import java.util.List;
 public class InventoryViewModelGet {
     private List<MedicationItem> medications;
     private List<String> availableUnits;
+    private List<String> availableForms;
 
     public List<MedicationItem> getMedications() {
         return medications;
@@ -39,5 +40,13 @@ public class InventoryViewModelGet {
 
     public void setAvailableUnits(List<String> availableUnits) {
         this.availableUnits = availableUnits;
+    }
+
+    public List<String> getAvailableForms() {
+        return availableForms;
+    }
+
+    public void setAvailableForms(List<String> availableForms) {
+        this.availableForms = availableForms;
     }
 }

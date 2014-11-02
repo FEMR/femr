@@ -52,6 +52,13 @@ public class InventoryController extends Controller {
             viewModel.setAvailableUnits(availableMedicationUnitsResponse.getResponseObject());
         }
 
+        ServiceResponse<List<String>> availableMedicationFormsResponse = inventoryService.getAvailableForms();
+        if (availableMedicationFormsResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else {
+            viewModel.setAvailableForms(availableMedicationFormsResponse.getResponseObject());
+        }
+
         return ok(index.render(currentUser, viewModel));
     }
 

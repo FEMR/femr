@@ -34,16 +34,19 @@ import java.util.List;
 public class InventoryService implements IInventoryService {
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
+    private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private DomainMapper domainMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
+                            IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
                             DomainMapper domainMapper) {
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
+        this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.domainMapper = domainMapper;
     }
@@ -139,9 +142,25 @@ public class InventoryService implements IInventoryService {
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
-
         return response;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<List<String>> getAvailableForms() {
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        try {
+            List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);
+            List<String> availableForms = new ArrayList<>();
+            for (IMedicationForm mf : medicationForms) {
+                availableForms.add(mf.getName());
+            }
+            response.setResponseObject(availableForms);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
     }
 
 }

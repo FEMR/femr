@@ -44,4 +44,9 @@ public interface IInventoryService {
      * Get a list of available units for the user
      */
     ServiceResponse<List<String>> getAvailableUnits();
+
+    /**
+     * Get a list of available forms for the user
+     */
+    ServiceResponse<List<String>> getAvailableForms();
 }

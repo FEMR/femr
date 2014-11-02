@@ -27,9 +27,11 @@
                         <label for="formInput"></label>
                         <select name="medicationForm" class="fOption">
                             <option value="" disabled selected>Form</option>
-                            <option>pill</option>
-                            <option>cream</option>
-                            <option>chewable</option>
+                            @for(formIndex <- 1 to viewModel.getAvailableForms.size) {
+                                @defining(viewModel.getAvailableForms.get(formIndex - 1)) { form =>
+                                    <option value="@form">@form</option>
+                                }
+                            }
                         </select>
                     </div>
 

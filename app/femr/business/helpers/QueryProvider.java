@@ -46,6 +46,10 @@ public class QueryProvider {
         return Ebean.find(MedicationActiveDrugName.class);
     }
 
+    public static Query<MedicationForm> getMedicationFormQuery() {
+        return Ebean.find(MedicationForm.class);
+    }
+
     public static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
     }

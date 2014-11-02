@@ -1,3 +1,21 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
@@ -16,10 +34,13 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-
 import java.util.List;
 
-//Note: Administrative controllers still interface with pure data models
+/**
+ * Right now, the inventory feature supports the adding of medications, but
+ * when a physician submits a prescription it simply creates a new medication
+ * with a name equal to the prescription. The feature is not complete, yet.
+ */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
@@ -84,7 +105,6 @@ public class InventoryController extends Controller {
         if (medicationItemServiceResponse.hasErrors()) {
             return internalServerError();
         }
-
 
         return redirect("/admin/inventory");
     }

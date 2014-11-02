@@ -35,7 +35,7 @@ public class Medication implements IMedication {
     private Integer quantity_initial;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_forms_id")
     private MedicationForm medicationForm;
     @ManyToMany(fetch = FetchType.EAGER,

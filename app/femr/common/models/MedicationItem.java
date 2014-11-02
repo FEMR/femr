@@ -38,7 +38,7 @@ public class MedicationItem {
 
 
     public MedicationItem(){
-        this.activeIngredients = new ArrayList();
+        this.activeIngredients = new ArrayList<>();
     }
 
     /**

@@ -96,16 +96,17 @@ public class InventoryService implements IInventoryService {
                 for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()) {
                     medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
                             .where()
-                            .eq("unit_name", miac.getUnit());
+                            .eq("name", miac.getUnit());
                     medicationActiveDrugNameExpressionList = QueryProvider.getMedicationActiveDrugNameQuery()
                             .where()
                             .eq("name", miac.getName());
+
                     //get the measurement unit ID (they are pre recorded)
                     IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
                     IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationActiveDrugName == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
-                        domainMapper.createMedicationActiveDrugName(miac.getName());
+                        medicationActiveDrugName = domainMapper.createMedicationActiveDrugName(miac.getName());
                     }
                     if (medicationMeasurementUnit != null) {
                         IMedicationActiveDrug medicationActiveDrug = domainMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
@@ -115,8 +116,19 @@ public class InventoryService implements IInventoryService {
                 }
             }
 
+            //set the form
+            ExpressionList<MedicationForm> medicationFormExpressionList;
 
-            IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs);
+            medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
+                    .where()
+                    .eq("name", medicationItem.getForm());
+            IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
+            if (medicationForm == null){
+                medicationForm = domainMapper.createMedicationForm(medicationItem.getForm());
+            }
+
+
+            IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
             MedicationItem newMedicationItem = DomainMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);

@@ -303,11 +303,11 @@ public class DomainMapper {
      * @param medicationItem medication item without active ingredients, separate active ingredients in the service
      * @return a new MedicationItem
      */
-    public IMedication createMedication(MedicationItem medicationItem, List<IMedicationActiveDrug> medicationActiveDrugs) {
+    public IMedication createMedication(MedicationItem medicationItem, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
         if (medicationItem == null) {
             return null;
         }
-        //set medication information that doesn't have any foreign keys
+
         IMedication medication = medicationProvider.get();
         medication.setName(medicationItem.getName());
         medication.setQuantity_total(medicationItem.getQuantity_total());
@@ -316,11 +316,16 @@ public class DomainMapper {
 
         medication.setMedicationActiveDrugs(medicationActiveDrugs);
 
-        //set the medication's form
-        IMedicationForm medicationForm = medicationFormProvider.get();
-        medicationForm.setName(medicationItem.getName());
         medication.setMedicationForm(medicationForm);
+
         return medication;
+    }
+
+    public IMedicationForm createMedicationForm(String name){
+        IMedicationForm medicationForm = medicationFormProvider.get();
+        medicationForm.setName(name);
+        medicationForm.setIsDeleted(false);
+        return medicationForm;
     }
 
     /**

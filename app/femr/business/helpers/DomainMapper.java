@@ -281,13 +281,18 @@ public class DomainMapper {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }
 
+        String fullActiveDrugName = "";
         for(IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()){
             medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
                     medicationActiveDrug.getMedicationMeasurementUnit().getName(),
                     medicationActiveDrug.getValue(),
                     medicationActiveDrug.isDenominator()
             );
+            fullActiveDrugName = fullActiveDrugName.concat(medicationActiveDrug.getValue() + medicationActiveDrug.getMedicationMeasurementUnit().getName() + " " + medicationActiveDrug.getMedicationActiveDrugName().getName());
         }
+
+        medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
+
 
         return medicationItem;
     }

@@ -29,4 +29,12 @@ public interface IMedicationForm {
     String getName();
 
     void setName(String name);
+
+    String getDescription();
+
+    void setDescription(String description);
+
+    Boolean getIsDeleted();
+
+    void setIsDeleted(Boolean isDeleted);
 }

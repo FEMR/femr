@@ -90,7 +90,7 @@ public class InventoryService implements IInventoryService {
             ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
             if (medicationItem.getActiveIngredients() != null) {
 
-                for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()){
+                for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()) {
                     medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
                             .where()
                             .eq("unit_name", miac.getUnit());
@@ -100,20 +100,17 @@ public class InventoryService implements IInventoryService {
                     //get the measurement unit ID (they are pre recorded)
                     IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
                     IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
-                    if (medicationActiveDrugName == null){
+                    if (medicationActiveDrugName == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
                         domainMapper.createMedicationActiveDrugName(miac.getName());
                     }
-                    if (medicationMeasurementUnit != null){
+                    if (medicationMeasurementUnit != null) {
                         IMedicationActiveDrug medicationActiveDrug = domainMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
                         medicationActiveDrugs.add(medicationActiveDrug);
                     }
 
                 }
             }
-
-
-
 
 
             IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs);
@@ -125,6 +122,26 @@ public class InventoryService implements IInventoryService {
         }
 
         return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<List<String>> getAvailableUnits() {
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        try {
+            List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
+            List<String> availableUnits = new ArrayList<>();
+            for (IMedicationMeasurementUnit mmu : medicationMeasurementUnits) {
+                availableUnits.add(mmu.getName());
+            }
+            response.setResponseObject(availableUnits);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+
     }
 
 }

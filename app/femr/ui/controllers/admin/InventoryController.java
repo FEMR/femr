@@ -45,10 +45,17 @@ public class InventoryController extends Controller {
             viewModel.setMedications(medicationServiceResponse.getResponseObject());
         }
 
+        ServiceResponse<List<String>> availableMedicationUnitsResponse = inventoryService.getAvailableUnits();
+        if (availableMedicationUnitsResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else {
+            viewModel.setAvailableUnits(availableMedicationUnitsResponse.getResponseObject());
+        }
+
         return ok(index.render(currentUser, viewModel));
     }
 
-    public Result indexPost(){
+    public Result indexPost() {
         InventoryViewModelPost inventoryViewModelPost = inventoryViewModelPostForm.bindFromRequest().get();
 
         MedicationItem medicationItem = new MedicationItem();
@@ -57,7 +64,7 @@ public class InventoryController extends Controller {
         medicationItem.setQuantity_current(inventoryViewModelPost.getMedicationQuantity());
         medicationItem.setForm(inventoryViewModelPost.getMedicationForm());
 
-        for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++){
+        for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++) {
             medicationItem.addActiveIngredient(
                     inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
                     inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
@@ -67,7 +74,7 @@ public class InventoryController extends Controller {
         }
 
         ServiceResponse<MedicationItem> medicationItemServiceResponse = inventoryService.createMedication(medicationItem);
-        if (medicationItemServiceResponse.hasErrors()){
+        if (medicationItemServiceResponse.hasErrors()) {
             return internalServerError();
         }
 

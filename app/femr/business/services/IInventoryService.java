@@ -39,4 +39,9 @@ public interface IInventoryService {
      * @return
      */
     ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem);
+
+    /**
+     * Get a list of available units for the user
+     */
+    ServiceResponse<List<String>> getAvailableUnits();
 }

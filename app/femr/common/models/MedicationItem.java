@@ -18,6 +18,7 @@
 */
 package femr.common.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationItem {
@@ -25,13 +26,19 @@ public class MedicationItem {
     private Integer quantity_current;
     private Integer quantity_total;
     private String form;
+    //name is only the name of the medication
+    //ex: "Vicodin"
     private String name;
+    //full name includes the active ingredients
+    //ex: "Vicodin 10mg hydrocodone/325mg acetominophen"
+    private String fullName;
     //active ingredients uses an inner class because
     //a medication can have more than one active ingredient.
     private List<ActiveIngredient> activeIngredients;
 
-    public List<ActiveIngredient> getActiveIngredients() {
-        return activeIngredients;
+
+    public MedicationItem(){
+        this.activeIngredients = new ArrayList();
     }
 
     /**
@@ -52,9 +59,14 @@ public class MedicationItem {
         this.activeIngredients.add(activeIngredient);
     }
 
+    public List<ActiveIngredient> getActiveIngredients() {
+        return activeIngredients;
+    }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -90,6 +102,14 @@ public class MedicationItem {
 
     public void setForm(String form) {
         this.form = form;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public class ActiveIngredient{

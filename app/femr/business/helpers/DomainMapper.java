@@ -280,7 +280,7 @@ public class DomainMapper {
         if (medication.getMedicationForm() != null) {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }
-        /*
+
         for(IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()){
             medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
                     medicationActiveDrug.getMedicationMeasurementUnit().getName(),
@@ -288,7 +288,7 @@ public class DomainMapper {
                     medicationActiveDrug.isDenominator()
             );
         }
-          */
+
         return medicationItem;
     }
 

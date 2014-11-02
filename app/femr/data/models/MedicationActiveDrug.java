@@ -21,7 +21,7 @@ package femr.data.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medication_forms")
+@Table(name = "medication_active_drugs")
 public class MedicationActiveDrug implements IMedicationActiveDrug {
     @Id
     @Column(name = "id", unique = true, nullable = false)

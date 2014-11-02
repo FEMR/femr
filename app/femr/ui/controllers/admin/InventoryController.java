@@ -50,7 +50,28 @@ public class InventoryController extends Controller {
 
     public Result indexPost(){
         InventoryViewModelPost inventoryViewModelPost = inventoryViewModelPostForm.bindFromRequest().get();
-        Integer test = inventoryViewModelPost.getMedicationQuantity();
+
+        MedicationItem medicationItem = new MedicationItem();
+        medicationItem.setName(inventoryViewModelPost.getMedicationName());
+        medicationItem.setQuantity_total(inventoryViewModelPost.getMedicationQuantity());
+        medicationItem.setQuantity_current(inventoryViewModelPost.getMedicationQuantity());
+        medicationItem.setForm(inventoryViewModelPost.getMedicationForm());
+
+        for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++){
+            medicationItem.addActiveIngredient(
+                    inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
+                    inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
+                    inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex),
+                    false
+            );
+        }
+
+        ServiceResponse<MedicationItem> medicationItemServiceResponse = inventoryService.createMedication(medicationItem);
+        if (medicationItemServiceResponse.hasErrors()){
+            return internalServerError();
+        }
+
+
         return redirect("/admin/inventory");
     }
 

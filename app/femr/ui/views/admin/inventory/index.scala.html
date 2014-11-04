@@ -80,11 +80,11 @@
 
                     <div class="fieldMedication ingredientFieldMedication">
                         <label for="ingredientInput"></label>
-                        <input type="text" name="medicationIngredient[]" class="fInput" placeholder="ingredient"/>
+                        <input type="text" name="medicationIngredient[]" class="fInput" placeholder="ingredient" disabled/>
                     </div>
                     <div class="fieldMedication unitFieldMedication">
                         <label for="unitInput"></label>
-                        <select name="medicationUnit[]" class="fOption">
+                        <select name="medicationUnit[]" class="fOption" disabled>
                             <option value="" selected>Unit</option>
                             @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
                                 @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
@@ -95,7 +95,7 @@
                     </div>
                     <div class="fieldMedication strengthFieldMedication">
                         <label for="strengthInput"></label>
-                        <input type="number" name="medicationStrength[]" class="fInput" placeholder="X"/>
+                        <input type="number" name="medicationStrength[]" class="fInput" placeholder="X" disabled/>
                     </div>
 
 

@@ -32,7 +32,7 @@ public class PatientEncounterVital implements IPatientEncounterVital {
     private int patientEncounterId;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vital_id", nullable = false)
-    private Vital vital;//*eBean doesn't support mapping annotations on an interface...
+    private Vital vital;
     @Column(name = "vital_value", nullable = false)
     private float vitalValue;
     @Column(name = "date_taken", nullable = false)
@@ -70,12 +70,7 @@ public class PatientEncounterVital implements IPatientEncounterVital {
 
     @Override
     public void setVital(IVital vital) {
-        //cast IVital to Vital to get past the limitation of
-        //the bean not being able to map annotations to an
-        //interface
-        Vital newVital = (Vital)vital;
-        this.vital = newVital;
-
+        this.vital = (Vital) vital;
     }
 
     @Override

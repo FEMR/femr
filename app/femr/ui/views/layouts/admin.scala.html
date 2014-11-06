@@ -31,8 +31,10 @@
                 Manage Users</a>
             <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
                 Add User</a>
-            <a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
-                Inventory Tracking</a>
+            @if(currentUser.getEmail == "superuser"){
+                <a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
+                    Inventory Tracking</a>
+            }
             <a href="@ConfigureController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
             @menus

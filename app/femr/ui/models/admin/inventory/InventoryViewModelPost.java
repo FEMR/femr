@@ -40,6 +40,18 @@ public class InventoryViewModelPost {
             errors.add(new ValidationError("medicationName", "name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(medicationForm))
             errors.add(new ValidationError("medicationForm", "a form is required"));
+        for (Integer i : medicationStrength){
+            if (i == null)
+                errors.add(new ValidationError("medicationStrength", "all strength fields are required"));
+        }
+        for (String ms : medicationUnit){
+            if (StringUtils.isNullOrWhiteSpace(ms))
+                errors.add(new ValidationError("medicationUnit", "all units are required"));
+        }
+        for (String mi : medicationIngredient){
+            if (StringUtils.isNullOrWhiteSpace(mi))
+                errors.add(new ValidationError("medicationIngredient", "all ingredients required"));
+        }
 
         return errors.isEmpty() ? null : errors;
     }

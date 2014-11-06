@@ -87,7 +87,10 @@ public class InventoryController extends Controller {
     public Result indexPost() {
         Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
         if (form.hasErrors()){
-            throw new RuntimeException();
+            //if the request gets past the javascript validation and fails validation in the viewmodel, then
+            //don't proceed to save anything. In the future, this should alert the user as to what they did
+            //wrong.
+            return redirect("/admin/inventory");
         }
 
         InventoryViewModelPost inventoryViewModelPost = form.bindFromRequest().get();

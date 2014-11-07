@@ -21,15 +21,15 @@ package femr.data.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medication_forms")
+@Table(name = "medication_active_drugs")
 public class MedicationActiveDrug implements IMedicationActiveDrug {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_measurement_units_id")
     private MedicationMeasurementUnit medicationMeasurementUnit;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_active_drug_names_id")
     private MedicationActiveDrugName medicationActiveDrugName;
     @Column(name = "isDenominator", nullable = false)

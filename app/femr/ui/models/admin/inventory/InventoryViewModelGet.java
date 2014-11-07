@@ -16,37 +16,37 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.business.services;
+package femr.ui.models.admin.inventory;
 
-import femr.common.dto.ServiceResponse;
 import femr.common.models.MedicationItem;
-
 import java.util.List;
 
-public interface IInventoryService {
+public class InventoryViewModelGet {
+    private List<MedicationItem> medications;
+    private List<String> availableUnits;
+    private List<String> availableForms;
 
-    /**
-     * Gets all medicine that is currently not deleted
-     *
-     * @return list of MedicationItems for use by controller
-     */
-    ServiceResponse<List<MedicationItem>> getMedicationInventory();
+    public List<MedicationItem> getMedications() {
+        return medications;
+    }
 
-    /**
-     * Add a new medication to the inventory
-     *
-     * @param medicationItem the medication
-     * @return
-     */
-    ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem);
+    public void setMedications(List<MedicationItem> medications) {
+        this.medications = medications;
+    }
 
-    /**
-     * Get a list of available units for the user
-     */
-    ServiceResponse<List<String>> getAvailableUnits();
+    public List<String> getAvailableUnits() {
+        return availableUnits;
+    }
 
-    /**
-     * Get a list of available forms for the user
-     */
-    ServiceResponse<List<String>> getAvailableForms();
+    public void setAvailableUnits(List<String> availableUnits) {
+        this.availableUnits = availableUnits;
+    }
+
+    public List<String> getAvailableForms() {
+        return availableForms;
+    }
+
+    public void setAvailableForms(List<String> availableForms) {
+        this.availableForms = availableForms;
+    }
 }

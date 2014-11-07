@@ -16,25 +16,23 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models;
+package femr.ui.models.admin.users;
 
-/**
- * MedicationForm represents the form of the medication
- * being dispensed. e.g. cream/chewable/pill
- */
-public interface IMedicationForm {
+import femr.data.models.IUser;
+import java.util.List;
 
-    int getId();
+public class IndexViewModelGet {
+    private List<? extends IUser> users;
 
-    String getName();
+    public IUser getUser(int i){
+        return users.get(i);
+    }
 
-    void setName(String name);
+    public void setUsers(List<? extends IUser> users) {
+        this.users = users;
+    }
 
-    String getDescription();
-
-    void setDescription(String description);
-
-    Boolean getIsDeleted();
-
-    void setIsDeleted(Boolean isDeleted);
+    public List<? extends IUser> getUsers() {
+        return users;
+    }
 }

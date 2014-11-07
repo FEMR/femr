@@ -16,43 +16,34 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.superuser;
+package femr.ui.models.admin.configure;
 
-public class TabsViewModelPost {
-    private String addTabName;
-    private String deleteTab;
-    private Integer addTabLeft;
-    private Integer addTabRight;
+public class ConfigureViewModelPost {
+    private String ss1;//multiple chief complaints
+    private String ss2;//medical pmh tab
+    private String ss3;//medical photo tab
 
-    public String getAddTabName() {
-        return addTabName;
+    public String getSs1() {
+        return ss1;
     }
 
-    public void setAddTabName(String addTabName) {
-        this.addTabName = addTabName;
+    public void setSs1(String ss1) {
+        this.ss1 = ss1;
     }
 
-    public String getDeleteTab() {
-        return deleteTab;
+    public String getSs2() {
+        return ss2;
     }
 
-    public void setDeleteTab(String deleteTab) {
-        this.deleteTab = deleteTab;
+    public void setSs2(String ss2) {
+        this.ss2 = ss2;
     }
 
-    public Integer getAddTabLeft() {
-        return addTabLeft;
+    public String getSs3() {
+        return ss3;
     }
 
-    public void setAddTabLeft(Integer addTabLeft) {
-        this.addTabLeft = addTabLeft;
-    }
-
-    public Integer getAddTabRight() {
-        return addTabRight;
-    }
-
-    public void setAddTabRight(Integer addTabRight) {
-        this.addTabRight = addTabRight;
+    public void setSs3(String ss3) {
+        this.ss3 = ss3;
     }
 }

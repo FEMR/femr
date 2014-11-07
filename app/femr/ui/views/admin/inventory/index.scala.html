@@ -1,4 +1,6 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.admin.InventoryViewModelGet)
+@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.admin.inventory.InventoryViewModelGet)
+
+@import femr.ui.controllers.admin.routes.InventoryController
 
 @import femr.ui.views.html.layouts.admin
 
@@ -11,68 +13,113 @@
 
 
 @admin("Inventory Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-    <div id="inputMedication">
-        <div id="nameAndQuantityWrap">
-            <div class="fieldMedication" id="quantityFieldMedication">
-                <label for="amountInput">Quantity</label>
-                <input type="number" class="fInput" id="amountInput" placeholder="X"/>
+    @helper.form(action = InventoryController.indexPost()) {
+        <div id="newMedicationWrap">
+            <div id="primaryMedicationRow">
+                <div id="quantityFormName_Wrap">
+
+                    <div class="fieldMedication" id="quantityFieldMedication">
+                        <label for="amountInput">Quantity</label>
+                        <input type="number" class="fInput" name="medicationQuantity" placeholder="X"/>
+                    </div>
+
+                    <div class="fieldMedication" id="formFieldMedication">
+                        <label for="formInput"></label>
+                        <select name="medicationForm" class="fOption">
+                            <option value="" disabled selected>Form</option>
+                            @for(formIndex <- 1 to viewModel.getAvailableForms.size) {
+                                @defining(viewModel.getAvailableForms.get(formIndex - 1)) { form =>
+                                    <option value="@form">@form</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="fieldMedication" id="nameFieldMedication">
+                        <label for="nameInput">Name</label>
+                        <input type="text" name="medicationName" class="fInput" placeholder="name"/>
+                    </div>
+                </div>
+                <div id="strengthUnitIngredient_Wrap">
+
+                    <div class="fieldMedication strengthFieldMedication">
+                        <label for="strengthInput">Strength:</label>
+                        <input type="number" name="medicationStrength[]" class="fInput" placeholder="X"/>
+                    </div>
+
+                    <div class="fieldMedication unitFieldMedication">
+                        <label for="unitInput"></label>
+                        <select name="medicationUnit[]" class="fOption">
+                            <option value="" selected>Unit</option>
+                            @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
+                                @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
+                                    <option value="@unit">@unit</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="fieldMedication ingredientFieldMedication">
+                        <label for="ingredientInput">Ingredient</label>
+                        <input type="text" name="medicationIngredient[]" class="fInput" placeholder="ingredient"/>
+                    </div>
+                </div>
+
+
+                <div class="fieldMedication" id="addIngredientPlusSignWrap">
+                    <span id="addNewIngredient">+</span>
+                </div>
+
             </div>
-            <div class="fieldMedication" id="nameFieldMedication">
-                <label for="nameInput">Name</label>
-                <input type="text" class="fInput" id="nameInput" placeholder="name"/>
+            <div class="newIngredientRow hidden">
+                <div class="newInvisiblePlusSignWrap">
+                    <p></p>
+                </div>
+                <div class="newIngredientWrap">
+
+
+                    <div class="fieldMedication ingredientFieldMedication">
+                        <label for="ingredientInput"></label>
+                        <input type="text" name="medicationIngredient[]" class="fInput" placeholder="ingredient" disabled/>
+                    </div>
+                    <div class="fieldMedication unitFieldMedication">
+                        <label for="unitInput"></label>
+                        <select name="medicationUnit[]" class="fOption" disabled>
+                            <option value="" selected>Unit</option>
+                            @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
+                                @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
+                                    <option value="@unit">@unit</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="fieldMedication strengthFieldMedication">
+                        <label for="strengthInput"></label>
+                        <input type="number" name="medicationStrength[]" class="fInput" placeholder="X" disabled/>
+                    </div>
+
+
+                </div>
+
+
             </div>
-            <ol id="ingredientsForMedication"></ol>
+
+
         </div>
-        <div id="strengthAndUnitAndIngredientWrap">
-
-            <div class="fieldMedication" id="strengthFieldMedication">
-                <label for="strengthInput">Strength:</label>
-                <input type="number" class="fInput" id="strengthInput" placeholder="X"/>
-            </div>
-
-            <div class="fieldMedication" id="ingredientFieldMedication">
-                <label for="ingredientInput">Ingredient</label>
-                <input type="text" class="fInput" id="ingredientInput" placeholder="ingredient"/>
-            </div>
-            <div class="fieldMedication" id="addIngredientPlusSign">
-                <span>+</span>
-            </div>
 
 
-        </div>
-        <div id="formAndUnitWrap">
-            <div class="fieldMedication" id="unitFieldMedication">
-                <label for="unitInput"></label>
-                <select name="form" id="unitInput">
-                    <option value="" disabled selected>Unit</option>
-                    <option value="mg">mg</option>
-                    <option value="g">g</option>
-                    <option value="ml">mL</option>
-                    <option value="l">L</option>
-                </select>
-            </div>
-            <div class="fieldMedication" id="formFieldMedication">
-                <label for="formInput"></label>
-                <select name="form" id="formInput">
-                    <option value="" disabled selected>Form</option>
-                    <option>pill</option>
-                    <option>cream</option>
-                    <option>chewable</option>
-                </select>
-            </div>
-        </div>
 
         <div class="fieldMedication">
-            <button class="fButton" id="addMedToList">Add</button>
+            <button class="fButton" id="submitMedicationButton">Submit</button>
         </div>
-    </div>
+    }
 
     <div id="currentMedication">
         <h3>Current Medications:</h3>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable">
                 <thead>
-                    <th>Name</th>
+                    <th>Medication</th>
                     <th>Total Quantity</th>
                     <th>Current Quantity</th>
                     <th>Remove</th>
@@ -80,11 +127,10 @@
                 <tbody>
                 @for(m <- 1 to viewModel.getMedications.size) {
                     <tr>
-                        <td class="name">@viewModel.getMedications.get(m - 1).getName</td>
+                        <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
                         <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
                         <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
-                        <td class="remove">
-                        </td>
+                        <td class="remove"></td>
                     </tr>
                 }
 
@@ -95,6 +141,5 @@
         </div>
 
     </div>
-
 
 }

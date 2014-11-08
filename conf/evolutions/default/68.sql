@@ -1,7 +1,7 @@
 # --- !Ups
 
 CREATE TABLE `patient_age_classifications` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `description` VARCHAR(255) NULL DEFAULT NULL,
   `isDeleted` BIT(1) NOT NULL DEFAULT 0,

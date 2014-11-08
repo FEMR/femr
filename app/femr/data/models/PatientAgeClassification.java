@@ -36,30 +36,37 @@ public class PatientAgeClassification implements IPatientAgeClassification {
     @Column(name="isDeleted")
     private Boolean isDeleted;
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public Boolean getIsDeleted() {
         return isDeleted;
     }
 
+    @Override
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }

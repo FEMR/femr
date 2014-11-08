@@ -23,4 +23,17 @@ package femr.data.models;
  * Many patients in poor countries do not know their actual age.
  */
 public interface IPatientAgeClassification {
+    int getId();
+
+    String getName();
+
+    void setName(String name);
+
+    String getDescription();
+
+    void setDescription(String description);
+
+    Boolean getIsDeleted();
+
+    void setIsDeleted(Boolean isDeleted);
 }

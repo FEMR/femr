@@ -41,6 +41,7 @@ public class DatabaseSeeder {
     private final Repository<TabFieldSize> tabFieldSizeRepository;
     private final Repository<TabFieldType> tabFieldTypeRepository;
     private final Repository<Tab> tabRepository;
+    private final Repository<PatientAgeClassification> patientAgeClassificationRepository;
 
     public DatabaseSeeder() {
         medicationMeasurementUnitRepository = new Repository<>();
@@ -52,6 +53,7 @@ public class DatabaseSeeder {
         tabFieldSizeRepository = new Repository<>();
         tabFieldTypeRepository = new Repository<>();
         tabRepository = new Repository<>();
+        patientAgeClassificationRepository = new Repository<>();
     }
 
     public void seed() {
@@ -62,6 +64,50 @@ public class DatabaseSeeder {
         seedDefaultTabFields();
         seedMedicationUnits();
         seedMedicationForms();
+        seedPatientAgeClassification();
+    }
+
+    private void seedPatientAgeClassification() {
+        List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.findAll(PatientAgeClassification.class);
+
+        List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
+        PatientAgeClassification patientAgeClassification;
+        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "infant")){
+            patientAgeClassification = new PatientAgeClassification();
+            patientAgeClassification.setName("infant");
+            patientAgeClassification.setDescription("really really young");
+            patientAgeClassification.setIsDeleted(false);
+            newPatientAgeClassifications.add(patientAgeClassification);
+        }
+        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "child")){
+            patientAgeClassification = new PatientAgeClassification();
+            patientAgeClassification.setName("child");
+            patientAgeClassification.setDescription("really young");
+            patientAgeClassification.setIsDeleted(false);
+            newPatientAgeClassifications.add(patientAgeClassification);
+        }
+        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "teen")){
+            patientAgeClassification = new PatientAgeClassification();
+            patientAgeClassification.setName("teen");
+            patientAgeClassification.setDescription("young");
+            patientAgeClassification.setIsDeleted(false);
+            newPatientAgeClassifications.add(patientAgeClassification);
+        }
+        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "adult")){
+            patientAgeClassification = new PatientAgeClassification();
+            patientAgeClassification.setName("adult");
+            patientAgeClassification.setDescription("not young");
+            patientAgeClassification.setIsDeleted(false);
+            newPatientAgeClassifications.add(patientAgeClassification);
+        }
+        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "elderly")){
+            patientAgeClassification = new PatientAgeClassification();
+            patientAgeClassification.setName("elderly");
+            patientAgeClassification.setDescription("really old");
+            patientAgeClassification.setIsDeleted(false);
+            newPatientAgeClassifications.add(patientAgeClassification);
+        }
+        patientAgeClassificationRepository.createAll(newPatientAgeClassifications);
     }
 
     private void seedMedicationForms() {
@@ -274,6 +320,15 @@ public class DatabaseSeeder {
             systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }
+    }
+
+    private static boolean containClassification(List<? extends IPatientAgeClassification> ageClassifications, String name) {
+        for (IPatientAgeClassification pac : ageClassifications) {
+            if (pac.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean containForm(List<? extends IMedicationForm> medicationForms, String form) {

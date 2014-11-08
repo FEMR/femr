@@ -156,7 +156,7 @@ public class TriageService implements ITriageService {
         try {
             IPatient newPatient = domainMapper.createPatient(patient);
             newPatient = patientRepository.create(newPatient);
-            response.setResponseObject(domainMapper.createPatientItem(newPatient, null, null, null, null));
+            response.setResponseObject(DomainMapper.createPatientItem(newPatient, null, null, null, null));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

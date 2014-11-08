@@ -33,7 +33,7 @@ public class Patient implements IPatient {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private Date age;
     @Column(name = "sex", nullable = true)
     private String sex;

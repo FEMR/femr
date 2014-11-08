@@ -20,6 +20,9 @@ REFERENCES `patient_age_classifications` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+ALTER TABLE `patients`
+CHANGE COLUMN `age` `age` DATE NULL ;
+
 # --- !Downs
 
 ALTER TABLE `patient_encounters`
@@ -30,3 +33,5 @@ DROP INDEX `fk_patient_encounter_patient_age_classification_id_idx` ;
 
 DROP TABLE `patient_age_classifications`;
 
+ALTER TABLE `patients`
+CHANGE COLUMN `age` `age` DATE NOT NULL ;

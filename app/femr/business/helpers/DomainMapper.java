@@ -453,7 +453,8 @@ public class DomainMapper {
         patient.setUserId(patientItem.getUserId());
         patient.setFirstName(patientItem.getFirstName());
         patient.setLastName(patientItem.getLastName());
-        patient.setAge(patientItem.getBirth());
+        if (patientItem.getBirth() != null)
+            patient.setAge(patientItem.getBirth());
         patient.setSex(patientItem.getSex());
         patient.setAddress(patientItem.getAddress());
         patient.setCity(patientItem.getCity());
@@ -468,9 +469,11 @@ public class DomainMapper {
         }
         PatientItem patientItem = new PatientItem();
         patientItem.setAddress(patient.getAddress());
-        patientItem.setAge(dateUtils.getAge(patient.getAge()));//age (int)
-        patientItem.setBirth(patient.getAge());//date of birth(date)
-        patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(patient.getAge()));
+        if (patient.getAge() != null){
+            patientItem.setAge(dateUtils.getAge(patient.getAge()));//age (int)
+            patientItem.setBirth(patient.getAge());//date of birth(date)
+            patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(patient.getAge()));
+        }
         patientItem.setCity(patient.getCity());
         patientItem.setFirstName(patient.getFirstName());
         patientItem.setId(patient.getId());

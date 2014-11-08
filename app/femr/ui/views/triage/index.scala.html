@@ -38,26 +38,22 @@
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
 
-                <div id="classificationBirthdayWrap">
-
-                    <p>Select One<span class="red bold">*</span></p>
-
-                    <div id="classificationWrap">
-                        <label>Classification</label>
-                            <select name="ageClassification">
-                                <option selected="selected">Select</option>
-                                @for(x <- 1 to viewModel.getPossibleAgeClassifications.size) {
-                                    <option>@viewModel.getPossibleAgeClassifications.get(x - 1)</option>
+                <div id="ageClassificationWrap">
+                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
+                    <div class="generalInfoInput">
+                        <label>Age Classification</label>
+                        <select name="ageClassification" id="ageClassification">
+                            <option value="" selected="selected">Select</option>
+                            @for(ageClassificationNameIndex <- 1 to viewModel.getPossibleAgeClassifications.size) {
+                                @defining(viewModel.getPossibleAgeClassifications.get(ageClassificationNameIndex - 1)) { ageClassification =>
+                                    <option value="@ageClassification">@ageClassification</option>
                                 }
-                            </select>
+                            }
+                        </select>
                     </div>
-                    <div id="birthdayWrap">
-                        @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                        @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
-                    </div>
-
-
                 </div>
+
 
                 @inputGender(viewModel)
 

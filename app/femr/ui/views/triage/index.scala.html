@@ -37,7 +37,14 @@
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
-                    <!--inputText("Birth Date", "age", true, if(viewModel != null) viewModel.getBirth else null, "date")-->
+
+                <select>
+                    <option>Infant</option>
+                    <option>Child</option>
+                    <option>Young Adult</option>
+                    <option>Adult</option>
+                    <option>Elderly</option>
+                </select>
                 @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                 @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
                 @inputGender(viewModel)

@@ -150,6 +150,24 @@
     margin-right: 120px;
     width: 175px;
 }
+#classificationBirthdayWrap input{
+    width: 100%;
+}
+#classificationBirthdayWrap{
+    overflow: hidden;
+    border: 1px solid #d3d3d3;
+}
+#classificationWrap{
+    width: 50%;
+    float: left;
+}
+#classificationWrap select{
+    width: 75%;
+}
+#birthdayWrap{
+    width: 50%;
+    float: left;
+}
 
 /*Triage Page*/
 .stackedInput {

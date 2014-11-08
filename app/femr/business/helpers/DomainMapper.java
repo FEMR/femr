@@ -39,12 +39,14 @@ public class DomainMapper {
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
     private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
     private final Provider<IMedicationForm> medicationFormProvider;
+    private final Provider<IPatient> patientProvider;
+    private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
     private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
-    private final Provider<IPatient> patientProvider;
+
     private final Provider<IPhoto> photoProvider;
     private final Provider<IRole> roleProvider;
     private final Provider<ITabField> tabFieldProvider;
@@ -61,12 +63,13 @@ public class DomainMapper {
                         Provider<IMedicationForm> medicationFormProvider,
                         Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                         Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
+                        Provider<IPatient> patientProvider,
+                        Provider<IPatientAgeClassification> patientAgeClassificationProvider,
                         Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
                         Provider<IPatientEncounter> patientEncounterProvider,
                         Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
                         Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                         Provider<IPatientPrescription> patientPrescriptionProvider,
-                        Provider<IPatient> patientProvider,
                         Provider<IPhoto> photoProvider,
                         Provider<IRole> roleProvider,
                         Provider<ITabField> tabFieldProvider,
@@ -82,11 +85,12 @@ public class DomainMapper {
         this.medicationFormProvider = medicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
         this.medicationMeasurementUnitProvider  = medicationMeasurementUnitProvider;
+        this.patientProvider = patientProvider;
+        this.patientAgeClassificationProvider = patientAgeClassificationProvider;
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
-        this.patientProvider = patientProvider;
         this.photoProvider = photoProvider;
         this.roleProvider = roleProvider;
         this.tabFieldProvider = tabFieldProvider;
@@ -405,7 +409,7 @@ public class DomainMapper {
      * @param userId               id of the user creating the encounter
      * @return a new PatientEncounter
      */
-    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId) {
+    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId, Integer patientAgeClassificationId) {
         if (patientEncounterItem == null || userId < 1) {
             return null;
         }
@@ -415,6 +419,8 @@ public class DomainMapper {
         patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientEncounterItem.getPatientId()));
         patientEncounter.setNurse(Ebean.getReference(userProvider.get().getClass(), userId));
         patientEncounter.setWeeksPregnant(patientEncounterItem.getWeeksPregnant());
+        if (patientAgeClassificationId != null)
+            patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
         return patientEncounter;
     }
 

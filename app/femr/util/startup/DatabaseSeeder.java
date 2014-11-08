@@ -72,35 +72,35 @@ public class DatabaseSeeder {
 
         List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
         PatientAgeClassification patientAgeClassification;
-        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "infant")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("infant");
             patientAgeClassification.setDescription("really really young");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "child")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("child");
             patientAgeClassification.setDescription("really young");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "teen")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("teen");
             patientAgeClassification.setDescription("young");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "adult")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("adult");
             patientAgeClassification.setDescription("not young");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(newPatientAgeClassifications, "elderly")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elderly")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("elderly");
             patientAgeClassification.setDescription("really old");

@@ -36,6 +36,8 @@ public class IndexViewModelGet {
     private List<VitalItem> vitalNames;
     //system settings
     private SettingItem settings;
+    //all possible options for age classification
+    private List<String> possibleAgeClassifications;
 
     public boolean isSearchError() {
         return searchError;
@@ -67,5 +69,13 @@ public class IndexViewModelGet {
 
     public void setSettings(SettingItem settings) {
         this.settings = settings;
+    }
+
+    public List<String> getPossibleAgeClassifications() {
+        return possibleAgeClassifications;
+    }
+
+    public void setPossibleAgeClassifications(List<String> possibleAgeClassifications) {
+        this.possibleAgeClassifications = possibleAgeClassifications;
     }
 }

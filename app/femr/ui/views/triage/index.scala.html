@@ -39,19 +39,21 @@
                 @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
 
                 <div id="ageClassificationWrap">
+                    <label>Age<span class="red bold">*</span></label>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <span class="orSpan">OR</span>
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
+                    <span class="orSpan">OR</span>
                     <div class="generalInfoInput">
-                        <label>Age Classification</label>
-                        <select name="ageClassification" id="ageClassification">
-                            <option value="" selected="selected">Select</option>
-                            @for(ageClassificationNameIndex <- 1 to viewModel.getPossibleAgeClassifications.size) {
-                                @defining(viewModel.getPossibleAgeClassifications.get(ageClassificationNameIndex - 1)) { ageClassification =>
-                                    <option value="@ageClassification">@ageClassification</option>
-                                }
+                        <div id="classificationRadioWrap">
+                        @for(ageClassificationNameIndex <- 1 to viewModel.getPossibleAgeClassifications.size) {
+                            @defining(viewModel.getPossibleAgeClassifications.get(ageClassificationNameIndex - 1)) { ageClassification =>
+                                <label><input type="radio" name="ageClassification" value="@ageClassification" />@ageClassification</label>
                             }
-                        </select>
+                        }
+                        </div>
                     </div>
+
                 </div>
 
 

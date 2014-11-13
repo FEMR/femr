@@ -78,6 +78,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setName("infant");
             patientAgeClassification.setDescription("0-1");
             patientAgeClassification.setIsDeleted(false);
+            patientAgeClassification.setSortOrder(1);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")){
@@ -85,6 +86,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setName("child");
             patientAgeClassification.setDescription("2-12");
             patientAgeClassification.setIsDeleted(false);
+            patientAgeClassification.setSortOrder(2);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")){
@@ -92,6 +94,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setName("teen");
             patientAgeClassification.setDescription("13-17");
             patientAgeClassification.setIsDeleted(false);
+            patientAgeClassification.setSortOrder(3);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")){
@@ -99,6 +102,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setName("adult");
             patientAgeClassification.setDescription("18-64");
             patientAgeClassification.setIsDeleted(false);
+            patientAgeClassification.setSortOrder(4);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")){
@@ -106,6 +110,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setName("elder");
             patientAgeClassification.setDescription("65+");
             patientAgeClassification.setIsDeleted(false);
+            patientAgeClassification.setSortOrder(5);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         patientAgeClassificationRepository.createAll(newPatientAgeClassifications);

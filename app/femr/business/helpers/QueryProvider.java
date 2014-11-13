@@ -54,6 +54,10 @@ public class QueryProvider {
         return Ebean.find(Patient.class);
     }
 
+    public static Query<PatientAgeClassification> getPatientAgeClassificationQuery() {
+        return Ebean.find(PatientAgeClassification.class);
+    }
+
     public static Query<PatientEncounter> getPatientEncounterQuery() {
         return Ebean.find(PatientEncounter.class);
     }

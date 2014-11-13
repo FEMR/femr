@@ -59,4 +59,8 @@ public interface IPatientEncounter {
     IUser getNurse();
 
     void setNurse(IUser nurse);
+
+    IPatientAgeClassification getPatientAgeClassification();
+
+    void setPatientAgeClassification(IPatientAgeClassification patientAgeClassification);
 }

@@ -32,6 +32,10 @@ import java.util.Map;
  */
 public interface ITriageService {
     /**
+     * Finds all possible age classifications for a patient
+     */
+    ServiceResponse<Map<String,String>> findPossibleAgeClassifications();
+    /**
      * Retrieve patient and update the patients sex. Used when a user submits a sex for
      * a patient with a previously unidentified sex.
      *

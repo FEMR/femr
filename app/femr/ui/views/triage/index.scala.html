@@ -37,9 +37,26 @@
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
-                    <!--inputText("Birth Date", "age", true, if(viewModel != null) viewModel.getBirth else null, "date")-->
-                @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
+
+                <div id="ageClassificationWrap">
+                    <label>Age<span class="red bold">*</span></label>
+                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <span class="orSpan">OR</span>
+                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
+                    <span class="orSpan">OR</span>
+                    <div class="generalInfoInput">
+                        <div id="classificationRadioWrap">
+                        @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
+                            <label><input type="radio" name="ageClassification" value="@key" />@key <span>@valyew</span></label>
+
+                        }
+
+                        </div>
+                    </div>
+
+                </div>
+
+
                 @inputGender(viewModel)
 
 
@@ -165,7 +182,7 @@
                             @if(viewModel.getSettings.isMultipleChiefComplaint) {
                                 <span id="addChiefComplaint">+</span>
                             }
-                             Chief Complaint
+                            Chief Complaint
                         </label>
                     </div>
                     <input type="text" class="hidden" name="chiefComplaintsJSON"/>
@@ -188,7 +205,7 @@
 
                 }
 
-        @if(viewModel.getPatient.getId != 0){
+        @if(viewModel.getPatient.getId != 0) {
             @helper.form(action = SearchController.handleSearch("history")) {
                 <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatient.getId"/>
                 <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>

@@ -52,6 +52,9 @@ public class PatientEncounter implements IPatientEncounter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_pharmacy", nullable = true)
     private User pharmacist;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_age_classification_id")
+    private PatientAgeClassification patientAgeClassification;
 
     @Override
     public int getId() {
@@ -152,5 +155,15 @@ public class PatientEncounter implements IPatientEncounter {
     @Override
     public void setNurse(IUser nurse) {
         this.nurse = (User) nurse;
+    }
+
+    @Override
+    public IPatientAgeClassification getPatientAgeClassification() {
+        return patientAgeClassification;
+    }
+
+    @Override
+    public void setPatientAgeClassification(IPatientAgeClassification patientAgeClassification) {
+        this.patientAgeClassification =  (PatientAgeClassification) patientAgeClassification;
     }
 }

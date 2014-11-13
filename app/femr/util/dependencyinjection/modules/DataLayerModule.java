@@ -39,6 +39,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
         bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
         bind(IPatient.class).toProvider(PatientProvider.class);
+        bind(IPatientAgeClassification.class).toProvider(PatientAgeClassificationProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
         bind(IPatientEncounterPhoto.class).toProvider(PatientEncounterPhotoProvider.class);
         bind(IPatientEncounterTabField.class).toProvider(PatientEncounterTabFieldProvider.class);
@@ -64,6 +65,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<Repository<IMedicationMeasurementUnit>>() {});
         bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
+        bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<Repository<IPatientAgeClassification>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});

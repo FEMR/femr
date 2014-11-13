@@ -22,6 +22,7 @@ import femr.common.models.PatientItem;
 import femr.common.models.SettingItem;
 import femr.common.models.VitalItem;
 import java.util.List;
+import java.util.Map;
 
 //NOTE: the triage view sets the input element names dynamically
 //based on the vital name entry in the database, but this
@@ -36,6 +37,8 @@ public class IndexViewModelGet {
     private List<VitalItem> vitalNames;
     //system settings
     private SettingItem settings;
+    //all possible options for age classification
+    private Map<String,String> possibleAgeClassifications;
 
     public boolean isSearchError() {
         return searchError;
@@ -67,5 +70,13 @@ public class IndexViewModelGet {
 
     public void setSettings(SettingItem settings) {
         this.settings = settings;
+    }
+
+    public Map<String, String> getPossibleAgeClassifications() {
+        return possibleAgeClassifications;
+    }
+
+    public void setPossibleAgeClassifications(Map<String, String> possibleAgeClassifications) {
+        this.possibleAgeClassifications = possibleAgeClassifications;
     }
 }

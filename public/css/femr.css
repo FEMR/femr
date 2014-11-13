@@ -146,6 +146,13 @@ hr {
     -moz-border-radius: 5px;
 }
 
+/* THE fEMR select!*/
+.fSelect{
+    width: 100%;
+    float: right;
+    height: 33px;
+}
+
 /* THE fEMR input(text)! */
 .fInput {
     border-radius: 5px;

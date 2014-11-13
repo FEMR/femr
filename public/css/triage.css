@@ -158,6 +158,9 @@
     padding-left: 15px;
     text-indent: -15px;
 }
+#classificationRadioWrap span{
+    font-size: 10px;
+}
 
   .submitResetWrap {
     margin-top: 15px;

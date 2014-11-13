@@ -36,4 +36,8 @@ public interface IPatientAgeClassification {
     Boolean getIsDeleted();
 
     void setIsDeleted(Boolean isDeleted);
+
+    int getSortOrder();
+
+    void setSortOrder(int sortOrder);
 }

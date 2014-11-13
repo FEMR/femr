@@ -19,6 +19,7 @@
 package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.helpers.DomainMapper;
@@ -33,9 +34,7 @@ import femr.common.models.VitalItem;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TriageService implements ITriageService {
 
@@ -73,13 +72,18 @@ public class TriageService implements ITriageService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<List<String>> findPossibleAgeClassifications() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> patientAgeClassificationStrings = new ArrayList<>();
+    public ServiceResponse<Map<String,String>> findPossibleAgeClassifications() {
+        ServiceResponse<Map<String,String>> response = new ServiceResponse<>();
+        Map<String,String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
-            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.findAll(PatientAgeClassification.class);
+            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("isDeleted", false)
+                    .order()
+                    .asc("sortOrder");
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
-                patientAgeClassificationStrings.add(pac.getName());
+                patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
             }
             response.setResponseObject(patientAgeClassificationStrings);
         } catch (Exception ex) {

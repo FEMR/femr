@@ -35,6 +35,8 @@ public class PatientAgeClassification implements IPatientAgeClassification {
     private String description;
     @Column(name="isDeleted")
     private Boolean isDeleted;
+    @Column(name="sortOrder")
+    private int sortOrder;
 
     @Override
     public int getId() {
@@ -69,5 +71,15 @@ public class PatientAgeClassification implements IPatientAgeClassification {
     @Override
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    @Override
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    @Override
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

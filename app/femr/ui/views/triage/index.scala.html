@@ -46,11 +46,11 @@
                     <span class="orSpan">OR</span>
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">
-                        @for(ageClassificationNameIndex <- 1 to viewModel.getPossibleAgeClassifications.size) {
-                            @defining(viewModel.getPossibleAgeClassifications.get(ageClassificationNameIndex - 1)) { ageClassification =>
-                                <label><input type="radio" name="ageClassification" value="@ageClassification" />@ageClassification</label>
-                            }
+                        @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
+                            <label><input type="radio" name="ageClassification" value="@key" />@key <span>@valyew</span></label>
+
                         }
+
                         </div>
                     </div>
 

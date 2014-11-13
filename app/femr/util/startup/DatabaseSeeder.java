@@ -68,6 +68,7 @@ public class DatabaseSeeder {
     }
 
     private void seedPatientAgeClassification() {
+        //sort order auto increments
         List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.findAll(PatientAgeClassification.class);
 
         List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
@@ -75,35 +76,35 @@ public class DatabaseSeeder {
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("infant");
-            patientAgeClassification.setDescription("really really young");
+            patientAgeClassification.setDescription("0-1");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("child");
-            patientAgeClassification.setDescription("really young");
+            patientAgeClassification.setDescription("2-12");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("teen");
-            patientAgeClassification.setDescription("young");
+            patientAgeClassification.setDescription("13-17");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")){
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("adult");
-            patientAgeClassification.setDescription("not young");
+            patientAgeClassification.setDescription("18-64");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elderly")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")){
             patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("elderly");
-            patientAgeClassification.setDescription("really old");
+            patientAgeClassification.setName("elder");
+            patientAgeClassification.setDescription("65+");
             patientAgeClassification.setIsDeleted(false);
             newPatientAgeClassifications.add(patientAgeClassification);
         }

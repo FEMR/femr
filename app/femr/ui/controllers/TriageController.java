@@ -67,7 +67,7 @@ public class TriageController extends Controller {
         }
 
         //get age classifications
-        ServiceResponse<List<String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
         if (patientAgeClassificationsResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -109,7 +109,7 @@ public class TriageController extends Controller {
         }
 
         //get age classifications
-        ServiceResponse<List<String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
         if (patientAgeClassificationsResponse.hasErrors()){
             throw new RuntimeException();
         }

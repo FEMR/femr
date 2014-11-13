@@ -22,43 +22,17 @@ var triageFieldValidator = {
             triageFieldValidator.isValid = false;
         }
 
-        if (!patientInformation.age.val() && !patientInformation.ageClassification.val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
+        if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
+            //nothing has been filled out
             $('#ageClassificationWrap').css('border', '1px solid red');
             triageFieldValidator.isValid = false;
         } else {
+            //something has been filled out
             $('#ageClassificationWrap').css('border', 'none');
         }
         /*
          //validate age
-         if (!patientInformation.age.val() && !$('#readOnlyBirthDate').val()) {
-         //if an age was not entered and age is not stored
-         //$('#age').val(null);
-         patientInformation.age.css('border-color', 'red');
-         patientInformation.years.val(null);
-         patientInformation.years.css('border-color', 'red');
-         patientInformation.years.attr('placeholder', 'Input age');
-         patientInformation.months.val(null);
-         patientInformation.months.css('border-color', 'red');
-         patientInformation.months.attr('placeholder', 'or birth date');
-         triageFieldValidator.isValid = false;
-         } else if (patientInformation.age.val()) {
-         //age has a value
-         var inputYear = patientInformation.age.val().split('-')[0];
-         var inputMonth = patientInformation.age.val().split('-')[1] - 1;
-         var inputDay = patientInformation.age.val().split('-')[2];
-         var inputDate = new Date(inputYear, inputMonth, inputDay);
-         if (inputDate > Date.now()) {
-         //$('#age').val(null);
-         patientInformation.age.css('border-color', 'red');
-         patientInformation.years.val(null);
-         patientInformation.years.css('border-color', 'red');
-         patientInformation.years.attr('placeholder', 'Input age');
-         patientInformation.months.val(null);
-         patientInformation.months.css('border-color', 'red');
-         patientInformation.months.attr('placeholder', 'or birth date');
-         triageFieldValidator.isValid = false;
-         }
-         }
+
 
          if (!patientInformation.years.val() && !patientInformation.months.val() && !$('#readOnlyAge').val()) {
          patientInformation.age.css('border-color', 'red');

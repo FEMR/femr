@@ -58,6 +58,16 @@ public class dateUtils {
             return Integer.toString(monthsInt/12) + " YO";
     }
 
+    public static float getAgeFloat(Date born) {
+        LocalDate birthdate = new LocalDate(born);
+        LocalDate now = new LocalDate();
+        Months months = Months.monthsBetween(birthdate, now);
+        int monthsInt = months.getMonths();
+        float result = (float) monthsInt;
+        return result/12;
+    }
+
+
     public static String getFriendlyDate(DateTime dateTime){
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - HH:mm:ss");
         String dtStr = dateTime.toString(fmt);

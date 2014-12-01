@@ -46,6 +46,11 @@ public class Medication implements IMedication {
             inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
     private List<IMedicationActiveDrug> medicationActiveDrugs;
 
+    /*@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "patient_encounters")
+    private PatientEncounter patientEncounter;
+*/
+
     @Override
     public int getId() {
         return id;

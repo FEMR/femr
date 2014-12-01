@@ -187,6 +187,7 @@ public class TriageService implements ITriageService {
 
             IUser nurseUser = userRepository.findOne(nurseQuery);
 
+
             //find the age classification of the patient, if it exists
             ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()

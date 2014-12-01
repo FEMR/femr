@@ -4,16 +4,21 @@ import femr.data.models.IRole;
 import femr.data.models.IUser;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MockUser implements IUser {
 
-    public int id = 0;
-    public String firstName = "";
-    public String lastName = "";
-    public String email = "";
-    public String password = "";
-    public List<IRole> roles;
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private List<IRole> roles;
+    private DateTime lastLogin;
+    private Boolean deleted;
+    private Boolean passwordReset;
+    private String notes;
 
     @Override
     public int getId() {
@@ -66,8 +71,11 @@ public class MockUser implements IUser {
     }
 
     @Override
-    public void setRoles(List<IRole> roles) {
-        this.roles = roles;
+    public void setRoles(List<? extends IRole> roles) {
+        this.roles = new ArrayList<>();
+        for (IRole role : roles){
+            this.roles.add(role);
+        }
     }
 
     @Override
@@ -77,31 +85,41 @@ public class MockUser implements IUser {
 
     @Override
     public DateTime getLastLogin() {
-        return null;
+        return lastLogin;
     }
 
     @Override
     public void setLastLogin(DateTime lastLogin) {
-
+        this.lastLogin = lastLogin;
     }
 
     @Override
     public Boolean getDeleted() {
-        return null;
+        return deleted;
     }
 
     @Override
     public void setDeleted(Boolean deleted) {
-
+        this.deleted = deleted;
     }
 
     @Override
     public Boolean getPasswordReset() {
-        return null;
+        return passwordReset;
     }
 
     @Override
     public void setPasswordReset(Boolean passwordReset) {
+        this.passwordReset = passwordReset;
+    }
 
+    @Override
+    public String getNotes() {
+        return notes;
+    }
+
+    @Override
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

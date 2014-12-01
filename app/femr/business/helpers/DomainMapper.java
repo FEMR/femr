@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import javax.inject.Provider;
 import femr.common.models.*;
 import femr.data.models.*;
+import femr.ui.models.research.FilterViewModel;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -641,5 +642,39 @@ public class DomainMapper {
         return photo;
     }
 
+    /**
+     * Create research filter
+     *
+     * @param filterViewModel
+     * @return ResearchFilterItem
+     */
+    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel){
+
+        ResearchFilterItem filterItem = new ResearchFilterItem();
+
+        filterItem.setPrimaryDataset(filterViewModel.getPrimaryDataset());
+        filterItem.setSecondaryDataset(filterViewModel.getSecondaryDataset());
+        filterItem.setGraphType(filterViewModel.getGraphType());
+        filterItem.setStartDate(filterViewModel.getStartDate());
+        filterItem.setEndDate(filterViewModel.getEndDate());
+
+        Integer groupFactor = filterViewModel.getGroupFactor();
+        filterItem.setGroupFactor(groupFactor);
+        if( groupFactor != null && groupFactor > 0 ) {
+
+            filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
+        }
+        else{
+
+            filterItem.setGroupPrimary(false);
+        }
+
+        filterItem.setRangeStart(filterViewModel.getRangeStart());
+        filterItem.setRangeEnd(filterViewModel.getRangeEnd());
+
+        filterItem.setMedicationId(filterViewModel.getMedicationId());
+
+        return filterItem;
+    }
 
 }

@@ -19,14 +19,22 @@
 package femr.business.services;
 
 
+import com.google.gson.JsonObject;
+
+import femr.common.dto.ServiceResponse;
+import femr.common.models.*;
+import femr.ui.models.research.FilterViewModel;
+
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Interface for the Research Service
  */
 public interface IResearchService {
 
-
-
-
-
-
+    public ServiceResponse<Map<Integer, String>> getAllMedications();
+    public ServiceResponse<ResearchGraphDataItem> getGraphData(ResearchFilterItem filterItem);
 }

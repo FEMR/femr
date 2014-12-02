@@ -66,11 +66,18 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
+        //get age classifications
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+
         IndexViewModelGet viewModelGet = new IndexViewModelGet();
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPatient(patientItem);
         viewModelGet.setSearchError(false);
         viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
+        viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -80,35 +87,38 @@ public class TriageController extends Controller {
     and wants to create a new encounter
      */
     public Result indexPopulatedGet(int patientId) {
-
-        PatientItem patient;
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
-
-        //get user that is currently logged in
         CurrentUser currentUser = sessionService.getCurrentUserSession();
+
         //retrieve vitals names for dynamic html element naming
         ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
-
+        //get the patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        patient = patientItemServiceResponse.getResponseObject();
-        viewModelGet.setPatient(patient);
+        PatientItem patient = patientItemServiceResponse.getResponseObject();
 
-        //create the view model
-        viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
-
+        //get the settings
         ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
 
+        //get age classifications
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+        viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
+        viewModelGet.setPatient(patient);
+        viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
+        viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -145,7 +155,7 @@ public class TriageController extends Controller {
 
         //create and save a new encounter
         PatientEncounterItem patientEncounterItem =
-                populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId());
+                populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -202,7 +212,9 @@ public class TriageController extends Controller {
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModelPost.getFirstName());
         patient.setLastName(viewModelPost.getLastName());
-        patient.setBirth(viewModelPost.getAge());
+        if (viewModelPost.getAge() != null) {
+            patient.setBirth(viewModelPost.getAge());
+        }
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());
@@ -210,10 +222,11 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, Integer weeksPregnant, CurrentUser currentUser, int patientId) {
+    private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, Integer weeksPregnant, CurrentUser currentUser, int patientId, String ageClassification) {
         PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
         patientEncounterItem.setPatientId(patientId);
         patientEncounterItem.setNurseEmailAddress(currentUser.getEmail());
+        patientEncounterItem.setAgeClassification(ageClassification);
         //JSON chief complaints (multiple chief complaints - requires javascript)
         //this won't happen if the multiple chief complaint
         // feature is turned off (chiefComplaintJSON will be null)

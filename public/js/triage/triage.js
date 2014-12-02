@@ -184,7 +184,8 @@ var triageFields = {
         age: $('#age'),
         years: $('#years'),
         months: $('#months'),
-        city: $('#city')
+        city: $('#city'),
+        ageClassification: $('[name=ageClassification]')
     },
     patientVitals: {
         respiratoryRate: $('#respiratoryRate'),

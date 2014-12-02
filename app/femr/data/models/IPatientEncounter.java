@@ -19,7 +19,6 @@
 package femr.data.models;
 
 import org.joda.time.DateTime;
-
 import java.util.List;
 
 public interface IPatientEncounter {
@@ -60,4 +59,8 @@ public interface IPatientEncounter {
     IUser getNurse();
 
     void setNurse(IUser nurse);
+
+    IPatientAgeClassification getPatientAgeClassification();
+
+    void setPatientAgeClassification(IPatientAgeClassification patientAgeClassification);
 }

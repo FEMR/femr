@@ -24,26 +24,29 @@ import femr.common.models.MedicationItem;
 import java.util.List;
 
 public interface IInventoryService {
-    /**
-     * Adds a list of medicine to the inventory
-     *
-     * @param medicationItems list of MedicationItems to save
-     * @return the same list of MedicationItems WITHOUT primary key (id)
-     */
-    ServiceResponse<List<MedicationItem>> createMedicationInventory(List<MedicationItem> medicationItems);
 
     /**
-     * Removes a medicine from the inventory
-     *
-     * @param id id of medication to remove
-     * @return true if successful, false if failed
-     */
-    ServiceResponse<Boolean> removeMedicationFromInventory(int id);
-
-    /**
-     * Gets all medicine in the inventory
+     * Gets all medicine that is currently not deleted
      *
      * @return list of MedicationItems for use by controller
      */
     ServiceResponse<List<MedicationItem>> getMedicationInventory();
+
+    /**
+     * Add a new medication to the inventory
+     *
+     * @param medicationItem the medication
+     * @return
+     */
+    ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem);
+
+    /**
+     * Get a list of available units for the user
+     */
+    ServiceResponse<List<String>> getAvailableUnits();
+
+    /**
+     * Get a list of available forms for the user
+     */
+    ServiceResponse<List<String>> getAvailableForms();
 }

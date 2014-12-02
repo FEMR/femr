@@ -1,6 +1,6 @@
-@(currentUser: femr.common.dto.CurrentUser, settings: java.util.List[_ <: femr.data.models.ISystemSetting])
-@import femr.ui.controllers.admin.routes.ConfigureController
+@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.admin.configure.IndexViewModelGet)
 
+@import femr.ui.controllers.admin.routes.ConfigureController
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
@@ -15,21 +15,17 @@
                 <th>Toggle</th>
             </tr>
 
-            @for(x <- 1 to settings.size) {
+            @for((key, valyew) <- viewModel.getSettings) {
                 <tr>
-                    <td class="name">@settings.get(x - 1).getName</td>
+                    <td class="name">@key</td>
                     <td class="isActive">
-                    @if(settings.get(x - 1).isActive) {
-                        <input type="checkbox" name="ss@x" value="@settings.get(x - 1).getName" checked/>
-                    } else {
-                        <input type="checkbox" name="ss@x" value="@settings.get(x - 1).getName"/>
-                    }
+                        <input type="checkbox" name="settings[]" value="@key" @if(valyew) { checked="checked"} />
                     </td>
                 </tr>
             }
 
-
         </table>
+
         <input type="submit" class="fButton" value="Save"/>
     }
 

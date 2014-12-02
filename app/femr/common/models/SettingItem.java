@@ -22,6 +22,7 @@ public class SettingItem {
     private boolean isMultipleChiefComplaint;
     private boolean isPmhTab;
     private boolean isPhotoTab;
+    private boolean isConsolidateHPI;
 
 
     public boolean isMultipleChiefComplaint() {
@@ -46,5 +47,13 @@ public class SettingItem {
 
     public void setPhotoTab(boolean isPhotoTab) {
         this.isPhotoTab = isPhotoTab;
+    }
+
+    public boolean isConsolidateHPI() {
+        return isConsolidateHPI;
+    }
+
+    public void setConsolidateHPI(boolean isConsolidateHPI) {
+        this.isConsolidateHPI = isConsolidateHPI;
     }
 }

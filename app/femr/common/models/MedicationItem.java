@@ -18,17 +18,57 @@
 */
 package femr.common.models;
 
-/**
- * Created by kevin on 5/12/14.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class MedicationItem {
     private int id;
-    private String name;
     private Integer quantity_current;
     private Integer quantity_total;
+    private String form;
+    //name is only the name of the medication
+    //ex: "Vicodin"
+    private String name;
+    //full name includes the active ingredients
+    //ex: "Vicodin 10mg hydrocodone/325mg acetominophen"
+    private String fullName;
+    //active ingredients uses an inner class because
+    //a medication can have more than one active ingredient.
+    private List<ActiveIngredient> activeIngredients;
+
+
+    public MedicationItem(){
+        this.activeIngredients = new ArrayList<>();
+    }
+
+    /**
+     * Add an active ingredient to the medication item. ActiveIngredient is an
+     * inner class of MedicationItem
+     *
+     * @param name name of the active ingredient
+     * @param unit unit of measurement for the active ingredient
+     * @param value strength of the active ingredient
+     * @param isDenominator is the active ingredient a denominator when displayed to the user?
+     */
+    public void addActiveIngredient(String name, String unit, int value, boolean isDenominator) {
+        ActiveIngredient activeIngredient = new ActiveIngredient();
+        activeIngredient.setDenominator(isDenominator);
+        activeIngredient.setName(name);
+        activeIngredient.setUnit(unit);
+        activeIngredient.setValue(value);
+        this.activeIngredients.add(activeIngredient);
+    }
+
+    public List<ActiveIngredient> getActiveIngredients() {
+        return activeIngredients;
+    }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -55,7 +95,59 @@ public class MedicationItem {
         this.quantity_total = quantity_total;
     }
 
-    public void setId(int id) {
-        this.id = id;
+
+    public String getForm() {
+        return form;
+    }
+
+    public void setForm(String form) {
+        this.form = form;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public class ActiveIngredient{
+        private String name;
+        private String unit;
+        private int value;
+        private boolean isDenominator;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
+
+        public void setUnit(String unit) {
+            this.unit = unit;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        public boolean isDenominator() {
+            return isDenominator;
+        }
+
+        public void setDenominator(boolean isDenominator) {
+            this.isDenominator = isDenominator;
+        }
     }
 }

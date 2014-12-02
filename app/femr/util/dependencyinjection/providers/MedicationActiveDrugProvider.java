@@ -16,16 +16,14 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models;
+package femr.util.dependencyinjection.providers;
 
-public interface IPmhField {
-    int getId();
+import com.google.inject.Provider;
+import femr.data.models.MedicationActiveDrug;
 
-    String getName();
-
-    void setName(String name);
-
-    Boolean getDeleted();
-
-    void setDeleted(Boolean deleted);
+public class MedicationActiveDrugProvider implements Provider<MedicationActiveDrug> {
+    @Override
+    public MedicationActiveDrug get() {
+        return new MedicationActiveDrug();
+    }
 }

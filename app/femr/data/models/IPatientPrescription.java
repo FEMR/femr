@@ -25,6 +25,14 @@ public interface IPatientPrescription {
     int getId();
 
 
+    IMedication getMedication();
+
+    void setMedication(IMedication medication);
+
+    IMedicationAdministration getMedicationAdministration();
+
+    void setMedicationAdministration(IMedicationAdministration medicationAdministration);
+
     IUser getPhysician();
 
     void setPhysician(IUser physician);
@@ -37,10 +45,6 @@ public interface IPatientPrescription {
 
     void setReplacementId(Integer replacementId);
 
-    String getMedicationName();
-
-    void setMedicationName(String medicationName);
-
     DateTime getDateTaken();
 
     void setDateTaken(DateTime dateTaken);
@@ -48,4 +52,8 @@ public interface IPatientPrescription {
     IPatientEncounter getPatientEncounter();
 
     void setPatientEncounter(IPatientEncounter patientEncounter);
+
+    String getSpecialInstructions();
+
+    void setSpecialInstructions(String specialInstructions);
 }

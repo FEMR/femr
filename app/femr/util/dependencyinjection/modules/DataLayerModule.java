@@ -30,16 +30,23 @@ public class DataLayerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        //Model Injection
+        //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
+        bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
+        bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
+        bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
+        bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
+        bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
         bind(IPatient.class).toProvider(PatientProvider.class);
+        bind(IPatientAgeClassification.class).toProvider(PatientAgeClassificationProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
         bind(IPatientEncounterPhoto.class).toProvider(PatientEncounterPhotoProvider.class);
         bind(IPatientEncounterTabField.class).toProvider(PatientEncounterTabFieldProvider.class);
         bind(IPatientEncounterVital.class).toProvider(PatientEncounterVitalProvider.class);
         bind(IPatientPrescription.class).toProvider(PatientPrescriptionProvider.class);
         bind(IPhoto.class).toProvider(PhotoProvider.class);
+        bind(IRole.class).toProvider(RoleProvider.class);
         bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
         bind(ITab.class).toProvider(TabProvider.class);
         bind(ITabField.class).toProvider(TabFieldProvider.class);
@@ -52,7 +59,13 @@ public class DataLayerModule extends AbstractModule {
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<Repository<IMedicationAdministration>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<Repository<IMedicationMeasurementUnit>>() {});
         bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
+        bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<Repository<IPatientAgeClassification>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});

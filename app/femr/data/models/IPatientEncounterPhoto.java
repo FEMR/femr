@@ -19,10 +19,11 @@
 package femr.data.models;
 
 public interface IPatientEncounterPhoto {
+    int getPatientEncounterId();
 
-    int  getPatientEncounterId();
     void setPatientEncounterId(int id);
 
-    int  getPhotoId();
+    int getPhotoId();
+
     void setPhotoId(int id);
 }

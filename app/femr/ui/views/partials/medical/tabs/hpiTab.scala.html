@@ -1,8 +1,9 @@
 @(viewModel: femr.ui.models.medical.EditViewModelGet)
+
 @import femr.ui.views.html.partials.medical.severityDropDown;
 
-
 <div class="controlWrap" id="hpiControl">
+
 
     @if(viewModel.getPatientEncounterItem.getChiefComplaints.size > 1) {
         @* Slider for navigating each HPI, only shows up if > 1 chief complaint exists *@
@@ -34,70 +35,97 @@
 
             @* New Stuff *@
             @defining(viewModel.getStaticFields) { fields =>
-                <div class="leftHPI">
+                @if(!viewModel.getSettings.isConsolidateHPI) {
+                    <div class="leftHPI">
 
-                    <div class="staticField">
-                        <label for="onset">Onset</label>
-                        <input name="onset" type="text" class="fInput" value="@if(fields.get("onset" + (x - 1)) != null) @{fields.get("onset" + (x-1)).getValue}" />
+                        <div class="staticField">
+                            <label for="onset">Onset</label>
+                            <input name="onset" type="text" class="fInput" value="@if(fields.get("onset" + (x - 1)) != null) @{
+                                fields.get("onset" + (x - 1)).getValue
+                            }" />
+                        </div>
+
+                        <div class="staticField">
+                            <label for="radiation">Radiation</label>
+                            <input name="radiation" type="text" class="fInput" value="@if(fields.get("radiation" + (x - 1)) != null) @{
+                                fields.get("radiation" + (x - 1)).getValue
+                            }" />
+                        </div>
+
                     </div>
 
-                    <div class="staticField">
-                        <label for="radiation">Radiation</label>
-                        <input name="radiation" type="text" class="fInput" value="@if(fields.get("radiation" + (x - 1)) != null) @{fields.get("radiation" + (x-1)).getValue}" />
+                    <div class="rightHPI">
+                        <div class="staticField">
+                            <label for="quality">Quality</label>
+                            <input name="quality" type="text" class="fInput" value="@if(fields.get("quality" + (x - 1)) != null) @{
+                                fields.get("quality" + (x - 1)).getValue
+                            }" />
+                        </div>
+
+                        @* Severity *@
+                        <div class="staticField">
+                        @if(fields.get("severity" + (x - 1)) != null) {
+                            @severityDropDown(fields.get("severity" + (x - 1)).getValue)
+                        } else {
+                            @severityDropDown(null)
+                        }
+                        </div>
+
+
+                    </div>
+                    <div class="bottomHPI">
+
+                        <div class="staticField">
+                            <label for="provokes">Provokes</label>
+                            <input name="provokes" type="text" class="fInput" value="@if(fields.get("provokes" + (x - 1)) != null) @{
+                                fields.get("provokes" + (x - 1)).getValue
+                            }" />
+                        </div>
+
+                        <div class="staticField">
+                            <label for="palliates">Palliates</label>
+                            <input name="palliates" type="text" class="fInput" value="@if(fields.get("palliates" + (x - 1)) != null) @{
+                                fields.get("palliates" + (x - 1)).getValue
+                            }" />
+                        </div>
+
+                        <div class="staticField">
+                            <label for="timeOfDay">Time Of Day</label>
+                            <input name="timeOfDay" type="text" class="fInput" value="@if(fields.get("timeOfDay" + (x - 1)) != null) @{
+                                fields.get("timeOfDay" + (x - 1)).getValue
+                            }" />
+                        </div>
+
+                        <div class="staticField">
+                            <label for="narrative">Narrative</label>
+                            <input name="narrative" type="text" class="fInput" value="@if(fields.get("narrative" + (x - 1)) != null) @{
+                                fields.get("narrative" + (x - 1)).getValue
+                            }" />
+                        </div>
+
+                        <div class="staticField">
+                            @* Physical Examination *@
+                            <label for="physicalExamination">Physical Examination</label>
+                            <textarea rows="3" name="physicalExamination" class="form-control input-sm">@if(fields.get("physicalExamination" + (x - 1)) != null) @{
+                                fields.get("physicalExamination" + (x - 1)).getValue
+                            }</textarea>
+                        </div>
                     </div>
 
-                </div>
 
-                <div class="rightHPI">
-                    <div class="staticField">
-                        <label for="quality">Quality</label>
-                        <input name="quality" type="text" class="fInput" value="@if(fields.get("quality" + (x-1)) != null) @{fields.get("quality" + (x-1)).getValue}" />
-                    </div>
-
-                    @* Severity *@
-                    <div class="staticField">
-                    @if(fields.get("severity" + (x-1)) != null) {
-                        @severityDropDown(fields.get("severity" + (x-1)).getValue)
-                    } else {
-                        @severityDropDown(null)
-                    }
-                    </div>
-
-
-                </div>
-                <div class="bottomHPI">
-
-                    <div class="staticField">
-                        <label for="provokes">Provokes</label>
-                        <input name="provokes" type="text" class="fInput" value="@if(fields.get("provokes" + (x-1)) != null) @{fields.get("provokes" + (x-1)).getValue}" />
-                    </div>
-
-                    <div class="staticField">
-                        <label for="palliates">Palliates</label>
-                        <input name="palliates" type="text" class="fInput" value="@if(fields.get("palliates" + (x-1)) != null) @{fields.get("palliates" + (x-1)).getValue}" />
-                    </div>
-
-                    <div class="staticField">
-                        <label for="timeOfDay">Time Of Day</label>
-                        <input name="timeOfDay" type="text" class="fInput" value="@if(fields.get("timeOfDay" + (x-1)) != null) @{fields.get("timeOfDay" + (x-1)).getValue()}" />
-                    </div>
-
+                }else {
                     <div class="staticField">
                         <label for="narrative">Narrative</label>
-                        <input name="narrative" type="text" class="fInput" value="@if(fields.get("narrative" + (x-1)) != null) @{fields.get("narrative" + (x-1)).getValue()}" />
+                        <textarea name="narrative" class="fNarrativeTextArea" >@if(fields.get("narrative" + (x - 1)) != null) @{
+                            fields.get("narrative" + (x - 1)).getValue
+                        }</textarea>
                     </div>
-
-                    <div class="staticField">
-                        @* Physical Examination *@
-                        <label for="physicalExamination">Physical Examination</label>
-                        <textarea rows="3" name="physicalExamination" class="form-control input-sm">@if(fields.get("physicalExamination" + (x-1)) != null) @{fields.get("physicalExamination" + (x-1)).getValue }</textarea>
-                    </div>
-                </div>
-
+                }
             }
         </div>
 
     }
+
 
 
 </div>

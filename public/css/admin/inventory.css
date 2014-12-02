@@ -1,5 +1,4 @@
 #addMed {
-    float: right;
     margin-bottom: 20px;
 }
 
@@ -12,62 +11,113 @@
     text-align: center;
 }
 
-/* Dialog styles */
-#inventoryPartial{
-    height: 100%;
+
+#submitMedicationButton{
+    width: 20%;
+    float: right;
+    margin-top: 10px;
 }
-#inputMedication{
+
+#newMedicationWrap{
+    padding: 12px 12px 2px 12px;
     overflow: hidden;
-}
-#addMedToList{
+    margin: 0 auto;
     width: 100%;
-    margin-top: 25px;
 }
-#fieldMedicationWrap{
+#primaryMedicationRow{
     overflow: hidden;
-    border-top: 1px solid black;
-    margin-bottom: 20px;
 }
-.fieldMedication{
+#quantityFormName_Wrap, #strengthUnitIngredient_Wrap{
+    width: 46%;
+    overflow: hidden;
     float: left;
-    width: 32%;
-    margin-right: 5px;
+}
+#addIngredientPlusSignWrap{
+    float: left;
+    width: 8%;
+    margin-top: 16px;
+}
+.newIngredientRow{
+
+    width: 100%;
+    overflow: hidden;
+}
+.newIngredientRow div{
+    float: right !important;
+}
+.newIngredientWrap{
+    width: 46%;
+}
+.newIngredientWrap select{
+    margin-top: 0 !important;
+}
+.newInvisiblePlusSignWrap{
+    width: 8%;
+    float: right;
+    overflow: hidden;
+}
+
+
+.fieldMedication{
+    padding: 2px;
+
 }
 .fieldMedication input{
     width: 100% !important;
 }
-#saveAllNewMeds{
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin-bottom: 10px;
-    margin-right: 10px;
+
+
+
+#quantityFieldMedication{
+    width: 25%;
+    float: left;
 }
-#cancelAllNewMeds{
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin-bottom: 10px;
-    margin-right: 80px;
+#formFieldMedication{
+    width: 25%;
+    float: left;
+}
+#formFieldMedication select, .unitFieldMedication select{
+    width: 100%;
+    margin-top: 5px;
+}
+#nameFieldMedication{
+    width: 50%;
+    float: left;
+}
+
+.strengthFieldMedication{
+    width: 27%;
+    float: left;
+}
+.unitFieldMedication{
+    width: 23%;
+    float: left;
+}
+.ingredientFieldMedication{
+    width: 50%;
+    float: left;
+}
+
+#invisibleShit{
+    width: 4%;
+    float: right;
+    overflow: hidden;
 
 }
-#listMedication{
-    margin-top: 20px;
-    border-top: 1px solid black;
+#addIngredientPlusSignWrap span{
+    padding: 0 10px 0 10px;
+    font-size: 36px;
+    margin: 0 auto;
 }
-#listMedication input{
-    border: none;
-    background-color: transparent;
-}
-#listMedication input:hover{
+#addIngredientPlusSignWrap span:hover{
     cursor: default;
+}
+
+
+#formFieldMedication{
+    float: left;
 }
 
 .remove span:hover{
     cursor: pointer;
-
-}
-#removeMed{
-    background: transparent;
-    border: none !important;
 }

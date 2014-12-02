@@ -24,6 +24,10 @@ import java.util.List;
 public class PatientEncounterItem {
     private int id;
     private int patientId;
+    //age classification is not part of the patient because it doesn't change with time
+    //i.e. when you save the birth date of a patient, you can always tell how old the patient is,
+    //it is part of a patient
+    private String ageClassification;//infant, teen, etc
     private List<String> chiefComplaints;
     private Integer weeksPregnant;
     private Boolean isClosed;
@@ -132,5 +136,13 @@ public class PatientEncounterItem {
 
     public void setPharmacyDateOfVisit(String pharmacyDateOfVisit) {
         this.pharmacyDateOfVisit = pharmacyDateOfVisit;
+    }
+
+    public String getAgeClassification() {
+        return ageClassification;
+    }
+
+    public void setAgeClassification(String ageClassification) {
+        this.ageClassification = ageClassification;
     }
 }

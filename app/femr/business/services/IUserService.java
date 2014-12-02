@@ -19,13 +19,50 @@
 package femr.business.services;
 
 import femr.common.dto.ServiceResponse;
+import femr.common.models.UserItem;
 import femr.data.models.IRole;
 import femr.data.models.IUser;
 
 import java.util.List;
 
 public interface IUserService {
-    ServiceResponse<IUser> createUser(IUser user);
+    /**
+     * Create a brand new user
+     * @param user user to be created
+     * @param password the users password to be encrypted
+     * @return a new user
+     */
+    ServiceResponse<UserItem> createUser(UserItem user, String password);
+
+    /**
+     *
+     * @return all users that exist
+     */
+    ServiceResponse<List<UserItem>> findAllUsers();
+
+    /**
+     * If a user is deactivated, activate them and vice versa
+     *
+     * @param id primary id of the user
+     * @return
+     */
+    ServiceResponse<UserItem> toggleUser(int id);
+
+    /**
+     * Find a user by their ID
+     * @param id primary id of the user
+     * @return
+     */
+    ServiceResponse<UserItem> findUser(int id);
+
+    /**
+     * Updates a user based on ID. Email can be changed.
+     *
+     * @param userItem user item where id is the identifier
+     * @param newPassword if not null, changes the users password
+     * @return
+     */
+    ServiceResponse<UserItem> updateUser(UserItem userItem, String newPassword);
 
     IUser findByEmail(String email);
 
@@ -33,7 +70,9 @@ public interface IUserService {
 
     List<? extends IRole> findRolesForUser(int id);
 
-    ServiceResponse<List<? extends IUser>> findAllUsers();
+
+
+
 
     ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword);
 }

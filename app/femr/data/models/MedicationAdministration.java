@@ -18,14 +18,32 @@
 */
 package femr.data.models;
 
-public interface ITreatmentField {
-    int getId();
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-    String getName();
+@Entity
+@Table(name = "medication_administrations")
+public class MedicationAdministration implements IMedicationAdministration{
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "name", unique = true, nullable = false)
+    private String name;
 
-    void setName(String name);
+    @Override
+    public int getId() {
+        return id;
+    }
 
-    Boolean getDeleted();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void setDeleted(Boolean deleted);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

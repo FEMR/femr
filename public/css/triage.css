@@ -10,6 +10,17 @@
     font-weight: bold
 }
 
+#ageClassificationWrap{
+    padding-left: 5px;
+    margin-bottom: 10px;
+}
+.orSpan{
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+}
+
 .sectionBackground {
     min-height: 638px;
     padding: 5px;
@@ -118,13 +129,40 @@
     overflow: hidden;
 }
 
-.generalInfoInput input {
+.generalInfoInput input[type="text"], .generalInfoInput input[type="date"] {
     float: right;
     margin-right: 120px;
     width: 180px;
 }
+.generalInfoInput select{
+    width: 180px;
+    margin-right: 120px;
+    float: right;
+}
+.generalInfoInput input[type="radio"]{
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+}
+#classificationRadioWrap{
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+#classificationRadioWrap label{
+    padding-left: 15px;
+    text-indent: -15px;
+}
+#classificationRadioWrap span{
+    font-size: 10px;
+}
 
-.submitResetWrap {
+  .submitResetWrap {
     margin-top: 15px;
     margin-bottom: 5px;
     overflow: hidden;
@@ -176,17 +214,13 @@
     float: left !important;
 }
 
-.red {
-    color: red;
-}
-
 /* Shrinking of General Info section */
 @media (max-width: 1199px) {
     #genderBtns {
         margin-right: 0px;
     }
 
-    .generalInfoInput input {
+    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select {
         margin-right: 0px;
     }
 
@@ -201,7 +235,7 @@
         padding: 0px;
     }
 
-    .generalInfoInput input {
+    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select {
         width: 175px;
     }
 }
@@ -220,14 +254,19 @@
         display: block;
     }
 
-    .generalInfoInput input {
+    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select {
         float: left;
         display: block;
     }
 }
 
 @media (max-width: 620px) {
-
+    .orSpan{
+        display: inline;
+    }
+    #classificationRadioWrap{
+        text-align: left;
+    }
     #vitalsWrap {
         width: 100%;
     }
@@ -247,13 +286,16 @@
 }
 
 @media (max-width: 495px) {
+    #classificationRadioWrap{
+        text-align: center;
+    }
     #genInfoWrap{
         text-align: center;
     }
     #genderBtns{
         float: none;
     }
-    .generalInfoInput input{
+    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select{
         float: none;
         display: inline;
 

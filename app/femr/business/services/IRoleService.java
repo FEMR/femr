@@ -18,12 +18,15 @@
 */
 package femr.business.services;
 
+import femr.common.dto.ServiceResponse;
 import femr.data.models.IRole;
 
 import java.util.List;
 
 public interface IRoleService {
     List<? extends IRole> getAllRoles();
+
+    ServiceResponse<List<String>> getAllRolesString();
 
     List<? extends IRole> getRolesFromIds(List<Integer> checkValuesAsIntegers);
 }

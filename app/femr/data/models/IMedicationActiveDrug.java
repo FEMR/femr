@@ -18,14 +18,26 @@
 */
 package femr.data.models;
 
-public interface IHpiField {
+/**
+ * MedicationActiveDrug represents the active ingredient inside a medication,
+ * e.g. 500mg Acetominophen
+ */
+public interface IMedicationActiveDrug {
     int getId();
 
-    String getName();
+    IMedicationMeasurementUnit getMedicationMeasurementUnit();
 
-    void setName(String name);
+    void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit);
 
-    Boolean getDeleted();
+    IMedicationActiveDrugName getMedicationActiveDrugName();
 
-    void setDeleted(Boolean deleted);
+    void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName);
+
+    boolean isDenominator();
+
+    void setDenominator(boolean isDenominator);
+
+    int getValue();
+
+    void setValue(int value);
 }

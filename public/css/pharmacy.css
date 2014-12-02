@@ -111,6 +111,7 @@ input[style] {
     box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
+    position: relative !important;
 }
 
 .tt-suggestion {

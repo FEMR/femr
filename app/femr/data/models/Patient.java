@@ -33,7 +33,7 @@ public class Patient implements IPatient {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private Date age;
     @Column(name = "sex", nullable = true)
     private String sex;
@@ -44,8 +44,6 @@ public class Patient implements IPatient {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "photo_id", nullable = true)
     private Photo photo;
-//    @Column(name = "photo_id", nullable = true)
-//    private Integer photoId;
 
     @Override
     public int getId() {

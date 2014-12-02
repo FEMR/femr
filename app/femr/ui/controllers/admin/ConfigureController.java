@@ -1,3 +1,21 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
@@ -9,21 +27,20 @@ import femr.data.models.ISystemSetting;
 import femr.data.models.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.configure.ConfigureViewModelPost;
-import femr.util.stringhelpers.StringUtils;
+import femr.ui.models.admin.configure.IndexViewModelGet;
+import femr.ui.models.admin.configure.IndexViewModelPost;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import femr.ui.views.html.admin.configure.index;
-
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class ConfigureController extends Controller {
 
-    private final Form<ConfigureViewModelPost> ConfigureViewModelForm = Form.form(ConfigureViewModelPost.class);
+    private final Form<IndexViewModelPost> indexViewModelForm = Form.form(IndexViewModelPost.class);
     private ISessionService sessionService;
     private IConfigureService configureService;
 
@@ -36,53 +53,28 @@ public class ConfigureController extends Controller {
 
     public Result indexGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
+        IndexViewModelGet indexViewModel = new IndexViewModelGet();
+
+
         ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.getCurrentSettings();
         if (systemSettingsResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        List<? extends ISystemSetting> systemSettings = systemSettingsResponse.getResponseObject();
+        for (ISystemSetting ss : systemSettingsResponse.getResponseObject()) {
+            indexViewModel.setSetting(ss.getName(), ss.isActive());
+        }
 
-        return ok(index.render(currentUser, systemSettings));
+
+        return ok(index.render(currentUser, indexViewModel));
     }
 
-    /**
-     * Only updates one system setting right now,
-     * the service is designed to updated more than one
-     * when the time comes
-     *
-     * @return
-     */
     public Result indexPost() {
-        ConfigureViewModelPost viewModel = ConfigureViewModelForm.bindFromRequest().get();
+        IndexViewModelPost viewModel = indexViewModelForm.bindFromRequest().get();
 
-        ServiceResponse<ISystemSetting> response = configureService.getSystemSetting("Multiple chief complaints");
-        ISystemSetting systemSetting = response.getResponseObject();
-
-
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getSs1()))
-            systemSetting.setActive(true);
-        else
-            systemSetting.setActive(false);
-
-        configureService.updateSystemSetting(systemSetting);
-
-        response = configureService.getSystemSetting("Medical PMH Tab");
-        systemSetting = response.getResponseObject();
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getSs2()))
-            systemSetting.setActive(true);
-        else
-            systemSetting.setActive(false);
-        configureService.updateSystemSetting(systemSetting);
-
-        response = configureService.getSystemSetting("Medical Photo Tab");
-        systemSetting = response.getResponseObject();
-        if (StringUtils.isNotNullOrWhiteSpace(viewModel.getSs3()))
-            systemSetting.setActive(true);
-        else
-            systemSetting.setActive(false);
-        configureService.updateSystemSetting(systemSetting);
-
-
+        ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.updateSystemSettings(viewModel.getSettings());
+        if (systemSettingsResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
 
         return redirect(routes.AdminController.index());
     }

@@ -21,7 +21,7 @@ package femr.data.models;
 import org.joda.time.DateTime;
 
 /**
- * Created by kevin on 5/31/14.
+ * A tab on the medical screen - allows for dynamic tabs
  */
 public interface ITab {
     int getId();

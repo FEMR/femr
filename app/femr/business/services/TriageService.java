@@ -19,6 +19,7 @@
 package femr.business.services;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.helpers.DomainMapper;
@@ -32,41 +33,63 @@ import femr.common.models.PatientItem;
 import femr.common.models.VitalItem;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class TriageService implements ITriageService {
 
-    //repositories
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatient> patientRepository;
+    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IUser> userRepository;
     private final IRepository<IVital> vitalRepository;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
-
     private final DomainMapper domainMapper;
 
     @Inject
     public TriageService(IRepository<IChiefComplaint> chiefComplaintRepository,
                          IRepository<IPatient> patientRepository,
+                         IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitaRepository,
                          IRepository<IUser> userRepository,
                          IRepository<IVital> vitalRepository,
                          Provider<IPatientEncounterVital> patientEncounterVitalProvider,
-
                          DomainMapper domainMapper) {
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientRepository = patientRepository;
+        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitaRepository;
         this.userRepository = userRepository;
         this.vitalRepository = vitalRepository;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.domainMapper = domainMapper;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<Map<String,String>> findPossibleAgeClassifications() {
+        ServiceResponse<Map<String,String>> response = new ServiceResponse<>();
+        Map<String,String> patientAgeClassificationStrings = new LinkedHashMap<>();
+        try {
+            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("isDeleted", false)
+                    .order()
+                    .asc("sortOrder");
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
+            for (IPatientAgeClassification pac : patientAgeClassifications) {
+                patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
+            }
+            response.setResponseObject(patientAgeClassificationStrings);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
     }
 
     /**
@@ -137,7 +160,7 @@ public class TriageService implements ITriageService {
         try {
             IPatient newPatient = domainMapper.createPatient(patient);
             newPatient = patientRepository.create(newPatient);
-            response.setResponseObject(domainMapper.createPatientItem(newPatient, null, null, null, null));
+            response.setResponseObject(DomainMapper.createPatientItem(newPatient, null, null, null, null));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -157,21 +180,30 @@ public class TriageService implements ITriageService {
         }
 
         try {
+            //find the nurse that checked in the patient
             ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
                     .where()
                     .eq("email", patientEncounterItem.getNurseEmailAddress());
 
-            IUser user = userRepository.findOne(nurseQuery);
+            IUser nurseUser = userRepository.findOne(nurseQuery);
 
+            //find the age classification of the patient, if it exists
+            ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("name", patientEncounterItem.getAgeClassification());
+            IPatientAgeClassification patientAgeClassification = patientAgeClassificationRepository.findOne(patientAgeClassificationExpressionList);
+            Integer patientAgeClassificationId = null;
+            if (patientAgeClassification != null)
+                patientAgeClassificationId = patientAgeClassification.getId();
 
-            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, user.getId());
+            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, nurseUser.getId(), patientAgeClassificationId);
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
 
             List<IChiefComplaint> chiefComplaints = new ArrayList<>();
-            for (String cc : patientEncounterItem.getChiefComplaints()){
+            for (String cc : patientEncounterItem.getChiefComplaints()) {
                 chiefComplaints.add(domainMapper.createChiefComplaint(cc, newPatientEncounter.getId()));
             }
-            if (chiefComplaints != null && chiefComplaints.size() > 0){
+            if (chiefComplaints.size() > 0) {
                 chiefComplaintRepository.createAll(chiefComplaints);
             }
 

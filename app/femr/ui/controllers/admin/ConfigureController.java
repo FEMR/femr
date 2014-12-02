@@ -19,12 +19,12 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
-import femr.business.services.IConfigureService;
-import femr.business.services.ISessionService;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
-import femr.data.models.ISystemSetting;
-import femr.data.models.Roles;
+import femr.business.services.core.IConfigureService;
+import femr.business.services.core.ISessionService;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
+import femr.data.models.core.ISystemSetting;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.configure.IndexViewModelGet;

@@ -103,3 +103,18 @@ function randomString(strVal) {
   return isNaN(strVal);
 }
 
+/*
+ * Typeahead initalizer
+ */
+var typeaheadFeature = {
+    initalizeTypeAhead: function(elementSelector, name, data){
+        $(elementSelector).typeahead({
+            name: name,
+            local: data
+        });
+    },
+    destroyTypeAhead: function(elementSelector){
+        $(elementSelector).typeahead('destroy');
+    }
+};
+

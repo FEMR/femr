@@ -19,9 +19,9 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
-import femr.common.dto.CurrentUser;
-import femr.business.services.ISessionService;
-import femr.data.models.Roles;
+import femr.common.dtos.CurrentUser;
+import femr.business.services.core.ISessionService;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.views.html.admin.index;

@@ -1,6 +1,7 @@
 package mock.femr.data.models;
 
 import femr.data.models.*;
+import femr.data.models.core.IPatientPrescription;
 import org.joda.time.DateTime;
 
 public class MockPatientPrescription implements IPatientPrescription {

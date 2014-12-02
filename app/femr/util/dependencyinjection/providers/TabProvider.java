@@ -18,8 +18,8 @@
 */
 package femr.util.dependencyinjection.providers;
 
-import femr.data.models.ITab;
-import femr.data.models.Tab;
+import femr.data.models.core.ITab;
+import femr.data.models.mysql.Tab;
 
 import javax.inject.Provider;
 

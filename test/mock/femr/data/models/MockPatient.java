@@ -1,8 +1,9 @@
 package mock.femr.data.models;
 
-import femr.data.models.IPatient;
+
 import femr.data.models.IPhoto;
 import femr.data.models.Photo;
+import femr.data.models.core.IPatient;
 
 import java.util.Date;
 

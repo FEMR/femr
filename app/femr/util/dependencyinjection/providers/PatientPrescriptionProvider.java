@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.IPatientPrescription;
-import femr.data.models.PatientPrescription;
+import femr.data.models.core.IPatientPrescription;
+import femr.data.models.mysql.PatientPrescription;
 
 public class PatientPrescriptionProvider implements Provider<IPatientPrescription> {
     @Override

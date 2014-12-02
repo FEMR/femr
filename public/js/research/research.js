@@ -164,7 +164,7 @@ var graphLoaderModule = (function(){
         // post graph
         $.post("/research/graph", postData, function (rawData) {
 
-            jsonData = jQuery.parseJSON(rawData);
+            jsonData = $.parseJSON(rawData);
 
             if( typeof jsonData.graphData == 'undefined' || jsonData.graphData.length == 0 ){
 

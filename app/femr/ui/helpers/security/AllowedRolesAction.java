@@ -1,8 +1,8 @@
 package femr.ui.helpers.security;
 
 import com.google.inject.Inject;
-import femr.business.services.IUserService;
-import femr.data.models.IRole;
+import femr.business.services.core.IUserService;
+import femr.data.models.core.IRole;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;

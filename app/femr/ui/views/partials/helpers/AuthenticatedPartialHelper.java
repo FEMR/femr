@@ -1,7 +1,7 @@
 package femr.ui.views.partials.helpers;
 
-import femr.data.models.IRole;
-import femr.data.models.Roles;
+import femr.data.models.core.IRole;
+import femr.data.models.mysql.Roles;
 
 import java.util.List;
 

@@ -1,14 +1,13 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.superuser.ContentViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.ContentViewModelGet)
 
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.routes.SuperuserController
-@import femr.ui.views.html.superuser.superuserMenu
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/superuser.css")">
     }
 
-@admin("SuperUser Panel", currentUser, menus = superuserMenu(), styles = additionalStyles) {
+@admin("SuperUser Panel", currentUser, styles = additionalStyles) {
     <h1>Adding content to @viewModel.getName</h1>
     <div id="superUserWrap">
         <div class="halfPageTables">

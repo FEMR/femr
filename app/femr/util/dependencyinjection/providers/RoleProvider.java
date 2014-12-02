@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.IRole;
-import femr.data.models.Role;
+import femr.data.models.core.IRole;
+import femr.data.models.mysql.Role;
 
 public class RoleProvider implements Provider<IRole> {
     @Override

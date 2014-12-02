@@ -1,11 +1,11 @@
 /*
 package mock.femr.business.services;
 
-import femr.common.dto.ServiceResponse;
+import femr.common.dtos.ServiceResponse;
 import femr.business.services.ITriageService;
-import femr.data.models.IPatient;
-import femr.data.models.IPatientEncounter;
-import femr.data.models.IPatientEncounterVital;
+import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientEncounter;
+import femr.data.models.core.IPatientEncounterVital;
 
 import java.util.List;
 import java.util.Map;

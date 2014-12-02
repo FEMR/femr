@@ -2,9 +2,9 @@ package mock.femr.data.models;
 
 import femr.data.models.*;
 import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
+import femr.data.models.core.IPatientEncounter;
 
 public class MockPatientEncounter implements IPatientEncounter {
 

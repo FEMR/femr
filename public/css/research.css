@@ -108,6 +108,7 @@
     display: block;
     clear: both;
     margin-left: 10px;
+    width: 150px;
 }
 
 .nav-sidebar li.submit{

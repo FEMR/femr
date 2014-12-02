@@ -3,14 +3,13 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
-import femr.common.dto.CurrentUser;
-import femr.business.services.IResearchService;
-import femr.business.services.ISessionService;
-
-import femr.common.dto.ServiceResponse;
+import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
 import femr.common.models.ResearchGraphDataItem;
-import femr.data.models.Roles;
+import femr.common.dtos.CurrentUser;
+import femr.business.services.core.IResearchService;
+import femr.business.services.core.ISessionService;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.views.html.research.index;
@@ -54,6 +53,7 @@ public class ResearchController extends Controller {
     public Result indexGet() {
 
         // There isn't really a request here, should this be different?
+        //TODO: nothing to bind here
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
 
         // Set Default Start (30 Days Ago) and End Date (Today)
@@ -81,7 +81,7 @@ public class ResearchController extends Controller {
     public Result getGraphPost(){
 
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
-
+        //TODO: domain mapper out of scope
         ResearchFilterItem researchFilterItem = DomainMapper.createResearchFilterItem(filterViewModel);
 
         ServiceResponse<ResearchGraphDataItem> response = researchService.getGraphData(researchFilterItem);

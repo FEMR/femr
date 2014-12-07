@@ -106,7 +106,7 @@ public class MedicalService implements IMedicalService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId) {
+    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         if (prescriptionItems == null || userId < 1 || encounterId < 1) {
             response.addError("", "invalid parameters");
@@ -116,7 +116,7 @@ public class MedicalService implements IMedicalService {
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         for (PrescriptionItem pi : prescriptionItems) {
             IMedication medication = domainMapper.createMedication(pi.getName());
-            patientPrescriptions.add(domainMapper.createPatientPrescription(0, medication, userId, encounterId, null));
+            patientPrescriptions.add(domainMapper.createPatientPrescription(0, medication, userId, encounterId, null, false, false));
         }
 
         try {

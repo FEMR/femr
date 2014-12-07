@@ -30,13 +30,13 @@
 
                 <ol class="problems">
 
-                    @if(viewModel.getProblems != null) {
-                        @for(y <- 1 to viewModel.getProblems.size) {
-                            @if(viewModel.getProblems.get(y - 1) != null) {
-                                <li>@viewModel.getProblems.get(y - 1).getName</li>
-                            }
+                @if(viewModel.getProblems != null) {
+                    @for(y <- 1 to viewModel.getProblems.size) {
+                        @if(viewModel.getProblems.get(y - 1) != null) {
+                            <li>@viewModel.getProblems.get(y - 1).getName</li>
                         }
                     }
+                }
                 </ol>
             </div>
 
@@ -57,7 +57,17 @@
                 </ol>
 
             </div>
-            <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">Submit</button>
+
+
+            <div id="disclaimerWrap">
+                <label for="disclaimer">
+                    The patient was counseled on the risks and side effects of the medications dispensed.</label>
+                <input type="checkbox" name="disclaimer" value="disclaimer">
+            </div>
+            <div id="submitWrap">
+                <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                    Submit</button>
+            </div>
 
         </div>
 

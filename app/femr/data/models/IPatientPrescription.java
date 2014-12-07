@@ -56,4 +56,12 @@ public interface IPatientPrescription {
     String getSpecialInstructions();
 
     void setSpecialInstructions(String specialInstructions);
+
+    boolean isCounseled();
+
+    void setCounseled(boolean isCounseled);
+
+    boolean isDispensed();
+
+    void setDispensed(boolean isDispensed);
 }

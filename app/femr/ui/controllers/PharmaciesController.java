@@ -18,6 +18,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -150,6 +151,11 @@ public class PharmaciesController extends Controller {
         }
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
+        //after replacing the prescriptions, this list will contain the non-replaced prescriptions that need
+        //to be identified as dispensed. The service layer checks for an ID of 0. Also, this is a cluster fuck
+        //and some of the logic needs to be moved up to the service layer.
+        List<Integer> prescriptionToMarkAsDispensedOrCounseled = new ArrayList<>();
+        boolean isCounseled = StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getDisclaimer());
         //replace prescription 1
         PrescriptionItem prescriptionItem = new PrescriptionItem();
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())) {
@@ -157,11 +163,14 @@ public class PharmaciesController extends Controller {
             ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription1(),
-                    currentUserSession.getId()
+                    currentUserSession.getId(),
+                    isCounseled
             );
             if (response.hasErrors()) {
                 throw new RuntimeException();
             }
+        } else {
+            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription1());
         }
         //replace prescription 2
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication2())) {
@@ -169,11 +178,14 @@ public class PharmaciesController extends Controller {
             ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription2(),
-                    currentUserSession.getId()
+                    currentUserSession.getId(),
+                    isCounseled
             );
             if (response.hasErrors()) {
                 throw new RuntimeException();
             }
+        } else {
+            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription2());
         }
         //replace prescription 3
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication3())) {
@@ -181,11 +193,14 @@ public class PharmaciesController extends Controller {
             ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription3(),
-                    currentUserSession.getId()
+                    currentUserSession.getId(),
+                    isCounseled
             );
             if (response.hasErrors()) {
                 throw new RuntimeException();
             }
+        } else {
+            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription3());
         }
         //replace prescription 4
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication4())) {
@@ -193,11 +208,14 @@ public class PharmaciesController extends Controller {
             ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription4(),
-                    currentUserSession.getId()
+                    currentUserSession.getId(),
+                    isCounseled
             );
             if (response.hasErrors()) {
                 throw new RuntimeException();
             }
+        } else {
+            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription4());
         }
         //replace prescription 5
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication5())) {
@@ -205,9 +223,25 @@ public class PharmaciesController extends Controller {
             ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription5(),
-                    currentUserSession.getId()
+                    currentUserSession.getId(),
+                    isCounseled
             );
             if (response.hasErrors()) {
+                throw new RuntimeException();
+            }
+        } else {
+            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription5());
+        }
+
+        //update non-replaced prescriptions to dispensed
+        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = pharmacyService.markPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
+        if (prescriptionDispensedResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        //update non-replaced prescriptions that the patient was counseled on
+        if (isCounseled){
+            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = pharmacyService.markPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
+            if (prescriptionCounseledResponse.hasErrors()){
                 throw new RuntimeException();
             }
         }

@@ -96,7 +96,7 @@ public class PharmacyService implements IPharmacyService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId) {
+    public ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId, boolean isCounseled) {
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
         if (prescriptionItem == null || StringUtils.isNullOrWhiteSpace(prescriptionItem.getName()) || oldScriptId < 1 || userId < 1) {
             response.addError("", "bad parameters");
@@ -112,11 +112,12 @@ public class PharmacyService implements IPharmacyService {
 
             //create new prescription
             IMedication medication = domainMapper.createMedication(prescriptionItem.getName());
-            IPatientPrescription newPatientPrescription = domainMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null);
+            IPatientPrescription newPatientPrescription = domainMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
             //replace the old prescription
             oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
+            oldPatientPrescription.setDispensed(false);
             patientPrescriptionRepository.update(oldPatientPrescription);
 
             PrescriptionItem newPrescriptionItem = domainMapper.createPrescriptionItem(newPatientPrescription);
@@ -176,6 +177,66 @@ public class PharmacyService implements IPharmacyService {
             response.setResponseObject(medicationNames);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsFilled(List<Integer> prescriptionIds) {
+        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+
+        List<PrescriptionItem> updatedPrescriptions = new ArrayList<>();
+        try {
+
+            for (Integer i : prescriptionIds) {
+                if (i != null && i > 0) {
+                    ExpressionList<PatientPrescription> patientPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
+                            .where()
+                            .eq("id", i);
+                    IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
+                    patientPrescription.setDispensed(true);
+                    patientPrescription = patientPrescriptionRepository.update(patientPrescription);
+                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                }
+            }
+            response.setResponseObject(updatedPrescriptions);
+        } catch (Exception ex) {
+
+            response.addError("", "prescriptions were not updated");
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsCounseled(List<Integer> prescriptionIds){
+        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+
+        List<PrescriptionItem> updatedPrescriptions = new ArrayList<>();
+        try {
+
+            for (Integer i : prescriptionIds) {
+                if (i != null && i > 0) {
+                    ExpressionList<PatientPrescription> patientPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
+                            .where()
+                            .eq("id", i);
+                    IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
+                    patientPrescription.setCounseled(true);
+                    patientPrescription = patientPrescriptionRepository.update(patientPrescription);
+                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                }
+            }
+            response.setResponseObject(updatedPrescriptions);
+        } catch (Exception ex) {
+
+            response.addError("", "prescriptions were not updated");
         }
 
         return response;

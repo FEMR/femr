@@ -42,9 +42,10 @@ public interface IPharmacyService {
      *
      * @param prescriptionItem new prescription to replace the old one
      * @param oldScriptId      id of the old prescription that is being replaced
+     * @param isCounseled      was the patient counseled on this prescription
      * @return updated new prescription
      */
-    ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId);
+    ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId, boolean isCounseled);
 
     /**
      * Find all problems
@@ -60,4 +61,20 @@ public interface IPharmacyService {
      * @return
      */
     ServiceResponse<List<String>> findAllMedications();
+
+    /**
+     * Mark prescriptions as filled
+     *
+     * @param prescriptionIds a list of prescription ids to fill
+     * @return prescription items that were filled
+     */
+    ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsFilled(List<Integer> prescriptionIds);
+
+    /**
+     * Mark prescriptions as having the patient counseled
+     *
+     * @param prescriptionIds a list of prescription ids to identify as counseled
+     * @return prescription items that were marked as counseled
+     */
+    ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsCounseled(List<Integer> prescriptionIds);
 }

@@ -258,8 +258,12 @@ public class MedicalController extends Controller {
         if (viewModelPost.getPrescription5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription5()))
             prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription5()));
         if (prescriptionItems.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> prescriptionResponse =
-                    medicalService.createPatientPrescriptions(prescriptionItems, currentUserSession.getId(), patientEncounterItem.getId());
+            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicalService.createPatientPrescriptions(
+                    prescriptionItems,
+                    currentUserSession.getId(),
+                    patientEncounterItem.getId(),
+                    false
+            );
             if (prescriptionResponse.hasErrors()) {
                 throw new RuntimeException();
             }

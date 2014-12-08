@@ -53,7 +53,7 @@ public interface IMedicalService {
      * @param encounterId       id of the current encounter
      * @return updated prescription list
      */
-    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId);
+    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed);
 
     /**
      * Adds tab field items to the PatientEncounterTabField table

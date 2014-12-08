@@ -48,6 +48,10 @@ public class PatientPrescription implements IPatientPrescription {
     private Integer replacementId;
     @Column(name = "special_instructions", nullable = true)
     private String specialInstructions;
+    @Column(name = "isCounseled", nullable = false)
+    private boolean isCounseled;
+    @Column(name = "isDispensed", nullable = false)
+    private boolean isDispensed;
 
     @Override
     public int getId() {
@@ -132,5 +136,25 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setSpecialInstructions(String specialInstructions) {
         this.specialInstructions = specialInstructions;
+    }
+
+    @Override
+    public boolean isCounseled() {
+        return isCounseled;
+    }
+
+    @Override
+    public void setCounseled(boolean isCounseled) {
+        this.isCounseled = isCounseled;
+    }
+
+    @Override
+    public boolean isDispensed() {
+        return isDispensed;
+    }
+
+    @Override
+    public void setDispensed(boolean isDispensed) {
+        this.isDispensed = isDispensed;
     }
 }

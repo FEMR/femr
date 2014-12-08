@@ -29,6 +29,7 @@ public class EditViewModelPost {
     private String replacementMedication3;
     private String replacementMedication4;
     private String replacementMedication5;
+    private String disclaimer;
 
     public String getReplacementMedication1() {
         return replacementMedication1;
@@ -109,5 +110,13 @@ public class EditViewModelPost {
 
     public void setId_prescription5(int id_prescription5) {
         this.id_prescription5 = id_prescription5;
+    }
+
+    public String getDisclaimer() {
+        return disclaimer;
+    }
+
+    public void setDisclaimer(String disclaimer) {
+        this.disclaimer = disclaimer;
     }
 }

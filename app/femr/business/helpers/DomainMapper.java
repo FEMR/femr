@@ -576,9 +576,10 @@ public class DomainMapper {
      * @param userId        id of the user creating the prescription
      * @param encounterId   encounter id of the prescription
      * @param replacementId id of the prescription being replaced OR null
+     * @param isDispensed is the patient prescription dispensed to the patient yet
      * @return a new IPatientPrescription
      */
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId) {
+    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
         if (medication == null || StringUtils.isNullOrWhiteSpace(medication.getName()) || userId < 1 || encounterId < 1) {
             return null;
         }
@@ -589,6 +590,8 @@ public class DomainMapper {
         patientPrescription.setMedication(medication);
         patientPrescription.setReplacementId(replacementId);
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
+        patientPrescription.setDispensed(isDispensed);
+        patientPrescription.setCounseled(isCounseled);
         return patientPrescription;
     }
 

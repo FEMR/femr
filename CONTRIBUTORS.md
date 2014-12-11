@@ -13,3 +13,6 @@ These people have contributed to fEMR's design and implementation:
 * [Danny Reinheimer](https://github.com/codeitandloadit)
 * [Cohen Carlisle](https://github.com/Cohen-Carlisle)
 * [Brandon Dane](https://github.com/b6025)
+* [Ken Dunlap](https://github.com/kdunlap)
+* [Arslan Gondal](https://github.com/unfixed)
+* [Khoa Le](https://github.com/khoal)

@@ -18,8 +18,7 @@
 */
 package femr.business.services;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import com.avaje.ebean.*;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
@@ -166,11 +165,28 @@ public class PharmacyService implements IPharmacyService {
      */
     @Override
     public ServiceResponse<List<String>> findAllMedications() {
+
         ServiceResponse<List<String>> response = new ServiceResponse<>();
 
         try {
             List<String> medicationNames = new ArrayList<>();
-            List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
+
+            //List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
+
+            //use raw sql to temporarily filter out the duplicate medication names
+            //after implementing the inventory tracking feature, this shouldn't be needed
+            //as duplicates will never exist.
+            //Also - ebeans "setDistinct" method has known bugs in it hence rawsql crap
+            String rawSqlString = "SELECT id, name FROM medications GROUP BY name";
+            RawSql rawSql = RawSqlBuilder.parse(rawSqlString).create();
+
+            Query<Medication> medicationQuery = Ebean.find(Medication.class);
+            medicationQuery.setRawSql(rawSql);
+
+            List<? extends IMedication> medications = medicationQuery.findList();
+
+
+
             for (IMedication m : medications) {
                 medicationNames.add(m.getName());
             }

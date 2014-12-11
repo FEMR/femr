@@ -1,5 +1,6 @@
 var meds;
 $(document).ready(function () {
+
     $('.replaceBtn').click(function(){
         replaceClick(this);
     });
@@ -12,7 +13,7 @@ $(document).ready(function () {
 
 
 function replaceClick(btn){
-    console.log();
+
     var medicationListElementId = $(btn).parent().attr("id");
     var medicationNumber = medicationListElementId.substr(medicationListElementId.length - 1);
     var replacementInputBox = $("#replacementMedication" + medicationNumber);

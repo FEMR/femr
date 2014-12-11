@@ -1,3 +1,4 @@
+/*
 package mock.femr.business.services;
 
 import femr.common.dto.ServiceResponse;
@@ -44,3 +45,4 @@ public class MockTriageService implements ITriageService {
         return null;
     }
 }
+*/

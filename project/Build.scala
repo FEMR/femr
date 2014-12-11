@@ -22,8 +22,8 @@ object ApplicationBuild extends Build {
 
 
   val main = Project(appName, file(".")).enablePlugins(play.PlayJava).settings(
-    /*javacOptions += "-Xlint:deprecation",*/   //use when searching for deprecated API usage
-    /*javacOptions += "-Xlint:unchecked",*/     //use when you want to display java warnings
+    javacOptions += "-Xlint:deprecation", //*/   //use when searching for deprecated API usage
+    javacOptions += "-Xlint:unchecked", //*/     //use when you want to display java warnings
     version := appVersion,
     scalaVersion := currentScalaVersion,
     libraryDependencies ++= appDependencies,

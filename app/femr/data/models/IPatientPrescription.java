@@ -24,7 +24,6 @@ public interface IPatientPrescription {
 
     int getId();
 
-
     IMedication getMedication();
 
     void setMedication(IMedication medication);

@@ -4,7 +4,8 @@ var patientPhotoFeature = {
         windowWidth: 250,
         windowHeight: 250,
         imageElement: $('#patientPhoto'),
-        isNewPhoto: false
+        isNewPhoto: false,
+        overrideIsDragging: false
     },
 
     photo: {
@@ -24,7 +25,7 @@ var patientPhotoFeature = {
             jwc.destroyCrop();
 
         //Create new crop window
-        jwc = $(patientPhotoFeature.config.imageElement).jWindowCrop({
+       jwc = $(patientPhotoFeature.config.imageElement).jWindowCrop({
             targetWidth: patientPhotoFeature.config.windowWidth,
             targetHeight: patientPhotoFeature.config.windowHeight,
             loadingText: '',
@@ -32,10 +33,13 @@ var patientPhotoFeature = {
             zoomOutId: 'btnZoomOut',
 
             onChange: function (result) {
+
                 patientPhotoFeature.photo.x = result.cropX;
                 patientPhotoFeature.photo.y = result.cropY;
                 patientPhotoFeature.photo.width = result.cropW;
                 patientPhotoFeature.photo.height = result.cropH;
+
+                patientPhotoFeature.cropAndReplace();
             }
         });
         jwc.touchit(); //This invokes the "touchit" module which translates mouse/click
@@ -48,6 +52,10 @@ var patientPhotoFeature = {
             $('#patientPhotoDiv').hide();
             $('#photoInputFormDiv').show();
             $(patientPhotoFeature.config.imageElement).show();
+            /*
+             No zooming allowed
+             */
+            $('#zoomControls').hide();
         }
         else {
             $('#patientPhotoDiv').show();
@@ -112,7 +120,12 @@ var patientPhotoFeature = {
         }
 
     },
+    /**
+     * Takes the photo from the canvas and crops it. Then sets it back on the canvas.
+     * This helps reduce the amount of bandwidth, especially when a poor signal is detected.
+     */
     cropAndReplace: function () {
+
         if (patientPhotoFeature.config.isNewPhoto === true) {
             var canvas = document.getElementById('patientPhotoCanvas'),
                 context = canvas.getContext('2d');
@@ -121,19 +134,100 @@ var patientPhotoFeature = {
             canvas.width = 255;
 
             var img = document.getElementById('patientPhoto');
+
+            var orientation = 1;
+            EXIF.getData(img, function () {
+                orientation = EXIF.getTag(this, "Orientation");
+            });
+
+
+            //sx, sy, sw, and sh identify the area of the photo that is going to
+            //be cropped. This is because a user can drag the photo around and choose
+            //which part they want to be saved.
             var sx = patientPhotoFeature.photo.x;
             var sy = patientPhotoFeature.photo.y;
             var sw = patientPhotoFeature.photo.width;
             var sh = patientPhotoFeature.photo.height;
 
-            context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+            switch (orientation) {
+                case 1:
+                    //patientPhotoFeature.drawImageIOSFix(context, img, sx, sy, sw, sh, 0, 0, 255, 255);
+                    if (sx >= 2) {
+                        //fixes a bug where iOS devices will spit out a black image.
+                        //This only happens when the user has scrolled all the way to
+                        //the right, but sx is always subtracted by 2 (negative not allowed).
+                        sx = sx - 2;
+                    }
+                    context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
 
-            //specify the quality downgrade, but how much?!??!?
-            var dataURL = canvas.toDataURL("image/jpeg", 0.5);
-            $('#photoInputCropped').val(dataURL);
-            $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+                    break;
+                case 3:
+                    //this occurs in iOS landscape mode, but only when the camera is on the left
+                    context.translate(canvas.width, canvas.height);
+                    context.rotate(180 * Math.PI / 180);
+                    //get the width of the actual picture that was uploaded
+                    var real_width = img.naturalWidth;
+                    //get the width of the <img> html element
+                    var imgElement_width = img.width;
+                    var pixel_density_sx = real_width / imgElement_width;
+                    //250 = jwc frame size
+                    var max_sx = (imgElement_width - 250) * pixel_density_sx;
+                    //a 180 degree rotation introduces a different spot for sx
+                    sx = max_sx - sx;
+                    if (sx < 0) {
+                        //just in case the calculation is off by a small decimal
+                        sx = 0;
+                    }
+                    if (sx >= 2) {
+                        //fixes a bug where iOS devices will spit out a black image.
+                        //This only happens when the user has scrolled all the way to
+                        //the right, but sx is always subtracted by 2 (negative not allowed).
+                        sx = sx - 2;
+                    }
+                    context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+                    break;
+                case 6:
+                    patientPhotoFeature.config.overrideIsDragging = true;
+                    //here you will find iOS in portrait mode with bizzare behavior,
+                    //we use a special library to take care of the vertical squashing bug
+                    var fileInput = document.getElementById('photoInput');
+                    var file = fileInput.files[0];
+                    // MegaPixImage constructor accepts File/Blob object.
+                    var mpImg = new MegaPixImage(file);
+                    //context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+                    // Render resized image into canvas element.
+                    mpImg.render(canvas, { width: 255, height: 255, orientation: 6, sx: sx, sy: sy });
+                    break;
+                case 8:
+                    //this case occurs in android portrait mode and android isn't fucking retarded
+                    context.translate(0, canvas.height);
+                    context.rotate(270 * Math.PI / 180);
+                    if (sx >= 2) {
+                        //fixes a bug where iOS devices will spit out a black image.
+                        //This only happens when the user has scrolled all the way to
+                        //the right, but sx is always subtracted by 2 (negative not allowed).
+                        sx = sx - 2;
+                    }
+                    context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+                    break;
+                default:
+                    if (sx >= 2) {
+                        //fixes a bug where iOS devices will spit out a black image.
+                        //This only happens when the user has scrolled all the way to
+                        //the right, but sx is always subtracted by 2 (negative not allowed).
+                        sx = sx - 2;
+                    }
+                    context.drawImage(img, sx, sy, sw, sh, 0, 0, 255, 255);
+            }
         }
+    },
+    prepareForPOST: function () {
+        //0.5 is the quality downgrade.
+        var dataURL = document.getElementById('patientPhotoCanvas').toDataURL("image/jpeg", 0.5);
+        $('#photoInputCropped').val(dataURL);
+        $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
     }
+
 };
 
 var multipleChiefComplaintFeature = {
@@ -162,15 +256,15 @@ var multipleChiefComplaintFeature = {
         var chiefComplaintText = $(evt.target).parent().text();
         chiefComplaintText = chiefComplaintText.substring(1, chiefComplaintText.length);
         var index = multipleChiefComplaintFeature.chiefComplaintsJSON.indexOf(chiefComplaintText);
-        if (index > -1){
-           multipleChiefComplaintFeature.chiefComplaintsJSON.splice(index,1);
+        if (index > -1) {
+            multipleChiefComplaintFeature.chiefComplaintsJSON.splice(index, 1);
         }
         $(evt.target).parent().remove();
     },
     JSONifyChiefComplaints: function () {
         var chiefComplaintBox = $('#chiefComplaint').val().trim();
         //add the value in the box currently (if it exists and if it doesn't already exist in the current list)
-        if (chiefComplaintBox && $.inArray(chiefComplaintBox, multipleChiefComplaintFeature.chiefComplaintsJSON) === -1){
+        if (chiefComplaintBox && $.inArray(chiefComplaintBox, multipleChiefComplaintFeature.chiefComplaintsJSON) === -1) {
             multipleChiefComplaintFeature.chiefComplaintsJSON.push(chiefComplaintBox);
         }
         $('input[name=chiefComplaintsJSON]').val(JSON.stringify(multipleChiefComplaintFeature.chiefComplaintsJSON));
@@ -405,9 +499,10 @@ $(document).ready(function () {
     });
 
     $('#triageSubmitBtn').click(function () {
-        patientPhotoFeature.cropAndReplace();
+        //get the base64 URI string from the canvas
+        patientPhotoFeature.prepareForPOST();
         //make sure the feature is turned on before JSONifying
-        if (multipleChiefComplaintFeature.isActive == true){
+        if (multipleChiefComplaintFeature.isActive == true) {
             multipleChiefComplaintFeature.JSONifyChiefComplaints();
         }
         return validate(); //located in triageClientValidation.js

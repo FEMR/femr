@@ -96,7 +96,6 @@ var createUsers = {
         //validate roles
         var isARoleChecked = false;
         $.each(document.forms["createForm"].elements["roles[]"], function () {
-            console.log($(this).is(':checked'));
             if ($(this).is(':checked')) {
                 isARoleChecked = true;
             }

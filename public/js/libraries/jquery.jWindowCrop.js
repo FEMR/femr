@@ -18,7 +18,6 @@
 		base.$image = $(image); // target image jquery element
 		base.image = image; // target image dom element
 		base.$image.data("jWindowCrop", base); // target frame jquery element
-
 		base.namespace = 'jWindowCrop';
 		base.originalWidth = 0;
 		base.isDragging = false;
@@ -60,7 +59,9 @@
 			base.$image.removeAttr( 'style' ); // undo the style
 			base.$image.unwrap(); // undo the wrap
 		};
-		
+        base.setScroll = function(isScroll){
+            base.isScrolling = isScroll;
+        };
 		base.setZoom = function(percent) {
 			if(base.minPercent >= 1) {
 				percent = base.minPercent;
@@ -130,7 +131,9 @@
 		}
 		function handleMouseDown(event) {
             event.preventDefault(); //some browsers do image dragging themselves
-			base.isDragging = true;
+            if (!patientPhotoFeature.config.overrideIsDragging){
+                base.isDragging = true;
+            }
 			base.dragMouseCoords = {x: event.pageX, y: event.pageY};
 			base.dragImageCoords = {x: parseInt(base.$image.css('left')), y: parseInt(base.$image.css('top'))}
             if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeIn('fast');
@@ -139,7 +142,6 @@
 			base.isDragging = false;
             hidePanel();
 		}
-
 		function handleMouseMove(event) {
 			if(base.isDragging) {
 				var xDif = event.pageX - base.dragMouseCoords.x;

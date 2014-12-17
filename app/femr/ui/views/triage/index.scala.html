@@ -11,13 +11,14 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/libraries/datepicker.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/triage/touchit-1.0.0.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/triage/jquery.jWindowCrop.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/touchit-1.0.0.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/exif.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/megapix-image.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/shared/vitalClientValidation.js")"></script>
     }
-
 
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
@@ -40,14 +41,14 @@
 
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>
-                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
-                    <span class="orSpan">OR</span>
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
+                    <span class="orSpan">OR</span>
+                    @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                     <span class="orSpan">OR</span>
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">
                         @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
-                            <label><input type="radio" name="ageClassification" value="@key" />@key <span>@valyew</span></label>
+                            <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>
 
                         }
 
@@ -218,4 +219,3 @@
     </div>
 
 }
-

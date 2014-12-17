@@ -14,6 +14,8 @@
         <script type="text/javascript" src="@routes.Assets.at("js/triage/touchit-1.0.0.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triage.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/triage/exif.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/triage/megapix-image.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/triage/triageClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/shared/vitalClientValidation.js")"></script>
     }
@@ -47,7 +49,7 @@
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">
                         @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
-                            <label><input type="radio" name="ageClassification" value="@key" />@key <span>@valyew</span></label>
+                            <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>
 
                         }
 
@@ -218,4 +220,3 @@
     </div>
 
 }
-

@@ -1,3 +1,12 @@
+$(document).on('blur', 'input, textarea', function () {
+    //this is a hacky fix for the navigation bar dropping on iPads. After the keyboard
+    //appears and disappears, the navigation bar would fall to the center of the screen and
+    //fix itself after scrolling.
+    setTimeout(function () {
+        window.scrollTo(document.body.scrollLeft, document.body.scrollTop);
+    }, 0);
+});
+
 $(document).ready(function () {
     $('.hamburger').click(function(){
         var navMenu = $('.navigationItemsWrap');

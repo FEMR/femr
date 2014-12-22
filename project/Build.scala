@@ -5,7 +5,7 @@ import play.Play.autoImport._
 object ApplicationBuild extends Build {
 
   val appName = "fEMR"
-  val appVersion = "2.1.0"
+  val appVersion = "2.1.2"//doesn't auto update everything in the code when this is changed
   val currentScalaVersion = "2.11.2"
 
   val appDependencies = Seq(

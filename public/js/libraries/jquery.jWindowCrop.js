@@ -131,7 +131,6 @@
 		}
 		function handleMouseDown(event) {
             event.preventDefault(); //some browsers do image dragging themselves
-            console.log(patientPhotoFeature.config.overrideIsDragging);
             if (!patientPhotoFeature.config.overrideIsDragging){
                 base.isDragging = true;
             }

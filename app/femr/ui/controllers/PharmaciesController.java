@@ -1,12 +1,14 @@
 package femr.ui.controllers;
 
-import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import femr.business.services.*;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
+import femr.business.services.core.IEncounterService;
+import femr.business.services.core.IMedicationService;
+import femr.business.services.core.ISearchService;
+import femr.business.services.core.ISessionService;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.models.Roles;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.pharmacy.*;
@@ -24,16 +26,20 @@ import java.util.List;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PharmaciesController extends Controller {
+
     private final Form<EditViewModelPost> populatedViewModelPostForm = Form.form(EditViewModelPost.class);
-    private ISessionService sessionService;
-    private ISearchService searchService;
-    private IPharmacyService pharmacyService;
+    private final IEncounterService encounterService;
+    private final IMedicationService medicationService;
+    private final ISessionService sessionService;
+    private final ISearchService searchService;
 
     @Inject
-    public PharmaciesController(IPharmacyService pharmacyService,
+    public PharmaciesController(IEncounterService encounterService,
+                                IMedicationService medicationService,
                                 ISessionService sessionService,
                                 ISearchService searchService) {
-        this.pharmacyService = pharmacyService;
+        this.encounterService = encounterService;
+        this.medicationService = medicationService;
         this.sessionService = sessionService;
         this.searchService = searchService;
     }
@@ -121,7 +127,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
         //find patient problems, they do not have to exist.
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = pharmacyService.findProblemItems(patientEncounterItem.getId());
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -160,7 +166,7 @@ public class PharmaciesController extends Controller {
         PrescriptionItem prescriptionItem = new PrescriptionItem();
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())) {
             prescriptionItem.setName(createViewModelPost.getReplacementMedication1());
-            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription1(),
                     currentUserSession.getId(),
@@ -175,7 +181,7 @@ public class PharmaciesController extends Controller {
         //replace prescription 2
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication2())) {
             prescriptionItem.setName(createViewModelPost.getReplacementMedication2());
-            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription2(),
                     currentUserSession.getId(),
@@ -190,7 +196,7 @@ public class PharmaciesController extends Controller {
         //replace prescription 3
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication3())) {
             prescriptionItem.setName(createViewModelPost.getReplacementMedication3());
-            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription3(),
                     currentUserSession.getId(),
@@ -205,7 +211,7 @@ public class PharmaciesController extends Controller {
         //replace prescription 4
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication4())) {
             prescriptionItem.setName(createViewModelPost.getReplacementMedication4());
-            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription4(),
                     currentUserSession.getId(),
@@ -220,7 +226,7 @@ public class PharmaciesController extends Controller {
         //replace prescription 5
         if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication5())) {
             prescriptionItem.setName(createViewModelPost.getReplacementMedication5());
-            ServiceResponse<PrescriptionItem> response = pharmacyService.createAndReplacePrescription(
+            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
                     prescriptionItem,
                     createViewModelPost.getId_prescription5(),
                     currentUserSession.getId(),
@@ -234,20 +240,20 @@ public class PharmaciesController extends Controller {
         }
 
         //update non-replaced prescriptions to dispensed
-        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = pharmacyService.markPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
+        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.markPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
         if (prescriptionDispensedResponse.hasErrors()) {
             throw new RuntimeException();
         }
         //update non-replaced prescriptions that the patient was counseled on
         if (isCounseled){
-            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = pharmacyService.markPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
+            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.markPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
             if (prescriptionCounseledResponse.hasErrors()){
                 throw new RuntimeException();
             }
         }
 
         //check the patient in!
-        pharmacyService.checkPatientIn(patientEncounterItem.getId(), currentUserSession.getId());
+        encounterService.checkPatientInToPharmacy(patientEncounterItem.getId(), currentUserSession.getId());
         String message = "Patient information for " +
                 patientItem.getFirstName() +
                 " " +
@@ -266,21 +272,12 @@ public class PharmaciesController extends Controller {
      * @return JSON object of medications that exist in the medications table
      */
     public Result typeaheadJSONGet() {
-        JsonObject jsonObject = new JsonObject();
 
-        //get a list of medications in the medication table
-        //these medications are added by an administrator in the admin section
-        ServiceResponse<List<String>> medicationServiceResponse = pharmacyService.findAllMedications();
+        ServiceResponse<String> medicationServiceResponse = medicationService.getMedicationNames();
         if (medicationServiceResponse.hasErrors()) {
-            return ok(jsonObject.toString());
+            return ok("");
         }
 
-        List<String> medications = medicationServiceResponse.getResponseObject();
-
-        //create a JsonObject to send back via AJAX
-        for (int medication = 0; medication < medications.size(); medication++) {
-            jsonObject.addProperty("medicine" + medication, medications.get(medication));
-        }
-        return ok(jsonObject.toString());
+        return ok(medicationServiceResponse.getResponseObject());
     }
 }

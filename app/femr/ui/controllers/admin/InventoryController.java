@@ -19,17 +19,16 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
-import femr.business.services.IInventoryService;
-import femr.business.services.ISessionService;
-import femr.data.models.Roles;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
+import femr.business.services.core.IInventoryService;
+import femr.business.services.core.ISessionService;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.InventoryViewModelGet;
 import femr.common.models.MedicationItem;
 import femr.ui.models.admin.inventory.InventoryViewModelPost;
-import femr.ui.models.admin.users.CreateViewModel;
 import femr.ui.views.html.admin.inventory.index;
 import play.data.Form;
 import play.mvc.Controller;

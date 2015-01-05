@@ -18,8 +18,8 @@
 */
 package femr.util.dependencyinjection.providers;
 
-import femr.data.models.IPatientEncounterPhoto;
-import femr.data.models.PatientEncounterPhoto;
+import femr.data.models.core.IPatientEncounterPhoto;
+import femr.data.models.mysql.PatientEncounterPhoto;
 
 import javax.inject.Provider;
 

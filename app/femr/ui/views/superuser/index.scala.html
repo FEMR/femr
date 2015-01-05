@@ -1,9 +1,8 @@
-@(currentUser: femr.common.dto.CurrentUser)
+@(currentUser: femr.common.dtos.CurrentUser)
 
 @import femr.ui.views.html.layouts.admin
-@import femr.ui.views.html.superuser.superuserMenu
 
-@admin("SuperUser Panel", currentUser, menus = superuserMenu()) {
+@admin("SuperUser Panel", currentUser) {
     <h3>Welcome, SuperUser. Choose an option to get started.</h3>
 
 }

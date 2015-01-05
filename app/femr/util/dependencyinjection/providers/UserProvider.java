@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.IUser;
-import femr.data.models.User;
+import femr.data.models.core.IUser;
+import femr.data.models.mysql.User;
 
 public class UserProvider implements Provider<IUser> {
     @Override

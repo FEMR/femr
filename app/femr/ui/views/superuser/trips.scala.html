@@ -1,0 +1,96 @@
+@(currentUser: femr.common.dtos.CurrentUser, form: play.data.Form[femr.ui.models.superuser.TripViewModel])
+
+@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/superuser.css")">
+    }
+
+@admin("SuperUser Panel", currentUser, styles = additionalStyles) {
+    @helper.form(action = SuperuserController.tripsPost()) {
+        <p>-Changing the 'Team Name' will create a new team.</p>
+        <p>-Changing anything related to the Trip will create a new Trip.</p>
+        <div id="teamTripWrap">
+            <div id="teamWrap">
+                <h3>Current Team:</h3>
+                @helper.inputText(form("team"),
+                    'class -> "fInput",
+                    'placeholder -> "Team Name",
+                    '_label -> "Team Name:"
+                )
+                @helper.inputText(form("teamLocation"),
+                    'class -> "fInput",
+                    'placeholder -> "Team Location",
+                    '_label -> "Team Location:"
+                )
+                @helper.inputText(form("description"),
+                    'class -> "fInput",
+                    'placeholder -> "Description",
+                    '_label -> "Team Description:"
+                )
+            </div>
+            <div id="tripWrap">
+                <h3>Current Trip:</h3>
+                @helper.inputText(form("city"),
+                    'class -> "fInput",
+                    'placeholder -> "City",
+                    '_label -> "Trip City:"
+                )
+                @helper.inputText(form("country"),
+                    'class -> "fInput",
+                    'placeholder -> "Country",
+                    '_label -> "Trip Country:"
+                )
+
+                @helper.inputDate(form("startDate"),
+                    '_label -> "Trip Start Date"
+                )
+                @helper.inputDate(form("endDate"),
+                    '_label -> "Trip End Date"
+                )
+            </div>
+        </div>
+
+        <button type="submit" class="fButton">Change</button>
+
+    }
+    @* helper.form(action = SuperuserController.tripsPost()) {
+    <h3>Change Trip:</h3>
+    <div id="tripItemsWrap">
+    <div class="tripItemWrap">
+    <label>Team</label>
+    <input type="text" class="fInput" name="newTeam" placeholder="Team Name"/>
+    <select name="newTeamDropDown" class="fSelect">
+    @defining(viewModel.getAvailableTeams) { teams =>
+    <option value="@teams">@teams</option>
+    }
+    </select>
+    </div>
+
+    <div class="tripItemWrap">
+    <label>City:</label>
+    <input type="text" class="fInput" name="newCity" placeholder="City Name"/>
+    <select name="newCityDropDown" class="fSelect">
+    @defining(viewModel.getAvailableCities) { cities =>
+    <option value="@cities">@cities</option>
+    }
+    </select>
+    </div>
+
+    <div class="tripItemWrap">
+    <label>Country:</label>
+    <input type="text" class="fInput" name="newCountry" placeholder="Country Name"/>
+    <select name="newCountryDropDown" class="fSelect">
+    @defining(viewModel.getAvailableCountries) { countries =>
+    <option value="@countries">@countries</option>
+    }
+    </select>
+    </div>
+
+    </div>
+
+    }
+
+    *@
+}

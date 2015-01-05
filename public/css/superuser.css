@@ -33,6 +33,15 @@ table th,td{
     .halfPageTables{
         width: 100%;
     }
+}
 
 
+/*trip tracking*/
+#teamWrap, #tripWrap{
+    width: 50%;
+    float: left;
+}
+#teamTripWrap{
+    width: 100%;
+    overflow: hidden;
 }

@@ -472,3 +472,8 @@ The hamburger button
     margin-top: 3px;
     width: 100%;
 }
+
+/*errors from viewmodel form validation*/
+.errors, .error dd{
+    color: rgb(198, 0, 0);
+}

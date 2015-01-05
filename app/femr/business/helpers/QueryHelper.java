@@ -19,10 +19,9 @@
 package femr.business.helpers;
 
 import com.avaje.ebean.Query;
-import femr.common.models.VitalItem;
 import femr.data.daos.IRepository;
-import femr.data.models.IPatientEncounterVital;
-import femr.data.models.PatientEncounterVital;
+import femr.data.models.core.IPatientEncounterVital;
+import femr.data.models.mysql.PatientEncounterVital;
 
 import java.util.List;
 

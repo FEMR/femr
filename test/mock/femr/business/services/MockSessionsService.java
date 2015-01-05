@@ -1,8 +1,8 @@
 package mock.femr.business.services;
 
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
-import femr.business.services.ISessionService;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
+import femr.business.services.core.ISessionService;
 
 public class MockSessionsService implements ISessionService {
     public boolean createSessionWasCalled = false;

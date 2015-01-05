@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.ITabFieldSize;
-import femr.data.models.TabFieldSize;
+import femr.data.models.core.ITabFieldSize;
+import femr.data.models.mysql.TabFieldSize;
 
 public class TabFieldSizeProvider implements Provider<ITabFieldSize> {
     @Override

@@ -3,14 +3,11 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
-import femr.business.services.IPhotoService;
-import femr.business.services.ISearchService;
-import femr.business.services.ISessionService;
-import femr.business.services.ITriageService;
+import femr.business.services.core.*;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
 import femr.common.models.SettingItem;
-import femr.data.models.Roles;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.common.models.PatientEncounterItem;
@@ -21,7 +18,6 @@ import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,20 +27,27 @@ import java.util.Map;
 public class TriageController extends Controller {
 
     private final Form<IndexViewModelPost> IndexViewModelForm = Form.form(IndexViewModelPost.class);
-    private ITriageService triageService;
-    private ISessionService sessionService;
-    private ISearchService searchService;
-    private IPhotoService photoService;
+    private final IEncounterService encounterService;
+    private final IPatientService patientService;
+    private final ISessionService sessionService;
+    private final ISearchService searchService;
+    private final IPhotoService photoService;
+    private final IVitalService vitalService;
 
     @Inject
-    public TriageController(ITriageService triageService,
+    public TriageController(IEncounterService encounterService,
                             ISessionService sessionService,
                             ISearchService searchService,
-                            IPhotoService photoService) {
-        this.triageService = triageService;
+                            IPatientService patientService,
+                            IPhotoService photoService,
+                            IVitalService vitalService) {
+
+        this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.patientService = patientService;
         this.photoService = photoService;
+        this.vitalService = vitalService;
     }
 
     public Result indexGet() {
@@ -52,7 +55,7 @@ public class TriageController extends Controller {
 
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -67,7 +70,7 @@ public class TriageController extends Controller {
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.findPossibleAgeClassifications();
         if (patientAgeClassificationsResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -90,7 +93,7 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         //retrieve vitals names for dynamic html element naming
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -109,7 +112,7 @@ public class TriageController extends Controller {
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = triageService.findPossibleAgeClassifications();
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.findPossibleAgeClassifications();
         if (patientAgeClassificationsResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -137,9 +140,9 @@ public class TriageController extends Controller {
         PatientItem patientItem;
         if (id == 0) {
             patientItem = populatePatientItem(viewModel, currentUser);
-            patientServiceResponse = triageService.createPatient(patientItem);
+            patientServiceResponse = patientService.createPatient(patientItem);
         } else {
-            patientServiceResponse = triageService.findPatientAndUpdateSex(id, viewModel.getSex());
+            patientServiceResponse = patientService.findPatientAndUpdateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -156,7 +159,7 @@ public class TriageController extends Controller {
         //create and save a new encounter
         PatientEncounterItem patientEncounterItem =
                 populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = triageService.createPatientEncounter(patientEncounterItem);
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -198,7 +201,7 @@ public class TriageController extends Controller {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }
 
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = triageService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

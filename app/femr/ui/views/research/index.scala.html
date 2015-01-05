@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.ResearchController
@@ -26,7 +26,7 @@
         <div class="row dropdown">
             <div class="col-sm-3 col-md-2 sidebar">
 
-                @helper.form(action = ResearchController.getGraphPost(), 'id -> "graph-options") {
+                @helper.form(action = ResearchController.getGraphPost, 'id -> "graph-options") {
                     <div id="filter-errors">
 
                     </div>

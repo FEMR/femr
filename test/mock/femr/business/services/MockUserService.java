@@ -7,9 +7,11 @@ import femr.common.dto.ServiceResponse;
 import femr.business.services.IUserService;
 import femr.common.models.UserItem;
 import femr.data.models.IRole;
-import femr.data.models.IUser;
 import femr.data.models.User;
-
+import femr.common.dtos.ServiceResponse;
+import femr.business.services.core.IUserService;
+import femr.data.models.core.IRole;
+import femr.data.models.core.IUser;
 import java.util.List;
 
 public class MockUserService implements IUserService {

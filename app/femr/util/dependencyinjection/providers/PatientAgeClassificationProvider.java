@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.IPatientAgeClassification;
-import femr.data.models.PatientAgeClassification;
+import femr.data.models.core.IPatientAgeClassification;
+import femr.data.models.mysql.PatientAgeClassification;
 
 public class PatientAgeClassificationProvider implements Provider<IPatientAgeClassification> {
     @Override

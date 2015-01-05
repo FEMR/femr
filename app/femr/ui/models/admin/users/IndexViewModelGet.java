@@ -18,7 +18,7 @@
 */
 package femr.ui.models.admin.users;
 
-import femr.data.models.IUser;
+import femr.data.models.core.IUser;
 import java.util.List;
 
 public class IndexViewModelGet {

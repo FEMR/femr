@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.IMedicationActiveDrugName;
-import femr.data.models.MedicationActiveDrugName;
+import femr.data.models.core.IMedicationActiveDrugName;
+import femr.data.models.mysql.MedicationActiveDrugName;
 
 public class MedicationActiveDrugNameProvider implements Provider<IMedicationActiveDrugName> {
     @Override

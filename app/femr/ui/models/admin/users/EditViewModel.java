@@ -20,7 +20,6 @@ package femr.ui.models.admin.users;
 
 import femr.util.stringhelpers.StringUtils;
 import play.data.validation.ValidationError;
-
 import java.util.ArrayList;
 import java.util.List;
 

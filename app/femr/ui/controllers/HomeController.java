@@ -1,8 +1,8 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.common.dto.CurrentUser;
-import femr.business.services.ISessionService;
+import femr.common.dtos.CurrentUser;
+import femr.business.services.core.ISessionService;
 import femr.ui.views.html.home.index;
 import femr.ui.views.html.sessions.create;
 import play.mvc.Controller;

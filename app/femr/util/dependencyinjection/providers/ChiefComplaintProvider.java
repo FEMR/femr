@@ -19,8 +19,8 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.ChiefComplaint;
-import femr.data.models.IChiefComplaint;
+import femr.data.models.mysql.ChiefComplaint;
+import femr.data.models.core.IChiefComplaint;
 
 public class ChiefComplaintProvider implements Provider<IChiefComplaint> {
 

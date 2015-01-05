@@ -7,6 +7,9 @@ GET         /superuser/tabs/:name            @femr.ui.controllers.SuperuserContr
 POST        /superuser/tabs/:name            @femr.ui.controllers.SuperuserController.contentPost(name: String)
 GET         /superuser/tabs                  @femr.ui.controllers.SuperuserController.tabsGet()
 POST        /superuser/tabs                  @femr.ui.controllers.SuperuserController.tabsPost()
+GET         /superuser/trips                 @femr.ui.controllers.SuperuserController.tripsGet()
+POST        /superuser/trips                 @femr.ui.controllers.SuperuserController.tripsPost()
+GET         /superuser/typeahead             @femr.ui.controllers.SuperuserController.typeaheadJSONGet()
 GET         /superuser                       @femr.ui.controllers.SuperuserController.indexGet()
 #Admin
 POST        /admin/users/create              @femr.ui.controllers.admin.UsersController.createPost()

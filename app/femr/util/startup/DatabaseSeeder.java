@@ -21,7 +21,8 @@ package femr.util.startup;
 import com.avaje.ebean.Ebean;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.models.*;
+import femr.data.models.core.*;
+import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
@@ -34,6 +35,9 @@ public class DatabaseSeeder {
 
     private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final Repository<MedicationForm> medicationFormRepository;
+    private final IRepository<MissionCountry> missionCountryRepository;
+    private final IRepository<MissionCity> missionCityRepository;
+    private final IRepository<MissionTeam> missionTeamRepository;
     private final IRepository<User> userRepository;
     private final Repository<Role> roleRepository;
     private final Repository<SystemSetting> systemSettingRepository;
@@ -54,9 +58,13 @@ public class DatabaseSeeder {
         tabFieldTypeRepository = new Repository<>();
         tabRepository = new Repository<>();
         patientAgeClassificationRepository = new Repository<>();
+        missionCountryRepository = new Repository<>();
+        missionTeamRepository = new Repository<>();
+        missionCityRepository = new Repository<>();
     }
 
     public void seed() {
+        seedMissionTripInformation();
         seedSystemSettings();
         seedAdminUser();
         seedDefaultTabNames();
@@ -67,13 +75,87 @@ public class DatabaseSeeder {
         seedPatientAgeClassification();
     }
 
+    private void seedMissionTripInformation() {
+        //mission countries
+        List<? extends IMissionCountry> missionCountries = missionCountryRepository.findAll(MissionCountry.class);
+        List<MissionCountry> newMissionCountries = new ArrayList<>();
+        MissionCountry missionCountry;
+        if (missionCountries != null && !containMissionCountry(missionCountries, "Haiti")) {
+            missionCountry = new MissionCountry();
+            missionCountry.setName("Haiti");
+            newMissionCountries.add(missionCountry);
+        }
+        if (missionCountries != null && !containMissionCountry(missionCountries, "Ecuador")) {
+            missionCountry = new MissionCountry();
+            missionCountry.setName("Ecuador");
+            newMissionCountries.add(missionCountry);
+        }
+        if (missionCountries != null && !containMissionCountry(missionCountries, "USA")) {
+            missionCountry = new MissionCountry();
+            missionCountry.setName("USA");
+            newMissionCountries.add(missionCountry);
+        }
+        missionCountryRepository.createAll(newMissionCountries);
+        missionCountries = missionCountryRepository.findAll(MissionCountry.class);
+
+        //mission teams
+        List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
+        List<MissionTeam> newMissionTeams = new ArrayList<>();
+        MissionTeam missionTeam;
+        if (missionTeams != null && !containMissionTeam(missionTeams, "Aid for Haiti"))
+        {
+            missionTeam = new MissionTeam();
+            missionTeam.setName("Aid for Haiti");
+            missionTeam.setLocation("Tennessee");
+            missionTeam.setDescription("Dr. Sutherland's group");
+            newMissionTeams.add(missionTeam);
+        }
+        if (missionTeams != null && !containMissionTeam(missionTeams, "WSU-WHSO"))
+        {
+            missionTeam = new MissionTeam();
+            missionTeam.setName("WSU-WHSO");
+            missionTeam.setLocation("Detroit");
+            missionTeam.setDescription("Wayne State medical students");
+            newMissionTeams.add(missionTeam);
+        }
+        if (missionTeams != null && !containMissionTeam(missionTeams, "ApParent Project"))
+        {
+            missionTeam = new MissionTeam();
+            missionTeam.setName("ApParent Project");
+            missionTeam.setLocation("New York");
+            missionTeam.setDescription("Dr. Parson's group - primarily operates in Port Au Prince");
+            newMissionTeams.add(missionTeam);
+        }
+        missionTeamRepository.createAll(newMissionTeams);
+
+        //countries
+        List<? extends IMissionCity> missionCities = missionCityRepository.findAll(MissionCity.class);
+        List<MissionCity> newMissionCities = new ArrayList<>();
+
+        MissionCity missionCity;
+        if (missionCities != null && !containMissionCity(missionCities, "Morne De L' Hopital", "Haiti")){
+            missionCity = new MissionCity();
+            missionCity.setName("Morne De L' Hopital");
+            missionCity.setMissionCountry(getMissionCountry(missionCountries, "Haiti"));
+            newMissionCities.add(missionCity);
+        }
+        if (missionCities != null && !containMissionCity(missionCities, "Port-au-Prince", "Haiti")){
+            missionCity = new MissionCity();
+            missionCity.setName("Port-au-Prince");
+            missionCity.setMissionCountry(getMissionCountry(missionCountries, "Haiti"));
+            newMissionCities.add(missionCity);
+        }
+        missionCityRepository.createAll(newMissionCities);
+
+    }
+
     private void seedPatientAgeClassification() {
         //sort order auto increments
         List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.findAll(PatientAgeClassification.class);
 
         List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
         PatientAgeClassification patientAgeClassification;
-        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")) {
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("infant");
             patientAgeClassification.setDescription("0-1");
@@ -81,7 +163,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setSortOrder(1);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")) {
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("child");
             patientAgeClassification.setDescription("2-12");
@@ -89,7 +171,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setSortOrder(2);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")) {
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("teen");
             patientAgeClassification.setDescription("13-17");
@@ -97,7 +179,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setSortOrder(3);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")) {
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("adult");
             patientAgeClassification.setDescription("18-64");
@@ -105,7 +187,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setSortOrder(4);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")){
+        if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")) {
             patientAgeClassification = new PatientAgeClassification();
             patientAgeClassification.setName("elder");
             patientAgeClassification.setDescription("65+");
@@ -326,6 +408,42 @@ public class DatabaseSeeder {
             systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }
+    }
+
+    private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries, String countryName) {
+        for (IMissionCountry mc : missionCountries) {
+            if (mc.getName().toLowerCase().equals(countryName.toLowerCase())) {
+                return mc;
+            }
+        }
+        return null;
+    }
+
+    private static boolean containMissionCity(List<? extends IMissionCity> missionCities, String cityName, String countryName) {
+        for (IMissionCity mc : missionCities) {
+            if (mc.getName().toLowerCase().equals(cityName.toLowerCase()) && mc.getMissionCountry().getName().toLowerCase().equals(countryName.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containMissionTeam(List<? extends IMissionTeam> missionTeams, String name) {
+        for (IMissionTeam mt : missionTeams) {
+            if (mt.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containMissionCountry(List<? extends IMissionCountry> missionCountries, String name) {
+        for (IMissionCountry mc : missionCountries) {
+            if (mc.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean containClassification(List<? extends IPatientAgeClassification> ageClassifications, String name) {
@@ -610,7 +728,7 @@ public class DatabaseSeeder {
             userRepository.create(adminUser);
 
             //SuperUser is currently only used for managing dynamic tabs on the medical page
-            //SuperUser is a "backdoor" account that gives access to important configuration
+            //SuperUser is an account that gives access to important configuration
             //settings
             User superUser = new User();
             String encryptedSuperUserPassword = encryptor.encryptPassword("wsu1f8e6m8r");

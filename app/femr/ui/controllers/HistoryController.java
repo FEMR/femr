@@ -1,11 +1,14 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.services.*;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
+import femr.business.services.core.IEncounterService;
+import femr.business.services.core.IPhotoService;
+import femr.business.services.core.ISearchService;
+import femr.business.services.core.ISessionService;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.models.*;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.history.IndexEncounterMedicalViewModel;
@@ -29,19 +32,21 @@ import play.mvc.Security;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class HistoryController extends Controller {
-    private ISessionService sessionService;
-    private ISearchService searchService;
-    private IPharmacyService pharmacyService;
-    private IPhotoService photoService;
+
+    private final IEncounterService encounterService;
+    private final ISessionService sessionService;
+    private final ISearchService searchService;
+    private final IPhotoService photoService;
 
     @Inject
-    public HistoryController(ISessionService sessionService,
+    public HistoryController(IEncounterService encounterService,
+                             ISessionService sessionService,
                              ISearchService searchService,
-                             IPharmacyService pharmacyService,
                              IPhotoService photoService) {
+
+        this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;
-        this.pharmacyService = pharmacyService;
         this.photoService = photoService;
     }
 
@@ -166,7 +171,7 @@ public class HistoryController extends Controller {
 
         //get problems
         List<String> problems = new ArrayList<>();
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = pharmacyService.findProblemItems(encounterId);
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(encounterId);
         if (problemItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }

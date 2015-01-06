@@ -20,10 +20,8 @@ package femr.data.models.mysql;
 
 import femr.data.models.core.IMissionTeam;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "mission_teams")
@@ -37,6 +35,9 @@ public class MissionTeam implements IMissionTeam {
     private String location;
     @Column(name = "description", unique = true, nullable = false)
     private String description;
+    @OneToMany(fetch = FetchType.LAZY,
+            mappedBy = "missionTeam")
+    private List<MissionTrip> missionTrips;
 
     @Override
     public int getId() {
@@ -71,5 +72,15 @@ public class MissionTeam implements IMissionTeam {
     @Override
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public List<MissionTrip> getMissionTrips() {
+        return missionTrips;
+    }
+
+    @Override
+    public void setMissionTrips(List<MissionTrip> missionTrips) {
+        this.missionTrips = missionTrips;
     }
 }

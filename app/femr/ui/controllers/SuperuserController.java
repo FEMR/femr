@@ -22,11 +22,9 @@ import com.google.inject.Inject;
 import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.TabFieldItem;
-import femr.common.models.TabItem;
+import femr.common.models.*;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.ICustomTabService;
-import femr.common.models.TripItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -48,7 +46,7 @@ import java.util.List;
 public class SuperuserController extends Controller {
     private final Form<TabsViewModelPost> TabsViewModelForm = Form.form(TabsViewModelPost.class);
     private final Form<ContentViewModelPost> ContentViewModelForm = Form.form(ContentViewModelPost.class);
-    private Form<TripViewModel> tripViewModelForm = Form.form(TripViewModel.class);
+    private Form<TripViewModelPost> tripViewModelPostForm = Form.form(TripViewModelPost.class);
     private final ICustomTabService customTabService;
     private final IMissionTripService missionTripService;
     private final ISessionService sessionService;
@@ -57,6 +55,7 @@ public class SuperuserController extends Controller {
     public SuperuserController(ICustomTabService customTabService,
                                IMissionTripService missionTripService,
                                ISessionService sessionService) {
+
         this.customTabService = customTabService;
         this.missionTripService = missionTripService;
         this.sessionService = sessionService;
@@ -67,52 +66,92 @@ public class SuperuserController extends Controller {
         return ok(index.render(currentUser));
     }
 
-    public Result tripsGet(){
+    public Result tripsGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        ServiceResponse<TripItem> currentMissionTripServiceResponse = missionTripService.findCurrentMissionTrip();
-        if (currentMissionTripServiceResponse.getResponseObject() == null){
-            //either a trip doesnt exist or more than one exists
-        }else{
-            //a trip exists
-            TripViewModel tripViewModel = new TripViewModel();
-            TripItem tripItem = currentMissionTripServiceResponse.getResponseObject();
-            tripViewModel.setTeam(tripItem.getTeam());
-            tripViewModel.setTeamLocation(tripItem.getTeamLocation());
-            tripViewModel.setCity(tripItem.getCity());
-            tripViewModel.setCountry(tripItem.getCountry());
-            tripViewModel.setDescription(tripItem.getDescription());
-            tripViewModel.setStartDate(tripItem.getTripStartDate());
-            tripViewModel.setEndDate(tripItem.getTripEndDate());
-            tripViewModelForm = tripViewModelForm.fill(tripViewModel);
-        }
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.findAllTripInformation();
+        if (missionItemServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.findAvailableTeams();
+        if (availableTeamsServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.findAvailableCities();
+        if (availableCitiesServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.findAvailableCountries();
+        if (availableCountriesServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        TripViewModelGet tripViewModel = new TripViewModelGet();
+        tripViewModel.setMissionItems(missionItemServiceResponse.getResponseObject());
+        tripViewModel.setAvailableTeams(availableTeamsServiceResponse.getResponseObject());
+        tripViewModel.setAvailableCities(availableCitiesServiceResponse.getResponseObject());
+        tripViewModel.setAvailableCountries(availableCountriesServiceResponse.getResponseObject());
 
 
-        return ok(trips.render(currentUser, tripViewModelForm));
+        return ok(trips.render(currentUser, tripViewModel));
     }
 
-    public Result tripsPost(){
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
-        Form<TripViewModel> form = tripViewModelForm.bindFromRequest();
-        if (form.hasErrors()){
+    public Result toggleCurrentTripPost(int tripId) {
 
-            return badRequest(trips.render(currentUser, form));
-        }else{
-            TripViewModel tripViewModel = form.bindFromRequest().get();
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        ServiceResponse<TripItem> tripItemUpdateServiceResponse = missionTripService.updateCurrentTrip(tripId);
+        if (tripItemUpdateServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        return ok(index.render(currentUser));
+    }
+
+    public Result tripsPost() {
+
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
+
+        //creating a new team or trip or city-
+
+        //Create a new city if the user has entered the city and country
+        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCity()) &&
+                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCityCountry())) {
+
+            ServiceResponse<CityItem> newCityServiceResponse = missionTripService.createNewCity(tripViewModelPost.getNewCity(), tripViewModelPost.getNewCityCountry());
+            if (newCityServiceResponse.hasErrors())
+                throw new RuntimeException();
+        }
+
+        //Create a new team if the user has entered a team name
+        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTeamName())) {
+
+            TeamItem teamItem = new TeamItem();
+            teamItem.setName(tripViewModelPost.getNewTeamName());
+            teamItem.setLocation(tripViewModelPost.getNewTeamLocation());
+            teamItem.setDescription(tripViewModelPost.getNewTeamDescription());
+            ServiceResponse<TeamItem> newTeamItemServiceResponse = missionTripService.createNewTeam(teamItem);
+            if (newTeamItemServiceResponse.hasErrors())
+                throw new RuntimeException();
+
+        }
+
+        //create a new trip if the user has entered the information
+        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripTeamName()) &&
+                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCountry()) &&
+                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCity()) &&
+                tripViewModelPost.getNewTripStartDate() != null &&
+                tripViewModelPost.getNewTripEndDate() != null) {
 
             TripItem tripItem = new TripItem();
-            tripItem.setCity(tripViewModel.getCity());
-            tripItem.setCountry(tripViewModel.getCountry());
-            tripItem.setTeam(tripViewModel.getTeam());
-            tripItem.setTeamLocation(tripViewModel.getTeamLocation());
-            tripItem.setDescription(tripViewModel.getDescription());
-            tripItem.setTripStartDate(tripViewModel.getStartDate());
-            tripItem.setTripEndDate(tripViewModel.getEndDate());
-
-            ServiceResponse<TripItem> tripItemServiceResponse = missionTripService.updateTrip(tripItem);
-            if (tripItemServiceResponse.hasErrors()){
+            tripItem.setTeamName(tripViewModelPost.getNewTripTeamName());
+            tripItem.setTripCity(tripViewModelPost.getNewTripCity());
+            tripItem.setTripCountry(tripViewModelPost.getNewTripCountry());
+            tripItem.setTripStartDate(tripViewModelPost.getNewTripStartDate());
+            tripItem.setTripEndDate(tripViewModelPost.getNewTripEndDate());
+            ServiceResponse<TripItem> newTripItemServiceResponse = missionTripService.createNewTrip(tripItem);
+            if (newTripItemServiceResponse.hasErrors())
                 throw new RuntimeException();
-            }
         }
 
         return ok(index.render(currentUser));
@@ -252,17 +291,6 @@ public class SuperuserController extends Controller {
         }
 
         return redirect("/superuser/tabs/" + name);
-    }
-
-    public Result typeaheadJSONGet() {
-
-        /*ServiceResponse<String> medicationServiceResponse = typeaheadService.getTripInformation();
-        if (medicationServiceResponse.hasErrors()){
-
-        }
-
-        return ok(medicationServiceResponse.getResponseObject());*/
-        return ok("");
     }
 
 }

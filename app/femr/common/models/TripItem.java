@@ -3,44 +3,34 @@ package femr.common.models;
 import java.util.Date;
 
 public class TripItem {
-    private String team;
-    private String teamLocation;
-    private String city;
-    private String country;
-    private String description;
+    private String teamName;
+    private String tripCity;
+    private String tripCountry;
     private Date tripStartDate;
     private Date tripEndDate;
 
-    public String getTeam() {
-        return team;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setTeam(String team) {
-        this.team = team;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
-    public String getCity() {
-        return city;
+    public String getTripCity() {
+        return tripCity;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setTripCity(String tripCity) {
+        this.tripCity = tripCity;
     }
 
-    public String getCountry() {
-        return country;
+    public String getTripCountry() {
+        return tripCountry;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTripCountry(String tripCountry) {
+        this.tripCountry = tripCountry;
     }
 
     public Date getTripStartDate() {
@@ -57,13 +47,5 @@ public class TripItem {
 
     public void setTripEndDate(Date tripEndDate) {
         this.tripEndDate = tripEndDate;
-    }
-
-    public String getTeamLocation() {
-        return teamLocation;
-    }
-
-    public void setTeamLocation(String teamLocation) {
-        this.teamLocation = teamLocation;
     }
 }

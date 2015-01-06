@@ -67,13 +67,17 @@ public class dateUtils {
         return result/12;
     }
 
-
     public static String getFriendlyDate(DateTime dateTime){
+        if (dateTime == null)
+            return null;
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - HH:mm:ss");
         String dtStr = dateTime.toString(fmt);
         return dtStr;
     }
+
     public static String getFriendlyDate(Date date){
+        if (date == null)
+            return null;
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         String dStr = df.format(date);
         return dStr;

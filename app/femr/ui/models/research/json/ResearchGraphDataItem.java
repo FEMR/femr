@@ -1,9 +1,11 @@
-package femr.common.models;
+package femr.ui.models.research.json;
+
+import femr.common.models.ResearchItem;
 
 import java.util.List;
 import java.util.Map;
 
-
+//technically shared in the service layer right now
 public class ResearchGraphDataItem {
 
     private float average;

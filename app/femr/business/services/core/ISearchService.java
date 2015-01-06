@@ -129,4 +129,11 @@ public interface ISearchService {
      * @return list of their names
      */
     ServiceResponse<List<String>> getCustomFieldList();
+
+    /**
+     * Get all patient information for searching users.
+     *
+     * @return patient item for json serialization
+     */
+    ServiceResponse<List<PatientItem>> findPatientsForSearch();
 }

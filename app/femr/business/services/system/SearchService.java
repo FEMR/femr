@@ -522,5 +522,27 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PatientItem>> findPatientsForSearch() {
+        ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
+
+        try {
+            List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
+            List<PatientItem> patientItems = new ArrayList<>();
+            for (int patientIndex = 0; patientIndex < allPatients.size(); patientIndex++) {
+                patientItems.add(DomainMapper.createPatientItem(allPatients.get(patientIndex), null, null, null, null));
+            }
+
+
+            response.setResponseObject(patientItems);
+
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+        return response;
+    }
 
 }

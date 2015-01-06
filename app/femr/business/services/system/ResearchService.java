@@ -20,12 +20,12 @@ package femr.business.services.system;
 
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import femr.business.services.core.IResearchService;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.ui.models.research.json.ResearchGraphDataItem;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Medication;

@@ -78,91 +78,56 @@ $(document).ready(function () {
     /* Search typeahead */
     if( $("#patientSearchContainer").length > 0 ) {
 
-        var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-            'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-            'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-            'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-            'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-            'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-            'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-            'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-            'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-        ];
+        var patient_data = [];
 
-        // Get Patients from server later
-        var data = [
-            {
-                patientId: 1,
-                firstName: "Test",
-                lastName: "Patient",
-                photo: "/photo/patient/1?showDefault=false"
-            },
-            {
-                patientId: 2,
-                firstName: "Test 2",
-                lastName: "Patient 2",
-                photo: "/photo/patient/1?showDefault=false"
-            }
-        ];
+        // Get Patients from server
+        $.getJSON("/search/typeahead/patients", function (data) {
 
+            patient_data = data;
 
-        var patients = new Bloodhound({
-            datumTokenizer: function (d) {
-                return Bloodhound.tokenizers.whitespace(d.firstName);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: data, //'../data/films/post_1960.json',
-            remote: data //'../data/films/queries/%QUERY.json'
-            /*
-            remote: {
-                url: 'Search.aspx/searchStaffByName',
-                replace: function (url, query) {
-                    searchQuery = query;
-                    return url;
+            console.log(patient_data);
+
+            var patients = new Bloodhound({
+                datumTokenizer: function (d) {
+                    // tokenize the fields that will need to be searched
+                    return Bloodhound.tokenizers.whitespace(d.firstName, d.lastName);
                 },
-                ajax: {
-                    beforeSend: function (jqXhr, settings) {
-                        settings.data = JSON.stringify({
-                            q: searchQuery
-                        });
-                        jqXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                    },
-                    dataFilter: function (data, type) {
-                        if (type === "json") {
-                            data = $.parseJSON(data);
-                            if (typeof data.d === 'object' && data.d.Count > 0) {
-                                return data.d.Records;
-                            }
-                        }
-                    },
-                    type: 'POST'
-                }
-            }
-             */
-        });
-        patients.initialize();
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: patient_data,
+                limit: 30
+            });
+            patients.initialize();
 
-        // <img src="/photo/patient/1?showDefault=false" height="90" width="90">
 
-        //initalize typeahead
-        $("#patientSearchContainer .patientSearch").typeahead(null, {
-            name: 'patients',
-            displayKey: 'firstName',
-            source: patients.ttAdapter(),
-            matcher: function (item) {
-                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                    return true;
+            var typeahead_options = {
+
+                highlight: true
+
+            };
+
+            //initalize typeahead
+            $("#patientSearchContainer").find(".patientSearch").typeahead(typeahead_options, {
+                name: 'patients',
+                displayKey: 'firstName',
+                source: patients.ttAdapter(),
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                templates: {
+                    empty: [
+                        '<div class="emptyMessage">',
+                        'No matching patients found',
+                        '</div>'
+                    ].join('\n'),
+                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">' +
+                        '<img class="photo" src="{{photo}}" height="80" width="80">' +
+                        '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
+                        '<span class="age">{{age}}</span>' +
+                        '</a></p>')
                 }
-            },
-            templates: {
-                empty: [
-                    '<div class="empty-message">',
-                    'unable to find any Patients that match the current query',
-                    '</div>'
-                ].join('\n'),
-                suggestion: Handlebars.compile('<p>template: <strong>{{firstName}} {{lastName}}</strong> – ' +
-                    '<img src="{{photo}}" height="20" width="20"></p>')
-            }
+            });
         });
 
     }

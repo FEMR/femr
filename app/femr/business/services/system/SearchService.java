@@ -533,7 +533,19 @@ public class SearchService implements ISearchService {
             List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
             List<PatientItem> patientItems = new ArrayList<>();
             for (int patientIndex = 0; patientIndex < allPatients.size(); patientIndex++) {
-                patientItems.add(DomainMapper.createPatientItem(allPatients.get(patientIndex), null, null, null, null));
+
+                PatientItem currPatient = DomainMapper.createPatientItem(allPatients.get(patientIndex), null, null, null, null);
+
+                if (allPatients.get(patientIndex).getPhoto() != null) {
+                    currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
+                }
+                else{
+                    // If no photo for patient, show default
+                    currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=true");
+                }
+
+                patientItems.add(currPatient);
+
             }
 
 

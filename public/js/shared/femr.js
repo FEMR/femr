@@ -85,12 +85,31 @@ $(document).ready(function () {
 
             patient_data = data;
 
-            console.log(patient_data);
+            //console.log(patient_data);
 
             var patients = new Bloodhound({
+                /*
                 datumTokenizer: function (d) {
                     // tokenize the fields that will need to be searched
-                    return Bloodhound.tokenizers.whitespace(d.firstName, d.lastName);
+                    return Bloodhound.tokenizers.whitespace(d.firstName);
+                },
+                */
+                datumTokenizer: function(d) {
+
+                    // break apart first/last name into separate words
+                    var words = Bloodhound.tokenizers.whitespace(d.firstName+" "+d.lastName);
+
+                    // make all possible substring words
+                    // Original Word: Name
+                    // Add  ame, me, e to the list also
+                    $.each(words,function(k,v){
+                        var i = 0;
+                        while( (i+1) < v.length ){
+                            words.push(v.substr(i,v.length));
+                            i++;
+                        }
+                    });
+                    return words;
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 local: patient_data,
@@ -98,11 +117,9 @@ $(document).ready(function () {
             });
             patients.initialize();
 
-
             var typeahead_options = {
 
                 highlight: true
-
             };
 
             //initalize typeahead
@@ -129,10 +146,7 @@ $(document).ready(function () {
                 }
             });
         });
-
     }
-
-
 });
 
 /*

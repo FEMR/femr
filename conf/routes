@@ -35,6 +35,7 @@ GET         /history/patient/:query          @femr.ui.controllers.HistoryControl
 #Search
 GET         /search/:page                    @femr.ui.controllers.SearchController.handleSearch(page: String)
 GET         /search/check/:query             @femr.ui.controllers.SearchController.doesPatientExist(query: String)
+GET         /search/typeahead/patients                 @femr.ui.controllers.SearchController.typeaheadPatientsJSONGet()
 #Photo
 GET         /photo/patient/:id               @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /photo/encounter/:id             @femr.ui.controllers.PhotoController.GetPhoto(id: Int)
@@ -62,6 +63,7 @@ POST        /login/reset                     @femr.ui.controllers.SessionsContro
 POST        /login                           @femr.ui.controllers.SessionsController.createPost()
 GET         /login                           @femr.ui.controllers.SessionsController.createGet()
 
+#Home
 GET         /                                @femr.ui.controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path

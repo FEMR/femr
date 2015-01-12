@@ -74,6 +74,65 @@ $(document).ready(function () {
         }
         return isValid;
     });
+
+    /* Search typeahead */
+    if( $("#patientSearchContainer").length > 0 ) {
+
+        var patient_data = [];
+
+        // Get Patients from server
+        $.getJSON("/search/typeahead/patients", function (data) {
+
+            patient_data = data;
+
+            console.log(patient_data);
+
+            var patients = new Bloodhound({
+                datumTokenizer: function (d) {
+                    // tokenize the fields that will need to be searched
+                    return Bloodhound.tokenizers.whitespace(d.firstName, d.lastName);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: patient_data,
+                limit: 30
+            });
+            patients.initialize();
+
+
+            var typeahead_options = {
+
+                highlight: true
+
+            };
+
+            //initalize typeahead
+            $("#patientSearchContainer").find(".patientSearch").typeahead(typeahead_options, {
+                name: 'patients',
+                displayKey: 'firstName',
+                source: patients.ttAdapter(),
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                templates: {
+                    empty: [
+                        '<div class="emptyMessage">',
+                        'No matching patients found',
+                        '</div>'
+                    ].join('\n'),
+                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">'+
+                            '<img class="photo" src="{{photo}}" height="80" width="80">' +
+                            '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
+                            '<span class="age">{{age}}</span>' +
+                            '</a></p>')
+                }
+            });
+        });
+
+    }
+
+
 });
 
 /*

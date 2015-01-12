@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
-import femr.common.models.ResearchGraphDataItem;
+import femr.ui.models.research.json.ResearchGraphDataItem;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
 import femr.business.services.core.ISessionService;

@@ -20,6 +20,8 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.ui.models.research.json.ResearchGraphDataItem;
+
 import java.util.Map;
 
 /**

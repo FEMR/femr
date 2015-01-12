@@ -522,5 +522,39 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PatientItem>> findPatientsForSearch() {
+        ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
+
+        try {
+            List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
+            List<PatientItem> patientItems = new ArrayList<>();
+            for (int patientIndex = 0; patientIndex < allPatients.size(); patientIndex++) {
+
+                PatientItem currPatient = DomainMapper.createPatientItem(allPatients.get(patientIndex), null, null, null, null);
+
+                if (allPatients.get(patientIndex).getPhoto() != null) {
+                    currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
+                }
+                else{
+                    // If no photo for patient, show default
+                    currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=true");
+                }
+
+                patientItems.add(currPatient);
+
+            }
+
+
+            response.setResponseObject(patientItems);
+
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+        return response;
+    }
 
 }

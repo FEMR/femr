@@ -2,7 +2,7 @@ package mock.femr.business.services;
 
 import femr.common.dto.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
-import femr.common.models.ResearchGraphDataItem;
+import femr.ui.models.research.json.ResearchGraphDataItem;
 
 
 public class MockResearchService {

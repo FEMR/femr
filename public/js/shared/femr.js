@@ -121,11 +121,11 @@ $(document).ready(function () {
                         'No matching patients found',
                         '</div>'
                     ].join('\n'),
-                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">' +
-                        '<img class="photo" src="{{photo}}" height="80" width="80">' +
-                        '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
-                        '<span class="age">{{age}}</span>' +
-                        '</a></p>')
+                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">'+
+                            '<img class="photo" src="{{photo}}" height="80" width="80">' +
+                            '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
+                            '<span class="age">{{age}}</span>' +
+                            '</a></p>')
                 }
             });
         });

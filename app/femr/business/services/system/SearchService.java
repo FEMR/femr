@@ -38,6 +38,8 @@ import femr.util.stringhelpers.StringUtils;
 import java.util.*;
 
 public class SearchService implements ISearchService {
+
+    private final IRepository<IDiagnosis> diagnosisRepository;
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
@@ -50,7 +52,8 @@ public class SearchService implements ISearchService {
     private final DomainMapper domainMapper;
 
     @Inject
-    public SearchService(IRepository<IMedication> medicationRepository,
+    public SearchService(IRepository<IDiagnosis> diagnosisRepository,
+                         IRepository<IMedication> medicationRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
@@ -61,6 +64,7 @@ public class SearchService implements ISearchService {
                          IRepository<ITabField> tabFieldRepository,
                          DomainMapper domainMapper) {
 
+        this.diagnosisRepository = diagnosisRepository;
         this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -532,14 +536,13 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (int patientIndex = 0; patientIndex < allPatients.size(); patientIndex++) {
+            for (IPatient allPatient : allPatients) {
 
-                PatientItem currPatient = DomainMapper.createPatientItem(allPatients.get(patientIndex), null, null, null, null);
+                PatientItem currPatient = DomainMapper.createPatientItem(allPatient, null, null, null, null);
 
-                if (allPatients.get(patientIndex).getPhoto() != null) {
+                if (allPatient.getPhoto() != null) {
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
-                }
-                else{
+                } else {
                     // If no photo for patient, show default
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=true");
                 }
@@ -554,6 +557,32 @@ public class SearchService implements ISearchService {
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<String>> findDiagnosisForSearch() {
+
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        try {
+
+            List<? extends IDiagnosis> allDiagnoses = diagnosisRepository.findAll(Diagnosis.class);
+            List<String> diagnoses = new ArrayList<>();
+
+            for (IDiagnosis d : allDiagnoses){
+                if (StringUtils.isNotNullOrWhiteSpace(d.getName()))
+                    diagnoses.add(d.getName());
+            }
+
+            response.setResponseObject(diagnoses);
+
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
         return response;
     }
 

@@ -565,7 +565,7 @@ input[style] {
 
 #patientSearchContainer{
 
-    width: 50%;
+    width: 100%;
     position: relative;
     text-align: left;
 }

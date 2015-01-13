@@ -113,4 +113,13 @@ public class SearchController extends Controller {
 
         return ok(new Gson().toJson(patientSearches));
     }
+
+    public Result typeaheadDiagnosisJSONGet(){
+
+        ServiceResponse<List<String>> allDiagnosesServiceResponse = searchService.findDiagnosisForSearch();
+        if (allDiagnosesServiceResponse.hasErrors())
+            return ok("");
+
+        return ok(new Gson().toJson(allDiagnosesServiceResponse.getResponseObject()));
+    }
 }

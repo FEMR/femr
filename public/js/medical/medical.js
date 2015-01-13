@@ -110,6 +110,13 @@ var multipleChiefComplaintFeature = {
 
 
 $(document).ready(function () {
+
+    // GET DIAGNOSES
+    $.getJSON("/search/typeahead/diagnoses", function (data) {
+        console.log(data);
+    });
+
+
     //set a global variable to track browser compatibility with image previews
     window.isFileReader = typeof FileReader !== 'undefined';
 

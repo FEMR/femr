@@ -249,6 +249,15 @@ $(document).ready(function () {
         }
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
+
+
+    $("input.problem").each(function(){
+
+        //if( !$(this).hasClass("hidden") ) {
+            registerTypeAhead(this);
+        //}
+    });
+
 });
 
 function JSONifyDynamicFields() {
@@ -315,7 +324,8 @@ function getNumberOfFilledScripts() {
 function getNumberOfProblems() {
     var x = 0;
     $('.problem').each(function () {
-        if ($(this).attr("readonly")) {
+        //if ($(this).attr("readonly")) {
+        if (!$(this).hasClass("hidden")) {
             x++;
         }
     });
@@ -503,6 +513,58 @@ function photoNameFixup() {
     });
 
     return true;
+}
+
+
+function registerTypeAhead(obj){
+
+
+    var substringMatcher = function(strs) {
+        return function findMatches(q, cb) {
+            var matches, substrRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function(i, str) {
+                if (substrRegex.test(str)) {
+                    // the typeahead jQuery plugin expects suggestions to a
+                    // JavaScript object, refer to typeahead docs for more info
+                    matches.push({ value: str });
+                }
+            });
+
+            cb(matches);
+        };
+    };
+
+
+    var diagnoses = [];
+
+    // Get Patients from server
+    //$.getJSON("/search/typeahead/patients", function (data) {
+
+        //diagnoses = data;
+        diagnoses = ["test1", "test2", "test3"];
+
+        $(obj).typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'dianoses',
+            displayKey: 'value',
+            source: substringMatcher(diagnoses)
+        });
+
+
+    //});
 }
 
 

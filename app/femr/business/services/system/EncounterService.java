@@ -24,6 +24,8 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
+import femr.business.services.core.IMissionTripService;
+import femr.business.services.core.IUserService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.ProblemItem;
@@ -42,6 +44,7 @@ import java.util.Map;
 
 public class EncounterService implements IEncounterService {
 
+    private IMissionTripService missionTripService;
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
@@ -51,7 +54,8 @@ public class EncounterService implements IEncounterService {
     private final DomainMapper domainMapper;
 
     @Inject
-    public EncounterService(IRepository<IChiefComplaint> chiefComplaintRepository,
+    public EncounterService(IMissionTripService missionTripService,
+                            IRepository<IChiefComplaint> chiefComplaintRepository,
                             IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                             IRepository<IPatientEncounter> patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
@@ -59,6 +63,7 @@ public class EncounterService implements IEncounterService {
                             IRepository<IUser> userRepository,
                             DomainMapper domainMapper){
 
+        this.missionTripService = missionTripService;
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.patientEncounterRepository = patientEncounterRepository;
@@ -96,7 +101,13 @@ public class EncounterService implements IEncounterService {
             if (patientAgeClassification != null)
                 patientAgeClassificationId = patientAgeClassification.getId();
 
-            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, nurseUser.getId(), patientAgeClassificationId);
+            //find the current trip, if one exists
+            IMissionTrip missionTrip = missionTripService.findCurrentMissionTrip();
+            Integer missionTripId = null;
+            if (missionTrip != null)
+                missionTripId = missionTrip.getId();
+
+            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, nurseUser.getId(), patientAgeClassificationId, missionTripId);
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
 
             List<IChiefComplaint> chiefComplaints = new ArrayList<>();

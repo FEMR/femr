@@ -16,28 +16,26 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.core;
+package femr.common.models;
 
-import femr.data.models.mysql.MissionTrip;
+public class CityItem {
 
-import java.util.List;
+    private String cityName;
+    private String countryName;
 
-public interface IMissionTeam {
-    int getId();
+    public String getCityName() {
+        return cityName;
+    }
 
-    String getName();
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 
-    void setName(String name);
+    public String getCountryName() {
+        return countryName;
+    }
 
-    String getLocation();
-
-    void setLocation(String location);
-
-    String getDescription();
-
-    void setDescription(String description);
-
-    List<MissionTrip> getMissionTrips();
-
-    void setMissionTrips(List<MissionTrip> missionTrips);
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
 }

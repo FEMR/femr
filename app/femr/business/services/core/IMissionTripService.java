@@ -19,7 +19,11 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.CityItem;
+import femr.common.models.MissionItem;
+import femr.common.models.TeamItem;
 import femr.common.models.TripItem;
+import femr.data.models.core.IMissionTrip;
 
 import java.util.List;
 
@@ -28,7 +32,7 @@ public interface IMissionTripService {
      * Retrieve the current trip information
      * @return the current trip or an error if one doesn't exist
      */
-    ServiceResponse<TripItem> findCurrentMissionTrip();
+    IMissionTrip findCurrentMissionTrip();
 
     /**
      * Retrieve a list of the teams that are already in the database
@@ -38,9 +42,9 @@ public interface IMissionTripService {
 
     /**
      * Retrieve a list of the cities that are already in the database
-     * @return a list of cities
+     * @return a list of cities with respective country
      */
-    ServiceResponse<List<String>> findAvailableCities();
+    ServiceResponse<List<CityItem>> findAvailableCities();
 
     /**
      * Retrieve a list of the countries that are already in the database
@@ -49,20 +53,41 @@ public interface IMissionTripService {
     ServiceResponse<List<String>> findAvailableCountries();
 
     /**
-     * Given a trip item, do:
-     * <ul>
-     * <li>Nothing if the current trip is the same as tripItem</li>
-     * <li>Create new teams, cities, countries as needed</li>
-     * <li>If something new is created (other than description), creates a new current trip</li>
-     * </ul>
-     * @return
+     * Get all available team and trip information
+     *
+     * @return all mission teams with their respective trips
      */
-    ServiceResponse<TripItem> updateTrip(TripItem tripItem);
+    ServiceResponse<List<MissionItem>> findAllTripInformation();
 
     /**
-     * Get a JSON string representing trip information
+     * Create a new team
      *
+     * @param teamItem the name is required
      * @return
      */
-    ServiceResponse<String> getTripInformation();
+    ServiceResponse<TeamItem> createNewTeam(TeamItem teamItem);
+
+    /**
+     * Create a new trip
+     *
+     * @param tripItem everything except end date required
+     * @return
+     */
+    ServiceResponse<TripItem> createNewTrip(TripItem tripItem);
+
+    /**
+     * Create a new city
+     * @param cityName name of the city
+     * @param countryName name of the country
+     * @return name of the created city
+     */
+    ServiceResponse<CityItem> createNewCity(String cityName, String countryName);
+
+    /**
+     * Mark a trip as current and all others as not current
+     *
+     * @param tripId the id of the trip to mark current
+     * @return the current trip
+     */
+    ServiceResponse<TripItem> updateCurrentTrip(int tripId);
 }

@@ -31,13 +31,13 @@ import play.libs.F.*;
 import static play.mvc.Results.*;
 import femr.ui.views.html.errors.global;
 
-
 public class Global extends GlobalSettings {
 
     private static final Injector INJECTOR = createInjector();
 
     @Override
     public void onStart(Application app) {
+
         super.onStart(app);
         new DatabaseSeeder().seed();
     }

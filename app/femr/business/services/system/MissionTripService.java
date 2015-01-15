@@ -18,14 +18,16 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.SqlUpdate;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.CityItem;
+import femr.common.models.MissionItem;
+import femr.common.models.TeamItem;
 import femr.common.models.TripItem;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IMissionCity;
@@ -36,7 +38,9 @@ import femr.data.models.mysql.MissionCity;
 import femr.data.models.mysql.MissionCountry;
 import femr.data.models.mysql.MissionTeam;
 import femr.data.models.mysql.MissionTrip;
+import femr.util.stringhelpers.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MissionTripService implements IMissionTripService {
@@ -65,31 +69,9 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TripItem> findCurrentMissionTrip() {
+    public IMissionTrip findCurrentMissionTrip() {
 
-        ServiceResponse<TripItem> response = new ServiceResponse<>();
-        IMissionTrip missionTrip = getCurrentMissionTrip();
-
-        if (missionTrip == null) {
-
-            response.setResponseObject(null);
-            //    response.addError("", "there is not a current trip.");
-        } else {
-
-            response.setResponseObject(
-                    DomainMapper.createTripItem(
-                            missionTrip.getMissionTeam().getName(),
-                            missionTrip.getMissionTeam().getLocation(),
-                            missionTrip.getMissionCity().getName(),
-                            missionTrip.getMissionCity().getMissionCountry().getName(),
-                            missionTrip.getMissionTeam().getDescription(),
-                            missionTrip.getStartDate(),
-                            missionTrip.getEndDate()
-                    )
-            );
-        }
-
-        return response;
+        return getCurrentMissionTrip();
     }
 
     /**
@@ -97,7 +79,16 @@ public class MissionTripService implements IMissionTripService {
      */
     @Override
     public ServiceResponse<List<String>> findAvailableTeams() {
+
         ServiceResponse<List<String>> response = new ServiceResponse<>();
+        List<String> teams = new ArrayList<>();
+        Query<MissionTeam> missionTeamQuery = QueryProvider.getMissionTeamQuery()
+                .orderBy("name");
+        List<? extends IMissionTeam> missionTeams = missionTeamRepository.find(missionTeamQuery);
+        for (IMissionTeam mt : missionTeams) {
+            teams.add(mt.getName());
+        }
+        response.setResponseObject(teams);
         return response;
     }
 
@@ -105,9 +96,17 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> findAvailableCities() {
+    public ServiceResponse<List<CityItem>> findAvailableCities() {
 
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
+        ServiceResponse<List<CityItem>> response = new ServiceResponse<>();
+        List<CityItem> cities = new ArrayList<>();
+        Query<MissionCity> missionCityQuery = QueryProvider.getMissionCityQuery()
+                .orderBy("name");
+        List<? extends IMissionCity> missionCities = missionCityRepository.find(missionCityQuery);
+        for (IMissionCity mc : missionCities) {
+            cities.add(DomainMapper.createCityItem(mc.getName(), mc.getMissionCountry().getName()));
+        }
+        response.setResponseObject(cities);
         return response;
     }
 
@@ -118,6 +117,14 @@ public class MissionTripService implements IMissionTripService {
     public ServiceResponse<List<String>> findAvailableCountries() {
 
         ServiceResponse<List<String>> response = new ServiceResponse<>();
+        List<String> countries = new ArrayList<>();
+        Query<MissionCountry> missionCountryQuery = QueryProvider.getMissionCountryQuery()
+                .orderBy("name");
+        List<? extends IMissionCountry> missionCountries = missionCountryRepository.find(missionCountryQuery);
+        for (IMissionCountry mc : missionCountries) {
+            countries.add(mc.getName());
+        }
+        response.setResponseObject(countries);
         return response;
     }
 
@@ -125,106 +132,48 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TripItem> updateTrip(TripItem tripItem) {
-        //ALL COMMENTS IN THIS METHOD ARE IN CAPS AND ANGRY
-        ServiceResponse<TripItem> response = new ServiceResponse<>();
-        boolean isNewTrip = false;
+    public ServiceResponse<List<MissionItem>> findAllTripInformation() {
 
-        //CHECK TRIP COUNTRY
-        IMissionCountry missionCountry = null;
-        ExpressionList<MissionCountry> missionCountryExpressionList = QueryProvider.getMissionCountryQuery()
-                .where()
-                .eq("name", tripItem.getCountry());
+        ServiceResponse<List<MissionItem>> response = new ServiceResponse<>();
+        List<MissionItem> missionItems = new ArrayList<>();
+
         try {
-            missionCountry = missionCountryRepository.findOne(missionCountryExpressionList);
-            if (missionCountry == null) {
-                missionCountry = domainMapper.createMissionCountry(tripItem.getCountry());
-                missionCountry = missionCountryRepository.create(missionCountry);
-                isNewTrip = true;
+            //start by getting all available mission teams. If you start by getting all the trips then
+            //you might miss some teams that don't have a trip, yet.
+            List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
+            for (IMissionTeam missionTeam : missionTeams) {
+                missionItems.add(DomainMapper.createMissionItem(missionTeam));
             }
+
+            response.setResponseObject(missionItems);
         } catch (Exception ex) {
-            response.addError("", "error searching for the country, more than one might exist");
-            return response;
+
+            response.addError("", ex.getMessage());
         }
 
-        //CHECK TRIP CITY
-        IMissionCity missionCity = null;
-        ExpressionList<MissionCity> missionCityExpressionList = QueryProvider.getMissionCityQuery()
-                .where()
-                .eq("name", tripItem.getCity());
-        try {
-            missionCity = missionCityRepository.findOne(missionCityExpressionList);
-            if (missionCity == null || isNewTrip) {
-                missionCity = domainMapper.createMissionCity(tripItem.getCity(), missionCountry);
-                missionCity = missionCityRepository.create(missionCity);
-                isNewTrip = true;
-            }
-        } catch (Exception ex) {
-            response.addError("", "error searching for the city, more than one might exist");
-            return response;
-        }
+        return response;
+    }
 
-        //CHECK TEAM NAME
-        IMissionTeam missionTeam = null;
-        ExpressionList<MissionTeam> missionTeamExpressionList = QueryProvider.getMissionTeamQuery()
-                .where()
-                .eq("name", tripItem.getTeam());
-        try {
-            missionTeam = missionTeamRepository.findOne(missionTeamExpressionList);
-            if (missionTeam == null) {
-                missionTeam = domainMapper.createMissionTeam(tripItem.getTeam(), tripItem.getTeamLocation(), tripItem.getDescription());
-                missionTeam = missionTeamRepository.create(missionTeam);
-                isNewTrip = true;
-            } else {
-                //the team was found, just update the teams description and location
-                missionTeam.setDescription(tripItem.getDescription());
-                missionTeam.setLocation(tripItem.getTeamLocation());
-                missionTeam = missionTeamRepository.update(missionTeam);
-            }
-        } catch (Exception ex) {
-            response.addError("", "error searching for the team, more than one might exist");
-            return response;
-        }
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<TeamItem> createNewTeam(TeamItem teamItem) {
 
-        //CHECK TRIP START AND END DATE
-        ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
-                .where()
-                .eq("mission_team_id", missionTeam.getId())
-                .eq("mission_city_id", missionCity.getId())
-                .eq("start_date", tripItem.getTripStartDate())
-                .eq("end_date", tripItem.getTripEndDate());
-        try {
-            IMissionTrip missionTrip = missionTripRepository.findOne(missionTripExpressionList);
-            if (missionTrip == null) {
-                isNewTrip = true;
-            }
-        } catch (Exception ex) {
-            response.addError("", "error checking start and end dates");
-            return response;
-        }
+        ServiceResponse<TeamItem> response = new ServiceResponse<>();
+        if (teamItem == null || StringUtils.isNullOrWhiteSpace(teamItem.getName())) {
 
-        //CREATE THE NEW TRIP IF NECESSARY, OTHERWISE DON'T
-        if (isNewTrip) {
-            IMissionTrip missionTrip = domainMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), true, missionCity, missionTeam);
-            if (missionTrip == null) {
-                response.addError("", "serious problems are happening now");
-                return response;
-            } else {
-                String setAllTripsToNotCurrent = "UPDATE `mission_trips` SET `isCurrent` = false";
-                SqlUpdate update = Ebean.createSqlUpdate(setAllTripsToNotCurrent);
-                try {
-                    int modifiedCount = Ebean.execute(update);
-                    if (modifiedCount > 0) {
-                        //a current trip was removed
-                    }
-                } catch (Exception ex) {
-                    response.addError("", "error updating current trips");
-                    return response;
-                }
-                missionTrip = missionTripRepository.create(missionTrip);
-            }
+            response.addError("", "team must have a name");
         } else {
-            //do nothing
+
+            try {
+
+                IMissionTeam missionTeam = domainMapper.createMissionTeam(teamItem.getName(), teamItem.getLocation(), teamItem.getDescription());
+                missionTeam = missionTeamRepository.create(missionTeam);
+                response.setResponseObject(DomainMapper.createTeamItem(missionTeam.getName(), missionTeam.getLocation(), missionTeam.getDescription()));
+            } catch (Exception ex) {
+
+                response.addError("", ex.getMessage());
+            }
         }
 
         return response;
@@ -233,10 +182,60 @@ public class MissionTripService implements IMissionTripService {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ServiceResponse<String> getTripInformation(){
+    public ServiceResponse<TripItem> createNewTrip(TripItem tripItem) {
 
-        ServiceResponse<String> response = new ServiceResponse<>();
+        ServiceResponse<TripItem> response = new ServiceResponse<>();
+        if (tripItem == null ||
+                StringUtils.isNullOrWhiteSpace(tripItem.getTeamName()) ||
+                StringUtils.isNullOrWhiteSpace(tripItem.getTripCity()) ||
+                StringUtils.isNullOrWhiteSpace(tripItem.getTripCountry()) ||
+                tripItem.getTripStartDate() == null) {
+            response.addError("", "you're missing required fields, try again");
+        } else {
+            try {
+
+
+                ExpressionList<MissionTeam> missionTeamExpressionList = QueryProvider.getMissionTeamQuery()
+                        .where()
+                        .eq("name", tripItem.getTeamName());
+                IMissionTeam missionTeam = missionTeamRepository.findOne(missionTeamExpressionList);
+
+                ExpressionList<MissionCountry> missionCountryExpressionList = QueryProvider.getMissionCountryQuery()
+                        .where()
+                        .eq("name", tripItem.getTripCountry());
+                IMissionCountry missionCountry = missionCountryRepository.findOne(missionCountryExpressionList);
+
+                if (missionCountry == null) {
+                    //make sure we have a country to work with
+                    response.addError("", "someone sent a bad country in the request");
+                } else if (missionTeam == null) {
+                    //make sure we have a team to work with
+                    response.addError("", "someone sent a bad team name in the request");
+                } else {
+
+                    ExpressionList<MissionCity> missionCityExpressionList = QueryProvider.getMissionCityQuery()
+                            .where()
+                            .eq("name", tripItem.getTripCity())
+                            .eq("missionCountry", missionCountry);
+                    IMissionCity missionCity = missionCityRepository.findOne(missionCityExpressionList);
+
+                    if (missionCity == null) {
+                        //city doesn't exist
+                        missionCity = domainMapper.createMissionCity(tripItem.getTripCity(), missionCountry);
+                        missionCity = missionCityRepository.create(missionCity);
+                    }
+
+
+                    IMissionTrip missionTrip = domainMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), false, missionCity, missionTeam);
+                    missionTrip = missionTripRepository.create(missionTrip);
+                    response.setResponseObject(DomainMapper.createTripItem(missionTrip.getMissionTeam().getName(), missionTrip.getMissionCity().getName(), missionTrip.getMissionCity().getMissionCountry().getName(), missionTrip.getStartDate(), missionTrip.getEndDate()));
+
+                }
+            } catch (Exception ex) {
+
+                response.addError("", ex.getMessage());
+            }
+        }
 
         return response;
     }
@@ -259,5 +258,79 @@ public class MissionTripService implements IMissionTripService {
         }
 
         return missionTrip;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<CityItem> createNewCity(String cityName, String countryName) {
+
+        ServiceResponse<CityItem> response = new ServiceResponse<>();
+
+        ExpressionList<MissionCountry> missionCountryExpressionList = QueryProvider.getMissionCountryQuery()
+                .where()
+                .eq("name", countryName);
+        try {
+
+            IMissionCountry missionCountry = missionCountryRepository.findOne(missionCountryExpressionList);
+            if (missionCountry == null) {
+                response.addError("", "that country does not exist");
+            } else {
+
+                //check for duplicate
+                List<? extends IMissionCity> missionCities = missionCityRepository.findAll(MissionCity.class);
+                boolean isDuplicate = false;
+                for (IMissionCity mc : missionCities){
+                    if (mc.getName().toUpperCase().equals(cityName.toUpperCase())){
+                        isDuplicate = true;
+                        response.addError("", "duplicate city");
+                    }
+                }
+                if (!isDuplicate){
+                    IMissionCity missionCity = domainMapper.createMissionCity(cityName, missionCountry);
+                    missionCity = missionCityRepository.create(missionCity);
+                    response.setResponseObject(DomainMapper.createCityItem(missionCity.getName(), missionCity.getMissionCountry().getName()));
+                }
+            }
+        } catch (Exception ex) {
+
+            response.addError("", "there was an issue saving the city");
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<TripItem> updateCurrentTrip(int tripId) {
+
+        ServiceResponse<TripItem> response = new ServiceResponse<>();
+        ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
+                .where()
+                .eq("id", tripId);
+        try {
+            IMissionTrip missionTrip = missionTripRepository.findOne(missionTripExpressionList);
+            if (missionTrip == null) {
+                response.addError("", "could not find a trip with that id");
+            } else {
+                List<? extends IMissionTrip> allTrips = missionTripRepository.findAll(MissionTrip.class);
+                for (IMissionTrip mt : allTrips) {
+                    if (mt.getId() == missionTrip.getId()) {
+                        mt.setCurrent(true);
+                    } else {
+                        mt.setCurrent(false);
+                    }
+                    missionTripRepository.update(mt);
+                    response.setResponseObject(DomainMapper.createTripItem(mt.getMissionTeam().getName(), mt.getMissionCity().getName(), mt.getMissionCity().getMissionCountry().getName(), mt.getStartDate(), mt.getEndDate()));
+                }
+            }
+
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
     }
 }

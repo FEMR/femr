@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 import javax.inject.Provider;
 
 import femr.common.models.*;
-import femr.data.models.*;
 import femr.ui.models.research.FilterViewModel;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
@@ -193,25 +192,51 @@ public class DomainMapper {
     }
 
     /**
-     * Create a trip item
+     * Creates a trip item
      *
-     * @param teamName    name of the team
-     * @param cityName    name of the city that the team is working in
-     * @param countryName name of the country that the team is working in
-     * @param description a brief description of the team
+     * @param teamName name of the team
+     * @param tripCity city of the trip
+     * @param tripCountry country of the trip
+     * @param startDate when the trip starts
+     * @param endDate when the trip ends
      * @return
      */
-    public static TripItem createTripItem(String teamName, String teamLocation, String cityName, String countryName, String description, Date startDate, Date endDate) {
+    public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
+        if (StringUtils.isNullOrWhiteSpace(teamName)||
+                StringUtils.isNullOrWhiteSpace(tripCity) ||
+                StringUtils.isNullOrWhiteSpace(tripCountry) ||
+                startDate == null){
+            return null;
+        }
 
         TripItem tripItem = new TripItem();
-        tripItem.setTeam(teamName);
-        tripItem.setTeamLocation(teamLocation);
-        tripItem.setCity(cityName);
-        tripItem.setCountry(countryName);
-        tripItem.setDescription(description);
+        tripItem.setTeamName(teamName);
+        tripItem.setTripCity(tripCity);
+        tripItem.setTripCountry(tripCountry);
         tripItem.setTripStartDate(startDate);
         tripItem.setTripEndDate(endDate);
         return tripItem;
+    }
+
+    public static TeamItem createTeamItem(String name, String location, String description){
+        if (StringUtils.isNullOrWhiteSpace(name)){
+            return null;
+        }
+        TeamItem teamItem = new TeamItem();
+        teamItem.setName(name);
+        teamItem.setLocation(location);
+        teamItem.setDescription(description);
+        return teamItem;
+    }
+
+    public static CityItem createCityItem(String cityName, String countryName){
+        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
+            return null;
+
+        CityItem cityItem = new CityItem();
+        cityItem.setCityName(cityName);
+        cityItem.setCountryName(countryName);
+        return cityItem;
     }
 
     /**
@@ -225,7 +250,7 @@ public class DomainMapper {
      * @return a brand spankin' new freakin' mission trip
      */
     public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam) {
-        if (startDate == null || endDate == null || missionCity == null || missionTeam == null){
+        if (startDate == null || endDate == null || missionCity == null || missionTeam == null) {
             return null;
         }
         IMissionTrip missionTrip = missionTripProvider.get();
@@ -238,7 +263,7 @@ public class DomainMapper {
     }
 
     public IMissionCountry createMissionCountry(String name) {
-        if (StringUtils.isNullOrWhiteSpace(name)){
+        if (StringUtils.isNullOrWhiteSpace(name)) {
             return null;
         }
         IMissionCountry missionCountry = missionCountryProvider.get();
@@ -246,8 +271,8 @@ public class DomainMapper {
         return missionCountry;
     }
 
-    public IMissionCity createMissionCity(String name, IMissionCountry missionCountry){
-        if (StringUtils.isNullOrWhiteSpace(name) || missionCountry == null){
+    public IMissionCity createMissionCity(String name, IMissionCountry missionCountry) {
+        if (StringUtils.isNullOrWhiteSpace(name) || missionCountry == null) {
             return null;
         }
         IMissionCity missionCity = missionCityProvider.get();
@@ -256,8 +281,8 @@ public class DomainMapper {
         return missionCity;
     }
 
-    public IMissionTeam createMissionTeam(String name, String location, String description){
-        if (StringUtils.isNullOrWhiteSpace(name) || StringUtils.isNullOrWhiteSpace(location) || StringUtils.isNullOrWhiteSpace(description)){
+    public IMissionTeam createMissionTeam(String name, String location, String description) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
             return null;
         }
         IMissionTeam missionTeam = missionTeamProvider.get();
@@ -448,8 +473,8 @@ public class DomainMapper {
         return medicationActiveDrugName;
     }
 
-    public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, IVital vital, float vitalKey){
-        if (vital == null || encounterId < 1 || userId < 1){
+    public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, IVital vital, float vitalKey) {
+        if (vital == null || encounterId < 1 || userId < 1) {
             return null;
         }
         IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
@@ -514,7 +539,7 @@ public class DomainMapper {
      * @param userId               id of the user creating the encounter
      * @return a new PatientEncounter
      */
-    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId, Integer patientAgeClassificationId) {
+    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId, Integer patientAgeClassificationId, Integer tripId) {
         if (patientEncounterItem == null || userId < 1) {
             return null;
         }
@@ -526,6 +551,8 @@ public class DomainMapper {
         patientEncounter.setWeeksPregnant(patientEncounterItem.getWeeksPregnant());
         if (patientAgeClassificationId != null)
             patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
+        if (tripId != null)
+            patientEncounter.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), tripId));
         return patientEncounter;
     }
 
@@ -537,6 +564,26 @@ public class DomainMapper {
         chiefComplaint.setValue(value);
         chiefComplaint.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), patientEncounterId));
         return chiefComplaint;
+    }
+
+    public static MissionItem createMissionItem(IMissionTeam missionTeam) {
+
+        MissionItem missionItem = new MissionItem();
+        missionItem.setTeamName(missionTeam.getName());
+        missionItem.setTeamLocation(missionTeam.getLocation());
+        missionItem.setTeamDescription(missionTeam.getDescription());
+
+        for (IMissionTrip mt : missionTeam.getMissionTrips()) {
+            missionItem.addMissionTrip(mt.getId(),
+                    mt.getMissionCity().getName(),
+                    mt.getMissionCity().getMissionCountry().getName(),
+                    mt.getStartDate(),
+                    dateUtils.getFriendlyDate(mt.getStartDate()),
+                    mt.getEndDate(),
+                    dateUtils.getFriendlyDate(mt.getEndDate()),
+                    mt.isCurrent());
+        }
+        return missionItem;
     }
 
     public PrescriptionItem createPrescriptionItem(IPatientPrescription patientPrescription) {
@@ -681,7 +728,7 @@ public class DomainMapper {
      * @param userId        id of the user creating the prescription
      * @param encounterId   encounter id of the prescription
      * @param replacementId id of the prescription being replaced OR null
-     * @param isDispensed is the patient prescription dispensed to the patient yet
+     * @param isDispensed   is the patient prescription dispensed to the patient yet
      * @return a new IPatientPrescription
      */
     public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
@@ -752,7 +799,7 @@ public class DomainMapper {
      * @param filterViewModel
      * @return ResearchFilterItem
      */
-    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel){
+    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel) {
 
         ResearchFilterItem filterItem = new ResearchFilterItem();
 
@@ -764,11 +811,10 @@ public class DomainMapper {
 
         Integer groupFactor = filterViewModel.getGroupFactor();
         filterItem.setGroupFactor(groupFactor);
-        if( groupFactor != null && groupFactor > 0 ) {
+        if (groupFactor != null && groupFactor > 0) {
 
             filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
-        }
-        else{
+        } else {
 
             filterItem.setGroupPrimary(false);
         }

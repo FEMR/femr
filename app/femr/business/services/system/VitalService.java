@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IVitalService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
 import femr.data.daos.IRepository;
@@ -80,7 +81,8 @@ public class VitalService implements IVitalService {
             List<VitalItem> vitalItems = new ArrayList<>();
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             for (IPatientEncounterVital pev : newPatientEncounterVitals) {
-                vitalItems.add(DomainMapper.createVitalItem(pev));
+                if (pev.getVital() != null)
+                    vitalItems.add(ItemMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
@@ -144,7 +146,8 @@ public class VitalService implements IVitalService {
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IPatientEncounterVital pev : patientEncounterVitals) {
-                vitalItems.add(DomainMapper.createVitalItem(pev));
+                if (pev.getVital() != null)
+                    vitalItems.add(ItemMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
 
             response.setResponseObject(vitalItems);

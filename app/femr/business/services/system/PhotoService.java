@@ -31,6 +31,7 @@ import femr.business.helpers.DomainMapper;
 import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPhotoService;
+import femr.common.ItemMapper;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
@@ -281,7 +282,7 @@ public class PhotoService implements IPhotoService {
                             .eq("id", pep.getPhotoId());
                     try {
                         IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
-                        returnList.add(domainMapper.createPhotoItem(savedPhoto, femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                        returnList.add(ItemMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
                     } catch (Exception ex) {
                         response.addError("", ex.getMessage());
                         return response;

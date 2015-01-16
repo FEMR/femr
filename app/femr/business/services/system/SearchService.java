@@ -26,6 +26,7 @@ import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
@@ -105,9 +106,30 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
 
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (savedPatient.getPhoto() != null){
+                pathToPhoto = savedPatient.getPhoto().getFilePath();
+                photoId = savedPatient.getPhoto().getId();
+            }
+            PatientItem patientItem = ItemMapper.createPatientItem(
+                    savedPatient.getId(),
+                    savedPatient.getFirstName(),
+                    savedPatient.getLastName(),
+                    savedPatient.getCity(),
+                    savedPatient.getAddress(),
+                    savedPatient.getUserId(),
+                    savedPatient.getAge(),
+                    savedPatient.getSex(),
+                    recentEncounter.getWeeksPregnant(),
+                    patientHeightFeet,
+                    patientHeightInches,
+                    patientWeight,
+                    pathToPhoto,
+                    photoId
+            );
 
-            PatientItem patientItem = DomainMapper.createPatientItem(savedPatient, recentEncounter.getWeeksPregnant(), patientHeightFeet, patientHeightInches, patientWeight);
-
+            //TODO: why is this being repeated?
             if (savedPatient.getPhoto() != null) {
                 patientItem.setPathToPhoto("/photo/patient/" + patientId + "?showDefault=false");
             }
@@ -141,7 +163,29 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
-            PatientItem patientItem = DomainMapper.createPatientItem(patient, patientEncounter.getWeeksPregnant(), patientHeightFeet, patientHeightInches, patientWeight);
+
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (patient.getPhoto() != null){
+                pathToPhoto = patient.getPhoto().getFilePath();
+                photoId = patient.getPhoto().getId();
+            }
+            PatientItem patientItem = ItemMapper.createPatientItem(
+                    patient.getId(),
+                    patient.getFirstName(),
+                    patient.getLastName(),
+                    patient.getCity(),
+                    patient.getAddress(),
+                    patient.getUserId(),
+                    patient.getAge(),
+                    patient.getSex(),
+                    patientEncounter.getWeeksPregnant(),
+                    patientHeightFeet,
+                    patientHeightInches,
+                    patientWeight,
+                    pathToPhoto,
+                    photoId
+            );
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -391,8 +435,30 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatient> patients = patientRepository.find(query);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient p : patients) {
-                patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+            for (IPatient patient : patients) {
+                //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (patient.getPhoto() != null) {
+                    pathToPhoto = patient.getPhoto().getFilePath();
+                    photoId = patient.getPhoto().getId();
+                }
+                patientItems.add(ItemMapper.createPatientItem(
+                        patient.getId(),
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getCity(),
+                        patient.getAddress(),
+                        patient.getUserId(),
+                        patient.getAge(),
+                        patient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId
+                ));
             }
             response.setResponseObject(patientItems);
         } catch (Exception ex) {
@@ -538,11 +604,34 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient allPatient : allPatients) {
 
-                PatientItem currPatient = DomainMapper.createPatientItem(allPatient, null, null, null, null);
+            for (IPatient patient : allPatients) {
 
-                if (allPatient.getPhoto() != null) {
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (patient.getPhoto() != null) {
+                    pathToPhoto = patient.getPhoto().getFilePath();
+                    photoId = patient.getPhoto().getId();
+                }
+                PatientItem currPatient = ItemMapper.createPatientItem(
+                        patient.getId(),
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getCity(),
+                        patient.getAddress(),
+                        patient.getUserId(),
+                        patient.getAge(),
+                        patient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId
+                );
+
+                //TODO: whyyyyy after?
+                if (patient.getPhoto() != null) {
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
                 } else {
                     // If no photo for patient, show default

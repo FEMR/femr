@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.daos.IRepository;
@@ -31,6 +32,7 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,7 @@ public class PatientService implements IPatientService {
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                          DomainMapper domainMapper){
+                          DomainMapper domainMapper) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
@@ -54,9 +56,9 @@ public class PatientService implements IPatientService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<Map<String,String>> findPossibleAgeClassifications() {
-        ServiceResponse<Map<String,String>> response = new ServiceResponse<>();
-        Map<String,String> patientAgeClassificationStrings = new LinkedHashMap<>();
+    public ServiceResponse<Map<String, String>> findPossibleAgeClassifications() {
+        ServiceResponse<Map<String, String>> response = new ServiceResponse<>();
+        Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
             Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
@@ -97,7 +99,26 @@ public class PatientService implements IPatientService {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.update(savedPatient);
             }
-            PatientItem patientItem = DomainMapper.createPatientItem(savedPatient, null, null, null, null);
+            String photoPath = null;
+            Integer photoId = null;
+            if (savedPatient.getPhoto() != null) {
+                photoPath = savedPatient.getPhoto().getFilePath();
+                photoId = savedPatient.getPhoto().getId();
+            }
+            PatientItem patientItem = ItemMapper.createPatientItem(savedPatient.getId(),
+                    savedPatient.getFirstName(),
+                    savedPatient.getLastName(),
+                    savedPatient.getCity(),
+                    savedPatient.getAddress(),
+                    savedPatient.getUserId(),
+                    savedPatient.getAge(),
+                    savedPatient.getSex(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    photoPath,
+                    photoId);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -121,7 +142,28 @@ public class PatientService implements IPatientService {
         try {
             IPatient newPatient = domainMapper.createPatient(patient);
             newPatient = patientRepository.create(newPatient);
-            response.setResponseObject(DomainMapper.createPatientItem(newPatient, null, null, null, null));
+            String photoPath = null;
+            Integer photoId = null;
+            if (newPatient.getPhoto() != null) {
+                photoPath = newPatient.getPhoto().getFilePath();
+                photoId = newPatient.getPhoto().getId();
+            }
+            response.setResponseObject(
+                    ItemMapper.createPatientItem(newPatient.getId(),
+                            newPatient.getFirstName(),
+                            newPatient.getLastName(),
+                            newPatient.getCity(),
+                            newPatient.getAddress(),
+                            newPatient.getUserId(),
+                            newPatient.getAge(),
+                            newPatient.getSex(),
+                            null,
+                            null,
+                            null,
+                            null,
+                            photoPath,
+                            photoId)
+            );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

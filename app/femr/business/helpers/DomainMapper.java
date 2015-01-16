@@ -590,17 +590,6 @@ public class DomainMapper {
         return missionItem;
     }
 
-    public PrescriptionItem createPrescriptionItem(IPatientPrescription patientPrescription) {
-        if (patientPrescription == null) {
-            return null;
-        }
-        PrescriptionItem prescriptionItem = new PrescriptionItem();
-        prescriptionItem.setId(patientPrescription.getId());
-        prescriptionItem.setName(patientPrescription.getMedication().getName());
-        prescriptionItem.setReplacementId(patientPrescription.getReplacementId());
-        return prescriptionItem;
-    }
-
     public IPatient createPatient(PatientItem patientItem) {
         if (patientItem == null) {
             return null;
@@ -619,37 +608,6 @@ public class DomainMapper {
         return patient;
     }
 
-    public static PatientItem createPatientItem(IPatient patient, Integer weeksPregnant, Integer heightFeet, Integer heightInches, Float weight) {
-        if (patient == null) {
-            return null;
-        }
-        PatientItem patientItem = new PatientItem();
-        patientItem.setAddress(patient.getAddress());
-        if (patient.getAge() != null) {
-            patientItem.setAge(dateUtils.getAge(patient.getAge()));//age (int)
-            patientItem.setBirth(patient.getAge());//date of birth(date)
-            patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(patient.getAge()));
-        }
-        patientItem.setCity(patient.getCity());
-        patientItem.setFirstName(patient.getFirstName());
-        patientItem.setId(patient.getId());
-        patientItem.setLastName(patient.getLastName());
-        patientItem.setSex(patient.getSex());
-        patientItem.setUserId(patient.getUserId());
-        if (patient.getPhoto() != null) {
-            patientItem.setPathToPhoto(patient.getPhoto().getFilePath());
-            patientItem.setPhotoId(patient.getPhoto().getId());
-        }
-        if (weeksPregnant != null) patientItem.setWeeksPregnant(weeksPregnant);
-
-        //heightFeet, heightInches, and weight should all be the most recent value
-        if (heightFeet != null) patientItem.setHeightFeet(heightFeet);
-        if (heightInches != null) patientItem.setHeightInches(heightInches);
-        if (weight != null) patientItem.setWeight(weight);
-
-        return patientItem;
-    }
-
     /**
      * Maps an IVital to a VitalItem.
      *
@@ -657,6 +615,7 @@ public class DomainMapper {
      * @return a new VitalItem with no value
      */
     public static VitalItem createVitalItem(IVital vital) {
+        //TODO: this shouldn't happen, no need for a vitalitem without a value
         if (vital == null) {
             return null;
         }
@@ -665,42 +624,7 @@ public class DomainMapper {
         return vitalItem;
     }
 
-    /**
-     * Maps an IPatientEncounterVital to a VitalItem
-     *
-     * @param patientEncounterVital the IPatientEncounterVital
-     * @return a new VitalItem with a value
-     */
-    public static VitalItem createVitalItem(IPatientEncounterVital patientEncounterVital) {
-        if (patientEncounterVital == null || patientEncounterVital.getVital() == null) {
-            return null;
-        }
-        VitalItem vitalItem = new VitalItem();
-        vitalItem.setName(patientEncounterVital.getVital().getName());
-        vitalItem.setValue(patientEncounterVital.getVitalValue());
-        return vitalItem;
-    }
 
-    /**
-     * gets a photo item
-     *
-     * @param photo    the photo
-     * @param imageURL url to the image
-     * @return a new PhotoItem
-     */
-    public PhotoItem createPhotoItem(IPhoto photo, String imageURL) {
-        PhotoItem photoItem = new PhotoItem();
-        if (photo == null || StringUtils.isNullOrWhiteSpace(imageURL)) {
-            return null;
-        }
-
-        photoItem.setId(photo.getId());
-        photoItem.setImageDesc(photo.getDescription());
-        photoItem.setImageUrl(imageURL);
-        photoItem.setImageDate(StringUtils.ToSimpleDate(photo.getInsertTS()));
-
-        return photoItem;
-    }
 
     /**
      * Creates a new patientEncounterTabField
@@ -763,21 +687,6 @@ public class DomainMapper {
         }
 
         return new PrescriptionItem(patientPrescription.getMedication().getName());
-    }
-
-    /**
-     * Create a new problem item
-     *
-     * @param patientEncounterTabField
-     * @return
-     */
-    public ProblemItem createProblemItem(IPatientEncounterTabField patientEncounterTabField) {
-        if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
-            return null;
-        }
-        ProblemItem problemItem = new ProblemItem();
-        problemItem.setName(patientEncounterTabField.getTabFieldValue());
-        return problemItem;
     }
 
     /**

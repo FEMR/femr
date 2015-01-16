@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
 import femr.data.daos.IRepository;
@@ -104,7 +105,7 @@ public class MedicationService implements IMedicationService {
             oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
             patientPrescriptionRepository.update(oldPatientPrescription);
 
-            PrescriptionItem newPrescriptionItem = domainMapper.createPrescriptionItem(newPatientPrescription);
+            PrescriptionItem newPrescriptionItem = ItemMapper.createPrescriptionItem(newPatientPrescription.getId(), newPatientPrescription.getMedication().getName(), newPatientPrescription.getReplacementId());
             response.setResponseObject(newPrescriptionItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -162,7 +163,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                    updatedPrescriptions.add(ItemMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);
@@ -192,7 +193,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setCounseled(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                    updatedPrescriptions.add(ItemMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);

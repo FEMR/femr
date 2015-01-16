@@ -26,6 +26,7 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.IUserService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.ProblemItem;
@@ -380,7 +381,8 @@ public class EncounterService implements IEncounterService {
                 response.addError("", "bad query");
             } else {
                 for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
-                    problemItems.add(domainMapper.createProblemItem(petf));
+                    if (petf.getTabField() != null)
+                        problemItems.add(ItemMapper.createProblemItem(petf.getTabFieldValue()));
                 }
                 response.setResponseObject(problemItems);
             }

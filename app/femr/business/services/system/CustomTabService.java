@@ -260,6 +260,8 @@ public class CustomTabService implements ICustomTabService {
      */
     @Override
     public ServiceResponse<TabFieldItem> toggleTabField(String fieldName, String tabName) {
+
+        //TODO: properly mark tabs as custom
         ServiceResponse<TabFieldItem> response = new ServiceResponse<>();
         if (StringUtils.isNullOrWhiteSpace(fieldName) || StringUtils.isNullOrWhiteSpace(tabName)) {
             response.addError("", "bad parameters, wtf are you doing?");

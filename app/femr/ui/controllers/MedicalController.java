@@ -138,11 +138,12 @@ public class MedicalController extends Controller {
         }
         viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
 
-        //get non-custom fields
+        //get non-custom fields that currently have a value
         //Map<String, TabFieldItem>
         // String = tab field name
         // TabFieldItem contains value
-        ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse = encounterService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
+        ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse =
+                encounterService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
         Map<String, TabFieldItem> tabFieldItemMap;
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
@@ -151,13 +152,15 @@ public class MedicalController extends Controller {
             viewModelGet.setStaticFields(tabFieldItemMap);
         }
 
-        //get custom tabs/fields
+        //get custom tabs
         ServiceResponse<List<TabItem>> tabItemResponse = customTabService.getCustomTabs(false);
         if (tabItemResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
             viewModelGet.setCustomTabs(tabItemResponse.getResponseObject());
         }
+        //get custom fields. This actually gets all fields mapped to their respective tabs. The view uses
+        //the list of custom tabs to pull out the custom fields. This is stupid
         ServiceResponse<Map<String, List<TabFieldItem>>> tabFieldResponse = customTabService.getTabFields(patientEncounter.getId());
         if (tabFieldResponse.hasErrors()) {
             throw new RuntimeException();

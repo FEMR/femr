@@ -91,7 +91,7 @@ public class ItemMapper {
                                                 Float weight,
                                                 String pathToPatientPhoto,
                                                 Integer photoId) {
-
+        //TODO: split up into overloaded methods?
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
                 StringUtils.isNullOrWhiteSpace(city)) {
@@ -167,6 +167,7 @@ public class ItemMapper {
 
             return null;
         }
+
         PhotoItem photoItem = new PhotoItem();
         photoItem.setId(id);
         photoItem.setImageDesc(description);
@@ -177,11 +178,7 @@ public class ItemMapper {
     }
 
     /**
-     * create a new PrescriptionItem, the following fields are required to have values:
-     * <ul>
-     *     <li>id</li>
-     *     <li>name</li>
-     * </ul>
+     * create a new PrescriptionItem that has been replaced
      *
      * @param id id of the prescription
      * @param name name of the prescription
@@ -190,14 +187,38 @@ public class ItemMapper {
      */
     public static PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId) {
 
-        if (StringUtils.isNullOrWhiteSpace(name)) {
+        if (StringUtils.isNullOrWhiteSpace(name) ||
+                replacementId == null) {
 
             return null;
         }
+
         PrescriptionItem prescriptionItem = new PrescriptionItem();
         prescriptionItem.setId(id);
         prescriptionItem.setName(name);
         prescriptionItem.setReplacementId(replacementId);
+
+        return prescriptionItem;
+    }
+
+    /**
+     * create a new PrescriptionItem that has not been replaced
+     *
+     * @param id id of the prescription
+     * @param name name of the prescription
+     * @return a new PrescriptionItem or null if the required fields are null
+     */
+    public static PrescriptionItem createPrescriptionItem(int id, String name) {
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        PrescriptionItem prescriptionItem = new PrescriptionItem();
+        prescriptionItem.setId(id);
+        prescriptionItem.setName(name);
+
         return prescriptionItem;
     }
 
@@ -213,6 +234,7 @@ public class ItemMapper {
 
             return null;
         }
+
         ProblemItem problemItem = new ProblemItem();
         problemItem.setName(name);
 
@@ -220,10 +242,45 @@ public class ItemMapper {
     }
 
     /**
-     * Create a team item, the following field is required to have a value:
-     * <ul>
-     *     <li>name</li>
-     * </ul>
+     * Create a team item
+     *
+     * @param name name of the team
+     * @return a new team item or null parameters are empty
+     */
+    public static TeamItem createTeamItem(String name){
+
+        if (StringUtils.isNullOrWhiteSpace(name)){
+            return null;
+        }
+
+        TeamItem teamItem = new TeamItem();
+        teamItem.setName(name);
+
+        return teamItem;
+    }
+
+    /**
+     * Create a team item
+     *
+     * @param name name of the team
+     * @param location where the team is based out of
+     * @return a new team item or null parameters are empty
+     */
+    public static TeamItem createTeamItem(String name, String location){
+
+        if (StringUtils.isNullOrWhiteSpace(name)){
+            return null;
+        }
+
+        TeamItem teamItem = new TeamItem();
+        teamItem.setName(name);
+        teamItem.setLocation(location);
+
+        return teamItem;
+    }
+
+    /**
+     * Create a team item
      *
      * @param name name of the team
      * @param location where the team is based out of
@@ -231,15 +288,20 @@ public class ItemMapper {
      * @return a new team item or null if name is empty
      */
     public static TeamItem createTeamItem(String name, String location, String description){
+
         if (StringUtils.isNullOrWhiteSpace(name)){
             return null;
         }
+
         TeamItem teamItem = new TeamItem();
         teamItem.setName(name);
         teamItem.setLocation(location);
         teamItem.setDescription(description);
+
         return teamItem;
     }
+
+
 
     /**
      * Creates a trip item
@@ -252,6 +314,7 @@ public class ItemMapper {
      * @return a new trip item or null if any of the parameters are empty
      */
     public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
+
         if (StringUtils.isNullOrWhiteSpace(teamName)||
                 StringUtils.isNullOrWhiteSpace(tripCity) ||
                 StringUtils.isNullOrWhiteSpace(tripCountry) ||
@@ -266,6 +329,7 @@ public class ItemMapper {
         tripItem.setTripCountry(tripCountry);
         tripItem.setTripStartDate(startDate);
         tripItem.setTripEndDate(endDate);
+
         return tripItem;
     }
 

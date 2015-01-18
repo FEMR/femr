@@ -309,9 +309,15 @@ public class EncounterService implements IEncounterService {
         ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
                 .where()
                 .eq("isDeleted", false);
+        ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId);
 
         try {
             List<? extends ITab> allTabs = tabRepository.find(tabQuery);
+            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+            Integer numberOfChiefComplaints = null;
+            numberOfChiefComplaints = chiefComplaints.size();
 
             for (ITab t : allTabs) {
 
@@ -340,41 +346,56 @@ public class EncounterService implements IEncounterService {
                             .eq("tabField", tf)
                             .eq("patient_encounter_id", encounterId)
                             .order()
-                            .desc("date_taken")
-                            .setMaxRows(1);
+                            .desc("date_taken");
 
-                    List<? extends IPatientEncounterTabField> patientEncounterField = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+                    List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
 
                     String name = tf.getName();
                     String type = tf.getTabFieldType().getName();
 
-                    //add the respective filled out tab fields to each tab
 
-                    if (patientEncounterField != null && patientEncounterField.size() == 1) {
+                    //handles the tab fields with value
+                    if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
+                        //hpi is a special case because the tab fields can exist more than once for each chief complaint.
+                        //for example, this requires the onset field to exist twice as "onset0" and "onset1", both with different values
+                        //and matching the number of chief complaints that exist
+                        if (t.getName().toLowerCase().equals("hpi")){
+                            for (int hpiBox = 0; hpiBox < numberOfChiefComplaints; hpiBox++){
+                                IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(hpiBox);
+                                if (patientEncounterTabField != null) {
+                                    String value = patientEncounterTabField.getTabFieldValue();
+                                    String chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
+                                }
+                                name = name + hpiBox;
+                                tabItem.addTabFieldItem(name, type, value, chiefComplaint);
+                            }
+                        }else{
+                            //every tab other than hpi is handeled in here
+                            IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(0);
+                            String value = patientEncounterTabField.getTabFieldValue();
+                            String chiefComplaint = null;
+                            if (patientEncounterTabField.getChiefComplaint() != null) {
+                                chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
+                            }
 
-                        IPatientEncounterTabField patientEncounterTabField = patientEncounterField.get(0);
+                            if (!t.getIsCustom()) {
 
-                        String value = patientEncounterTabField.getTabFieldValue();
-                        String chiefComplaint = null;
-                        if (patientEncounterTabField.getChiefComplaint() != null)
-                            chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
+                                tabItem.addTabFieldItem(name, type, value, chiefComplaint);
+                            } else if (t.getIsCustom()) {
 
-                        if (!t.getIsCustom()) {
+                                String size = null;
+                                if (tf.getTabFieldSize() != null)
+                                    size = tf.getTabFieldSize().getName();
+                                //else
+                                //response.addError("", tabField.getName() + " doesn't have a sort order");
+                                Integer sortOrder = tf.getOrder();
+                                String placeholder = tf.getPlaceholder();
 
-                            tabItem.addTabFieldItem(name, type, value, chiefComplaint);
-                        } else if (t.getIsCustom()) {
-
-                            String size = null;
-                            if (tf.getTabFieldSize() != null)
-                                size = tf.getTabFieldSize().getName();
-                            //else
-                            //response.addError("", tabField.getName() + " doesn't have a sort order");
-                            Integer sortOrder = tf.getOrder();
-                            String placeholder = tf.getPlaceholder();
-
-                            tabItem.addTabFieldItem(name, type, size, sortOrder, placeholder, value, chiefComplaint);
+                                tabItem.addTabFieldItem(name, type, size, sortOrder, placeholder, value, chiefComplaint);
+                            }
                         }
-                    } else {//add the non filled out tab fields to each tab
+
+                    } else {//handles the tab fields without value
 
                         if (!t.getIsCustom()) {
 
@@ -392,6 +413,7 @@ public class EncounterService implements IEncounterService {
                             tabItem.addTabFieldItem(name, type, size, sortOrder, placeholder);
                         }
                     }
+
 
                 }
                 tabItems.add(tabItem);

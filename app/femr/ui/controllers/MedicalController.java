@@ -254,18 +254,44 @@ public class MedicalController extends Controller {
         photoService.HandleEncounterPhotos(fps, patientEncounterItem, viewModelPost);
 
 
+        PrescriptionItem prescriptionItem;
         //save prescriptions
         List<PrescriptionItem> prescriptionItems = new ArrayList<>();
-        if (viewModelPost.getPrescription1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription1()))
-            prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription1()));
-        if (viewModelPost.getPrescription2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription2()))
-            prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription2()));
-        if (viewModelPost.getPrescription3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription3()))
-            prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription3()));
-        if (viewModelPost.getPrescription4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription4()))
-            prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription4()));
-        if (viewModelPost.getPrescription5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription5()))
-            prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription5()));
+        if (viewModelPost.getPrescription1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription1())){
+
+            prescriptionItem = new PrescriptionItem();
+            prescriptionItem.setName(viewModelPost.getPrescription1());
+            prescriptionItems.add(prescriptionItem);
+        }
+
+        if (viewModelPost.getPrescription2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription2())){
+
+            prescriptionItem = new PrescriptionItem();
+            prescriptionItem.setName(viewModelPost.getPrescription2());
+            prescriptionItems.add(prescriptionItem);
+        }
+
+        if (viewModelPost.getPrescription3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription3())){
+
+            prescriptionItem = new PrescriptionItem();
+            prescriptionItem.setName(viewModelPost.getPrescription3());
+            prescriptionItems.add(prescriptionItem);
+        }
+
+        if (viewModelPost.getPrescription4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription4())){
+
+            prescriptionItem = new PrescriptionItem();
+            prescriptionItem.setName(viewModelPost.getPrescription4());
+            prescriptionItems.add(prescriptionItem);
+        }
+
+        if (viewModelPost.getPrescription5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription5())){
+
+            prescriptionItem = new PrescriptionItem();
+            prescriptionItem.setName(viewModelPost.getPrescription5());
+            prescriptionItems.add(prescriptionItem);
+        }
+
         if (prescriptionItems.size() > 0) {
 
             ServiceResponse<List<PrescriptionItem>> prescriptionResponse =

@@ -135,7 +135,8 @@ public class MedicationService implements IMedicationService {
             List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
-                newPrescriptionItems.add(domainMapper.createPatientPrescriptionItem(pp));
+                if (pp.getMedication() != null)
+                    newPrescriptionItems.add(ItemMapper.createPatientPrescriptionItem(pp.getMedication().getName()));
             }
             response.setResponseObject(newPrescriptionItems);
         } catch (Exception ex) {

@@ -24,6 +24,7 @@ import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientPrescription;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.jboss.netty.util.internal.StringUtil;
 
 import java.util.Date;
 
@@ -33,6 +34,22 @@ import java.util.Date;
  */
 public class ItemMapper {
 
+    /**
+     * Creates a city item.
+     *
+     * @param cityName name of the city
+     * @param countryName name of the country that the city is in
+     * @return a new city item or null if either parameters don't exist
+     */
+    public static CityItem createCityItem(String cityName, String countryName){
+        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
+            return null;
+
+        CityItem cityItem = new CityItem();
+        cityItem.setCityName(cityName);
+        cityItem.setCountryName(countryName);
+        return cityItem;
+    }
 
     /**
      * Creates a patient item, the following fields are required to have values:
@@ -115,6 +132,25 @@ public class ItemMapper {
     }
 
     /**
+     * Create a new prescription item
+     *
+     * @param prescriptionName name of the prescription
+     * @return a new prescription item or null if the name is empty
+     */
+    public static PrescriptionItem createPatientPrescriptionItem(String prescriptionName) {
+
+        if (StringUtils.isNullOrWhiteSpace(prescriptionName)) {
+
+            return null;
+        }
+
+        PrescriptionItem prescriptionItem = new PrescriptionItem();
+        prescriptionItem.setName(prescriptionName);
+
+        return prescriptionItem;
+    }
+
+    /**
      * create a photo item, all fields are required
      *
      * @param id              id of the photo
@@ -166,7 +202,7 @@ public class ItemMapper {
     }
 
     /**
-     * create a new ProblemItem, all fields are requried
+     * create a new ProblemItem
      *
      * @param name the name of the problem
      * @return a new ProblemItem or null if parameters are empty
@@ -181,6 +217,56 @@ public class ItemMapper {
         problemItem.setName(name);
 
         return problemItem;
+    }
+
+    /**
+     * Create a team item, the following field is required to have a value:
+     * <ul>
+     *     <li>name</li>
+     * </ul>
+     *
+     * @param name name of the team
+     * @param location where the team is based out of
+     * @param description a description of the team
+     * @return a new team item or null if name is empty
+     */
+    public static TeamItem createTeamItem(String name, String location, String description){
+        if (StringUtils.isNullOrWhiteSpace(name)){
+            return null;
+        }
+        TeamItem teamItem = new TeamItem();
+        teamItem.setName(name);
+        teamItem.setLocation(location);
+        teamItem.setDescription(description);
+        return teamItem;
+    }
+
+    /**
+     * Creates a trip item
+     *
+     * @param teamName name of the team
+     * @param tripCity city of the trip
+     * @param tripCountry country of the trip
+     * @param startDate when the trip starts
+     * @param endDate when the trip ends
+     * @return a new trip item or null if any of the parameters are empty
+     */
+    public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
+        if (StringUtils.isNullOrWhiteSpace(teamName)||
+                StringUtils.isNullOrWhiteSpace(tripCity) ||
+                StringUtils.isNullOrWhiteSpace(tripCountry) ||
+                startDate == null ||
+                endDate == null){
+            return null;
+        }
+
+        TripItem tripItem = new TripItem();
+        tripItem.setTeamName(teamName);
+        tripItem.setTripCity(tripCity);
+        tripItem.setTripCountry(tripCountry);
+        tripItem.setTripStartDate(startDate);
+        tripItem.setTripEndDate(endDate);
+        return tripItem;
     }
 
     /**

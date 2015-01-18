@@ -28,10 +28,7 @@ import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.IUserService;
 import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.ProblemItem;
-import femr.common.models.TabFieldItem;
-import femr.common.models.UserItem;
+import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -295,6 +292,17 @@ public class EncounterService implements IEncounterService {
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId){
+
+        ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
 
         return response;
     }

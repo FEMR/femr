@@ -192,54 +192,6 @@ public class DomainMapper {
     }
 
     /**
-     * Creates a trip item
-     *
-     * @param teamName name of the team
-     * @param tripCity city of the trip
-     * @param tripCountry country of the trip
-     * @param startDate when the trip starts
-     * @param endDate when the trip ends
-     * @return
-     */
-    public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
-        if (StringUtils.isNullOrWhiteSpace(teamName)||
-                StringUtils.isNullOrWhiteSpace(tripCity) ||
-                StringUtils.isNullOrWhiteSpace(tripCountry) ||
-                startDate == null){
-            return null;
-        }
-
-        TripItem tripItem = new TripItem();
-        tripItem.setTeamName(teamName);
-        tripItem.setTripCity(tripCity);
-        tripItem.setTripCountry(tripCountry);
-        tripItem.setTripStartDate(startDate);
-        tripItem.setTripEndDate(endDate);
-        return tripItem;
-    }
-
-    public static TeamItem createTeamItem(String name, String location, String description){
-        if (StringUtils.isNullOrWhiteSpace(name)){
-            return null;
-        }
-        TeamItem teamItem = new TeamItem();
-        teamItem.setName(name);
-        teamItem.setLocation(location);
-        teamItem.setDescription(description);
-        return teamItem;
-    }
-
-    public static CityItem createCityItem(String cityName, String countryName){
-        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
-            return null;
-
-        CityItem cityItem = new CityItem();
-        cityItem.setCityName(cityName);
-        cityItem.setCountryName(countryName);
-        return cityItem;
-    }
-
-    /**
      * Create a new mission trip
      *
      * @param startDate   start date of the trip
@@ -669,20 +621,6 @@ public class DomainMapper {
         patientPrescription.setDispensed(isDispensed);
         patientPrescription.setCounseled(isCounseled);
         return patientPrescription;
-    }
-
-    /**
-     * Create a new prescription item
-     *
-     * @param patientPrescription the IPatientPrescription
-     * @return a new prescription item
-     */
-    public PrescriptionItem createPatientPrescriptionItem(IPatientPrescription patientPrescription) {
-        if (patientPrescription == null) {
-            return null;
-        }
-
-        return new PrescriptionItem(patientPrescription.getMedication().getName());
     }
 
     /**

@@ -21,6 +21,7 @@ package femr.common;
 import femr.common.models.*;
 import femr.data.models.core.IPatient;
 
+import femr.data.models.core.IPatientEncounterTabField;
 import femr.data.models.core.IPatientPrescription;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -239,6 +240,80 @@ public class ItemMapper {
         problemItem.setName(name);
 
         return problemItem;
+    }
+
+    /**
+     * Create a new tab field item
+     *
+     * @param tabFieldName the name of the field
+     * @param tabFieldValue
+     * @param isCustom
+     * @param tabFieldOrder
+     * @param tabFieldPlaceholder
+     * @param tabFieldSize
+     * @param tabFieldType
+     * @param chiefComplaint
+     * @return
+     */
+    public static TabFieldItem createTabFieldItem(String tabFieldName,
+                                                  String tabFieldValue,
+                                                  boolean isCustom,
+                                                  Integer tabFieldOrder,
+                                                  String tabFieldPlaceholder,
+                                                  String tabFieldSize,
+                                                  String tabFieldType,
+                                                  String chiefComplaint) {
+
+        if (StringUtils.isNullOrWhiteSpace(tabFieldName)||
+                StringUtils.isNullOrWhiteSpace(tabFieldValue)) {
+
+            return null;
+        }
+
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(tabFieldName);
+        tabFieldItem.setValue(tabFieldValue);
+        tabFieldItem.setIsCustom(isCustom);
+        if (StringUtils.isNotNullOrWhiteSpace(tabFieldPlaceholder))
+            tabFieldItem.setPlaceholder(tabFieldPlaceholder);
+        if (tabFieldOrder != null)
+            tabFieldItem.setOrder(tabFieldOrder);
+        if (StringUtils.isNotNullOrWhiteSpace(tabFieldSize))
+            tabFieldItem.setSize(tabFieldSize);
+        if (StringUtils.isNotNullOrWhiteSpace(tabFieldType))
+            tabFieldItem.setType(tabFieldType);
+        if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint))
+            tabFieldItem.setChiefComplaint(chiefComplaint);
+
+        return tabFieldItem;
+    }
+
+    /**
+     * Create a new TabFieldItem
+     *
+     * @param patientEncounterTabField DAO with joined TabField
+     * @return tab field with value
+     */
+    public static TabFieldItem createTabFieldItem(IPatientEncounterTabField patientEncounterTabField) {
+        if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
+            return null;
+        }
+
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
+        tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());
+        tabFieldItem.setPlaceholder(patientEncounterTabField.getTabField().getPlaceholder());
+        if (patientEncounterTabField.getTabField().getTabFieldSize() != null)
+            tabFieldItem.setSize(patientEncounterTabField.getTabField().getTabFieldSize().getName());
+        if (patientEncounterTabField.getTabField().getTabFieldType() != null)
+            tabFieldItem.setType(patientEncounterTabField.getTabField().getTabFieldType().getName());
+        tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
+        if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
+        else tabFieldItem.setIsCustom(true);
+        if (patientEncounterTabField.getChiefComplaint() != null)
+            tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
+
+        return tabFieldItem;
     }
 
     /**

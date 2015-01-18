@@ -117,8 +117,9 @@ public class DomainMapper {
         this.vitalProvider = vitalProvider;
     }
 
+
     /**
-     * Create a new TabFieldItem (DTO) that contains a value.
+     * Create a new TabFieldItem
      *
      * @param patientEncounterTabField DAO with joined TabField
      * @return tab field with value
@@ -127,6 +128,7 @@ public class DomainMapper {
         if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
             return null;
         }
+
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
         tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());

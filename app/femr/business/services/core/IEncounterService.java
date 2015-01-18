@@ -65,7 +65,8 @@ public interface IEncounterService {
     ServiceResponse<UserItem> getPhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * Finds non-custom current field values for medical tabs
+     * Finds non-custom current field values for medical tabs. Current means the field
+     * currently has a value.
      *
      * @param encounterId current encounter id
      * @return Mapping of the field name to the fielditem

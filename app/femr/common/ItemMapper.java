@@ -254,6 +254,8 @@ public class ItemMapper {
         TabItem tabItem = new TabItem();
         tabItem.setName(name);
         tabItem.setCustom(isCustom);
+        tabItem.setLeftColumnSize(leftColumnSize);
+        tabItem.setRightColumnSize(rightColumnSize);
         return tabItem;
     }
 

@@ -21,7 +21,6 @@ package femr.ui.models.medical;
 import femr.common.models.*;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import java.util.List;
-import java.util.Map;
 
 public class EditViewModelGet {
     //The patient being seen
@@ -42,15 +41,7 @@ public class EditViewModelGet {
 
     private SettingItem settings;
 
-
-
-    /* Custom Tab Content */
-    private List<TabItem> customTabs;
-    //Map<tabName, list of field names>
-    private Map<String, List<TabFieldItem>> customFields;
-    /* Non-Custom Tab Content */
-    //Map<fieldName, field content>
-    private Map<String, TabFieldItem> staticFields;
+    private List<TabItem> tabItems;
 
     public PatientItem getPatientItem() {
         return patientItem;
@@ -97,30 +88,6 @@ public class EditViewModelGet {
         this.prescriptionItems = prescriptionItems;
     }
 
-    public List<TabItem> getCustomTabs() {
-        return customTabs;
-    }
-
-    public void setCustomTabs(List<TabItem> customTabs) {
-        this.customTabs = customTabs;
-    }
-
-    public Map<String, List<TabFieldItem>> getCustomFields() {
-        return customFields;
-    }
-
-    public void setCustomFields(Map<String, List<TabFieldItem>> customFields) {
-        this.customFields = customFields;
-    }
-
-    public Map<String, TabFieldItem> getStaticFields() {
-        return staticFields;
-    }
-
-    public void setStaticFields(Map<String, TabFieldItem> staticFields) {
-        this.staticFields = staticFields;
-    }
-
     public List<PhotoItem> getPhotos() {
         return photos;
     }
@@ -143,5 +110,21 @@ public class EditViewModelGet {
 
     public void setSettings(SettingItem settings) {
         this.settings = settings;
+    }
+
+    public List<TabItem> getTabItems() {
+        return tabItems;
+    }
+
+    public void setTabItems(List<TabItem> tabItems) {
+        this.tabItems = tabItems;
+    }
+
+    public TabItem getTabItemByName(String name){
+        for (TabItem ti : this.getTabItems()){
+            if (ti.getName().toLowerCase().equals(name.toLowerCase()))
+                return ti;
+        }
+        return null;
     }
 }

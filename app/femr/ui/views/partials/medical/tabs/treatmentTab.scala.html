@@ -1,22 +1,32 @@
-@(viewModel: femr.ui.models.medical.EditViewModelGet)
+@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem])
+
 @import femr.ui.views.html.partials.medical.problemField;
 @import femr.ui.views.html.partials.medical.prescriptionField;
-
 
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
         <label for="assessment">Assessment</label>
-        <textarea rows="3" name="assessment" class="form-control input-sm">@if(viewModel.getStaticFields.get("assessment") != null) @{viewModel.getStaticFields.get("assessment").getValue}</textarea>
+        <textarea rows="3" name="assessment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName("assessment") != null) @{treatmentTab.getTabFieldItemByName("assessment").getValue}</textarea>
     </div>
     <div class="form-group">
         <label for="problem">Diagnosis</label>
         <div class="row">
             <div class="col-xs-9 col-sm-9 col-md-9">
-                @problemField(1, viewModel.getStaticFields.get("problem1"))
-                @problemField(2, viewModel.getStaticFields.get("problem2"))
-                @problemField(3, viewModel.getStaticFields.get("problem3"))
-                @problemField(4, viewModel.getStaticFields.get("problem4"))
-                @problemField(5, viewModel.getStaticFields.get("problem5"))
+                @if(treatmentTab.getTabFieldItemByName("problem1") != null) {
+                    @problemField(1, treatmentTab.getTabFieldItemByName("problem1").getValue)
+                }
+                @if(treatmentTab.getTabFieldItemByName("problem2") != null) {
+                    @problemField(2, treatmentTab.getTabFieldItemByName("problem2").getValue)
+                }
+                @if(treatmentTab.getTabFieldItemByName("problem3") != null) {
+                    @problemField(3, treatmentTab.getTabFieldItemByName("problem3").getValue)
+                }
+                @if(treatmentTab.getTabFieldItemByName("problem4") != null) {
+                    @problemField(4, treatmentTab.getTabFieldItemByName("problem4").getValue)
+                }
+                @if(treatmentTab.getTabFieldItemByName("problem5") != null) {
+                    @problemField(5, treatmentTab.getTabFieldItemByName("problem5").getValue)
+                }
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">
@@ -32,11 +42,11 @@
         <label for="prescription">Prescriptions</label>
         <div class="row">
             <div class="col-xs-9 col-sm-9 col-md-9">
-                @prescriptionField(1, viewModel.getPrescriptionItems)
-                @prescriptionField(2, viewModel.getPrescriptionItems)
-                @prescriptionField(3, viewModel.getPrescriptionItems)
-                @prescriptionField(4, viewModel.getPrescriptionItems)
-                @prescriptionField(5, viewModel.getPrescriptionItems)
+                @prescriptionField(1, prescriptions)
+                @prescriptionField(2, prescriptions)
+                @prescriptionField(3, prescriptions)
+                @prescriptionField(4, prescriptions)
+                @prescriptionField(5, prescriptions)
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">
@@ -50,6 +60,6 @@
     </div>
     <div class="form-group">
         <label for="treatment">Treatment Given</label>
-        <textarea rows="3" name="treatment" class="form-control input-sm">@if(viewModel.getStaticFields.get("treatment") != null) @{viewModel.getStaticFields.get("treatment").getValue}</textarea>
+        <textarea rows="3" name="treatment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName("treatment") != null) @{treatmentTab.getTabFieldItemByName("treatment").getValue}</textarea>
     </div>
 </div>

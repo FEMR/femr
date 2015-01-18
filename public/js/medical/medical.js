@@ -116,6 +116,9 @@ $(document).ready(function () {
 
     calculateBMI();
 
+    //make the first tab active
+    $('#medicalTabs li').first().addClass('active');
+
     //Unhides a prescription input box everytime
     //the + button is clicked (max of 5)
     $('#addPrescriptionButton').click(function () {

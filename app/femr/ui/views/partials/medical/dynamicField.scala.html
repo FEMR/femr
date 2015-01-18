@@ -1,31 +1,24 @@
-@(number: Integer, fields: java.util.List[femr.common.models.TabFieldItem], isReadOnly: Boolean)
-
-@for(f <- 1 to fields.size) {
-
-    @defining(fields.get(f - 1)) { field =>
+@(number: Integer, value: java.lang.String, name: java.lang.String, size: java.lang.String, order: java.lang.Integer, tipe: java.lang.String, placeholder: java.lang.String, isReadOnly: Boolean)
 
 
-            @if(field.getSize == "medium" && field.getOrder == number){
-                <label for="@field.getName">@field.getName</label>
-                @if(isReadOnly == true){
-                    <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder" value="@field.getValue" readonly/>
-                }else{
-                    <input type="@field.getType" id="@field.getName" class="fInput customField" placeholder="@field.getPlaceholder" value="@field.getValue" />
-                }
+@if(size.toLowerCase == "medium" && order == number) {
+    <label for="@name">@name</label>
+    @if(isReadOnly == true) {
+        <input type="@tipe" id="@name" class="fInput customField" placeholder="@placeholder" value="@value" readonly/>
+    } else {
+        <input type="@tipe" id="@name" class="fInput customField" placeholder="@placeholder" value="@value" />
+    }
 
-                <br/>
-            }else{
-                @if(field.getSize == "large" && field.getOrder == number){
-                    <label for="@field.getName">@field.getName</label>
-                    @if(isReadOnly == true){
-                        <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder" readonly>@field.getValue</textarea>
-                    }else{
-                        <textarea id="@field.getName" class="fTextArea customField" placeholder="@field.getPlaceholder">@field.getValue</textarea>
-                    }
+    <br/>
+} else {
+    @if(size.toLowerCase == "large" && order == number) {
+        <label for="@name">@name</label>
+        @if(isReadOnly == true) {
+            <textarea id="@name" class="fTextArea customField" placeholder="@placeholder" readonly>@value</textarea>
+        } else {
+            <textarea id="@name" class="fTextArea customField" placeholder="@placeholder">@value</textarea>
+        }
 
-                    <br/>
-                }
-            }
-
+        <br/>
     }
 }

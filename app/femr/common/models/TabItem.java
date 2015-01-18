@@ -28,7 +28,7 @@ public class TabItem {
     private boolean isCustom;
     private List<TabFieldItem> fields;
 
-    public TabItem(){
+    public TabItem() {
         this.fields = new ArrayList<>();
     }
 
@@ -72,7 +72,17 @@ public class TabItem {
         this.fields = fields;
     }
 
-    public void addTabFieldItem(String name, String type){
+
+    public TabFieldItem getTabFieldItemByName(String name) {
+        for (TabFieldItem tfi : this.fields) {
+            if (tfi.getName().toLowerCase().equals(name.toLowerCase()))
+                return tfi;
+        }
+        return null;
+    }
+
+
+    public void addTabFieldItem(String name, String type) {
         //empty, non-custom
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setName(name);
@@ -81,7 +91,7 @@ public class TabItem {
         this.fields.add(tabFieldItem);
     }
 
-    public void addTabFieldItem(String name, String type, String value, String chiefComplaint){
+    public void addTabFieldItem(String name, String type, String value, String chiefComplaint) {
         //has value & non-custom
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setName(name);
@@ -92,7 +102,7 @@ public class TabItem {
         this.fields.add(tabFieldItem);
     }
 
-    public void addTabFieldItem(String name, String type, String size, Integer sortOrder, String placeholder){
+    public void addTabFieldItem(String name, String type, String size, Integer sortOrder, String placeholder) {
         //no value & custom
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setName(name);
@@ -104,7 +114,7 @@ public class TabItem {
         this.fields.add(tabFieldItem);
     }
 
-    public void addTabFieldItem(String name, String type, String size, Integer sortOrder, String placeholder, String value, String chiefComplaint){
+    public void addTabFieldItem(String name, String type, String size, Integer sortOrder, String placeholder, String value, String chiefComplaint) {
         //has value & custom
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setName(name);

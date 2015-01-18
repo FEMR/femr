@@ -53,47 +53,40 @@
                 @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getPatientItem.getId)), 'enctype -> "multipart/form-data") {
                     <div class="tabWrap">
                         <ul id="medicalTabs" class="tabrow">
-                            <li class="active" id="hpi">HPI</li>
-                            @if(viewModel.getSettings.isPmhTab) {
-                                <li id="pmh">PMH</li>
-                            }
-
-                            <li id="treatment">Treatment</li>
-                            @if(viewModel.getSettings.isPhotoTab) {
-                                <li id="photo">Photos (@viewModel.getPhotos.size)</li>
-                            }
-
-                            @for(x <- 1 to viewModel.getCustomTabs.size) {
-                                @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
-                                    <li id="@tabName" class="customTab">@tabName</li>
+                            @*Generate the tabs*@
+                            @for(tab <- viewModel.getTabItems) {
+                                @if(!tab.isCustom) {
+                                    <li id="@tab.getName.toLowerCase">@tab.getName</li>
+                                } else {
+                                    <li class="customTab" id="@tab.getName.toLowerCase">@tab.getName</li>
                                 }
                             }
                         </ul>
-
                     </div>
 
                     <div id="tabContentWrap">
-                        @hpiTab(viewModel)
+                        @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getPatientEncounterItem)
 
-                        @treatmentTab(viewModel)
+                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems)
 
                         @if(viewModel.getSettings.isPmhTab) {
-                            @pmhTab(viewModel)
+                            @pmhTab(viewModel.getTabItemByName("pmh"))
                         }
 
                         @if(viewModel.getSettings.isPhotoTab) {
-                            @photoTab(viewModel)
+                            @photoTab(viewModel.getPhotos)
                         }
 
-                        @for(i <- 1 to viewModel.getCustomTabs.size) {
-                            @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
-                                @* Move the div wrapper into dynamicTab *@
-                                <div class="controlWrap hidden" id="@customTab.getName()Control">
-                                @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, false)
+                        @for(tabs <- viewModel.getTabItems) {
+                            @* Move the div wrapper into dynamicTab*@
+                            @if(tabs.isCustom){
+                                <div class="controlWrap hidden" id="@tabs.getName.toLowerCase()Control">
+                                @dynamicTab(tabs)
                                 </div>
-
                             }
+
                         }
+
                         @* Use for "POSTing" JSON (dynamic tab data) *@
                         <input type="text" class="hidden" name="customFieldJSON"/>
                         @* Use for "POSTing" JSON (multiple chief complaint data) *@
@@ -101,16 +94,15 @@
 
 
                         <div class="historySubmitWrap">
-                        <button type="submit" id="medicalSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
-                            Submit Patient</button>
-                    }
+                            <button type="submit" id="medicalSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                                Submit Patient</button>
+                            }
 
                 @helper.form(action = SearchController.handleSearch("history")) {
                     <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatientItem.getId"/>
                     <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
                 }
             </div>
-
             </div>
 
             </div>

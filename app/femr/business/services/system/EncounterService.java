@@ -300,7 +300,7 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId) {
+    public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive) {
 
         ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
         List<TabItem> tabItems = new ArrayList<>();

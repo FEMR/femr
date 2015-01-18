@@ -140,7 +140,11 @@ public class MedicalController extends Controller {
 
 
 
-        ServiceResponse<List<TabItem>> tabItemResponse = encounterService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId());
+        ServiceResponse<List<TabItem>> tabItemResponse = encounterService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId(), true);
+        if (tabItemResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setTabItems(tabItemResponse.getResponseObject());
 
 
 

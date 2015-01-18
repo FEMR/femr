@@ -76,9 +76,10 @@ public interface IEncounterService {
      * Finds all tabs with respective fields
      *
      * @param encounterId id of the current encounter
+     * @param isActive is the tab turned on?
      * @return a list of tab items including the fields
      */
-    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId);
+    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
 
     /**
      * Adds tab field items to the PatientEncounterTabField table

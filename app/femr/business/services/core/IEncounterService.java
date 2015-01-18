@@ -19,11 +19,9 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.ProblemItem;
-import femr.common.models.TabFieldItem;
-import femr.common.models.UserItem;
+import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
+import femr.data.models.mysql.TabField;
 
 import java.util.List;
 import java.util.Map;
@@ -72,6 +70,14 @@ public interface IEncounterService {
      * @return Mapping of the field name to the fielditem
      */
     ServiceResponse<Map<String, TabFieldItem>> findCurrentTabFieldsByEncounterId(int encounterId);
+
+    /**
+     * Finds all tabs with respective fields
+     *
+     * @param encounterId id of the current encounter
+     * @return a list of tab items including the fields
+     */
+    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId);
 
     /**
      * Adds tab field items to the PatientEncounterTabField table

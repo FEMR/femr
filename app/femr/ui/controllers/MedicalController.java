@@ -138,7 +138,15 @@ public class MedicalController extends Controller {
         }
         viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
 
-        //get non-custom fields that currently have a value
+
+
+
+
+
+
+
+
+        //get non-custom & custom fields that currently have a value
         //Map<String, TabFieldItem>
         // String = tab field name
         // TabFieldItem contains value
@@ -167,6 +175,16 @@ public class MedicalController extends Controller {
         } else {
             viewModelGet.setCustomFields(tabFieldResponse.getResponseObject());
         }
+
+
+
+
+
+
+
+
+
+
 
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {

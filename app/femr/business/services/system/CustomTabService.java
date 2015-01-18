@@ -212,7 +212,7 @@ public class CustomTabService implements ICustomTabService {
                 .where()
                 .eq("isDeleted", false);
         try {
-            //O(n^2) because who gives a fuck
+            //
             List<? extends ITab> customTabs = tabRepository.find(query);
             for (ITab ct : customTabs) {
                 Query<TabField> query2 = QueryProvider.getTabFieldQuery()
@@ -229,7 +229,7 @@ public class CustomTabService implements ICustomTabService {
                 for (ITabField cf : customFields) {
                     Query<PatientEncounterTabField> query3 = QueryProvider.getPatientEncounterTabFieldQuery()
                             .where()
-                            .eq("tabField", cf)//somethings fucky
+                            .eq("tabField", cf)
                             .eq("patient_encounter_id", encounterId)
                             .order()
                             .desc("date_taken");

@@ -242,6 +242,21 @@ public class ItemMapper {
         return problemItem;
     }
 
+    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize){
+
+        if (StringUtils.isNullOrWhiteSpace(name) ||
+                leftColumnSize == null ||
+                rightColumnSize == null){
+
+            return null;
+        }
+
+        TabItem tabItem = new TabItem();
+        tabItem.setName(name);
+        tabItem.setCustom(isCustom);
+        return tabItem;
+    }
+
     /**
      * Create a new tab field item
      *
@@ -254,7 +269,7 @@ public class ItemMapper {
      * @param tabFieldType
      * @param chiefComplaint
      * @return
-     */
+
     public static TabFieldItem createTabFieldItem(String tabFieldName,
                                                   String tabFieldValue,
                                                   boolean isCustom,
@@ -287,13 +302,14 @@ public class ItemMapper {
 
         return tabFieldItem;
     }
+     */
 
     /**
      * Create a new TabFieldItem
      *
      * @param patientEncounterTabField DAO with joined TabField
      * @return tab field with value
-     */
+
     public static TabFieldItem createTabFieldItem(IPatientEncounterTabField patientEncounterTabField) {
         if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
             return null;
@@ -315,7 +331,7 @@ public class ItemMapper {
 
         return tabFieldItem;
     }
-
+     */
     /**
      * Create a team item
      *

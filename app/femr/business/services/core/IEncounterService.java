@@ -68,8 +68,9 @@ public interface IEncounterService {
      *
      * @param encounterId current encounter id
      * @return Mapping of the field name to the fielditem
-     */
+
     ServiceResponse<Map<String, TabFieldItem>> findCurrentTabFieldsByEncounterId(int encounterId);
+     */
 
     /**
      * Finds all tabs with respective fields
@@ -86,8 +87,10 @@ public interface IEncounterService {
      * @param encounterId   id of the current encounter
      * @param userId        id of the user saving the fields
      * @return updated list of items
-     */
+
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
+     */
+
 
     /**
      * Find all problems

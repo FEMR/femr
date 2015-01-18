@@ -140,11 +140,12 @@ public class MedicalController extends Controller {
 
 
 
+        ServiceResponse<List<TabItem>> tabItemResponse = encounterService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId());
 
 
 
 
-
+         /*
 
         //get non-custom & custom fields that currently have a value
         //Map<String, TabFieldItem>
@@ -177,7 +178,7 @@ public class MedicalController extends Controller {
         }
 
 
-
+                         */
 
 
 
@@ -218,6 +219,10 @@ public class MedicalController extends Controller {
         Map<String, List<JCustomField>> customFieldInformation = gson.fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
         }.getType());
 
+
+
+
+        /*
         List<TabFieldItem> customFieldItems = new ArrayList<>();
         for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
             List<JCustomField> fields = entry.getValue();
@@ -228,8 +233,9 @@ public class MedicalController extends Controller {
                 tabFieldItem.setIsCustom(true);
                 customFieldItems.add(tabFieldItem);
             }
-        }
+        } */
 
+        /*
         //save the custom fields, if any
         if (customFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> customFieldItemResponse =
@@ -261,7 +267,7 @@ public class MedicalController extends Controller {
             }
         }
 
-
+             */
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -417,7 +423,7 @@ public class MedicalController extends Controller {
      *
      * @param viewModelPost view model POST from edit.scala.html
      * @return a list of values the user entered
-     */
+
     private List<TabFieldItem> mapPmhFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //Pmh_fields
@@ -430,14 +436,14 @@ public class MedicalController extends Controller {
         if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory()))
             tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));
         return tabFieldItems;
-    }
+    }*/
 
     /**
      * Creates a list of available treatment fields in the viewmodel
      *
      * @param viewModelPost view model POST from edit.scala.html
      * @return a list of values the user entered
-     */
+
     private List<TabFieldItem> mapTreatmentFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //treatment fields
@@ -456,14 +462,14 @@ public class MedicalController extends Controller {
         if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment()))
             tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));
         return tabFieldItems;
-    }
+    }*/
 
     /**
      * Creates a list of available hpi fields in the viewmodel
      *
      * @param viewModelPost view model POST from edit.scala.html
      * @return a list of values the user entered
-     */
+
     private List<TabFieldItem> mapHpiFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //hpi fields
@@ -489,7 +495,9 @@ public class MedicalController extends Controller {
             tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));
         return tabFieldItems;
     }
+     */
 
+    /*
     private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         Gson gson = new Gson();
@@ -510,7 +518,7 @@ public class MedicalController extends Controller {
             }
         }
         return tabFieldItems;
-    }
+    }      */
 
     /**
      * Creates a non-custom tabfielditem
@@ -518,7 +526,7 @@ public class MedicalController extends Controller {
      * @param name  name of the field
      * @param value value of the field
      * @return a non custom tab field item
-     */
+
     private TabFieldItem createTabFieldItem(String name, String value) {
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setIsCustom(false);
@@ -529,5 +537,5 @@ public class MedicalController extends Controller {
         tabFieldItem.setType(null);
         tabFieldItem.setValue(value.trim());
         return tabFieldItem;
-    }
+    } */
 }

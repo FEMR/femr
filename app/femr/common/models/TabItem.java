@@ -18,6 +18,7 @@
 */
 package femr.common.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TabItem {
@@ -27,6 +28,9 @@ public class TabItem {
     private boolean isCustom;
     private List<TabFieldItem> fields;
 
+    public TabItem(){
+        this.fields = new ArrayList<>();
+    }
 
     public String getName() {
         return name;
@@ -66,6 +70,52 @@ public class TabItem {
 
     public void setFields(List<TabFieldItem> fields) {
         this.fields = fields;
+    }
+
+    public void addTabFieldItem(String name, String type){
+        //empty, non-custom
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(name);
+        tabFieldItem.setType(type);
+
+        this.fields.add(tabFieldItem);
+    }
+
+    public void addTabFieldItem(String name, String type, String value, String chiefComplaint){
+        //has value & non-custom
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(name);
+        tabFieldItem.setType(type);
+        tabFieldItem.setValue(value);
+        tabFieldItem.setChiefComplaint(chiefComplaint);
+
+        this.fields.add(tabFieldItem);
+    }
+
+    public void addTabFieldItem(String name, String type, String size, Integer sortOrder, String placeholder){
+        //no value & custom
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(name);
+        tabFieldItem.setType(type);
+        tabFieldItem.setSize(size);
+        tabFieldItem.setOrder(sortOrder);
+        tabFieldItem.setPlaceholder(placeholder);
+
+        this.fields.add(tabFieldItem);
+    }
+
+    public void addTabFieldItem(String name, String type, String size, Integer sortOrder, String placeholder, String value, String chiefComplaint){
+        //has value & custom
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(name);
+        tabFieldItem.setType(type);
+        tabFieldItem.setSize(size);
+        tabFieldItem.setOrder(sortOrder);
+        tabFieldItem.setPlaceholder(placeholder);
+        tabFieldItem.setChiefComplaint(chiefComplaint);
+        tabFieldItem.setValue(value);
+
+        this.fields.add(tabFieldItem);
     }
 
     public class TabFieldItem {

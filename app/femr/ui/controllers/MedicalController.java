@@ -146,51 +146,6 @@ public class MedicalController extends Controller {
         }
         viewModelGet.setTabItems(tabItemResponse.getResponseObject());
 
-
-
-
-         /*
-
-        //get non-custom & custom fields that currently have a value
-        //Map<String, TabFieldItem>
-        // String = tab field name
-        // TabFieldItem contains value
-        ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse =
-                encounterService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
-        Map<String, TabFieldItem> tabFieldItemMap;
-        if (patientEncounterTabFieldResponse.hasErrors()) {
-            throw new RuntimeException();
-        } else {
-            tabFieldItemMap = patientEncounterTabFieldResponse.getResponseObject();
-            viewModelGet.setStaticFields(tabFieldItemMap);
-        }
-
-        //get custom tabs
-        ServiceResponse<List<TabItem>> tabItemResponse = customTabService.getCustomTabs(false);
-        if (tabItemResponse.hasErrors()) {
-            throw new RuntimeException();
-        } else {
-            viewModelGet.setCustomTabs(tabItemResponse.getResponseObject());
-        }
-        //get custom fields. This actually gets all fields mapped to their respective tabs. The view uses
-        //the list of custom tabs to pull out the custom fields. This is stupid
-        ServiceResponse<Map<String, List<TabFieldItem>>> tabFieldResponse = customTabService.getTabFields(patientEncounter.getId());
-        if (tabFieldResponse.hasErrors()) {
-            throw new RuntimeException();
-        } else {
-            viewModelGet.setCustomFields(tabFieldResponse.getResponseObject());
-        }
-
-
-                         */
-
-
-
-
-
-
-
-
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {
             throw new RuntimeException();
@@ -523,23 +478,4 @@ public class MedicalController extends Controller {
         }
         return tabFieldItems;
     }      */
-
-    /**
-     * Creates a non-custom tabfielditem
-     *
-     * @param name  name of the field
-     * @param value value of the field
-     * @return a non custom tab field item
-
-    private TabFieldItem createTabFieldItem(String name, String value) {
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setIsCustom(false);
-        tabFieldItem.setName(name);
-        tabFieldItem.setOrder(null);
-        tabFieldItem.setPlaceholder(null);
-        tabFieldItem.setSize(null);
-        tabFieldItem.setType(null);
-        tabFieldItem.setValue(value.trim());
-        return tabFieldItem;
-    } */
 }

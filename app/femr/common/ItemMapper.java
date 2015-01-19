@@ -38,11 +38,11 @@ public class ItemMapper {
     /**
      * Creates a city item.
      *
-     * @param cityName name of the city
+     * @param cityName    name of the city
      * @param countryName name of the country that the city is in
      * @return a new city item or null if either parameters don't exist
      */
-    public static CityItem createCityItem(String cityName, String countryName){
+    public static CityItem createCityItem(String cityName, String countryName) {
         if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
             return null;
 
@@ -55,27 +55,27 @@ public class ItemMapper {
     /**
      * Creates a patient item, the following fields are required to have values:
      * <ul>
-     *     <li>id</li>
-     *     <li>firstName</li>
-     *     <li>lastName</li>
-     *     <li>city</li>
-     *     <li>userId</li>
+     * <li>id</li>
+     * <li>firstName</li>
+     * <li>lastName</li>
+     * <li>city</li>
+     * <li>userId</li>
      * </ul>
      *
-     * @param id id of the patient
-     * @param firstName first name of the patient
-     * @param lastName last name of the patient
-     * @param city city that the patient lives in
-     * @param address address of the patient
-     * @param userId id of the user that checked in the patient in triage
-     * @param age age of the patient
-     * @param sex sex of the patient
-     * @param weeksPregnant how many weeks pregnant the patient is
-     * @param heightFeet how tall the patient is (in feet)
-     * @param heightInches how tall the patient is (in inches)
-     * @param weight how much the patient weights (imperial)
+     * @param id                 id of the patient
+     * @param firstName          first name of the patient
+     * @param lastName           last name of the patient
+     * @param city               city that the patient lives in
+     * @param address            address of the patient
+     * @param userId             id of the user that checked in the patient in triage
+     * @param age                age of the patient
+     * @param sex                sex of the patient
+     * @param weeksPregnant      how many weeks pregnant the patient is
+     * @param heightFeet         how tall the patient is (in feet)
+     * @param heightInches       how tall the patient is (in inches)
+     * @param weight             how much the patient weights (imperial)
      * @param pathToPatientPhoto filepath to the patient photo
-     * @param photoId id of the patients photo
+     * @param photoId            id of the patients photo
      * @return a new PatientItem or null if any of the required fields are empty
      */
     public static PatientItem createPatientItem(int id,
@@ -181,8 +181,8 @@ public class ItemMapper {
     /**
      * create a new PrescriptionItem that has been replaced
      *
-     * @param id id of the prescription
-     * @param name name of the prescription
+     * @param id            id of the prescription
+     * @param name          name of the prescription
      * @param replacementId id of the prescription that replaced this prescription
      * @return a new PrescriptionItem or null if the required fields are null
      */
@@ -205,7 +205,7 @@ public class ItemMapper {
     /**
      * create a new PrescriptionItem that has not been replaced
      *
-     * @param id id of the prescription
+     * @param id   id of the prescription
      * @param name name of the prescription
      * @return a new PrescriptionItem or null if the required fields are null
      */
@@ -242,11 +242,11 @@ public class ItemMapper {
         return problemItem;
     }
 
-    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize){
+    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize) {
 
         if (StringUtils.isNullOrWhiteSpace(name) ||
                 leftColumnSize == null ||
-                rightColumnSize == null){
+                rightColumnSize == null) {
 
             return null;
         }
@@ -260,51 +260,83 @@ public class ItemMapper {
     }
 
     /**
-     * Create a new tab field item
+     * Create a new tab field item without a value
      *
-     * @param tabFieldName the name of the field
-     * @param tabFieldValue
-     * @param isCustom
-     * @param tabFieldOrder
-     * @param tabFieldPlaceholder
-     * @param tabFieldSize
-     * @param tabFieldType
-     * @param chiefComplaint
-     * @return
+     * @param name           the name of the field
+     * @param type           the fields type e.g. number, text
+     * @param size           the size of the field e.g. small, med, large
+     * @param order          sorting order for the field
+     * @param placeholder    placeholder text for the field
+     * @return a new TabFieldItem or null if name is empty
+     */
+    public static TabFieldItem createTabFieldItem(String name,
+                                                  String type,
+                                                  String size,
+                                                  Integer order,
+                                                  String placeholder) {
 
-    public static TabFieldItem createTabFieldItem(String tabFieldName,
-                                                  String tabFieldValue,
-                                                  boolean isCustom,
-                                                  Integer tabFieldOrder,
-                                                  String tabFieldPlaceholder,
-                                                  String tabFieldSize,
-                                                  String tabFieldType,
-                                                  String chiefComplaint) {
-
-        if (StringUtils.isNullOrWhiteSpace(tabFieldName)||
-                StringUtils.isNullOrWhiteSpace(tabFieldValue)) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
 
         TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setName(tabFieldName);
-        tabFieldItem.setValue(tabFieldValue);
-        tabFieldItem.setIsCustom(isCustom);
-        if (StringUtils.isNotNullOrWhiteSpace(tabFieldPlaceholder))
-            tabFieldItem.setPlaceholder(tabFieldPlaceholder);
-        if (tabFieldOrder != null)
-            tabFieldItem.setOrder(tabFieldOrder);
-        if (StringUtils.isNotNullOrWhiteSpace(tabFieldSize))
-            tabFieldItem.setSize(tabFieldSize);
-        if (StringUtils.isNotNullOrWhiteSpace(tabFieldType))
-            tabFieldItem.setType(tabFieldType);
+        tabFieldItem.setName(name);
+        if (StringUtils.isNotNullOrWhiteSpace(placeholder))
+            tabFieldItem.setPlaceholder(placeholder);
+        if (order != null)
+            tabFieldItem.setOrder(order);
+        if (StringUtils.isNotNullOrWhiteSpace(size))
+            tabFieldItem.setSize(size);
+        if (StringUtils.isNotNullOrWhiteSpace(type))
+            tabFieldItem.setType(type);
+
+        return tabFieldItem;
+    }
+
+    /**
+     * Create a new tab field item
+     *
+     * @param name           the name of the field
+     * @param type           the fields type e.g. number, text
+     * @param size           the size of the field e.g. small, med, large
+     * @param order          sorting order for the field
+     * @param placeholder    placeholder text for the field
+     * @param value          current value of the field
+     * @param chiefComplaint what chief complaint the field belongs to(mostly used for hpi)
+     * @return a new TabFieldItem or null if name/value are empty
+     */
+    public static TabFieldItem createTabFieldItem(String name,
+                                                  String type,
+                                                  String size,
+                                                  Integer order,
+                                                  String placeholder,
+                                                  String value,
+                                                  String chiefComplaint) {
+
+        if (StringUtils.isNullOrWhiteSpace(name) ||
+                StringUtils.isNullOrWhiteSpace(value)) {
+
+            return null;
+        }
+
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setName(name);
+        tabFieldItem.setValue(value);
+        if (StringUtils.isNotNullOrWhiteSpace(placeholder))
+            tabFieldItem.setPlaceholder(placeholder);
+        if (order != null)
+            tabFieldItem.setOrder(order);
+        if (StringUtils.isNotNullOrWhiteSpace(size))
+            tabFieldItem.setSize(size);
+        if (StringUtils.isNotNullOrWhiteSpace(type))
+            tabFieldItem.setType(type);
         if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint))
             tabFieldItem.setChiefComplaint(chiefComplaint);
 
         return tabFieldItem;
     }
-     */
+
 
     /**
      * Create a new TabFieldItem
@@ -313,25 +345,25 @@ public class ItemMapper {
      * @return tab field with value
 
     public static TabFieldItem createTabFieldItem(IPatientEncounterTabField patientEncounterTabField) {
-        if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
-            return null;
-        }
+    if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
+    return null;
+    }
 
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
-        tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());
-        tabFieldItem.setPlaceholder(patientEncounterTabField.getTabField().getPlaceholder());
-        if (patientEncounterTabField.getTabField().getTabFieldSize() != null)
-            tabFieldItem.setSize(patientEncounterTabField.getTabField().getTabFieldSize().getName());
-        if (patientEncounterTabField.getTabField().getTabFieldType() != null)
-            tabFieldItem.setType(patientEncounterTabField.getTabField().getTabFieldType().getName());
-        tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
-        if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
-        else tabFieldItem.setIsCustom(true);
-        if (patientEncounterTabField.getChiefComplaint() != null)
-            tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
+    TabFieldItem tabFieldItem = new TabFieldItem();
+    tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
+    tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());
+    tabFieldItem.setPlaceholder(patientEncounterTabField.getTabField().getPlaceholder());
+    if (patientEncounterTabField.getTabField().getTabFieldSize() != null)
+    tabFieldItem.setSize(patientEncounterTabField.getTabField().getTabFieldSize().getName());
+    if (patientEncounterTabField.getTabField().getTabFieldType() != null)
+    tabFieldItem.setType(patientEncounterTabField.getTabField().getTabFieldType().getName());
+    tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
+    if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
+    else tabFieldItem.setIsCustom(true);
+    if (patientEncounterTabField.getChiefComplaint() != null)
+    tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
 
-        return tabFieldItem;
+    return tabFieldItem;
     }
      */
     /**
@@ -340,9 +372,9 @@ public class ItemMapper {
      * @param name name of the team
      * @return a new team item or null parameters are empty
      */
-    public static TeamItem createTeamItem(String name){
+    public static TeamItem createTeamItem(String name) {
 
-        if (StringUtils.isNullOrWhiteSpace(name)){
+        if (StringUtils.isNullOrWhiteSpace(name)) {
             return null;
         }
 
@@ -355,13 +387,13 @@ public class ItemMapper {
     /**
      * Create a team item
      *
-     * @param name name of the team
+     * @param name     name of the team
      * @param location where the team is based out of
      * @return a new team item or null parameters are empty
      */
-    public static TeamItem createTeamItem(String name, String location){
+    public static TeamItem createTeamItem(String name, String location) {
 
-        if (StringUtils.isNullOrWhiteSpace(name)){
+        if (StringUtils.isNullOrWhiteSpace(name)) {
             return null;
         }
 
@@ -375,14 +407,14 @@ public class ItemMapper {
     /**
      * Create a team item
      *
-     * @param name name of the team
-     * @param location where the team is based out of
+     * @param name        name of the team
+     * @param location    where the team is based out of
      * @param description a description of the team
      * @return a new team item or null if name is empty
      */
-    public static TeamItem createTeamItem(String name, String location, String description){
+    public static TeamItem createTeamItem(String name, String location, String description) {
 
-        if (StringUtils.isNullOrWhiteSpace(name)){
+        if (StringUtils.isNullOrWhiteSpace(name)) {
             return null;
         }
 
@@ -395,24 +427,23 @@ public class ItemMapper {
     }
 
 
-
     /**
      * Creates a trip item
      *
-     * @param teamName name of the team
-     * @param tripCity city of the trip
+     * @param teamName    name of the team
+     * @param tripCity    city of the trip
      * @param tripCountry country of the trip
-     * @param startDate when the trip starts
-     * @param endDate when the trip ends
+     * @param startDate   when the trip starts
+     * @param endDate     when the trip ends
      * @return a new trip item or null if any of the parameters are empty
      */
     public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
 
-        if (StringUtils.isNullOrWhiteSpace(teamName)||
+        if (StringUtils.isNullOrWhiteSpace(teamName) ||
                 StringUtils.isNullOrWhiteSpace(tripCity) ||
                 StringUtils.isNullOrWhiteSpace(tripCountry) ||
                 startDate == null ||
-                endDate == null){
+                endDate == null) {
             return null;
         }
 

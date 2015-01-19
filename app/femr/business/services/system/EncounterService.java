@@ -340,7 +340,7 @@ public class EncounterService implements IEncounterService {
                 });
 
                 for (ITabField tf : t.getTabFields()) {
-                    //this query gets sorted by descending date then grabs the first row so we only get the most recent value
+                    //this query gets sorted by descending date so the most recent value (the one to display) always comes first
                     Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
                             .where()
                             .eq("tabField", tf)
@@ -348,70 +348,18 @@ public class EncounterService implements IEncounterService {
                             .order()
                             .desc("date_taken");
 
-                    List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+                    List<? extends IPatientEncounterTabField> patientEncounterField = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+                    TabFieldItem tabFieldItem;
+                    //add the respective filled out tab fields to each tab
+                    if (patientEncounterField != null && patientEncounterField.size() > 0) {
 
-                    String name = tf.getName();
-                    String type = tf.getTabFieldType().getName();
+                        IPatientEncounterTabField patientEncounterTabField = patientEncounterField.get(0);
+                        tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
+                        tabItem.addTabFieldItem(tabFieldItem);
+                    } else {//add the non filled out tab fields to each tab
 
-
-                    //handles the tab fields with value
-                    if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
-                        //hpi is a special case because the tab fields can exist more than once for each chief complaint.
-                        //for example, this requires the onset field to exist twice as "onset0" and "onset1", both with different values
-                        //and matching the number of chief complaints that exist
-                        if (t.getName().toLowerCase().equals("hpi")){
-                            for (int hpiBox = 0; hpiBox < numberOfChiefComplaints; hpiBox++){
-                                IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(hpiBox);
-                                if (patientEncounterTabField != null) {
-                                    String value = patientEncounterTabField.getTabFieldValue();
-                                    String chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
-                                }
-                                name = name + hpiBox;
-                                tabItem.addTabFieldItem(name, type, value, chiefComplaint);
-                            }
-                        }else{
-                            //every tab other than hpi is handeled in here
-                            IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(0);
-                            String value = patientEncounterTabField.getTabFieldValue();
-                            String chiefComplaint = null;
-                            if (patientEncounterTabField.getChiefComplaint() != null) {
-                                chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
-                            }
-
-                            if (!t.getIsCustom()) {
-
-                                tabItem.addTabFieldItem(name, type, value, chiefComplaint);
-                            } else if (t.getIsCustom()) {
-
-                                String size = null;
-                                if (tf.getTabFieldSize() != null)
-                                    size = tf.getTabFieldSize().getName();
-                                //else
-                                //response.addError("", tabField.getName() + " doesn't have a sort order");
-                                Integer sortOrder = tf.getOrder();
-                                String placeholder = tf.getPlaceholder();
-
-                                tabItem.addTabFieldItem(name, type, size, sortOrder, placeholder, value, chiefComplaint);
-                            }
-                        }
-
-                    } else {//handles the tab fields without value
-
-                        if (!t.getIsCustom()) {
-
-                            tabItem.addTabFieldItem(name, type);
-                        } else if (t.getIsCustom()) {
-
-                            String size = null;
-                            if (tf.getTabFieldSize() != null)
-                                size = tf.getTabFieldSize().getName();
-                            //else
-                            //response.addError("", tabField.getName() + " doesn't have a sort order");
-                            Integer sortOrder = tf.getOrder();
-                            String placeholder = tf.getPlaceholder();
-
-                            tabItem.addTabFieldItem(name, type, size, sortOrder, placeholder);
-                        }
+                        tabFieldItem = getTabFieldItem(tf);
+                        tabItem.addTabFieldItem(tabFieldItem);
                     }
 
 
@@ -425,6 +373,40 @@ public class EncounterService implements IEncounterService {
         }
 
         return response;
+    }
+
+    private TabFieldItem getTabFieldItemWithValue(IPatientEncounterTabField patientEncounterTabField) {
+        ITabField tf = patientEncounterTabField.getTabField();
+
+        String name = tf.getName();
+        String type = tf.getTabFieldType().getName();
+        String size = null;
+        if (tf.getTabFieldSize() != null)
+            size = tf.getTabFieldSize().getName();
+        Integer sortOrder = tf.getOrder();
+        String placeholder = tf.getPlaceholder();
+        String value = patientEncounterTabField.getTabFieldValue();
+        String chiefComplaint = null;
+        if (patientEncounterTabField.getChiefComplaint() != null)
+            chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
+
+        return ItemMapper.createTabFieldItem(name, type, size, sortOrder, placeholder, value, chiefComplaint);
+    }
+
+    private TabFieldItem getTabFieldItem(ITabField tf) {
+
+        String name = tf.getName();
+        String type = tf.getTabFieldType().getName();
+        String size = null;
+        if (tf.getTabFieldSize() != null)
+            size = tf.getTabFieldSize().getName();
+        //else
+        //response.addError("", tabField.getName() + " doesn't have a sort order");
+        Integer sortOrder = tf.getOrder();
+        String placeholder = tf.getPlaceholder();
+
+        return ItemMapper.createTabFieldItem(name, type, size, sortOrder, placeholder);
+
     }
 
 

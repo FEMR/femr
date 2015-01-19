@@ -35,12 +35,9 @@ public class EditViewModelGet {
     private List<ProblemItem> problemItems;
     //List of prescriptions for the patient
     private List<PrescriptionItem> prescriptionItems;
-
     //photos for the medical tab
     private List<PhotoItem> photos;
-
     private SettingItem settings;
-
     private List<TabItem> tabItems;
 
     public PatientItem getPatientItem() {

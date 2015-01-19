@@ -348,18 +348,39 @@ public class EncounterService implements IEncounterService {
                             .order()
                             .desc("date_taken");
 
-                    List<? extends IPatientEncounterTabField> patientEncounterField = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+                    List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
                     TabFieldItem tabFieldItem;
-                    //add the respective filled out tab fields to each tab
-                    if (patientEncounterField != null && patientEncounterField.size() > 0) {
 
-                        IPatientEncounterTabField patientEncounterTabField = patientEncounterField.get(0);
-                        tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
-                        tabItem.addTabFieldItem(tabFieldItem);
-                    } else {//add the non filled out tab fields to each tab
+                    //add the respective filled out tab fields to each tab. HPI gets special treatment because
+                    //duplicate fields exist when multiple chief complaints are being used
+                    if (t.getName().toLowerCase().equals("hpi")) {
+                        if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
 
-                        tabFieldItem = getTabFieldItem(tf);
-                        tabItem.addTabFieldItem(tabFieldItem);
+                            for (int petf_index = 0; petf_index < patientEncounterFieldsWithValue.size(); petf_index++){
+
+                                IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(petf_index);
+                                tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
+                                tabFieldItem.setName(tabFieldItem.getName() + petf_index);
+                                tabItem.addTabFieldItem(tabFieldItem);
+                            }
+
+                        } else {//add the non filled out tab fields to each tab
+
+                            tabFieldItem = getTabFieldItem(tf);
+                            tabFieldItem.setName(tf.getName() + "0");
+                            tabItem.addTabFieldItem(tabFieldItem);
+                        }
+                    } else {
+                        if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
+
+                            IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(0);
+                            tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
+                            tabItem.addTabFieldItem(tabFieldItem);
+                        } else {//add the non filled out tab fields to each tab
+
+                            tabFieldItem = getTabFieldItem(tf);
+                            tabItem.addTabFieldItem(tabFieldItem);
+                        }
                     }
 
 

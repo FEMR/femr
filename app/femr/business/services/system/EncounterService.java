@@ -350,7 +350,7 @@ public class EncounterService implements IEncounterService {
                     if (t.getName().toLowerCase().equals("hpi")) {
                         if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
 
-                            for (int petf_index = 0; petf_index < patientEncounterFieldsWithValue.size(); petf_index++){
+                            for (int petf_index = 0; petf_index < patientEncounterFieldsWithValue.size(); petf_index++) {
 
                                 IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(petf_index);
                                 tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
@@ -366,10 +366,20 @@ public class EncounterService implements IEncounterService {
                         }
                     } else {
                         if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
+                            //add problems to the list, doesn't work if you can edit them
+                            if (tf.getName().toLowerCase().equals("problem")){
+                                for (int problemIndex = 0; problemIndex < patientEncounterFieldsWithValue.size(); problemIndex++){
+                                    IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(problemIndex);
+                                    tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
+                                    tabFieldItem.setName(tabFieldItem.getName() + problemIndex);
+                                    tabItem.addTabFieldItem(tabFieldItem);
+                                }
+                            }else{
+                                IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(0);
+                                tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
+                                tabItem.addTabFieldItem(tabFieldItem);
+                            }
 
-                            IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(0);
-                            tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
-                            tabItem.addTabFieldItem(tabFieldItem);
                         } else {//add the non filled out tab fields to each tab
 
                             tabFieldItem = getTabFieldItem(tf);
@@ -427,61 +437,62 @@ public class EncounterService implements IEncounterService {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
+        ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
 
-     @Override public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
-     ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
+        //list of values to insert into database
+        List<IPatientEncounterTabField> tabFields = new ArrayList<>();
+        try {
+            for (TabFieldItem tf : tabFieldItems) {
+                //get the current tab field item
+                ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
+                        .where()
+                        .eq("name", tf.getName());
+                ITabField tabField = tabFieldRepository.findOne(query);
 
-     //list of values to insert into database
-     List<IPatientEncounterTabField> tabFields = new ArrayList<>();
-     try {
-     for (TabFieldItem tf : tabFieldItems) {
-     //get the current tab field item
-     ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
-     .where()
-     .eq("name", tf.getName());
-     ITabField tabField = tabFieldRepository.findOne(query);
-
-     //create a patientEncounterTabField for saving
-     IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue(), encounterId);
-     if (StringUtils.isNotNullOrWhiteSpace(tf.getChiefComplaint())) {
-     ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
-     .where()
-     .eq("value", tf.getChiefComplaint().trim())
-     .eq("patient_encounter_id", encounterId);
-     IChiefComplaint chiefComplaint = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
-     if (chiefComplaint != null) {
-     patientEncounterTabField.setChiefComplaint(chiefComplaint);
-     }
-     }
-
-
-     //check to see if the tab field item already exists (updating will result in a duplicate)
-     ExpressionList<PatientEncounterTabField> query2 = QueryProvider.getPatientEncounterTabFieldQuery()
-     .where()
-     .eq("tabField", tabField)
-     .eq("patient_encounter_id", encounterId)
-     .eq("tab_field_value", tf.getValue());
-     List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
-     if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
-     //already exists - field wasn't changed
-     } else {
-     tabFields.add(patientEncounterTabField);
-     }
-     }
-     List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
+                //create a patientEncounterTabField for saving
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue(), encounterId);
+                if (StringUtils.isNotNullOrWhiteSpace(tf.getChiefComplaint())) {
+                    ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
+                            .where()
+                            .eq("value", tf.getChiefComplaint().trim())
+                            .eq("patient_encounter_id", encounterId);
+                    IChiefComplaint chiefComplaint = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
+                    if (chiefComplaint != null) {
+                        patientEncounterTabField.setChiefComplaint(chiefComplaint);
+                    }
+                }
 
 
-     List<TabFieldItem> tabFieldItemsToReturn = new ArrayList<>();
-     for (IPatientEncounterTabField petf : savedTabFields) {
-     tabFieldItemsToReturn.add(DomainMapper.createTabFieldItem(petf));
-     }
-     response.setResponseObject(tabFieldItemsToReturn);
-     } catch (Exception ex) {
-     response.addError("exception", ex.getMessage());
-     }
+                //check to see if the tab field item already exists (updating will result in a duplicate)
+                ExpressionList<PatientEncounterTabField> query2 = QueryProvider.getPatientEncounterTabFieldQuery()
+                        .where()
+                        .eq("tabField", tabField)
+                        .eq("patient_encounter_id", encounterId)
+                        .eq("tab_field_value", tf.getValue());
+                List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
+                if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
+                    //already exists - field wasn't changed
+                } else {
+                    tabFields.add(patientEncounterTabField);
+                }
+            }
+            List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
 
-     return response;
-     }       */
+
+            List<TabFieldItem> tabFieldItemsToReturn = new ArrayList<>();
+            for (IPatientEncounterTabField petf : savedTabFields) {
+                tabFieldItemsToReturn.add(DomainMapper.createTabFieldItem(petf));
+            }
+            response.setResponseObject(tabFieldItemsToReturn);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
 
     /**
      * {@inheritDoc}

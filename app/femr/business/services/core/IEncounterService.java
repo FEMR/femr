@@ -88,9 +88,9 @@ public interface IEncounterService {
      * @param encounterId   id of the current encounter
      * @param userId        id of the user saving the fields
      * @return updated list of items
-
-    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
      */
+    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
+
 
 
     /**

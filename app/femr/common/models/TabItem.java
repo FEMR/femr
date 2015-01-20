@@ -19,17 +19,20 @@
 package femr.common.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TabItem {
     private String name;
     private int leftColumnSize;
     private int rightColumnSize;
     private boolean isCustom;
-    private List<TabFieldItem> fields;
+    //private List<TabFieldItem> fields;
+    private Map<String, List<TabFieldItem>> fields;
 
     public TabItem() {
-        this.fields = new ArrayList<>();
+        this.fields = new HashMap<>();
     }
 
     public String getName() {
@@ -64,17 +67,17 @@ public class TabItem {
         this.isCustom = isCustom;
     }
 
-    public List<TabFieldItem> getFields() {
-        return fields;
+    public List<TabFieldItem> getFields(String chiefComplaint) {
+        return fields.get(chiefComplaint);
     }
 
-    public void setFields(List<TabFieldItem> fields) {
-        this.fields = fields;
+    public void setFields(String chiefComplaint, List<TabFieldItem> fields) {
+        this.fields.put(chiefComplaint, fields);
     }
 
 
-    public TabFieldItem getTabFieldItemByName(String name) {
-        for (TabFieldItem tfi : this.fields) {
+    public TabFieldItem getTabFieldItemByName(String chiefComplaint, String name) {
+        for (TabFieldItem tfi : this.fields.get(chiefComplaint)) {
             if (tfi.getName().toLowerCase().equals(name.toLowerCase()))
                 return tfi;
         }
@@ -82,8 +85,11 @@ public class TabItem {
     }
 
 
-    public void addTabFieldItem(TabFieldItem tabFieldItem) {
-
-        this.fields.add(tabFieldItem);
+    public void addTabFieldItem(String chiefComplaint, TabFieldItem tabFieldItem) {
+        List<TabFieldItem> tabFieldItems = this.fields.get(chiefComplaint);
+        if (tabFieldItems == null)
+            tabFieldItems = new ArrayList<>();
+        tabFieldItems.add(tabFieldItem);
+        this.fields.put(chiefComplaint, tabFieldItems);
     }
 }

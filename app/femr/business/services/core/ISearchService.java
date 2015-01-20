@@ -136,4 +136,11 @@ public interface ISearchService {
      * @return patient item for json serialization
      */
     ServiceResponse<List<PatientItem>> findPatientsForSearch();
+
+    /**
+     * Get all diagnosis for help on problem input fields in medical
+     *
+     * @return ALL STRINGS, BABY
+     */
+    ServiceResponse<List<String>> findDiagnosisForSearch();
 }

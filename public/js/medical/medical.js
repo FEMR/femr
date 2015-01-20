@@ -110,6 +110,7 @@ var multipleChiefComplaintFeature = {
 
 
 $(document).ready(function () {
+
     //set a global variable to track browser compatibility with image previews
     window.isFileReader = typeof FileReader !== 'undefined';
 
@@ -163,8 +164,8 @@ $(document).ready(function () {
         } else {
             return;
         }
-        $("#problem" + $("body").data("prob")).removeClass("hidden");
-        $("#problem" + $("body").data("prob")).focus();
+        $("#problem" + $("body").data("prob") + "-container").removeClass("hidden");
+        $("#problem" + $("body").data("prob") + "-container").focus();
         return;
     });
 
@@ -172,9 +173,9 @@ $(document).ready(function () {
         if (typeof $("body").data("prob") === "undefined") {
             return;
         } else if ($("body").data("prob") > 1) {
-            $("#problem" + $("body").data("prob")).addClass("hidden");
-            $("#problem" + ($("body").data("prob"))).val('');
-            $("#problem" + ($("body").data("prob") - 1)).focus();
+            $("#problem" + $("body").data("prob") + "-container").addClass("hidden");
+            $("#problem" + ($("body").data("prob")) + "-container").val('');
+            $("#problem" + ($("body").data("prob") - 1) + "-container").focus();
             $("body").data("prob", $("body").data("prob") - 1);
         }
         return;
@@ -249,6 +250,9 @@ $(document).ready(function () {
         }
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
+
+    registerTypeAhead();
+
 });
 
 function JSONifyDynamicFields() {
@@ -315,7 +319,8 @@ function getNumberOfFilledScripts() {
 function getNumberOfProblems() {
     var x = 0;
     $('.problem').each(function () {
-        if ($(this).attr("readonly")) {
+        //if ($(this).attr("readonly")) {
+        if (!$(this).hasClass("hidden")) {
             x++;
         }
     });
@@ -503,6 +508,58 @@ function photoNameFixup() {
     });
 
     return true;
+}
+
+
+function registerTypeAhead(obj){
+
+
+    var substringMatcher = function(strs) {
+        return function findMatches(q, cb) {
+            var matches, substrRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function(i, str) {
+                if (substrRegex.test(str)) {
+                    // the typeahead jQuery plugin expects suggestions to a
+                    // JavaScript object, refer to typeahead docs for more info
+                    matches.push({ value: str });
+                }
+            });
+
+            cb(matches);
+        };
+    };
+
+    var diagnoses = [];
+
+    // get diagnoses, register typeahead on response
+    $.getJSON("/search/typeahead/diagnoses", function (data) {
+
+        diagnoses = data;
+
+        $(".problem").find('input[type="text"]').each(function(){
+
+            $(this).typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                {
+                    name: 'dianoses',
+                    displayKey: 'value',
+                    source: substringMatcher(diagnoses)
+                });
+        });
+
+    });
 }
 
 

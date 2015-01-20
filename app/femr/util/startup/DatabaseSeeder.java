@@ -33,6 +33,7 @@ import java.util.List;
 
 public class DatabaseSeeder {
 
+    private final Repository<Diagnosis> diagnosisRepository;
     private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final Repository<MedicationForm> medicationFormRepository;
     private final IRepository<MissionCountry> missionCountryRepository;
@@ -48,6 +49,7 @@ public class DatabaseSeeder {
     private final Repository<PatientAgeClassification> patientAgeClassificationRepository;
 
     public DatabaseSeeder() {
+        diagnosisRepository = new Repository<>();
         medicationMeasurementUnitRepository = new Repository<>();
         medicationFormRepository = new Repository<>();
         userRepository = new Repository<>();
@@ -73,6 +75,133 @@ public class DatabaseSeeder {
         seedMedicationUnits();
         seedMedicationForms();
         seedPatientAgeClassification();
+        seedDiagnosis();
+    }
+
+    private void seedDiagnosis() {
+        List<? extends IDiagnosis> diagnosis_but_plural = diagnosisRepository.findAll(Diagnosis.class);
+        List<String> availableDiagnosis = new ArrayList<>();
+
+        availableDiagnosis.add("Acne Vulgaris");
+        availableDiagnosis.add("Allergies");
+        availableDiagnosis.add("Amenorrhea");
+        availableDiagnosis.add("Anemia, Iron Deficiency");
+        availableDiagnosis.add("Anemia, Sickle Cell");
+        availableDiagnosis.add("Anxiety Disorder");
+        availableDiagnosis.add("Arthritis, Osteo");
+        availableDiagnosis.add("Arthritis, Rheumatoid");
+        availableDiagnosis.add("Ascites");
+        availableDiagnosis.add("Asthma");
+        availableDiagnosis.add("Bacterial Infection, Abscess");
+        availableDiagnosis.add("Bacterial Infection, Skin");
+        availableDiagnosis.add("Bacterial Vaginosis");
+        availableDiagnosis.add("Trichomonas Vaginalis");
+        availableDiagnosis.add("Benign Prostatic Hyperplasia");
+        availableDiagnosis.add("Bronchitis");
+        availableDiagnosis.add("Bursitis");
+        availableDiagnosis.add("Cataracts");
+        availableDiagnosis.add("Cerebral Palsy");
+        availableDiagnosis.add("Chlamydia");
+        availableDiagnosis.add("Chronic Obstructive Pulmonary Disease");
+        availableDiagnosis.add("Constipation");
+        availableDiagnosis.add("Contact Dermatitis");
+        availableDiagnosis.add("Cough");
+        availableDiagnosis.add("Conjuctivitis");
+        availableDiagnosis.add("Cystitis");
+        availableDiagnosis.add("Dehydration");
+        availableDiagnosis.add("Dental, Abscess");
+        availableDiagnosis.add("Dental, Chipped Tooth");
+        availableDiagnosis.add("Dental, Gingivitis");
+        availableDiagnosis.add("Dental, Infection");
+        availableDiagnosis.add("Dental, Pain");
+        availableDiagnosis.add("Depression");
+        availableDiagnosis.add("Diabetes Mellitus, Type 1");
+        availableDiagnosis.add("Diabetes mellitus, Type 2");
+        availableDiagnosis.add("Diarrhea");
+        availableDiagnosis.add("Dizziness");
+        availableDiagnosis.add("Dry Eyes");
+        availableDiagnosis.add("Dry Skin");
+        availableDiagnosis.add("Dysmenorrhea");
+        availableDiagnosis.add("Dysuria");
+        availableDiagnosis.add("Ear Infection (not Otitis Media)");
+        availableDiagnosis.add("Eczema");
+        availableDiagnosis.add("Fever");
+        availableDiagnosis.add("Folliculitis");
+        availableDiagnosis.add("Gastric Ulcer");
+        availableDiagnosis.add("Gastritis");
+        availableDiagnosis.add("Gastroenteritis");
+        availableDiagnosis.add("Gastroesophageal Reflux Disease");
+        availableDiagnosis.add("Headache");
+        availableDiagnosis.add("Herpangina");
+        availableDiagnosis.add("Herpes Simplex Virus, Oral");
+        availableDiagnosis.add("Herpes Simplex Virus, Genital");
+        availableDiagnosis.add("High Blood Pressure");
+        availableDiagnosis.add("Hypertension");
+        availableDiagnosis.add("Irregular Menstruation");
+        availableDiagnosis.add("Laceration");
+        availableDiagnosis.add("Lipoma");
+        availableDiagnosis.add("Lymphadenitis");
+        availableDiagnosis.add("Malaria");
+        availableDiagnosis.add("Malnutrition");
+        availableDiagnosis.add("Melena");
+        availableDiagnosis.add("Nausea");
+        availableDiagnosis.add("Neuropathy");
+        availableDiagnosis.add("Orthostatic Hypotension");
+        availableDiagnosis.add("Otitis Media");
+        availableDiagnosis.add("Pain, Abdominal");
+        availableDiagnosis.add("Pain, Arm");
+        availableDiagnosis.add("Pain, Bone");
+        availableDiagnosis.add("Pain, Breast");
+        availableDiagnosis.add("Pain, Costrochondral");
+        availableDiagnosis.add("Pain, Ear");
+        availableDiagnosis.add("Pain, Eye");
+        availableDiagnosis.add("Pain, Foot");
+        availableDiagnosis.add("Pain, Generalized");
+        availableDiagnosis.add("Pain, Joint");
+        availableDiagnosis.add("Pain, Knee");
+        availableDiagnosis.add("Pain, Leg");
+        availableDiagnosis.add("Pain, Muscle");
+        availableDiagnosis.add("Parasitic Infection");
+        availableDiagnosis.add("Pelvic Inflammatory Disease");
+        availableDiagnosis.add("Pharyngitis, Bacterial");
+        availableDiagnosis.add("Pharyngitis, Viral");
+        availableDiagnosis.add("Phimosis");
+        availableDiagnosis.add("Pneumonia");
+        availableDiagnosis.add("Pregnancy");
+        availableDiagnosis.add("Prostitis");
+        availableDiagnosis.add("Psoriasis");
+        availableDiagnosis.add("Pylonephritis");
+        availableDiagnosis.add("Scabies");
+        availableDiagnosis.add("Sebhorragic Dermatitis");
+        availableDiagnosis.add("Seizure Disorder");
+        availableDiagnosis.add("Shortness of Breath");
+        availableDiagnosis.add("Angina Pectoris, Stable");
+        availableDiagnosis.add("Angina Pectoris, Unstable");
+        availableDiagnosis.add("Sinusitis");
+        availableDiagnosis.add("Sty");
+        availableDiagnosis.add("Syphilis");
+        availableDiagnosis.add("Thelarche");
+        availableDiagnosis.add("Tinea Capitis");
+        availableDiagnosis.add("Tinea Corporis");
+        availableDiagnosis.add("Tinea Cruris");
+        availableDiagnosis.add("Tinea Legionella");
+        availableDiagnosis.add("Tinea Versicolor");
+        availableDiagnosis.add("Urinary Tract Infection");
+        availableDiagnosis.add("Uterine Fibroids");
+        availableDiagnosis.add("Uterine Prolapse");
+        availableDiagnosis.add("Candiasis, Vaginal");
+        availableDiagnosis.add("Candiasis, Oral");
+        availableDiagnosis.add("Candiasis, Cutaneous");
+
+        List<Diagnosis> newDiagnosis = new ArrayList<>();
+        Diagnosis diagnosis;
+        for (String diag : availableDiagnosis)
+            if (diagnosis_but_plural != null && !containDiagnosis(diagnosis_but_plural, diag)) {
+                diagnosis = new Diagnosis();
+                diagnosis.setName(diag);
+                newDiagnosis.add(diagnosis);
+            }
+        diagnosisRepository.createAll(newDiagnosis);
     }
 
     private void seedMissionTripInformation() {
@@ -295,24 +424,21 @@ public class DatabaseSeeder {
         List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
         List<MissionTeam> newMissionTeams = new ArrayList<>();
         MissionTeam missionTeam;
-        if (missionTeams != null && !containMissionTeam(missionTeams, "Aid for Haiti"))
-        {
+        if (missionTeams != null && !containMissionTeam(missionTeams, "Aid for Haiti")) {
             missionTeam = new MissionTeam();
             missionTeam.setName("Aid for Haiti");
             missionTeam.setLocation("Tennessee");
             missionTeam.setDescription("Dr. Sutherland's group");
             newMissionTeams.add(missionTeam);
         }
-        if (missionTeams != null && !containMissionTeam(missionTeams, "WSU-WHSO"))
-        {
+        if (missionTeams != null && !containMissionTeam(missionTeams, "WSU-WHSO")) {
             missionTeam = new MissionTeam();
             missionTeam.setName("WSU-WHSO");
             missionTeam.setLocation("Detroit");
             missionTeam.setDescription("Wayne State medical students");
             newMissionTeams.add(missionTeam);
         }
-        if (missionTeams != null && !containMissionTeam(missionTeams, "ApParent Project"))
-        {
+        if (missionTeams != null && !containMissionTeam(missionTeams, "ApParent Project")) {
             missionTeam = new MissionTeam();
             missionTeam.setName("ApParent Project");
             missionTeam.setLocation("New York");
@@ -326,13 +452,13 @@ public class DatabaseSeeder {
         List<MissionCity> newMissionCities = new ArrayList<>();
 
         MissionCity missionCity;
-        if (missionCities != null && !containMissionCity(missionCities, "Morne De L' Hopital", "Haiti")){
+        if (missionCities != null && !containMissionCity(missionCities, "Morne De L' Hopital", "Haiti")) {
             missionCity = new MissionCity();
             missionCity.setName("Morne De L' Hopital");
             missionCity.setMissionCountry(getMissionCountry(missionCountries, "Haiti"));
             newMissionCities.add(missionCity);
         }
-        if (missionCities != null && !containMissionCity(missionCities, "Port-au-Prince", "Haiti")){
+        if (missionCities != null && !containMissionCity(missionCities, "Port-au-Prince", "Haiti")) {
             missionCity = new MissionCity();
             missionCity.setName("Port-au-Prince");
             missionCity.setMissionCountry(getMissionCountry(missionCountries, "Haiti"));
@@ -633,6 +759,15 @@ public class DatabaseSeeder {
     private static boolean containMissionCountry(List<? extends IMissionCountry> missionCountries, String name) {
         for (IMissionCountry mc : missionCountries) {
             if (mc.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containDiagnosis(List<? extends IDiagnosis> diagnosises, String name) {
+        for (IDiagnosis d : diagnosises) {
+            if (d.getName().equals(name)) {
                 return true;
             }
         }

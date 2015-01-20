@@ -111,12 +111,6 @@ var multipleChiefComplaintFeature = {
 
 $(document).ready(function () {
 
-    // GET DIAGNOSES
-    $.getJSON("/search/typeahead/diagnoses", function (data) {
-        console.log(data);
-    });
-
-
     //set a global variable to track browser compatibility with image previews
     window.isFileReader = typeof FileReader !== 'undefined';
 
@@ -170,8 +164,8 @@ $(document).ready(function () {
         } else {
             return;
         }
-        $("#problem" + $("body").data("prob")).removeClass("hidden");
-        $("#problem" + $("body").data("prob")).focus();
+        $("#problem" + $("body").data("prob") + "-container").removeClass("hidden");
+        $("#problem" + $("body").data("prob") + "-container").focus();
         return;
     });
 
@@ -179,9 +173,9 @@ $(document).ready(function () {
         if (typeof $("body").data("prob") === "undefined") {
             return;
         } else if ($("body").data("prob") > 1) {
-            $("#problem" + $("body").data("prob")).addClass("hidden");
-            $("#problem" + ($("body").data("prob"))).val('');
-            $("#problem" + ($("body").data("prob") - 1)).focus();
+            $("#problem" + $("body").data("prob") + "-container").addClass("hidden");
+            $("#problem" + ($("body").data("prob")) + "-container").val('');
+            $("#problem" + ($("body").data("prob") - 1) + "-container").focus();
             $("body").data("prob", $("body").data("prob") - 1);
         }
         return;
@@ -257,13 +251,7 @@ $(document).ready(function () {
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 
-
-    $("input.problem").each(function(){
-
-        //if( !$(this).hasClass("hidden") ) {
-            registerTypeAhead(this);
-        //}
-    });
+    registerTypeAhead();
 
 });
 
@@ -550,28 +538,28 @@ function registerTypeAhead(obj){
         };
     };
 
-
     var diagnoses = [];
 
-    // Get Patients from server
-    //$.getJSON("/search/typeahead/patients", function (data) {
+    // get diagnoses, register typeahead on response
+    $.getJSON("/search/typeahead/diagnoses", function (data) {
 
-        //diagnoses = data;
-        diagnoses = ["test1", "test2", "test3"];
+        diagnoses = data;
 
-        $(obj).typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 1
-        },
-        {
-            name: 'dianoses',
-            displayKey: 'value',
-            source: substringMatcher(diagnoses)
+        $(".problem").find('input[type="text"]').each(function(){
+
+            $(this).typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                {
+                    name: 'dianoses',
+                    displayKey: 'value',
+                    source: substringMatcher(diagnoses)
+                });
         });
 
-
-    //});
+    });
 }
 
 

@@ -309,15 +309,9 @@ public class EncounterService implements IEncounterService {
         ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
                 .where()
                 .eq("isDeleted", false);
-        ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId);
 
         try {
             List<? extends ITab> allTabs = tabRepository.find(tabQuery);
-            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
-            Integer numberOfChiefComplaints = null;
-            numberOfChiefComplaints = chiefComplaints.size();
 
             for (ITab t : allTabs) {
 

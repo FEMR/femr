@@ -1,10 +1,10 @@
-@(number: Integer, value: java.lang.String)
+@(number: Integer, problemField: femr.common.models.TabFieldItem)
 
 @if(number == 1) {
-    @if(value != null) {
+    @if(problemField != null) {
 
         <div id="problem@number-container" class="problem">
-            <input id="problem@number" type="text" class="form-control input-sm" value="@value" readonly/>
+            <input id="problem@number" type="text" class="form-control input-sm" value="@problemField.getValue" readonly/>
         </div>
     } else {
 
@@ -13,10 +13,10 @@
         </div>
     }
 } else {
-    @if(value != null) {
+    @if(problemField != null) {
 
         <div id="problem@number-container" class="problem">
-            <input id="problem@number" type="text" class="form-control input-sm" value="@value" readonly/>
+            <input id="problem@number" type="text" class="form-control input-sm" value="@problemField.getValue" readonly/>
         </div>
     } else {
 

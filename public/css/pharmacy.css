@@ -183,3 +183,7 @@ input[style] {
     width: 100%;
     float: right;
 }
+
+#prescriber{
+    font-size: 10px;
+}

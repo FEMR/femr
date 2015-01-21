@@ -22,7 +22,8 @@ public class PrescriptionItem {
     private int id;
     private String name;
     private Integer replacementId;
-
+    private String prescriberFirstName;
+    private String prescriberLastName;
 
     public PrescriptionItem(String name){
         this.name = name;
@@ -54,5 +55,21 @@ public class PrescriptionItem {
 
     public void setReplacementId(Integer replacementId) {
         this.replacementId = replacementId;
+    }
+
+    public String getPrescriberFirstName() {
+        return prescriberFirstName;
+    }
+
+    public void setPrescriberFirstName(String prescriberFirstName) {
+        this.prescriberFirstName = prescriberFirstName;
+    }
+
+    public String getPrescriberLastName() {
+        return prescriberLastName;
+    }
+
+    public void setPrescriberLastName(String prescriberLastName) {
+        this.prescriberLastName = prescriberLastName;
     }
 }

@@ -343,49 +343,12 @@ public class EncounterService implements IEncounterService {
                             .desc("date_taken");
 
                     List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+
                     TabFieldItem tabFieldItem;
 
-                    //add the respective filled out tab fields to each tab. HPI gets special treatment because
-                    //duplicate fields exist when multiple chief complaints are being used
-                    if (t.getName().toLowerCase().equals("hpi")) {
-                        if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
 
-                            for (int petf_index = 0; petf_index < patientEncounterFieldsWithValue.size(); petf_index++) {
 
-                                IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(petf_index);
-                                tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
-                                tabFieldItem.setName(tabFieldItem.getName() + petf_index);
-                                tabItem.addTabFieldItem(tabFieldItem);
-                            }
 
-                        } else {//add the non filled out tab fields to each tab
-
-                            tabFieldItem = getTabFieldItem(tf);
-                            tabFieldItem.setName(tf.getName() + "0");
-                            tabItem.addTabFieldItem(tabFieldItem);
-                        }
-                    } else {
-                        if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
-                            //add problems to the list, doesn't work if you can edit them
-                            if (tf.getName().toLowerCase().equals("problem")){
-                                for (int problemIndex = 0; problemIndex < patientEncounterFieldsWithValue.size(); problemIndex++){
-                                    IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(problemIndex);
-                                    tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
-                                    tabFieldItem.setName(tabFieldItem.getName() + problemIndex);
-                                    tabItem.addTabFieldItem(tabFieldItem);
-                                }
-                            }else{
-                                IPatientEncounterTabField patientEncounterTabField = patientEncounterFieldsWithValue.get(0);
-                                tabFieldItem = getTabFieldItemWithValue(patientEncounterTabField);
-                                tabItem.addTabFieldItem(tabFieldItem);
-                            }
-
-                        } else {//add the non filled out tab fields to each tab
-
-                            tabFieldItem = getTabFieldItem(tf);
-                            tabItem.addTabFieldItem(tabFieldItem);
-                        }
-                    }
 
 
                 }

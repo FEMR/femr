@@ -333,18 +333,21 @@ public class EncounterService implements IEncounterService {
                     }
                 });
 
+                //goes through each tab field that belongs to a specific tab
                 for (ITabField tf : t.getTabFields()) {
-                    //this query gets sorted by descending date so the most recent value (the one to display) always comes first
+
+                    //get a list of values that have been recorded for a specific tab field
                     Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
                             .where()
                             .eq("tabField", tf)
                             .eq("patient_encounter_id", encounterId)
                             .order()
                             .desc("date_taken");
-
                     List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
 
-                    TabFieldItem tabFieldItem;
+                    Map<String, List<TabFieldItem>> separatedTabFieldsByChiefComplaint = separateTabFieldsByChiefComplaint(patientEncounterFieldsWithValue);
+
+                    //grab the first one from each list, BECAUSE ITS THE MOST RECENT YAAAAA
 
 
 
@@ -361,6 +364,42 @@ public class EncounterService implements IEncounterService {
         }
 
         return response;
+    }
+
+    private Map<String, List<TabFieldItem>> separateTabFieldsByChiefComplaint(List<? extends IPatientEncounterTabField> patientEncounterTabFields){
+        Map<String, List<TabFieldItem>> mappedTabFields = new HashMap<>();
+        List<TabFieldItem> patientEncounterTabFieldItemsForMap;
+        TabFieldItem tabFieldItem;
+        for (IPatientEncounterTabField petf : patientEncounterTabFields){
+
+            tabFieldItem = ItemMapper.createTabFieldItem(petf.getTabField().getName(),
+                    petf.getTabField().getTabFieldType().getName(),
+                    petf.getTabField().getTabFieldSize().getName(),
+                    petf.getTabField().getOrder(),
+                    petf.getTabField().getPlaceholder(),
+                    petf.getTabFieldValue(),
+                    petf.getChiefComplaint().getValue());
+
+            String chiefComplaint;
+            if (petf.getChiefComplaint() != null)
+                chiefComplaint = petf.getChiefComplaint().getValue();
+            else
+                chiefComplaint = "";
+
+            if (!mappedTabFields.containsKey(chiefComplaint)){
+                //create a new entry
+                patientEncounterTabFieldItemsForMap = new ArrayList<>();
+                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
+                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
+            }else{
+
+                patientEncounterTabFieldItemsForMap = mappedTabFields.get(chiefComplaint);
+                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
+                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
+            }
+        }
+
+        return mappedTabFields;
     }
 
     private TabFieldItem getTabFieldItemWithValue(IPatientEncounterTabField patientEncounterTabField) {

@@ -26,6 +26,7 @@ public class TabFieldItem {
     private String placeholder;
     private String value;
     private Boolean isCustom;
+    private String chiefComplaint;
 
     public String getName() {
         return name;
@@ -81,5 +82,13 @@ public class TabFieldItem {
 
     public void setIsCustom(Boolean isCustom) {
         this.isCustom = isCustom;
+    }
+
+    public String getChiefComplaint() {
+        return chiefComplaint;
+    }
+
+    public void setChiefComplaint(String chiefComplaint) {
+        this.chiefComplaint = chiefComplaint;
     }
 }

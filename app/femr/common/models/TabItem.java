@@ -71,16 +71,31 @@ public class TabItem {
         return fields.get(chiefComplaint);
     }
 
+    public Map<String, List<TabFieldItem>> getFields(){
+        return fields;
+    }
+
+    public int getNumberOfChiefComplaints(){
+        int count = 0;
+        for (Map.Entry<String, List<TabFieldItem>> tabFieldEntry : fields.entrySet()){
+            count++;
+        }
+        return count;
+    }
+
     public void setFields(String chiefComplaint, List<TabFieldItem> fields) {
         this.fields.put(chiefComplaint, fields);
     }
 
 
     public TabFieldItem getTabFieldItemByName(String chiefComplaint, String name) {
-        for (TabFieldItem tfi : this.fields.get(chiefComplaint)) {
-            if (tfi.getName().toLowerCase().equals(name.toLowerCase()))
-                return tfi;
+        if (fields.get(chiefComplaint) != null){
+            for (TabFieldItem tfi : fields.get(chiefComplaint)) {
+                if (tfi.getName().toLowerCase().equals(name.toLowerCase()))
+                    return tfi;
+            }
         }
+
         return null;
     }
 

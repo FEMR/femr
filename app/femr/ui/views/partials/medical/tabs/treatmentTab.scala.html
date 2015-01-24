@@ -6,19 +6,19 @@
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
         <label for="assessment">Assessment</label>
-        <textarea rows="3" name="assessment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName("assessment") != null) @{
-            treatmentTab.getTabFieldItemByName("assessment").getValue
+        <textarea rows="3" name="assessment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "assessment") != null) @{
+            treatmentTab.getTabFieldItemByName(null, "assessment").getValue
         }</textarea>
     </div>
     <div class="form-group">
         <label for="problem">Diagnosis</label>
         <div class="row">
             <div class="col-xs-9 col-sm-9 col-md-9">
-                @problemField(0, treatmentTab.getTabFieldItemByName("problem0"))
-                @problemField(1, treatmentTab.getTabFieldItemByName("problem1"))
-                @problemField(2, treatmentTab.getTabFieldItemByName("problem2"))
-                @problemField(3, treatmentTab.getTabFieldItemByName("problem3"))
-                @problemField(4, treatmentTab.getTabFieldItemByName("problem4"))
+                @problemField(0, treatmentTab.getTabFieldItemByName(null, "problem0"))
+                @problemField(1, treatmentTab.getTabFieldItemByName(null, "problem1"))
+                @problemField(2, treatmentTab.getTabFieldItemByName(null, "problem2"))
+                @problemField(3, treatmentTab.getTabFieldItemByName(null, "problem3"))
+                @problemField(4, treatmentTab.getTabFieldItemByName(null, "problem4"))
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">
@@ -52,8 +52,8 @@
     </div>
     <div class="form-group">
         <label for="treatment">Treatment Given</label>
-        <textarea rows="3" name="treatment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName("treatment") != null) @{
-            treatmentTab.getTabFieldItemByName("treatment").getValue
+        <textarea rows="3" name="treatment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "treatment") != null) @{
+            treatmentTab.getTabFieldItemByName(null, "treatment").getValue
         }</textarea>
     </div>
 </div>

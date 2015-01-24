@@ -345,17 +345,53 @@ public class EncounterService implements IEncounterService {
                             .desc("date_taken");
                     List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
 
-                    Map<String, List<TabFieldItem>> separatedTabFieldsByChiefComplaint = separateTabFieldsByChiefComplaint(patientEncounterFieldsWithValue);
+                    List<TabFieldItem> tabFieldItemsForChiefComplaint;
 
-                    //grab the first one from each list, BECAUSE ITS THE MOST RECENT YAAAAA
+                    //separate the tab fields by chief complaint
+                    Map<String, List<TabFieldItem>> separatedTabFieldsByChiefComplaint = new HashMap<>();
+                    if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0){
+                        separatedTabFieldsByChiefComplaint = separateTabFieldsByChiefComplaint(patientEncounterFieldsWithValue);
+                    }else{
+                        List<TabFieldItem> tabFieldItems = new ArrayList<>();
+                        String size = null;
+                        if (tf.getTabFieldSize() != null){
+                            size = tf.getTabFieldSize().getName();
+                        }
+                        TabFieldItem tabFieldItem = ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), size, tf.getOrder(), tf.getPlaceholder());
+                        tabFieldItems.add(tabFieldItem);
+                        separatedTabFieldsByChiefComplaint.put(null, tabFieldItems);
+                    }
 
 
+                    //iterate over all tab fields that have a value
+                    for (Map.Entry<String, List<TabFieldItem>> tabFieldItems : separatedTabFieldsByChiefComplaint.entrySet()) {
+                        String key_chiefComplaint = tabFieldItems.getKey();
+                        List<TabFieldItem> tabFieldItemsWithValueForChiefComplaint = tabFieldItems.getValue();
 
+                        if (tabFieldItemsWithValueForChiefComplaint.size() > 0) {
+                            //pull the fields out of the map going back to the UI
+                            tabFieldItemsForChiefComplaint = tabItem.getFields(key_chiefComplaint);
+                            if (tabFieldItemsForChiefComplaint == null || tabFieldItemsForChiefComplaint.size() == 0) {
 
+                                tabFieldItemsForChiefComplaint = new ArrayList<>();
+                            }
+                            tabFieldItemsForChiefComplaint.add(tabFieldItemsWithValueForChiefComplaint.get(0));
+                            tabItem.setFields(key_chiefComplaint, tabFieldItemsForChiefComplaint);
+                        } else {
+                            tabFieldItemsForChiefComplaint = tabItem.getFields(key_chiefComplaint);
+                            if (tabFieldItemsForChiefComplaint == null || tabFieldItemsForChiefComplaint.size() == 0) {
 
+                                tabFieldItemsForChiefComplaint = new ArrayList<>();
+                            }
+                            tabFieldItemsForChiefComplaint.add(ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tf.getTabFieldSize().getName(), tf.getOrder(), tf.getPlaceholder()));
+                            tabItem.setFields(key_chiefComplaint, tabFieldItemsForChiefComplaint);
+                        }
 
+                    }
                 }
+
                 tabItems.add(tabItem);
+
             }
             response.setResponseObject(tabItems);
         } catch (Exception ex) {
@@ -366,11 +402,12 @@ public class EncounterService implements IEncounterService {
         return response;
     }
 
-    private Map<String, List<TabFieldItem>> separateTabFieldsByChiefComplaint(List<? extends IPatientEncounterTabField> patientEncounterTabFields){
+    private Map<String, List<TabFieldItem>> separateTabFieldsByChiefComplaint(List<? extends IPatientEncounterTabField> patientEncounterTabFieldsWithValue) {
         Map<String, List<TabFieldItem>> mappedTabFields = new HashMap<>();
         List<TabFieldItem> patientEncounterTabFieldItemsForMap;
         TabFieldItem tabFieldItem;
-        for (IPatientEncounterTabField petf : patientEncounterTabFields){
+
+        for (IPatientEncounterTabField petf : patientEncounterTabFieldsWithValue) {
 
             tabFieldItem = ItemMapper.createTabFieldItem(petf.getTabField().getName(),
                     petf.getTabField().getTabFieldType().getName(),
@@ -384,14 +421,14 @@ public class EncounterService implements IEncounterService {
             if (petf.getChiefComplaint() != null)
                 chiefComplaint = petf.getChiefComplaint().getValue();
             else
-                chiefComplaint = "";
+                chiefComplaint = null;
 
-            if (!mappedTabFields.containsKey(chiefComplaint)){
+            if (!mappedTabFields.containsKey(chiefComplaint)) {
                 //create a new entry
                 patientEncounterTabFieldItemsForMap = new ArrayList<>();
                 patientEncounterTabFieldItemsForMap.add(tabFieldItem);
                 mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
-            }else{
+            } else {
 
                 patientEncounterTabFieldItemsForMap = mappedTabFields.get(chiefComplaint);
                 patientEncounterTabFieldItemsForMap.add(tabFieldItem);

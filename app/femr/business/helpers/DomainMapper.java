@@ -140,8 +140,8 @@ public class DomainMapper {
         tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
         if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
         else tabFieldItem.setIsCustom(true);
-        if (patientEncounterTabField.getChiefComplaint() != null)
-            tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
+        //if (patientEncounterTabField.getChiefComplaint() != null)
+          //  tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
 
         return tabFieldItem;
     }

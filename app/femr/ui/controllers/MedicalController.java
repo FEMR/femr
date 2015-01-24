@@ -464,7 +464,7 @@ public class MedicalController extends Controller {
             for (JCustomField jcf : fields) {
                 TabFieldItem tabFieldItem = new TabFieldItem();
                 tabFieldItem.setName(jcf.getName());
-                tabFieldItem.setChiefComplaint(entry.getKey().trim());
+                //tabFieldItem.setChiefComplaint(entry.getKey().trim());
                 tabFieldItem.setIsCustom(false);
                 tabFieldItem.setValue(jcf.getValue());
                 tabFieldItems.add(tabFieldItem);

@@ -8,20 +8,20 @@ var medicalFields = {
 
 var multipleChiefComplaintFeature = {
     numberOfChiefComplaints: $(".chiefComplaintText").length,
-    currentChiefComplaintNumber: 1,
     getCurrentChiefComplaintObject: function () {
-        return $('#cc' + multipleChiefComplaintFeature.currentChiefComplaintNumber);
+        return $('.chiefComplaintText').not('.hidden');
     },
     getCurrentHpiObject: function () {
-        return $('#hpi' + multipleChiefComplaintFeature.currentChiefComplaintNumber);
+        return $('.hpiWraps').not('.hidden');
     },
     slideChiefComplaintRight: function () {
-        if ($('#cc' + (multipleChiefComplaintFeature.currentChiefComplaintNumber + 1)).length !== 0) {
+        var nextText = multipleChiefComplaintFeature.getCurrentChiefComplaintObject().next();
+        var nextForm = multipleChiefComplaintFeature.getCurrentHpiObject().next();
+        if ($(nextText).hasClass('chiefComplaintText') && $(nextForm).hasClass('hpiWraps')) {
             multipleChiefComplaintFeature.getCurrentChiefComplaintObject().addClass("hidden");
             multipleChiefComplaintFeature.getCurrentHpiObject().addClass("hidden");
-            multipleChiefComplaintFeature.currentChiefComplaintNumber++;
-            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().removeClass("hidden");
-            multipleChiefComplaintFeature.getCurrentHpiObject().removeClass("hidden");
+            $(nextForm).removeClass("hidden");
+            $(nextText).removeClass("hidden");
             return true;
         } else {
             return false;
@@ -29,12 +29,13 @@ var multipleChiefComplaintFeature = {
 
     },
     slideChiefComplaintLeft: function () {
-        if ($('#cc' + (multipleChiefComplaintFeature.currentChiefComplaintNumber - 1)).length !== 0) {
+        var previousText = multipleChiefComplaintFeature.getCurrentChiefComplaintObject().prev();
+        var previousForm = multipleChiefComplaintFeature.getCurrentHpiObject().prev();
+        if ($(previousText).hasClass('chiefComplaintText') && $(previousForm).hasClass('hpiWraps')) {
             multipleChiefComplaintFeature.getCurrentChiefComplaintObject().addClass("hidden");
             multipleChiefComplaintFeature.getCurrentHpiObject().addClass("hidden");
-            multipleChiefComplaintFeature.currentChiefComplaintNumber--;
-            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().removeClass("hidden");
-            multipleChiefComplaintFeature.getCurrentHpiObject().removeClass("hidden");
+            $(previousText).removeClass("hidden");
+            $(previousForm).removeClass("hidden");
             return true;
         } else {
             return false;
@@ -118,6 +119,10 @@ $(document).ready(function () {
 
     //make the first tab active
     $('#medicalTabs li').first().addClass('active');
+    //unhide the first HPI form
+    $('.hpiWraps').first().removeClass('hidden');
+    //unhide the first chief complaint on HPI
+    $('.chiefComplaintText').first().removeClass('hidden');
 
     //Unhides a prescription input box everytime
     //the + button is clicked (max of 5)

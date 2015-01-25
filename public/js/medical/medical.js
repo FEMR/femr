@@ -102,7 +102,7 @@ var multipleChiefComplaintFeature = {
                 hpiFields.push(hpiField);
             }
 
-            hpiStuff[$("#cc" + (index + 1) + " span").text()] = hpiFields;
+            hpiStuff[$($('.chiefComplaintText span').get(index)).text()] = hpiFields;
         });
         var stringifiedHpiFields = JSON.stringify(hpiStuff);
         $("input[name=multipleHpiJSON]").val(stringifiedHpiFields);

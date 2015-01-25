@@ -432,19 +432,19 @@ public class EncounterService implements IEncounterService {
 
         for (IPatientEncounterTabField petf : patientEncounterTabFieldsWithValue) {
 
+            String size = null;
+            String chiefComplaint = null;
+            if (petf.getTabField().getTabFieldSize() != null)
+                size = petf.getTabField().getTabFieldSize().getName();
+            if (petf.getChiefComplaint() != null)
+                chiefComplaint = petf.getChiefComplaint().getValue();
             tabFieldItem = ItemMapper.createTabFieldItem(petf.getTabField().getName(),
                     petf.getTabField().getTabFieldType().getName(),
-                    petf.getTabField().getTabFieldSize().getName(),
+                    size,
                     petf.getTabField().getOrder(),
                     petf.getTabField().getPlaceholder(),
                     petf.getTabFieldValue(),
-                    petf.getChiefComplaint().getValue());
-
-            String chiefComplaint;
-            if (petf.getChiefComplaint() != null)
-                chiefComplaint = petf.getChiefComplaint().getValue();
-            else
-                chiefComplaint = null;
+                    chiefComplaint);
 
             if (!mappedTabFields.containsKey(chiefComplaint)) {
                 //create a new entry

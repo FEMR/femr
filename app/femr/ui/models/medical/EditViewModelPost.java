@@ -23,9 +23,6 @@ import java.util.List;
 public class EditViewModelPost {
     private String customFieldJSON;
     private String multipleHpiJSON;
-
-
-
     //patient identifier
     private int id;
     //prescription fields

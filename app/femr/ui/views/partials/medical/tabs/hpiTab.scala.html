@@ -1,4 +1,4 @@
-@(hpiTab: femr.common.models.TabItem, patientEncounterItem: femr.common.models.PatientEncounterItem, settings: femr.common.models.SettingItem, numberOfHpiTabs: java.lang.Integer)
+@(hpiTab: femr.common.models.TabItem, isConsolidated: java.lang.Boolean)
 
 @import femr.ui.views.html.partials.medical.severityDropDown;
 
@@ -32,7 +32,7 @@
         @* Hide the div if multiple chief complaints *@
         <div class="hpiWraps hidden">
 
-        @if(!settings.isConsolidateHPI) {
+        @if(!isConsolidated) {
             <div class="leftHPI">
 
                 <div class="staticField">

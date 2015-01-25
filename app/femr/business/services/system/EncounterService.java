@@ -218,86 +218,6 @@ public class EncounterService implements IEncounterService {
 
     /**
      * {@inheritDoc}
-
-     @Override public ServiceResponse<Map<String, TabFieldItem>> findCurrentTabFieldsByEncounterId(int encounterId) {
-     ServiceResponse<Map<String, TabFieldItem>> response = new ServiceResponse<>();
-     if (encounterId < 1) {
-     response.addError("", "encounter id invalid");
-     return response;
-     }
-     Map<String, TabFieldItem> fieldValueMap = new LinkedHashMap<>();
-
-
-     //get patient encounter
-     ExpressionList<PatientEncounter> patientEncounterExpressionList = QueryProvider.getPatientEncounterQuery()
-     .where()
-     .eq("id", encounterId);
-     IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterExpressionList);
-     //query without problems
-     Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
-     .fetch("tabField")
-     .where()
-     .eq("patient_encounter_id", encounterId)
-     .ne("tabField.name", "problem")
-     .order()
-     .desc("date_taken");
-     //query for problems
-     Query<PatientEncounterTabField> problemQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-     .fetch("tabField")
-     .where()
-     .eq("patient_encounter_id", encounterId)
-     .eq("tabField.name", "problem")
-     .order()
-     .asc("date_taken");
-     try {
-     //map non-problems
-     List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query);
-     for (IPatientEncounterTabField petf : patientEncounterTabFields) {
-
-     String fieldName = petf.getTabField().getName();
-
-     //if the field is from the HPI tab
-     if (petf.getTabField().getTab().getName().equals("HPI")) {
-
-     if (petf.getChiefComplaint() != null) {
-     int index = patientEncounter.getChiefComplaints().indexOf(petf.getChiefComplaint());
-     fieldName = fieldName + index;
-     } else {
-     fieldName = fieldName + "0";
-     }
-
-     }
-
-     //adds the field and its value to the map if it doesnt already exist.
-     //query was sorted in desc order of date to ensure only the newest entries
-     //get put in the map
-     if (!fieldValueMap.containsKey(fieldName)) {
-     fieldValueMap.put(fieldName, domainMapper.createTabFieldItem(petf));
-     }
-
-     }
-
-     //map problems
-     List<? extends IPatientEncounterTabField> problemFields = patientEncounterTabFieldRepository.find(problemQuery);
-     int problemNumber = 1;
-     for (IPatientEncounterTabField petf2 : problemFields) {
-     fieldValueMap.put(petf2.getTabField().getName() + problemNumber, domainMapper.createTabFieldItem(petf2));
-     problemNumber++;
-     }
-
-
-     response.setResponseObject(fieldValueMap);
-
-     } catch (Exception ex) {
-     response.addError("exception", ex.getMessage());
-     }
-
-     return response;
-     }
-     */
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive) {
@@ -461,41 +381,6 @@ public class EncounterService implements IEncounterService {
 
         return mappedTabFields;
     }
-
-    private TabFieldItem getTabFieldItemWithValue(IPatientEncounterTabField patientEncounterTabField) {
-        ITabField tf = patientEncounterTabField.getTabField();
-
-        String name = tf.getName();
-        String type = tf.getTabFieldType().getName();
-        String size = null;
-        if (tf.getTabFieldSize() != null)
-            size = tf.getTabFieldSize().getName();
-        Integer sortOrder = tf.getOrder();
-        String placeholder = tf.getPlaceholder();
-        String value = patientEncounterTabField.getTabFieldValue();
-        String chiefComplaint = null;
-        if (patientEncounterTabField.getChiefComplaint() != null)
-            chiefComplaint = patientEncounterTabField.getChiefComplaint().getValue();
-
-        return ItemMapper.createTabFieldItem(name, type, size, sortOrder, placeholder, value, chiefComplaint);
-    }
-
-    private TabFieldItem getTabFieldItem(ITabField tf) {
-
-        String name = tf.getName();
-        String type = tf.getTabFieldType().getName();
-        String size = null;
-        if (tf.getTabFieldSize() != null)
-            size = tf.getTabFieldSize().getName();
-        //else
-        //response.addError("", tabField.getName() + " doesn't have a sort order");
-        Integer sortOrder = tf.getOrder();
-        String placeholder = tf.getPlaceholder();
-
-        return ItemMapper.createTabFieldItem(name, type, size, sortOrder, placeholder);
-
-    }
-
 
     /**
      * {@inheritDoc}

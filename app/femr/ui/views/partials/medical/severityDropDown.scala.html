@@ -1,7 +1,8 @@
 @(value: String)
 
 <label for="severity">Severity</label>
-<select name="severity" id="severityDropDown">
+<input name="tabFieldItems[3].name" type="text" class="hidden" value="severity"/>
+<select name="tabFieldItems[3].value" id="severityDropDown">
     <option></option>
     @for(x <- 1 to 10) {
         @if(value != null && !value.isEmpty) {

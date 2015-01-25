@@ -315,6 +315,7 @@ public class EncounterService implements IEncounterService {
 
             for (ITab t : allTabs) {
 
+                //create a tab item that will store chief complaints and fields
                 tabItem = ItemMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize());
 
                 //does this work..?
@@ -336,6 +337,11 @@ public class EncounterService implements IEncounterService {
                 //goes through each tab field that belongs to a specific tab
                 for (ITabField tf : t.getTabFields()) {
 
+                    //get available chief complaints
+                    ExpressionList<ChiefComplaint> chiefComplaintQuery = QueryProvider.getChiefComplaintQuery()
+                            .where()
+                            .eq("patient_encounter_id", encounterId);
+                    List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintQuery);
                     //get a list of values that have been recorded for a specific tab field
                     Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
                             .where()
@@ -349,17 +355,34 @@ public class EncounterService implements IEncounterService {
 
                     //separate the tab fields by chief complaint
                     Map<String, List<TabFieldItem>> separatedTabFieldsByChiefComplaint = new HashMap<>();
-                    if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0){
+                    if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
+                        //the field has value(s)
                         separatedTabFieldsByChiefComplaint = separateTabFieldsByChiefComplaint(patientEncounterFieldsWithValue);
-                    }else{
+                    } else {
+                        //the field has no values
                         List<TabFieldItem> tabFieldItems = new ArrayList<>();
                         String size = null;
-                        if (tf.getTabFieldSize() != null){
+                        if (tf.getTabFieldSize() != null) {
                             size = tf.getTabFieldSize().getName();
                         }
                         TabFieldItem tabFieldItem = ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), size, tf.getOrder(), tf.getPlaceholder());
                         tabFieldItems.add(tabFieldItem);
-                        separatedTabFieldsByChiefComplaint.put(null, tabFieldItems);
+                        if (t.getName().toLowerCase().equals("hpi")) {
+                            //if the tab is HPI, separate the empty fields by chief complaint
+                            //(each chief complaint gets the field)
+                            if (chiefComplaints == null || chiefComplaints.size() < 1) {
+                                //no chief complaints exist, add the field to the null key
+                                separatedTabFieldsByChiefComplaint.put(null, tabFieldItems);
+                            } else {
+                                for (IChiefComplaint cc : chiefComplaints) {
+                                    separatedTabFieldsByChiefComplaint.put(cc.getValue(), tabFieldItems);
+                                }
+                            }
+                        }else{
+                            separatedTabFieldsByChiefComplaint.put(null, tabFieldItems);
+                        }
+
+
                     }
 
 

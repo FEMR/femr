@@ -36,11 +36,11 @@ public class EditViewModelPost {
     private String prescription5;
     //treatment fields
     private String assessment;
+    private String problem0;
     private String problem1;
     private String problem2;
     private String problem3;
     private String problem4;
-    private String problem5;
     private String treatment;
     //hpi fields
     private String onset;
@@ -102,6 +102,14 @@ public class EditViewModelPost {
         this.assessment = assessment;
     }
 
+    public String getProblem0() {
+        return problem0;
+    }
+
+    public void setProblem0(String problem0) {
+        this.problem0 = problem0;
+    }
+
     public String getProblem1() {
         return problem1;
     }
@@ -132,14 +140,6 @@ public class EditViewModelPost {
 
     public void setProblem4(String problem4) {
         this.problem4 = problem4;
-    }
-
-    public String getProblem5() {
-        return problem5;
-    }
-
-    public void setProblem5(String problem5) {
-        this.problem5 = problem5;
     }
 
     public String getPrescription1() {

@@ -403,6 +403,8 @@ public class MedicalController extends Controller {
         //treatment fields
         if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment()))
             tabFieldItems.add(createTabFieldItem("assessment", viewModelPost.getAssessment()));
+        if (viewModelPost.getProblem0() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem0()))
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem0()));
         if (viewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem1()))
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem1()));
         if (viewModelPost.getProblem2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem2()))
@@ -411,8 +413,6 @@ public class MedicalController extends Controller {
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem3()));
         if (viewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem4()))
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem4()));
-        if (viewModelPost.getProblem5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem5()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem5()));
         if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment()))
             tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));
         return tabFieldItems;
@@ -464,7 +464,7 @@ public class MedicalController extends Controller {
             for (JCustomField jcf : fields) {
                 TabFieldItem tabFieldItem = new TabFieldItem();
                 tabFieldItem.setName(jcf.getName());
-                //tabFieldItem.setChiefComplaint(entry.getKey().trim());
+                tabFieldItem.setChiefComplaint(entry.getKey().trim());
                 tabFieldItem.setIsCustom(false);
                 tabFieldItem.setValue(jcf.getValue());
                 tabFieldItems.add(tabFieldItem);

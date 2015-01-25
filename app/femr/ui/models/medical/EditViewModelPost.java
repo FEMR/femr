@@ -18,11 +18,16 @@
 */
 package femr.ui.models.medical;
 
+import femr.common.models.TabFieldItem;
+
 import java.util.List;
 
 public class EditViewModelPost {
     private String customFieldJSON;
     private String multipleHpiJSON;
+
+    private List<TabFieldItem> tabFieldItems;
+
     //patient identifier
     private int id;
     //prescription fields
@@ -321,5 +326,13 @@ public class EditViewModelPost {
 
     public void setMultipleHpiJSON(String multipleHpiJSON) {
         this.multipleHpiJSON = multipleHpiJSON;
+    }
+
+    public List<TabFieldItem> getTabFieldItems() {
+        return tabFieldItems;
+    }
+
+    public void setTabFieldItems(List<TabFieldItem> tabFieldItems) {
+        this.tabFieldItems = tabFieldItems;
     }
 }

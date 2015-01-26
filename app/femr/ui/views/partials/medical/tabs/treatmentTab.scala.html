@@ -34,11 +34,17 @@
         <label for="prescription">Prescriptions</label>
         <div class="row">
             <div class="col-xs-9 col-sm-9 col-md-9">
+                @for(script <- prescriptions){
+                    <input type="text" class="form-control input-sm" value="@script.getName" readonly/>
+                }
+                <input name="prescriptions[].name" type="text" class="form-control input-sm" value=""/>
+                @*
                 @prescriptionField(1, prescriptions)
                 @prescriptionField(2, prescriptions)
                 @prescriptionField(3, prescriptions)
                 @prescriptionField(4, prescriptions)
                 @prescriptionField(5, prescriptions)
+                *@
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">

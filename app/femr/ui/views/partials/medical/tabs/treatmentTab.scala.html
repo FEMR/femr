@@ -1,7 +1,6 @@
 @(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem])
 
 @import femr.ui.views.html.partials.medical.problemField;
-@import femr.ui.views.html.partials.medical.prescriptionField;
 
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
@@ -33,18 +32,12 @@
     <div class="form-group">
         <label for="prescription">Prescriptions</label>
         <div class="row">
-            <div class="col-xs-9 col-sm-9 col-md-9">
+            <div class="col-xs-9 col-sm-9 col-md-9 prescriptionWrap">
                 @for(script <- prescriptions){
                     <input type="text" class="form-control input-sm" value="@script.getName" readonly/>
                 }
-                <input name="prescriptions[].name" type="text" class="form-control input-sm" value=""/>
-                @*
-                @prescriptionField(1, prescriptions)
-                @prescriptionField(2, prescriptions)
-                @prescriptionField(3, prescriptions)
-                @prescriptionField(4, prescriptions)
-                @prescriptionField(5, prescriptions)
-                *@
+                <input name="prescriptions[0].name" type="text" class="form-control input-sm"/>
+
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">

@@ -1,11 +1,39 @@
-var medicalFields = {
-    prescription1: $('#prescription1'),
-    prescription2: $('#prescription2'),
-    prescription3: $('#prescription3'),
-    prescription4: $('#prescription4'),
-    prescription5: $('#prescription5')
-};
+var prescriptionFeature = {
+    allPrescriptions: $('.prescriptionWrap input'),
+    getNumberOfNonReadonlyPrescriptionFields: function () {
+        prescriptionFeature.refreshSelectors();
+        var number = 0;
+        $(prescriptionFeature.allPrescriptions).each(function(){
+            if (!$(this).is('[readonly]')){
+                number++;
+            }
+        });
+        return number;
+    },
+    refreshSelectors: function () {
+        prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions).selector;
+    },
+    addPrescriptionField: function () {
+        var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
+        $(prescriptionFeature.allPrescriptions)
+            .parent()
+            .append("<input name='prescriptions[" + scriptIndex + "].name' type='text' class='form-control input-sm'/>");
+    },
+    removePrescriptionField: function () {
+        prescriptionFeature.refreshSelectors();
+        var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
+        if ($(prescriptionFeature.allPrescriptions).size() > 1) {
+            if (!$(lastPrescription).is('[readonly]')) {
+                $(lastPrescription).remove();
+            }
+        } else {
+            if (!$(lastPrescription).is('[readonly]')) {
+                $(lastPrescription).val('');
+            }
+        }
 
+    }
+};
 var multipleChiefComplaintFeature = {
     numberOfChiefComplaints: $(".chiefComplaintText").length,
     getCurrentChiefComplaintObject: function () {
@@ -127,33 +155,11 @@ $(document).ready(function () {
     //Unhides a prescription input box everytime
     //the + button is clicked (max of 5)
     $('#addPrescriptionButton').click(function () {
-        var numberOfFilledPrescriptions = getNumberOfFilledScripts();
-        if (numberOfFilledPrescriptions > 0 && ($("body").data("script") < numberOfFilledPrescriptions || typeof $("body").data("script") === "undefined")) {
-            $("body").data("script", numberOfFilledPrescriptions);
-        }
-
-        if (typeof $("body").data("script") === "undefined") {
-            $("body").data("script", 2);
-        } else if ($("body").data("script") < 5) {
-            $("body").data("script", $("body").data("script") + 1);
-        } else {
-            return;
-        }
-        $("#prescription" + $("body").data("script")).removeClass("hidden");
-        $("#prescription" + $("body").data("script")).focus();
-        return;
+        prescriptionFeature.addPrescriptionField();
     });
 
     $('#subtractPrescriptionButton').click(function () {
-        if (typeof $("body").data("script") === "undefined") {
-            return;
-        } else if ($("body").data("script") > 1) {
-            $("#prescription" + $("body").data("script")).addClass("hidden");
-            $("#prescription" + ($("body").data("script"))).val('');
-            $("#prescription" + ($("body").data("script") - 1)).focus();
-            $("body").data("script", $("body").data("script") - 1);
-        }
-        return;
+        prescriptionFeature.removePrescriptionField();
     });
 
     //Unhides a problem input box everytime
@@ -312,16 +318,6 @@ function showTab(clickedTab) {
             $(this).removeClass("active");
         }
     });
-}
-
-function getNumberOfFilledScripts() {
-    var x = 0;
-    $('.prescription').each(function () {
-        if ($(this).attr("readonly")) {
-            x++;
-        }
-    });
-    return x;
 }
 
 function getNumberOfProblems() {
@@ -519,10 +515,10 @@ function photoNameFixup() {
 }
 
 
-function registerTypeAhead(obj){
+function registerTypeAhead(obj) {
 
 
-    var substringMatcher = function(strs) {
+    var substringMatcher = function (strs) {
         return function findMatches(q, cb) {
             var matches, substrRegex;
 
@@ -534,7 +530,7 @@ function registerTypeAhead(obj){
 
             // iterate through the pool of strings and for any string that
             // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
+            $.each(strs, function (i, str) {
                 if (substrRegex.test(str)) {
                     // the typeahead jQuery plugin expects suggestions to a
                     // JavaScript object, refer to typeahead docs for more info
@@ -553,7 +549,7 @@ function registerTypeAhead(obj){
 
         diagnoses = data;
 
-        $(".problem").find('input[type="text"]').each(function(){
+        $(".problem").find('input[type="text"]').each(function () {
 
             $(this).typeahead({
                     hint: true,

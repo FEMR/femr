@@ -18,6 +18,7 @@
 */
 package femr.ui.models.medical;
 
+import femr.common.models.PrescriptionItem;
 import femr.common.models.TabFieldItem;
 
 import java.util.List;
@@ -30,12 +31,11 @@ public class EditViewModelPost {
 
     //patient identifier
     private int id;
+
+
     //prescription fields
-    private String prescription1;
-    private String prescription2;
-    private String prescription3;
-    private String prescription4;
-    private String prescription5;
+    private List<PrescriptionItem> prescriptions;
+
     //treatment fields
     private String assessment;
     private String problem0;
@@ -142,45 +142,6 @@ public class EditViewModelPost {
 
     public void setProblem4(String problem4) {
         this.problem4 = problem4;
-    }
-
-    public String getPrescription1() {
-        return prescription1;
-    }
-
-    public void setPrescription1(String prescription1) {
-        this.prescription1 = prescription1;
-    }
-    public String getPrescription2() {
-        return prescription2;
-    }
-
-    public void setPrescription2(String prescription2) {
-        this.prescription2 = prescription2;
-    }
-
-    public String getPrescription3() {
-        return prescription3;
-    }
-
-    public void setPrescription3(String prescription3) {
-        this.prescription3 = prescription3;
-    }
-
-    public String getPrescription4() {
-        return prescription4;
-    }
-
-    public void setPrescription4(String prescription4) {
-        this.prescription4 = prescription4;
-    }
-
-    public String getPrescription5() {
-        return prescription5;
-    }
-
-    public void setPrescription5(String prescription5) {
-        this.prescription5 = prescription5;
     }
 
     public String getTreatment() {
@@ -334,5 +295,13 @@ public class EditViewModelPost {
 
     public void setTabFieldItems(List<TabFieldItem> tabFieldItems) {
         this.tabFieldItems = tabFieldItems;
+    }
+
+    public List<PrescriptionItem> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<PrescriptionItem> prescriptions) {
+        this.prescriptions = prescriptions;
     }
 }

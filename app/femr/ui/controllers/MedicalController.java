@@ -139,7 +139,6 @@ public class MedicalController extends Controller {
         viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
 
 
-
         ServiceResponse<List<TabItem>> tabItemResponse = encounterService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId(), true);
         if (tabItemResponse.hasErrors()) {
             throw new RuntimeException();
@@ -234,47 +233,9 @@ public class MedicalController extends Controller {
         //wtf is this
         photoService.HandleEncounterPhotos(fps, patientEncounterItem, viewModelPost);
 
-
-        PrescriptionItem prescriptionItem;
         //save prescriptions
-        List<PrescriptionItem> prescriptionItems = new ArrayList<>();
-        if (viewModelPost.getPrescription1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription1())){
-
-            prescriptionItem = new PrescriptionItem();
-            prescriptionItem.setName(viewModelPost.getPrescription1());
-            prescriptionItems.add(prescriptionItem);
-        }
-
-        if (viewModelPost.getPrescription2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription2())){
-
-            prescriptionItem = new PrescriptionItem();
-            prescriptionItem.setName(viewModelPost.getPrescription2());
-            prescriptionItems.add(prescriptionItem);
-        }
-
-        if (viewModelPost.getPrescription3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription3())){
-
-            prescriptionItem = new PrescriptionItem();
-            prescriptionItem.setName(viewModelPost.getPrescription3());
-            prescriptionItems.add(prescriptionItem);
-        }
-
-        if (viewModelPost.getPrescription4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription4())){
-
-            prescriptionItem = new PrescriptionItem();
-            prescriptionItem.setName(viewModelPost.getPrescription4());
-            prescriptionItems.add(prescriptionItem);
-        }
-
-        if (viewModelPost.getPrescription5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription5())){
-
-            prescriptionItem = new PrescriptionItem();
-            prescriptionItem.setName(viewModelPost.getPrescription5());
-            prescriptionItems.add(prescriptionItem);
-        }
-
+        List<PrescriptionItem> prescriptionItems = viewModelPost.getPrescriptions();
         if (prescriptionItems.size() > 0) {
-
             ServiceResponse<List<PrescriptionItem>> prescriptionResponse =
                     medicationService.createPatientPrescriptions(prescriptionItems, currentUserSession.getId(), patientEncounterItem.getId(), false, false);
             if (prescriptionResponse.hasErrors()) {

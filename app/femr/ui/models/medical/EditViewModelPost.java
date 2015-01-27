@@ -19,6 +19,7 @@
 package femr.ui.models.medical;
 
 import femr.common.models.PrescriptionItem;
+import femr.common.models.ProblemItem;
 import femr.common.models.TabFieldItem;
 
 import java.util.List;
@@ -38,12 +39,9 @@ public class EditViewModelPost {
 
     //treatment fields
     private String assessment;
-    private String problem0;
-    private String problem1;
-    private String problem2;
-    private String problem3;
-    private String problem4;
+    private List<ProblemItem> problems;
     private String treatment;
+
     //hpi fields
     private String onset;
     private String onsetTime;
@@ -102,46 +100,6 @@ public class EditViewModelPost {
 
     public void setAssessment(String assessment) {
         this.assessment = assessment;
-    }
-
-    public String getProblem0() {
-        return problem0;
-    }
-
-    public void setProblem0(String problem0) {
-        this.problem0 = problem0;
-    }
-
-    public String getProblem1() {
-        return problem1;
-    }
-
-    public void setProblem1(String problem1) {
-        this.problem1 = problem1;
-    }
-
-    public String getProblem2() {
-        return problem2;
-    }
-
-    public void setProblem2(String problem2) {
-        this.problem2 = problem2;
-    }
-
-    public String getProblem3() {
-        return problem3;
-    }
-
-    public void setProblem3(String problem3) {
-        this.problem3 = problem3;
-    }
-
-    public String getProblem4() {
-        return problem4;
-    }
-
-    public void setProblem4(String problem4) {
-        this.problem4 = problem4;
     }
 
     public String getTreatment() {
@@ -303,5 +261,13 @@ public class EditViewModelPost {
 
     public void setPrescriptions(List<PrescriptionItem> prescriptions) {
         this.prescriptions = prescriptions;
+    }
+
+    public List<ProblemItem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<ProblemItem> problems) {
+        this.problems = problems;
     }
 }

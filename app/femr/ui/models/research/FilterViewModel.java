@@ -20,8 +20,7 @@ public class FilterViewModel {
     private Integer groupFactor;
     private Float rangeStart;
     private Float rangeEnd;
-    private Integer medicationId;
-    private Map<Integer, String> medicationsList;
+    private String medicationName;
 
     /*
     public List<ValidationError> validate() {
@@ -126,11 +125,8 @@ public class FilterViewModel {
 
     public void setRangeEnd(Float rangeEnd) { this.rangeEnd = rangeEnd; }
 
-    public Integer getMedicationId() { return medicationId; }
+    public String getMedicationName() { return medicationName; }
 
-    public void setMedicationId(Integer medicationId) { this.medicationId = medicationId; }
+    public void setMedicationName(String medicationId) { this.medicationName = medicationId; }
 
-    public Map<Integer, String> getMedicationsList() { return medicationsList; }
-
-    public void setMedicationsList(Map<Integer, String> medicationsList) { this.medicationsList = medicationsList; }
 }

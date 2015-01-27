@@ -3,8 +3,10 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
+import femr.business.services.core.IMedicationService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
+import femr.data.models.core.IMedication;
 import femr.ui.models.research.json.ResearchGraphDataItem;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
@@ -34,25 +36,26 @@ public class ResearchController extends Controller {
     private final Form<FilterViewModel> FilterViewModelForm = Form.form(FilterViewModel.class);
 
     private IResearchService researchService;
+    private IMedicationService medicationService;
     private ISessionService sessionService;
 
     /**
-     * Research Controller constructer that Injects the services indicated by the parameters
+     * Research Controller constructor that Injects the services indicated by the parameters
      *
      * @param sessionService  {@link ISessionService}
      * @param researchService {@link IResearchService}
+     * @param medicationService {@link IMedicationService}
      */
     @Inject
-    public ResearchController(ISessionService sessionService, IResearchService researchService) {
+    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService) {
         this.researchService = researchService;
+        this.medicationService = medicationService;
         this.sessionService = sessionService;
     }
 
     public Result indexGet() {
 
-        // There isn't really a request here, should this be different?
-        //TODO: nothing to bind here
-        FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
+        FilterViewModel filterViewModel = new FilterViewModel();
 
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
@@ -60,11 +63,6 @@ public class ResearchController extends Controller {
         filterViewModel.setEndDate(dateFormat.format(today.getTime()));
         today.add(Calendar.DAY_OF_MONTH, -30);
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
-
-        ServiceResponse<Map<Integer, String>> medResponse = researchService.getAllMedications();
-        if( !medResponse.hasErrors() ) {
-            filterViewModel.setMedicationsList(medResponse.getResponseObject());
-        }
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
         return ok(index.render(currentUserSession, filterViewModel));
@@ -91,6 +89,19 @@ public class ResearchController extends Controller {
 
         Gson gson = new Gson();
         String jsonString = gson.toJson(graphModel);
+        return ok(jsonString);
+    }
+
+    public Result typeaheadJSONGet(){
+
+        ServiceResponse<List<String>> medicationServiceResponse = medicationService.findAllMedications();
+        if (medicationServiceResponse.hasErrors()) {
+            return ok("");
+        }
+
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(medicationServiceResponse.getResponseObject());
+
         return ok(jsonString);
     }
 

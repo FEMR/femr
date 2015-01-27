@@ -12,7 +12,7 @@ public class ResearchFilterItem {
     private Integer groupFactor;
     private Float rangeStart;
     private Float rangeEnd;
-    private Integer medicationId;
+    private String medicationName;
 
     public String getPrimaryDataset() {
         return primaryDataset;
@@ -90,7 +90,7 @@ public class ResearchFilterItem {
         }
     }
 
-    public Integer getMedicationId() { return medicationId; }
+    public String getMedicationName() { return medicationName; }
 
-    public void setMedicationId(Integer medicationId) { this.medicationId = medicationId; }
+    public void setMedicationName(String medicationName) { this.medicationName = medicationName; }
 }

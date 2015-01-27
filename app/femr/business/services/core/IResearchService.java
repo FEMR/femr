@@ -29,6 +29,12 @@ import java.util.Map;
  */
 public interface IResearchService {
 
-    public ServiceResponse<Map<Integer, String>> getAllMedications();
+
+    /**
+     * Take filters and build matching data for graph
+     *
+     * @param filterItem object representing chosen filters
+     * @return Graph data bundled for display
+     */
     public ServiceResponse<ResearchGraphDataItem> getGraphData(ResearchFilterItem filterItem);
 }

@@ -10,7 +10,7 @@ var problemFeature = {
     },
     getNumberOfNonReadonlyProblemFields: function () {
         problemFeature.refreshSelectors();
-        return problemFeature.newProblems.length;
+        return problemFeature.newProblems.length / 2;
     },
     addProblemField: function () {
         var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
@@ -19,7 +19,8 @@ var problemFeature = {
             .append("<div class='problem'>" +
                 "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
                 "</div>");
-        typeaheadFeature.activateTypeahead($("[name='problems[" + problemIndex +"].name'"));
+
+        typeaheadFeature.activateTypeahead($("[name='problems[" + problemIndex + "].name'"));
     },
     removeProblemField: function () {
         problemFeature.refreshSelectors();
@@ -60,8 +61,7 @@ var prescriptionFeature = {
         prescriptionFeature.refreshSelectors();
         var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
         if ($(prescriptionFeature.allPrescriptions).size() > 1) {
-            if (!$(lastPrescription).is('[readonly]')) {
-                $(lastPrescription).typeahead('destroy');
+            if (!$(lastPrescription).is('[readonly]')) {;
                 $(lastPrescription).remove();
             }
         } else {
@@ -279,6 +279,7 @@ $(document).ready(function () {
     });
 
     typeaheadFeature.setGlobalVariable();
+    typeaheadFeature.activateTypeahead(problemFeature.newProblems.first());
 
 });
 
@@ -558,6 +559,9 @@ var typeaheadFeature = {
                 displayKey: 'value',
                 source: typeaheadFeature.substringMatcher(diagnoses)
             });
+    },
+    destroyTypeahead: function(element) {
+        $(element).typeahead('destroy')
     }
 
 };

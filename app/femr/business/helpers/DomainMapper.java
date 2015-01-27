@@ -650,7 +650,7 @@ public class DomainMapper {
         filterItem.setRangeStart(filterViewModel.getRangeStart());
         filterItem.setRangeEnd(filterViewModel.getRangeEnd());
 
-        filterItem.setMedicationId(filterViewModel.getMedicationId());
+        filterItem.setMedicationName(filterViewModel.getMedicationName());
 
         return filterItem;
     }

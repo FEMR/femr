@@ -341,6 +341,9 @@ var graphLoaderModule = (function(){
             thisContainerId = newContainerId;
         }
 
+        // remove any previous graph
+        d3.selectAll("svg > *").remove();
+
         if( jsonData != null ) {
             switch (graphType) {
 

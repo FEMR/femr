@@ -18,6 +18,7 @@
 */
 package femr.business.services.system;
 
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.services.core.IResearchService;
@@ -75,7 +76,6 @@ public class ResearchService implements IResearchService {
         ServiceResponse<ResearchGraphDataItem> response = new ServiceResponse<>();
 
         String primaryDatasetName = filters.getPrimaryDataset();
-        //TODO: gender throws error here due to patients with no sex
         ResearchResult primaryItems = getDatasetItems(primaryDatasetName, filters);
 
         ResearchResult secondaryItems = new ResearchResult();
@@ -95,31 +95,48 @@ public class ResearchService implements IResearchService {
         return response;
     }
 
-    @Override
-    public ServiceResponse<Map<Integer, String>> getAllMedications(){
+    public static ResearchGraphDataItem createResearchGraphItemNew(ResearchResult primaryResult, ResearchResult secondaryResult, ResearchFilterItem filters) {
 
-        ServiceResponse<Map<Integer, String>> response = new ServiceResponse<>();
+        ResearchGraphDataItem graphModel = new ResearchGraphDataItem();
+        List<ResearchItem> graphData = new ArrayList<>();
+        Map<String, ResearchItem> groupedData = new HashMap<>();
 
-        try {
-            List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
+        String yAxisTitle = "Number of Patients";
+        String xAxisTitle = WordUtils.capitalize(StringUtils.splitCamelCase(primaryResult.getDataType()));
+        String unitOfMeasurement = primaryResult.getUnitOfMeasurement();
 
-            Map<Integer, String> medicationItems = new HashMap<>();
+        List<Float> sortedPrimary = new ArrayList<>();
+        Map<Integer, Float> primaryDataset = primaryResult.getDataset();
+        Map<Integer, Float> secondaryDataset = secondaryResult.getDataset();
+        int sampleSize = primaryDataset.size();
+        float total = 0;
+        float average = 0.0f; //total / sampleSize;
+        float rangeHigh = Float.MIN_VALUE;
+        float rangeLow = Float.MAX_VALUE;
+        float median = 0;
 
-            for (IMedication medication : medications) {
+        // primary and secondary Datasets are lists of individual patients
+        // -- need to group into totals for display
+        // -- find average, rangeHigh, rangeLow
+        // -- efficiently find median
+        // -- group values if requested
 
-                medicationItems.put(
-                        medication.getId(),
-                        medication.getName()
-                );
-            }
-            response.setResponseObject(medicationItems);
 
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
+        // build graph model item
+        graphModel.setAverage(average);
+        graphModel.setMedian(median);
+        graphModel.setRangeLow(rangeLow);
+        graphModel.setRangeHigh(rangeHigh);
+        graphModel.setGraphData(graphData);
+        graphModel.setPrimaryValuemap(primaryResult.getValueMap());
+        graphModel.setSecondaryValuemap(secondaryResult.getValueMap());
+        graphModel.setyAxisTitle(yAxisTitle);
+        graphModel.setxAxisTitle(xAxisTitle);
+        graphModel.setUnitOfMeasurement(unitOfMeasurement);
 
-        return response;
+        return graphModel;
     }
+
 
     public static ResearchGraphDataItem createResearchGraphItem(ResearchResult primaryResult, ResearchResult secondaryResult, ResearchFilterItem filters) {
 
@@ -136,8 +153,8 @@ public class ResearchService implements IResearchService {
         Map<Integer, Float> secondaryDataset = secondaryResult.getDataset();
         int sampleSize = primaryDataset.size();
         float total = 0;
-        float rangeHigh = 0;
-        float rangeLow = 10000;
+        float rangeHigh = Float.MIN_VALUE;
+        float rangeLow = Float.MAX_VALUE;
         float median = 0;
 
         // Medications will not group correctly, just bundle and return
@@ -483,7 +500,7 @@ public class ResearchService implements IResearchService {
 
         String startDateString = filters.getStartDate();
         String endDateString = filters.getEndDate();
-        Integer medicationID = filters.getMedicationId();
+        String medicationName = filters.getMedicationName();
 
         ResearchResult resultObj = new ResearchResult();
         Map<Integer, Float> resultItems = new HashMap<>();
@@ -510,11 +527,12 @@ public class ResearchService implements IResearchService {
 
         Query<PatientEncounterVital> q = QueryProvider.getPatientEncounterVitalQuery();
 
-        if( medicationID > 0 ) {
+        if( !medicationName.isEmpty()) {
+
 
             Query<PatientPrescription> pQ = QueryProvider.getPatientPrescriptionQuery();
 
-            pQ.fetch("patientEncounter").where().eq("medication.id", medicationID);
+            pQ.fetch("patientEncounter").where().eq("medication.name", medicationName);
             List<? extends IPatientPrescription> patientPrescriptions = prescriptionRepository.find(pQ);
 
             List<Integer> scriptEncounterIds = new ArrayList<>();
@@ -525,6 +543,7 @@ public class ResearchService implements IResearchService {
             }
 
             q.where().in("patientEncounterId", scriptEncounterIds);
+
         }
 
         q.where()
@@ -535,30 +554,6 @@ public class ResearchService implements IResearchService {
                 .findList();
 
         List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(q);
-
-
-
-/*
-        select t0.id c0, t0.user_id c1, t0.patient_encounter_id c2, t0.vital_value c3, t0.date_taken c4,
-        t1.id c5, t1.name c6, t1.data_type c7, t1.unit_of_measurement c8, t1.isDeleted c9
-        from patient_encounter_vitals t0
-        left outer join vitals as t1 on t1.id = t0.vital_id
-        left join patient_prescriptions as t2 on t2.encounter_id = t0.patient_encounter_id
-        where t0.date_taken > '2014-10-24 00:00:00'
-        and t0.date_taken < '2014-11-05 11:59:59'
-        and t1.name = 'temperature'
-        and t2.medication_id = 1
-        order by vital_value
-
-        select t0.id c0, t0.user_id c1, t0.patient_encounter_id c2, t0.vital_value c3, t0.date_taken c4
-        from patient_encounter_vitals t0
-        left outer join vitals t1 on t1.id = t0.vital_id
-        where t0.date_taken > ?
-        and t0.date_taken < ?
-        and t1.name = ?
-        order by vital_value
-*/
-
 
         String unitOfMeasurement = "";
         for (IPatientEncounterVital eVital : patientEncounterVitals) {
@@ -592,7 +587,7 @@ public class ResearchService implements IResearchService {
 
         String startDateString = filters.getStartDate();
         String endDateString = filters.getEndDate();
-        Integer medicationID = filters.getMedicationId();
+        String medicationName = filters.getMedicationName();
 
         ResearchResult resultObj = new ResearchResult();
         Map<Integer, Float> resultItems = new HashMap<>();
@@ -622,11 +617,11 @@ public class ResearchService implements IResearchService {
         // using dateOfTriageVisit for now -- might want to also check dateOfMedicalVisit & dateOfPharmacyVisit
         Query<PatientEncounter> q = QueryProvider.getPatientEncounterQuery();
 
-        if( medicationID > 0 ) {
+        if( !medicationName.isEmpty() ) {
 
             Query<PatientPrescription> pQ = QueryProvider.getPatientPrescriptionQuery();
 
-            pQ.fetch("patientEncounter").where().eq("medication.id", medicationID);
+            pQ.fetch("patientEncounter").where().eq("medication.name", medicationName);
             List<? extends IPatientPrescription> patientPrescriptions = prescriptionRepository.find(pQ);
 
             List<Integer> scriptEncounterIds = new ArrayList<>();
@@ -679,16 +674,17 @@ public class ResearchService implements IResearchService {
                     IPatient patient = encounter.getPatient();
 
                     float gender = -1;
-                    // Do case in-sensitve comparison to be safe
+                    // Do case in-sensitive comparison to be safe
                     //1 = female
                     //0 = male
                     //2 = no sex
-                    if (patient.getSex() == null){
-                        gender = 2;
-                    }else if (patient.getSex().matches("(?i:Male)")) {
+                    if (patient.getSex().matches("(?i:Male)")) {
                         gender = 0;
                     } else if (patient.getSex().matches("(?i:Female)")) {
                         gender = 1;
+                    }
+                    else{
+                        gender = 2;
                     }
                     resultItems.put(
                             encounter.getId(),
@@ -750,7 +746,7 @@ public class ResearchService implements IResearchService {
 
         String startDateString = filters.getStartDate();
         String endDateString = filters.getEndDate();
-        Integer medicationID = filters.getMedicationId();
+        String medicationName = filters.getMedicationName();
 
         ResearchResult resultObj = new ResearchResult();
         Map<Integer, Float> buildItems = new HashMap<>();
@@ -779,14 +775,13 @@ public class ResearchService implements IResearchService {
         Query<PatientEncounterVital> q = QueryProvider.getPatientEncounterVitalQuery();
 
         List<Integer> scriptEncounterIds = new ArrayList<>();
-        if( medicationID > 0 ) {
+        if( !medicationName.isEmpty() ) {
 
             Query<PatientPrescription> pQ = QueryProvider.getPatientPrescriptionQuery();
 
-            pQ.fetch("patientEncounter").where().eq("medication.id", medicationID);
+            pQ.fetch("patientEncounter").where().eq("medication.name", medicationName);
             List<? extends IPatientPrescription> patientPrescriptions = prescriptionRepository.find(pQ);
 
-            int i = 0;
             for (IPatientPrescription script : patientPrescriptions) {
 
                 scriptEncounterIds.add(script.getPatientEncounter().getId());
@@ -806,7 +801,7 @@ public class ResearchService implements IResearchService {
 
         q = QueryProvider.getPatientEncounterVitalQuery();
 
-        if( medicationID > 0 && scriptEncounterIds.size() > 0 ) {
+        if( !medicationName.isEmpty() && scriptEncounterIds.size() > 0 ) {
 
             q.where().in("patientEncounterId", scriptEncounterIds);
         }

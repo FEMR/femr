@@ -2,6 +2,7 @@
 var filterMenuModule = (function(){
 
     var activeSubMenu = null;
+    var meds = null;
     var filterValues = {
 
         dataset1: null,
@@ -24,7 +25,7 @@ var filterMenuModule = (function(){
         groupFactor: $("#groupPrimaryData"),
         rangeStart: $("#rangeStart"),
         rangeEnd: $("#rangeEnd"),
-        medicationId: $("#medicationId")
+        medicationName: $("#medicationName")
     };
 
     var filterMenus = {
@@ -137,7 +138,7 @@ var filterMenuModule = (function(){
 
         $(filterFields.rangeStart).val("");
         $(filterFields.rangeEnd).val("");
-        $(filterFields.medicationId).val(-1);
+        $(filterFields.medicationName).val(-1);
         $(filterFields.groupPrimary).prop('checked', false);
         $(filterFields.groupFactor).val("10");
 
@@ -553,7 +554,6 @@ var filterMenuModule = (function(){
             }
         }
 
-        console.log(filterValues);
         if( filterValues.rangeStart != null ) {
 
             if( isNaN(+filterValues.rangeStart) || !isFinite(filterValues.rangeStart) ){
@@ -623,6 +623,16 @@ var filterMenuModule = (function(){
         return false;
     };
 
+    var registerTypeahead = function(){
+
+        //get medications
+        $.getJSON("/research/typeahead", function (data) {
+
+            meds =  data;
+            typeaheadFeature.initalizeTypeAhead(filterFields.medicationName, "medication", meds);
+        });
+    };
+
     var publicObject = {};
     publicObject.getPrimaryDataset = function(){ return filterValues.dataset1; };
     publicObject.getSecondaryDataset = function(){ return filterValues.dataset2; };
@@ -653,6 +663,9 @@ var filterMenuModule = (function(){
         $("#save-button").click(showImageOptions);
         $(".save-image-cont").find(".options").find(".image-size-selection").click(chooseImageSize);
         $(".save-image-cont").find(".options").find(".close").click(hideImageOptions)
+
+        // register typeahead on medication names field
+        registerTypeahead();
 
         // stop form submission
         $("#graph-options").attr("onsubmit", "return false;");

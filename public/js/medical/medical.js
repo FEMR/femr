@@ -1,17 +1,54 @@
+//used in typeahead
+var diagnoses = [];
+
+var problemFeature = {
+    allProblems: $('.newProblems, .oldProblems'),
+    newProblems: $('.newProblems'),
+    refreshSelectors: function () {
+        problemFeature.allProblems = $(problemFeature.allProblems.selector);
+        problemFeature.newProblems = $(problemFeature.newProblems.selector);
+    },
+    getNumberOfNonReadonlyProblemFields: function () {
+        problemFeature.refreshSelectors();
+        return problemFeature.newProblems.length;
+    },
+    addProblemField: function () {
+        var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
+        $('.problem')
+            .parent()
+            .append("<div class='problem'>" +
+                "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
+                "</div>");
+        typeaheadFeature.activateTypeahead($("[name='problems[" + problemIndex +"].name'"));
+    },
+    removeProblemField: function () {
+        problemFeature.refreshSelectors();
+        var lastProblem = $(problemFeature.newProblems).last();
+        if ($(problemFeature.newProblems).size() > 1) {
+            if (!$(lastProblem).is('[readonly]')) {
+                $(lastProblem).remove();
+            }
+        } else {
+            if (!$(lastProblem).is('[readonly]')) {
+                $(lastProblem).val('');
+            }
+        }
+    }
+};
 var prescriptionFeature = {
     allPrescriptions: $('.prescriptionWrap input'),
+    refreshSelectors: function () {
+        prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions.selector);
+    },
     getNumberOfNonReadonlyPrescriptionFields: function () {
         prescriptionFeature.refreshSelectors();
         var number = 0;
-        $(prescriptionFeature.allPrescriptions).each(function(){
-            if (!$(this).is('[readonly]')){
+        $(prescriptionFeature.allPrescriptions).each(function () {
+            if (!$(this).is('[readonly]')) {
                 number++;
             }
         });
         return number;
-    },
-    refreshSelectors: function () {
-        prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions).selector;
     },
     addPrescriptionField: function () {
         var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
@@ -24,6 +61,7 @@ var prescriptionFeature = {
         var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
         if ($(prescriptionFeature.allPrescriptions).size() > 1) {
             if (!$(lastPrescription).is('[readonly]')) {
+                $(lastPrescription).typeahead('destroy');
                 $(lastPrescription).remove();
             }
         } else {
@@ -152,8 +190,7 @@ $(document).ready(function () {
     //unhide the first chief complaint on HPI
     $('.chiefComplaintText').first().removeClass('hidden');
 
-    //Unhides a prescription input box everytime
-    //the + button is clicked (max of 5)
+    //hide/unhide prescriptions
     $('#addPrescriptionButton').click(function () {
         prescriptionFeature.addPrescriptionField();
     });
@@ -162,37 +199,13 @@ $(document).ready(function () {
         prescriptionFeature.removePrescriptionField();
     });
 
-    //Unhides a problem input box everytime
-    //the + button is clicked (max of 5)
+    //hide/unhide problems
     $('#addProblemButton').click(function () {
-        var numberOfProblems = getNumberOfProblems();
-        if (numberOfProblems > 0 && ($("body").data("prob") < numberOfProblems || typeof $("body").data("prob") === "undefined")) {
-            $("body").data("prob", numberOfProblems);
-        }
-
-
-        if (typeof $("body").data("prob") === "undefined") {
-            $("body").data("prob", 2);
-        } else if ($("body").data("prob") < 5) {
-            $("body").data("prob", $("body").data("prob") + 1);
-        } else {
-            return;
-        }
-        $("#problem" + $("body").data("prob") + "-container").removeClass("hidden");
-        $("#problem" + $("body").data("prob")).focus();
-        return;
+        problemFeature.addProblemField();
     });
 
     $('#subtractProblemButton').click(function () {
-        if (typeof $("body").data("prob") === "undefined") {
-            return;
-        } else if ($("body").data("prob") > 1) {
-            $("#problem" + $("body").data("prob") + "-container").addClass("hidden");
-            $("#problem" + ($("body").data("prob")) + "-container").val('');
-            $("#problem" + ($("body").data("prob") - 1) + "-container").focus();
-            $("body").data("prob", $("body").data("prob") - 1);
-        }
-        return;
+        problemFeature.removeProblemField();
     });
 
     $('#medicalTabs li').click(function () {
@@ -265,7 +278,7 @@ $(document).ready(function () {
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 
-    registerTypeAhead();
+    typeaheadFeature.setGlobalVariable();
 
 });
 
@@ -318,17 +331,6 @@ function showTab(clickedTab) {
             $(this).removeClass("active");
         }
     });
-}
-
-function getNumberOfProblems() {
-    var x = 0;
-    $('.problem').each(function () {
-        //if ($(this).attr("readonly")) {
-        if (!$(this).hasClass("hidden")) {
-            x++;
-        }
-    });
-    return x;
 }
 
 
@@ -515,10 +517,8 @@ function photoNameFixup() {
 }
 
 
-function registerTypeAhead(obj) {
-
-
-    var substringMatcher = function (strs) {
+var typeaheadFeature = {
+    substringMatcher: function (strs) {
         return function findMatches(q, cb) {
             var matches, substrRegex;
 
@@ -540,30 +540,26 @@ function registerTypeAhead(obj) {
 
             cb(matches);
         };
-    };
-
-    var diagnoses = [];
-
-    // get diagnoses, register typeahead on response
-    $.getJSON("/search/typeahead/diagnoses", function (data) {
-
-        diagnoses = data;
-
-        $(".problem").find('input[type="text"]').each(function () {
-
-            $(this).typeahead({
-                    hint: true,
-                    highlight: true,
-                    minLength: 1
-                },
-                {
-                    name: 'dianoses',
-                    displayKey: 'value',
-                    source: substringMatcher(diagnoses)
-                });
+    },
+    setGlobalVariable: function () {
+        // get diagnoses, register typeahead on response
+        $.getJSON("/search/typeahead/diagnoses", function (data) {
+            diagnoses = data;
         });
+    },
+    activateTypeahead: function (element) {
+        $(element).typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            },
+            {
+                name: 'dianoses',
+                displayKey: 'value',
+                source: typeaheadFeature.substringMatcher(diagnoses)
+            });
+    }
 
-    });
-}
+};
 
 

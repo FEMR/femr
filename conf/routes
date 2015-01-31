@@ -7,6 +7,9 @@ GET         /superuser/tabs/:name            @femr.ui.controllers.SuperuserContr
 POST        /superuser/tabs/:name            @femr.ui.controllers.SuperuserController.contentPost(name: String)
 GET         /superuser/tabs                  @femr.ui.controllers.SuperuserController.tabsGet()
 POST        /superuser/tabs                  @femr.ui.controllers.SuperuserController.tabsPost()
+GET         /superuser/trips                 @femr.ui.controllers.SuperuserController.tripsGet()
+POST        /superuser/trips                 @femr.ui.controllers.SuperuserController.tripsPost()
+POST        /superuser/trips/:id             @femr.ui.controllers.SuperuserController.toggleCurrentTripPost(id: Integer)
 GET         /superuser                       @femr.ui.controllers.SuperuserController.indexGet()
 #Admin
 POST        /admin/users/create              @femr.ui.controllers.admin.UsersController.createPost()
@@ -32,6 +35,8 @@ GET         /history/patient/:query          @femr.ui.controllers.HistoryControl
 #Search
 GET         /search/:page                    @femr.ui.controllers.SearchController.handleSearch(page: String)
 GET         /search/check/:query             @femr.ui.controllers.SearchController.doesPatientExist(query: String)
+GET         /search/typeahead/patients       @femr.ui.controllers.SearchController.typeaheadPatientsJSONGet()
+GET         /search/typeahead/diagnoses      @femr.ui.controllers.SearchController.typeaheadDiagnosisJSONGet()
 #Photo
 GET         /photo/patient/:id               @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /photo/encounter/:id             @femr.ui.controllers.PhotoController.GetPhoto(id: Int)
@@ -49,12 +54,17 @@ GET         /medical                         @femr.ui.controllers.MedicalControl
 POST        /medical                         @femr.ui.controllers.MedicalController.indexPost()
 #Research
 GET         /research                        @femr.ui.controllers.ResearchController.indexGet()
+POST        /research/graph                  @femr.ui.controllers.ResearchController.getGraphPost()
+GET         /research/generateData           @femr.ui.controllers.ResearchController.generateData()
+
+
 #Sessions
 GET         /logout                          @femr.ui.controllers.SessionsController.delete()
 POST        /login/reset                     @femr.ui.controllers.SessionsController.editPasswordPost()
 POST        /login                           @femr.ui.controllers.SessionsController.createPost()
 GET         /login                           @femr.ui.controllers.SessionsController.createGet()
 
+#Home
 GET         /                                @femr.ui.controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path

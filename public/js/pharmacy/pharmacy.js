@@ -18,19 +18,17 @@ function replaceClick(btn){
     var medicationNumber = medicationListElementId.substr(medicationListElementId.length - 1);
     var replacementInputBox = $("#replacementMedication" + medicationNumber);
 
-
     if ($(replacementInputBox).hasClass('hidden')){
+        //show replacement input box
         $(replacementInputBox).removeClass('hidden');
-        //initalize typeahead
-        $(replacementInputBox).typeahead({
-            name: 'medication',
-            local: meds
-        });
+        //initalize typeahead for the input
+        typeaheadFeature.initalizeTypeAhead(replacementInputBox, "medication", meds);
     }else{
+        //hide the replacement input box
         $(replacementInputBox).addClass('hidden');
         $(replacementInputBox).val("");
-        //eliminate typeahead
-        $(replacementInputBox).typeahead('destroy');
+        //eliminate typeahead for the input
+        typeaheadFeature.destroyTypeAhead(replacementInputBox);
     }
 }
 

@@ -20,10 +20,9 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.models.IUser;
+import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.models.*;
 import femr.util.dependencyinjection.providers.*;
 
 public class DataLayerModule extends AbstractModule {
@@ -32,12 +31,17 @@ public class DataLayerModule extends AbstractModule {
     protected void configure() {
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
+        bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
         bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
         bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
         bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
         bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
+        bind(IMissionCity.class).toProvider(MissionCityProvider.class);
+        bind(IMissionCountry.class).toProvider(MissionCountryProvider.class);
+        bind(IMissionTeam.class).toProvider(MissionTeamProvider.class);
+        bind(IMissionTrip.class).toProvider(MissionTripProvider.class);
         bind(IPatient.class).toProvider(PatientProvider.class);
         bind(IPatientAgeClassification.class).toProvider(PatientAgeClassificationProvider.class);
         bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
@@ -58,12 +62,17 @@ public class DataLayerModule extends AbstractModule {
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
+        bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});
         bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<Repository<IMedicationAdministration>>() {});
         bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<Repository<IMedicationMeasurementUnit>>() {});
+        bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
+        bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
+        bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});
+        bind(new TypeLiteral<IRepository<IMissionTrip>>() {}).to(new TypeLiteral<Repository<IMissionTrip>>() {});
         bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
         bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<Repository<IPatientAgeClassification>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});

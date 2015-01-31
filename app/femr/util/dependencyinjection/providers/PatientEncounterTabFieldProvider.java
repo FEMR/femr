@@ -18,8 +18,8 @@
 */
 package femr.util.dependencyinjection.providers;
 
-import femr.data.models.IPatientEncounterTabField;
-import femr.data.models.PatientEncounterTabField;
+import femr.data.models.core.IPatientEncounterTabField;
+import femr.data.models.mysql.PatientEncounterTabField;
 
 import javax.inject.Provider;
 

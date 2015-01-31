@@ -19,28 +19,30 @@
 package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
-import femr.business.services.*;
+import femr.business.services.core.*;
+import femr.business.services.system.*;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.business.wrappers.sessions.SessionHelper;
-import femr.data.models.ISystemSetting;
 
 public class BusinessLayerModule extends AbstractModule {
 
     @Override
     protected void configure() {
         //Business Service Injection
+        bind(IConfigureService.class).to(ConfigureService.class);
+        bind(ICustomTabService.class).to(CustomTabService.class);
+        bind(IEncounterService.class).to(EncounterService.class);
         bind(IInventoryService.class).to(InventoryService.class);
-        bind(IMedicalService.class).to(MedicalService.class);
-        bind(IPharmacyService.class).to(PharmacyService.class);
+        bind(IMedicationService.class).to(MedicationService.class);
+        bind(IMissionTripService.class).to(MissionTripService.class);
+        bind(IPatientService.class).to(PatientService.class);
         bind(IPhotoService.class).to(PhotoService.class);
         bind(IResearchService.class).to(ResearchService.class);
         bind(IRoleService.class).to(RoleService.class);
         bind(ISearchService.class).to(SearchService.class);
         bind(ISessionHelper.class).to(SessionHelper.class);
         bind(ISessionService.class).to(SessionService.class);
-        bind(IConfigureService.class).to(ConfigureService.class);
-        bind(ISuperuserService.class).to(SuperuserService.class);
-        bind(ITriageService.class).to(TriageService.class);
         bind(IUserService.class).to(UserService.class);
+        bind(IVitalService.class).to(VitalService.class);
     }
 }

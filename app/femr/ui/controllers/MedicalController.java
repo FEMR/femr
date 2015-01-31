@@ -3,11 +3,11 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import femr.business.services.*;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
+import femr.business.services.core.*;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.models.Roles;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.medical.*;
@@ -32,20 +32,29 @@ public class MedicalController extends Controller {
 
     private final Form<EditViewModelPost> createViewModelPostForm = Form.form(EditViewModelPost.class);
     private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
+    private final ICustomTabService customTabService;
+    private final IEncounterService encounterService;
+    private final IMedicationService medicationService;
+    private final IPhotoService photoService;
     private final ISessionService sessionService;
     private final ISearchService searchService;
-    private final IMedicalService medicalService;
-    private final IPhotoService photoService;
+    private final IVitalService vitalService;
 
     @Inject
-    public MedicalController(ISessionService sessionService,
+    public MedicalController(ICustomTabService customTabService,
+                             IEncounterService encounterService,
+                             IMedicationService medicationService,
+                             IPhotoService photoService,
+                             ISessionService sessionService,
                              ISearchService searchService,
-                             IMedicalService medicalService,
-                             IPhotoService photoService) {
+                             IVitalService vitalService) {
+        this.customTabService = customTabService;
+        this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;
-        this.medicalService = medicalService;
+        this.medicationService = medicationService;
         this.photoService = photoService;
+        this.vitalService = vitalService;
     }
 
     public Result indexGet() {
@@ -77,7 +86,7 @@ public class MedicalController extends Controller {
         }
 
         //check if the doc has already seen the patient today
-        ServiceResponse<UserItem> userItemServiceResponse = medicalService.getPhysicianThatCheckedInPatient(patientEncounterItem.getId());
+        ServiceResponse<UserItem> userItemServiceResponse = encounterService.getPhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
         if (userItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -133,7 +142,7 @@ public class MedicalController extends Controller {
         //Map<String, TabFieldItem>
         // String = tab field name
         // TabFieldItem contains value
-        ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse = medicalService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
+        ServiceResponse<Map<String, TabFieldItem>> patientEncounterTabFieldResponse = encounterService.findCurrentTabFieldsByEncounterId(patientEncounter.getId());
         Map<String, TabFieldItem> tabFieldItemMap;
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
@@ -143,13 +152,13 @@ public class MedicalController extends Controller {
         }
 
         //get custom tabs/fields
-        ServiceResponse<List<TabItem>> tabItemResponse = medicalService.getCustomTabs();
+        ServiceResponse<List<TabItem>> tabItemResponse = customTabService.getCustomTabs(false);
         if (tabItemResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
             viewModelGet.setCustomTabs(tabItemResponse.getResponseObject());
         }
-        ServiceResponse<Map<String, List<TabFieldItem>>> tabFieldResponse = medicalService.getCustomFields(patientEncounter.getId());
+        ServiceResponse<Map<String, List<TabFieldItem>>> tabFieldResponse = customTabService.getTabFields(patientEncounter.getId());
         if (tabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -180,7 +189,7 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
-        patientEncounterItem = medicalService.checkPatientIn(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
+        patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
         //update patient encounter
 
         //Maps the dynamic tab name to the field list
@@ -203,7 +212,7 @@ public class MedicalController extends Controller {
         //save the custom fields, if any
         if (customFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> customFieldItemResponse =
-                    medicalService.createPatientEncounterTabFields(customFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
+                    encounterService.createPatientEncounterTabFields(customFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
             if (customFieldItemResponse.hasErrors()) {
                 throw new RuntimeException();
             }
@@ -225,7 +234,7 @@ public class MedicalController extends Controller {
 
         if (nonCustomFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
-                    medicalService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
+                    encounterService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
             if (nonCustomFieldItemResponse.hasErrors()) {
                 throw new RuntimeException();
             }
@@ -258,12 +267,9 @@ public class MedicalController extends Controller {
         if (viewModelPost.getPrescription5() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPrescription5()))
             prescriptionItems.add(new PrescriptionItem(viewModelPost.getPrescription5()));
         if (prescriptionItems.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicalService.createPatientPrescriptions(
-                    prescriptionItems,
-                    currentUserSession.getId(),
-                    patientEncounterItem.getId(),
-                    false
-            );
+
+            ServiceResponse<List<PrescriptionItem>> prescriptionResponse =
+                    medicationService.createPatientPrescriptions(prescriptionItems, currentUserSession.getId(), patientEncounterItem.getId(), false, false);
             if (prescriptionResponse.hasErrors()) {
                 throw new RuntimeException();
             }
@@ -282,7 +288,7 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         //update date_of_medical_visit when a vital is updated
-        medicalService.checkPatientIn(currentEncounterByPatientId.getResponseObject().getId(), currentUser.getId());
+        encounterService.checkPatientInToMedical(currentEncounterByPatientId.getResponseObject().getId(), currentUser.getId());
 
         PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
 
@@ -290,7 +296,7 @@ public class MedicalController extends Controller {
 
         Map<String, Float> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel);
         ServiceResponse<List<VitalItem>> patientEncounterVitalsServiceResponse =
-                medicalService.createPatientEncounterVitals(patientEncounterVitals, currentUser.getId(), patientEncounter.getId());
+                vitalService.createPatientEncounterVitals(patientEncounterVitals, currentUser.getId(), patientEncounter.getId());
         if (patientEncounterVitalsServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

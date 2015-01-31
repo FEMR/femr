@@ -1,18 +1,23 @@
 package mock.femr.data.models;
 
-import femr.data.models.IPatient;
+
+import femr.data.models.IPhoto;
+import femr.data.models.Photo;
+import femr.data.models.core.IPatient;
 
 import java.util.Date;
 
 public class MockPatient implements IPatient {
-    private int id = 0;
-    private int userId = 0;
-    private String firstName = "";
-    private String lastName = "";
+
+    private int id;
+    private int userId;
+    private String firstName;
+    private String lastName;
     private Date age;
-    private String sex = "";
-    private String address = "";
-    private String city = "";
+    private String sex;
+    private String address;
+    private String city;
+    private Photo photo;
 
     @Override
     public int getId() {
@@ -95,12 +100,12 @@ public class MockPatient implements IPatient {
     }
 
     @Override
-    public Integer getPhotoId() {
-        return null;
+    public IPhoto getPhoto() {
+        return photo;
     }
 
     @Override
-    public void setPhotoId(Integer id) {
-
+    public void setPhoto(IPhoto photo) {
+        this.photo = (Photo) photo;
     }
 }

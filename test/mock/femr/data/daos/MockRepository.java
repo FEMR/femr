@@ -64,4 +64,16 @@ public class MockRepository<T> implements IRepository<T> {
         entityPassedIn = entity;
         return entityPassedIn;
     }
+
+    @Override
+    public void delete(List<? extends T> entities){
+
+
+    }
+
+    @Override
+    public void delete(T entity){
+
+
+    }
 }

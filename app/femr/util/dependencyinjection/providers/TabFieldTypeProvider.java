@@ -18,8 +18,8 @@
 */
 package femr.util.dependencyinjection.providers;
 
-import femr.data.models.ITabFieldType;
-import femr.data.models.TabFieldType;
+import femr.data.models.core.ITabFieldType;
+import femr.data.models.mysql.TabFieldType;
 
 import javax.inject.Provider;
 

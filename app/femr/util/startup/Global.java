@@ -20,7 +20,6 @@ package femr.util.startup;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import femr.common.dto.CurrentUser;
 import femr.util.dependencyinjection.modules.BusinessLayerModule;
 import femr.util.dependencyinjection.modules.DataLayerModule;
 import femr.util.dependencyinjection.modules.UtilitiesModule;
@@ -29,8 +28,8 @@ import play.GlobalSettings;
 import play.mvc.*;
 import play.mvc.Http.*;
 import play.libs.F.*;
-
 import static play.mvc.Results.*;
+import femr.ui.views.html.errors.global;
 
 public class Global extends GlobalSettings {
 
@@ -38,6 +37,7 @@ public class Global extends GlobalSettings {
 
     @Override
     public void onStart(Application app) {
+
         super.onStart(app);
         new DatabaseSeeder().seed();
     }
@@ -61,7 +61,7 @@ public class Global extends GlobalSettings {
     @Override
     public Promise<Result> onBadRequest(RequestHeader request, String error) {
         return Promise.<Result>pure(internalServerError(
-                femr.ui.views.html.errors.global.render()
+                global.render()
         ));
     }
 

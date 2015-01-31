@@ -19,7 +19,7 @@
 package femr.business.helpers;
 
 import com.typesafe.config.ConfigFactory;
-import femr.data.models.IPatientEncounter;
+import femr.data.models.core.IPatientEncounter;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 

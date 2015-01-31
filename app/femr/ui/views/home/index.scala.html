@@ -1,18 +1,30 @@
-@(currentUser: femr.common.dto.CurrentUser)
+@(currentUser: femr.common.dtos.CurrentUser)
 
 @import femr.ui.views.html.layouts.main
 
+    @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/handlebars.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
+    }
+
+
   @top = {
     <div class="jumbotron">
-    <div class="container">
-        <h2>Welcome to fEMR 2.1.2, @currentUser.getFirstName!</h2>
+      <div class="container">
+        <h2>Welcome to fEMR 2.1.3, @currentUser.getFirstName!</h2>
         @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
         <p>Please select a tab at the top to get started!</p>
+
+        <p>or</p>
+        <p>Search Below:</p>
+        <div id="patientSearchContainer">
+            <input type="text" class="patientSearch fInput typeahead" id="patientSearch" name="patientSearch" placeholder="Patient ID or Name"/>
+        </div>
       </div>
     </div>
   }
 
-@main("Home", currentUser, outsideContainerTop = top) {
+@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts) {
   @*<ul>
   @for(role <- currentUser.getRoles) {
     <li>@role.getName</li>

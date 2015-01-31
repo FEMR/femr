@@ -20,12 +20,17 @@ package femr.business.helpers;
 
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
+
 import javax.inject.Provider;
+
 import femr.common.models.*;
-import femr.data.models.*;
+import femr.ui.models.research.FilterViewModel;
+import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +44,10 @@ public class DomainMapper {
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
     private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
     private final Provider<IMedicationForm> medicationFormProvider;
+    private final Provider<IMissionCity> missionCityProvider;
+    private final Provider<IMissionCountry> missionCountryProvider;
+    private final Provider<IMissionTeam> missionTeamProvider;
+    private final Provider<IMissionTrip> missionTripProvider;
     private final Provider<IPatient> patientProvider;
     private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
     private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
@@ -46,7 +55,6 @@ public class DomainMapper {
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
-
     private final Provider<IPhoto> photoProvider;
     private final Provider<IRole> roleProvider;
     private final Provider<ITabField> tabFieldProvider;
@@ -63,6 +71,10 @@ public class DomainMapper {
                         Provider<IMedicationForm> medicationFormProvider,
                         Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                         Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
+                        Provider<IMissionCity> missionCityProvider,
+                        Provider<IMissionCountry> missionCountryProvider,
+                        Provider<IMissionTeam> missionTeamProvider,
+                        Provider<IMissionTrip> missionTripProvider,
                         Provider<IPatient> patientProvider,
                         Provider<IPatientAgeClassification> patientAgeClassificationProvider,
                         Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
@@ -84,7 +96,11 @@ public class DomainMapper {
         this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
         this.medicationFormProvider = medicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
-        this.medicationMeasurementUnitProvider  = medicationMeasurementUnitProvider;
+        this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
+        this.missionCityProvider = missionCityProvider;
+        this.missionCountryProvider = missionCountryProvider;
+        this.missionTeamProvider = missionTeamProvider;
+        this.missionTripProvider = missionTripProvider;
         this.patientProvider = patientProvider;
         this.patientAgeClassificationProvider = patientAgeClassificationProvider;
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
@@ -173,6 +189,107 @@ public class DomainMapper {
         tabField.setTabFieldType(iTabFieldType);
         tabField.setTab(tab);
         return tabField;
+    }
+
+    /**
+     * Creates a trip item
+     *
+     * @param teamName name of the team
+     * @param tripCity city of the trip
+     * @param tripCountry country of the trip
+     * @param startDate when the trip starts
+     * @param endDate when the trip ends
+     * @return
+     */
+    public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
+        if (StringUtils.isNullOrWhiteSpace(teamName)||
+                StringUtils.isNullOrWhiteSpace(tripCity) ||
+                StringUtils.isNullOrWhiteSpace(tripCountry) ||
+                startDate == null){
+            return null;
+        }
+
+        TripItem tripItem = new TripItem();
+        tripItem.setTeamName(teamName);
+        tripItem.setTripCity(tripCity);
+        tripItem.setTripCountry(tripCountry);
+        tripItem.setTripStartDate(startDate);
+        tripItem.setTripEndDate(endDate);
+        return tripItem;
+    }
+
+    public static TeamItem createTeamItem(String name, String location, String description){
+        if (StringUtils.isNullOrWhiteSpace(name)){
+            return null;
+        }
+        TeamItem teamItem = new TeamItem();
+        teamItem.setName(name);
+        teamItem.setLocation(location);
+        teamItem.setDescription(description);
+        return teamItem;
+    }
+
+    public static CityItem createCityItem(String cityName, String countryName){
+        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
+            return null;
+
+        CityItem cityItem = new CityItem();
+        cityItem.setCityName(cityName);
+        cityItem.setCountryName(countryName);
+        return cityItem;
+    }
+
+    /**
+     * Create a new mission trip
+     *
+     * @param startDate   start date of the trip
+     * @param endDate     end date of the trip
+     * @param isCurrent   is this the current trip?
+     * @param missionCity the city where the trip is taking place
+     * @param missionTeam the country where the trip is taking place
+     * @return a brand spankin' new freakin' mission trip
+     */
+    public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam) {
+        if (startDate == null || endDate == null || missionCity == null || missionTeam == null) {
+            return null;
+        }
+        IMissionTrip missionTrip = missionTripProvider.get();
+        missionTrip.setCurrent(isCurrent);
+        missionTrip.setStartDate(startDate);
+        missionTrip.setEndDate(endDate);
+        missionTrip.setMissionCity(missionCity);
+        missionTrip.setMissionTeam(missionTeam);
+        return missionTrip;
+    }
+
+    public IMissionCountry createMissionCountry(String name) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+            return null;
+        }
+        IMissionCountry missionCountry = missionCountryProvider.get();
+        missionCountry.setName(name);
+        return missionCountry;
+    }
+
+    public IMissionCity createMissionCity(String name, IMissionCountry missionCountry) {
+        if (StringUtils.isNullOrWhiteSpace(name) || missionCountry == null) {
+            return null;
+        }
+        IMissionCity missionCity = missionCityProvider.get();
+        missionCity.setMissionCountry(missionCountry);
+        missionCity.setName(name);
+        return missionCity;
+    }
+
+    public IMissionTeam createMissionTeam(String name, String location, String description) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+            return null;
+        }
+        IMissionTeam missionTeam = missionTeamProvider.get();
+        missionTeam.setName(name);
+        missionTeam.setLocation(location);
+        missionTeam.setDescription(description);
+        return missionTeam;
     }
 
     /**
@@ -286,7 +403,7 @@ public class DomainMapper {
         }
 
         String fullActiveDrugName = "";
-        for(IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()){
+        for (IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()) {
             medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
                     medicationActiveDrug.getMedicationMeasurementUnit().getName(),
                     medicationActiveDrug.getValue(),
@@ -325,7 +442,7 @@ public class DomainMapper {
         return medication;
     }
 
-    public IMedicationForm createMedicationForm(String name){
+    public IMedicationForm createMedicationForm(String name) {
         IMedicationForm medicationForm = medicationFormProvider.get();
         medicationForm.setName(name);
         medicationForm.setIsDeleted(false);
@@ -335,13 +452,13 @@ public class DomainMapper {
     /**
      * Creates a new active drug
      *
-     * @param value strength of the drug
-     * @param isDenominator is the drug a denominator
-     * @param activeDrugUnitId id of the unit for measurement of the drug
+     * @param value                    strength of the drug
+     * @param isDenominator            is the drug a denominator
+     * @param activeDrugUnitId         id of the unit for measurement of the drug
      * @param medicationActiveDrugName the drug name
      * @return new active drug
      */
-    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName){
+    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
         IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
         medicationActiveDrug.setValue(value);
         medicationActiveDrug.setDenominator(isDenominator);
@@ -350,10 +467,23 @@ public class DomainMapper {
         return medicationActiveDrug;
     }
 
-    public IMedicationActiveDrugName createMedicationActiveDrugName(String name){
+    public IMedicationActiveDrugName createMedicationActiveDrugName(String name) {
         IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameProvider.get();
         medicationActiveDrugName.setName(name);
         return medicationActiveDrugName;
+    }
+
+    public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, IVital vital, float vitalKey) {
+        if (vital == null || encounterId < 1 || userId < 1) {
+            return null;
+        }
+        IPatientEncounterVital patientEncounterVital = patientEncounterVitalProvider.get();
+        patientEncounterVital.setPatientEncounterId(encounterId);
+        patientEncounterVital.setUserId(userId);
+        patientEncounterVital.setDateTaken(time);
+        patientEncounterVital.setVital(vital);
+        patientEncounterVital.setVitalValue(vitalKey);
+        return patientEncounterVital;
     }
 
     /**
@@ -409,7 +539,7 @@ public class DomainMapper {
      * @param userId               id of the user creating the encounter
      * @return a new PatientEncounter
      */
-    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId, Integer patientAgeClassificationId) {
+    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId, Integer patientAgeClassificationId, Integer tripId) {
         if (patientEncounterItem == null || userId < 1) {
             return null;
         }
@@ -421,6 +551,8 @@ public class DomainMapper {
         patientEncounter.setWeeksPregnant(patientEncounterItem.getWeeksPregnant());
         if (patientAgeClassificationId != null)
             patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
+        if (tripId != null)
+            patientEncounter.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), tripId));
         return patientEncounter;
     }
 
@@ -432,6 +564,26 @@ public class DomainMapper {
         chiefComplaint.setValue(value);
         chiefComplaint.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), patientEncounterId));
         return chiefComplaint;
+    }
+
+    public static MissionItem createMissionItem(IMissionTeam missionTeam) {
+
+        MissionItem missionItem = new MissionItem();
+        missionItem.setTeamName(missionTeam.getName());
+        missionItem.setTeamLocation(missionTeam.getLocation());
+        missionItem.setTeamDescription(missionTeam.getDescription());
+
+        for (IMissionTrip mt : missionTeam.getMissionTrips()) {
+            missionItem.addMissionTrip(mt.getId(),
+                    mt.getMissionCity().getName(),
+                    mt.getMissionCity().getMissionCountry().getName(),
+                    mt.getStartDate(),
+                    dateUtils.getFriendlyDate(mt.getStartDate()),
+                    mt.getEndDate(),
+                    dateUtils.getFriendlyDate(mt.getEndDate()),
+                    mt.isCurrent());
+        }
+        return missionItem;
     }
 
     public PrescriptionItem createPrescriptionItem(IPatientPrescription patientPrescription) {
@@ -469,7 +621,7 @@ public class DomainMapper {
         }
         PatientItem patientItem = new PatientItem();
         patientItem.setAddress(patient.getAddress());
-        if (patient.getAge() != null){
+        if (patient.getAge() != null) {
             patientItem.setAge(dateUtils.getAge(patient.getAge()));//age (int)
             patientItem.setBirth(patient.getAge());//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(patient.getAge()));
@@ -576,7 +728,7 @@ public class DomainMapper {
      * @param userId        id of the user creating the prescription
      * @param encounterId   encounter id of the prescription
      * @param replacementId id of the prescription being replaced OR null
-     * @param isDispensed is the patient prescription dispensed to the patient yet
+     * @param isDispensed   is the patient prescription dispensed to the patient yet
      * @return a new IPatientPrescription
      */
     public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
@@ -641,5 +793,38 @@ public class DomainMapper {
         return photo;
     }
 
+    /**
+     * Create research filter
+     *
+     * @param filterViewModel
+     * @return ResearchFilterItem
+     */
+    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel) {
+
+        ResearchFilterItem filterItem = new ResearchFilterItem();
+
+        filterItem.setPrimaryDataset(filterViewModel.getPrimaryDataset());
+        filterItem.setSecondaryDataset(filterViewModel.getSecondaryDataset());
+        filterItem.setGraphType(filterViewModel.getGraphType());
+        filterItem.setStartDate(filterViewModel.getStartDate());
+        filterItem.setEndDate(filterViewModel.getEndDate());
+
+        Integer groupFactor = filterViewModel.getGroupFactor();
+        filterItem.setGroupFactor(groupFactor);
+        if (groupFactor != null && groupFactor > 0) {
+
+            filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
+        } else {
+
+            filterItem.setGroupPrimary(false);
+        }
+
+        filterItem.setRangeStart(filterViewModel.getRangeStart());
+        filterItem.setRangeEnd(filterViewModel.getRangeEnd());
+
+        filterItem.setMedicationId(filterViewModel.getMedicationId());
+
+        return filterItem;
+    }
 
 }

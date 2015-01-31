@@ -1,0 +1,150 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TripViewModelGet)
+
+@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/superuser.css")">
+    }
+
+    @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/superuser/superuser.js")"></script>
+    }
+
+@admin("SuperUser Panel", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+    @helper.form(action = SuperuserController.tripsPost()) {
+        <p>This is where a superuser can identify the trip that is currently underway. The trip, when defined, will be linked to
+            the patient's encounter. The submit button will create a new team and/or city and/or trip depending on which required fields
+            are filled out.</p>
+        <div id="addTeamWrap">
+            <h1>Add Team:</h1>
+            <div>
+                <label>Team Name<span class="red bold">*</span>:
+                    <input class="fInput" type="text" name="newTeamName"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Team Location:
+                    <input class="fInput" type="text" name="newTeamLocation"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Team Description:
+                    <input class="fInput" type="text" name="newTeamDescription"/>
+                </label>
+            </div>
+
+            <h1>Add City:</h1>
+            <div>
+                <label>City:<span class="red bold">*</span>
+                    <input class="fInput" type="text" name="newCity"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Country:<span class="red bold">*</span>
+                    <select class="fSelect" name="newCityCountry">
+                        <option selected disabled value=""></option>
+                        @for(countryIndex <- 1 to viewModel.getAvailableCountries.size) {
+                            <option>@viewModel.getAvailableCountries.get(countryIndex - 1)</option>
+                        }
+                    </select>
+                </label>
+            </div>
+
+        </div>
+
+        <div id="addTripWrap">
+            <h1>Add Trip:</h1>
+            <div>
+                <label>Trip Team:<span class="red bold">*</span>
+                    <select class="fSelect" name="newTripTeamName">
+                        <option selected value=""></option>
+                        @for(teamIndex <- 1 to viewModel.getAvailableTeams.size) {
+                            <option>@viewModel.getAvailableTeams.get(teamIndex - 1)</option>
+                        }
+                    </select>
+                </label>
+            </div>
+            <div>
+                <label>Trip City:<span class="red bold">*</span>
+                    <select class="fSelect" name="newTripCity">
+                        <option selected value=""></option>
+                        @for(tripIndex <- 1 to viewModel.getAvailableCities.size) {
+                            @defining(viewModel.getAvailableCities.get(tripIndex - 1)) { city =>
+                                <option country-name="@city.getCountryName">@city.getCityName</option>
+                            }
+                        }
+                    </select>
+                </label>
+            </div>
+            <div>
+                <label>Trip Country:
+                    <input class="fInput" type="text" value="" name="newTripCountry" readonly/>
+                </label>
+            </div>
+
+            <div>
+                <label>Start Date:<span class="red bold">*</span>
+                    <input type="date" name="newTripStartDate"/>
+                </label>
+            </div>
+            <div>
+                <label>End Date:<span class="red bold">*</span>
+                    <input type="date" name="newTripEndDate"/>
+                </label>
+            </div>
+        </div>
+        <div id="submitWrap">
+            <button type="submit" class="fButton">Submit</button>
+        </div>
+    }
+
+
+    <div id="currentWrap">
+
+        <table id="tripTable">
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Country</th>
+                    <th>City</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>isCurrent</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(i <- 1 to viewModel.getMissionItems.size) {
+                @defining(viewModel.getMissionItems.get(i - 1)) { missionItem =>
+                    @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                        @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+                            <tr>
+                                <td>@missionItem.getTeamName</td>
+                                <td>@missionTrip.getTripCountry</td>
+                                <td>@missionTrip.getTripCity</td>
+                                <td>@missionTrip.getFriendlyTripStartDate</td>
+                                <td>@missionTrip.getFriendlyTripEndDate</td>
+                                <td>
+                                @if(missionTrip.isCurrent) {
+                                    <span>Yes</span>
+                                } else {
+                                    <input type="number" class="hidden" value="@missionTrip.getId" name="currentTripIdToggle"/>
+                                    <button class="fButton currentButton" type="button">Make Current</button>
+                                }
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+}

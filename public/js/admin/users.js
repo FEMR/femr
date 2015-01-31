@@ -25,7 +25,7 @@ var manageUsers = {
     },
     toggleUser: function (btn) {
         //user ID
-        var id = $(btn).attr('data-user_id');
+        var id = $(btn).attr('data-id');
 
         $.ajax({
             url: '/admin/users/toggle/' + id,

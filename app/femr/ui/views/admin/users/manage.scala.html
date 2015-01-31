@@ -1,8 +1,8 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModelGet: femr.ui.models.admin.users.ManageViewModelGet)
-@import femr.ui.controllers.admin.routes.UsersController
+@(currentUser: femr.common.dtos.CurrentUser, viewModelGet: femr.ui.models.admin.users.ManageViewModelGet)
 
+@import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.views.html.layouts.admin
-@import femr.ui.views.html.partials.admin._
+@import femr.ui.views.html.partials.admin.toggleButton
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/admin/users.css")">
@@ -50,7 +50,13 @@
                 </td>
                 <td>@viewModelGet.getUser(y - 1).getLastLoginDate</td>
                 <td class="text-center">
-                @toggleButton(viewModelGet.getUser(y - 1))
+                @defining(viewModelGet.getUser(y - 1)) { user =>
+                    @if(user.getEmail != "admin") {
+                        @toggleButton(!user.isDeleted, user.getId)
+                    }
+
+                }
+
                 </td>
             </tr>
         }

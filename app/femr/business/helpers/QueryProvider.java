@@ -21,9 +21,7 @@ package femr.business.helpers;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
-import femr.data.models.Role;
-import femr.data.models.User;
-import femr.data.models.*;
+import femr.data.models.mysql.*;
 
 /**
  * Responsible for providing all queries
@@ -49,6 +47,14 @@ public class QueryProvider {
     public static Query<MedicationForm> getMedicationFormQuery() {
         return Ebean.find(MedicationForm.class);
     }
+
+    public static Query<MissionTrip> getMissionTripQuery() { return Ebean.find(MissionTrip.class);}
+
+    public static Query<MissionCity> getMissionCityQuery() { return Ebean.find(MissionCity.class);}
+
+    public static Query<MissionCountry> getMissionCountryQuery() { return Ebean.find(MissionCountry.class);}
+
+    public static Query<MissionTeam> getMissionTeamQuery() { return Ebean.find(MissionTeam.class);}
 
     public static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);

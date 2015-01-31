@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dto.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
 
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
@@ -34,6 +34,7 @@
                     @for(y <- 1 to viewModel.getProblems.size) {
                         @if(viewModel.getProblems.get(y - 1) != null) {
                             <li>@viewModel.getProblems.get(y - 1).getName</li>
+
                         }
                     }
                 }
@@ -47,12 +48,21 @@
                 <h4>List of Medications</h4>
                 <ol id="medicationList">
                 @for(x <- 1 to viewModel.getMedications.size) {
-                    <li class="medication" id="med@x">
-                        <button type="button" class="fButton fOtherButton replaceBtn">R</button>
-                        <span>@viewModel.getMedications.get(x - 1).getName</span>
-                        <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement"/>
-                        <input type="text" class="hidden" name="id_prescription@x" value="@viewModel.getMedications.get(x - 1).getId"/>
-                    </li>
+                    @defining(viewModel.getMedications.get(x - 1)) { medication =>
+                        <li class="medication" id="med@x">
+                            <button type="button" class="fButton fOtherButton replaceBtn">R</button>
+                            <div>
+                                <span>@medication.getName</span>
+                            </div>
+                            <div>
+                                <span id="prescriber">
+                                    Prescriber: @medication.getPrescriberLastName, @medication.getPrescriberFirstName</span>
+                            </div>
+                            <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement"/>
+                            <input type="text" class="hidden" name="id_prescription@x" value="@medication.getId"/>
+                        </li>
+                    }
+
                 }
                 </ol>
 

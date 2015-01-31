@@ -2,9 +2,9 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
-import femr.common.dto.ServiceResponse;
-import femr.business.services.IPhotoService;
-import femr.data.models.Roles;
+import femr.common.dtos.ServiceResponse;
+import femr.business.services.core.IPhotoService;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.util.stringhelpers.StringUtils;

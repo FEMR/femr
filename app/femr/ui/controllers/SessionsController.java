@@ -1,11 +1,11 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.common.dto.CurrentUser;
-import femr.common.dto.ServiceResponse;
-import femr.business.services.ISessionService;
-import femr.business.services.IUserService;
-import femr.data.models.IUser;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
+import femr.business.services.core.ISessionService;
+import femr.business.services.core.IUserService;
+import femr.data.models.core.IUser;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;

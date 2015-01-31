@@ -223,11 +223,13 @@ var patientPhotoFeature = {
     },
     prepareForPOST: function () {
         //0.5 is the quality downgrade.
-        var dataURL = document.getElementById('patientPhotoCanvas').toDataURL("image/jpeg", 0.5);
-        $('#photoInputCropped').val(dataURL);
-        $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+        var canvas = document.getElementById('patientPhotoCanvas');
+        if (!isCanvasBlank(canvas)){
+            var dataURL = canvas.toDataURL("image/jpeg", 0.5);
+            $('#photoInputCropped').val(dataURL);
+            $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
+        }
     }
-
 };
 
 var multipleChiefComplaintFeature = {
@@ -520,6 +522,14 @@ $(document).ready(function () {
 
 
 });
+
+function isCanvasBlank(canvas){
+    var blank = document.createElement('canvas');
+    blank.width = canvas.width;
+    blank.height = canvas.height;
+
+    return canvas.toDataURL() == blank.toDataURL();
+}
 
 
 $(function () {

@@ -5,7 +5,7 @@ import play.Play.autoImport._
 object ApplicationBuild extends Build {
 
   val appName = "fEMR"
-  val appVersion = "2.1.2"//doesn't auto update everything in the code when this is changed
+  val appVersion = "2.1.3"//doesn't auto update everything in the code when this is changed
   val currentScalaVersion = "2.11.2"
 
   val appDependencies = Seq(
@@ -14,10 +14,10 @@ object ApplicationBuild extends Build {
     javaJdbc,
     javaEbean,
     "com.google.inject" % "guice" % "3.0",
-    "mysql" % "mysql-connector-java" % "5.1.18",
+    "mysql" % "mysql-connector-java" % "5.1.34",
     "org.mindrot" % "jbcrypt" % "0.3m",
     "commons-collections" % "commons-collections" % "3.2.1",
-    "com.google.code.gson" % "gson" % "2.2.4"
+    "com.google.code.gson" % "gson" % "2.3.1"
   )
 
 

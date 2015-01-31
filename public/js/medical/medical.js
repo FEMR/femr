@@ -165,7 +165,7 @@ $(document).ready(function () {
             return;
         }
         $("#problem" + $("body").data("prob") + "-container").removeClass("hidden");
-        $("#problem" + $("body").data("prob") + "-container").focus();
+        $("#problem" + $("body").data("prob")).focus();
         return;
     });
 

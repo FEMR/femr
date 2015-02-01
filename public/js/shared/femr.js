@@ -188,13 +188,9 @@ function randomString(strVal) {
  * Typeahead initalizer
  */
 var typeaheadFeature = {
-    /*initalizeTypeAhead: function(elementSelector, name, data){
-     $(elementSelector).typeahead({
-     name: name,
-     local: data
-     });
-     },*/
+
     substringMatcher: function (strs) {
+
         return function findMatches(q, cb) {
             var matches, substrRegex;
 

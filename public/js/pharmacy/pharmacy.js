@@ -4,10 +4,7 @@ $(document).ready(function () {
         replaceClick(this);
     });
 
-
-    typeaheadFeature.setGlobalVariable("/pharmacy/typeahead");
-
-
+    typeaheadFeature.setGlobalVariable("/search/typeahead/medications");
 });
 
 
@@ -21,7 +18,7 @@ function replaceClick(btn) {
         //show replacement input box
         $(replacementInputBox).removeClass('hidden');
         //initalize typeahead for the input
-        typeaheadFeature.initalizeTypeAhead(replacementInputBox, "medication", false, false);
+        typeaheadFeature.initalizeTypeAhead(replacementInputBox, "medication", true, true);
     } else {
         //hide the replacement input box
         $(replacementInputBox).addClass('hidden');

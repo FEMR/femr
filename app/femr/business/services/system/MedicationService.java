@@ -33,6 +33,7 @@ import femr.data.models.core.IPatientPrescription;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.PatientPrescription;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,22 +56,21 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getMedicationNames() {
+    public ServiceResponse<List<String>> getMedicationNames() {
 
-        ServiceResponse<String> response = new ServiceResponse<>();
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
 
         try {
-            List<String> medicationNames = new ArrayList<>();
-            List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
 
-            JsonObject jsonObject = new JsonObject();
-            if (medications != null) {
-                for (int medicationIndex = 0; medicationIndex < medications.size(); medicationIndex++) {
-                    jsonObject.addProperty("medicine" + medicationIndex, medications.get(medicationIndex).getName());
-                }
+            List<? extends IMedication> allMedications = medicationRepository.findAll(Medication.class);
+            List<String> medications = new ArrayList<>();
+
+            for (IMedication m : allMedications) {
+                if (StringUtils.isNotNullOrWhiteSpace(m.getName()))
+                    medications.add(m.getName());
             }
 
-            response.setResponseObject(jsonObject.toString());
+            response.setResponseObject(medications);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

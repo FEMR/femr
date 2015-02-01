@@ -343,14 +343,14 @@ public class MedicalController extends Controller {
     private List<TabFieldItem> mapPmhFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //Pmh_fields
-        if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory()))
+        /*if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory()))
             tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", viewModelPost.getMedicalSurgicalHistory()));
         if (viewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory()))
             tabFieldItems.add(createTabFieldItem("socialHistory", viewModelPost.getSocialHistory()));
         if (viewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication()))
             tabFieldItems.add(createTabFieldItem("currentMedication", viewModelPost.getCurrentMedication()));
         if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory()))
-            tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));
+            tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));*/
         return tabFieldItems;
     }
 
@@ -389,7 +389,7 @@ public class MedicalController extends Controller {
     private List<TabFieldItem> mapHpiFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //hpi fields
-        if (viewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset()))
+        /*if (viewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset()))
             tabFieldItems.add(createTabFieldItem("onset", viewModelPost.getOnset()));
         if (viewModelPost.getOnsetTime() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnsetTime()))
             tabFieldItems.add(createTabFieldItem("onsetTime", viewModelPost.getOnsetTime()));
@@ -408,7 +408,7 @@ public class MedicalController extends Controller {
         if (viewModelPost.getPhysicalExamination() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPhysicalExamination()))
             tabFieldItems.add(createTabFieldItem("physicalExamination", viewModelPost.getPhysicalExamination()));
         if (viewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getNarrative()))
-            tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));
+            tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));*/
         return tabFieldItems;
     }
 

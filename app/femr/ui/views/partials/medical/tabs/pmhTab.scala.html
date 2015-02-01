@@ -3,18 +3,22 @@
 <div class="controlWrap hidden" id="pmhControl">
     <div class="form-group">
         <label for="medicalSurgicalHistory">Medical/Surgical History</label>
-        <textarea row="3" name="medicalSurgicalHistory" class="form-control input-sm" >@if(pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory") != null){@pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory").getValue}</textarea>
+        <input type="text" class="hidden" name="tabFieldItems[10].name" value="medicalSurgicalHistory"/>
+        <textarea name="tabFieldItems[10].value" class="form-control input-sm" >@if(pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory") != null){@pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory").getValue}</textarea>
     </div>
     <div class="form-group">
         <label for="socialHistory">Social History</label>
-        <textarea row ="3" name="socialHistory" class="form-control input-sm" >@if(pmhTab.getTabFieldItemByName(null, "socialHistory") != null){@pmhTab.getTabFieldItemByName(null, "socialHistory").getValue}</textarea>
+        <input type="text" class="hidden" name="tabFieldItems[11].name" value="socialHistory"/>
+        <textarea name="tabFieldItems[11].value" class="form-control input-sm" >@if(pmhTab.getTabFieldItemByName(null, "socialHistory") != null){@pmhTab.getTabFieldItemByName(null, "socialHistory").getValue}</textarea>
     </div>
     <div class="form-group">
         <label for="currentMedication">Current Medications</label>
-        <textarea row = "3" name="currentMedication" class="form-control input-sm">@if(pmhTab.getTabFieldItemByName(null, "currentMedication") != null){@pmhTab.getTabFieldItemByName(null, "currentMedication").getValue}</textarea>
+        <input type="text" class="hidden" name="tabFieldItems[12].name" value="currentMedication"/>
+        <textarea name="tabFieldItems[12].value" class="form-control input-sm">@if(pmhTab.getTabFieldItemByName(null, "currentMedication") != null){@pmhTab.getTabFieldItemByName(null, "currentMedication").getValue}</textarea>
     </div>
     <div class="form-group">
         <label for="familyHistory">Family History</label>
-        <textarea rows="3" name="familyHistory" class="form-control input-sm">@if(pmhTab.getTabFieldItemByName(null, "familyHistory") != null){@pmhTab.getTabFieldItemByName(null, "familyHistory").getValue}</textarea>
+        <input type="text" class="hidden" name="tabFieldItems[13].name" value="familyHistory"/>
+        <textarea name="tabFieldItems[13].value" class="form-control input-sm">@if(pmhTab.getTabFieldItemByName(null, "familyHistory") != null){@pmhTab.getTabFieldItemByName(null, "familyHistory").getValue}</textarea>
     </div>
 </div>

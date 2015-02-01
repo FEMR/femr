@@ -3,7 +3,8 @@
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
         <label for="assessment">Assessment</label>
-        <textarea rows="3" name="assessment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "assessment") != null) @{
+        <input name="tabFieldItems[14].name" type="text" class="hidden" value="assessment"/>
+        <textarea rows="3" name="tabFieldItems[14].value" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "assessment") != null) @{
             treatmentTab.getTabFieldItemByName(null, "assessment").getValue
         }</textarea>
     </div>
@@ -52,7 +53,8 @@
     </div>
     <div class="form-group">
         <label for="treatment">Treatment Given</label>
-        <textarea rows="3" name="treatment" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "treatment") != null) @{
+        <input name="tabFieldItems[15].name" type="text" class="hidden" value="treatment"/>
+        <textarea rows="3" name="tabFieldItems[15].name" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "treatment") != null) @{
             treatmentTab.getTabFieldItemByName(null, "treatment").getValue
         }</textarea>
     </div>

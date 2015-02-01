@@ -1,5 +1,3 @@
-//used in typeahead
-
 
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
@@ -20,7 +18,10 @@ var problemFeature = {
                 "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
                 "</div>");
 
-        typeaheadFeature.initalizeTypeAhead($("[name='problems[" + problemIndex + "].name'"), 'diagnoses', true, true);
+        var problemInputElement = $("[name='problems[" + problemIndex + "].name'");
+        typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
+        $(problemInputElement).focus();
+
     },
     removeProblemField: function () {
         problemFeature.refreshSelectors();

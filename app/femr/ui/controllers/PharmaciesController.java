@@ -265,20 +265,4 @@ public class PharmaciesController extends Controller {
 
         return ok(index.render(currentUserSession, message, 0));
     }
-
-    /**
-     * Used for typeahead in replacement prescription boxes
-     * Called via ajax
-     *
-     * @return JSON object of medications that exist in the medications table
-     */
-    public Result typeaheadJSONGet() {
-
-        ServiceResponse<List<String>> medicationServiceResponse = medicationService.findAllMedications();
-        if (medicationServiceResponse.hasErrors()) {
-            return ok("");
-        }
-
-        return ok(new Gson().toJson(medicationServiceResponse.getResponseObject()));
-    }
 }

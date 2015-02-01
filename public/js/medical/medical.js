@@ -1,5 +1,5 @@
 //used in typeahead
-var diagnoses = [];
+
 
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
@@ -20,7 +20,7 @@ var problemFeature = {
                 "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
                 "</div>");
 
-        typeaheadFeature.activateTypeahead($("[name='problems[" + problemIndex + "].name'"));
+        typeaheadFeature.initalizeTypeAhead($("[name='problems[" + problemIndex + "].name'"), 'diagnoses', true, true);
     },
     removeProblemField: function () {
         problemFeature.refreshSelectors();
@@ -61,7 +61,8 @@ var prescriptionFeature = {
         prescriptionFeature.refreshSelectors();
         var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
         if ($(prescriptionFeature.allPrescriptions).size() > 1) {
-            if (!$(lastPrescription).is('[readonly]')) {;
+            if (!$(lastPrescription).is('[readonly]')) {
+                ;
                 $(lastPrescription).remove();
             }
         } else {
@@ -278,8 +279,10 @@ $(document).ready(function () {
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 
-    typeaheadFeature.setGlobalVariable();
-    typeaheadFeature.activateTypeahead(problemFeature.newProblems.first());
+    typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {
+        typeaheadFeature.initalizeTypeAhead(problemFeature.newProblems.first(), 'diagnoses', true, true);
+    });
+
 
 });
 
@@ -516,54 +519,5 @@ function photoNameFixup() {
 
     return true;
 }
-
-
-var typeaheadFeature = {
-    substringMatcher: function (strs) {
-        return function findMatches(q, cb) {
-            var matches, substrRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function (i, str) {
-                if (substrRegex.test(str)) {
-                    // the typeahead jQuery plugin expects suggestions to a
-                    // JavaScript object, refer to typeahead docs for more info
-                    matches.push({ value: str });
-                }
-            });
-
-            cb(matches);
-        };
-    },
-    setGlobalVariable: function () {
-        // get diagnoses, register typeahead on response
-        $.getJSON("/search/typeahead/diagnoses", function (data) {
-            diagnoses = data;
-        });
-    },
-    activateTypeahead: function (element) {
-        $(element).typeahead({
-                hint: true,
-                highlight: true,
-                minLength: 1
-            },
-            {
-                name: 'dianoses',
-                displayKey: 'value',
-                source: typeaheadFeature.substringMatcher(diagnoses)
-            });
-    },
-    destroyTypeahead: function(element) {
-        $(element).typeahead('destroy')
-    }
-
-};
 
 

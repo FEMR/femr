@@ -39,43 +39,15 @@ import java.util.List;
 
 public class MedicationService implements IMedicationService {
 
-    private final IRepository<IMedication> medicationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final DomainMapper domainMapper;
 
     @Inject
-    public MedicationService(IRepository<IMedication> medicationRepository,
-                             IRepository<IPatientPrescription> patientPrescriptionRepository,
+    public MedicationService(IRepository<IPatientPrescription> patientPrescriptionRepository,
                              DomainMapper domainMapper) {
-        this.medicationRepository = medicationRepository;
+
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.domainMapper = domainMapper;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<List<String>> getMedicationNames() {
-
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-
-        try {
-
-            List<? extends IMedication> allMedications = medicationRepository.findAll(Medication.class);
-            List<String> medications = new ArrayList<>();
-
-            for (IMedication m : allMedications) {
-                if (StringUtils.isNotNullOrWhiteSpace(m.getName()))
-                    medications.add(m.getName());
-            }
-
-            response.setResponseObject(medications);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
-
-        return response;
     }
 
     /**

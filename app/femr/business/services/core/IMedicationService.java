@@ -26,13 +26,6 @@ import java.util.List;
 public interface IMedicationService {
 
     /**
-     * Get a JSON string representing medication names
-     *
-     * @return JSON object in the form of { medication# : "name" }
-     */
-    ServiceResponse<List<String>> getMedicationNames();
-
-    /**
      * Create a new prescription and replace an old one with it
      *
      * @param prescriptionItem new prescription to replace the old one

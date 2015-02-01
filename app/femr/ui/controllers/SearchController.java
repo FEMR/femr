@@ -139,7 +139,7 @@ public class SearchController extends Controller {
      */
     public Result typeaheadMedicationsJSONGet() {
 
-        ServiceResponse<List<String>> medicationServiceResponse = medicationService.getMedicationNames();
+        ServiceResponse<List<String>> medicationServiceResponse = medicationService.findAllMedications();
         if (medicationServiceResponse.hasErrors()) {
             return ok("");
         }

@@ -363,9 +363,9 @@ public class MedicalController extends Controller {
     private List<TabFieldItem> mapTreatmentFieldItems(EditViewModelPost viewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //treatment fields
-        if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment()))
+        /*if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment()))
             tabFieldItems.add(createTabFieldItem("assessment", viewModelPost.getAssessment()));
-        /*if (viewModelPost.getProblem0() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem0()))
+        if (viewModelPost.getProblem0() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem0()))
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem0()));
         if (viewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem1()))
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem1()));
@@ -374,9 +374,9 @@ public class MedicalController extends Controller {
         if (viewModelPost.getProblem3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem3()))
             tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem3()));
         if (viewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem4()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem4()));*/
+            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem4()));
         if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment()))
-            tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));
+            tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));*/
         return tabFieldItems;
     }
 

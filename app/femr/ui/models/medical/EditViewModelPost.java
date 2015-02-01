@@ -25,42 +25,16 @@ import femr.common.models.TabFieldItem;
 import java.util.List;
 
 public class EditViewModelPost {
+
+    private int id;
     private String customFieldJSON;
     private String multipleHpiJSON;
 
     private List<TabFieldItem> tabFieldItems;
-
-    //patient identifier
-    private int id;
-
-
-    //prescription fields
     private List<PrescriptionItem> prescriptions;
-
-    //treatment fields
-    private String assessment;
     private List<ProblemItem> problems;
-    private String treatment;
 
-    //hpi fields
-    private String onset;
-    private String onsetTime;
-    private String severity;
-    private String radiation;
-    private String quality;
-    private String provokes;
-    private String palliates;
-    private String timeOfDay;
-    private String physicalExamination;
-    private String narrative;
-
-    //editable information - PMH
-    private String familyHistory;
-    private String medicalSurgicalHistory;
-    private String socialHistory;
-    private String currentMedication;
-
-    //Photo Info Arrays
+    //Photo stuff
     private List<Boolean> deleteRequested;
     private List<Boolean> hasUpdatedDesc;
     private List<String>  imageDescText;
@@ -91,24 +65,8 @@ public class EditViewModelPost {
     }
 
     public List<String> getImageDescText() { return imageDescText; }
+
     public void setImageDescText(List<String> lst) { this.imageDescText = lst; }
-
-
-    public String getAssessment() {
-        return assessment;
-    }
-
-    public void setAssessment(String assessment) {
-        this.assessment = assessment;
-    }
-
-    public String getTreatment() {
-        return treatment;
-    }
-
-    public void setTreatment(String treatment) {
-        this.treatment = treatment;
-    }
 
     public int getId() {
         return id;
@@ -116,119 +74,6 @@ public class EditViewModelPost {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getOnset() {
-        return onset;
-    }
-
-    public void setOnset(String onset) {
-        this.onset = onset;
-    }
-
-    public String getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getRadiation() {
-        return radiation;
-    }
-
-    public void setRadiation(String radiation) {
-        this.radiation = radiation;
-    }
-
-    public String getQuality() {
-        return quality;
-    }
-
-    public void setQuality(String quality) {
-        this.quality = quality;
-    }
-
-    public String getProvokes() {
-        return provokes;
-    }
-
-    public void setProvokes(String provokes) {
-        this.provokes = provokes;
-    }
-
-    public String getPalliates() {
-        return palliates;
-    }
-
-    public void setPalliates(String palliates) {
-        this.palliates = palliates;
-    }
-
-    public String getTimeOfDay() {
-        return timeOfDay;
-    }
-
-    public void setTimeOfDay(String timeOfDay) {
-        this.timeOfDay = timeOfDay;
-    }
-
-    public String getPhysicalExamination() {
-        return physicalExamination;
-    }
-
-    public void setPhysicalExamination(String physicalExamination) {
-        this.physicalExamination = physicalExamination;
-    }
-
-    public String getOnsetTime() {
-        return onsetTime;
-    }
-
-    public void setOnsetTime(String onsetTime) {
-        this.onsetTime = onsetTime;
-    }
-
-
-    public String getNarrative() {
-        return narrative;
-    }
-
-    public void setNarrative(String narrative) {
-        this.narrative = narrative;
-    }
-
-    public String getSocialHistory() {
-        return socialHistory;
-    }
-
-    public void setSocialHistory(String socialHistory) {
-        this.socialHistory = socialHistory;
-    }
-
-    public String getCurrentMedication() {
-        return currentMedication;
-    }
-
-    public void setCurrentMedication(String currentMedication) {
-        this.currentMedication = currentMedication;
-    }
-
-    public String getMedicalSurgicalHistory() {
-        return medicalSurgicalHistory;
-    }
-
-    public void setMedicalSurgicalHistory(String medicalSurgicalHistory) {
-        this.medicalSurgicalHistory = medicalSurgicalHistory;
-    }
-
-    public String getFamilyHistory() {
-        return familyHistory;
-    }
-
-    public void setFamilyHistory(String familyHistory) {
-        this.familyHistory = familyHistory;
     }
 
     public String getCustomFieldJSON() {

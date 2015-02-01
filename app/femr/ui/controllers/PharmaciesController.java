@@ -1,5 +1,6 @@
 package femr.ui.controllers;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IMedicationService;
@@ -273,11 +274,11 @@ public class PharmaciesController extends Controller {
      */
     public Result typeaheadJSONGet() {
 
-        ServiceResponse<String> medicationServiceResponse = medicationService.getMedicationNames();
+        ServiceResponse<List<String>> medicationServiceResponse = medicationService.findAllMedications();
         if (medicationServiceResponse.hasErrors()) {
             return ok("");
         }
 
-        return ok(medicationServiceResponse.getResponseObject());
+        return ok(new Gson().toJson(medicationServiceResponse.getResponseObject()));
     }
 }

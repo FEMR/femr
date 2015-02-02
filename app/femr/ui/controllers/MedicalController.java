@@ -207,11 +207,11 @@ public class MedicalController extends Controller {
             nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(viewModelPost.getMultipleHpiJSON()));
 
         } else {//one or less chief complaints
-            nonCustomFieldItems.addAll(mapHpiFieldItems(viewModelPost));
+            //nonCustomFieldItems.addAll(mapHpiFieldItems(viewModelPost));
         }
 
-        nonCustomFieldItems.addAll(mapPmhFieldItems(viewModelPost));
-        nonCustomFieldItems.addAll(mapTreatmentFieldItems(viewModelPost));
+        //nonCustomFieldItems.addAll(mapPmhFieldItems(viewModelPost));
+        //nonCustomFieldItems.addAll(mapTreatmentFieldItems(viewModelPost));
 
         if (nonCustomFieldItems.size() > 0) {
             ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
@@ -334,85 +334,6 @@ public class MedicalController extends Controller {
         return newVitals;
     }
 
-    /**
-     * Creates a list of available pmh fields in the viewmodel
-     *
-     * @param viewModelPost view model POST from edit.scala.html
-     * @return a list of values the user entered
-     */
-    private List<TabFieldItem> mapPmhFieldItems(EditViewModelPost viewModelPost) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //Pmh_fields
-        /*if (viewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMedicalSurgicalHistory()))
-            tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", viewModelPost.getMedicalSurgicalHistory()));
-        if (viewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSocialHistory()))
-            tabFieldItems.add(createTabFieldItem("socialHistory", viewModelPost.getSocialHistory()));
-        if (viewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getCurrentMedication()))
-            tabFieldItems.add(createTabFieldItem("currentMedication", viewModelPost.getCurrentMedication()));
-        if (viewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getFamilyHistory()))
-            tabFieldItems.add(createTabFieldItem("familyHistory", viewModelPost.getFamilyHistory()));*/
-        return tabFieldItems;
-    }
-
-    /**
-     * Creates a list of available treatment fields in the viewmodel
-     *
-     * @param viewModelPost view model POST from edit.scala.html
-     * @return a list of values the user entered
-     */
-    private List<TabFieldItem> mapTreatmentFieldItems(EditViewModelPost viewModelPost) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //treatment fields
-        /*if (viewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAssessment()))
-            tabFieldItems.add(createTabFieldItem("assessment", viewModelPost.getAssessment()));
-        if (viewModelPost.getProblem0() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem0()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem0()));
-        if (viewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem1()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem1()));
-        if (viewModelPost.getProblem2() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem2()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem2()));
-        if (viewModelPost.getProblem3() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem3()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem3()));
-        if (viewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProblem4()))
-            tabFieldItems.add(createTabFieldItem("problem", viewModelPost.getProblem4()));
-        if (viewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTreatment()))
-            tabFieldItems.add(createTabFieldItem("treatment", viewModelPost.getTreatment()));*/
-        return tabFieldItems;
-    }
-
-    /**
-     * Creates a list of available hpi fields in the viewmodel
-     *
-     * @param viewModelPost view model POST from edit.scala.html
-     * @return a list of values the user entered
-     */
-    private List<TabFieldItem> mapHpiFieldItems(EditViewModelPost viewModelPost) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //hpi fields
-        /*if (viewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnset()))
-            tabFieldItems.add(createTabFieldItem("onset", viewModelPost.getOnset()));
-        if (viewModelPost.getOnsetTime() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getOnsetTime()))
-            tabFieldItems.add(createTabFieldItem("onsetTime", viewModelPost.getOnsetTime()));
-        if (viewModelPost.getSeverity() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getSeverity()))
-            tabFieldItems.add(createTabFieldItem("severity", viewModelPost.getSeverity()));
-        if (viewModelPost.getRadiation() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getRadiation()))
-            tabFieldItems.add(createTabFieldItem("radiation", viewModelPost.getRadiation()));
-        if (viewModelPost.getQuality() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getQuality()))
-            tabFieldItems.add(createTabFieldItem("quality", viewModelPost.getQuality()));
-        if (viewModelPost.getProvokes() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getProvokes()))
-            tabFieldItems.add(createTabFieldItem("provokes", viewModelPost.getProvokes()));
-        if (viewModelPost.getPalliates() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPalliates()))
-            tabFieldItems.add(createTabFieldItem("palliates", viewModelPost.getPalliates()));
-        if (viewModelPost.getTimeOfDay() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getTimeOfDay()))
-            tabFieldItems.add(createTabFieldItem("timeOfDay", viewModelPost.getTimeOfDay()));
-        if (viewModelPost.getPhysicalExamination() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getPhysicalExamination()))
-            tabFieldItems.add(createTabFieldItem("physicalExamination", viewModelPost.getPhysicalExamination()));
-        if (viewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(viewModelPost.getNarrative()))
-            tabFieldItems.add(createTabFieldItem("narrative", viewModelPost.getNarrative()));*/
-        return tabFieldItems;
-    }
-
-
     private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         Gson gson = new Gson();
@@ -433,17 +354,5 @@ public class MedicalController extends Controller {
             }
         }
         return tabFieldItems;
-    }
-
-    private TabFieldItem createTabFieldItem(String name, String value) {
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setIsCustom(false);
-        tabFieldItem.setName(name);
-        tabFieldItem.setOrder(null);
-        tabFieldItem.setPlaceholder(null);
-        tabFieldItem.setSize(null);
-        tabFieldItem.setType(null);
-        tabFieldItem.setValue(value.trim());
-        return tabFieldItem;
     }
 }

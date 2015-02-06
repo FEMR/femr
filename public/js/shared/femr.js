@@ -145,6 +145,12 @@ $(document).ready(function () {
                             '</a></p>')
                 }
             });
+
+            // Reenable search input field
+            $("input.patientSearch").removeClass("loading")
+                                    .removeAttr("disabled")
+                                    .attr("placeholder", "Patient ID or Name");
+
         });
     }
 });

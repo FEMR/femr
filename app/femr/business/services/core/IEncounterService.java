@@ -74,13 +74,13 @@ public interface IEncounterService {
     /**
      * Adds tab field items to the PatientEncounterTabField table
      *
-     * @param tabFieldItems list of fields to be saved
+     * @param tabFieldsWithValue key is name of tab field, value is value of that tab field
+     * @param chiefComplaint the chief complaint the tab field belongs to
      * @param encounterId   id of the current encounter
      * @param userId        id of the user saving the fields
      * @return updated list of items
      */
-    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
-
+    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String,String> tabFieldsWithValue, String chiefComplaint, int encounterId, int userId);
 
 
     /**

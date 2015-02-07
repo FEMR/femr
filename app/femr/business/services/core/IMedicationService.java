@@ -42,7 +42,7 @@ public interface IMedicationService {
      * @param encounterId       id of the current encounter
      * @return updated prescription list
      */
-    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
+    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
 
     /**
      * Mark prescriptions as filled

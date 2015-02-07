@@ -18,6 +18,7 @@ import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import org.omg.SendingContext.RunTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -164,6 +165,13 @@ public class MedicalController extends Controller {
 
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
+        //get current patient
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        if (patientItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
+
         //get current encounter
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterServiceResponse.hasErrors()) {
@@ -171,85 +179,65 @@ public class MedicalController extends Controller {
         }
         PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
-        //update patient encounter
 
-        //Maps the dynamic tab name to the field list
-        Gson gson = new Gson();
-        Map<String, List<JCustomField>> customFieldInformation = gson.fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
+        //create patient encounter tab fields
+        Map<String, String> tabFieldsWithValue = new HashMap<>();
+        //get problems
+        for (ProblemItem pi : viewModelPost.getProblems()) {
+            if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
+                tabFieldsWithValue.put("problem", pi.getName());
+        }
+
+        //get non-custom tab fields other than problems
+        for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
+            if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
+                tabFieldsWithValue.put(tfi.getName(), tfi.getValue());
+        }
+        //get custom tab fields
+        Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
         }.getType());
-
-        List<TabFieldItem> customFieldItems = new ArrayList<>();
         for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
-            List<JCustomField> fields = entry.getValue();
-            for (JCustomField jcf : fields) {
-                TabFieldItem tabFieldItem = new TabFieldItem();
-                tabFieldItem.setName(jcf.getName());
-                tabFieldItem.setValue(jcf.getValue());
-                tabFieldItem.setIsCustom(true);
-                customFieldItems.add(tabFieldItem);
+            for (JCustomField jcf : entry.getValue()) {
+                if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
+                    tabFieldsWithValue.put(jcf.getName(), jcf.getValue());
             }
         }
-
-        //save the custom fields, if any
-        if (customFieldItems.size() > 0) {
-            ServiceResponse<List<TabFieldItem>> customFieldItemResponse =
-                    encounterService.createPatientEncounterTabFields(customFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
-            if (customFieldItemResponse.hasErrors()) {
-                throw new RuntimeException();
-            }
-        }
-
-        List<TabFieldItem> nonCustomFieldItems = new ArrayList<>();
-
-        //multiple chief complaints
-        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMultipleHpiJSON())) {
-            //iterate over all values, adding them to the list with the respective chief complaint
-            nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(viewModelPost.getMultipleHpiJSON()));
-
-        } else {//one or less chief complaints
-            //nonCustomFieldItems.addAll(mapHpiFieldItems(viewModelPost));
-        }
-
-        //nonCustomFieldItems.addAll(mapPmhFieldItems(viewModelPost));
-        //nonCustomFieldItems.addAll(mapTreatmentFieldItems(viewModelPost));
-
-        if (nonCustomFieldItems.size() > 0) {
-            ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
-                    encounterService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
-            if (nonCustomFieldItemResponse.hasErrors()) {
+        //save dat sheeeit, mayne
+        if (tabFieldsWithValue.size() > 0) {
+            ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldsWithValue, null, patientEncounterItem.getId(), currentUserSession.getId());
+            if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {
                 throw new RuntimeException();
             }
         }
 
 
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
-        if (patientItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
+        //create patient encounter photos
+        photoService.HandleEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
+
+        //create prescriptions
+        List<String> prescriptions = new ArrayList<>();
+        for (PrescriptionItem pi : viewModelPost.getPrescriptions()){
+            if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
+                prescriptions.add(pi.getName());
         }
-        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
-
-
-        List<FilePart> fps = request().body().asMultipartFormData().getFiles();
-
-        //wtf is this
-        photoService.HandleEncounterPhotos(fps, patientEncounterItem, viewModelPost);
-
-        //save problems
-        List<ProblemItem> problemItems = viewModelPost.getProblems();
-        if (problemItems.size() > 0){
-
-
-        }
-
-        //save prescriptions
-        List<PrescriptionItem> prescriptionItems = viewModelPost.getPrescriptions();
-        if (prescriptionItems.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> prescriptionResponse =
-                    medicationService.createPatientPrescriptions(prescriptionItems, currentUserSession.getId(), patientEncounterItem.getId(), false, false);
+        if (prescriptions.size() > 0) {
+            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicationService.createPatientPrescriptions(prescriptions, currentUserSession.getId(), patientEncounterItem.getId(), false, false);
             if (prescriptionResponse.hasErrors()) {
                 throw new RuntimeException();
             }
         }
+
+
+        /*
+        //TODO: handle multiple chief complaints
+        //multiple chief complaints
+        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMultipleHpiJSON())) {
+            //iterate over all values, adding them to the list with the respective chief complaint
+            //nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(viewModelPost.getMultipleHpiJSON()));
+
+        } else {//one or less chief complaints
+            //nonCustomFieldItems.addAll(mapHpiFieldItems(viewModelPost));
+        } */
 
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";

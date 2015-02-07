@@ -386,31 +386,34 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
-        ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
+    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String,String> tabFieldsWithValue, String chiefComplaint, int encounterId, int userId){
 
-        //TODO: make this method accept a Map<String,String> and a chief complaint instead of a tabfielditem. It will be able to be used on custom fields, noncustom fields, and problem fields
+        ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
+        if (tabFieldsWithValue.size() < 1){
+            response.addError("", "no data to save");
+            return response;
+        }
 
         //list of values to insert into database
         List<IPatientEncounterTabField> tabFields = new ArrayList<>();
         try {
-            for (TabFieldItem tf : tabFieldItems) {
+            for (Map.Entry<String, String> entry : tabFieldsWithValue.entrySet()) {
                 //get the current tab field item
                 ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
                         .where()
-                        .eq("name", tf.getName());
+                        .eq("name", entry.getKey());
                 ITabField tabField = tabFieldRepository.findOne(query);
 
                 //create a patientEncounterTabField for saving
-                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, tf.getValue(), encounterId);
-                if (StringUtils.isNotNullOrWhiteSpace(tf.getChiefComplaint())) {
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, entry.getValue(), encounterId);
+                if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
                     ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                             .where()
-                            .eq("value", tf.getChiefComplaint().trim())
+                            .eq("value", chiefComplaint.trim())
                             .eq("patient_encounter_id", encounterId);
-                    IChiefComplaint chiefComplaint = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
-                    if (chiefComplaint != null) {
-                        patientEncounterTabField.setChiefComplaint(chiefComplaint);
+                    IChiefComplaint chiefComplaintData = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
+                    if (chiefComplaintData != null) {
+                        patientEncounterTabField.setChiefComplaint(chiefComplaintData);
                     }
                 }
 
@@ -420,7 +423,7 @@ public class EncounterService implements IEncounterService {
                         .where()
                         .eq("tabField", tabField)
                         .eq("patient_encounter_id", encounterId)
-                        .eq("tab_field_value", tf.getValue());
+                        .eq("tab_field_value", entry.getValue());
                 List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
                 if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
                     //already exists - field wasn't changed

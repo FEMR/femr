@@ -26,9 +26,9 @@ var problemFeature = {
     removeProblemField: function () {
         problemFeature.refreshSelectors();
         var lastProblem = $(problemFeature.newProblems).last();
-        if ($(problemFeature.newProblems).size() > 1) {
+        if ($(problemFeature.newProblems).size() / 2 > 1) {
             if (!$(lastProblem).is('[readonly]')) {
-                $(lastProblem).remove();
+                $(lastProblem).parent().parent().remove();
             }
         } else {
             if (!$(lastProblem).is('[readonly]')) {

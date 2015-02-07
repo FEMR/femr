@@ -234,6 +234,13 @@ public class MedicalController extends Controller {
         //wtf is this
         photoService.HandleEncounterPhotos(fps, patientEncounterItem, viewModelPost);
 
+        //save problems
+        List<ProblemItem> problemItems = viewModelPost.getProblems();
+        if (problemItems.size() > 0){
+
+
+        }
+
         //save prescriptions
         List<PrescriptionItem> prescriptionItems = viewModelPost.getPrescriptions();
         if (prescriptionItems.size() > 0) {
@@ -243,6 +250,7 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
+
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 

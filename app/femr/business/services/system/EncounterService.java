@@ -389,6 +389,8 @@ public class EncounterService implements IEncounterService {
     public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
 
+        //TODO: make this method accept a Map<String,String> and a chief complaint instead of a tabfielditem. It will be able to be used on custom fields, noncustom fields, and problem fields
+
         //list of values to insert into database
         List<IPatientEncounterTabField> tabFields = new ArrayList<>();
         try {

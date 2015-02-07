@@ -90,16 +90,16 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
+    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        if (prescriptionItems == null || userId < 1 || encounterId < 1) {
+        if (prescriptionNames == null || prescriptionNames.size() < 1 || userId < 1 || encounterId < 1) {
             response.addError("", "invalid parameters");
             return response;
         }
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
-        for (PrescriptionItem pi : prescriptionItems) {
-            IMedication medication = domainMapper.createMedication(pi.getName());
+        for (String script : prescriptionNames) {
+            IMedication medication = domainMapper.createMedication(script);
             patientPrescriptions.add(domainMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
         }
 

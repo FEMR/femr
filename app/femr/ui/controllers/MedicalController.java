@@ -100,6 +100,7 @@ public class MedicalController extends Controller {
     }
 
     public Result editGet(int patientId) {
+        //TODO: diagnoses are not displaying properly
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
@@ -131,7 +132,13 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
-        viewModelGet.setProblemItems(new ArrayList<ProblemItem>());
+
+        //get problems
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounter.getId());
+        if (problemItemServiceResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+        viewModelGet.setProblemItems(problemItemServiceResponse.getResponseObject());
 
         //get vitals
         ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = searchService.getVitalMultiMap(patientEncounter.getId());

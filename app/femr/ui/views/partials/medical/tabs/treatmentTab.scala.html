@@ -54,7 +54,7 @@
     <div class="form-group">
         <label for="treatment">Treatment Given</label>
         <input name="tabFieldItems[15].name" type="text" class="hidden" value="treatment"/>
-        <textarea rows="3" name="tabFieldItems[15].name" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "treatment") != null) @{
+        <textarea rows="3" name="tabFieldItems[15].value" class="form-control input-sm">@if(treatmentTab.getTabFieldItemByName(null, "treatment") != null) @{
             treatmentTab.getTabFieldItemByName(null, "treatment").getValue
         }</textarea>
     </div>

@@ -53,12 +53,18 @@
                 @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getPatientItem.getId)), 'enctype -> "multipart/form-data") {
                     <div class="tabWrap">
                         <ul id="medicalTabs" class="tabrow">
-                            @*Generate the tabs*@
+                            <li id="hpi">HPI</li>
+                            <li id="treatment">Treatment</li>
+                            @if(viewModel.getSettings.isPmhTab) {
+                                <li id="pmh">PMH</li>
+                            }
+                            @if(viewModel.getSettings.isPhotoTab) {
+                                <li id="photos">Photos</li>
+                            }
+                            @*Generate the custom tabs*@
                             @for(tab <- viewModel.getTabItems) {
-                                @if(!tab.isCustom) {
+                                @if(tab.isCustom) {
                                     <li id="@tab.getName.toLowerCase">@tab.getName</li>
-                                } else {
-                                    <li class="customTab" id="@tab.getName.toLowerCase">@tab.getName</li>
                                 }
                             }
                         </ul>

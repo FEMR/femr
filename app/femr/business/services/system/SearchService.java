@@ -545,29 +545,18 @@ public class SearchService implements ISearchService {
         ServiceResponse<SettingItem> response = new ServiceResponse<>();
         try {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
-            SettingItem settingItem = new SettingItem();
+
             if (systemSettings == null || systemSettings.size() == 0) {
+
                 response.addError("", "no settings exist at this time");
             } else {
-                for (ISystemSetting ss : systemSettings) {
-                    switch (ss.getName()) {
-                        case "Multiple chief complaints":
-                            settingItem.setMultipleChiefComplaint(ss.isActive());
-                            break;
-                        case "Medical PMH Tab":
-                            settingItem.setPmhTab(ss.isActive());
-                            break;
-                        case "Medical Photo Tab":
-                            settingItem.setPhotoTab(ss.isActive());
-                            break;
-                        case "Medical HPI Consolidate":
-                            settingItem.setConsolidateHPI(ss.isActive());
-                            break;
-                    }
-                }
+
+                SettingItem settingItem = ItemMapper.createSettingItem(systemSettings);
+                response.setResponseObject(settingItem);
             }
-            response.setResponseObject(settingItem);
+
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
 

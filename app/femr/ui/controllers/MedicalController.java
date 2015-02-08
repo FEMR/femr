@@ -18,13 +18,10 @@ import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
-import org.omg.SendingContext.RunTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.Http.MultipartFormData.FilePart;
-
 import java.util.*;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -148,7 +145,7 @@ public class MedicalController extends Controller {
         viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
 
 
-        ServiceResponse<List<TabItem>> tabItemResponse = encounterService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId(), true);
+        ServiceResponse<List<TabItem>> tabItemResponse = tabService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId(), true);
         if (tabItemResponse.hasErrors()) {
             throw new RuntimeException();
         }

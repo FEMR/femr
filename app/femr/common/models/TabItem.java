@@ -24,14 +24,11 @@ import java.util.List;
 import java.util.Map;
 
 public class TabItem {
-    //TODO: add a flag to indicate if the tab is currently being displayed (you can turn off some tabs in settings.
-    //TODO: this allows you to remove the logic of checking settings from the view to the service layer
 
     private String name;
     private int leftColumnSize;
     private int rightColumnSize;
     private boolean isCustom;
-    private boolean isDisplayed;
     //private List<TabFieldItem> fields;
     private Map<String, List<TabFieldItem>> fields;
 
@@ -110,13 +107,5 @@ public class TabItem {
             tabFieldItems = new ArrayList<>();
         tabFieldItems.add(tabFieldItem);
         this.fields.put(chiefComplaint, tabFieldItems);
-    }
-
-    public boolean isDisplayed() {
-        return isDisplayed;
-    }
-
-    public void setDisplayed(boolean isDisplayed) {
-        this.isDisplayed = isDisplayed;
     }
 }

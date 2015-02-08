@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ITabService {
+
     /**
      * Edit a tab field
      *
@@ -43,6 +44,15 @@ public interface ITabService {
      * @return ServiceResponse object containing the new TabItem with possible exceptions
      */
     ServiceResponse<TabItem> editTab(TabItem customTabItem, int userId);
+
+    /**
+     * Finds all tabs with respective fields
+     *
+     * @param encounterId id of the current encounter
+     * @param isActive is the tab turned on?
+     * @return a list of tab items including the fields
+     */
+    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
 
     /**
      * Deletes or un-Deletes a tab

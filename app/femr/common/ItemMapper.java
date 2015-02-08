@@ -23,11 +23,14 @@ import femr.data.models.core.IPatient;
 
 import femr.data.models.core.IPatientEncounterTabField;
 import femr.data.models.core.IPatientPrescription;
+import femr.data.models.core.ISystemSetting;
+import femr.data.models.mysql.SystemSetting;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.jboss.netty.util.internal.StringUtil;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Responsible for creating item objects (common/models)
@@ -241,16 +244,50 @@ public class ItemMapper {
     }
 
     /**
+     * Creates a setting item, currently requires direct knowledge of a column in the database
+     *
+     * @param systemSettings a list of all system settings
+     * @return
+     */
+    public static SettingItem createSettingItem(List<? extends ISystemSetting> systemSettings) {
+
+        SettingItem settingItem = new SettingItem();
+
+        if (systemSettings == null)
+            return null;
+        else if (systemSettings.size() > 0) {
+
+            for (ISystemSetting ss : systemSettings) {
+                switch (ss.getName()) {
+                    case "Multiple chief complaints":
+                        settingItem.setMultipleChiefComplaint(ss.isActive());
+                        break;
+                    case "Medical PMH Tab":
+                        settingItem.setPmhTab(ss.isActive());
+                        break;
+                    case "Medical Photo Tab":
+                        settingItem.setPhotoTab(ss.isActive());
+                        break;
+                    case "Medical HPI Consolidate":
+                        settingItem.setConsolidateHPI(ss.isActive());
+                        break;
+                }
+            }
+        }
+
+        return settingItem;
+    }
+
+    /**
      * Create a new TabItem
      *
-     * @param name name of the tab
-     * @param isCustom was the tab made custom by superuser?
-     * @param leftColumnSize size of the left column
+     * @param name            name of the tab
+     * @param isCustom        was the tab made custom by superuser?
+     * @param leftColumnSize  size of the left column
      * @param rightColumnSize size of the right column
-     * @param isDisplayed is the tab currently displayed? some can be turned off via the admin panel
      * @return duh
      */
-    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize, boolean isDisplayed) {
+    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize) {
 
         if (StringUtils.isNullOrWhiteSpace(name) ||
                 leftColumnSize == null ||
@@ -264,18 +301,17 @@ public class ItemMapper {
         tabItem.setCustom(isCustom);
         tabItem.setLeftColumnSize(leftColumnSize);
         tabItem.setRightColumnSize(rightColumnSize);
-        tabItem.setDisplayed(isDisplayed);
         return tabItem;
     }
 
     /**
      * Create a new tab field item without a value
      *
-     * @param name           the name of the field
-     * @param type           the fields type e.g. number, text
-     * @param size           the size of the field e.g. small, med, large
-     * @param order          sorting order for the field
-     * @param placeholder    placeholder text for the field
+     * @param name        the name of the field
+     * @param type        the fields type e.g. number, text
+     * @param size        the size of the field e.g. small, med, large
+     * @param order       sorting order for the field
+     * @param placeholder placeholder text for the field
      * @return a new TabFieldItem or null if name is empty
      */
     public static TabFieldItem createTabFieldItem(String name,
@@ -346,35 +382,6 @@ public class ItemMapper {
         return tabFieldItem;
     }
 
-
-    /**
-     * Create a new TabFieldItem
-     *
-     * @param patientEncounterTabField DAO with joined TabField
-     * @return tab field with value
-
-    public static TabFieldItem createTabFieldItem(IPatientEncounterTabField patientEncounterTabField) {
-    if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
-    return null;
-    }
-
-    TabFieldItem tabFieldItem = new TabFieldItem();
-    tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
-    tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());
-    tabFieldItem.setPlaceholder(patientEncounterTabField.getTabField().getPlaceholder());
-    if (patientEncounterTabField.getTabField().getTabFieldSize() != null)
-    tabFieldItem.setSize(patientEncounterTabField.getTabField().getTabFieldSize().getName());
-    if (patientEncounterTabField.getTabField().getTabFieldType() != null)
-    tabFieldItem.setType(patientEncounterTabField.getTabField().getTabFieldType().getName());
-    tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
-    if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
-    else tabFieldItem.setIsCustom(true);
-    if (patientEncounterTabField.getChiefComplaint() != null)
-    tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
-
-    return tabFieldItem;
-    }
-     */
     /**
      * Create a team item
      *

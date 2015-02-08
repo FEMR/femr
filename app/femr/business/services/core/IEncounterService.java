@@ -21,8 +21,6 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
-import femr.data.models.mysql.TabField;
-
 import java.util.List;
 import java.util.Map;
 
@@ -63,15 +61,6 @@ public interface IEncounterService {
     ServiceResponse<UserItem> getPhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * Finds all tabs with respective fields
-     *
-     * @param encounterId id of the current encounter
-     * @param isActive is the tab turned on?
-     * @return a list of tab items including the fields
-     */
-    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
-
-    /**
      * Adds tab field items to the PatientEncounterTabField table
      *
      * @param tabFieldsWithValue key is name of tab field, value is value of that tab field
@@ -81,7 +70,6 @@ public interface IEncounterService {
      * @return updated list of items
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String,String> tabFieldsWithValue, String chiefComplaint, int encounterId, int userId);
-
 
     /**
      * Find all problems

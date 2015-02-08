@@ -162,9 +162,7 @@ public class ItemMapper {
      */
     public static PhotoItem createPhotoItem(int id, String description, Date insertTimeStamp, String imageURL) {
 
-        if (StringUtils.isNullOrWhiteSpace(description) ||
-                StringUtils.isNullOrWhiteSpace(imageURL) ||
-                insertTimeStamp == null) {
+        if (StringUtils.isNullOrWhiteSpace(imageURL) || insertTimeStamp == null) {
 
             return null;
         }

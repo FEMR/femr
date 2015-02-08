@@ -25,7 +25,7 @@ import femr.common.models.TabItem;
 import java.util.List;
 import java.util.Map;
 
-public interface ICustomTabService {
+public interface ITabService {
     /**
      * Edit a tab field
      *

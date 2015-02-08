@@ -240,7 +240,17 @@ public class ItemMapper {
         return problemItem;
     }
 
-    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize) {
+    /**
+     * Create a new TabItem
+     *
+     * @param name name of the tab
+     * @param isCustom was the tab made custom by superuser?
+     * @param leftColumnSize size of the left column
+     * @param rightColumnSize size of the right column
+     * @param isDisplayed is the tab currently displayed? some can be turned off via the admin panel
+     * @return duh
+     */
+    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize, boolean isDisplayed) {
 
         if (StringUtils.isNullOrWhiteSpace(name) ||
                 leftColumnSize == null ||
@@ -254,6 +264,7 @@ public class ItemMapper {
         tabItem.setCustom(isCustom);
         tabItem.setLeftColumnSize(leftColumnSize);
         tabItem.setRightColumnSize(rightColumnSize);
+        tabItem.setDisplayed(isDisplayed);
         return tabItem;
     }
 

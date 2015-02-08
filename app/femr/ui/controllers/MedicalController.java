@@ -33,7 +33,7 @@ public class MedicalController extends Controller {
 
     private final Form<EditViewModelPost> createViewModelPostForm = Form.form(EditViewModelPost.class);
     private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
-    private final ICustomTabService customTabService;
+    private final ITabService tabService;
     private final IEncounterService encounterService;
     private final IMedicationService medicationService;
     private final IPhotoService photoService;
@@ -42,14 +42,14 @@ public class MedicalController extends Controller {
     private final IVitalService vitalService;
 
     @Inject
-    public MedicalController(ICustomTabService customTabService,
+    public MedicalController(ITabService tabService,
                              IEncounterService encounterService,
                              IMedicationService medicationService,
                              IPhotoService photoService,
                              ISessionService sessionService,
                              ISearchService searchService,
                              IVitalService vitalService) {
-        this.customTabService = customTabService;
+        this.tabService = tabService;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;

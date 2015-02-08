@@ -23,7 +23,7 @@ import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
-import femr.business.services.core.ICustomTabService;
+import femr.business.services.core.ITabService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomTabService implements ICustomTabService {
+public class TabService implements ITabService {
 
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
@@ -49,7 +49,7 @@ public class CustomTabService implements ICustomTabService {
     private final DomainMapper domainMapper;
 
     @Inject
-    public CustomTabService(IRepository<IChiefComplaint> chiefComplaintRepository,
+    public TabService(IRepository<IChiefComplaint> chiefComplaintRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITab> tabRepository,
                             IRepository<ITabField> tabFieldRepository,

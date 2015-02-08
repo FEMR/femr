@@ -100,7 +100,7 @@ public class MedicalController extends Controller {
     }
 
     public Result editGet(int patientId) {
-        //TODO: diagnoses are not displaying properly
+
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();

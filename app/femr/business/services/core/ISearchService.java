@@ -21,8 +21,6 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
-
 import java.util.List;
 
 public interface ISearchService {
@@ -99,23 +97,6 @@ public interface ISearchService {
      * @return list of patients
      */
     ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery);
-
-    /**
-     * Create a map of tabs and their fields where the key can be the name of the tab
-     * or the date
-     *
-     * @param encounterId id of the encounter
-     * @return
-     */
-    ServiceResponse<TabFieldMultiMap> getTabFieldMultiMap(int encounterId);
-
-    /**
-     * Create linked hash map of vitals where the key is the date as well as the name
-     *
-     * @param encounterId the id of the encounter to get vitals for
-     * @return vitals and dates related to encounter
-     */
-    ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId);
 
     /**
      * Get all current system setting values, only works for one right now.

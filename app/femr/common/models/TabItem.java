@@ -29,7 +29,7 @@ public class TabItem {
     private int leftColumnSize;
     private int rightColumnSize;
     private boolean isCustom;
-    //private List<TabFieldItem> fields;
+    //a map that uses chief complaint as the key and it's respective tab fields as the value
     private Map<String, List<TabFieldItem>> fields;
 
     public TabItem() {

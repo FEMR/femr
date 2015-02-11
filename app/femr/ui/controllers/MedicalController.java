@@ -16,7 +16,9 @@ import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -138,12 +140,11 @@ public class MedicalController extends Controller {
         viewModelGet.setProblemItems(problemItemServiceResponse.getResponseObject());
 
         //get vitals
-        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = searchService.getVitalMultiMap(patientEncounter.getId());
+        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.findVitalMultiMap(patientEncounter.getId());
         if (patientEncounterVitalMapResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setVitalMap(patientEncounterVitalMapResponse.getResponseObject());
-
 
         ServiceResponse<List<TabItem>> tabItemResponse = tabService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId(), true);
         if (tabItemResponse.hasErrors()) {
@@ -184,18 +185,27 @@ public class MedicalController extends Controller {
         PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
 
+
+
+
+
         //create patient encounter tab fields
-        Map<String, String> tabFieldsWithValue = new HashMap<>();
+        //Map<String, String> tabFieldsWithValue = new HashMap<>();
+        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
+        String date = dateUtils.getCurrentDateTimeString();
         //get problems
         for (ProblemItem pi : viewModelPost.getProblems()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
-                tabFieldsWithValue.put("problem", pi.getName());
+                tabFieldMultiMap.put("problem", date, "", pi.getName());
+                //tabFieldsWithValue.put("problem", pi.getName());
         }
 
         //get non-custom tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
             if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
-                tabFieldsWithValue.put(tfi.getName(), tfi.getValue());
+                tabFieldMultiMap.put(tfi.getName(), date, "", tfi.getValue());
+                //tabFieldsWithValue.put(tfi.getName(), tfi.getValue());
+
         }
         //get custom tab fields
         Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
@@ -203,13 +213,17 @@ public class MedicalController extends Controller {
         for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
             for (JCustomField jcf : entry.getValue()) {
                 if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
-                    tabFieldsWithValue.put(jcf.getName(), jcf.getValue());
+                    tabFieldMultiMap.put(jcf.getName(), date, "", jcf.getValue());
+                    //tabFieldsWithValue.put(jcf.getName(), jcf.getValue());
             }
         }
         //save dat sheeeit, mayne
-        if (tabFieldsWithValue.size() > 0) {
-            ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldsWithValue, null, patientEncounterItem.getId(), currentUserSession.getId());
+        //if (tabFieldsWithValue.size() > 0) {
+        if (tabFieldMultiMap.getSize() > 0) {
+
+            ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldMultiMap, patientEncounterItem.getId(), currentUserSession.getId());
             if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {
+
                 throw new RuntimeException();
             }
         }
@@ -285,7 +299,7 @@ public class MedicalController extends Controller {
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = searchService.getVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
+        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = vitalService.findVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
         if (vitalMultiMapServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

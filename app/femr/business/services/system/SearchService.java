@@ -33,7 +33,6 @@ import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.*;
@@ -465,75 +464,6 @@ public class SearchService implements ISearchService {
             response.addError("", ex.getMessage());
         }
 
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<TabFieldMultiMap> getTabFieldMultiMap(int encounterId) {
-        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
-        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
-        String tabFieldName;
-        String chiefComplaint;
-
-        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
-
-        try {
-            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
-            if (patientEncounterTabFields != null) {
-
-                for (IPatientEncounterTabField petf : patientEncounterTabFields) {
-                    tabFieldName = petf.getTabField().getName();
-                    chiefComplaint = null;
-                    if (petf.getTabField().getTab().getName().equals("HPI")) {
-                        if (petf.getChiefComplaint() != null) {
-                            chiefComplaint = petf.getChiefComplaint().getValue();
-                        }
-                    }
-
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, petf.getTabFieldValue());
-                }
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad querying");
-        }
-
-        response.setResponseObject(tabFieldMultiMap);
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId) {
-        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
-        VitalMultiMap vitalMultiMap = new VitalMultiMap();
-
-        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
-        try {
-            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
-
-            if (patientEncounterVitals != null) {
-                for (IPatientEncounterVital vitalData : patientEncounterVitals) {
-                    vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
-                }
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad query");
-        }
-
-        response.setResponseObject(vitalMultiMap);
         return response;
     }
 

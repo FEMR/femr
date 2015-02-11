@@ -32,6 +32,7 @@ import femr.common.models.TabItem;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -541,7 +542,7 @@ public class TabService implements ITabService {
 
         try {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
-            SettingItem settingItem = ItemMapper.createSettingItem(systemSettings);
+//            SettingItem settingItem = ItemMapper.createSettingItem(systemSettings);
             List<? extends ITab> allTabs = tabRepository.find(tabQuery);
 
             for (ITab t : allTabs) {
@@ -690,6 +691,46 @@ public class TabService implements ITabService {
         }
 
         return mappedTabFields;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId) {
+        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
+        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
+        String tabFieldName;
+        String chiefComplaint;
+
+        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
+
+        try {
+            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+            if (patientEncounterTabFields != null) {
+
+                for (IPatientEncounterTabField petf : patientEncounterTabFields) {
+                    tabFieldName = petf.getTabField().getName();
+                    chiefComplaint = null;
+                    if (petf.getTabField().getTab().getName().equals("HPI")) {
+                        if (petf.getChiefComplaint() != null) {
+                            chiefComplaint = petf.getChiefComplaint().getValue();
+                        }
+                    }
+
+                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, petf.getTabFieldValue());
+                }
+            }
+        } catch (Exception ex) {
+            response.addError("", "bad querying");
+        }
+
+        response.setResponseObject(tabFieldMultiMap);
+        return response;
     }
 
 }

@@ -21,6 +21,7 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
 import java.util.List;
 import java.util.Map;
@@ -144,4 +145,13 @@ public interface ITabService {
      * @return TabFieldItems mapped to their respective tab
      */
     ServiceResponse<Map<String, List<TabFieldItem>>> getTabFields(int encounterId);
+
+    /**
+     * Create a map of tabs and their fields where the key can be the name of the tab
+     * or the date or the chief complaint
+     *
+     * @param encounterId id of the encounter
+     * @return
+     */
+    ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId);
 }

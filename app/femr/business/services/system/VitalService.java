@@ -19,6 +19,7 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
@@ -29,7 +30,9 @@ import femr.common.models.VitalItem;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.IVital;
+import femr.data.models.mysql.PatientEncounterVital;
 import femr.data.models.mysql.Vital;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +158,35 @@ public class VitalService implements IVitalService {
             response.addError("exception", ex.getMessage());
         }
 
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<VitalMultiMap> findVitalMultiMap(int encounterId) {
+        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
+        VitalMultiMap vitalMultiMap = new VitalMultiMap();
+
+        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
+        try {
+            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+
+            if (patientEncounterVitals != null) {
+                for (IPatientEncounterVital vitalData : patientEncounterVitals) {
+                    vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
+                }
+            }
+        } catch (Exception ex) {
+            response.addError("", "bad query");
+        }
+
+        response.setResponseObject(vitalMultiMap);
         return response;
     }
 }

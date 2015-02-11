@@ -1,13 +1,11 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.services.core.IEncounterService;
-import femr.business.services.core.IPhotoService;
-import femr.business.services.core.ISearchService;
-import femr.business.services.core.ISessionService;
+import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.data.models.core.IVital;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -36,18 +34,24 @@ public class HistoryController extends Controller {
     private final IEncounterService encounterService;
     private final ISessionService sessionService;
     private final ISearchService searchService;
+    private final ITabService tabService;
     private final IPhotoService photoService;
+    private final IVitalService vitalService;
 
     @Inject
     public HistoryController(IEncounterService encounterService,
                              ISessionService sessionService,
                              ISearchService searchService,
-                             IPhotoService photoService) {
+                             ITabService tabService,
+                             IPhotoService photoService,
+                             IVitalService vitalService) {
 
         this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.tabService = tabService;
         this.photoService = photoService;
+        this.vitalService = vitalService;
     }
 
     public Result indexPatientGet(String query) {
@@ -114,7 +118,7 @@ public class HistoryController extends Controller {
         indexEncounterViewModel.setPatientEncounterItem(patientEncounterItemServiceResponse.getResponseObject());
 
         //get vitals
-        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = searchService.getVitalMultiMap(encounterId);
+        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.findVitalMultiMap(encounterId);
         if (patientEncounterVitalMapResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -127,7 +131,7 @@ public class HistoryController extends Controller {
         }
         indexEncounterMedicalViewModel.setPhotos(photoListResponse.getResponseObject());
 
-        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = searchService.getTabFieldMultiMap(encounterId);
+        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.findTabFieldMultiMap(encounterId);
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         }

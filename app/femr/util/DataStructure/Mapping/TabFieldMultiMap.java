@@ -25,7 +25,8 @@ import java.util.List;
  */
 public class TabFieldMultiMap extends AbstractMultiMap {
     /**
-     * Puts a value into the map and associatres the name and date as the two keys to the value
+     * Puts a value into the map and associatres the name and date as the two keys to the value.
+     * For the love of all things holy, use empty strings for keys instead of null.
      *
      * @param tabFieldName   The name of the vital
      * @param date           The date the vital was taken

@@ -31,7 +31,10 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.collections.MapIterator;
+import org.apache.commons.collections.keyvalue.MultiKey;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -216,10 +219,11 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String,String> tabFieldsWithValue, String chiefComplaint, int encounterId, int userId){
+    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId){
 
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
-        if (tabFieldsWithValue.size() < 1){
+        if (tabFieldMultiMap.getSize() < 1){
+
             response.addError("", "no data to save");
             return response;
         }
@@ -227,19 +231,23 @@ public class EncounterService implements IEncounterService {
         //list of values to insert into database
         List<IPatientEncounterTabField> tabFields = new ArrayList<>();
         try {
-            for (Map.Entry<String, String> entry : tabFieldsWithValue.entrySet()) {
+            MapIterator multiMapIterator = tabFieldMultiMap.getMultiMapIterator();
+            while (multiMapIterator.hasNext()){
+                multiMapIterator.next();
+                MultiKey mk = (MultiKey) multiMapIterator.getKey();
+
                 //get the current tab field item
                 ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
                         .where()
-                        .eq("name", entry.getKey());
+                        .eq("name", mk.getKey(0).toString());
                 ITabField tabField = tabFieldRepository.findOne(query);
 
                 //create a patientEncounterTabField for saving
-                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, entry.getValue(), encounterId);
-                if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, mk.getKey(0).toString(), encounterId);
+                if (StringUtils.isNotNullOrWhiteSpace(mk.getKey(2).toString())) {
                     ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                             .where()
-                            .eq("value", chiefComplaint.trim())
+                            .eq("value", mk.getKey(2).toString())
                             .eq("patient_encounter_id", encounterId);
                     IChiefComplaint chiefComplaintData = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
                     if (chiefComplaintData != null) {
@@ -253,7 +261,7 @@ public class EncounterService implements IEncounterService {
                         .where()
                         .eq("tabField", tabField)
                         .eq("patient_encounter_id", encounterId)
-                        .eq("tab_field_value", entry.getValue());
+                        .eq("tab_field_value", mk.getKey(0).toString());
                 List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
                 if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
                     //already exists - field wasn't changed
@@ -261,6 +269,8 @@ public class EncounterService implements IEncounterService {
                     tabFields.add(patientEncounterTabField);
                 }
             }
+
+
             List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
 
 
@@ -274,6 +284,7 @@ public class EncounterService implements IEncounterService {
         }
 
         return response;
+
     }
 
     /**

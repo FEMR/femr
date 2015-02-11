@@ -14,9 +14,9 @@
             </div>
 
             @* Complaint list *@
-            @for((key, valyew) <- hpiTab.getFields){
+            @for((chiefComplaint_key, valyew) <- hpiTab.getFields){
                 <div class="chiefComplaintText hidden">
-                    <span>@key</span>
+                    <span>@chiefComplaint_key</span>
                 </div>
             }
 
@@ -28,7 +28,7 @@
     }
 
     @* Make an HPI page for each chief complaint *@
-    @for((key, valyew) <- hpiTab.getFields) {
+    @for((chiefComplaint_key, valyew) <- hpiTab.getFields) {
         @* Hide the div if multiple chief complaints *@
         <div class="hpiWraps hidden">
 
@@ -38,16 +38,18 @@
                 <div class="staticField">
                     <label for="onset">Onset</label>
                     <input name="tabFieldItems[0].name" type="text" class="hidden" value="onset"/>
-                    <input name="tabFieldItems[0].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "onset") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "onset").getValue
+                    <input name="tabFieldItems[0].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[0].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "onset") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "onset").getValue
                     }" />
                 </div>
 
                 <div class="staticField">
                     <label for="radiation">Radiation</label>
                     <input name="tabFieldItems[1].name" type="text" class="hidden" value="radiation"/>
-                    <input name="tabFieldItems[1].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "radiation") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "radiation").getValue
+                    <input name="tabFieldItems[1].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[1].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "radiation") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "radiation").getValue
                     }" />
                 </div>
 
@@ -57,17 +59,18 @@
                 <div class="staticField">
                     <label for="quality">Quality</label>
                     <input name="tabFieldItems[2].name" type="text" class="hidden" value="quality"/>
-                    <input name="tabFieldItems[2].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "quality") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "quality").getValue
+                    <input name="tabFieldItems[2].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[2].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "quality") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "quality").getValue
                     }" />
                 </div>
 
                 @* Severity *@
                 <div class="staticField">
-                @if(hpiTab.getTabFieldItemByName(key, "severity") != null) {
-                    @severityDropDown(hpiTab.getTabFieldItemByName(key, "severity").getValue)
+                @if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "severity") != null) {
+                    @severityDropDown(chiefComplaint_key, hpiTab.getTabFieldItemByName(chiefComplaint_key, "severity").getValue)
                 } else {
-                    @severityDropDown(null)
+                    @severityDropDown(null, null)
                 }
                 </div>
 
@@ -78,32 +81,36 @@
                 <div class="staticField">
                     <label for="provokes">Provokes</label>
                     <input name="tabFieldItems[4].name" type="text" class="hidden" value="provokes"/>
-                    <input name="tabFieldItems[4].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "provokes") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "provokes").getValue
+                    <input name="tabFieldItems[4].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[4].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "provokes") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "provokes").getValue
                     }" />
                 </div>
 
                 <div class="staticField">
                     <label for="palliates">Palliates</label>
                     <input name="tabFieldItems[5].name" type="text" class="hidden" value="palliates"/>
-                    <input name="tabFieldItems[5].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "palliates") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "palliates").getValue
+                    <input name="tabFieldItems[5].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[5].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "palliates") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "palliates").getValue
                     }" />
                 </div>
 
                 <div class="staticField">
                     <label for="timeOfDay">Time Of Day</label>
                     <input name="tabFieldItems[6].name" type="text" class="hidden" value="timeOfDay"/>
-                    <input name="tabFieldItems[6].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "timeOfDay") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "timeOfDay").getValue
+                    <input name="tabFieldItems[6].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[6].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "timeOfDay") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "timeOfDay").getValue
                     }" />
                 </div>
 
                 <div class="staticField">
                     <label for="narrative">Narrative</label>
                     <input name="tabFieldItems[7].name" type="text" class="hidden" value="narrative"/>
-                    <input name="tabFieldItems[7].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(key, "narrative") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "narrative").getValue
+                    <input name="tabFieldItems[7].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <input name="tabFieldItems[7].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative").getValue
                     }" />
                 </div>
 
@@ -111,8 +118,9 @@
                     @* Physical Examination *@
                     <label for="physicalExamination">Physical Examination</label>
                     <input name="tabFieldItems[8].name" type="text" class="hidden" value="physicalExamination"/>
-                    <textarea rows="3" name="tabFieldItems[8].value" class="form-control input-sm">@if(hpiTab.getTabFieldItemByName(key, "physicalExamination") != null) @{
-                        hpiTab.getTabFieldItemByName(key, "physicalExamination").getValue
+                    <input name="tabFieldItems[8].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                    <textarea rows="3" name="tabFieldItems[8].value" class="form-control input-sm">@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "physicalExamination") != null) @{
+                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "physicalExamination").getValue
                     }</textarea>
                 </div>
             </div>
@@ -122,8 +130,9 @@
             <div class="staticField">
                 <label for="narrative">Narrative</label>
                 <input name="tabFieldItems[9].name" type="text" class="hidden" value="narrative"/>
-                <textarea name="tabFieldItems[9].value" class="fNarrativeTextArea" >@if(hpiTab.getTabFieldItemByName(key, "narrative") != null) @{
-                    hpiTab.getTabFieldItemByName(key, "narrative").getValue
+                <input name="tabFieldItems[9].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
+                <textarea name="tabFieldItems[9].value" class="fNarrativeTextArea" >@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative") != null) @{
+                    hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative").getValue
                 }</textarea>
             </div>
         }

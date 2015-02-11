@@ -190,22 +190,18 @@ public class MedicalController extends Controller {
 
 
         //create patient encounter tab fields
-        //Map<String, String> tabFieldsWithValue = new HashMap<>();
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
         String date = dateUtils.getCurrentDateTimeString();
         //get problems
         for (ProblemItem pi : viewModelPost.getProblems()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
                 tabFieldMultiMap.put("problem", date, "", pi.getName());
-                //tabFieldsWithValue.put("problem", pi.getName());
         }
 
         //get non-custom tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
             if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
-                tabFieldMultiMap.put(tfi.getName(), date, "", tfi.getValue());
-                //tabFieldsWithValue.put(tfi.getName(), tfi.getValue());
-
+                tabFieldMultiMap.put(tfi.getName(), date, tfi.getChiefComplaint(), tfi.getValue());
         }
         //get custom tab fields
         Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
@@ -214,7 +210,6 @@ public class MedicalController extends Controller {
             for (JCustomField jcf : entry.getValue()) {
                 if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
                     tabFieldMultiMap.put(jcf.getName(), date, "", jcf.getValue());
-                    //tabFieldsWithValue.put(jcf.getName(), jcf.getValue());
             }
         }
         //save dat sheeeit, mayne

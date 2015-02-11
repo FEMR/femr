@@ -27,6 +27,9 @@ public class TabFieldItem {
     private String value;
     private Boolean isCustom;
     private String chiefComplaint;
+    //since the total number of tabfields is dependant on the number of chief complaints,
+    //this assigns each tabfielditem an index for the html name element attribute
+    private Integer index;
 
     public String getName() {
         return name;
@@ -90,5 +93,13 @@ public class TabFieldItem {
 
     public void setChiefComplaint(String chiefComplaint) {
         this.chiefComplaint = chiefComplaint;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }

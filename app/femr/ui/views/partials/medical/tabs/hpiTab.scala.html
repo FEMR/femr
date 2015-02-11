@@ -5,7 +5,7 @@
 <div class="controlWrap" id="hpiControl">
 
 
-    @if(hpiTab.getNumberOfChiefComplaints > 1){
+    @if(hpiTab.getTabFieldMultiMap.getChiefComplaintList.size() > 1) {
         @* Slider for navigating each HPI, only shows up if > 1 chief complaint exists *@
         <div id="chiefComplaintSliderWrap">
             @* Left arrow *@
@@ -14,9 +14,9 @@
             </div>
 
             @* Complaint list *@
-            @for((chiefComplaint_key, valyew) <- hpiTab.getFields){
+            @for(chiefComplaint <- hpiTab.getTabFieldMultiMap.getChiefComplaintList) {
                 <div class="chiefComplaintText hidden">
-                    <span>@chiefComplaint_key</span>
+                    <span>@chiefComplaint</span>
                 </div>
             }
 
@@ -26,9 +26,8 @@
             </div>
         </div>
     }
-
     @* Make an HPI page for each chief complaint *@
-    @for((chiefComplaint_key, valyew) <- hpiTab.getFields) {
+    @for(chiefComplaint <- hpiTab.getTabFieldMultiMap.getChiefComplaintList) {
         @* Hide the div if multiple chief complaints *@
         <div class="hpiWraps hidden">
 
@@ -37,20 +36,19 @@
 
                 <div class="staticField">
                     <label for="onset">Onset</label>
-                    <input name="tabFieldItems[0].name" type="text" class="hidden" value="onset"/>
-                    <input name="tabFieldItems[0].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[0].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "onset") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "onset").getValue
-                    }" />
+
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="onset"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("onset", chiefComplaint)" />
+
+
                 </div>
 
                 <div class="staticField">
                     <label for="radiation">Radiation</label>
-                    <input name="tabFieldItems[1].name" type="text" class="hidden" value="radiation"/>
-                    <input name="tabFieldItems[1].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[1].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "radiation") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "radiation").getValue
-                    }" />
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="radiation"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("radiation", chiefComplaint)" />
                 </div>
 
             </div>
@@ -58,20 +56,14 @@
             <div class="rightHPI">
                 <div class="staticField">
                     <label for="quality">Quality</label>
-                    <input name="tabFieldItems[2].name" type="text" class="hidden" value="quality"/>
-                    <input name="tabFieldItems[2].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[2].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "quality") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "quality").getValue
-                    }" />
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="quality"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("quality", chiefComplaint)" />
                 </div>
 
                 @* Severity *@
                 <div class="staticField">
-                @if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "severity") != null) {
-                    @severityDropDown(chiefComplaint_key, hpiTab.getTabFieldItemByName(chiefComplaint_key, "severity").getValue)
-                } else {
-                    @severityDropDown(null, null)
-                }
+                @severityDropDown(chiefComplaint, hpiTab.getTabFieldMultiMap.getMostRecent("severity", chiefComplaint))
                 </div>
 
 
@@ -80,64 +72,51 @@
 
                 <div class="staticField">
                     <label for="provokes">Provokes</label>
-                    <input name="tabFieldItems[4].name" type="text" class="hidden" value="provokes"/>
-                    <input name="tabFieldItems[4].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[4].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "provokes") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "provokes").getValue
-                    }" />
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="provokes"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("provokes", chiefComplaint)" />
                 </div>
 
                 <div class="staticField">
                     <label for="palliates">Palliates</label>
-                    <input name="tabFieldItems[5].name" type="text" class="hidden" value="palliates"/>
-                    <input name="tabFieldItems[5].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[5].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "palliates") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "palliates").getValue
-                    }" />
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="palliates"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("palliates", chiefComplaint)" />
                 </div>
 
                 <div class="staticField">
                     <label for="timeOfDay">Time Of Day</label>
-                    <input name="tabFieldItems[6].name" type="text" class="hidden" value="timeOfDay"/>
-                    <input name="tabFieldItems[6].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[6].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "timeOfDay") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "timeOfDay").getValue
-                    }" />
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="timeOfDay"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("timeOfDay", chiefComplaint)" />
                 </div>
 
                 <div class="staticField">
                     <label for="narrative">Narrative</label>
-                    <input name="tabFieldItems[7].name" type="text" class="hidden" value="narrative"/>
-                    <input name="tabFieldItems[7].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <input name="tabFieldItems[7].value" type="text" class="fInput" value="@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative").getValue
-                    }" />
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="narrative"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <input name="tabFieldItems[].value" type="text" class="fInput" value="@hpiTab.getTabFieldMultiMap.getMostRecent("narrative", chiefComplaint)" />
                 </div>
 
                 <div class="staticField">
                     @* Physical Examination *@
                     <label for="physicalExamination">Physical Examination</label>
-                    <input name="tabFieldItems[8].name" type="text" class="hidden" value="physicalExamination"/>
-                    <input name="tabFieldItems[8].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                    <textarea rows="3" name="tabFieldItems[8].value" class="form-control input-sm">@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "physicalExamination") != null) @{
-                        hpiTab.getTabFieldItemByName(chiefComplaint_key, "physicalExamination").getValue
-                    }</textarea>
+                    <input name="tabFieldItems[].name" type="text" class="hidden" value="physicalExamination"/>
+                    <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                    <textarea rows="3" name="tabFieldItems[].value" class="form-control input-sm">@hpiTab.getTabFieldMultiMap.getMostRecent("physicalExamination", chiefComplaint)
+                        " </textarea>
                 </div>
             </div>
-
 
         } else {
             <div class="staticField">
                 <label for="narrative">Narrative</label>
-                <input name="tabFieldItems[9].name" type="text" class="hidden" value="narrative"/>
-                <input name="tabFieldItems[9].chiefComplaint" type="text" class="hidden" value="@chiefComplaint_key"/>
-                <textarea name="tabFieldItems[9].value" class="fNarrativeTextArea" >@if(hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative") != null) @{
-                    hpiTab.getTabFieldItemByName(chiefComplaint_key, "narrative").getValue
-                }</textarea>
+                <input name="tabFieldItems[].name" type="text" class="hidden" value="narrative"/>
+                <input name="tabFieldItems[].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <textarea name="tabFieldItems[].value" class="fNarrativeTextArea" >@hpiTab.getTabFieldMultiMap.getMostRecent("narrative", chiefComplaint)</textarea>
             </div>
         }
         </div>
-
     }
 
 

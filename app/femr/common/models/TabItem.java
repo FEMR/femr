@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +32,11 @@ public class TabItem {
     private int rightColumnSize;
     private boolean isCustom;
     //a map that uses chief complaint as the key and it's respective tab fields as the value
-    private Map<String, List<TabFieldItem>> fields;
+    //private Map<String, List<TabFieldItem>> fields;
+    private TabFieldMultiMap tabFieldMultiMap;
 
     public TabItem() {
-        this.fields = new HashMap<>();
+        this.tabFieldMultiMap = new TabFieldMultiMap();
     }
 
     public String getName() {
@@ -68,6 +71,15 @@ public class TabItem {
         this.isCustom = isCustom;
     }
 
+    public TabFieldMultiMap getTabFieldMultiMap() {
+        return tabFieldMultiMap;
+    }
+
+    public void setTabFieldMultiMap(TabFieldMultiMap tabFieldMultiMap) {
+        this.tabFieldMultiMap = tabFieldMultiMap;
+    }
+
+    /*
     public List<TabFieldItem> getFields(String chiefComplaint) {
         return fields.get(chiefComplaint);
     }
@@ -107,5 +119,5 @@ public class TabItem {
             tabFieldItems = new ArrayList<>();
         tabFieldItems.add(tabFieldItem);
         this.fields.put(chiefComplaint, tabFieldItems);
-    }
+    }               */
 }

@@ -534,6 +534,7 @@ public class TabService implements ITabService {
 
         ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
         List<TabItem> tabItems = new ArrayList<>();
+        TabFieldMultiMap tabFieldMultiMap;
         TabItem tabItem;
 
         ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
@@ -541,110 +542,12 @@ public class TabService implements ITabService {
                 .eq("isDeleted", false);
 
         try {
-            List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
-//            SettingItem settingItem = ItemMapper.createSettingItem(systemSettings);
             List<? extends ITab> allTabs = tabRepository.find(tabQuery);
 
             for (ITab t : allTabs) {
-
-                //create a tab item that will store chief complaints and fields
+                tabFieldMultiMap = mapTabFields(encounterId, t.getName());
                 tabItem = ItemMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize());
-
-                //does this work..?
-                Collections.sort(t.getTabFields(), new Comparator<ITabField>() {
-
-                    @Override
-                    public int compare(ITabField o1, ITabField o2) {
-                        if (o1.getOrder() == null && o2.getOrder() != null)
-                            return -1;
-                        if (o1.getOrder() == null && o2.getOrder() == null)
-                            return 0;
-                        if (o1.getOrder() != null && o2.getOrder() == null)
-                            return 1;
-
-                        return o1.getOrder().compareTo(o2.getOrder());
-                    }
-                });
-
-                //goes through each tab field that belongs to a specific tab
-                for (ITabField tf : t.getTabFields()) {
-
-                    //get available chief complaints
-                    ExpressionList<ChiefComplaint> chiefComplaintQuery = QueryProvider.getChiefComplaintQuery()
-                            .where()
-                            .eq("patient_encounter_id", encounterId);
-                    List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintQuery);
-                    //get a list of values that have been recorded for a specific tab field
-                    Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                            .where()
-                            .eq("tabField", tf)
-                            .eq("patient_encounter_id", encounterId)
-                            .order()
-                            .desc("date_taken");
-                    List<? extends IPatientEncounterTabField> patientEncounterFieldsWithValue = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
-
-                    List<TabFieldItem> tabFieldItemsForChiefComplaint;
-
-                    //separate the tab fields by chief complaint
-                    Map<String, List<TabFieldItem>> separatedTabFieldsByChiefComplaint = new HashMap<>();
-                    if (patientEncounterFieldsWithValue != null && patientEncounterFieldsWithValue.size() > 0) {
-                        //the field has value(s)
-                        separatedTabFieldsByChiefComplaint = separateTabFieldsByChiefComplaint(patientEncounterFieldsWithValue);
-                    } else {
-                        //the field has no values
-                        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-                        String size = null;
-                        if (tf.getTabFieldSize() != null) {
-                            size = tf.getTabFieldSize().getName();
-                        }
-                        TabFieldItem tabFieldItem = ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), size, tf.getOrder(), tf.getPlaceholder());
-                        tabFieldItems.add(tabFieldItem);
-                        if (t.getName().toLowerCase().equals("hpi")) {
-                            //if the tab is HPI, separate the empty fields by chief complaint
-                            //(each chief complaint gets the field)
-                            if (chiefComplaints == null || chiefComplaints.size() < 1) {
-                                //no chief complaints exist, add the field to the null key
-                                separatedTabFieldsByChiefComplaint.put(null, tabFieldItems);
-                            } else {
-                                for (IChiefComplaint cc : chiefComplaints) {
-                                    separatedTabFieldsByChiefComplaint.put(cc.getValue(), tabFieldItems);
-                                }
-                            }
-                        } else {
-                            separatedTabFieldsByChiefComplaint.put(null, tabFieldItems);
-                        }
-
-
-                    }
-
-
-                    //iterate over all tab fields that have a value
-                    for (Map.Entry<String, List<TabFieldItem>> tabFieldItems : separatedTabFieldsByChiefComplaint.entrySet()) {
-                        String key_chiefComplaint = tabFieldItems.getKey();
-                        List<TabFieldItem> tabFieldItemsWithValueForChiefComplaint = tabFieldItems.getValue();
-
-                        if (tabFieldItemsWithValueForChiefComplaint.size() > 0) {
-                            //pull the fields out of the map going back to the UI
-                            tabFieldItemsForChiefComplaint = tabItem.getFields(key_chiefComplaint);
-                            if (tabFieldItemsForChiefComplaint == null || tabFieldItemsForChiefComplaint.size() == 0) {
-
-                                tabFieldItemsForChiefComplaint = new ArrayList<>();
-                            }
-                            tabFieldItemsForChiefComplaint.add(tabFieldItemsWithValueForChiefComplaint.get(0));
-                            tabItem.setFields(key_chiefComplaint, tabFieldItemsForChiefComplaint);
-                        } else {
-                            tabFieldItemsForChiefComplaint = tabItem.getFields(key_chiefComplaint);
-                            if (tabFieldItemsForChiefComplaint == null || tabFieldItemsForChiefComplaint.size() == 0) {
-
-                                tabFieldItemsForChiefComplaint = new ArrayList<>();
-                            }
-                            tabFieldItemsForChiefComplaint.add(ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tf.getTabFieldSize().getName(), tf.getOrder(), tf.getPlaceholder()));
-                            tabItem.setFields(key_chiefComplaint, tabFieldItemsForChiefComplaint);
-                        }
-
-                    }
-                }
-
+                tabItem.setTabFieldMultiMap(tabFieldMultiMap);
                 tabItems.add(tabItem);
             }
             response.setResponseObject(tabItems);
@@ -655,59 +558,83 @@ public class TabService implements ITabService {
 
         return response;
     }
+//
+//    private Map<String, List<TabFieldItem>> separateTabFieldsByChiefComplaint(List<? extends IPatientEncounterTabField> patientEncounterTabFieldsWithValue) {
+//        Map<String, List<TabFieldItem>> mappedTabFields = new HashMap<>();
+//        List<TabFieldItem> patientEncounterTabFieldItemsForMap;
+//        TabFieldItem tabFieldItem;
+//
+//        for (IPatientEncounterTabField petf : patientEncounterTabFieldsWithValue) {
+//
+//            String size = null;
+//            String chiefComplaint = null;
+//            if (petf.getTabField().getTabFieldSize() != null)
+//                size = petf.getTabField().getTabFieldSize().getName();
+//            if (petf.getChiefComplaint() != null)
+//                chiefComplaint = petf.getChiefComplaint().getValue();
+//            tabFieldItem = ItemMapper.createTabFieldItem(petf.getTabField().getName(),
+//                    petf.getTabField().getTabFieldType().getName(),
+//                    size,
+//                    petf.getTabField().getOrder(),
+//                    petf.getTabField().getPlaceholder(),
+//                    petf.getTabFieldValue(),
+//                    chiefComplaint);
+//
+//            if (!mappedTabFields.containsKey(chiefComplaint)) {
+//                //create a new entry
+//                patientEncounterTabFieldItemsForMap = new ArrayList<>();
+//                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
+//                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
+//            } else {
+//
+//                patientEncounterTabFieldItemsForMap = mappedTabFields.get(chiefComplaint);
+//                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
+//                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
+//            }
+//        }
+//
+//        return mappedTabFields;    */
 
-    private Map<String, List<TabFieldItem>> separateTabFieldsByChiefComplaint(List<? extends IPatientEncounterTabField> patientEncounterTabFieldsWithValue) {
-        Map<String, List<TabFieldItem>> mappedTabFields = new HashMap<>();
-        List<TabFieldItem> patientEncounterTabFieldItemsForMap;
-        TabFieldItem tabFieldItem;
-
-        for (IPatientEncounterTabField petf : patientEncounterTabFieldsWithValue) {
-
-            String size = null;
-            String chiefComplaint = null;
-            if (petf.getTabField().getTabFieldSize() != null)
-                size = petf.getTabField().getTabFieldSize().getName();
-            if (petf.getChiefComplaint() != null)
-                chiefComplaint = petf.getChiefComplaint().getValue();
-            tabFieldItem = ItemMapper.createTabFieldItem(petf.getTabField().getName(),
-                    petf.getTabField().getTabFieldType().getName(),
-                    size,
-                    petf.getTabField().getOrder(),
-                    petf.getTabField().getPlaceholder(),
-                    petf.getTabFieldValue(),
-                    chiefComplaint);
-
-            if (!mappedTabFields.containsKey(chiefComplaint)) {
-                //create a new entry
-                patientEncounterTabFieldItemsForMap = new ArrayList<>();
-                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
-                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
-            } else {
-
-                patientEncounterTabFieldItemsForMap = mappedTabFields.get(chiefComplaint);
-                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
-                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
-            }
-        }
-
-        return mappedTabFields;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId) {
+
         ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
+        TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId, null);
+        if (tabFieldMultiMap != null)
+            response.setResponseObject(tabFieldMultiMap);
+        else
+            response.addError("", "there was an issue building the multi map");
+        return response;
+    }
+
+    private TabFieldMultiMap mapTabFields(int encounterId, String tabName) {
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
         String tabFieldName;
         String chiefComplaint;
+        Query<PatientEncounterTabField> patientEncounterTabFieldQuery;
 
-        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
+        if (StringUtils.isNullOrWhiteSpace(tabName)) {//do all tab fields, don't filter by tab name
+            patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId)
+                    .order()
+                    .desc("date_taken");
+        } else { //filter by tab name
+
+            //TODO: can't directly join tabs, nested fetch?!
+            patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .fetch("tabs")
+                    .where()
+                    .eq("tabs.name", tabName)
+                    .eq("patient_encounter_id", encounterId)
+                    .order()
+                    .desc("date_taken");
+        }
+
 
         try {
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
@@ -726,11 +653,10 @@ public class TabService implements ITabService {
                 }
             }
         } catch (Exception ex) {
-            response.addError("", "bad querying");
+            return null;
         }
 
-        response.setResponseObject(tabFieldMultiMap);
-        return response;
+        return tabFieldMultiMap;
     }
 
 }

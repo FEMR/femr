@@ -21,6 +21,7 @@ package femr.ui.models.medical;
 import femr.common.models.PrescriptionItem;
 import femr.common.models.ProblemItem;
 import femr.common.models.TabFieldItem;
+import femr.data.models.mysql.TabField;
 
 import java.util.List;
 

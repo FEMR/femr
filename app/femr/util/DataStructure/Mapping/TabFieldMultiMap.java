@@ -18,19 +18,23 @@
 */
 package femr.util.DataStructure.Mapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Contains all available tab fields and their values. (Includes old and new)
  */
 public class TabFieldMultiMap extends AbstractMultiMap {
+
+    private final List<String> chiefComplaintList = new ArrayList<>();
+
     /**
      * Puts a value into the map and associatres the name and date as the two keys to the value.
      * For the love of all things holy, use empty strings for keys instead of null.
      *
-     * @param tabFieldName   The name of the vital
-     * @param date           The date the vital was taken
-     * @param value          The value of the vital
+     * @param tabFieldName   The name of the tab field
+     * @param date           The date the tab field was taken
+     * @param value          The value of the tab field
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
      */
     public void put(String tabFieldName, String date, String chiefComplaint, Object value) {
@@ -39,16 +43,19 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         if (!dateList.contains(date)) {
             dateList.add(date);
         }
+        if (!chiefComplaintList.contains(chiefComplaint)) {
+            chiefComplaintList.add(chiefComplaint);
+        }
     }
 
     /**
      * Given the tab field name and date and chief complaint return the tab field value
      * if the keys do not exist it returns null
      *
-     * @param tabFieldName   the name of the vital
-     * @param date           the date the vital was taken
+     * @param tabFieldName   the name of the tab field
+     * @param date           the date the tab field was taken
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
-     * @return the value of the vital as on type Object or null if not found
+     * @return the value of the tab field as on type Object or null if not found
      */
     public String get(String tabFieldName, String date, String chiefComplaint) {
         if (map.containsKey(tabFieldName, date, chiefComplaint)) {
@@ -61,21 +68,25 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * Given the tab field name and chief complaint return the most recent tab field value
      * if the keys do not exist it returns null
      *
-     * @param tabFieldName   the name of the vital
+     * @param tabFieldName   the name of the tab field
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
-     * @return the value of the vital as on type Object or null if not found
+     * @return the value of the tab field as on type Object or null if not found
      */
-    public String getMostRecent(String tabFieldName, String chiefComplaint){
+    public String getMostRecent(String tabFieldName, String chiefComplaint) {
         Object value;
         List<String> dateList = this.getDateList();
 
-        for (String s : dateList){
-            if (map.containsKey(tabFieldName, s, chiefComplaint)){
+        for (String s : dateList) {
+            if (map.containsKey(tabFieldName, s, chiefComplaint)) {
                 value = map.get(tabFieldName, s, chiefComplaint);
                 return value.toString();
             }
         }
 
         return null;
+    }
+
+    public List<String> getChiefComplaintList() {
+        return chiefComplaintList;
     }
 }

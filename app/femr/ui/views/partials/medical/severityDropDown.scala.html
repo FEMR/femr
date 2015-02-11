@@ -1,9 +1,9 @@
 @(chiefComplaint: String, value: String)
 
 <label for="severity">Severity</label>
-<input name="tabFieldItems[3].name" type="text" class="hidden" value="severity"/>
-<input name="tabFieldItems[3].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
-<select name="tabFieldItems[3].value" id="severityDropDown">
+<input name="tabFieldItems.name" type="text" class="hidden" value="severity"/>
+<input name="tabFieldItems.chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+<select name="tabFieldItems.value" id="severityDropDown">
     <option></option>
     @for(x <- 1 to 10) {
         @if(value != null && !value.isEmpty) {

@@ -558,43 +558,6 @@ public class TabService implements ITabService {
 
         return response;
     }
-//
-//    private Map<String, List<TabFieldItem>> separateTabFieldsByChiefComplaint(List<? extends IPatientEncounterTabField> patientEncounterTabFieldsWithValue) {
-//        Map<String, List<TabFieldItem>> mappedTabFields = new HashMap<>();
-//        List<TabFieldItem> patientEncounterTabFieldItemsForMap;
-//        TabFieldItem tabFieldItem;
-//
-//        for (IPatientEncounterTabField petf : patientEncounterTabFieldsWithValue) {
-//
-//            String size = null;
-//            String chiefComplaint = null;
-//            if (petf.getTabField().getTabFieldSize() != null)
-//                size = petf.getTabField().getTabFieldSize().getName();
-//            if (petf.getChiefComplaint() != null)
-//                chiefComplaint = petf.getChiefComplaint().getValue();
-//            tabFieldItem = ItemMapper.createTabFieldItem(petf.getTabField().getName(),
-//                    petf.getTabField().getTabFieldType().getName(),
-//                    size,
-//                    petf.getTabField().getOrder(),
-//                    petf.getTabField().getPlaceholder(),
-//                    petf.getTabFieldValue(),
-//                    chiefComplaint);
-//
-//            if (!mappedTabFields.containsKey(chiefComplaint)) {
-//                //create a new entry
-//                patientEncounterTabFieldItemsForMap = new ArrayList<>();
-//                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
-//                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
-//            } else {
-//
-//                patientEncounterTabFieldItemsForMap = mappedTabFields.get(chiefComplaint);
-//                patientEncounterTabFieldItemsForMap.add(tabFieldItem);
-//                mappedTabFields.put(chiefComplaint, patientEncounterTabFieldItemsForMap);
-//            }
-//        }
-//
-//        return mappedTabFields;    */
-
 
     /**
      * {@inheritDoc}
@@ -611,6 +574,7 @@ public class TabService implements ITabService {
         return response;
     }
 
+
     private TabFieldMultiMap mapTabFields(int encounterId, String tabName) {
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
         String tabFieldName;
@@ -618,6 +582,7 @@ public class TabService implements ITabService {
         Query<PatientEncounterTabField> patientEncounterTabFieldQuery;
 
         if (StringUtils.isNullOrWhiteSpace(tabName)) {//do all tab fields, don't filter by tab name
+
             patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
                     .where()
                     .eq("patient_encounter_id", encounterId)
@@ -625,11 +590,11 @@ public class TabService implements ITabService {
                     .desc("date_taken");
         } else { //filter by tab name
 
-            //TODO: can't directly join tabs, nested fetch?!
             patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .fetch("tabs")
+                    .fetch("tabField")
+                    .fetch("tabField.tab")
                     .where()
-                    .eq("tabs.name", tabName)
+                    .eq("tabField.tab.name", tabName)
                     .eq("patient_encounter_id", encounterId)
                     .order()
                     .desc("date_taken");

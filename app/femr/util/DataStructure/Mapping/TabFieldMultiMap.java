@@ -87,6 +87,10 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     }
 
     public List<String> getChiefComplaintList() {
+        if (chiefComplaintList.size() == 0)
+            chiefComplaintList.add("");
+
+
         return chiefComplaintList;
     }
 }

@@ -18,6 +18,8 @@
 */
 package femr.util.DataStructure.Mapping;
 
+import femr.util.stringhelpers.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,10 +42,10 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     public void put(String tabFieldName, String date, String chiefComplaint, Object value) {
         map.put(tabFieldName, date, chiefComplaint, value);
         // check if the dated is already in the dateList if so don't add it
-        if (!dateList.contains(date)) {
+        if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
             dateList.add(date);
         }
-        if (!chiefComplaintList.contains(chiefComplaint)) {
+        if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
             chiefComplaintList.add(chiefComplaint);
         }
     }
@@ -86,11 +88,13 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         return null;
     }
 
+    /**
+     * Adds a blank chief complaint if non exist
+     * @return
+     */
     public List<String> getChiefComplaintList() {
-        if (chiefComplaintList.size() == 0)
-            chiefComplaintList.add("");
-
 
         return chiefComplaintList;
     }
+
 }

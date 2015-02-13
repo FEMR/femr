@@ -139,19 +139,11 @@ public interface ITabService {
     ServiceResponse<Boolean> doesTabExist(String tabName);
 
     /**
-     * Maps a list of TabFieldItems to their respective tab
-     *
-     * @param encounterId current encounter id
-     * @return TabFieldItems mapped to their respective tab
-     */
-    ServiceResponse<Map<String, List<TabFieldItem>>> getTabFields(int encounterId);
-
-    /**
-     * Create a map of tabs and their fields where the key can be the name of the tab
-     * or the date or the chief complaint
+     * Create a map of tabs and their fields where the key is the name, date, and chief complaint.
+     * Chief complaint is null if it doesn't exist.
      *
      * @param encounterId id of the encounter
-     * @return
+     * @return a "TabFieldMultiMap" that contains all tab fields and their values. <strong>It will also contain empty fields.</strong>
      */
     ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId);
 }

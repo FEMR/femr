@@ -40,11 +40,11 @@ public abstract class AbstractMultiMap {
      *
      * @return the gd iterator
      */
-    public MapIterator getMultiMapIterator(){
+    public MapIterator getMultiMapIterator() {
         return map.mapIterator();
     }
 
-    public int getSize(){
+    public int getSize() {
         return map.size();
     }
 
@@ -95,4 +95,9 @@ public abstract class AbstractMultiMap {
         }
         return StringUtils.FormatDateTime(dateList.get(i));
     }
+
+    public boolean containsKey(String key) {
+        return map.containsKey(key);
+    }
+
 }

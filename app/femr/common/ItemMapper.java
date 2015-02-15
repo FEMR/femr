@@ -318,8 +318,7 @@ public class ItemMapper {
                                                   String type,
                                                   String size,
                                                   Integer order,
-                                                  String placeholder,
-                                                  Integer index) {
+                                                  String placeholder) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -336,8 +335,6 @@ public class ItemMapper {
             tabFieldItem.setSize(size);
         if (StringUtils.isNotNullOrWhiteSpace(type))
             tabFieldItem.setType(type);
-        if (index != null)
-            tabFieldItem.setIndex(index);
 
         return tabFieldItem;
     }

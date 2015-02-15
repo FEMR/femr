@@ -1,4 +1,6 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.medical.EditViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser,
+        vitals: femr.util.DataStructure.Mapping.VitalMultiMap,
+        viewModel: femr.ui.models.medical.EditViewModelGet)
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.SearchController
@@ -37,7 +39,7 @@
             <div id="vitalsWrap">
                 <div id="vitalsPartial">
                         <!-- Repalaced when user clicks save in record new vitals dialog -->
-                    @listVitals(viewModel.getVitalMap)
+                    @listVitals(vitals)
                 </div>
 
                 <button type="button" id="newVitalsBtn" class="fButton fOtherButton">Record New Vitals</button>
@@ -71,7 +73,7 @@
                     </div>
 
                     <div id="tabContentWrap">
-                        @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI)
+                        @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI, viewModel.getChiefComplaints)
 
                         @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getProblemItems)
 

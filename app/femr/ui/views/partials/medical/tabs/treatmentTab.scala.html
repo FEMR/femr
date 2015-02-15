@@ -3,9 +3,12 @@
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
         <label for="assessment">Assessment</label>
-        <input name="tabFieldItems[].name" type="text" class="hidden" value="assessment"/>
-        <textarea rows="3" name="tabFieldItems[].value" class="form-control input-sm">@treatmentTab.getTabFieldMultiMap.getMostRecent("assessment", "")</textarea>
-    </div>
+        @defining(treatmentTab.getTabFieldItemByName(null, "assessment")) { assessment =>
+            <input name="tabFieldItems[@assessment.getIndex].name" type="text" class="hidden" value="assessment"/>
+            <textarea rows="3" name="tabFieldItems[@assessment.getIndex].value" class="form-control input-sm">@assessment.getValue</textarea>
+        }
+        </div>
+
     <div class="form-group">
         <label for="problem">Diagnosis</label>
         <div class="row">
@@ -51,7 +54,9 @@
     </div>
     <div class="form-group">
         <label for="treatment">Treatment Given</label>
-        <input name="tabFieldItems[].name" type="text" class="hidden" value="treatment"/>
-        <textarea rows="3" name="tabFieldItems[].value" class="form-control input-sm">@treatmentTab.getTabFieldMultiMap.getMostRecent("treatment", "")</textarea>
+        @defining(treatmentTab.getTabFieldItemByName(null, "treatment")) { treatment =>
+            <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="treatment"/>
+            <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm">@treatment.getValue</textarea>
+        }
     </div>
 </div>

@@ -18,6 +18,7 @@
 */
 package femr.common.models;
 
+import femr.data.models.mysql.ChiefComplaint;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
 import java.util.ArrayList;
@@ -34,10 +35,9 @@ public class TabItem {
 
     //a map that uses chief complaint as the key and it's respective tab fields as the value
     private Map<String, List<TabFieldItem>> fields;
-    private TabFieldMultiMap tabFieldMultiMap;
 
     public TabItem() {
-        this.tabFieldMultiMap = new TabFieldMultiMap();
+        this.fields = new HashMap<>();
     }
 
     public String getName() {
@@ -72,15 +72,6 @@ public class TabItem {
         this.isCustom = isCustom;
     }
 
-    public TabFieldMultiMap getTabFieldMultiMap() {
-        return tabFieldMultiMap;
-    }
-
-    public void setTabFieldMultiMap(TabFieldMultiMap tabFieldMultiMap) {
-        this.tabFieldMultiMap = tabFieldMultiMap;
-    }
-
-
     public List<TabFieldItem> getFields(String chiefComplaint) {
         return fields.get(chiefComplaint);
     }
@@ -88,19 +79,6 @@ public class TabItem {
     public Map<String, List<TabFieldItem>> getFields(){
         return fields;
     }
-
-    public int getNumberOfChiefComplaints(){
-        int count = 0;
-        for (Map.Entry<String, List<TabFieldItem>> tabFieldEntry : fields.entrySet()){
-            count++;
-        }
-        return count;
-    }
-
-    public void setFields(String chiefComplaint, List<TabFieldItem> fields) {
-        this.fields.put(chiefComplaint, fields);
-    }
-
 
     public TabFieldItem getTabFieldItemByName(String chiefComplaint, String name) {
         if (fields.get(chiefComplaint) != null){
@@ -113,12 +91,7 @@ public class TabItem {
         return null;
     }
 
-
-    public void addTabFieldItem(String chiefComplaint, TabFieldItem tabFieldItem) {
-        List<TabFieldItem> tabFieldItems = this.fields.get(chiefComplaint);
-        if (tabFieldItems == null)
-            tabFieldItems = new ArrayList<>();
-        tabFieldItems.add(tabFieldItem);
-        this.fields.put(chiefComplaint, tabFieldItems);
+    public void setFields(Map<String, List<TabFieldItem>> fields) {
+        this.fields = fields;
     }
 }

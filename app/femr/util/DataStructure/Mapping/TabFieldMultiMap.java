@@ -89,7 +89,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     }
 
     /**
-     * Adds a blank chief complaint if non exist
+     * Get the available chief complaints
      * @return
      */
     public List<String> getChiefComplaintList() {

@@ -31,8 +31,9 @@ public class TabItem {
     private int leftColumnSize;
     private int rightColumnSize;
     private boolean isCustom;
+
     //a map that uses chief complaint as the key and it's respective tab fields as the value
-    //private Map<String, List<TabFieldItem>> fields;
+    private Map<String, List<TabFieldItem>> fields;
     private TabFieldMultiMap tabFieldMultiMap;
 
     public TabItem() {
@@ -79,7 +80,7 @@ public class TabItem {
         this.tabFieldMultiMap = tabFieldMultiMap;
     }
 
-    /*
+
     public List<TabFieldItem> getFields(String chiefComplaint) {
         return fields.get(chiefComplaint);
     }
@@ -119,5 +120,5 @@ public class TabItem {
             tabFieldItems = new ArrayList<>();
         tabFieldItems.add(tabFieldItem);
         this.fields.put(chiefComplaint, tabFieldItems);
-    }               */
+    }
 }

@@ -470,36 +470,36 @@ public class TabService implements ITabService {
 
     /**
      * {@inheritDoc}
+
+     @Override public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive) {
+
+     ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
+     List<TabItem> tabItems = new ArrayList<>();
+     TabFieldMultiMap tabFieldMultiMap;
+     TabItem tabItem;
+
+     ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
+     .where()
+     .eq("isDeleted", false);
+
+     try {
+     List<? extends ITab> allTabs = tabRepository.find(tabQuery);
+
+     for (ITab t : allTabs) {
+     tabFieldMultiMap = mapTabFields(encounterId, t.getName());
+     tabItem = ItemMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize());
+     tabItem.setTabFieldMultiMap(tabFieldMultiMap);
+     tabItems.add(tabItem);
+     }
+     response.setResponseObject(tabItems);
+     } catch (Exception ex) {
+
+     response.addError("", ex.getMessage());
+     }
+
+     return response;
+     }
      */
-    @Override
-    public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive) {
-
-        ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
-        List<TabItem> tabItems = new ArrayList<>();
-        TabFieldMultiMap tabFieldMultiMap;
-        TabItem tabItem;
-
-        ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
-                .where()
-                .eq("isDeleted", false);
-
-        try {
-            List<? extends ITab> allTabs = tabRepository.find(tabQuery);
-
-            for (ITab t : allTabs) {
-                tabFieldMultiMap = mapTabFields(encounterId, t.getName());
-                tabItem = ItemMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize());
-                tabItem.setTabFieldMultiMap(tabFieldMultiMap);
-                tabItems.add(tabItem);
-            }
-            response.setResponseObject(tabItems);
-        } catch (Exception ex) {
-
-            response.addError("", ex.getMessage());
-        }
-
-        return response;
-    }
 
     /**
      * {@inheritDoc}
@@ -513,6 +513,28 @@ public class TabService implements ITabService {
             response.setResponseObject(tabFieldMultiMap);
         else
             response.addError("", "there was an issue building the multi map");
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted) {
+
+        ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
+        List<TabItem> tabItems = new ArrayList<>();
+        ExpressionList<Tab> tabExpressionList = QueryProvider.getTabQuery()
+                .where()
+                .eq("isDeleted", isDeleted);
+
+        try {
+
+            List<? extends ITab> tabs = tabRepository.find(tabExpressionList);
+            for (ITab tab : tabs) {
+                tabItems.add(ItemMapper.createTabItem(tab.getName(), tab.getIsCustom(), tab.getLeftColumnSize(), tab.getRightColumnSize()));
+            }
+            response.setResponseObject(tabItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
         return response;
     }
 
@@ -563,14 +585,18 @@ public class TabService implements ITabService {
                 .where()
                 .eq("patient_encounter_id", encounterId);
 
+
         try {
 
             List<? extends ITabField> tabFields = tabFieldRepository.find(tabFieldQuery);
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
             List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
 
-
+            //all fields that have values
             for (IPatientEncounterTabField petf : patientEncounterTabFields) {
+                String tabFieldSize = null;
+                if (petf.getTabField().getTabFieldSize() != null)
+                    tabFieldSize = petf.getTabField().getTabFieldSize().getName();
 
                 tabFieldName = petf.getTabField().getName();
 
@@ -578,31 +604,40 @@ public class TabService implements ITabService {
 
                     for (IChiefComplaint cc : chiefComplaints) {
 
-                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), petf.getTabFieldValue());
+//                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), petf.getTabFieldValue());
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), petf.getTabField().getTabFieldSize().getName(), petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
                     }
                 } else {
 
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, petf.getTabFieldValue());
+                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), petf.getTabField().getTabFieldSize().getName(), petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
                 }
 
 
             }
 
+            //all empty fields
 
             for (ITabField tf : tabFields) {
-
+                String tabFieldSize = null;
+                if (tf.getTabFieldSize() != null)
+                    tabFieldSize = tf.getTabFieldSize().getName();
+                //make sure the tab field wasn't already inserted with a value in the previous for loop
                 if (!tabFieldMultiMap.containsKey(tf.getName())) {
-
+                    //hpi gets special treatment for each chief complaint
                     if (tf.getTab().getName().equals("HPI")) {
 
+                        if (chiefComplaints != null && chiefComplaints.size() > 0) {
+                            for (IChiefComplaint cc : chiefComplaints) {
 
-                        for (IChiefComplaint cc : chiefComplaints) {
-
-                            tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), "");
+                                tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
+                            }
+                        } else {
+                            tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
                         }
+
                     } else {
 
-                        tabFieldMultiMap.put(tf.getName(), null, null, "");
+                        tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
                     }
                 }
             }
@@ -613,5 +648,6 @@ public class TabService implements ITabService {
 
         return tabFieldMultiMap;
     }
+
 
 }

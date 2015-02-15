@@ -26,7 +26,7 @@ public class TabFieldItem {
     private String placeholder;
     private String value;
     private Boolean isCustom;
-    private String chiefComplaint;
+    private String chiefComplaint; //TODO: is this needed
     //since the total number of tabfields is dependant on the number of chief complaints,
     //this assigns each tabfielditem an index for the html name element attribute
     private Integer index;

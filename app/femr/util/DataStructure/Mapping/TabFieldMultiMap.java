@@ -18,6 +18,7 @@
 */
 package femr.util.DataStructure.Mapping;
 
+import femr.common.models.TabFieldItem;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
@@ -57,12 +58,15 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @param tabFieldName   the name of the tab field
      * @param date           the date the tab field was taken
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
-     * @return the value of the tab field as on type Object or null if not found
+     * @return the tab field or null if not found
      */
-    public String get(String tabFieldName, String date, String chiefComplaint) {
+    public TabFieldItem get(String tabFieldName, String date, String chiefComplaint) {
+
         if (map.containsKey(tabFieldName, date, chiefComplaint)) {
-            return map.get(tabFieldName, date, chiefComplaint).toString();
+
+            return (TabFieldItem)map.get(tabFieldName, date, chiefComplaint);
         }
+
         return null;
     }
 
@@ -72,18 +76,26 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      *
      * @param tabFieldName   the name of the tab field
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
-     * @return the value of the tab field as on type Object or null if not found
+     * @return the tab field with or without a value or null if it doesn't exist
      */
-    public String getMostRecent(String tabFieldName, String chiefComplaint) {
+    public TabFieldItem getMostRecentOrEmpty(String tabFieldName, String chiefComplaint) {
         Object value;
         List<String> dateList = this.getDateList();
 
-        for (String s : dateList) {
-            if (map.containsKey(tabFieldName, s, chiefComplaint)) {
-                value = map.get(tabFieldName, s, chiefComplaint);
-                return value.toString();
+        if (dateList.size() == 0){
+
+            return (TabFieldItem)map.get(tabFieldName, null, chiefComplaint);
+        }else{
+            //datelist is already sorted :)
+            for (String s : dateList) {
+                if (map.containsKey(tabFieldName, s, chiefComplaint)) {
+
+                    value = map.get(tabFieldName, s, chiefComplaint);
+                    return (TabFieldItem)value;
+                }
             }
         }
+
 
         return null;
     }

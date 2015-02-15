@@ -52,9 +52,9 @@ public interface ITabService {
      * @param encounterId id of the current encounter
      * @param isActive is the tab turned on?
      * @return a list of tab items including the fields
-     */
-    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
 
+    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
+     */
     /**
      * Deletes or un-Deletes a tab
      *
@@ -146,4 +146,10 @@ public interface ITabService {
      * @return a "TabFieldMultiMap" that contains all tab fields and their values. <strong>It will also contain empty fields.</strong>
      */
     ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId);
+
+    /**
+     * Get all available tabs for use
+     * @return list of available tabs
+     */
+    ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted);
 }

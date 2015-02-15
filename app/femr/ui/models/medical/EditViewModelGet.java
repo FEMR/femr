@@ -19,14 +19,11 @@
 package femr.ui.models.medical;
 
 import femr.common.models.*;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
 import java.util.List;
 
 public class EditViewModelGet {
     //The patient being seen
     private PatientItem patientItem;
-    //Mapped vitals for the patient
-    private VitalMultiMap vitalMap;
     //The current encounter of the patient
     private PatientEncounterItem patientEncounterItem;
     //List of problems for the patient
@@ -36,9 +33,8 @@ public class EditViewModelGet {
     //photos for the medical tab
     private List<PhotoItem> photos;
     private SettingItem settings;
-
-
     private List<TabItem> tabItems;
+    private List<String> chiefComplaints;
 
     public PatientItem getPatientItem() {
         return patientItem;
@@ -46,14 +42,6 @@ public class EditViewModelGet {
 
     public void setPatientItem(PatientItem patientItem) {
         this.patientItem = patientItem;
-    }
-
-    public VitalMultiMap getVitalMap() {
-        return vitalMap;
-    }
-
-    public void setVitalMap(VitalMultiMap vitalMap) {
-        this.vitalMap = vitalMap;
     }
 
     public PatientEncounterItem getPatientEncounterItem() {
@@ -110,5 +98,13 @@ public class EditViewModelGet {
                 return ti;
         }
         return null;
+    }
+
+    public List<String> getChiefComplaints() {
+        return chiefComplaints;
+    }
+
+    public void setChiefComplaints(List<String> chiefComplaints) {
+        this.chiefComplaints = chiefComplaints;
     }
 }

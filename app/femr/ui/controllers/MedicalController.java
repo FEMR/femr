@@ -364,4 +364,35 @@ public class MedicalController extends Controller {
         }
         return tabFieldItems;
     }
+
+    private Map<String, List<TabFieldItem>> structureFieldsForView(TabFieldMultiMap tabFieldMultiMap){
+
+        if (tabFieldMultiMap == null){
+
+            return null;
+        }
+
+        Map<String, List<TabFieldItem>> chiefComplaintFieldMap = new HashMap<>();
+        List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        Integer index = 0;
+
+        List<String> availableChiefComplaints = tabFieldMultiMap.getChiefComplaintList();
+
+        for (String chiefComplaint : availableChiefComplaints){
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("onset", chiefComplaint));
+            tabFieldItem.set
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("radiation", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("quality", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("severity", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("provokes", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("palliates", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("timeOfDay", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("narrative", chiefComplaint));
+            tabFieldItem.setName(tabFieldMultiMap.getMostRecent("physicalExamination", chiefComplaint));
+        }
+
+
+
+    }
 }

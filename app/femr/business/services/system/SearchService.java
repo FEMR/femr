@@ -549,7 +549,6 @@ public class SearchService implements ISearchService {
                         photoId
                 );
 
-                //TODO: whyyyyy after?
                 if (patient.getPhoto() != null) {
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
                 } else {

@@ -602,14 +602,18 @@ public class TabService implements ITabService {
 
                 if (petf.getTabField().getTab().getName().equals("HPI")) {
 
-                    for (IChiefComplaint cc : chiefComplaints) {
+                    if (chiefComplaints != null && chiefComplaints.size() > 0) {
+                        for (IChiefComplaint cc : chiefComplaints) {
 
 //                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), petf.getTabFieldValue());
-                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), petf.getTabField().getTabFieldSize().getName(), petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
+                            tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
+                        }
+                    } else {
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null));
                     }
                 } else {
 
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), petf.getTabField().getTabFieldSize().getName(), petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
+                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
                 }
 
 

@@ -64,7 +64,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
 
         if (map.containsKey(tabFieldName, date, chiefComplaint)) {
 
-            return (TabFieldItem)map.get(tabFieldName, date, chiefComplaint);
+            return (TabFieldItem) map.get(tabFieldName, date, chiefComplaint);
         }
 
         return null;
@@ -79,21 +79,18 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @return the tab field with or without a value or null if it doesn't exist
      */
     public TabFieldItem getMostRecentOrEmpty(String tabFieldName, String chiefComplaint) {
-        Object value;
+        //TODO: this needs to take into consideration that sometimes you will have a null date when the tab is empty
         List<String> dateList = this.getDateList();
 
-        if (dateList.size() == 0){
+        TabFieldItem tabFieldItem;
 
-            return (TabFieldItem)map.get(tabFieldName, null, chiefComplaint);
-        }else{
-            //datelist is already sorted :)
-            for (String s : dateList) {
-                if (map.containsKey(tabFieldName, s, chiefComplaint)) {
+        //datelist is already sorted :)
+        for (String s : dateList) {
+            if (map.containsKey(tabFieldName, s, chiefComplaint)) {
 
-                    value = map.get(tabFieldName, s, chiefComplaint);
-                    return (TabFieldItem)value;
-                }
+                return (TabFieldItem) map.get(tabFieldName, s, chiefComplaint);
             }
+
         }
 
 
@@ -102,6 +99,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
 
     /**
      * Get the available chief complaints
+     *
      * @return
      */
     public List<String> getChiefComplaintList() {

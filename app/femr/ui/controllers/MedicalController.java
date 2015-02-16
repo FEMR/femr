@@ -466,7 +466,7 @@ public class MedicalController extends Controller {
             tabFieldItem.setIndex(index++);
             tabFieldItemsForChiefComplaint.add(tabFieldItem);
             tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", null);
-            tabFieldItem.setIndex(index++);
+            tabFieldItem.setIndex(index);
             tabFieldItemsForChiefComplaint.add(tabFieldItem);
             chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
         }

@@ -595,8 +595,11 @@ public class TabService implements ITabService {
             //all fields that have values
             for (IPatientEncounterTabField petf : patientEncounterTabFields) {
                 String tabFieldSize = null;
+                String chiefComplaint = null;
                 if (petf.getTabField().getTabFieldSize() != null)
                     tabFieldSize = petf.getTabField().getTabFieldSize().getName();
+                if (petf.getChiefComplaint() != null)
+                    chiefComplaint = petf.getChiefComplaint().getValue();
 
                 tabFieldName = petf.getTabField().getName();
 
@@ -606,14 +609,14 @@ public class TabService implements ITabService {
                         for (IChiefComplaint cc : chiefComplaints) {
 
 //                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), petf.getTabFieldValue());
-                            tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
+                            tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint));
                         }
                     } else {
                         tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null));
                     }
                 } else {
 
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), petf.getChiefComplaint().getValue()));
+                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint));
                 }
 
 

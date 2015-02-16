@@ -82,19 +82,30 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         //TODO: this needs to take into consideration that sometimes you will have a null date when the tab is empty
         List<String> dateList = this.getDateList();
 
-        TabFieldItem tabFieldItem;
+        TabFieldItem tabFieldItem = null;
 
-        //datelist is already sorted :)
-        for (String s : dateList) {
-            if (map.containsKey(tabFieldName, s, chiefComplaint)) {
 
-                return (TabFieldItem) map.get(tabFieldName, s, chiefComplaint);
+        try {
+            //datelist is already sorted :)
+            for (String s : dateList) {
+                if (map.containsKey(tabFieldName, s, chiefComplaint)) {
+
+                    tabFieldItem = (TabFieldItem) map.get(tabFieldName, s, chiefComplaint);
+                    break;
+                }
+
             }
-
+            //no field exists with a date, find the blank field
+            if (tabFieldItem == null) {
+                tabFieldItem = (TabFieldItem) map.get(tabFieldName, null, chiefComplaint);
+            }
+        } catch (Exception ex) {
+            //death
+            tabFieldItem = null;
         }
 
 
-        return null;
+        return tabFieldItem;
     }
 
     /**

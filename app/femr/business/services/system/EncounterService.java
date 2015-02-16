@@ -219,10 +219,10 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId){
+    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId) {
 
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
-        if (tabFieldMultiMap.getSize() < 1){
+        if (tabFieldMultiMap.getSize() < 1) {
 
             response.addError("", "no data to save");
             return response;
@@ -232,12 +232,20 @@ public class EncounterService implements IEncounterService {
         List<IPatientEncounterTabField> tabFields = new ArrayList<>();
         try {
             MapIterator multiMapIterator = tabFieldMultiMap.getMultiMapIterator();
-            while (multiMapIterator.hasNext()){
+            while (multiMapIterator.hasNext()) {
                 multiMapIterator.next();
                 MultiKey mk = (MultiKey) multiMapIterator.getKey();
-                if (mk.getKey(0) == null || mk.getKey(1) == null || mk.getKey(2) == null){
-                    response.addError("","stop using null keys, use a blank string");
+                String chiefComplaint = "";
+
+                if (mk.getKey(0) == null || mk.getKey(1) == null) {
+                    //key 0 = field name, string
+                    //key 1 = date, string
+                    response.addError("", "stop using null keys, use a blank string");
                     break;
+                } else if (mk.getKey(2) == null) {
+                    //key 2 = chief complaint, string
+                }else{
+                    chiefComplaint = (String)mk.getKey(2);
                 }
 
                 //get the current tab field item
@@ -248,10 +256,10 @@ public class EncounterService implements IEncounterService {
 
                 //create a patientEncounterTabField for saving
                 IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, multiMapIterator.getValue().toString(), encounterId);
-                if (StringUtils.isNotNullOrWhiteSpace(mk.getKey(2).toString())) {
+                if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
                     ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                             .where()
-                            .eq("value", mk.getKey(2).toString())
+                            .eq("value", chiefComplaint)
                             .eq("patient_encounter_id", encounterId);
                     IChiefComplaint chiefComplaintData = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
                     if (chiefComplaintData != null) {
@@ -265,7 +273,7 @@ public class EncounterService implements IEncounterService {
                         .where()
                         .eq("tabField", tabField)
                         .eq("patient_encounter_id", encounterId)
-                        .eq("tab_field_value", mk.getKey(0).toString());
+                        .eq("tab_field_value", multiMapIterator.getValue().toString());
                 List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
                 if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
                     //already exists - field wasn't changed
@@ -274,7 +282,7 @@ public class EncounterService implements IEncounterService {
                 }
             }
 
-            if (tabFields.size() > 0){
+            if (tabFields.size() > 0) {
                 List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
                 List<TabFieldItem> tabFieldItemsToReturn = new ArrayList<>();
                 for (IPatientEncounterTabField petf : savedTabFields) {
@@ -282,8 +290,6 @@ public class EncounterService implements IEncounterService {
                 }
                 response.setResponseObject(tabFieldItemsToReturn);
             }
-
-
 
 
         } catch (Exception ex) {

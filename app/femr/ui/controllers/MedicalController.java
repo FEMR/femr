@@ -149,11 +149,13 @@ public class MedicalController extends Controller {
         //get all fields and their values
         ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.findTabFieldMultiMap(patientEncounter.getId());
         if (tabFieldMultiMapResponse.hasErrors()){
+
             throw new RuntimeException();
         }
         TabFieldMultiMap tabFieldMultiMap = tabFieldMultiMapResponse.getResponseObject();
         ServiceResponse<List<TabItem>> tabItemServiceResponse = tabService.findAvailableTabs(false);
         if (tabItemServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
         List<TabItem> tabItems = tabItemServiceResponse.getResponseObject();
@@ -222,6 +224,7 @@ public class MedicalController extends Controller {
             if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
                 tabFieldMultiMap.put(tfi.getName(), date, tfi.getChiefComplaint(), tfi.getValue());
         }
+        /*
         //get custom tab fields
         Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
         }.getType());
@@ -230,7 +233,7 @@ public class MedicalController extends Controller {
                 if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
                     tabFieldMultiMap.put(jcf.getName(), date, "", jcf.getValue());
             }
-        }
+        } */
         //save dat sheeeit, mayne
         //if (tabFieldsWithValue.size() > 0) {
         if (tabFieldMultiMap.getSize() > 0) {

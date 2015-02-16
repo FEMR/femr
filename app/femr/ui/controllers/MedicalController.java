@@ -146,11 +146,6 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
 
-        /*ServiceResponse<List<TabItem>> tabItemResponse = tabService.findAllTabsAndFieldsByEncounterId(patientEncounter.getId(), true);
-        if (tabItemResponse.hasErrors()) {
-            throw new RuntimeException();
-        } */
-
         //get all fields and their values
         ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.findTabFieldMultiMap(patientEncounter.getId());
         if (tabFieldMultiMapResponse.hasErrors()){
@@ -178,8 +173,6 @@ public class MedicalController extends Controller {
         }
         viewModelGet.setTabItems(tabItems);
         viewModelGet.setChiefComplaints(tabFieldMultiMap.getChiefComplaintList());
-
-
 
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {

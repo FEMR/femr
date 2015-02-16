@@ -261,7 +261,6 @@ public class MedicalController extends Controller {
 
 
         /*
-        //TODO: handle multiple chief complaints
         //multiple chief complaints
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMultipleHpiJSON())) {
             //iterate over all values, adding them to the list with the respective chief complaint
@@ -434,8 +433,7 @@ public class MedicalController extends Controller {
             }
         } else {
             tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("onset", null);
-            tabFieldItem.setIndex(index);
-            index++;
+            tabFieldItem.setIndex(index++);
             tabFieldItemsForChiefComplaint.add(tabFieldItem);
             tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("radiation", null);
             tabFieldItem.setIndex(index++);

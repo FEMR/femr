@@ -95,7 +95,7 @@ public class ItemMapper {
                                                 Float weight,
                                                 String pathToPatientPhoto,
                                                 Integer photoId) {
-        //TODO: split up into overloaded methods?
+
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
                 StringUtils.isNullOrWhiteSpace(city)) {

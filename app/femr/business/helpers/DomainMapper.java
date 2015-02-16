@@ -565,8 +565,9 @@ public class DomainMapper {
      * @return a new VitalItem with no value
      */
     public static VitalItem createVitalItem(IVital vital) {
-        //TODO: this shouldn't happen, no need for a vitalitem without a value
+
         if (vital == null) {
+
             return null;
         }
         VitalItem vitalItem = new VitalItem();

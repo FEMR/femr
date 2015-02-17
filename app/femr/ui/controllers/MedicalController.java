@@ -211,19 +211,28 @@ public class MedicalController extends Controller {
 
 
         //create patient encounter tab fields
-        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
-        String date = dateUtils.getCurrentDateTimeString();
+
         //get problems
+        List<String> problemList = new ArrayList<>();
         for (ProblemItem pi : viewModelPost.getProblems()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
-                tabFieldMultiMap.put("problem", date, "", pi.getName());
+                problemList.add(pi.getName());
         }
+        //save problems
+        if (problemList.size() > 0)
+            encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
+
+        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
+        String date = dateUtils.getCurrentDateTimeString();
 
         //get non-custom tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
             if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
                 tabFieldMultiMap.put(tfi.getName(), date, tfi.getChiefComplaint(), tfi.getValue());
         }
+
+
+
         /*
         //get custom tab fields
         Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
@@ -388,7 +397,7 @@ public class MedicalController extends Controller {
     }     */
 
     private Map<String, List<TabFieldItem>> structureHPIFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
-
+        //TODO: tabfieldmultimap is right, there's a problem in this method   with duplicating chief complaint values
         if (tabFieldMultiMap == null) {
 
             return null;
@@ -398,6 +407,11 @@ public class MedicalController extends Controller {
         List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
         TabFieldItem tabFieldItem;
         int index = 6;
+        if (tabFieldMultiMap.getChiefComplaintList().size() > 0){
+
+        }
+
+
 
         List<String> availableChiefComplaints = tabFieldMultiMap.getChiefComplaintList();
 

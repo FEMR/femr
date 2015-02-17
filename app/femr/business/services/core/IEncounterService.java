@@ -65,13 +65,22 @@ public interface IEncounterService {
     /**
      * Adds tab field items to the PatientEncounterTabField table
      *
-     * @param tabFieldsWithValue key is name of tab field, value is value of that tab field
-     * @param chiefComplaint the chief complaint the tab field belongs to
+     * @param tabFieldMultiMap tab field multimap with value as a string (field value)
      * @param encounterId   id of the current encounter
      * @param userId        id of the user saving the fields
      * @return updated list of items
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId);
+
+    /**
+     * Create all problems
+     *
+     * @param problemValues each problem
+     * @param encounterId id of the current encounter
+     * @param userId id of the user saving the problems
+     * @return updated problems
+     */
+    ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId);
 
     /**
      * Find all problems

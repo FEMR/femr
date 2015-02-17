@@ -219,12 +219,44 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
+    public ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId) {
+
+        ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();
+
+        //get the current tab field item
+        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
+                .where()
+                .eq("name", "problem");
+
+        try {
+
+            ITabField tabField = tabFieldRepository.findOne(query);
+            List<IPatientEncounterTabField> patientEncounterTabFields = new ArrayList<>();
+            for (String problemval : problemValues) {
+
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, problemval, encounterId);
+                patientEncounterTabFields.add(patientEncounterTabField);
+            }
+            patientEncounterTabFieldRepository.createAll(patientEncounterTabFields);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId) {
 
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
-        if (tabFieldMultiMap.getSize() < 1) {
+        if (tabFieldMultiMap == null) {
 
-            response.addError("", "no data to save");
+            response.addError("", "tabfieldmap was null");
             return response;
         }
 
@@ -244,8 +276,8 @@ public class EncounterService implements IEncounterService {
                     break;
                 } else if (mk.getKey(2) == null) {
                     //key 2 = chief complaint, string
-                }else{
-                    chiefComplaint = (String)mk.getKey(2);
+                } else {
+                    chiefComplaint = (String) mk.getKey(2);
                 }
 
                 //get the current tab field item

@@ -96,8 +96,4 @@ public abstract class AbstractMultiMap {
         return StringUtils.FormatDateTime(dateList.get(i));
     }
 
-    public boolean containsKey(String key) {
-        return map.containsKey(key);
-    }
-
 }

@@ -20,6 +20,8 @@ package femr.util.DataStructure.Mapping;
 
 import femr.common.models.TabFieldItem;
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.collections.MapIterator;
+import org.apache.commons.collections.keyvalue.MultiKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +43,19 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
      */
     public void put(String tabFieldName, String date, String chiefComplaint, Object value) {
-        map.put(tabFieldName, date, chiefComplaint, value);
-        // check if the dated is already in the dateList if so don't add it
-        if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
-            dateList.add(date);
-        }
-        if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
-            chiefComplaintList.add(chiefComplaint);
-        }
+        //TODO: enforce a type for value
+      //  if (!(value instanceof TabFieldItem)){
+            //don't insert that shit
+        //}else{
+            map.put(tabFieldName, date, chiefComplaint, value);
+            // check if the dated is already in the dateList if so don't add it
+            if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
+                dateList.add(date);
+            }
+            if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                chiefComplaintList.add(chiefComplaint);
+            }
+        //}
     }
 
     /**
@@ -79,7 +86,6 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @return the tab field with or without a value or null if it doesn't exist
      */
     public TabFieldItem getMostRecentOrEmpty(String tabFieldName, String chiefComplaint) {
-        //TODO: this needs to take into consideration that sometimes you will have a null date when the tab is empty
         List<String> dateList = this.getDateList();
 
         TabFieldItem tabFieldItem = null;
@@ -116,6 +122,54 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     public List<String> getChiefComplaintList() {
 
         return chiefComplaintList;
+    }
+
+    /**
+     * Checks to see if the map contains any values for a tab field
+     *
+     * @param name name of the field
+     * @return true if the field has an entry, false otherwise
+     */
+    public boolean containsTabField(String name) {
+
+        MapIterator multiMapIterator = this.getMultiMapIterator();
+        while (multiMapIterator.hasNext()) {
+
+            multiMapIterator.next();
+            MultiKey mk = (MultiKey) multiMapIterator.getKey();
+            if (mk.getKey(0) != null) {
+
+                if (name.equals(mk.getKey(0))) {
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if the map contains any values for a tab field
+     *
+     * @param name name of the field
+     * @return true if the field has an entry, false otherwise
+     */
+    public boolean containsTabField(String name, String chiefComplaint) {
+
+        MapIterator multiMapIterator = this.getMultiMapIterator();
+        while (multiMapIterator.hasNext()) {
+
+            multiMapIterator.next();
+            MultiKey mk = (MultiKey) multiMapIterator.getKey();
+            if (mk.getKey(0) != null && mk.getKey(2) != null) {
+
+                if (name.equals(mk.getKey(0)) && chiefComplaint.equals(mk.getKey(2))) {
+
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

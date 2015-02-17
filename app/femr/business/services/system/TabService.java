@@ -606,11 +606,11 @@ public class TabService implements ITabService {
                 if (petf.getTabField().getTab().getName().equals("HPI")) {
 
                     if (chiefComplaints != null && chiefComplaints.size() > 0) {
-                        for (IChiefComplaint cc : chiefComplaints) {
+                        //for (IChiefComplaint cc : chiefComplaints) {
 
 //                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), petf.getTabFieldValue());
-                            tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint));
-                        }
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint));
+                        //}
                     } else {
                         tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null));
                     }
@@ -628,22 +628,22 @@ public class TabService implements ITabService {
                 String tabFieldSize = null;
                 if (tf.getTabFieldSize() != null)
                     tabFieldSize = tf.getTabFieldSize().getName();
-                //make sure the tab field wasn't already inserted with a value in the previous for loop
-                if (!tabFieldMultiMap.containsKey(tf.getName())) {
-                    //hpi gets special treatment for each chief complaint
-                    if (tf.getTab().getName().equals("HPI")) {
 
-                        if (chiefComplaints != null && chiefComplaints.size() > 0) {
-                            for (IChiefComplaint cc : chiefComplaints) {
+                //hpi gets special treatment for each chief complaint
+                if (tf.getTab().getName().equals("HPI")) {
 
+                    if (chiefComplaints != null && chiefComplaints.size() > 0) {
+                        for (IChiefComplaint cc : chiefComplaints) {
+                            if (!tabFieldMultiMap.containsTabField(tf.getName(), cc.getValue())) {
                                 tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
                             }
-                        } else {
-                            tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
                         }
-
                     } else {
+                        tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
+                    }
 
+                } else {
+                    if (!tabFieldMultiMap.containsTabField(tf.getName())) {
                         tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
                     }
                 }

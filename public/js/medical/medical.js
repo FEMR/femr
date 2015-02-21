@@ -108,72 +108,6 @@ var multipleChiefComplaintFeature = {
         } else {
             return false;
         }
-    },
-    JSONifyHpiFields: function () {
-        var hpiStuff = {};
-
-        $(".hpiWraps").each(function (index) {
-
-            var hpiFields = [];
-            var hpiField = {};
-            hpiField["name"] = "onset";
-            hpiField["value"] = $(this).find("[name=onset]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "quality";
-            hpiField["value"] = $(this).find("[name=quality]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "radiation";
-            hpiField["value"] = $(this).find("[name=radiation]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "severity";
-            hpiField["value"] = $(this).find("[name=severity]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "provokes";
-            hpiField["value"] = $(this).find("[name=provokes]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "palliates";
-            hpiField["value"] = $(this).find("[name=palliates]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "timeOfDay";
-            hpiField["value"] = $(this).find("[name=timeOfDay]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "narrative";
-            hpiField["value"] = $(this).find("[name=narrative]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "physicalExamination";
-            hpiField["value"] = $(this).find("[name=physicalExamination]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-
-            hpiStuff[$($('.chiefComplaintText span').get(index)).text()] = hpiFields;
-        });
-        var stringifiedHpiFields = JSON.stringify(hpiStuff);
-        $("input[name=multipleHpiJSON]").val(stringifiedHpiFields);
     }
 };
 
@@ -274,9 +208,6 @@ $(document).ready(function () {
 
     $('#medicalSubmitBtn').click(function () {
         JSONifyDynamicFields();
-        if (multipleChiefComplaintFeature.numberOfChiefComplaints > 1) {
-            multipleChiefComplaintFeature.JSONifyHpiFields();
-        }
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 

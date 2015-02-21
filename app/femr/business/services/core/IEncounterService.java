@@ -63,14 +63,14 @@ public interface IEncounterService {
     ServiceResponse<UserItem> getPhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * Adds tab field items to the PatientEncounterTabField table
+     * Gives values to a bunch of fields
      *
-     * @param tabFieldMultiMap tab field multimap with value as a string (field value)
-     * @param encounterId   id of the current encounter
-     * @param userId        id of the user saving the fields
+     * @param tabFieldItems the fields, required attributes:<ul><li>name</li><li>value</li></ul>
+     * @param encounterId id of the current encounter
+     * @param userId id of the user saving the fields
      * @return updated list of items
      */
-    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId);
+    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
 
     /**
      * Create all problems

@@ -231,20 +231,37 @@ public class MedicalController extends Controller {
         //get problems
         List<String> problemList = new ArrayList<>();
         for (ProblemItem pi : viewModelPost.getProblems()) {
-            if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
+
+            if (StringUtils.isNotNullOrWhiteSpace(pi.getName())) {
+
                 problemList.add(pi.getName());
+            }
+
         }
         //save problems
-        if (problemList.size() > 0)
+        if (problemList.size() > 0){
+
             encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
+        }
 
-        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
-        String date = dateUtils.getCurrentDateTimeString();
 
+
+        //String date = dateUtils.getCurrentDateTimeString();
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //get non-custom tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
+
             if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
-                tabFieldMultiMap.put(tfi.getName(), date, tfi.getChiefComplaint(), tfi.getValue());
+
+                tabFieldItems.add(tfi);
+        }
+        if (tabFieldItems.size() > 0){
+
+            ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
+            if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {
+
+                throw new RuntimeException();
+            }
         }
 
 
@@ -261,16 +278,6 @@ public class MedicalController extends Controller {
         } */
         //save dat sheeeit, mayne
         //if (tabFieldsWithValue.size() > 0) {
-
-        /*
-        if (tabFieldMultiMap.getSize() > 0) {
-
-            ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldMultiMap, patientEncounterItem.getId(), currentUserSession.getId());
-            if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {
-
-                throw new RuntimeException();
-            }
-        } */
 
 
         //create patient encounter photos

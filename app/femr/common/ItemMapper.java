@@ -312,13 +312,17 @@ public class ItemMapper {
      * @param size        the size of the field e.g. small, med, large
      * @param order       sorting order for the field
      * @param placeholder placeholder text for the field
+     * @param value       current value of the field
+     * @param chiefComplaint what chief complaint the field belongs to
      * @return a new TabFieldItem or null if name is empty
      */
     public static TabFieldItem createTabFieldItem(String name,
                                                   String type,
                                                   String size,
                                                   Integer order,
-                                                  String placeholder) {
+                                                  String placeholder,
+                                                  String value,
+                                                  String chiefComplaint) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -335,47 +339,8 @@ public class ItemMapper {
             tabFieldItem.setSize(size);
         if (StringUtils.isNotNullOrWhiteSpace(type))
             tabFieldItem.setType(type);
-
-        return tabFieldItem;
-    }
-
-    /**
-     * Create a new tab field item
-     *
-     * @param name           the name of the field
-     * @param type           the fields type e.g. number, text
-     * @param size           the size of the field e.g. small, med, large
-     * @param order          sorting order for the field
-     * @param placeholder    placeholder text for the field
-     * @param value          current value of the field
-     * @param chiefComplaint what chief complaint the field belongs to(mostly used for hpi)
-     * @return a new TabFieldItem or null if name/value are empty
-     */
-    public static TabFieldItem createTabFieldItem(String name,
-                                                  String type,
-                                                  String size,
-                                                  Integer order,
-                                                  String placeholder,
-                                                  String value,
-                                                  String chiefComplaint) {
-
-        if (StringUtils.isNullOrWhiteSpace(name) ||
-                StringUtils.isNullOrWhiteSpace(value)) {
-
-            return null;
-        }
-
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setName(name);
-        tabFieldItem.setValue(value);
-        if (StringUtils.isNotNullOrWhiteSpace(placeholder))
-            tabFieldItem.setPlaceholder(placeholder);
-        if (order != null)
-            tabFieldItem.setOrder(order);
-        if (StringUtils.isNotNullOrWhiteSpace(size))
-            tabFieldItem.setSize(size);
-        if (StringUtils.isNotNullOrWhiteSpace(type))
-            tabFieldItem.setType(type);
+        if (StringUtils.isNotNullOrWhiteSpace(value))
+            tabFieldItem.setValue(value);
         if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint))
             tabFieldItem.setChiefComplaint(chiefComplaint);
 

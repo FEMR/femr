@@ -225,10 +225,7 @@ public class MedicalController extends Controller {
         PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
 
-
-        //create patient encounter tab fields
-
-        //get problems
+        //get and save problems
         List<String> problemList = new ArrayList<>();
         for (ProblemItem pi : viewModelPost.getProblems()) {
 
@@ -238,15 +235,12 @@ public class MedicalController extends Controller {
             }
 
         }
-        //save problems
         if (problemList.size() > 0){
 
             encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
         }
 
-
-
-        //String date = dateUtils.getCurrentDateTimeString();
+        //get and save tab fields
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //get non-custom tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {

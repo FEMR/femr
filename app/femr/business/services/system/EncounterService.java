@@ -32,6 +32,7 @@ import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.keyvalue.MultiKey;
@@ -108,10 +109,14 @@ public class EncounterService implements IEncounterService {
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
 
             List<IChiefComplaint> chiefComplaints = new ArrayList<>();
+            Integer chiefComplaintSortOrder = 0;
             for (String cc : patientEncounterItem.getChiefComplaints()) {
-                chiefComplaints.add(domainMapper.createChiefComplaint(cc, newPatientEncounter.getId()));
+
+                chiefComplaints.add(domainMapper.createChiefComplaint(cc, newPatientEncounter.getId(), chiefComplaintSortOrder));
+                chiefComplaintSortOrder++;
             }
             if (chiefComplaints.size() > 0) {
+
                 chiefComplaintRepository.createAll(chiefComplaints);
             }
 
@@ -232,9 +237,10 @@ public class EncounterService implements IEncounterService {
 
             ITabField tabField = tabFieldRepository.findOne(query);
             List<IPatientEncounterTabField> patientEncounterTabFields = new ArrayList<>();
+            DateTime dateTaken = dateUtils.getCurrentDateTime();
             for (String problemval : problemValues) {
 
-                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, problemval, encounterId);
+                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField.getId(), userId, problemval, encounterId, dateTaken, null);
                 patientEncounterTabFields.add(patientEncounterTabField);
             }
             patientEncounterTabFieldRepository.createAll(patientEncounterTabFields);
@@ -260,6 +266,86 @@ public class EncounterService implements IEncounterService {
             return response;
         }
 
+        try {
+
+            ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId);
+
+            //the response object
+            List<TabFieldItem> tabFieldItemsForResponse = new ArrayList<>();
+            //the fields that will be saved
+            List<IPatientEncounterTabField> patientEncounterTabFieldsForSaving = new ArrayList<>();
+            //marking a date for each field
+            DateTime dateTaken = dateUtils.getCurrentDateTime();
+            //get all tab fields to find reference IDs
+            List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
+            //get all chief complaints for an encounter to find reference IDs
+            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+            //foreign key IDs for patientEncounterTabField referencing
+            Integer tabFieldId = null;
+            Integer chiefComplaintId = null;
+
+            for (TabFieldItem tfi : tabFieldItems) {
+
+                if (StringUtils.isNotNullOrWhiteSpace(tfi.getName()) || StringUtils.isNotNullOrWhiteSpace(tfi.getValue())) {
+
+                    //find reference ID for tabfield
+                    for (ITabField tf : tabFields) {
+
+                        if (tfi.getName().equals(tf.getName())) {
+
+                            tabFieldId = tf.getId();
+                            break;
+                        }
+                    }
+                    //find reference ID for chief complaint
+                    for (IChiefComplaint cc : chiefComplaints) {
+
+                        if (tfi.getChiefComplaint() != null && tfi.getChiefComplaint().equals(cc.getValue())) {
+
+                            chiefComplaintId = cc.getId();
+                            break;
+                        }
+                    }
+
+                    if (tabFieldId != null) {
+
+                        patientEncounterTabFieldsForSaving.add(domainMapper.createPatientEncounterTabField(tabFieldId, userId, tfi.getValue(), encounterId, dateTaken, chiefComplaintId));
+                    } else {
+
+                        response.addError("name", "one of the tabfields had an invalid name");
+                    }
+                }
+            }
+
+            //SAVE EM
+            List<? extends IPatientEncounterTabField> savedPatientEncounterTabFields = patientEncounterTabFieldRepository.createAll(patientEncounterTabFieldsForSaving);
+            //RETURN EM
+            String chiefComplaint = null;
+            String size = null;
+            for (IPatientEncounterTabField petf : savedPatientEncounterTabFields){
+
+                if (petf.getChiefComplaint() != null)
+                    chiefComplaint = petf.getChiefComplaint().getValue();
+                if (petf.getTabField().getTabFieldSize() != null)
+                    size = petf.getTabField().getTabFieldSize().getName();
+
+                tabFieldItemsForResponse.add(ItemMapper.createTabFieldItem(
+                        petf.getTabField().getName(),
+                        petf.getTabField().getTabFieldType().getName(),
+                        size,
+                        petf.getTabField().getOrder(),
+                        petf.getTabField().getPlaceholder(),
+                        petf.getTabFieldValue(),
+                        chiefComplaint
+                        )
+                );
+            }
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
 
 
         return response;

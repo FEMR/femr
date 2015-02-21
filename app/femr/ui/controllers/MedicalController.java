@@ -249,7 +249,18 @@ public class MedicalController extends Controller {
 
 
 
-
+        /*
+        //get custom tab fields
+        Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
+        }.getType());
+        for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
+            for (JCustomField jcf : entry.getValue()) {
+                if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
+                    tabFieldMultiMap.put(jcf.getName(), date, "", jcf.getValue());
+            }
+        } */
+        //save dat sheeeit, mayne
+        //if (tabFieldsWithValue.size() > 0) {
 
         /*
         if (tabFieldMultiMap.getSize() > 0) {
@@ -277,17 +288,6 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
-
-
-        /*
-        //multiple chief complaints
-        if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getMultipleHpiJSON())) {
-            //iterate over all values, adding them to the list with the respective chief complaint
-            //nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(viewModelPost.getMultipleHpiJSON()));
-
-        } else {//one or less chief complaints
-            //nonCustomFieldItems.addAll(mapHpiFieldItems(viewModelPost));
-        } */
 
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";

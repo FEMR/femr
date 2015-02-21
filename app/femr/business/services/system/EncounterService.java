@@ -251,82 +251,16 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(TabFieldMultiMap tabFieldMultiMap, int encounterId, int userId) {
+    public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
 
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
-        if (tabFieldMultiMap == null) {
+        if (tabFieldItems == null) {
 
-            response.addError("", "tabfieldmap was null");
+            response.addError("", "don't send null lists wtf");
             return response;
         }
 
-        //list of values to insert into database
-        List<IPatientEncounterTabField> tabFields = new ArrayList<>();
-        try {
-            MapIterator multiMapIterator = tabFieldMultiMap.getMultiMapIterator();
-            while (multiMapIterator.hasNext()) {
-                multiMapIterator.next();
-                MultiKey mk = (MultiKey) multiMapIterator.getKey();
-                String chiefComplaint = "";
 
-                if (mk.getKey(0) == null || mk.getKey(1) == null) {
-                    //key 0 = field name, string
-                    //key 1 = date, string
-                    response.addError("", "stop using null keys, use a blank string");
-                    break;
-                } else if (mk.getKey(2) == null) {
-                    //key 2 = chief complaint, string
-                } else {
-                    chiefComplaint = (String) mk.getKey(2);
-                }
-
-                //get the current tab field item
-                ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
-                        .where()
-                        .eq("name", mk.getKey(0).toString());
-                ITabField tabField = tabFieldRepository.findOne(query);
-
-                //create a patientEncounterTabField for saving
-                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField, userId, multiMapIterator.getValue().toString(), encounterId);
-                if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
-                    ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
-                            .where()
-                            .eq("value", chiefComplaint)
-                            .eq("patient_encounter_id", encounterId);
-                    IChiefComplaint chiefComplaintData = chiefComplaintRepository.findOne(chiefComplaintExpressionList);
-                    if (chiefComplaintData != null) {
-                        patientEncounterTabField.setChiefComplaint(chiefComplaintData);
-                    }
-                }
-
-
-                //check to see if the tab field item already exists (updating will result in a duplicate)
-                ExpressionList<PatientEncounterTabField> query2 = QueryProvider.getPatientEncounterTabFieldQuery()
-                        .where()
-                        .eq("tabField", tabField)
-                        .eq("patient_encounter_id", encounterId)
-                        .eq("tab_field_value", multiMapIterator.getValue().toString());
-                List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(query2);
-                if (patientEncounterTabFields != null && patientEncounterTabFields.size() > 0) {
-                    //already exists - field wasn't changed
-                } else {
-                    tabFields.add(patientEncounterTabField);
-                }
-            }
-
-            if (tabFields.size() > 0) {
-                List<? extends IPatientEncounterTabField> savedTabFields = patientEncounterTabFieldRepository.createAll(tabFields);
-                List<TabFieldItem> tabFieldItemsToReturn = new ArrayList<>();
-                for (IPatientEncounterTabField petf : savedTabFields) {
-                    tabFieldItemsToReturn.add(DomainMapper.createTabFieldItem(petf));
-                }
-                response.setResponseObject(tabFieldItemsToReturn);
-            }
-
-
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
 
         return response;
 

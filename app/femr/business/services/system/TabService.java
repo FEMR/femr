@@ -606,12 +606,10 @@ public class TabService implements ITabService {
                 if (petf.getTabField().getTab().getName().equals("HPI")) {
 
                     if (chiefComplaints != null && chiefComplaints.size() > 0) {
-                        //for (IChiefComplaint cc : chiefComplaints) {
 
-//                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), cc.getValue(), petf.getTabFieldValue());
                         tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint));
-                        //}
                     } else {
+
                         tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, ItemMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null));
                     }
                 } else {
@@ -635,16 +633,16 @@ public class TabService implements ITabService {
                     if (chiefComplaints != null && chiefComplaints.size() > 0) {
                         for (IChiefComplaint cc : chiefComplaints) {
                             if (!tabFieldMultiMap.containsTabField(tf.getName(), cc.getValue())) {
-                                tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
+                                tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null));
                             }
                         }
                     } else {
-                        tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
+                        tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null));
                     }
 
                 } else {
                     if (!tabFieldMultiMap.containsTabField(tf.getName())) {
-                        tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder()));
+                        tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null));
                     }
                 }
             }

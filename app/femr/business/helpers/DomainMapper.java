@@ -141,7 +141,7 @@ public class DomainMapper {
         if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
         else tabFieldItem.setIsCustom(true);
         //if (patientEncounterTabField.getChiefComplaint() != null)
-          //  tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
+        //  tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
 
         return tabFieldItem;
     }
@@ -514,13 +514,18 @@ public class DomainMapper {
         return patientEncounter;
     }
 
-    public IChiefComplaint createChiefComplaint(String value, int patientEncounterId) {
+    public IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder) {
+
         if (StringUtils.isNullOrWhiteSpace(value)) {
+
             return null;
         }
+
         IChiefComplaint chiefComplaint = chiefComplaintProvider.get();
         chiefComplaint.setValue(value);
         chiefComplaint.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), patientEncounterId));
+        chiefComplaint.setSortOrder(sortOrder);
+
         return chiefComplaint;
     }
 
@@ -580,26 +585,30 @@ public class DomainMapper {
     }
 
 
-
     /**
      * Creates a new patientEncounterTabField
      *
-     * @param tabField    DAO tabfield
+     * @param tabFieldId  id of the tab field
      * @param userId      id of the user filling out the value
      * @param value       value of the field
      * @param encounterId encounter id of the visit
      * @return a new patient encounter tab field!!
      */
-    public IPatientEncounterTabField createPatientEncounterTabField(ITabField tabField, int userId, String value, int encounterId) {
-        if (tabField == null || StringUtils.isNullOrWhiteSpace(value)) {
+    public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId) {
+
+        if (StringUtils.isNullOrWhiteSpace(value)) {
+
             return null;
         }
+
         IPatientEncounterTabField patientEncounterTabField = patientEncounterTabFieldProvider.get();
-        patientEncounterTabField.setDateTaken(dateUtils.getCurrentDateTime());
+        patientEncounterTabField.setDateTaken(dateTaken);
         patientEncounterTabField.setUserId(userId);
         patientEncounterTabField.setPatientEncounterId(encounterId);
-        patientEncounterTabField.setTabField(tabField);
+        patientEncounterTabField.setTabField(Ebean.getReference(tabFieldProvider.get().getClass(), tabFieldId));
         patientEncounterTabField.setTabFieldValue(value);
+        if (chiefComplaintId != null)
+            patientEncounterTabField.setChiefComplaint(Ebean.getReference(chiefComplaintProvider.get().getClass(), chiefComplaintId));
         return patientEncounterTabField;
     }
 

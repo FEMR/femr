@@ -44,7 +44,6 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     /**
      * Puts a value into the map and associates the name, date, and chief complaint
      * as the two keys to the value.
-     * For the love of all things holy, use empty strings for keys instead of null.
      *
      * @param fieldName      The name of the tab field, can not be null
      * @param date           The date the tab field was taken, can be null if empty field
@@ -52,21 +51,20 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
      */
     public void put(String fieldName, String date, String chiefComplaint, Object value) {
-        if (StringUtils.isNullOrWhiteSpace(fieldName))
-            return;
-        //TODO: enforce a type for value
-        //  if (!(value instanceof TabFieldItem)){
-        //don't insert that shit
-        //}else{
-        map.put(fieldName, date, chiefComplaint, value);
-        // check if the dated is already in the dateList if so don't add it
-        if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
-            dateList.add(date);
+
+        if (!(value instanceof TabFieldItem) || StringUtils.isNullOrWhiteSpace(fieldName)) {
+            //don't do a gd thing
+        } else {
+
+            map.put(fieldName, date, chiefComplaint, value);
+            // check if the dated is already in the dateList if so don't add it
+            if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
+                dateList.add(date);
+            }
+            if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                chiefComplaintList.add(chiefComplaint);
+            }
         }
-        if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
-            chiefComplaintList.add(chiefComplaint);
-        }
-        //}
     }
 
     /**

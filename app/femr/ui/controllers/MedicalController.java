@@ -1,17 +1,16 @@
 package femr.ui.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.mysql.Roles;
+import femr.data.models.mysql.TabField;
+import femr.ui.controllers.helpers.FieldHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.medical.*;
-import femr.ui.models.medical.json.JCustomField;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.newVitals;
@@ -20,6 +19,7 @@ import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.collections.MapIterator;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -70,6 +70,7 @@ public class MedicalController extends Controller {
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
         if (idQueryStringResponse.hasErrors()) {
+
             return ok(index.render(currentUserSession, idQueryStringResponse.getErrors().get(""), 0));
         }
         Integer patientId = idQueryStringResponse.getResponseObject();
@@ -77,21 +78,26 @@ public class MedicalController extends Controller {
         //get the patient's encounter
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
+
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
         //check for encounter closed
         if (patientEncounterItem.getIsClosed()) {
+
             return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
         }
 
         //check if the doc has already seen the patient today
         ServiceResponse<UserItem> userItemServiceResponse = encounterService.getPhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
         if (userItemServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         } else {
+
             if (userItemServiceResponse.getResponseObject() != null) {
+
                 return ok(index.render(currentUserSession, "That patient has already been seen today. Would you like to edit their encounter?", patientId));
             }
         }
@@ -109,6 +115,7 @@ public class MedicalController extends Controller {
         PatientEncounterItem patientEncounter;
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
         patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
@@ -116,12 +123,14 @@ public class MedicalController extends Controller {
 
         //verify encounter is still open
         if (patientEncounter.getIsClosed()) {
+
             return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
         }
 
         //get patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
@@ -129,6 +138,7 @@ public class MedicalController extends Controller {
         //get prescriptions
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounter.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
         viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
@@ -136,6 +146,7 @@ public class MedicalController extends Controller {
         //get problems
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounter.getId());
         if (problemItemServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
         viewModelGet.setProblemItems(problemItemServiceResponse.getResponseObject());
@@ -143,12 +154,13 @@ public class MedicalController extends Controller {
         //get vitals
         ServiceResponse<VitalMultiMap> vitalMapResponse = vitalService.findVitalMultiMap(patientEncounter.getId());
         if (vitalMapResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
 
         //get all fields and their values
         ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.findTabFieldMultiMap(patientEncounter.getId());
-        if (tabFieldMultiMapResponse.hasErrors()){
+        if (tabFieldMultiMapResponse.hasErrors()) {
 
             throw new RuntimeException();
         }
@@ -161,25 +173,29 @@ public class MedicalController extends Controller {
         List<TabItem> tabItems = tabItemServiceResponse.getResponseObject();
         //match the fields to their respective tabs
         for (TabItem tabItem : tabItems) {
-            switch (tabItem.getName().toLowerCase()){
+
+            switch (tabItem.getName().toLowerCase()) {
                 case "hpi":
-                    tabItem.setFields(structureHPIFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(FieldHelper.structureHPIFieldsForView(tabFieldMultiMap));
                     break;
                 case "pmh":
-                    tabItem.setFields(structurePMHFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(FieldHelper.structurePMHFieldsForView(tabFieldMultiMap));
                     break;
                 case "treatment":
-                    tabItem.setFields(structureTreatmentFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(FieldHelper.structureTreatmentFieldsForView(tabFieldMultiMap));
                     break;
             }
         }
+        tabItems = FieldHelper.applyIndicesToFieldsForView(tabItems);
         viewModelGet.setTabItems(tabItems);
         viewModelGet.setChiefComplaints(tabFieldMultiMap.getChiefComplaintList());
 
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {
+
             throw new RuntimeException();
         } else {
+
             viewModelGet.setPhotos(photoListResponse.getResponseObject());
         }
 
@@ -233,18 +249,9 @@ public class MedicalController extends Controller {
 
 
 
+
+
         /*
-        //get custom tab fields
-        Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
-        }.getType());
-        for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
-            for (JCustomField jcf : entry.getValue()) {
-                if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
-                    tabFieldMultiMap.put(jcf.getName(), date, "", jcf.getValue());
-            }
-        } */
-        //save dat sheeeit, mayne
-        //if (tabFieldsWithValue.size() > 0) {
         if (tabFieldMultiMap.getSize() > 0) {
 
             ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldMultiMap, patientEncounterItem.getId(), currentUserSession.getId());
@@ -252,7 +259,7 @@ public class MedicalController extends Controller {
 
                 throw new RuntimeException();
             }
-        }
+        } */
 
 
         //create patient encounter photos
@@ -395,142 +402,4 @@ public class MedicalController extends Controller {
         }
         return tabFieldItems;
     }     */
-
-    private Map<String, List<TabFieldItem>> structureHPIFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
-        //TODO: tabfieldmultimap is right, there's a problem in this method   with duplicating chief complaint values
-        if (tabFieldMultiMap == null) {
-
-            return null;
-        }
-
-        Map<String, List<TabFieldItem>> chiefComplaintFieldMap = new HashMap<>();
-        List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
-        TabFieldItem tabFieldItem;
-        int index = 6;
-        if (tabFieldMultiMap.getChiefComplaintList().size() > 0){
-
-        }
-
-
-
-        List<String> availableChiefComplaints = tabFieldMultiMap.getChiefComplaintList();
-
-        //get HPI fields
-        if (availableChiefComplaints.size() > 0) {
-
-            for (String chiefComplaint : availableChiefComplaints) {
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("onset", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("radiation", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("quality", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("severity", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("provokes", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("palliates", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("narrative", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", chiefComplaint);
-                tabFieldItem.setIndex(index++);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                chiefComplaintFieldMap.put(chiefComplaint, tabFieldItemsForChiefComplaint);
-            }
-        } else {
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("onset", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("radiation", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("quality", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("severity", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("provokes", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("palliates", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("narrative", null);
-            tabFieldItem.setIndex(index++);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", null);
-            tabFieldItem.setIndex(index);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
-        }
-
-
-        return chiefComplaintFieldMap;
-    }
-
-    private Map<String, List<TabFieldItem>> structurePMHFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
-
-        if (tabFieldMultiMap == null) {
-
-            return null;
-        }
-
-        Map<String, List<TabFieldItem>> chiefComplaintFieldMap = new HashMap<>();
-        List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
-        TabFieldItem tabFieldItem;
-
-        //get non HPI fields
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("medicalSurgicalHistory", null);
-        tabFieldItem.setIndex(2);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("socialHistory", null);
-        tabFieldItem.setIndex(3);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("currentMedication", null);
-        tabFieldItem.setIndex(4);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("familyHistory", null);
-        tabFieldItem.setIndex(5);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
-
-        return chiefComplaintFieldMap;
-    }
-
-    private Map<String, List<TabFieldItem>> structureTreatmentFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
-
-        if (tabFieldMultiMap == null) {
-
-            return null;
-        }
-
-        Map<String, List<TabFieldItem>> chiefComplaintFieldMap = new HashMap<>();
-        List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
-        TabFieldItem tabFieldItem;
-
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("assessment", null);
-        tabFieldItem.setIndex(0);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("treatment", null);
-        tabFieldItem.setIndex(1);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
-
-        return chiefComplaintFieldMap;
-    }
 }

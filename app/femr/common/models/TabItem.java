@@ -18,10 +18,6 @@
 */
 package femr.common.models;
 
-import femr.data.models.mysql.ChiefComplaint;
-import femr.util.DataStructure.Mapping.TabFieldMultiMap;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

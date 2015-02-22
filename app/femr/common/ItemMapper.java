@@ -322,7 +322,8 @@ public class ItemMapper {
                                                   Integer order,
                                                   String placeholder,
                                                   String value,
-                                                  String chiefComplaint) {
+                                                  String chiefComplaint,
+                                                  boolean isCustom) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -343,6 +344,7 @@ public class ItemMapper {
             tabFieldItem.setValue(value);
         if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint))
             tabFieldItem.setChiefComplaint(chiefComplaint);
+        tabFieldItem.setIsCustom(isCustom);
 
         return tabFieldItem;
     }

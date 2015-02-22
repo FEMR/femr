@@ -324,21 +324,23 @@ public class EncounterService implements IEncounterService {
             //RETURN EM
             String chiefComplaint = null;
             String size = null;
-            for (IPatientEncounterTabField petf : savedPatientEncounterTabFields){
-
+            boolean isCustom;
+            for (IPatientEncounterTabField petf : savedPatientEncounterTabFields) {
+                isCustom = petf.getTabField().getTab().getIsCustom();
                 if (petf.getChiefComplaint() != null)
                     chiefComplaint = petf.getChiefComplaint().getValue();
                 if (petf.getTabField().getTabFieldSize() != null)
                     size = petf.getTabField().getTabFieldSize().getName();
 
                 tabFieldItemsForResponse.add(ItemMapper.createTabFieldItem(
-                        petf.getTabField().getName(),
-                        petf.getTabField().getTabFieldType().getName(),
-                        size,
-                        petf.getTabField().getOrder(),
-                        petf.getTabField().getPlaceholder(),
-                        petf.getTabFieldValue(),
-                        chiefComplaint
+                                petf.getTabField().getName(),
+                                petf.getTabField().getTabFieldType().getName(),
+                                size,
+                                petf.getTabField().getOrder(),
+                                petf.getTabField().getPlaceholder(),
+                                petf.getTabFieldValue(),
+                                chiefComplaint,
+                                isCustom
                         )
                 );
             }

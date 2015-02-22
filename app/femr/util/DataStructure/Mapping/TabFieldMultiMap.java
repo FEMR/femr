@@ -38,8 +38,12 @@ import java.util.*;
  */
 public class TabFieldMultiMap extends AbstractMultiMap {
 
+    //a list of all chief complaints available in the multimap - not in any order
     private final List<String> chiefComplaintList = new ArrayList<>();
+    //keeps track of an order for the chief complaints
     private final Map<Integer, String> chiefComplaintListOrderMap = new TreeMap<>();
+    //tracks the names of custom fields that have been added by a superuser
+    private final List<String> customFieldNames = new ArrayList<>();
 
     /**
      * Puts a value into the map and associates the name, date, and chief complaint
@@ -55,7 +59,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         if (!(value instanceof TabFieldItem) || StringUtils.isNullOrWhiteSpace(fieldName)) {
             //don't do a gd thing
         } else {
-
+            TabFieldItem tabFieldItem = (TabFieldItem)value;
             map.put(fieldName, date, chiefComplaint, value);
             // check if the dated is already in the dateList if so don't add it
             if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
@@ -63,6 +67,9 @@ public class TabFieldMultiMap extends AbstractMultiMap {
             }
             if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
                 chiefComplaintList.add(chiefComplaint);
+            }
+            if (tabFieldItem.getIsCustom() != null && tabFieldItem.getIsCustom() && !customFieldNames.contains(tabFieldItem.getName())){
+                customFieldNames.add(tabFieldItem.getName());
             }
         }
     }
@@ -162,6 +169,16 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         }
 
         return orderedChiefComplaints;
+    }
+
+    /**
+     * Returns a list of available custom fields
+     *
+     * @return all strings, yo
+     */
+    public List<String> getCustomFieldNameList(){
+
+        return customFieldNames;
     }
 
     /**

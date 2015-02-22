@@ -62,6 +62,31 @@ public class FieldHelper {
     }
 
     //READ THE METHOD NAME LOL
+    public static Map<String, List<TabFieldItem>> structureDynamicFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
+
+        if (tabFieldMultiMap == null) {
+
+            return null;
+        }
+
+        Map<String, List<TabFieldItem>> chiefComplaintFieldMap = new HashMap<>();
+        List<String> customFields = tabFieldMultiMap.getCustomFieldNameList();
+        List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
+        TabFieldItem tabFieldItem;
+
+        for (String customField : customFields) {
+
+            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty(customField, null);
+            tabFieldItemsForChiefComplaint.add(tabFieldItem);
+        }
+
+        chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
+
+
+        return chiefComplaintFieldMap;
+    }
+
+    //READ THE METHOD NAME LOL
     public static Map<String, List<TabFieldItem>> structureHPIFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
 
         if (tabFieldMultiMap == null) {
@@ -126,9 +151,9 @@ public class FieldHelper {
         return chiefComplaintFieldMap;
     }
 
-    public static List<TabItem> applyIndicesToFieldsForView(List<TabItem> tabItems){
+    public static List<TabItem> applyIndicesToFieldsForView(List<TabItem> tabItems) {
 
-        if (tabItems == null){
+        if (tabItems == null) {
 
             return null;
         }
@@ -136,12 +161,12 @@ public class FieldHelper {
         int index = 0;
         List<TabFieldItem> tabFieldItems;
         //iterate over the map, assigning indices to each field
-        for (TabItem tabItem : tabItems){
+        for (TabItem tabItem : tabItems) {
 
-            for (String key : tabItem.getFields().keySet()){
+            for (String key : tabItem.getFields().keySet()) {
 
-                 tabFieldItems = tabItem.getFields().get(key);
-                for (TabFieldItem tfi : tabFieldItems){
+                tabFieldItems = tabItem.getFields().get(key);
+                for (TabFieldItem tfi : tabFieldItems) {
 
                     tfi.setIndex(index++);
                 }

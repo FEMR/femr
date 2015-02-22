@@ -184,6 +184,9 @@ public class MedicalController extends Controller {
                 case "treatment":
                     tabItem.setFields(FieldHelper.structureTreatmentFieldsForView(tabFieldMultiMap));
                     break;
+                default:
+                    tabItem.setFields(FieldHelper.structureDynamicFieldsForView(tabFieldMultiMap));
+                    break;
             }
         }
         tabItems = FieldHelper.applyIndicesToFieldsForView(tabItems);

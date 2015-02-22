@@ -29,7 +29,8 @@ import java.util.Map;
 public interface IEncounterService {
 
     /**
-     * Create a patient encounter
+     * Create a patient encounter. Chief complaint sort order is the same as
+     * the order they exist in the list
      *
      * @param patientEncounterItem the patient encounter
      * @return the patient encounter with id (pk)

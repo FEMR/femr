@@ -61,8 +61,8 @@ public class DomainMapper {
     private final Provider<ITabFieldSize> tabFieldSizeProvider;
     private final Provider<ITabFieldType> tabFieldTypeProvider;
     private final Provider<ITab> tabProvider;
-    private final Provider<IUser> userProvider;
     private final Provider<IVital> vitalProvider;
+    private final Provider<IUser> userProvider;
 
     @Inject
     public DomainMapper(Provider<IChiefComplaint> chiefComplaintProvider,
@@ -330,7 +330,7 @@ public class DomainMapper {
         user.setLastName(userItem.getLastName());
         user.setEmail(userItem.getEmail());
         user.setPassword(password);
-        user.setLastLogin(dateUtils.getCurrentDateTime());
+        user.setLastLogin(null);
         user.setDeleted(isDeleted);
         user.setPasswordReset(isPasswordReset);
         user.setNotes(userItem.getNotes());
@@ -353,7 +353,11 @@ public class DomainMapper {
         userItem.setEmail(user.getEmail());
         userItem.setFirstName(user.getFirstName());
         userItem.setLastName(user.getLastName());
-        userItem.setLastLoginDate(dateUtils.getFriendlyDate(user.getLastLogin()));
+        if(user.getLastLogin() != null)
+            userItem.setLastLoginDate(dateUtils.getFriendlyDate(user.getLastLogin()));
+        else
+            userItem.setLastLoginDate("Never");
+
         for (IRole role : user.getRoles()) {
             if (role != null && StringUtils.isNotNullOrWhiteSpace(role.getName())) {
                 userItem.addRole(role.getName());

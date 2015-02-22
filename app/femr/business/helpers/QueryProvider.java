@@ -22,6 +22,8 @@ package femr.business.helpers;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
 import femr.data.models.mysql.*;
+import femr.data.models.mysql.research.ResearchEncounter;
+import femr.data.models.mysql.research.ResearchEncounterVital;
 
 /**
  * Responsible for providing all queries
@@ -118,5 +120,14 @@ public class QueryProvider {
 
     public static Query<Vital> getVitalQuery() {
         return Ebean.find(Vital.class);
+    }
+
+
+    // Research
+    public static Query<ResearchEncounter> getResearchEncounterQuery() {
+        return Ebean.find(ResearchEncounter.class);
+    }
+    public static Query<ResearchEncounterVital> getResearchEncounterVitalQuery() {
+        return Ebean.find(ResearchEncounterVital.class);
     }
 }

@@ -16,23 +16,15 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.business.services.core;
+package femr.util.dependencyinjection.providers;
 
-import femr.common.dtos.ServiceResponse;
-import femr.common.models.*;
-import femr.ui.models.research.json.ResearchGraphDataModel;
+import com.google.inject.Provider;
+import femr.data.models.core.research.IResearchEncounter;
+import femr.data.models.mysql.research.ResearchEncounter;
 
-/**
- * Interface for the Research Service
- */
-public interface IResearchService {
-
-
-    /**
-     * Take filters and build matching data for graph
-     *
-     * @param filterItem object representing chosen filters
-     * @return Graph data bundled for display
-     */
-    public ServiceResponse<ResearchResultSetItem> getGraphData(ResearchFilterItem filterItem);
+public class ResearchEncounterProvider implements Provider<IResearchEncounter> {
+    @Override
+    public IResearchEncounter get() {
+        return new ResearchEncounter();
+    }
 }

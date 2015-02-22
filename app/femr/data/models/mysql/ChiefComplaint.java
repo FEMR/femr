@@ -34,7 +34,7 @@ public class ChiefComplaint implements IChiefComplaint {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_encounter_id")
     private PatientEncounter patientEncounter;
-    @Column(name = "sortOrder")
+    @Column(name = "sort_Order")
     private Integer sortOrder;
 
     @Override

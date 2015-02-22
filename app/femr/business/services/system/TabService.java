@@ -543,7 +543,7 @@ public class TabService implements ITabService {
 
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
         String tabFieldName;
-        ExpressionList<ChiefComplaint> chiefComplaintExpressionList;
+        Query<ChiefComplaint> chiefComplaintExpressionList;
         ExpressionList<TabField> tabFieldQuery;
         Query<PatientEncounterTabField> patientEncounterTabFieldQuery;
 
@@ -583,7 +583,9 @@ public class TabService implements ITabService {
         //need all chief complaints regardless
         chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                 .where()
-                .eq("patient_encounter_id", encounterId);
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .asc("sortOrder");
 
 
         try {
@@ -591,6 +593,7 @@ public class TabService implements ITabService {
             List<? extends ITabField> tabFields = tabFieldRepository.find(tabFieldQuery);
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
             List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+            //Collections.reverse(patientEncounterTabFields);
 
             //all fields that have values
             for (IPatientEncounterTabField petf : patientEncounterTabFields) {
@@ -645,6 +648,11 @@ public class TabService implements ITabService {
                         tabFieldMultiMap.put(tf.getName(), null, null, ItemMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null));
                     }
                 }
+            }
+
+            //sort the chief complaints
+            for (IChiefComplaint cc : chiefComplaints) {
+                tabFieldMultiMap.setChiefComplaintOrder(cc.getValue(), cc.getSortOrder());
             }
         } catch (Exception ex) {
 

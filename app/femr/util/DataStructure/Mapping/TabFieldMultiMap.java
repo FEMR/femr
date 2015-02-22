@@ -23,8 +23,7 @@ import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.keyvalue.MultiKey;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Contains all available tab fields and their values. (Includes old and new). In the following format:
@@ -40,6 +39,7 @@ import java.util.List;
 public class TabFieldMultiMap extends AbstractMultiMap {
 
     private final List<String> chiefComplaintList = new ArrayList<>();
+    private final Map<Integer, String> chiefComplaintListOrderMap = new TreeMap<>();
 
     /**
      * Puts a value into the map and associates the name, date, and chief complaint
@@ -65,6 +65,30 @@ public class TabFieldMultiMap extends AbstractMultiMap {
                 chiefComplaintList.add(chiefComplaint);
             }
         }
+    }
+
+    /**
+     * Sets a sort order for the chief complaints. If this doesn't happen then they can appear
+     * in a random order
+     *
+     * @param chiefComplaint the chief complaint (it must already exist in the multi map)
+     * @param sortOrder      the chief complaints sort order
+     * @return true if successfull, false if you f*cked up
+     */
+    public boolean setChiefComplaintOrder(String chiefComplaint, Integer sortOrder) {
+
+        if (StringUtils.isNullOrWhiteSpace(chiefComplaint))
+            return false;
+        if (!chiefComplaintList.contains(chiefComplaint))
+            return false;
+        for (Integer key : chiefComplaintListOrderMap.keySet()) {
+            if (key == sortOrder) {
+                return false;
+            }
+        }
+
+        chiefComplaintListOrderMap.put(sortOrder, chiefComplaint);
+        return true;
     }
 
     /**
@@ -120,13 +144,24 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     }
 
     /**
-     * Get the available chief complaints
+     * Get the available chief complaints in proper sort order
      *
      * @return a string list of chief complaints inside the map
      */
     public List<String> getChiefComplaintList() {
 
-        return chiefComplaintList;
+        List<String> orderedChiefComplaints = new ArrayList<>();
+        for (Integer key : chiefComplaintListOrderMap.keySet()) {
+
+            orderedChiefComplaints.add(chiefComplaintListOrderMap.get(key));
+        }
+
+        for (String chiefComplaint : chiefComplaintList) {
+            if (!orderedChiefComplaints.contains(chiefComplaint))
+                orderedChiefComplaints.add(chiefComplaint);
+        }
+
+        return orderedChiefComplaints;
     }
 
     /**

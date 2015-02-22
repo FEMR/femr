@@ -75,7 +75,7 @@ public class FieldHelper {
 
         List<String> availableChiefComplaints = tabFieldMultiMap.getChiefComplaintList();
 
-        if (availableChiefComplaints.size() < 0) {
+        if (availableChiefComplaints.size() == 0) {
             //no chief complaint - needs at least one set of fields which wouldn't be
             tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("onset", null);
             tabFieldItemsForChiefComplaint.add(tabFieldItem);

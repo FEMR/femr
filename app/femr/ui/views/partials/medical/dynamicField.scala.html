@@ -1,23 +1,17 @@
-@(number: Integer, value: java.lang.String, name: java.lang.String, size: java.lang.String, order: java.lang.Integer, tipe: java.lang.String, placeholder: java.lang.String, isReadOnly: Boolean)
+@(value: java.lang.String, name: java.lang.String, size: java.lang.String, order: java.lang.Integer, tipe: java.lang.String, placeholder: java.lang.String, isReadOnly: Boolean, index: Integer)
 
 
-@if(size.toLowerCase == "medium" && order == number) {
+@if(size.toLowerCase == "medium") {
     <label for="@name">@name</label>
-    @if(isReadOnly == true) {
-        <input type="@tipe" id="@name" class="fInput customField" placeholder="@placeholder" value="@value" readonly/>
-    } else {
-        <input type="@tipe" id="@name" class="fInput customField" placeholder="@placeholder" value="@value" />
-    }
+    <input name="tabFieldItems[@index].name" class="hidden" placeholder="@placeholder" type="text" value="@name"/>
+    <input name="tabFieldItems[@index].value" type="text" class="fInput customField" value="@value" @if(isReadOnly){readonly}/>
 
     <br/>
 } else {
-    @if(size.toLowerCase == "large" && order == number) {
+    @if(size.toLowerCase == "large") {
         <label for="@name">@name</label>
-        @if(isReadOnly == true) {
-            <textarea id="@name" class="fTextArea customField" placeholder="@placeholder" readonly>@value</textarea>
-        } else {
-            <textarea id="@name" class="fTextArea customField" placeholder="@placeholder">@value</textarea>
-        }
+        <input type="text" class="hidden" name="tabFieldItems[@index].name" value="@name"/>
+        <textarea id="tabFieldItems[@index].value" class="fTextArea customField" placeholder="@placeholder" @if(isReadOnly){ readonly } >@value </textarea>
 
         <br/>
     }

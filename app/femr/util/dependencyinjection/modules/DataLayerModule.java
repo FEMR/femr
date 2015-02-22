@@ -23,6 +23,8 @@ import com.google.inject.TypeLiteral;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
+import femr.data.models.core.research.IResearchEncounter;
+import femr.data.models.core.research.IResearchEncounterVital;
 import femr.util.dependencyinjection.providers.*;
 
 public class DataLayerModule extends AbstractModule {
@@ -59,6 +61,9 @@ public class DataLayerModule extends AbstractModule {
         bind(IUser.class).toProvider(UserProvider.class);
         bind(IVital.class).toProvider(VitalProvider.class);
 
+        // Research
+        bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
+
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
@@ -89,5 +94,9 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<ITabFieldSize>>(){}).to(new TypeLiteral<Repository<ITabFieldSize>>(){});
         bind(new TypeLiteral<IRepository<IUser>>() {}).to(new TypeLiteral<Repository<IUser>>() {});
         bind(new TypeLiteral<IRepository<IVital>>() {}).to(new TypeLiteral<Repository<IVital>>() {});
+
+        // Research
+        bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});
+        bind(new TypeLiteral<IRepository<IResearchEncounterVital>>() {}).to(new TypeLiteral<Repository<IResearchEncounterVital>>() {});
     }
 }

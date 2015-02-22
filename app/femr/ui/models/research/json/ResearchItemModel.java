@@ -1,4 +1,4 @@
-package femr.common.models;
+package femr.ui.models.research.json;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,21 +21,21 @@ import java.util.Map;
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-public class ResearchItem {
+public class ResearchItemModel {
 
 
     private String primaryName;
     private float primaryValue;
     private Map<String, Float> secondaryData;
 
-    public ResearchItem(){
+    public ResearchItemModel(){
 
         primaryName = "";
         primaryValue = 0.0f;
         secondaryData = new HashMap<>();
     }
 
-    public ResearchItem(String name){
+    public ResearchItemModel(String name){
 
         primaryName = name;
         primaryValue = 0.0f;

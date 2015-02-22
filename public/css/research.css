@@ -471,6 +471,11 @@
     display: none;
 }
 
+.graph-header #total{
+
+    display: block;
+}
+
 .chart{
 
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;

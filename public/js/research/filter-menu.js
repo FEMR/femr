@@ -23,8 +23,8 @@ var filterMenuModule = (function(){
         endDate: $("#endDate"),
         groupPrimary: $("#groupPrimary"),
         groupFactor: $("#groupPrimaryData"),
-        rangeStart: $("#rangeStart"),
-        rangeEnd: $("#rangeEnd"),
+        rangeStart: $("#filterRangeStart"),
+        rangeEnd: $("#filterRangeEnd"),
         medicationName: $("#medicationName")
     };
 
@@ -111,8 +111,8 @@ var filterMenuModule = (function(){
             $(filterMenus.filter).find(".val").find(".date").find(".end").text("");
         }
 
-        // make default startDate of 30 days ago
-        var defaultStartDate = new Date(defaultEndDate.getTime() - 30*24*60*60*1000);
+        // make default startDate of 120 days ago
+        var defaultStartDate = new Date(defaultEndDate.getTime() - 120*24*60*60*1000);
         // date field is in format yyyy-MM-dd --> view String like mm/dd/yyyy
         if( Object.prototype.toString.call(defaultStartDate) === "[object Date]" && !isNaN(defaultStartDate.getTime()) ) {
 
@@ -138,7 +138,7 @@ var filterMenuModule = (function(){
 
         $(filterFields.rangeStart).val("");
         $(filterFields.rangeEnd).val("");
-        $(filterFields.medicationName).val(-1);
+        $(filterFields.medicationName).val("");
         $(filterFields.groupPrimary).prop('checked', false);
         $(filterFields.groupFactor).val("10");
 
@@ -174,7 +174,7 @@ var filterMenuModule = (function(){
 
         // get Image Size
         var imageSize = $(this).data("imagesize");
-        console.log(imageSize);
+        //console.log(imageSize);
 
         var currWidth = $(".main").width();
 
@@ -446,7 +446,7 @@ var filterMenuModule = (function(){
         filterValues.rangeStart = $(filterFields.rangeStart).val();
         filterValues.rangeEnd = $(filterFields.rangeEnd).val();
 
-        console.log("Range Changed");
+        //console.log("Range Changed");
 
         return false;
     };

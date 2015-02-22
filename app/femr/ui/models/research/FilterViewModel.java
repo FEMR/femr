@@ -1,14 +1,5 @@
 package femr.ui.models.research;
 
-import play.data.validation.ValidationError;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 public class FilterViewModel {
 
     private String primaryDataset;
@@ -18,8 +9,8 @@ public class FilterViewModel {
     private String endDate;
     private boolean groupPrimary;
     private Integer groupFactor;
-    private Float rangeStart;
-    private Float rangeEnd;
+    private Float filterRangeStart;
+    private Float filterRangeEnd;
     private String medicationName;
 
     /*
@@ -117,13 +108,13 @@ public class FilterViewModel {
 
     public void setGroupFactor(Integer groupFactor) { this.groupFactor = groupFactor; }
 
-    public Float getRangeStart() { return rangeStart; }
+    public Float getFilterRangeStart() { return filterRangeStart; }
 
-    public void setRangeStart(Float rangeStart) { this.rangeStart = rangeStart; }
+    public void setFilterRangeStart(Float filterRangeStart) { this.filterRangeStart = filterRangeStart; }
 
-    public Float getRangeEnd() { return rangeEnd; }
+    public Float getFilterRangeEnd() { return filterRangeEnd; }
 
-    public void setRangeEnd(Float rangeEnd) { this.rangeEnd = rangeEnd; }
+    public void setFilterRangeEnd(Float filterRangeEnd) { this.filterRangeEnd = filterRangeEnd; }
 
     public String getMedicationName() { return medicationName; }
 

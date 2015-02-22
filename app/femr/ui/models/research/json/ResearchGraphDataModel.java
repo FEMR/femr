@@ -1,18 +1,17 @@
 package femr.ui.models.research.json;
 
-import femr.common.models.ResearchItem;
-
 import java.util.List;
 import java.util.Map;
 
 //technically shared in the service layer right now
-public class ResearchGraphDataItem {
+public class ResearchGraphDataModel {
 
     private float average;
     private float median;
     private float rangeLow;
     private float rangeHigh;
-    private List<ResearchItem> graphData;
+    private float total;
+    private List<ResearchItemModel> graphData;
     private String xAxisTitle;
     private String yAxisTitle;
     private String unitOfMeasurement;
@@ -51,6 +50,14 @@ public class ResearchGraphDataItem {
         this.rangeHigh = rangeHigh;
     }
 
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
     public String getxAxisTitle() {
         return xAxisTitle;
     }
@@ -71,11 +78,11 @@ public class ResearchGraphDataItem {
         this.unitOfMeasurement = unitOfMeasurement;
     }
 
-    public List<ResearchItem> getGraphData() {
+    public List<ResearchItemModel> getGraphData() {
         return graphData;
     }
 
-    public void setGraphData(List<ResearchItem> graphData) {
+    public void setGraphData(List<ResearchItemModel> graphData) {
         this.graphData = graphData;
     }
 

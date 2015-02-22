@@ -10,8 +10,8 @@ public class ResearchFilterItem {
     private String endDate;
     private boolean groupPrimary;
     private Integer groupFactor;
-    private Float rangeStart;
-    private Float rangeEnd;
+    private Float filterRangeStart;
+    private Float filterRangeEnd;
     private String medicationName;
 
     public String getPrimaryDataset() {
@@ -62,31 +62,31 @@ public class ResearchFilterItem {
 
     public void setGroupFactor(Integer groupFactor) { this.groupFactor = groupFactor; }
 
-    public Float getRangeStart() { return rangeStart; }
+    public Float getFilterRangeStart() { return filterRangeStart; }
 
-    public void setRangeStart(Float rangeStart) {
+    public void setFilterRangeStart(Float filterRangeStart) {
 
-        if (rangeStart == null) {
+        if (filterRangeStart == null) {
 
-            this.rangeStart = Float.MIN_VALUE;
+            this.filterRangeStart = -1 * Float.MAX_VALUE;
 
         } else {
 
-            this.rangeStart = rangeStart;
+            this.filterRangeStart = filterRangeStart;
         }
     }
 
-    public Float getRangeEnd() { return rangeEnd; }
+    public Float getFilterRangeEnd() { return filterRangeEnd; }
 
-    public void setRangeEnd(Float rangeEnd) {
+    public void setFilterRangeEnd(Float filterRangeEnd) {
 
-        if (rangeEnd == null) {
+        if (filterRangeEnd == null) {
 
-            this.rangeEnd = Float.MAX_VALUE;
+            this.filterRangeEnd = Float.MAX_VALUE;
 
         } else {
 
-            this.rangeEnd = rangeEnd;
+            this.filterRangeEnd = filterRangeEnd;
         }
     }
 

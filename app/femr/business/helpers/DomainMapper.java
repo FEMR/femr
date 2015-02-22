@@ -647,8 +647,8 @@ public class DomainMapper {
             filterItem.setGroupPrimary(false);
         }
 
-        filterItem.setRangeStart(filterViewModel.getRangeStart());
-        filterItem.setRangeEnd(filterViewModel.getRangeEnd());
+        filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
+        filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
 
         filterItem.setMedicationName(filterViewModel.getMedicationName());
 

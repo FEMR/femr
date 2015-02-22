@@ -6,17 +6,21 @@ import femr.business.helpers.DomainMapper;
 import femr.business.services.core.IMedicationService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
-import femr.data.models.core.IMedication;
-import femr.ui.models.research.json.ResearchGraphDataItem;
+import femr.common.models.ResearchResultItem;
+import femr.common.models.ResearchResultSetItem;
+import femr.ui.models.research.json.ResearchGraphDataModel;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
 import femr.business.services.core.ISessionService;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.research.json.ResearchItemModel;
 import femr.ui.views.html.research.index;
 import femr.ui.views.html.research.generatedata;
 import femr.ui.models.research.FilterViewModel;
+import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -53,6 +57,48 @@ public class ResearchController extends Controller {
         this.sessionService = sessionService;
     }
 
+
+    private ResearchGraphDataModel buildGraphModel(ResearchResultSetItem results){
+
+        ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
+
+        graphModel.setAverage(results.getAverage());
+        if( results.getDataRangeLow() > -1 * Float.MAX_VALUE ) {
+            graphModel.setRangeLow(results.getDataRangeLow());
+        }
+        else{
+            graphModel.setRangeLow(0.0f);
+        }
+        if(results.getDataRangeHigh() < Float.MAX_VALUE ){
+            graphModel.setRangeHigh(results.getDataRangeHigh());
+        }
+        else{
+            graphModel.setRangeHigh(0.0f);
+        }
+        graphModel.setTotal(results.getTotal());
+
+        graphModel.setUnitOfMeasurement(results.getUnitOfMeasurement());
+        graphModel.setxAxisTitle(WordUtils.capitalize(StringUtils.splitCamelCase(results.getDataType())));
+        graphModel.setyAxisTitle("Number of Patients");
+
+        graphModel.setPrimaryValuemap(results.getPrimaryValueMap());
+        graphModel.setSecondaryValuemap(results.getSecondaryValueMap());
+
+        // @TODO - This go in item mapper?
+        List<ResearchItemModel> graphData = new ArrayList<>();
+        for(ResearchResultItem item : results.getDataset() ) {
+
+            ResearchItemModel resultItem = new ResearchItemModel();
+            resultItem.setPrimaryName(item.getPrimaryName());
+            resultItem.setPrimaryValue(item.getPrimaryValue());
+            resultItem.setSecondaryData(item.getSecondaryData());
+            graphData.add(resultItem);
+        }
+        graphModel.setGraphData(graphData);
+
+        return graphModel;
+    }
+
     public Result indexGet() {
 
         FilterViewModel filterViewModel = new FilterViewModel();
@@ -61,7 +107,7 @@ public class ResearchController extends Controller {
         Calendar today = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         filterViewModel.setEndDate(dateFormat.format(today.getTime()));
-        today.add(Calendar.DAY_OF_MONTH, -30);
+        today.add(Calendar.DAY_OF_MONTH, -120);
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
         CurrentUser currentUserSession = sessionService.getCurrentUserSession();
@@ -80,11 +126,12 @@ public class ResearchController extends Controller {
         //TODO: domain mapper out of scope
         ResearchFilterItem researchFilterItem = DomainMapper.createResearchFilterItem(filterViewModel);
 
-        ServiceResponse<ResearchGraphDataItem> response = researchService.getGraphData(researchFilterItem);
-        ResearchGraphDataItem graphModel = new ResearchGraphDataItem();
+        ServiceResponse<ResearchResultSetItem> response = researchService.getGraphData(researchFilterItem);
+        ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
         if( !response.hasErrors() ) {
 
-            graphModel = response.getResponseObject();
+            ResearchResultSetItem results = response.getResponseObject();
+            graphModel = buildGraphModel(results);
         }
 
         Gson gson = new Gson();

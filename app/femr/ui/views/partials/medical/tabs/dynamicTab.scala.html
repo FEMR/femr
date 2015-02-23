@@ -5,10 +5,9 @@
 @*leftcolumnsize and rightcolumnsize size represent the sort order of custom fields*@
 <div class="customWrap" id="@genericTab.getName.toLowerCase()DynamicTab">
     <div class="customLeft">
+    @for(i <- 1 to genericTab.getFields.get(null).size) {
 
-    @for(i <- 1 to genericTab.getFields.size) {
-
-        @if(i < genericTab.getLeftColumnSize) {
+        @if(i - 1 < genericTab.getLeftColumnSize) {
             <div class="customFieldWrap">
             @defining(genericTab.getFields(null).get(i - 1)) { field =>
                 @dynamicField(field.getValue, field.getName, field.getSize, field.getOrder, field.getType, field.getPlaceholder, false, field.getIndex)
@@ -18,8 +17,10 @@
     }
     </div>
     <div class="customRight">
-    @for(i <- 1 to genericTab.getFields.size) {
-        @if(i > genericTab.getLeftColumnSize && i < (genericTab.getLeftColumnSize + genericTab.getRightColumnSize)) {
+    @for(i <- 1 to genericTab.getFields.get(null).size) {
+
+        @if(i - 1 >= genericTab.getLeftColumnSize && i - 1 <= (genericTab.getLeftColumnSize + genericTab.getRightColumnSize)) {
+
             <div class="customFieldWrap">
             @defining(genericTab.getFields(null).get(i - 1)) { field =>
                 @dynamicField(field.getValue, field.getName, field.getSize, field.getOrder, field.getType, field.getPlaceholder, false, field.getIndex)
@@ -29,8 +30,10 @@
     }
     </div>
     <div class="customBottom">
-    @for(i <- 1 to genericTab.getFields.size) {
-        @if(i > (genericTab.getLeftColumnSize + genericTab.getRightColumnSize)) {
+    @for(i <- 1 to genericTab.getFields.get(null).size) {
+
+        @if(i - 1 > (genericTab.getLeftColumnSize + genericTab.getRightColumnSize)) {
+
             <div class="customFieldWrap">
             @defining(genericTab.getFields(null).get(i - 1)) { field =>
                 @dynamicField(field.getValue, field.getName, field.getSize, field.getOrder, field.getType, field.getPlaceholder, false, field.getIndex)

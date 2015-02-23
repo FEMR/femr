@@ -85,11 +85,11 @@
                             @photoTab(viewModel.getPhotos)
                         }
 
-                        @for(tabs <- viewModel.getTabItems) {
+                        @for(tab <- viewModel.getTabItems) {
                             @* Move the div wrapper into dynamicTab*@
-                            @if(tabs.isCustom){
-                                <div class="controlWrap hidden" id="@tabs.getName.toLowerCase()Control">
-                                @dynamicTab(tabs)
+                            @if(tab.isCustom){
+                                <div class="controlWrap hidden" id="@tab.getName.toLowerCase()Control">
+                                @dynamicTab(tab)
                                 </div>
                             }
                         }

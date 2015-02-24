@@ -4,6 +4,7 @@
 
 @*leftcolumnsize and rightcolumnsize size represent the sort order of custom fields*@
 <div class="customWrap" id="@genericTab.getName.toLowerCase()DynamicTab">
+
     <div class="customLeft">
     @for(i <- 1 to genericTab.getFields.get(null).size) {
 
@@ -16,6 +17,7 @@
         }
     }
     </div>
+
     <div class="customRight">
     @for(i <- 1 to genericTab.getFields.get(null).size) {
 
@@ -29,6 +31,7 @@
         }
     }
     </div>
+
     <div class="customBottom">
     @for(i <- 1 to genericTab.getFields.get(null).size) {
 
@@ -43,8 +46,7 @@
     }
     </div>
 
-
 </div>
-    </div>
+
 
 

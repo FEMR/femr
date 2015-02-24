@@ -22,6 +22,10 @@
     @main("History", currentUser, scripts = additionalScripts, styles = additionalStyles) {
         <div class="sectionBackground backgroundForWrap" id="encounterViewWrap">
             <div id="encounterViewHeader">
+
+
+                <a href="/history/edit-encounter/@viewModel.getPatientEncounterItem.getId" class="btn btn-default pull-right">Edit history </a>
+
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
                     (@viewModel.getPatientItem.getId)</p>

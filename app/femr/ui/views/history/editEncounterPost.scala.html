@@ -1,0 +1,20 @@
+@()
+
+@import femr.ui.views.html.layouts.main
+
+@additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
+}
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
+}
+
+
+@main("History", scripts = additionalScripts, styles = additionalStyles) {
+
+
+    <p>
+        Post
+    </p>
+
+}

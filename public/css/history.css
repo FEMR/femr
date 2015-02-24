@@ -218,6 +218,11 @@
 .inputRow {
     font-size: 12px;
 }
+.submit {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
 
 .inputLabel {
     display: inline-block;

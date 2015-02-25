@@ -34,6 +34,7 @@ import femr.data.models.mysql.PatientEncounterVital;
 import femr.data.models.mysql.Vital;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.dateUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

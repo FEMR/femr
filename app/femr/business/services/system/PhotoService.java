@@ -19,14 +19,6 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
@@ -49,6 +41,12 @@ import org.apache.commons.codec.binary.Base64;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PhotoService implements IPhotoService {

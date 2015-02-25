@@ -31,11 +31,8 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
-import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.keyvalue.MultiKey;
 import org.joda.time.DateTime;
 
 import java.util.*;

@@ -19,15 +19,9 @@
 package femr.common;
 
 import femr.common.models.*;
-import femr.data.models.core.IPatient;
-
-import femr.data.models.core.IPatientEncounterTabField;
-import femr.data.models.core.IPatientPrescription;
 import femr.data.models.core.ISystemSetting;
-import femr.data.models.mysql.SystemSetting;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import org.jboss.netty.util.internal.StringUtil;
 
 import java.util.Date;
 import java.util.List;

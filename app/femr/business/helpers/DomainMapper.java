@@ -20,9 +20,6 @@ package femr.business.helpers;
 
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
-
-import javax.inject.Provider;
-
 import femr.common.models.*;
 import femr.ui.models.research.FilterViewModel;
 import femr.data.models.core.*;
@@ -30,6 +27,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import javax.inject.Provider;
 import java.util.Date;
 import java.util.List;
 
@@ -115,35 +113,6 @@ public class DomainMapper {
         this.tabProvider = tabProvider;
         this.userProvider = userProvider;
         this.vitalProvider = vitalProvider;
-    }
-
-
-    /**
-     * Create a new TabFieldItem
-     *
-     * @param patientEncounterTabField DAO with joined TabField
-     * @return tab field with value
-     */
-    public static TabFieldItem createTabFieldItem(IPatientEncounterTabField patientEncounterTabField) {
-        if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
-            return null;
-        }
-
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
-        tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());
-        tabFieldItem.setPlaceholder(patientEncounterTabField.getTabField().getPlaceholder());
-        if (patientEncounterTabField.getTabField().getTabFieldSize() != null)
-            tabFieldItem.setSize(patientEncounterTabField.getTabField().getTabFieldSize().getName());
-        if (patientEncounterTabField.getTabField().getTabFieldType() != null)
-            tabFieldItem.setType(patientEncounterTabField.getTabField().getTabFieldType().getName());
-        tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
-        if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
-        else tabFieldItem.setIsCustom(true);
-        //if (patientEncounterTabField.getChiefComplaint() != null)
-        //  tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
-
-        return tabFieldItem;
     }
 
     /**

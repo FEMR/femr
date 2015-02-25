@@ -1,6 +1,5 @@
 package femr.ui.controllers;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IMedicationService;

@@ -21,6 +21,7 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +31,11 @@ public interface IVitalService {
      * Create all vitals for an encounter
      *
      * @param patientEncounterVitalMap A <name,value> keypair of vitals to be created
-     * @param userId User creating the vitals
-     * @param encounterId Encounter that the vitals are for
+     * @param userId                   User creating the vitals
+     * @param encounterId              Encounter that the vitals are for
      * @return List of vitals that were created
      */
-    ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String,Float> patientEncounterVitalMap, int userId, int encounterId);
+    ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId);
 
     /**
      * Creates all patient encounter vitals

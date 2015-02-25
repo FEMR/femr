@@ -271,6 +271,9 @@ public class EncounterService implements IEncounterService {
             ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                     .where()
                     .eq("patient_encounter_id", encounterId);
+            ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId);
 
             //the response object
             List<TabFieldItem> tabFieldItemsForResponse = new ArrayList<>();
@@ -282,9 +285,33 @@ public class EncounterService implements IEncounterService {
             List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
             //get all chief complaints for an encounter to find reference IDs
             List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+            //find fields that have already been saved so we don't duplicate
+            List<? extends IPatientEncounterTabField> existingtabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldExpressionList);
             //foreign key IDs for patientEncounterTabField referencing
             Integer tabFieldId = null;
             Integer chiefComplaintId = null;
+
+            //removes a tab field from the list to be saved if it contains the same name and value as an entry that
+            //already exists. This can be a problem if a user tries to change the value then change it back.
+            Iterator<TabFieldItem> i = tabFieldItems.iterator();
+            while (i.hasNext()) {
+                TabFieldItem tfi = i.next();
+
+                for (IPatientEncounterTabField petf : existingtabFields) {
+
+                    if (petf.getTabField().getName().equals(tfi.getName()) &&
+                            petf.getTabFieldValue().equals(tfi.getValue())) {
+
+                        if (petf.getChiefComplaint() == null) {
+                            i.remove();
+                            break;
+                        } else if (petf.getChiefComplaint().getValue().equals(tfi.getChiefComplaint())) {
+                            i.remove();
+                            break;
+                        }
+                    }
+                }
+            }
 
             for (TabFieldItem tfi : tabFieldItems) {
 

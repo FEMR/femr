@@ -238,7 +238,7 @@ public class MedicalController extends Controller {
             }
 
         }
-        if (problemList.size() > 0){
+        if (problemList.size() > 0) {
 
             encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
         }
@@ -248,11 +248,12 @@ public class MedicalController extends Controller {
         //get non-custom tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
 
-            if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()))
-
+            if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue())) {
+                tfi.setValue(tfi.getValue().trim());
                 tabFieldItems.add(tfi);
+            }
         }
-        if (tabFieldItems.size() > 0){
+        if (tabFieldItems.size() > 0) {
 
             ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
             if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {

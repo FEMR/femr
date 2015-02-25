@@ -40,6 +40,7 @@ public class MedicalController extends Controller {
     private final ISessionService sessionService;
     private final ISearchService searchService;
     private final IVitalService vitalService;
+    private final FieldHelper fieldHelper;
 
     @Inject
     public MedicalController(ITabService tabService,
@@ -56,6 +57,7 @@ public class MedicalController extends Controller {
         this.medicationService = medicationService;
         this.photoService = photoService;
         this.vitalService = vitalService;
+        this.fieldHelper = new FieldHelper();
     }
 
     public Result indexGet() {
@@ -185,7 +187,7 @@ public class MedicalController extends Controller {
                     tabItem.setFields(FieldHelper.structureTreatmentFieldsForView(tabFieldMultiMap));
                     break;
                 default:
-                    tabItem.setFields(FieldHelper.structureDynamicFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(fieldHelper.structureDynamicFieldsForView(tabFieldMultiMap));
                     break;
             }
         }

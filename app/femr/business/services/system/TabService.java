@@ -470,39 +470,6 @@ public class TabService implements ITabService {
 
     /**
      * {@inheritDoc}
-
-     @Override public ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive) {
-
-     ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
-     List<TabItem> tabItems = new ArrayList<>();
-     TabFieldMultiMap tabFieldMultiMap;
-     TabItem tabItem;
-
-     ExpressionList<Tab> tabQuery = QueryProvider.getTabQuery()
-     .where()
-     .eq("isDeleted", false);
-
-     try {
-     List<? extends ITab> allTabs = tabRepository.find(tabQuery);
-
-     for (ITab t : allTabs) {
-     tabFieldMultiMap = mapTabFields(encounterId, t.getName());
-     tabItem = ItemMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize());
-     tabItem.setTabFieldMultiMap(tabFieldMultiMap);
-     tabItems.add(tabItem);
-     }
-     response.setResponseObject(tabItems);
-     } catch (Exception ex) {
-
-     response.addError("", ex.getMessage());
-     }
-
-     return response;
-     }
-     */
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId) {
@@ -516,6 +483,9 @@ public class TabService implements ITabService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted) {
 

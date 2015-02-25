@@ -4,10 +4,7 @@ import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helps logically arrange fields for the views after retrieving data from the service
@@ -61,8 +58,13 @@ public class FieldHelper {
         return chiefComplaintFieldMap;
     }
 
-    //READ THE METHOD NAME LOL
-    public static Map<String, List<TabFieldItem>> structureDynamicFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
+    /**
+     * Can't be static because of the comparator implementation.
+     *
+     * @param tabFieldMultiMap
+     * @return
+     */
+    public Map<String, List<TabFieldItem>> structureDynamicFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
 
         if (tabFieldMultiMap == null) {
 
@@ -80,6 +82,7 @@ public class FieldHelper {
             tabFieldItemsForChiefComplaint.add(tabFieldItem);
         }
 
+        Collections.sort(tabFieldItemsForChiefComplaint, new TabFieldSortOrderComparator());
         chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
 
 
@@ -174,5 +177,13 @@ public class FieldHelper {
         }
         String test = null;
         return tabItems;
+    }
+
+    class TabFieldSortOrderComparator implements Comparator<TabFieldItem> {
+
+        @Override
+        public int compare(TabFieldItem o1, TabFieldItem o2) {
+            return o1.getOrder().compareTo(o2.getOrder());
+        }
     }
 }

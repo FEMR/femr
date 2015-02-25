@@ -35,6 +35,8 @@ import java.util.*;
  * <li>key3 = chief complaint the field belongs to (null if n/a)</li>
  * <li>key = TabFieldItem matching the keys</li>
  * </ul>
+ *
+ * If you need to sort any fields by sort order then your on your own! muhahahaha
  */
 public class TabFieldMultiMap extends AbstractMultiMap {
 
@@ -59,16 +61,18 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         if (!(value instanceof TabFieldItem) || StringUtils.isNullOrWhiteSpace(fieldName)) {
             //don't do a gd thing
         } else {
-            TabFieldItem tabFieldItem = (TabFieldItem)value;
+
+            TabFieldItem tabFieldItem = (TabFieldItem) value;
             map.put(fieldName, date, chiefComplaint, value);
-            // check if the dated is already in the dateList if so don't add it
+            //check if the date is already in the comprehensive date list, if so don't add it
             if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
                 dateList.add(date);
             }
+            //check if the chief complaint is already in the comprehensive chief complaint list, if so don't add it
             if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
                 chiefComplaintList.add(chiefComplaint);
             }
-            if (tabFieldItem.getIsCustom() != null && tabFieldItem.getIsCustom() && !customFieldNames.contains(tabFieldItem.getName())){
+            if (tabFieldItem.getIsCustom() != null && tabFieldItem.getIsCustom() && !customFieldNames.contains(tabFieldItem.getName())) {
                 customFieldNames.add(tabFieldItem.getName());
             }
         }
@@ -99,7 +103,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     }
 
     /**
-     * Finds the field value
+     * Finds any field value
      *
      * @param fieldName      the name of the tab field
      * @param date           the date the tab field was taken
@@ -124,10 +128,9 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @return the tab field with or without a value or null if it doesn't exist
      */
     public TabFieldItem getMostRecentOrEmpty(String fieldName, String chiefComplaint) {
+
         List<String> dateList = this.getDateList();
-
         TabFieldItem tabFieldItem = null;
-
 
         try {
             //datelist is already sorted :)
@@ -140,6 +143,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
             }
             //no field exists with a date, find the blank field
             if (tabFieldItem == null) {
+
                 tabFieldItem = (TabFieldItem) map.get(fieldName, null, chiefComplaint);
             }
         } catch (Exception ex) {
@@ -164,6 +168,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
         }
 
         for (String chiefComplaint : chiefComplaintList) {
+
             if (!orderedChiefComplaints.contains(chiefComplaint))
                 orderedChiefComplaints.add(chiefComplaint);
         }
@@ -176,14 +181,13 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      *
      * @return all strings, yo
      */
-    public List<String> getCustomFieldNameList(){
+    public List<String> getCustomFieldNameList() {
 
         return customFieldNames;
     }
 
     /**
-     * Checks to see if the map contains any values for a tab field
-     * without a specific chief complaint
+     * Checks to see if the map contains an entry for a field
      *
      * @param fieldName name of the field
      * @return true if the field has an entry, false otherwise
@@ -207,8 +211,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
     }
 
     /**
-     * Checks to see if the map contains any values for a tab field
-     * with a specific chief complaint
+     * Checks to see if the map contains any entries for a field
      *
      * @param fieldName      name of the field
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)

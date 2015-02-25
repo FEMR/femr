@@ -24,7 +24,6 @@ import femr.common.models.TabItem;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ITabService {
 

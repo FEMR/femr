@@ -19,7 +19,6 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.*;
-import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;

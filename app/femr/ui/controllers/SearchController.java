@@ -11,7 +11,6 @@ import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.search.json.PatientSearch;
-import femr.util.calculations.dateUtils;
 import org.h2.util.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;

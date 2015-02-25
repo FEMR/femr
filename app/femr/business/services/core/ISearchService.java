@@ -20,7 +20,7 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+
 import java.util.List;
 
 public interface ISearchService {

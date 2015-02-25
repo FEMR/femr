@@ -26,7 +26,6 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ITabService;
 import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.SettingItem;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.data.daos.IRepository;

@@ -18,6 +18,7 @@ import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -21,10 +21,8 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
-import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
 import java.util.List;
-import java.util.Map;
 
 public interface IEncounterService {
 

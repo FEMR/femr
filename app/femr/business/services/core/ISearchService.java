@@ -106,12 +106,6 @@ public interface ISearchService {
     ServiceResponse<SettingItem> getSystemSettings();
 
     /**
-     * Get all custom fields that exist in the system
-     * @return list of their names
-     */
-    ServiceResponse<List<String>> getCustomFieldList();
-
-    /**
      * Get all patient information for searching users.
      *
      * @return patient item for json serialization

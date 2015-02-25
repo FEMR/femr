@@ -146,7 +146,7 @@ public class HistoryController extends Controller {
         Map<String, String> pmhFields = new HashMap<>();
         pmhFields.put("medicalSurgicalHistory", tabFieldMultiMap.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue());
         pmhFields.put("socialHistory", tabFieldMultiMap.getMostRecentOrEmpty("socialHistory", null).getValue());
-        pmhFields.put("currentMedications", tabFieldMultiMap.getMostRecentOrEmpty("currentMedications", null).getValue());
+        pmhFields.put("currentMedications", tabFieldMultiMap.getMostRecentOrEmpty("currentMedication", null).getValue());
         pmhFields.put("familyHistory", tabFieldMultiMap.getMostRecentOrEmpty("familyHistory", null).getValue());
         indexEncounterMedicalViewModel.setPmhFields(pmhFields);
 
@@ -205,13 +205,11 @@ public class HistoryController extends Controller {
      * @return
      */
     private Map<String, String> extractCustomFields(TabFieldMultiMap tabFieldMultiMap) {
+
         Map<String, String> customFields = new HashMap<>();
-        ServiceResponse<List<String>> customFieldNamesServiceResponse = searchService.getCustomFieldList();
-        if (customFieldNamesServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        List<String> customFieldNamess = customFieldNamesServiceResponse.getResponseObject();
-        for (String customField : customFieldNamess) {
+        List<String> customFieldNames = tabFieldMultiMap.getCustomFieldNameList();
+        for (String customField : customFieldNames) {
+
             customFields.put(customField, tabFieldMultiMap.getMostRecentOrEmpty(customField, null).getValue());
         }
         return customFields;

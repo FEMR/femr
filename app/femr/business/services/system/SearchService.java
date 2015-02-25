@@ -493,26 +493,6 @@ public class SearchService implements ISearchService {
         return response;
     }
 
-
-    public ServiceResponse<List<String>> getCustomFieldList() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> tabFieldNames = new ArrayList<>();
-        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
-                .fetch("tab")
-                .where()
-                .eq("tab.isCustom", true);
-        try {
-            List<? extends ITabField> tabFields = tabFieldRepository.find(query);
-            for (ITabField tabField : tabFields) {
-                tabFieldNames.add(tabField.getName());
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad query");
-        }
-        response.setResponseObject(tabFieldNames);
-        return response;
-    }
-
     /**
      * {@inheritDoc}
      */

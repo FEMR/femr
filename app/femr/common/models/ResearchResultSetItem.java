@@ -11,6 +11,7 @@ public class ResearchResultSetItem {
     private float dataRangeLow;
     private float dataRangeHigh;
     private float total;
+    private double standardDeviation;
 
     // @TODO -- is this really needed? Controller will know what it asked for
     private String dataType;
@@ -61,6 +62,14 @@ public class ResearchResultSetItem {
 
     public void setTotal(float total) {
         this.total = total;
+    }
+
+    public double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    public void setStandardDeviation(double standardDeviation) {
+        this.standardDeviation = standardDeviation;
     }
 
     public String getDataType() {

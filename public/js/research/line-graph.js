@@ -35,13 +35,13 @@ var lineGraphModule = (function(){
         var graphHeight = containerHeight - margin.top - margin.bottom;
 
         var xScale = d3.scale.linear()
-            .domain(d3.extent(graphData, function(d) { return parseInt(d.primaryName); }))
-            .nice()
+            .domain([d3.min(graphData, function(d) { return parseInt(d.primaryName); })-1,
+                d3.max(graphData, function(d) { return parseInt(d.primaryName); })])
             .range([0, graphWidth]);
 
         var yScale = d3.scale.linear()
-            .domain(d3.extent(graphData, function(d) { return d.primaryValue; }))
-            //.domain([0, d3.max(graphData, function(d) { return d.primaryValue; })])
+            .domain([0,
+                    d3.max(graphData, function(d) { return d.primaryValue; })])
             .range([graphHeight, 0]);
 
         var xAxis = d3.svg.axis()
@@ -55,7 +55,7 @@ var lineGraphModule = (function(){
 
         var line = d3.svg.line()
             .x(function(d) { return xScale(d.primaryName); })
-            .y(function(d) { return yScale(d.primaryValue); });
+            .y(function(d) { return (d) ? yScale(d.primaryValue) : 0; });
 
         var chart = d3.select("#"+containerIDString)
             .attr("width", containerWidth)

@@ -48,8 +48,9 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     private ChiefComplaint medicalSurgicalHistory;
     @JoinColumn(name = "social_history", nullable = true)
     private ChiefComplaint socialHistory;
-    @JoinColumn(name = "social_history", nullable = true)
-    private ChiefComplaint socialHistory;
+    @JoinColumn(name = "family_history", nullable = true)
+    private ChiefComplaint currentMedication;
+    @JoinColumn(name = "current_medication", nullable = true)
 
 
     @Override

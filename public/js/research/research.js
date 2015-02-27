@@ -131,9 +131,9 @@ var graphLoaderModule = (function(){
     var jsonData;
 
     var statisticsFields = {
-        median: $("#median"),
         average: $("#average"),
-        range: $("#range")
+        range: $("#range"),
+        total: $("#total")
     };
 
     var showGraphLoadingIcon = function(){
@@ -157,9 +157,9 @@ var graphLoaderModule = (function(){
 
         // remove any previous graph
         d3.selectAll("svg > *").remove();
-        $("#range").find(".val").text("");
-        $("#average").find(".val").text("");
-        $("#median").find(".val").text("");
+        $(statisticsFields.range).find(".val").text("");
+        $(statisticsFields.average).find(".val").text("");
+        $(statisticsFields.total).find(".val").text("");
 
         // post graph
         $.post("/research/graph", postData, function (rawData) {
@@ -244,40 +244,21 @@ var graphLoaderModule = (function(){
                     tableChartModule.buildGraph();
             }
 
+
             if( typeof jsonData.primaryValuemap != "undefined" &&
                 Object.keys(jsonData.primaryValuemap).length > 0){
 
                 // If there is a value map, statistics are not valid
-                $(statisticsFields.median).hide();
                 $(statisticsFields.average).hide();
                 $(statisticsFields.range).hide();
+
             }
             else {
 
-                $(statisticsFields.median).show();
                 $(statisticsFields.average).show();
                 $(statisticsFields.range).show();
 
                 // Grab Statistics
-                if ("median" in jsonData) {
-
-                    var median = jsonData.median;
-                    //console.log(median);
-                    if( filterMenuModule.getPrimaryDataset() == "height" ){
-
-                        var median = inchesToFeetInches(median);
-                    }
-                    else {
-
-                        median = parseFloat(median).toFixed(2);
-                    }
-
-                    $(statisticsFields.median).find(".val").text(median + " " + unitOfMeasurement);
-                }
-                else {
-                    $(statisticsFields.median).find(".val").text("n/a");
-                }
-
                 if ("average" in jsonData) {
 
                     var average = jsonData.average;
@@ -296,6 +277,7 @@ var graphLoaderModule = (function(){
                 else {
                     $(statisticsFields.average).find(".val").text("n/a");
                 }
+
 
                 if (("rangeLow" in jsonData) && ("rangeHigh" in jsonData)) {
 
@@ -328,6 +310,15 @@ var graphLoaderModule = (function(){
                 }
             }
 
+            if ("total" in jsonData) {
+
+                var total = jsonData.total;
+                $(statisticsFields.total).find(".val").text(total + " Patients");
+            }
+            else {
+                $(statisticsFields.total).find(".val").text("n/a");
+            }
+
             hideGraphLoadingIcon();
         });
 
@@ -340,6 +331,9 @@ var graphLoaderModule = (function(){
 
             thisContainerId = newContainerId;
         }
+
+        // remove any previous graph
+        d3.selectAll("svg > *").remove();
 
         if( jsonData != null ) {
             switch (graphType) {

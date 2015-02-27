@@ -1,5 +1,22 @@
-package femr.common.models;
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
 
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
+package femr.common.models;
 
 public class ResearchFilterItem {
 
@@ -10,9 +27,9 @@ public class ResearchFilterItem {
     private String endDate;
     private boolean groupPrimary;
     private Integer groupFactor;
-    private Float rangeStart;
-    private Float rangeEnd;
-    private Integer medicationId;
+    private Float filterRangeStart;
+    private Float filterRangeEnd;
+    private String medicationName;
 
     public String getPrimaryDataset() {
         return primaryDataset;
@@ -62,35 +79,35 @@ public class ResearchFilterItem {
 
     public void setGroupFactor(Integer groupFactor) { this.groupFactor = groupFactor; }
 
-    public Float getRangeStart() { return rangeStart; }
+    public Float getFilterRangeStart() { return filterRangeStart; }
 
-    public void setRangeStart(Float rangeStart) {
+    public void setFilterRangeStart(Float filterRangeStart) {
 
-        if (rangeStart == null) {
+        if (filterRangeStart == null) {
 
-            this.rangeStart = Float.MIN_VALUE;
-
-        } else {
-
-            this.rangeStart = rangeStart;
-        }
-    }
-
-    public Float getRangeEnd() { return rangeEnd; }
-
-    public void setRangeEnd(Float rangeEnd) {
-
-        if (rangeEnd == null) {
-
-            this.rangeEnd = Float.MAX_VALUE;
+            this.filterRangeStart = -1 * Float.MAX_VALUE;
 
         } else {
 
-            this.rangeEnd = rangeEnd;
+            this.filterRangeStart = filterRangeStart;
         }
     }
 
-    public Integer getMedicationId() { return medicationId; }
+    public Float getFilterRangeEnd() { return filterRangeEnd; }
 
-    public void setMedicationId(Integer medicationId) { this.medicationId = medicationId; }
+    public void setFilterRangeEnd(Float filterRangeEnd) {
+
+        if (filterRangeEnd == null) {
+
+            this.filterRangeEnd = Float.MAX_VALUE;
+
+        } else {
+
+            this.filterRangeEnd = filterRangeEnd;
+        }
+    }
+
+    public String getMedicationName() { return medicationName; }
+
+    public void setMedicationName(String medicationName) { this.medicationName = medicationName; }
 }

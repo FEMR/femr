@@ -2,6 +2,7 @@
 var filterMenuModule = (function(){
 
     var activeSubMenu = null;
+    var meds = null;
     var filterValues = {
 
         dataset1: null,
@@ -22,9 +23,9 @@ var filterMenuModule = (function(){
         endDate: $("#endDate"),
         groupPrimary: $("#groupPrimary"),
         groupFactor: $("#groupPrimaryData"),
-        rangeStart: $("#rangeStart"),
-        rangeEnd: $("#rangeEnd"),
-        medicationId: $("#medicationId")
+        rangeStart: $("#filterRangeStart"),
+        rangeEnd: $("#filterRangeEnd"),
+        medicationName: $("#medicationName")
     };
 
     var filterMenus = {
@@ -110,8 +111,8 @@ var filterMenuModule = (function(){
             $(filterMenus.filter).find(".val").find(".date").find(".end").text("");
         }
 
-        // make default startDate of 30 days ago
-        var defaultStartDate = new Date(defaultEndDate.getTime() - 30*24*60*60*1000);
+        // make default startDate of 120 days ago
+        var defaultStartDate = new Date(defaultEndDate.getTime() - 120*24*60*60*1000);
         // date field is in format yyyy-MM-dd --> view String like mm/dd/yyyy
         if( Object.prototype.toString.call(defaultStartDate) === "[object Date]" && !isNaN(defaultStartDate.getTime()) ) {
 
@@ -137,7 +138,7 @@ var filterMenuModule = (function(){
 
         $(filterFields.rangeStart).val("");
         $(filterFields.rangeEnd).val("");
-        $(filterFields.medicationId).val(-1);
+        $(filterFields.medicationName).val("");
         $(filterFields.groupPrimary).prop('checked', false);
         $(filterFields.groupFactor).val("10");
 
@@ -173,7 +174,7 @@ var filterMenuModule = (function(){
 
         // get Image Size
         var imageSize = $(this).data("imagesize");
-        console.log(imageSize);
+        //console.log(imageSize);
 
         var currWidth = $(".main").width();
 
@@ -445,7 +446,7 @@ var filterMenuModule = (function(){
         filterValues.rangeStart = $(filterFields.rangeStart).val();
         filterValues.rangeEnd = $(filterFields.rangeEnd).val();
 
-        console.log("Range Changed");
+        //console.log("Range Changed");
 
         return false;
     };
@@ -553,7 +554,6 @@ var filterMenuModule = (function(){
             }
         }
 
-        console.log(filterValues);
         if( filterValues.rangeStart != null ) {
 
             if( isNaN(+filterValues.rangeStart) || !isFinite(filterValues.rangeStart) ){
@@ -623,6 +623,16 @@ var filterMenuModule = (function(){
         return false;
     };
 
+    var registerTypeahead = function(){
+
+        //get medications
+        $.getJSON("/research/typeahead", function (data) {
+
+            meds =  data;
+            typeaheadFeature.initalizeTypeAhead(filterFields.medicationName, "medication", meds);
+        });
+    };
+
     var publicObject = {};
     publicObject.getPrimaryDataset = function(){ return filterValues.dataset1; };
     publicObject.getSecondaryDataset = function(){ return filterValues.dataset2; };
@@ -653,6 +663,9 @@ var filterMenuModule = (function(){
         $("#save-button").click(showImageOptions);
         $(".save-image-cont").find(".options").find(".image-size-selection").click(chooseImageSize);
         $(".save-image-cont").find(".options").find(".close").click(hideImageOptions)
+
+        // register typeahead on medication names field
+        registerTypeahead();
 
         // stop form submission
         $("#graph-options").attr("onsubmit", "return false;");

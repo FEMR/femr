@@ -37,6 +37,14 @@ var barGraphModule = (function(){
             .domain(graphData.map(function(d) { return mapGraphData(d.primaryName, valueMap); }))
             .rangeRoundBands([0, graphWidth], .25);
 
+        /*
+        var xScale = d3.scale.ordinal()
+            //.domain(graphData.map(function(d) { return mapGraphData(d.primaryName, valueMap); }))
+            .domain([d3.min(graphData, function(d) { return mapGraphData(d.primaryName, valueMap); }),
+                     d3.max(graphData, function(d) { return mapGraphData(d.primaryName, valueMap); })])
+            .range([0, graphWidth]);
+        */
+
         var yScale = d3.scale.linear()
             .domain([0, d3.max(graphData, function(d) { return d.primaryValue; })])
             .range([graphHeight, 0]);
@@ -103,7 +111,6 @@ var barGraphModule = (function(){
             .attr("x", function(d) { return xScale(mapGraphData(d.primaryName, valueMap)); })
             .attr("y", function(d) { return yScale(d.primaryValue); })
             .attr("height", function(d) { return graphHeight - yScale(d.primaryValue); })
-            //.attr("width", function(d) { return xScale(d.primaryName); })
             .attr("width", xScale.rangeBand())
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);

@@ -16,23 +16,37 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.business.services.core;
+package femr.data.models.core.research;
 
-import femr.common.dtos.ServiceResponse;
-import femr.common.models.*;
-import femr.ui.models.research.json.ResearchGraphDataModel;
+import femr.data.models.core.IVital;
+import femr.data.models.mysql.PatientEncounter;
+import femr.data.models.mysql.research.ResearchEncounter;
 
-/**
- * Interface for the Research Service
- */
-public interface IResearchService {
+public interface IResearchEncounterVital {
 
+    int getId();
 
-    /**
-     * Take filters and build matching data for graph
-     *
-     * @param filterItem object representing chosen filters
-     * @return Graph data bundled for display
-     */
-    public ServiceResponse<ResearchResultSetItem> getGraphData(ResearchFilterItem filterItem);
+    int getUserId();
+
+    ResearchEncounter getPatientEncounter();
+
+    void setPatientEncounter(ResearchEncounter patientEncounterId);
+
+    int getVitalId();
+
+    void setVitalId(int vitalId);
+
+    IVital getVital();
+    void setVital(IVital vital);
+
+    Float getVitalValue();
+
+    void setVitalValue(float vitalValue);
+
+    String getDateTaken();
+
+    void setDateTaken(String dateTaken);
+
+    void setUserId(int userId);
+
 }

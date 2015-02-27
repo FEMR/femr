@@ -28,8 +28,6 @@ import java.util.List;
 public class EditViewModelPost {
 
     private int id;
-    private String customFieldJSON;
-    private String multipleHpiJSON;
 
     private List<TabFieldItem> tabFieldItems;
     private List<PrescriptionItem> prescriptions;
@@ -75,22 +73,6 @@ public class EditViewModelPost {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getCustomFieldJSON() {
-        return customFieldJSON;
-    }
-
-    public void setCustomFieldJSON(String customFieldJSON) {
-        this.customFieldJSON = customFieldJSON;
-    }
-
-    public String getMultipleHpiJSON() {
-        return multipleHpiJSON;
-    }
-
-    public void setMultipleHpiJSON(String multipleHpiJSON) {
-        this.multipleHpiJSON = multipleHpiJSON;
     }
 
     public List<TabFieldItem> getTabFieldItems() {

@@ -207,7 +207,6 @@ $(document).ready(function () {
 
 
     $('#medicalSubmitBtn').click(function () {
-        JSONifyDynamicFields();
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 
@@ -217,34 +216,6 @@ $(document).ready(function () {
 
 
 });
-
-function JSONifyDynamicFields() {
-    var tabs = {};
-
-    //iterate over each tab
-    $(".customTab").each(function () {
-        var tabName = $(this).attr("id");
-
-        var fieldItem = [];
-        $("#" + tabName + "DynamicTab .customField").each(function () {
-            var fieldItems = {};
-            if ($(this).val() !== "") {
-                fieldItems["name"] = $(this).attr('id');
-                fieldItems["value"] = $(this).val();
-                fieldItem.push(fieldItems);
-            }
-            tabs[tabName] = fieldItem;
-
-        });
-
-
-    });
-    var stringifiedJSON = JSON.stringify(tabs);
-    $('input[name=customFieldJSON]').val(stringifiedJSON);
-
-
-}
-
 
 /**
  * Generic tab showing function. Also takes care of identifying active tab.

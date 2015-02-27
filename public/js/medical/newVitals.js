@@ -86,3 +86,6 @@ $(document).ready(function () {
 function closeDialog(name) {
     $('#' + name).dialog("close");
 }
+
+
+

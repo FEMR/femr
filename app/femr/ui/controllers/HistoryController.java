@@ -1,5 +1,7 @@
 package femr.ui.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -8,17 +10,19 @@ import femr.common.models.*;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.history.IndexEncounterMedicalViewModel;
-import femr.ui.models.history.IndexEncounterPharmacyViewModel;
-import femr.ui.models.history.IndexEncounterViewModel;
-import femr.ui.models.history.IndexPatientViewModelGet;
+import femr.ui.models.history.*;
+import femr.ui.models.medical.EditViewModelPost;
+import femr.ui.models.medical.json.JCustomField;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.ui.views.html.history.editEncounterGet;
 import femr.ui.views.html.history.editEncounterPost;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.stringhelpers.StringUtils;
+import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
 import java.util.ArrayList;
@@ -31,7 +35,8 @@ import play.mvc.Security;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class HistoryController extends Controller {
-
+    private final Form<IndexPatientViewModelPost> EditEncounterForm = Form.form(IndexPatientViewModelPost.class);
+    private final IMedicationService medicationService;
     private final IEncounterService encounterService;
     private final ISessionService sessionService;
     private final ISearchService searchService;
@@ -42,6 +47,7 @@ public class HistoryController extends Controller {
     @Inject
     public HistoryController(IEncounterService encounterService,
                              ISessionService sessionService,
+                             IMedicationService medicationService,
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
@@ -49,6 +55,7 @@ public class HistoryController extends Controller {
 
         this.encounterService = encounterService;
         this.sessionService = sessionService;
+        this.medicationService = medicationService;
         this.searchService = searchService;
         this.tabService = tabService;
         this.photoService = photoService;
@@ -84,6 +91,9 @@ public class HistoryController extends Controller {
 
         ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.findPatientEncounterItemsByPatientId(patientItems.get(0).getId());
         if (patientEncountersServiceResponse.hasErrors()) {
+
+
+
             throw new RuntimeException();
         }
         List<PatientEncounterItem> patientEncounterItems = patientEncountersServiceResponse.getResponseObject();
@@ -96,9 +106,6 @@ public class HistoryController extends Controller {
 
         return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems));
     }
-
-
-
     public Result editEncounterGet(int encounterId ) {
 
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -206,6 +213,84 @@ public class HistoryController extends Controller {
     public Result editEncounterPost(int encounterId) {
 
 
+        // Will get the current user in session
+        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+
+
+       IndexPatientViewModelPost patientViewModelPost = EditEncounterForm.bindFromRequest().get();
+       //get current encounter
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(encounterId);
+        if (patientEncounterServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
+        patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
+        //update patient encounter
+
+        //Maps the dynamic tab name to the field list
+        Gson gson = new Gson();
+        Map<String, List<JCustomField>> customFieldInformation = gson.fromJson(patientViewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
+        }.getType());
+
+        List<TabFieldItem> customFieldItems = new ArrayList<>();
+        for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
+            List<JCustomField> fields = entry.getValue();
+            for (JCustomField jcf : fields) {
+                TabFieldItem tabFieldItem = new TabFieldItem();
+                tabFieldItem.setName(jcf.getName());
+                tabFieldItem.setValue(jcf.getValue());
+                tabFieldItem.setIsCustom(true);
+                customFieldItems.add(tabFieldItem);
+            }
+        }
+
+        //save the custom fields, if any
+        if (customFieldItems.size() > 0) {
+            ServiceResponse<List<TabFieldItem>> customFieldItemResponse =
+                    encounterService.createPatientEncounterTabFields(customFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
+            if (customFieldItemResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+        }
+
+        List<TabFieldItem> nonCustomFieldItems = new ArrayList<>();
+
+        //multiple chief complaints
+        if (StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getMultipleHpiJSON())) {
+            //iterate over all values, adding them to the list with the respective chief complaint
+            nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(patientViewModelPost.getMultipleHpiJSON()));
+
+        } else {//one or less chief complaints
+            nonCustomFieldItems.addAll(mapHpiFieldItems(patientViewModelPost));
+        }
+
+        nonCustomFieldItems.addAll(mapPmhFieldItems(patientViewModelPost));
+        nonCustomFieldItems.addAll(mapTreatmentFieldItems(patientViewModelPost));
+
+        if (nonCustomFieldItems.size() > 0) {
+            ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
+                    encounterService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
+            if (nonCustomFieldItemResponse.hasErrors()) {
+                throw new RuntimeException();
+            }
+        }
+
+
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(encounterId);
+        if (patientItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
+
+
+        List<Http.MultipartFormData.FilePart> fps = request().body().asMultipartFormData().getFiles();
+
+        //wtf is this
+     //   photoService.HandleEncounterPhotos(fps, patientEncounterItem, patientViewModelPost);
+
+
+
+        String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 
 
 
@@ -361,5 +446,96 @@ public class HistoryController extends Controller {
 
         return hpiFields;
 
+    }
+
+    private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON) {
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
+        Gson gson = new Gson();
+        //get values from JSON, assign list of values to chief complaint
+        Map<String, List<JCustomField>> hpiTabInformation = gson.fromJson(JSON, new TypeToken<Map<String, List<JCustomField>>>() {
+        }.getType());
+
+        for (Map.Entry<String, List<JCustomField>> entry : hpiTabInformation.entrySet()) {
+            List<JCustomField> fields = entry.getValue();
+
+            for (JCustomField jcf : fields) {
+                TabFieldItem tabFieldItem = new TabFieldItem();
+                tabFieldItem.setName(jcf.getName());
+                tabFieldItem.setChiefComplaint(entry.getKey().trim());
+                tabFieldItem.setIsCustom(false);
+                tabFieldItem.setValue(jcf.getValue());
+                tabFieldItems.add(tabFieldItem);
+            }
+        }
+        return tabFieldItems;
+    }
+
+    private List<TabFieldItem> mapHpiFieldItems(IndexPatientViewModelPost patientViewModelPost) {
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
+        //hpi fields
+        if (patientViewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getOnset()))
+            tabFieldItems.add(createTabFieldItem("onset", patientViewModelPost.getOnset()));
+        if (patientViewModelPost.getOnsetTime() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getOnsetTime()))
+            tabFieldItems.add(createTabFieldItem("onsetTime", patientViewModelPost.getOnsetTime()));
+        if (patientViewModelPost.getSeverity() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getSeverity()))
+            tabFieldItems.add(createTabFieldItem("severity", patientViewModelPost.getSeverity()));
+        if (patientViewModelPost.getRadiation() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getRadiation()))
+            tabFieldItems.add(createTabFieldItem("radiation", patientViewModelPost.getRadiation()));
+        if (patientViewModelPost.getQuality() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getQuality()))
+            tabFieldItems.add(createTabFieldItem("quality", patientViewModelPost.getQuality()));
+        if (patientViewModelPost.getProvokes() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProvokes()))
+            tabFieldItems.add(createTabFieldItem("provokes", patientViewModelPost.getProvokes()));
+        if (patientViewModelPost.getPalliates() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getPalliates()))
+            tabFieldItems.add(createTabFieldItem("palliates", patientViewModelPost.getPalliates()));
+        if (patientViewModelPost.getTimeOfDay() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getTimeOfDay()))
+            tabFieldItems.add(createTabFieldItem("timeOfDay", patientViewModelPost.getTimeOfDay()));
+        if (patientViewModelPost.getPhysicalExamination() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getPhysicalExamination()))
+            tabFieldItems.add(createTabFieldItem("physicalExamination", patientViewModelPost.getPhysicalExamination()));
+        if (patientViewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getNarrative()))
+            tabFieldItems.add(createTabFieldItem("narrative", patientViewModelPost.getNarrative()));
+        return tabFieldItems;
+    }
+    private TabFieldItem createTabFieldItem(String name, String value) {
+        TabFieldItem tabFieldItem = new TabFieldItem();
+        tabFieldItem.setIsCustom(false);
+        tabFieldItem.setName(name);
+        tabFieldItem.setOrder(null);
+        tabFieldItem.setPlaceholder(null);
+        tabFieldItem.setSize(null);
+        tabFieldItem.setType(null);
+        tabFieldItem.setValue(value.trim());
+        return tabFieldItem;
+    }
+    private List<TabFieldItem> mapPmhFieldItems(IndexPatientViewModelPost patientViewModelPost) {
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
+        //Pmh_fields
+        if (patientViewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getMedicalSurgicalHistory()))
+            tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", patientViewModelPost.getMedicalSurgicalHistory()));
+        if (patientViewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getSocialHistory()))
+            tabFieldItems.add(createTabFieldItem("socialHistory", patientViewModelPost.getSocialHistory()));
+        if (patientViewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getCurrentMedication()))
+            tabFieldItems.add(createTabFieldItem("currentMedication", patientViewModelPost.getCurrentMedication()));
+        if (patientViewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getFamilyHistory()))
+            tabFieldItems.add(createTabFieldItem("familyHistory", patientViewModelPost.getFamilyHistory()));
+        return tabFieldItems;
+    }
+    private List<TabFieldItem> mapTreatmentFieldItems(IndexPatientViewModelPost patientViewModelPost) {
+        List<TabFieldItem> tabFieldItems = new ArrayList<>();
+        //treatment fields
+        if (patientViewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getAssessment()))
+            tabFieldItems.add(createTabFieldItem("assessment", patientViewModelPost.getAssessment()));
+        if (patientViewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem1()))
+            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem1()));
+        if (patientViewModelPost.getProblem2() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem2()))
+            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem2()));
+        if (patientViewModelPost.getProblem3() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem3()))
+            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem3()));
+        if (patientViewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem4()))
+            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem4()));
+        if (patientViewModelPost.getProblem5() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem5()))
+            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem5()));
+        if (patientViewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getTreatment()))
+            tabFieldItems.add(createTabFieldItem("treatment", patientViewModelPost.getTreatment()));
+        return tabFieldItems;
     }
 }

@@ -20,9 +20,6 @@ package femr.ui.models.triage;
 
 import java.util.Date;
 
-//NOTE: the triage view sets the input element names dynamically
-//based on the vital name entry in the database, but this
-//ViewModel does NOT.
 public class IndexViewModelPost {
     //begin patient
     private String firstName;

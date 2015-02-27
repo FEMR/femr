@@ -29,11 +29,11 @@
         <div id="encounterViewHeader">
 
             <div class="submit">
-                <button type="submit" id="historySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                <button type="submit" id="historySaveBtn" class="fButton fRedButton fSubmitButton pull-right">
                     Save</button>
             </div>
 
-            <a href="/history/edit-encounter/@viewModel.getPatientItem.getId" class="btn btn-default pull-right">Save </a>
+            <a href="/history/encounter/@viewModel.getPatientItem.getId" class="btn btn-default pull-right">Save </a>
 
             <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
             <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
@@ -149,17 +149,17 @@
 
 
                     <label class="inputLabel">Medical/Surgical History:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Medical/Surgical History" value="@outputStringOrNA(pmhFieldMap.get("medicalSurgicalHistory"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "MedicalSurgicalHistory" name="MedicalSurgical History" value="@outputStringOrNA(pmhFieldMap.get("medicalSurgicalHistory"))" />
 
                     <label class="inputLabel">Social History:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="SocialHistory" value="@outputStringOrNA(pmhFieldMap.get("socialHistory"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "SocialHistory" name="SocialHistory" value="@outputStringOrNA(pmhFieldMap.get("socialHistory"))" />
 
                     <label class="inputLabel">Current Medications:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="CurrentMedications" value="@outputStringOrNA(pmhFieldMap.get("currentMedications"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "CurrentMedications" name="CurrentMedications" value="@outputStringOrNA(pmhFieldMap.get("currentMedications"))" />
 
 
-                    <label class="inputLabel"> Family History:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="FamilyHistory" value="@outputStringOrNA(pmhFieldMap.get("familyHistory"))" />
+                    <label class="inputLabel">Family History:</label>
+                    <input type="text" class="form-control input-sm pull-left" id= "FamilyHistory" name="FamilyHistory" value="@outputStringOrNA(pmhFieldMap.get("familyHistory"))" />
 
 
 
@@ -168,10 +168,10 @@
                 @defining(viewModelMedical.getTreatmentFields) { treatmentFieldMap =>
 
                        <label class="inputLabel">Assessment:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Assessment" value="@outputStringOrNA(treatmentFieldMap.get("assessment"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Assessment" name="Assessment" value="@outputStringOrNA(treatmentFieldMap.get("assessment"))" />
 
-                    <label class="inputLabel"> Treatment:</label>
-                    <input type="text" class="form-control input-sm pull-left" name=" Treatment" value="@outputStringOrNA(treatmentFieldMap.get("treatment:"))" />
+                    <label class="inputLabel">Treatment:</label>
+                    <input type="text" class="form-control input-sm pull-left" id= "Treatment" name="Treatment" value="@outputStringOrNA(treatmentFieldMap.get("treatment:"))" />
 
 
 
@@ -193,33 +193,33 @@
                     <h4>Chief Complaint: @key</h4>
 
                     <label class="inputLabel">Onset:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Onset" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Onset" name="Onset" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))" />
 
                     <label class="inputLabel">Quality:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Quality" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Quality" name="Quality" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))" />
 
                     <label class="inputLabel">Radiation:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Radiation" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Radiation" name="Radiation" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))" />
 
                     <label class="inputLabel">Severity:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Severity" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Severity" name="Severity" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))" />
 
 
 
                     <label class="inputLabel">Provokes:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Provokes" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))" />
+                    <input type="text" class="form-control input-sm pull-left"id= "provokes"  name="Provokes" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))" />
 
                     <label class="inputLabel">Palliates:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Palliates:" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Palliates" name="Palliates:" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))" />
 
                     <label class="inputLabel">Time Of Day:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="TimeOfDay" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "TimeOfDay" name="TimeOfDay" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))" />
 
                     <label class="inputLabel"> Narrative:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="Narrative" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "Narrative" name="Narrative" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))" />
 
                     <label class="inputLabel">Physical Examination:</label>
-                    <input type="text" class="form-control input-sm pull-left" name="PhysicalExamination:" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))" />
+                    <input type="text" class="form-control input-sm pull-left" id= "PhysicalExamination" name="PhysicalExamination" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))" />
 
 
 
@@ -231,32 +231,32 @@
 
 
                 <label class="inputLabel">Onset:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Onset" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "Oneset" name="Onset" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))" />
 
                 <label class="inputLabel">Quality:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Quality" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "Quality" name="Quality" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))" />
 
                 <label class="inputLabel">Radiation:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Radiation" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "Radiation" name="Radiation" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))" />
 
                 <label class="inputLabel">Severity:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Severity" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "Severity" name="Severity" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))" />
 
 
 
                 <label class="inputLabel">Provokes:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Provokes" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "PhysicalExamination" name="Provokes" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))" />
 
                 <label class="inputLabel">Palliates:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Palliates" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "Palliates" name="Palliates" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))" />
                 <label class="inputLabel">Time Of Day:</label>
-                <input type="text" class="form-control input-sm pull-left" name="TimeOfDay" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "TimeOfDay" name="TimeOfDay" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))" />
 
                 <label class="inputLabel"> Narrative:</label>
-                <input type="text" class="form-control input-sm pull-left" name="Narrative" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "Narrative" name="Narrative" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))" />
 
                 <label class="inputLabel">Physical Examination:</label>
-                <input type="text" class="form-control input-sm pull-left" name="PhysicalExamination:" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))" />
+                <input type="text" class="form-control input-sm pull-left" id= "PhysicalExamination" name="PhysicalExamination:" value="@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))" />
 
 
 

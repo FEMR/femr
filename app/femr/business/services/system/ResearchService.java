@@ -200,6 +200,21 @@ public class ResearchService implements IResearchService {
 
     private ResearchResultSetItem groupData(ResearchResultSetItem results, ResearchFilterItem filters){
 
+        // Force grouping if not already chosen
+        /*
+        if( !filters.isGroupPrimary() ){
+
+            if( results.getDataset().size() > 30 ){
+
+                filters.setGroupPrimary(true);
+                // default to 20 groups
+                //int groupFactor = results.getDataset().size() / 20;
+                int groupFactor = 10;
+                filters.setGroupFactor(groupFactor);
+            }
+        }
+        */
+
         // Build group key values -- don't bother if there will only be 1 group
         // make happen automatically too? -- results.getDataset().size() > 20
         if( filters.isGroupPrimary() && results.getDataset().size() > filters.getGroupFactor() ) {
@@ -338,7 +353,6 @@ public class ResearchService implements IResearchService {
         if( encounters.isEmpty() ) return new ResearchResultSetItem();
 
         // used to calculate average
-        float totalForAvg = 0;
         float encountersTotal = 0;
 
         // Map to keep track of total patient for each vital_value
@@ -443,112 +457,13 @@ public class ResearchService implements IResearchService {
 
             }
 
-
-
-            // get secondary data
-            /*
-            if (filters.getSecondaryDataset() != null) {
-                if (filters.getSecondaryDataset().equals("gender")) {
-
-                    // Set valuemap if not already
-                    if (resultSet.getSecondaryValueMap() == null) {
-
-                        Map<Float, String> secondaryResultMap = new HashMap<>();
-                        secondaryResultMap.put(0.0f, "Male");
-                        secondaryResultMap.put(1.0f, "Female");
-                        secondaryResultMap.put(2.0f, "N/A");
-
-                        resultSet.setSecondaryValueMap(secondaryResultMap);
-                    }
-
-                    String gender = "2.0";
-                    if (patient.getSex() == null) {
-                        gender = "2.0";
-                    } else if (patient.getSex().matches("(?i:Male)")) {
-                        gender = "0.0";
-                    } else if (patient.getSex().matches("(?i:Female)")) {
-                        gender = "1.0";
-                    }
-
-                    Map<String, Float> secondaryData = resultItem.getSecondaryData();
-                    // Initialize secondary data
-                    if (secondaryData == null) {
-
-                        secondaryData = new HashMap<String, Float>();
-
-                        // Make sure all keys exist
-                        secondaryData.put("0.0", 0.0f);
-                        secondaryData.put("1.0", 0.0f);
-                        secondaryData.put("2.0", 0.0f);
-                    }
-
-                    // Add patient to secondary running total
-                    // key will exist after initialization above
-                    Float secTotal = secondaryData.get(gender);
-                    secondaryData.put(gender, secTotal + 1.0f);
-
-                    resultItem.setSecondaryData(secondaryData);
-
-                } else if (filters.getSecondaryDataset().equals("pregnancyStatus")) {
-
-                    // Set valuemap if not already
-                    if (resultSet.getSecondaryValueMap() == null) {
-
-                        Map<Float, String> secondaryResultMap = new HashMap<>();
-                        secondaryResultMap.put(0.0f, "No");
-                        secondaryResultMap.put(1.0f, "Yes");
-
-                        resultSet.setSecondaryValueMap(secondaryResultMap);
-                    }
-
-                    Integer wksPregnant = encounter.getWeeksPregnant();
-                    if (wksPregnant == null) wksPregnant = 0;
-
-                    String pregnancyStatus = "0.0";
-                    if (wksPregnant > 0) {
-                        pregnancyStatus = "1.0";
-                    }
-
-                    Map<String, Float> secondaryData = resultItem.getSecondaryData();
-                    // Initialize secondary data
-                    if (secondaryData == null) {
-
-                        secondaryData = new HashMap<String, Float>();
-
-                        // Make sure all keys exist
-                        secondaryData.put("0.0", 0.0f);
-                        secondaryData.put("1.0", 0.0f);
-                    }
-
-                    // Add patient to secondary running total
-                    // key will exist after initialization above
-                    Float secTotal = secondaryData.get(pregnancyStatus);
-                    secondaryData.put(pregnancyStatus, secTotal + 1.0f);
-
-                    resultItem.setSecondaryData(secondaryData);
-                }
-                else if( filters.getSecondaryDataset().equals("age") ){
-
-                    // Get patient Age - as of encounter date (Triage Visit)
-                    Float age = (float) Math.floor(dateUtils.getAgeAsOfDateFloat(patient.getAge(), encounter.getDateOfTriageVisit()));
-
-                }
-            }
-            */
-
-
         }
 
         // save builder map as list in result set
         resultSet.setDataset(new ArrayList<ResearchResultItem>(datasetBuilder.values()));
         resultSet.setTotal(encountersTotal);
 
-        // save AVERAGE
-        //float average = totalForAvg / encountersTotal;
-        //resultSet.setAverage(average);
-
         return resultSet;
-
     }
 
 
@@ -719,12 +634,6 @@ public class ResearchService implements IResearchService {
 
                     resultItem.setSecondaryData(secondaryData);
                 }
-                else if( filters.getSecondaryDataset().equals("age") ){
-
-                    // Get patient Age - as of encounter date (Triage Visit)
-                    Float age = (float) Math.floor(dateUtils.getAgeAsOfDateFloat(patient.getAge(), encounter.getDateOfTriageVisit()));
-
-                }
             }
 
             // put result item back into map
@@ -739,6 +648,14 @@ public class ResearchService implements IResearchService {
         float average = totalForAvg / encountersTotal;
         resultSet.setAverage(average);
 
+        // Standard Deviation -- might be used to detect outliers
+        double devSum = 0.0;
+        for( ResearchResultItem item : resultSet.getDataset() ){
+
+            //(indexed value - mean)^2
+            devSum += Math.pow(item.getPrimaryValue() - average, 2);
+        }
+        resultSet.setStandardDeviation(Math.sqrt(devSum));
 
         return resultSet;
 
@@ -939,9 +856,7 @@ public class ResearchService implements IResearchService {
         float average = totalForAvg / encountersTotal;
         resultSet.setAverage(average);
 
-
         return resultSet;
-
     }
 
     // do stuff specific to age request
@@ -1214,7 +1129,6 @@ public class ResearchService implements IResearchService {
 
                 // put result item back into map
                 datasetBuilder.put((float)wksPregnant, resultItem);
-
             }
 
         }
@@ -1267,7 +1181,7 @@ public class ResearchService implements IResearchService {
             resultSet.setPrimaryValueMap(resultMap);
 
             float gender = 2.0f;
-            // Do case in-sensitve comparison to be safe
+            // Do case in-sensitive comparison to be safe
             //1 = female
             //0 = male
             //2 = no sex
@@ -1305,4 +1219,5 @@ public class ResearchService implements IResearchService {
         return resultSet;
 
     }
+
 }

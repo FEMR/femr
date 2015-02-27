@@ -18,12 +18,13 @@
 */
 package femr.business.services.core;
 
-import java.util.List;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PhotoItem;
 import femr.ui.models.medical.EditViewModelPost;
 import play.mvc.Http.MultipartFormData.FilePart;
+
+import java.util.List;
 
 public interface IPhotoService {
 
@@ -49,8 +50,8 @@ public interface IPhotoService {
      * Saves a patient's photo and updates the patients photoId field to point
      * to the updated photo
      *
-     * @param img image to save
-     * @param patientId id of the patient
+     * @param img        image to save
+     * @param patientId  id of the patient
      * @param deleteFlag true if photo is being deleted instead of saved
      * @return i have no idea
      */

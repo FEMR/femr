@@ -16,21 +16,11 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.medical.json;
+package femr.data;
 
 /**
- * Used to get custom tab fields in addition to hpi fields
- * when multiple chief complaints exist
+ * Responsible for creating model objects (data/models).
+ * Only visible to data & service layer.
  */
-public class JCustomField {
-    String name;
-    String value;
-
-    public String getName() {
-        return name;
-    }
-
-    public String getValue() {
-        return value;
-    }
+public class BeanMapper {
 }

@@ -20,9 +20,6 @@ package femr.business.helpers;
 
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
-
-import javax.inject.Provider;
-
 import femr.common.models.*;
 import femr.ui.models.research.FilterViewModel;
 import femr.data.models.core.*;
@@ -30,6 +27,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import javax.inject.Provider;
 import java.util.Date;
 import java.util.List;
 
@@ -118,33 +116,6 @@ public class DomainMapper {
     }
 
     /**
-     * Create a new TabFieldItem (DTO) that contains a value.
-     *
-     * @param patientEncounterTabField DAO with joined TabField
-     * @return tab field with value
-     */
-    public static TabFieldItem createTabFieldItem(IPatientEncounterTabField patientEncounterTabField) {
-        if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
-            return null;
-        }
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setName(patientEncounterTabField.getTabField().getName());
-        tabFieldItem.setOrder(patientEncounterTabField.getTabField().getOrder());
-        tabFieldItem.setPlaceholder(patientEncounterTabField.getTabField().getPlaceholder());
-        if (patientEncounterTabField.getTabField().getTabFieldSize() != null)
-            tabFieldItem.setSize(patientEncounterTabField.getTabField().getTabFieldSize().getName());
-        if (patientEncounterTabField.getTabField().getTabFieldType() != null)
-            tabFieldItem.setType(patientEncounterTabField.getTabField().getTabFieldType().getName());
-        tabFieldItem.setValue(patientEncounterTabField.getTabFieldValue());
-        if (patientEncounterTabField.getTabField().getTab() == null) tabFieldItem.setIsCustom(false);
-        else tabFieldItem.setIsCustom(true);
-        if (patientEncounterTabField.getChiefComplaint() != null)
-            tabFieldItem.setChiefComplaint(patientEncounterTabField.getChiefComplaint().getValue());
-
-        return tabFieldItem;
-    }
-
-    /**
      * Create a new TabFieldItem (DTO) based on empty tab field
      *
      * @param tabField basic DAO TabField
@@ -189,54 +160,6 @@ public class DomainMapper {
         tabField.setTabFieldType(iTabFieldType);
         tabField.setTab(tab);
         return tabField;
-    }
-
-    /**
-     * Creates a trip item
-     *
-     * @param teamName name of the team
-     * @param tripCity city of the trip
-     * @param tripCountry country of the trip
-     * @param startDate when the trip starts
-     * @param endDate when the trip ends
-     * @return
-     */
-    public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
-        if (StringUtils.isNullOrWhiteSpace(teamName)||
-                StringUtils.isNullOrWhiteSpace(tripCity) ||
-                StringUtils.isNullOrWhiteSpace(tripCountry) ||
-                startDate == null){
-            return null;
-        }
-
-        TripItem tripItem = new TripItem();
-        tripItem.setTeamName(teamName);
-        tripItem.setTripCity(tripCity);
-        tripItem.setTripCountry(tripCountry);
-        tripItem.setTripStartDate(startDate);
-        tripItem.setTripEndDate(endDate);
-        return tripItem;
-    }
-
-    public static TeamItem createTeamItem(String name, String location, String description){
-        if (StringUtils.isNullOrWhiteSpace(name)){
-            return null;
-        }
-        TeamItem teamItem = new TeamItem();
-        teamItem.setName(name);
-        teamItem.setLocation(location);
-        teamItem.setDescription(description);
-        return teamItem;
-    }
-
-    public static CityItem createCityItem(String cityName, String countryName){
-        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
-            return null;
-
-        CityItem cityItem = new CityItem();
-        cityItem.setCityName(cityName);
-        cityItem.setCountryName(countryName);
-        return cityItem;
     }
 
     /**
@@ -556,13 +479,18 @@ public class DomainMapper {
         return patientEncounter;
     }
 
-    public IChiefComplaint createChiefComplaint(String value, int patientEncounterId) {
+    public IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder) {
+
         if (StringUtils.isNullOrWhiteSpace(value)) {
+
             return null;
         }
+
         IChiefComplaint chiefComplaint = chiefComplaintProvider.get();
         chiefComplaint.setValue(value);
         chiefComplaint.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), patientEncounterId));
+        chiefComplaint.setSortOrder(sortOrder);
+
         return chiefComplaint;
     }
 
@@ -586,17 +514,6 @@ public class DomainMapper {
         return missionItem;
     }
 
-    public PrescriptionItem createPrescriptionItem(IPatientPrescription patientPrescription) {
-        if (patientPrescription == null) {
-            return null;
-        }
-        PrescriptionItem prescriptionItem = new PrescriptionItem();
-        prescriptionItem.setId(patientPrescription.getId());
-        prescriptionItem.setName(patientPrescription.getMedication().getName());
-        prescriptionItem.setReplacementId(patientPrescription.getReplacementId());
-        return prescriptionItem;
-    }
-
     public IPatient createPatient(PatientItem patientItem) {
         if (patientItem == null) {
             return null;
@@ -615,37 +532,6 @@ public class DomainMapper {
         return patient;
     }
 
-    public static PatientItem createPatientItem(IPatient patient, Integer weeksPregnant, Integer heightFeet, Integer heightInches, Float weight) {
-        if (patient == null) {
-            return null;
-        }
-        PatientItem patientItem = new PatientItem();
-        patientItem.setAddress(patient.getAddress());
-        if (patient.getAge() != null) {
-            patientItem.setAge(dateUtils.getAge(patient.getAge()));//age (int)
-            patientItem.setBirth(patient.getAge());//date of birth(date)
-            patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(patient.getAge()));
-        }
-        patientItem.setCity(patient.getCity());
-        patientItem.setFirstName(patient.getFirstName());
-        patientItem.setId(patient.getId());
-        patientItem.setLastName(patient.getLastName());
-        patientItem.setSex(patient.getSex());
-        patientItem.setUserId(patient.getUserId());
-        if (patient.getPhoto() != null) {
-            patientItem.setPathToPhoto(patient.getPhoto().getFilePath());
-            patientItem.setPhotoId(patient.getPhoto().getId());
-        }
-        if (weeksPregnant != null) patientItem.setWeeksPregnant(weeksPregnant);
-
-        //heightFeet, heightInches, and weight should all be the most recent value
-        if (heightFeet != null) patientItem.setHeightFeet(heightFeet);
-        if (heightInches != null) patientItem.setHeightInches(heightInches);
-        if (weight != null) patientItem.setWeight(weight);
-
-        return patientItem;
-    }
-
     /**
      * Maps an IVital to a VitalItem.
      *
@@ -653,7 +539,9 @@ public class DomainMapper {
      * @return a new VitalItem with no value
      */
     public static VitalItem createVitalItem(IVital vital) {
+
         if (vital == null) {
+
             return null;
         }
         VitalItem vitalItem = new VitalItem();
@@ -661,62 +549,31 @@ public class DomainMapper {
         return vitalItem;
     }
 
-    /**
-     * Maps an IPatientEncounterVital to a VitalItem
-     *
-     * @param patientEncounterVital the IPatientEncounterVital
-     * @return a new VitalItem with a value
-     */
-    public static VitalItem createVitalItem(IPatientEncounterVital patientEncounterVital) {
-        if (patientEncounterVital == null || patientEncounterVital.getVital() == null) {
-            return null;
-        }
-        VitalItem vitalItem = new VitalItem();
-        vitalItem.setName(patientEncounterVital.getVital().getName());
-        vitalItem.setValue(patientEncounterVital.getVitalValue());
-        return vitalItem;
-    }
-
-    /**
-     * gets a photo item
-     *
-     * @param photo    the photo
-     * @param imageURL url to the image
-     * @return a new PhotoItem
-     */
-    public PhotoItem createPhotoItem(IPhoto photo, String imageURL) {
-        PhotoItem photoItem = new PhotoItem();
-        if (photo == null || StringUtils.isNullOrWhiteSpace(imageURL)) {
-            return null;
-        }
-
-        photoItem.setId(photo.getId());
-        photoItem.setImageDesc(photo.getDescription());
-        photoItem.setImageUrl(imageURL);
-        photoItem.setImageDate(StringUtils.ToSimpleDate(photo.getInsertTS()));
-
-        return photoItem;
-    }
 
     /**
      * Creates a new patientEncounterTabField
      *
-     * @param tabField    DAO tabfield
+     * @param tabFieldId  id of the tab field
      * @param userId      id of the user filling out the value
      * @param value       value of the field
      * @param encounterId encounter id of the visit
      * @return a new patient encounter tab field!!
      */
-    public IPatientEncounterTabField createPatientEncounterTabField(ITabField tabField, int userId, String value, int encounterId) {
-        if (tabField == null || StringUtils.isNullOrWhiteSpace(value)) {
+    public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId) {
+
+        if (StringUtils.isNullOrWhiteSpace(value)) {
+
             return null;
         }
+
         IPatientEncounterTabField patientEncounterTabField = patientEncounterTabFieldProvider.get();
-        patientEncounterTabField.setDateTaken(dateUtils.getCurrentDateTime());
+        patientEncounterTabField.setDateTaken(dateTaken);
         patientEncounterTabField.setUserId(userId);
         patientEncounterTabField.setPatientEncounterId(encounterId);
-        patientEncounterTabField.setTabField(tabField);
+        patientEncounterTabField.setTabField(Ebean.getReference(tabFieldProvider.get().getClass(), tabFieldId));
         patientEncounterTabField.setTabFieldValue(value);
+        if (chiefComplaintId != null)
+            patientEncounterTabField.setChiefComplaint(Ebean.getReference(chiefComplaintProvider.get().getClass(), chiefComplaintId));
         return patientEncounterTabField;
     }
 
@@ -745,35 +602,6 @@ public class DomainMapper {
         patientPrescription.setDispensed(isDispensed);
         patientPrescription.setCounseled(isCounseled);
         return patientPrescription;
-    }
-
-    /**
-     * Create a new prescription item
-     *
-     * @param patientPrescription the IPatientPrescription
-     * @return a new prescription item
-     */
-    public PrescriptionItem createPatientPrescriptionItem(IPatientPrescription patientPrescription) {
-        if (patientPrescription == null) {
-            return null;
-        }
-
-        return new PrescriptionItem(patientPrescription.getMedication().getName());
-    }
-
-    /**
-     * Create a new problem item
-     *
-     * @param patientEncounterTabField
-     * @return
-     */
-    public ProblemItem createProblemItem(IPatientEncounterTabField patientEncounterTabField) {
-        if (patientEncounterTabField == null || patientEncounterTabField.getTabField() == null) {
-            return null;
-        }
-        ProblemItem problemItem = new ProblemItem();
-        problemItem.setName(patientEncounterTabField.getTabFieldValue());
-        return problemItem;
     }
 
     /**

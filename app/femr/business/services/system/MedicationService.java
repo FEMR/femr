@@ -19,11 +19,11 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.*;
-import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
 import femr.data.daos.IRepository;
@@ -32,49 +32,21 @@ import femr.data.models.core.IPatientPrescription;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.PatientPrescription;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationService implements IMedicationService {
 
-    private final IRepository<IMedication> medicationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final DomainMapper domainMapper;
 
     @Inject
-    public MedicationService(IRepository<IMedication> medicationRepository,
-                             IRepository<IPatientPrescription> patientPrescriptionRepository,
+    public MedicationService(IRepository<IPatientPrescription> patientPrescriptionRepository,
                              DomainMapper domainMapper) {
-        this.medicationRepository = medicationRepository;
+
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.domainMapper = domainMapper;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<String> getMedicationNames() {
-
-        ServiceResponse<String> response = new ServiceResponse<>();
-
-        try {
-            List<String> medicationNames = new ArrayList<>();
-            List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
-
-            JsonObject jsonObject = new JsonObject();
-            if (medications != null) {
-                for (int medicationIndex = 0; medicationIndex < medications.size(); medicationIndex++) {
-                    jsonObject.addProperty("medicine" + medicationIndex, medications.get(medicationIndex).getName());
-                }
-            }
-
-            response.setResponseObject(jsonObject.toString());
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
-
-        return response;
     }
 
     /**
@@ -104,7 +76,7 @@ public class MedicationService implements IMedicationService {
             oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
             patientPrescriptionRepository.update(oldPatientPrescription);
 
-            PrescriptionItem newPrescriptionItem = domainMapper.createPrescriptionItem(newPatientPrescription);
+            PrescriptionItem newPrescriptionItem = ItemMapper.createPrescriptionItem(newPatientPrescription.getId(), newPatientPrescription.getMedication().getName(), newPatientPrescription.getReplacementId());
             response.setResponseObject(newPrescriptionItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -117,16 +89,16 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
+    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        if (prescriptionItems == null || userId < 1 || encounterId < 1) {
+        if (prescriptionNames == null || prescriptionNames.size() < 1 || userId < 1 || encounterId < 1) {
             response.addError("", "invalid parameters");
             return response;
         }
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
-        for (PrescriptionItem pi : prescriptionItems) {
-            IMedication medication = domainMapper.createMedication(pi.getName());
+        for (String script : prescriptionNames) {
+            IMedication medication = domainMapper.createMedication(script);
             patientPrescriptions.add(domainMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
         }
 
@@ -134,7 +106,8 @@ public class MedicationService implements IMedicationService {
             List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
-                newPrescriptionItems.add(domainMapper.createPatientPrescriptionItem(pp));
+                if (pp.getMedication() != null)
+                    newPrescriptionItems.add(ItemMapper.createPatientPrescriptionItem(pp.getMedication().getName()));
             }
             response.setResponseObject(newPrescriptionItems);
         } catch (Exception ex) {
@@ -162,7 +135,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                    updatedPrescriptions.add(ItemMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);
@@ -192,7 +165,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setCounseled(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                    updatedPrescriptions.add(ItemMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);

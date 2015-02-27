@@ -20,10 +20,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 
 /**
  * This is the controller for the research page, it is currently not supported.

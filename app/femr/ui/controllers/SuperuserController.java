@@ -20,11 +20,11 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import femr.business.services.core.IMissionTripService;
+import femr.business.services.core.ITabService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.business.services.core.ISessionService;
-import femr.business.services.core.ICustomTabService;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -47,16 +47,16 @@ public class SuperuserController extends Controller {
     private final Form<TabsViewModelPost> TabsViewModelForm = Form.form(TabsViewModelPost.class);
     private final Form<ContentViewModelPost> ContentViewModelForm = Form.form(ContentViewModelPost.class);
     private Form<TripViewModelPost> tripViewModelPostForm = Form.form(TripViewModelPost.class);
-    private final ICustomTabService customTabService;
+    private final ITabService tabService;
     private final IMissionTripService missionTripService;
     private final ISessionService sessionService;
 
     @Inject
-    public SuperuserController(ICustomTabService customTabService,
+    public SuperuserController(ITabService tabService,
                                IMissionTripService missionTripService,
                                ISessionService sessionService) {
 
-        this.customTabService = customTabService;
+        this.tabService = tabService;
         this.missionTripService = missionTripService;
         this.sessionService = sessionService;
     }
@@ -161,7 +161,7 @@ public class SuperuserController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         ServiceResponse<List<TabItem>> response;
 
-        response = customTabService.getCustomTabs(false);
+        response = tabService.getCustomTabs(false);
         if (response.hasErrors()) {
             throw new RuntimeException();
         }
@@ -170,7 +170,7 @@ public class SuperuserController extends Controller {
         viewModelGet.setCurrentTabs(response.getResponseObject());
 
         //get deleted tabs
-        response = customTabService.getCustomTabs(true);
+        response = tabService.getCustomTabs(true);
         if (response.hasErrors()) {
             throw new RuntimeException();
         }
@@ -187,11 +187,11 @@ public class SuperuserController extends Controller {
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getAddTabName())) {
             TabItem tabItem = new TabItem();
             //new
-            if (!customTabService.doesTabExist(viewModelPost.getAddTabName()).getResponseObject()) {
+            if (!tabService.doesTabExist(viewModelPost.getAddTabName()).getResponseObject()) {
                 tabItem.setName(viewModelPost.getAddTabName());
                 if (viewModelPost.getAddTabLeft() != null) tabItem.setLeftColumnSize(viewModelPost.getAddTabLeft());
                 if (viewModelPost.getAddTabRight() != null) tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
-                ServiceResponse<TabItem> response = customTabService.createTab(tabItem, currentUser.getId());
+                ServiceResponse<TabItem> response = tabService.createTab(tabItem, currentUser.getId());
                 if (response.hasErrors()) {
                     throw new RuntimeException();
                 }
@@ -203,7 +203,7 @@ public class SuperuserController extends Controller {
                 else tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
 
                 tabItem.setName(viewModelPost.getAddTabName());
-                ServiceResponse<TabItem> response = customTabService.editTab(tabItem, currentUser.getId());
+                ServiceResponse<TabItem> response = tabService.editTab(tabItem, currentUser.getId());
                 if (response.hasErrors()) {
                     throw new RuntimeException();
                 }
@@ -211,7 +211,7 @@ public class SuperuserController extends Controller {
         }
         //becomes toggle
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getDeleteTab())) {
-            ServiceResponse<TabItem> response = customTabService.toggleTab(viewModelPost.getDeleteTab());
+            ServiceResponse<TabItem> response = tabService.toggleTab(viewModelPost.getDeleteTab());
             if (response.hasErrors()) {
                 throw new RuntimeException();
             }
@@ -228,28 +228,28 @@ public class SuperuserController extends Controller {
         viewModelGet.setName(name);
 
         //get current custom fields
-        ServiceResponse<List<TabFieldItem>> currentFieldItemsResponse = customTabService.getTabFieldsByTabName(name, false);
+        ServiceResponse<List<TabFieldItem>> currentFieldItemsResponse = tabService.getTabFieldsByTabName(name, false);
         if (currentFieldItemsResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setCurrentCustomFieldItemList(currentFieldItemsResponse.getResponseObject());
 
         //get removed custom fields
-        ServiceResponse<List<TabFieldItem>> removedFieldItemsResponse = customTabService.getTabFieldsByTabName(name, true);
+        ServiceResponse<List<TabFieldItem>> removedFieldItemsResponse = tabService.getTabFieldsByTabName(name, true);
         if (currentFieldItemsResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setRemovedCustomFieldItemList(removedFieldItemsResponse.getResponseObject());
 
         //get available field types
-        ServiceResponse<List<String>> fieldTypesResponse = customTabService.getTypes();
+        ServiceResponse<List<String>> fieldTypesResponse = tabService.getTypes();
         if (fieldTypesResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setCustomFieldTypes(fieldTypesResponse.getResponseObject());
 
         //get available fields sizes
-        ServiceResponse<List<String>> fieldSizesResponse = customTabService.getSizes();
+        ServiceResponse<List<String>> fieldSizesResponse = tabService.getSizes();
         if (fieldSizesResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -272,11 +272,11 @@ public class SuperuserController extends Controller {
             tabFieldItem.setOrder(viewModelPost.getAddOrder());
             tabFieldItem.setPlaceholder(viewModelPost.getAddPlaceholder());
             //edit
-            if (customTabService.doesTabFieldExist(viewModelPost.getAddName()).getResponseObject()) {
-                customTabService.editTabField(tabFieldItem);
+            if (tabService.doesTabFieldExist(viewModelPost.getAddName()).getResponseObject()) {
+                tabService.editTabField(tabFieldItem);
             } else {
 
-                ServiceResponse<TabFieldItem> response = customTabService.createTabField(tabFieldItem, currentUser.getId(), name);
+                ServiceResponse<TabFieldItem> response = tabService.createTabField(tabFieldItem, currentUser.getId(), name);
                 if (response.hasErrors()) {
                     throw new RuntimeException();
                 }
@@ -284,7 +284,7 @@ public class SuperuserController extends Controller {
         }
         //deactivating a field
         if (StringUtils.isNotNullOrWhiteSpace(viewModelPost.getToggleName())) {
-            ServiceResponse<TabFieldItem> response = customTabService.toggleTabField(viewModelPost.getToggleName(), name);
+            ServiceResponse<TabFieldItem> response = tabService.toggleTabField(viewModelPost.getToggleName(), name);
             if (response.hasErrors()) {
                 throw new RuntimeException();
             }

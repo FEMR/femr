@@ -19,18 +19,11 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPhotoService;
+import femr.common.ItemMapper;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
@@ -48,6 +41,12 @@ import org.apache.commons.codec.binary.Base64;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PhotoService implements IPhotoService {
@@ -281,7 +280,7 @@ public class PhotoService implements IPhotoService {
                             .eq("id", pep.getPhotoId());
                     try {
                         IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
-                        returnList.add(domainMapper.createPhotoItem(savedPhoto, femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                        returnList.add(ItemMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
                     } catch (Exception ex) {
                         response.addError("", ex.getMessage());
                         return response;

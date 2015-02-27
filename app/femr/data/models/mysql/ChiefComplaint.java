@@ -34,6 +34,8 @@ public class ChiefComplaint implements IChiefComplaint {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_encounter_id")
     private PatientEncounter patientEncounter;
+    @Column(name = "sort_Order")
+    private Integer sortOrder;
 
     @Override
     public int getId() {
@@ -58,5 +60,15 @@ public class ChiefComplaint implements IChiefComplaint {
     @Override
     public void setPatientEncounter(IPatientEncounter patientEncounter) {
         this.patientEncounter = (PatientEncounter) patientEncounter;
+    }
+
+    @Override
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    @Override
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

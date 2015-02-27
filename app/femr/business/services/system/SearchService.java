@@ -26,13 +26,12 @@ import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
-import femr.util.DataStructure.Mapping.TabFieldMultiMap;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.*;
@@ -105,9 +104,30 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
 
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (savedPatient.getPhoto() != null){
+                pathToPhoto = savedPatient.getPhoto().getFilePath();
+                photoId = savedPatient.getPhoto().getId();
+            }
+            PatientItem patientItem = ItemMapper.createPatientItem(
+                    savedPatient.getId(),
+                    savedPatient.getFirstName(),
+                    savedPatient.getLastName(),
+                    savedPatient.getCity(),
+                    savedPatient.getAddress(),
+                    savedPatient.getUserId(),
+                    savedPatient.getAge(),
+                    savedPatient.getSex(),
+                    recentEncounter.getWeeksPregnant(),
+                    patientHeightFeet,
+                    patientHeightInches,
+                    patientWeight,
+                    pathToPhoto,
+                    photoId
+            );
 
-            PatientItem patientItem = DomainMapper.createPatientItem(savedPatient, recentEncounter.getWeeksPregnant(), patientHeightFeet, patientHeightInches, patientWeight);
-
+            //TODO: why is this being repeated?
             if (savedPatient.getPhoto() != null) {
                 patientItem.setPathToPhoto("/photo/patient/" + patientId + "?showDefault=false");
             }
@@ -141,7 +161,29 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
-            PatientItem patientItem = DomainMapper.createPatientItem(patient, patientEncounter.getWeeksPregnant(), patientHeightFeet, patientHeightInches, patientWeight);
+
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (patient.getPhoto() != null){
+                pathToPhoto = patient.getPhoto().getFilePath();
+                photoId = patient.getPhoto().getId();
+            }
+            PatientItem patientItem = ItemMapper.createPatientItem(
+                    patient.getId(),
+                    patient.getFirstName(),
+                    patient.getLastName(),
+                    patient.getCity(),
+                    patient.getAddress(),
+                    patient.getUserId(),
+                    patient.getAge(),
+                    patient.getSex(),
+                    patientEncounter.getWeeksPregnant(),
+                    patientHeightFeet,
+                    patientHeightInches,
+                    patientWeight,
+                    pathToPhoto,
+                    photoId
+            );
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -391,8 +433,30 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatient> patients = patientRepository.find(query);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient p : patients) {
-                patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+            for (IPatient patient : patients) {
+                //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (patient.getPhoto() != null) {
+                    pathToPhoto = patient.getPhoto().getFilePath();
+                    photoId = patient.getPhoto().getId();
+                }
+                patientItems.add(ItemMapper.createPatientItem(
+                        patient.getId(),
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getCity(),
+                        patient.getAddress(),
+                        patient.getUserId(),
+                        patient.getAge(),
+                        patient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId
+                ));
             }
             response.setResponseObject(patientItems);
         } catch (Exception ex) {
@@ -406,125 +470,25 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TabFieldMultiMap> getTabFieldMultiMap(int encounterId) {
-        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
-        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
-        String tabFieldName;
-        String chiefComplaint;
-
-        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
-
-        try {
-            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
-            if (patientEncounterTabFields != null) {
-
-                for (IPatientEncounterTabField petf : patientEncounterTabFields) {
-                    tabFieldName = petf.getTabField().getName();
-                    chiefComplaint = null;
-                    if (petf.getTabField().getTab().getName().equals("HPI")) {
-                        if (petf.getChiefComplaint() != null) {
-                            chiefComplaint = petf.getChiefComplaint().getValue();
-                        }
-                    }
-
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, petf.getTabFieldValue());
-                }
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad querying");
-        }
-
-        response.setResponseObject(tabFieldMultiMap);
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId) {
-        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
-        VitalMultiMap vitalMultiMap = new VitalMultiMap();
-
-        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
-        try {
-            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
-
-            if (patientEncounterVitals != null) {
-                for (IPatientEncounterVital vitalData : patientEncounterVitals) {
-                    vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
-                }
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad query");
-        }
-
-        response.setResponseObject(vitalMultiMap);
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ServiceResponse<SettingItem> getSystemSettings() {
         ServiceResponse<SettingItem> response = new ServiceResponse<>();
         try {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
-            SettingItem settingItem = new SettingItem();
+
             if (systemSettings == null || systemSettings.size() == 0) {
+
                 response.addError("", "no settings exist at this time");
             } else {
-                for (ISystemSetting ss : systemSettings) {
-                    switch (ss.getName()) {
-                        case "Multiple chief complaints":
-                            settingItem.setMultipleChiefComplaint(ss.isActive());
-                            break;
-                        case "Medical PMH Tab":
-                            settingItem.setPmhTab(ss.isActive());
-                            break;
-                        case "Medical Photo Tab":
-                            settingItem.setPhotoTab(ss.isActive());
-                            break;
-                        case "Medical HPI Consolidate":
-                            settingItem.setConsolidateHPI(ss.isActive());
-                            break;
-                    }
-                }
+
+                SettingItem settingItem = ItemMapper.createSettingItem(systemSettings);
+                response.setResponseObject(settingItem);
             }
-            response.setResponseObject(settingItem);
+
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
 
-        return response;
-    }
-
-
-    public ServiceResponse<List<String>> getCustomFieldList() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> tabFieldNames = new ArrayList<>();
-        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
-                .fetch("tab")
-                .where()
-                .eq("tab.isCustom", true);
-        try {
-            List<? extends ITabField> tabFields = tabFieldRepository.find(query);
-            for (ITabField tabField : tabFields) {
-                tabFieldNames.add(tabField.getName());
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad query");
-        }
-        response.setResponseObject(tabFieldNames);
         return response;
     }
 
@@ -538,11 +502,33 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient allPatient : allPatients) {
 
-                PatientItem currPatient = DomainMapper.createPatientItem(allPatient, null, null, null, null);
+            for (IPatient patient : allPatients) {
 
-                if (allPatient.getPhoto() != null) {
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (patient.getPhoto() != null) {
+                    pathToPhoto = patient.getPhoto().getFilePath();
+                    photoId = patient.getPhoto().getId();
+                }
+                PatientItem currPatient = ItemMapper.createPatientItem(
+                        patient.getId(),
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getCity(),
+                        patient.getAddress(),
+                        patient.getUserId(),
+                        patient.getAge(),
+                        patient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId
+                );
+
+                if (patient.getPhoto() != null) {
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
                 } else {
                     // If no photo for patient, show default

@@ -24,12 +24,6 @@ import femr.common.models.PrescriptionItem;
 import java.util.List;
 
 public interface IMedicationService {
-    /**
-     * Get a JSON string representing medication names
-     *
-     * @return JSON object in the form of { medication# : "name" }
-     */
-    ServiceResponse<String> getMedicationNames();
 
     /**
      * Create a new prescription and replace an old one with it
@@ -48,7 +42,7 @@ public interface IMedicationService {
      * @param encounterId       id of the current encounter
      * @return updated prescription list
      */
-    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
+    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
 
     /**
      * Mark prescriptions as filled

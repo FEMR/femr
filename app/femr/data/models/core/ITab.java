@@ -18,7 +18,10 @@
 */
 package femr.data.models.core;
 
+import femr.data.models.mysql.TabField;
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 /**
  * A tab on the medical screen - allows for dynamic tabs
@@ -55,4 +58,8 @@ public interface ITab {
     boolean getIsCustom();
 
     void setIsCustom(boolean isCustom);
+
+    List<TabField> getTabFields();
+
+    void setTabFields(List<TabField> tabFields);
 }

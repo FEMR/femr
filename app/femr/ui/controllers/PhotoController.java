@@ -9,9 +9,9 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.util.stringhelpers.StringUtils;
 import play.mvc.*;
-import java.io.File;
 import static play.mvc.Results.ok;
 
+import java.io.File;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})

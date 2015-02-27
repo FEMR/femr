@@ -1,5 +1,6 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.medical.EditViewModelGet)
-
+@(currentUser: femr.common.dtos.CurrentUser,
+        vitals: femr.util.DataStructure.Mapping.VitalMultiMap,
+        viewModel: femr.ui.models.medical.EditViewModelGet)
 
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.SearchController
@@ -38,7 +39,7 @@
             <div id="vitalsWrap">
                 <div id="vitalsPartial">
                         <!-- Repalaced when user clicks save in record new vitals dialog -->
-                    @listVitals(viewModel.getVitalMap)
+                    @listVitals(vitals)
                 </div>
 
                 <button type="button" id="newVitalsBtn" class="fButton fOtherButton">Record New Vitals</button>
@@ -54,64 +55,55 @@
                 @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getPatientItem.getId)), 'enctype -> "multipart/form-data") {
                     <div class="tabWrap">
                         <ul id="medicalTabs" class="tabrow">
-                            <li class="active" id="hpi">HPI</li>
+                            <li id="hpi">HPI</li>
+                            <li id="treatment">Treatment</li>
                             @if(viewModel.getSettings.isPmhTab) {
                                 <li id="pmh">PMH</li>
                             }
-
-                            <li id="treatment">Treatment</li>
                             @if(viewModel.getSettings.isPhotoTab) {
-                                <li id="photo">Photos (@viewModel.getPhotos.size)</li>
+                                <li id="photos">Photos</li>
                             }
-
-                            @for(x <- 1 to viewModel.getCustomTabs.size) {
-                                @defining(viewModel.getCustomTabs.get(x - 1).getName) { tabName =>
-                                    <li id="@tabName" class="customTab">@tabName</li>
+                            @*Generate the custom tabs*@
+                            @for(tab <- viewModel.getTabItems) {
+                                @if(tab.isCustom) {
+                                    <li id="@tab.getName.toLowerCase">@tab.getName</li>
                                 }
                             }
                         </ul>
-
                     </div>
 
                     <div id="tabContentWrap">
-                        @hpiTab(viewModel)
+                        @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI, viewModel.getChiefComplaints)
 
-                        @treatmentTab(viewModel)
+                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getProblemItems)
 
                         @if(viewModel.getSettings.isPmhTab) {
-                            @pmhTab(viewModel)
+                            @pmhTab(viewModel.getTabItemByName("pmh"))
                         }
 
                         @if(viewModel.getSettings.isPhotoTab) {
-                            @photoTab(viewModel)
+                            @photoTab(viewModel.getPhotos)
                         }
 
-                        @for(i <- 1 to viewModel.getCustomTabs.size) {
-                            @defining(viewModel.getCustomTabs.get(i - 1)) { customTab =>
-                                @* Move the div wrapper into dynamicTab *@
-                                <div class="controlWrap hidden" id="@customTab.getName()Control">
-                                @dynamicTab(viewModel.getCustomFields.get(customTab.getName), customTab.getLeftColumnSize, customTab.getRightColumnSize, customTab.getName, false)
+                        @for(tab <- viewModel.getTabItems) {
+                            @* Move the div wrapper into dynamicTab*@
+                            @if(tab.isCustom){
+                                <div class="controlWrap hidden" id="@tab.getName.toLowerCase()Control">
+                                @dynamicTab(tab)
                                 </div>
-
                             }
                         }
-                        @* Use for "POSTing" JSON (dynamic tab data) *@
-                        <input type="text" class="hidden" name="customFieldJSON"/>
-                        @* Use for "POSTing" JSON (multiple chief complaint data) *@
-                        <input type="text" class="hidden" name="multipleHpiJSON"/>
-
 
                         <div class="historySubmitWrap">
-                        <button type="submit" id="medicalSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
-                            Submit Patient</button>
-                    }
+                            <button type="submit" id="medicalSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                                Submit Patient</button>
+                            }
 
                 @helper.form(action = SearchController.handleSearch("history")) {
                     <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatientItem.getId"/>
                     <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
                 }
             </div>
-
             </div>
 
             </div>

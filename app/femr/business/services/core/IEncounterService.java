@@ -19,19 +19,16 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.ProblemItem;
-import femr.common.models.TabFieldItem;
-import femr.common.models.UserItem;
+import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 
 import java.util.List;
-import java.util.Map;
 
 public interface IEncounterService {
 
     /**
-     * Create a patient encounter
+     * Create a patient encounter. Chief complaint sort order is the same as
+     * the order they exist in the list
      *
      * @param patientEncounterItem the patient encounter
      * @return the patient encounter with id (pk)
@@ -65,22 +62,24 @@ public interface IEncounterService {
     ServiceResponse<UserItem> getPhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * Finds non-custom current field values for medical tabs
+     * Gives values to a bunch of fields
      *
-     * @param encounterId current encounter id
-     * @return Mapping of the field name to the fielditem
-     */
-    ServiceResponse<Map<String, TabFieldItem>> findCurrentTabFieldsByEncounterId(int encounterId);
-
-    /**
-     * Adds tab field items to the PatientEncounterTabField table
-     *
-     * @param tabFieldItems list of fields to be saved
-     * @param encounterId   id of the current encounter
-     * @param userId        id of the user saving the fields
+     * @param tabFieldItems the fields, required attributes:<ul><li>name</li><li>value</li></ul>
+     * @param encounterId id of the current encounter
+     * @param userId id of the user saving the fields
      * @return updated list of items
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
+
+    /**
+     * Create all problems
+     *
+     * @param problemValues each problem
+     * @param encounterId id of the current encounter
+     * @param userId id of the user saving the problems
+     * @return updated problems
+     */
+    ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId);
 
     /**
      * Find all problems

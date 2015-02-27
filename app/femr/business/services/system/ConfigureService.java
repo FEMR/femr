@@ -62,10 +62,10 @@ public class ConfigureService implements IConfigureService {
 
         try {
             for (ISystemSetting ss : allSystemSettings) {
-                if (systemSettings.contains(ss.getName())){
+                if (systemSettings.contains(ss.getName())) {
                     ss.setActive(true);
                     systemSettingRepository.update(ss);
-                }else{
+                } else {
                     ss.setActive(false);
                     systemSettingRepository.update(ss);
                 }

@@ -18,8 +18,10 @@
 */
 package femr.common;
 
+import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
-import femr.data.models.core.ISystemSetting;
+import femr.data.models.core.*;
+import femr.ui.models.research.FilterViewModel;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 
@@ -47,6 +49,55 @@ public class ItemMapper {
         cityItem.setCityName(cityName);
         cityItem.setCountryName(countryName);
         return cityItem;
+    }
+
+    public static MedicationItem createMedicationItem(IMedication medication) {
+        if (medication == null) {
+            return null;
+        }
+        MedicationItem medicationItem = new MedicationItem();
+        medicationItem.setId(medication.getId());
+        medicationItem.setName(medication.getName());
+        medicationItem.setQuantity_current(medication.getQuantity_current());
+        medicationItem.setQuantity_total(medication.getQuantity_total());
+        if (medication.getMedicationForm() != null) {
+            medicationItem.setForm(medication.getMedicationForm().getName());
+        }
+
+        String fullActiveDrugName = "";
+        for (IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()) {
+            medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
+                    medicationActiveDrug.getMedicationMeasurementUnit().getName(),
+                    medicationActiveDrug.getValue(),
+                    medicationActiveDrug.isDenominator()
+            );
+            fullActiveDrugName = fullActiveDrugName.concat(medicationActiveDrug.getValue() + medicationActiveDrug.getMedicationMeasurementUnit().getName() + " " + medicationActiveDrug.getMedicationActiveDrugName().getName());
+        }
+
+        medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
+
+
+        return medicationItem;
+    }
+
+    public static MissionItem createMissionItem(IMissionTeam missionTeam) {
+
+        MissionItem missionItem = new MissionItem();
+        missionItem.setTeamName(missionTeam.getName());
+        missionItem.setTeamLocation(missionTeam.getLocation());
+        missionItem.setTeamDescription(missionTeam.getDescription());
+
+        for (IMissionTrip mt : missionTeam.getMissionTrips()) {
+            missionItem.addMissionTrip(mt.getId(),
+                    mt.getMissionCity().getName(),
+                    mt.getMissionCity().getMissionCountry().getName(),
+                    mt.getStartDate(),
+                    dateUtils.getFriendlyDate(mt.getStartDate()),
+                    mt.getEndDate(),
+                    dateUtils.getFriendlyDate(mt.getEndDate()),
+                    mt.isCurrent());
+        }
+        return missionItem;
     }
 
     /**
@@ -127,6 +178,38 @@ public class ItemMapper {
             patientItem.setWeight(weight);
 
         return patientItem;
+    }
+
+    /**
+     * Create a new PatientEncounterItem (DTO)
+     *
+     * @param patientEncounter patient encounter info
+     * @return a new PatientEncounterItem
+     */
+    public static PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter) {
+        if (patientEncounter == null || patientEncounter.getPatient() == null) {
+            return null;
+        }
+        PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
+        for (IChiefComplaint cc : patientEncounter.getChiefComplaints()) {
+            patientEncounterItem.addChiefComplaint(cc.getValue());
+        }
+        patientEncounterItem.setId(patientEncounter.getId());
+        patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
+        patientEncounterItem.setWeeksPregnant(patientEncounter.getWeeksPregnant());
+        patientEncounterItem.setTriageDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfTriageVisit()));
+        if (patientEncounter.getDateOfMedicalVisit() != null)
+            patientEncounterItem.setMedicalDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfMedicalVisit()));
+        if (patientEncounter.getDateOfPharmacyVisit() != null)
+            patientEncounterItem.setPharmacyDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfPharmacyVisit()));
+        patientEncounterItem.setIsClosed(LogicDoer.isEncounterClosed(patientEncounter));
+
+        patientEncounterItem.setNurseEmailAddress(patientEncounter.getNurse().getEmail());
+        if (patientEncounter.getDoctor() != null)
+            patientEncounterItem.setPhysicianEmailAddress(patientEncounter.getDoctor().getEmail());
+        if (patientEncounter.getPharmacist() != null)
+            patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
+        return patientEncounterItem;
     }
 
     /**
@@ -238,6 +321,40 @@ public class ItemMapper {
     }
 
     /**
+     * Create research filter
+     *
+     * @param filterViewModel
+     * @return ResearchFilterItem
+     */
+    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel) {
+
+        ResearchFilterItem filterItem = new ResearchFilterItem();
+
+        filterItem.setPrimaryDataset(filterViewModel.getPrimaryDataset());
+        filterItem.setSecondaryDataset(filterViewModel.getSecondaryDataset());
+        filterItem.setGraphType(filterViewModel.getGraphType());
+        filterItem.setStartDate(filterViewModel.getStartDate());
+        filterItem.setEndDate(filterViewModel.getEndDate());
+
+        Integer groupFactor = filterViewModel.getGroupFactor();
+        filterItem.setGroupFactor(groupFactor);
+        if (groupFactor != null && groupFactor > 0) {
+
+            filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
+        } else {
+
+            filterItem.setGroupPrimary(false);
+        }
+
+        filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
+        filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
+
+        filterItem.setMedicationName(filterViewModel.getMedicationName());
+
+        return filterItem;
+    }
+
+    /**
      * Creates a setting item, currently requires direct knowledge of a column in the database
      *
      * @param systemSettings a list of all system settings
@@ -301,12 +418,12 @@ public class ItemMapper {
     /**
      * Create a new tab field item without a value
      *
-     * @param name        the name of the field
-     * @param type        the fields type e.g. number, text
-     * @param size        the size of the field e.g. small, med, large
-     * @param order       sorting order for the field
-     * @param placeholder placeholder text for the field
-     * @param value       current value of the field
+     * @param name           the name of the field
+     * @param type           the fields type e.g. number, text
+     * @param size           the size of the field e.g. small, med, large
+     * @param order          sorting order for the field
+     * @param placeholder    placeholder text for the field
+     * @param value          current value of the field
      * @param chiefComplaint what chief complaint the field belongs to
      * @return a new TabFieldItem or null if name is empty
      */
@@ -341,44 +458,6 @@ public class ItemMapper {
         tabFieldItem.setIsCustom(isCustom);
 
         return tabFieldItem;
-    }
-
-    /**
-     * Create a team item
-     *
-     * @param name name of the team
-     * @return a new team item or null parameters are empty
-     */
-    public static TeamItem createTeamItem(String name) {
-
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-            return null;
-        }
-
-        TeamItem teamItem = new TeamItem();
-        teamItem.setName(name);
-
-        return teamItem;
-    }
-
-    /**
-     * Create a team item
-     *
-     * @param name     name of the team
-     * @param location where the team is based out of
-     * @return a new team item or null parameters are empty
-     */
-    public static TeamItem createTeamItem(String name, String location) {
-
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-            return null;
-        }
-
-        TeamItem teamItem = new TeamItem();
-        teamItem.setName(name);
-        teamItem.setLocation(location);
-
-        return teamItem;
     }
 
     /**
@@ -435,6 +514,33 @@ public class ItemMapper {
     }
 
     /**
+     * Create a new UserItem
+     *
+     * @param user DAO user
+     * @return new userItem
+     */
+    public static UserItem createUserItem(IUser user) {
+        if (user == null) {
+            return null;
+        }
+        UserItem userItem = new UserItem();
+        userItem.setId(user.getId());
+        userItem.setEmail(user.getEmail());
+        userItem.setFirstName(user.getFirstName());
+        userItem.setLastName(user.getLastName());
+        userItem.setLastLoginDate(dateUtils.getFriendlyDate(user.getLastLogin()));
+        for (IRole role : user.getRoles()) {
+            if (role != null && StringUtils.isNotNullOrWhiteSpace(role.getName())) {
+                userItem.addRole(role.getName());
+            }
+        }
+        userItem.setNotes(user.getNotes());
+        userItem.setDeleted(user.getDeleted());
+        userItem.setPasswordReset(user.getPasswordReset());
+        return userItem;
+    }
+
+    /**
      * Create a new VitalItem, all fields are required
      *
      * @param name  name of the vital
@@ -451,6 +557,23 @@ public class ItemMapper {
         vitalItem.setName(name);
         vitalItem.setValue(value);
 
+        return vitalItem;
+    }
+
+    /**
+     * Create an empty vital item without a value
+     *
+     * @param name name of the vital
+     * @return
+     */
+    public static VitalItem createVitalItem(String name) {
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+        VitalItem vitalItem = new VitalItem();
+        vitalItem.setName(name);
         return vitalItem;
     }
 }

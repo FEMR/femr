@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.services.core.IMedicationService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
 import femr.common.models.ResearchResultItem;
@@ -142,7 +143,7 @@ public class ResearchController extends Controller {
 
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
         //TODO: domain mapper out of scope
-        ResearchFilterItem researchFilterItem = DomainMapper.createResearchFilterItem(filterViewModel);
+        ResearchFilterItem researchFilterItem = ItemMapper.createResearchFilterItem(filterViewModel);
 
         ServiceResponse<ResearchResultSetItem> response = researchService.getGraphData(researchFilterItem);
         ResearchGraphDataModel graphModel = new ResearchGraphDataModel();

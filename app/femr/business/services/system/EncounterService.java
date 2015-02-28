@@ -118,7 +118,7 @@ public class EncounterService implements IEncounterService {
             }
 
 
-            response.setResponseObject(DomainMapper.createPatientEncounterItem(newPatientEncounter));
+            response.setResponseObject(ItemMapper.createPatientEncounterItem(newPatientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -153,7 +153,7 @@ public class EncounterService implements IEncounterService {
             patientEncounter = patientEncounterRepository.update(patientEncounter);
 
 
-            response.setResponseObject(DomainMapper.createPatientEncounterItem(patientEncounter));
+            response.setResponseObject(ItemMapper.createPatientEncounterItem(patientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -208,7 +208,7 @@ public class EncounterService implements IEncounterService {
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
-                UserItem userItem = DomainMapper.createUserItem(patientEncounter.getDoctor());
+                UserItem userItem = ItemMapper.createUserItem(patientEncounter.getDoctor());
                 response.setResponseObject(userItem);
             }
         } catch (Exception ex) {

@@ -107,7 +107,7 @@ public class VitalService implements IVitalService {
             List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IVital v : vitals) {
-                vitalItems.add(DomainMapper.createVitalItem(v));
+                vitalItems.add(ItemMapper.createVitalItem(v.getName()));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {

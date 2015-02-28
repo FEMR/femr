@@ -96,7 +96,7 @@ public class TabService implements ITabService {
             return response;
         }
 
-        TabItem tabItem = DomainMapper.createTabItem(tab);
+        TabItem tabItem = ItemMapper.createTabItem(tab.getName(), tab.getIsCustom(), tab.getLeftColumnSize(), tab.getRightColumnSize());
         response.setResponseObject(tabItem);
         return response;
     }
@@ -160,7 +160,7 @@ public class TabService implements ITabService {
 
         List<TabItem> tabItems = new ArrayList<>();
         for (ITab t : tabs) {
-            tabItems.add(DomainMapper.createTabItem(t));
+            tabItems.add(ItemMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize()));
         }
         response.setResponseObject(tabItems);
 
@@ -188,8 +188,20 @@ public class TabService implements ITabService {
         try {
             List<? extends ITabField> tabFields = tabFieldRepository.find(query);
             List<TabFieldItem> customFieldItems = new ArrayList<>();
+            String size = null;
             for (ITabField tf : tabFields) {
-                customFieldItems.add(DomainMapper.createTabFieldItem(tf));
+
+                if (tf.getTabFieldSize() != null)
+                    size = tf.getTabFieldSize().getName();
+
+                customFieldItems.add(ItemMapper.createTabFieldItem(tf.getName(),
+                        tf.getTabFieldType().getName(),
+                        size,
+                        tf.getOrder(),
+                        tf.getPlaceholder(),
+                        null,
+                        null,
+                        true));
             }
             response.setResponseObject(customFieldItems);
         } catch (Exception ex) {
@@ -221,9 +233,20 @@ public class TabService implements ITabService {
             ITabField tabField = tabFieldRepository.findOne(query);
             tabField.setIsDeleted(!tabField.getIsDeleted());
             //delete the sort order when the tab gets deactivated
-            if (tabField.getIsDeleted() == true) tabField.setOrder(null);
+            if (tabField.getIsDeleted()) tabField.setOrder(null);
             tabField = tabFieldRepository.update(tabField);
-            TabFieldItem tabFieldItem = domainMapper.createTabFieldItem(tabField);
+            String size = null;
+            if (tabField.getTabFieldSize() != null)
+                size = tabField.getTabFieldSize().getName();
+
+            TabFieldItem tabFieldItem = ItemMapper.createTabFieldItem(tabField.getName(),
+                    tabField.getTabFieldType().getName(),
+                    size,
+                    tabField.getOrder(),
+                    tabField.getPlaceholder(),
+                    null,
+                    null,
+                    true);
             response.setResponseObject(tabFieldItem);
 
         } catch (Exception ex) {
@@ -254,7 +277,7 @@ public class TabService implements ITabService {
             newTab.setRightColumnSize(tabItem.getRightColumnSize());
             newTab.setUserId(userId);
             newTab = tabRepository.update(newTab);
-            TabItem newTabItem = domainMapper.createTabItem(newTab);
+            TabItem newTabItem = ItemMapper.createTabItem(newTab.getName(), newTab.getIsCustom(), newTab.getLeftColumnSize(), newTab.getRightColumnSize());
             response.setResponseObject(newTabItem);
         } catch (Exception ex) {
             response.addError("", "error");
@@ -300,7 +323,20 @@ public class TabService implements ITabService {
             }
             tabField = tabFieldRepository.update(tabField);
 
-            TabFieldItem newTabFieldItem = domainMapper.createTabFieldItem(tabField);
+            String size = null;
+
+            if (tabField.getTabFieldSize() != null)
+                size = tabField.getTabFieldSize().getName();
+
+            TabFieldItem newTabFieldItem = ItemMapper.createTabFieldItem(tabField.getName(),
+                    tabField.getTabFieldType().getName(),
+                    size,
+                    tabField.getOrder(),
+                    tabField.getPlaceholder(),
+                    null,
+                    null,
+                    true);
+
             response.setResponseObject(newTabFieldItem);
 
         } catch (Exception ex) {
@@ -371,7 +407,20 @@ public class TabService implements ITabService {
 
         try {
             customField = tabFieldRepository.create(customField);
-            TabFieldItem newTabFieldItem = domainMapper.createTabFieldItem(customField);
+            String size = null;
+
+            if (customField.getTabFieldSize() != null)
+                size = customField.getTabFieldSize().getName();
+
+            TabFieldItem newTabFieldItem = ItemMapper.createTabFieldItem(customField.getName(),
+                    customField.getTabFieldType().getName(),
+                    size,
+                    customField.getOrder(),
+                    customField.getPlaceholder(),
+                    null,
+                    null,
+                    true);
+
             response.setResponseObject(newTabFieldItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

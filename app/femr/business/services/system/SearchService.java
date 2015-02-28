@@ -208,7 +208,7 @@ public class SearchService implements ISearchService {
 
         try {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
-            PatientEncounterItem patientEncounterItem = DomainMapper.createPatientEncounterItem(patientEncounter);
+            PatientEncounterItem patientEncounterItem = ItemMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -238,7 +238,7 @@ public class SearchService implements ISearchService {
                 return response;
             }
             IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
-            PatientEncounterItem patientEncounterItem = domainMapper.createPatientEncounterItem(currentPatientEncounter);
+            PatientEncounterItem patientEncounterItem = ItemMapper.createPatientEncounterItem(currentPatientEncounter);
             response.setResponseObject(patientEncounterItem);
 
         } catch (Exception ex) {
@@ -263,7 +263,7 @@ public class SearchService implements ISearchService {
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
-                patientEncounterItems.add(DomainMapper.createPatientEncounterItem(pe));
+                patientEncounterItems.add(ItemMapper.createPatientEncounterItem(pe));
             }
             response.setResponseObject(patientEncounterItems);
         } catch (Exception ex) {

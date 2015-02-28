@@ -116,29 +116,6 @@ public class DomainMapper {
     }
 
     /**
-     * Create a new TabFieldItem (DTO) based on empty tab field
-     *
-     * @param tabField basic DAO TabField
-     * @return tab field with NULL value
-     */
-    public static TabFieldItem createTabFieldItem(ITabField tabField) {
-        if (tabField == null) {
-            return null;
-        }
-        TabFieldItem tabFieldItem = new TabFieldItem();
-        tabFieldItem.setName(tabField.getName());
-        tabFieldItem.setOrder(tabField.getOrder());
-        tabFieldItem.setPlaceholder(tabField.getPlaceholder());
-        if (tabField.getTabFieldSize() != null) tabFieldItem.setSize(tabField.getTabFieldSize().getName());
-        if (tabField.getTabFieldType() != null) tabFieldItem.setType(tabField.getTabFieldType().getName());
-        tabFieldItem.setValue(null);
-        if (tabField.getTab() == null) tabFieldItem.setIsCustom(false);
-        else tabFieldItem.setIsCustom(true);
-
-        return tabFieldItem;
-    }
-
-    /**
      * Create a new TabField (DAO)
      *
      * @param tabFieldItem  the new TabFieldItem (DTO)
@@ -213,23 +190,6 @@ public class DomainMapper {
         missionTeam.setLocation(location);
         missionTeam.setDescription(description);
         return missionTeam;
-    }
-
-    /**
-     * Create a new TabItem (DTO)
-     *
-     * @param tab basic DAO Tab
-     * @return a new TabItem
-     */
-    public static TabItem createTabItem(ITab tab) {
-        if (tab == null) {
-            return null;
-        }
-        TabItem tabItem = new TabItem();
-        tabItem.setName(tab.getName());
-        tabItem.setLeftColumnSize(tab.getLeftColumnSize());
-        tabItem.setRightColumnSize(tab.getRightColumnSize());
-        return tabItem;
     }
 
     public IRole createRole(String name) {
@@ -316,34 +276,7 @@ public class DomainMapper {
         return tab;
     }
 
-    public static MedicationItem createMedicationItem(IMedication medication) {
-        if (medication == null) {
-            return null;
-        }
-        MedicationItem medicationItem = new MedicationItem();
-        medicationItem.setId(medication.getId());
-        medicationItem.setName(medication.getName());
-        medicationItem.setQuantity_current(medication.getQuantity_current());
-        medicationItem.setQuantity_total(medication.getQuantity_total());
-        if (medication.getMedicationForm() != null) {
-            medicationItem.setForm(medication.getMedicationForm().getName());
-        }
 
-        String fullActiveDrugName = "";
-        for (IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()) {
-            medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
-                    medicationActiveDrug.getMedicationMeasurementUnit().getName(),
-                    medicationActiveDrug.getValue(),
-                    medicationActiveDrug.isDenominator()
-            );
-            fullActiveDrugName = fullActiveDrugName.concat(medicationActiveDrug.getValue() + medicationActiveDrug.getMedicationMeasurementUnit().getName() + " " + medicationActiveDrug.getMedicationActiveDrugName().getName());
-        }
-
-        medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
-
-
-        return medicationItem;
-    }
 
     /**
      * Creates a brand new medication that is being added to the inventory
@@ -428,38 +361,6 @@ public class DomainMapper {
     }
 
     /**
-     * Create a new PatientEncounterItem (DTO)
-     *
-     * @param patientEncounter patient encounter info
-     * @return a new PatientEncounterItem
-     */
-    public static PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter) {
-        if (patientEncounter == null || patientEncounter.getPatient() == null) {
-            return null;
-        }
-        PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
-        for (IChiefComplaint cc : patientEncounter.getChiefComplaints()) {
-            patientEncounterItem.addChiefComplaint(cc.getValue());
-        }
-        patientEncounterItem.setId(patientEncounter.getId());
-        patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
-        patientEncounterItem.setWeeksPregnant(patientEncounter.getWeeksPregnant());
-        patientEncounterItem.setTriageDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfTriageVisit()));
-        if (patientEncounter.getDateOfMedicalVisit() != null)
-            patientEncounterItem.setMedicalDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfMedicalVisit()));
-        if (patientEncounter.getDateOfPharmacyVisit() != null)
-            patientEncounterItem.setPharmacyDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfPharmacyVisit()));
-        patientEncounterItem.setIsClosed(LogicDoer.isEncounterClosed(patientEncounter));
-
-        patientEncounterItem.setNurseEmailAddress(patientEncounter.getNurse().getEmail());
-        if (patientEncounter.getDoctor() != null)
-            patientEncounterItem.setPhysicianEmailAddress(patientEncounter.getDoctor().getEmail());
-        if (patientEncounter.getPharmacist() != null)
-            patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
-        return patientEncounterItem;
-    }
-
-    /**
      * Create a new PatientEncounter (DAO)
      *
      * @param patientEncounterItem patient encounter DTO
@@ -498,25 +399,7 @@ public class DomainMapper {
         return chiefComplaint;
     }
 
-    public static MissionItem createMissionItem(IMissionTeam missionTeam) {
 
-        MissionItem missionItem = new MissionItem();
-        missionItem.setTeamName(missionTeam.getName());
-        missionItem.setTeamLocation(missionTeam.getLocation());
-        missionItem.setTeamDescription(missionTeam.getDescription());
-
-        for (IMissionTrip mt : missionTeam.getMissionTrips()) {
-            missionItem.addMissionTrip(mt.getId(),
-                    mt.getMissionCity().getName(),
-                    mt.getMissionCity().getMissionCountry().getName(),
-                    mt.getStartDate(),
-                    dateUtils.getFriendlyDate(mt.getStartDate()),
-                    mt.getEndDate(),
-                    dateUtils.getFriendlyDate(mt.getEndDate()),
-                    mt.isCurrent());
-        }
-        return missionItem;
-    }
 
     public IPatient createPatient(PatientItem patientItem) {
         if (patientItem == null) {
@@ -536,22 +419,6 @@ public class DomainMapper {
         return patient;
     }
 
-    /**
-     * Maps an IVital to a VitalItem.
-     *
-     * @param vital the IVital
-     * @return a new VitalItem with no value
-     */
-    public static VitalItem createVitalItem(IVital vital) {
-
-        if (vital == null) {
-
-            return null;
-        }
-        VitalItem vitalItem = new VitalItem();
-        vitalItem.setName(vital.getName());
-        return vitalItem;
-    }
 
 
     /**
@@ -624,39 +491,4 @@ public class DomainMapper {
         photo.setFilePath(filePath);
         return photo;
     }
-
-    /**
-     * Create research filter
-     *
-     * @param filterViewModel
-     * @return ResearchFilterItem
-     */
-    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel) {
-
-        ResearchFilterItem filterItem = new ResearchFilterItem();
-
-        filterItem.setPrimaryDataset(filterViewModel.getPrimaryDataset());
-        filterItem.setSecondaryDataset(filterViewModel.getSecondaryDataset());
-        filterItem.setGraphType(filterViewModel.getGraphType());
-        filterItem.setStartDate(filterViewModel.getStartDate());
-        filterItem.setEndDate(filterViewModel.getEndDate());
-
-        Integer groupFactor = filterViewModel.getGroupFactor();
-        filterItem.setGroupFactor(groupFactor);
-        if (groupFactor != null && groupFactor > 0) {
-
-            filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
-        } else {
-
-            filterItem.setGroupPrimary(false);
-        }
-
-        filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
-        filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
-
-        filterItem.setMedicationName(filterViewModel.getMedicationName());
-
-        return filterItem;
-    }
-
 }

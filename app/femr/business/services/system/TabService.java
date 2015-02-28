@@ -32,6 +32,7 @@ import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -57,7 +58,6 @@ public class TabService implements ITabService {
                       IRepository<ITabFieldType> tabFieldTypeRepository,
                       IRepository<ITabFieldSize> tabFieldSizeRepository,
                       DataModelMapper DataModelMapper) {
-
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.systemSettingRepository = systemSettingRepository;
@@ -112,7 +112,7 @@ public class TabService implements ITabService {
             response.addError("", "bad parameters, wtf are you doing?");
             return response;
         }
-        ITab tab = dataModelMapper.createTab(newTab, false, userId);
+        ITab tab = dataModelMapper.createTab(dateUtils.getCurrentDateTime(), newTab.getLeftColumnSize(), newTab.getRightColumnSize(), newTab.getName(), false, userId);
 
         ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
@@ -404,7 +404,7 @@ public class TabService implements ITabService {
             return response;
         }
 
-        ITabField customField = dataModelMapper.createTabField(tabFieldItem, false, tabFieldSize, tabFieldType, tab);
+        ITabField customField = dataModelMapper.createTabField(tabFieldItem.getName(), tabFieldItem.getOrder(), tabFieldItem.getPlaceholder(), false, tabFieldSize.getId(), tabFieldType.getId(), tab.getId());
 
         try {
             customField = tabFieldRepository.create(customField);

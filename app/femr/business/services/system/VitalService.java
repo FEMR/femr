@@ -77,7 +77,7 @@ public class VitalService implements IVitalService {
 
                 query = QueryProvider.getVitalQuery().where().eq("name", key);
                 vital = vitalRepository.findOne(query);
-                patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital, patientEncounterVitalMap.get(key)));
+                patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
             }
         }
 
@@ -143,7 +143,7 @@ public class VitalService implements IVitalService {
 
                     query = QueryProvider.getVitalQuery().where().eq("name", key);
                     vital = vitalRepository.findOne(query);
-                    patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital, patientEncounterVitalMap.get(key)));
+                    patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
                 }
             }
 

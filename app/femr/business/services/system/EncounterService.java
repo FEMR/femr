@@ -21,13 +21,13 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IMissionTripService;
-import femr.common.ItemMapper;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -46,7 +46,7 @@ public class EncounterService implements IEncounterService {
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IUser> userRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
     public EncounterService(IMissionTripService missionTripService,
@@ -56,7 +56,7 @@ public class EncounterService implements IEncounterService {
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IRepository<IUser> userRepository,
-                            DomainMapper domainMapper) {
+                            DataModelMapper dataModelMapper) {
 
         this.missionTripService = missionTripService;
         this.chiefComplaintRepository = chiefComplaintRepository;
@@ -65,7 +65,7 @@ public class EncounterService implements IEncounterService {
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.userRepository = userRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -102,14 +102,14 @@ public class EncounterService implements IEncounterService {
             if (missionTrip != null)
                 missionTripId = missionTrip.getId();
 
-            IPatientEncounter newPatientEncounter = domainMapper.createPatientEncounter(patientEncounterItem, nurseUser.getId(), patientAgeClassificationId, missionTripId);
+            IPatientEncounter newPatientEncounter = dataModelMapper.createPatientEncounter(patientEncounterItem, nurseUser.getId(), patientAgeClassificationId, missionTripId);
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
 
             List<IChiefComplaint> chiefComplaints = new ArrayList<>();
             Integer chiefComplaintSortOrder = 0;
             for (String cc : patientEncounterItem.getChiefComplaints()) {
 
-                chiefComplaints.add(domainMapper.createChiefComplaint(cc, newPatientEncounter.getId(), chiefComplaintSortOrder));
+                chiefComplaints.add(dataModelMapper.createChiefComplaint(cc, newPatientEncounter.getId(), chiefComplaintSortOrder));
                 chiefComplaintSortOrder++;
             }
             if (chiefComplaints.size() > 0) {
@@ -118,7 +118,7 @@ public class EncounterService implements IEncounterService {
             }
 
 
-            response.setResponseObject(ItemMapper.createPatientEncounterItem(newPatientEncounter));
+            response.setResponseObject(UIModelMapper.createPatientEncounterItem(newPatientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -153,7 +153,7 @@ public class EncounterService implements IEncounterService {
             patientEncounter = patientEncounterRepository.update(patientEncounter);
 
 
-            response.setResponseObject(ItemMapper.createPatientEncounterItem(patientEncounter));
+            response.setResponseObject(UIModelMapper.createPatientEncounterItem(patientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -208,7 +208,7 @@ public class EncounterService implements IEncounterService {
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
-                UserItem userItem = ItemMapper.createUserItem(patientEncounter.getDoctor());
+                UserItem userItem = UIModelMapper.createUserItem(patientEncounter.getDoctor());
                 response.setResponseObject(userItem);
             }
         } catch (Exception ex) {
@@ -237,7 +237,7 @@ public class EncounterService implements IEncounterService {
             DateTime dateTaken = dateUtils.getCurrentDateTime();
             for (String problemval : problemValues) {
 
-                IPatientEncounterTabField patientEncounterTabField = domainMapper.createPatientEncounterTabField(tabField.getId(), userId, problemval, encounterId, dateTaken, null);
+                IPatientEncounterTabField patientEncounterTabField = dataModelMapper.createPatientEncounterTabField(tabField.getId(), userId, problemval, encounterId, dateTaken, null);
                 patientEncounterTabFields.add(patientEncounterTabField);
             }
             patientEncounterTabFieldRepository.createAll(patientEncounterTabFields);
@@ -335,7 +335,7 @@ public class EncounterService implements IEncounterService {
 
                     if (tabFieldId != null) {
 
-                        patientEncounterTabFieldsForSaving.add(domainMapper.createPatientEncounterTabField(tabFieldId, userId, tfi.getValue(), encounterId, dateTaken, chiefComplaintId));
+                        patientEncounterTabFieldsForSaving.add(dataModelMapper.createPatientEncounterTabField(tabFieldId, userId, tfi.getValue(), encounterId, dateTaken, chiefComplaintId));
                     } else {
 
                         response.addError("name", "one of the tabfields had an invalid name");
@@ -356,7 +356,7 @@ public class EncounterService implements IEncounterService {
                 if (petf.getTabField().getTabFieldSize() != null)
                     size = petf.getTabField().getTabFieldSize().getName();
 
-                tabFieldItemsForResponse.add(ItemMapper.createTabFieldItem(
+                tabFieldItemsForResponse.add(UIModelMapper.createTabFieldItem(
                                 petf.getTabField().getName(),
                                 petf.getTabField().getTabFieldType().getName(),
                                 size,
@@ -400,7 +400,7 @@ public class EncounterService implements IEncounterService {
             } else {
                 for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
                     if (petf.getTabField() != null)
-                        problemItems.add(ItemMapper.createProblemItem(petf.getTabFieldValue()));
+                        problemItems.add(UIModelMapper.createProblemItem(petf.getTabFieldValue()));
                 }
                 response.setResponseObject(problemItems);
             }

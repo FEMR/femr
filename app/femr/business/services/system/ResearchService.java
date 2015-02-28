@@ -22,10 +22,10 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.services.core.IResearchService;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.data.DataModelMapper;
 import femr.data.models.core.research.IResearchEncounter;
 import femr.data.models.core.research.IResearchEncounterVital;
 import femr.data.models.mysql.PatientPrescription;
@@ -44,13 +44,12 @@ public class ResearchService implements IResearchService {
 
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
-
     private final IRepository<IResearchEncounterVital> researchEncounterVitalRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> prescriptionRepository;
     private final IRepository<IMedication> medicationRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     /**
      * Initializes the research service and injects the dependence
@@ -63,17 +62,16 @@ public class ResearchService implements IResearchService {
                            IRepository<IVital> vitalRepository,
                            IRepository<IPatientPrescription> prescriptionRepository,
                            IRepository<IMedication> medicationRepository,
-                           DomainMapper domainMapper) {
+                           DataModelMapper dataModelMapper) {
 
         this.researchEncounterRepository = researchEncounterRepository;
         this.researchEncounterVitalRepository = researchEncounterVitalRepository;
-
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitaRepository;
         this.vitalRepository = vitalRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.medicationRepository = medicationRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
 

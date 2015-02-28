@@ -107,7 +107,7 @@ public class VitalService implements IVitalService {
             List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IVital v : vitals) {
-                vitalItems.add(UIModelMapper.createVitalItem(v.getName()));
+                vitalItems.add(UIModelMapper.createVitalItem(v.getName(), null));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {

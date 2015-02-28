@@ -288,12 +288,16 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
-                PrescriptionItem prescriptionItem = new PrescriptionItem();
-                prescriptionItem.setName(pp.getMedication().getName());
-                prescriptionItem.setId(pp.getId());
-                prescriptionItem.setPrescriberFirstName(pp.getPhysician().getFirstName());
-                prescriptionItem.setPrescriberLastName(pp.getPhysician().getLastName());
-                prescriptionItems.add(prescriptionItem);
+
+                prescriptionItems.add(
+                        UIModelMapper.createPrescriptionItem(
+                                pp.getId(),
+                                pp.getMedication().getName(),
+                                pp.getReplacementId(),
+                                pp.getPhysician().getFirstName(),
+                                pp.getPhysician().getLastName()
+                        )
+                );
             }
 
             response.setResponseObject(prescriptionItems);
@@ -321,10 +325,16 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
-                PrescriptionItem prescriptionItem = new PrescriptionItem();
-                prescriptionItem.setName(pp.getMedication().getName());
-                prescriptionItem.setId(pp.getId());
-                prescriptionItems.add(prescriptionItem);
+
+                prescriptionItems.add(
+                        UIModelMapper.createPrescriptionItem(
+                                pp.getId(),
+                                pp.getMedication().getName(),
+                                pp.getReplacementId(),
+                                pp.getPhysician().getFirstName(),
+                                pp.getPhysician().getLastName()
+                        )
+                );
             }
 
             response.setResponseObject(prescriptionItems);

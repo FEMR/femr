@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUserService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.models.core.IRole;
@@ -75,7 +76,7 @@ public class UserService implements IUserService {
             }
 
             newUser = userRepository.create(newUser);
-            response.setResponseObject(DomainMapper.createUserItem(newUser));
+            response.setResponseObject(ItemMapper.createUserItem(newUser));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -100,7 +101,7 @@ public class UserService implements IUserService {
         List<UserItem> userItems = new ArrayList<>();
         if (users.size() > 0) {
             for (IUser user : users) {
-                userItems.add(DomainMapper.createUserItem(user));
+                userItems.add(ItemMapper.createUserItem(user));
             }
             response.setResponseObject(userItems);
         } else {
@@ -120,7 +121,7 @@ public class UserService implements IUserService {
             IUser user = userRepository.findOne(query);
             user.setDeleted(!user.getDeleted());
             user = userRepository.update(user);
-            response.setResponseObject(DomainMapper.createUserItem(user));
+            response.setResponseObject(ItemMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -139,7 +140,7 @@ public class UserService implements IUserService {
         try {
             IUser user = userRepository.findOne(query);
             UserItem userItem;
-            userItem = DomainMapper.createUserItem(user);
+            userItem = ItemMapper.createUserItem(user);
             response.setResponseObject(userItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -181,7 +182,7 @@ public class UserService implements IUserService {
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
             user = userRepository.update(user);
-            response.setResponseObject(DomainMapper.createUserItem(user));
+            response.setResponseObject(ItemMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }

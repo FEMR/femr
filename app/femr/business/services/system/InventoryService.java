@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
+import femr.common.ItemMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.data.daos.IRepository;
 import femr.common.models.MedicationItem;
@@ -76,7 +77,7 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
         for (IMedication m : medications) {
-            medicationItems.add(DomainMapper.createMedicationItem(m));
+            medicationItems.add(ItemMapper.createMedicationItem(m));
         }
         response.setResponseObject(medicationItems);
 
@@ -134,7 +135,7 @@ public class InventoryService implements IInventoryService {
 
             IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = DomainMapper.createMedicationItem(medication);
+            MedicationItem newMedicationItem = ItemMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);
         } catch (Exception ex) {
             response.addError("", "error creating medication");

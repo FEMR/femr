@@ -143,7 +143,7 @@ public class MissionTripService implements IMissionTripService {
             //you might miss some teams that don't have a trip, yet.
             List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
             for (IMissionTeam missionTeam : missionTeams) {
-                missionItems.add(DomainMapper.createMissionItem(missionTeam));
+                missionItems.add(ItemMapper.createMissionItem(missionTeam));
             }
 
             response.setResponseObject(missionItems);

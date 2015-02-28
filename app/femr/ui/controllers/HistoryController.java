@@ -155,16 +155,19 @@ public class HistoryController extends Controller {
             indexEncounterMedicalViewModel.setHpiFieldsWithMultipleChiefComplaints(extractHpiFieldsWithMultipleChiefComplaints(tabFieldMultiMap, patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints()));
             indexEncounterMedicalViewModel.setIsMultipleChiefComplaints(true);
         }else{
+            String chiefComplaint = null;
+            if (patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints().size() == 1)
+                chiefComplaint = patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints().get(0);
             Map<String,String> hpiFields = new HashMap<>();
-            hpiFields.put("onset", tabFieldMultiMap.getMostRecentOrEmpty("onset", null).getValue());
-            hpiFields.put("quality", tabFieldMultiMap.getMostRecentOrEmpty("quality", null).getValue());
-            hpiFields.put("radiation", tabFieldMultiMap.getMostRecentOrEmpty("radiation", null).getValue());
-            hpiFields.put("severity", tabFieldMultiMap.getMostRecentOrEmpty("severity", null).getValue());
-            hpiFields.put("provokes", tabFieldMultiMap.getMostRecentOrEmpty("provokes", null).getValue());
-            hpiFields.put("palliates", tabFieldMultiMap.getMostRecentOrEmpty("palliates", null).getValue());
-            hpiFields.put("timeOfDay", tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", null).getValue());
-            hpiFields.put("narrative", tabFieldMultiMap.getMostRecentOrEmpty("narrative", null).getValue());
-            hpiFields.put("physicalExamination", tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", null).getValue());
+            hpiFields.put("onset", tabFieldMultiMap.getMostRecentOrEmpty("onset", chiefComplaint).getValue());
+            hpiFields.put("quality", tabFieldMultiMap.getMostRecentOrEmpty("quality", chiefComplaint).getValue());
+            hpiFields.put("radiation", tabFieldMultiMap.getMostRecentOrEmpty("radiation", chiefComplaint).getValue());
+            hpiFields.put("severity", tabFieldMultiMap.getMostRecentOrEmpty("severity", chiefComplaint).getValue());
+            hpiFields.put("provokes", tabFieldMultiMap.getMostRecentOrEmpty("provokes", chiefComplaint).getValue());
+            hpiFields.put("palliates", tabFieldMultiMap.getMostRecentOrEmpty("palliates", chiefComplaint).getValue());
+            hpiFields.put("timeOfDay", tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", chiefComplaint).getValue());
+            hpiFields.put("narrative", tabFieldMultiMap.getMostRecentOrEmpty("narrative", chiefComplaint).getValue());
+            hpiFields.put("physicalExamination", tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", chiefComplaint).getValue());
             indexEncounterMedicalViewModel.setHpiFieldsWithoutMultipleChiefComplaints(hpiFields);
             indexEncounterMedicalViewModel.setIsMultipleChiefComplaints(false);
         }

@@ -457,16 +457,16 @@ public class DataModelMapper {
      * Generate and provide an implementation of IPatientPrescription
      *
      * @param amount        amount of medication dispensed, not null
-     * @param medicationID  the medication id, not null
+     * @param medication    the medication, not null
      * @param userId        id of the user creating the prescription, not null
      * @param encounterId   encounter id of the prescription, not null
      * @param replacementId id of the prescription being replaced, may be null
      * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    public IPatientPrescription createPatientPrescription(int amount, int medicationID, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
+    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
 
-        if (medicationID < 1 || userId < 1 || encounterId < 1) {
+        if (medication == null || userId < 1 || encounterId < 1) {
 
             return null;
         }
@@ -476,7 +476,7 @@ public class DataModelMapper {
         patientPrescription.setAmount(amount);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationID));
+        patientPrescription.setMedication(medication);
         patientPrescription.setReplacementId(replacementId);
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         patientPrescription.setDispensed(isDispensed);

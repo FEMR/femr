@@ -76,7 +76,7 @@ public class MedicationService implements IMedicationService {
             oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
             patientPrescriptionRepository.update(oldPatientPrescription);
 
-            PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(newPatientPrescription.getId(), newPatientPrescription.getMedication().getName(), newPatientPrescription.getReplacementId());
+            PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(newPatientPrescription.getId(), newPatientPrescription.getMedication().getName(), newPatientPrescription.getReplacementId(), newPatientPrescription.getPhysician().getFirstName(), newPatientPrescription.getPhysician().getLastName());
             response.setResponseObject(newPrescriptionItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -107,10 +107,11 @@ public class MedicationService implements IMedicationService {
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
                 if (pp.getMedication() != null)
-                    newPrescriptionItems.add(UIModelMapper.createPatientPrescriptionItem(pp.getMedication().getName()));
+                    newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(pp.getId(), pp.getMedication().getName(), pp.getReplacementId(), pp.getPhysician().getFirstName(), pp.getPhysician().getLastName()));
             }
             response.setResponseObject(newPrescriptionItems);
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
 
@@ -135,7 +136,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId()));
+                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId(), patientPrescription.getPhysician().getFirstName(), patientPrescription.getPhysician().getLastName()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);
@@ -165,7 +166,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setCounseled(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId()));
+                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId(), patientPrescription.getPhysician().getFirstName(), patientPrescription.getPhysician().getLastName()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);

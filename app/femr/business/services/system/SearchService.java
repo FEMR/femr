@@ -22,13 +22,13 @@ import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
-import femr.common.ItemMapper;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -48,7 +48,7 @@ public class SearchService implements ISearchService {
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IVital> vitalRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
@@ -61,7 +61,7 @@ public class SearchService implements ISearchService {
                          IRepository<IVital> vitalRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IRepository<ITabField> tabFieldRepository,
-                         DomainMapper domainMapper) {
+                         DataModelMapper dataModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
         this.medicationRepository = medicationRepository;
@@ -73,7 +73,7 @@ public class SearchService implements ISearchService {
         this.vitalRepository = vitalRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.tabFieldRepository = tabFieldRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -110,7 +110,7 @@ public class SearchService implements ISearchService {
                 pathToPhoto = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
             }
-            PatientItem patientItem = ItemMapper.createPatientItem(
+            PatientItem patientItem = UIModelMapper.createPatientItem(
                     savedPatient.getId(),
                     savedPatient.getFirstName(),
                     savedPatient.getLastName(),
@@ -168,7 +168,7 @@ public class SearchService implements ISearchService {
                 pathToPhoto = patient.getPhoto().getFilePath();
                 photoId = patient.getPhoto().getId();
             }
-            PatientItem patientItem = ItemMapper.createPatientItem(
+            PatientItem patientItem = UIModelMapper.createPatientItem(
                     patient.getId(),
                     patient.getFirstName(),
                     patient.getLastName(),
@@ -208,7 +208,7 @@ public class SearchService implements ISearchService {
 
         try {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
-            PatientEncounterItem patientEncounterItem = ItemMapper.createPatientEncounterItem(patientEncounter);
+            PatientEncounterItem patientEncounterItem = UIModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -238,7 +238,7 @@ public class SearchService implements ISearchService {
                 return response;
             }
             IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
-            PatientEncounterItem patientEncounterItem = ItemMapper.createPatientEncounterItem(currentPatientEncounter);
+            PatientEncounterItem patientEncounterItem = UIModelMapper.createPatientEncounterItem(currentPatientEncounter);
             response.setResponseObject(patientEncounterItem);
 
         } catch (Exception ex) {
@@ -263,7 +263,7 @@ public class SearchService implements ISearchService {
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
-                patientEncounterItems.add(ItemMapper.createPatientEncounterItem(pe));
+                patientEncounterItems.add(UIModelMapper.createPatientEncounterItem(pe));
             }
             response.setResponseObject(patientEncounterItems);
         } catch (Exception ex) {
@@ -441,7 +441,7 @@ public class SearchService implements ISearchService {
                     pathToPhoto = patient.getPhoto().getFilePath();
                     photoId = patient.getPhoto().getId();
                 }
-                patientItems.add(ItemMapper.createPatientItem(
+                patientItems.add(UIModelMapper.createPatientItem(
                         patient.getId(),
                         patient.getFirstName(),
                         patient.getLastName(),
@@ -480,7 +480,7 @@ public class SearchService implements ISearchService {
                 response.addError("", "no settings exist at this time");
             } else {
 
-                SettingItem settingItem = ItemMapper.createSettingItem(systemSettings);
+                SettingItem settingItem = UIModelMapper.createSettingItem(systemSettings);
                 response.setResponseObject(settingItem);
             }
 
@@ -511,7 +511,7 @@ public class SearchService implements ISearchService {
                     pathToPhoto = patient.getPhoto().getFilePath();
                     photoId = patient.getPhoto().getId();
                 }
-                PatientItem currPatient = ItemMapper.createPatientItem(
+                PatientItem currPatient = UIModelMapper.createPatientItem(
                         patient.getId(),
                         patient.getFirstName(),
                         patient.getLastName(),

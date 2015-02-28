@@ -32,7 +32,7 @@ import java.util.List;
  * Responsible for creating item objects (common/models)
  * Only visible to ui & service layer.
  */
-public class ItemMapper {
+public class UIModelMapper {
 
     /**
      * Creates a city item.
@@ -42,20 +42,29 @@ public class ItemMapper {
      * @return a new city item or null if either parameters don't exist
      */
     public static CityItem createCityItem(String cityName, String countryName) {
-        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName))
+
+        if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName)){
+
             return null;
+        }
 
         CityItem cityItem = new CityItem();
+
         cityItem.setCityName(cityName);
         cityItem.setCountryName(countryName);
+
         return cityItem;
     }
 
     public static MedicationItem createMedicationItem(IMedication medication) {
+
         if (medication == null) {
+
             return null;
         }
+
         MedicationItem medicationItem = new MedicationItem();
+
         medicationItem.setId(medication.getId());
         medicationItem.setName(medication.getName());
         medicationItem.setQuantity_current(medication.getQuantity_current());
@@ -76,18 +85,19 @@ public class ItemMapper {
 
         medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
 
-
         return medicationItem;
     }
 
     public static MissionItem createMissionItem(IMissionTeam missionTeam) {
 
         MissionItem missionItem = new MissionItem();
+
         missionItem.setTeamName(missionTeam.getName());
         missionItem.setTeamLocation(missionTeam.getLocation());
         missionItem.setTeamDescription(missionTeam.getDescription());
 
         for (IMissionTrip mt : missionTeam.getMissionTrips()) {
+
             missionItem.addMissionTrip(mt.getId(),
                     mt.getMissionCity().getName(),
                     mt.getMissionCity().getMissionCountry().getName(),
@@ -97,6 +107,7 @@ public class ItemMapper {
                     dateUtils.getFriendlyDate(mt.getEndDate()),
                     mt.isCurrent());
         }
+
         return missionItem;
     }
 
@@ -147,7 +158,9 @@ public class ItemMapper {
 
             return null;
         }
+
         PatientItem patientItem = new PatientItem();
+
         //required fields
         patientItem.setId(id);
         patientItem.setFirstName(firstName);
@@ -160,11 +173,13 @@ public class ItemMapper {
         if (StringUtils.isNotNullOrWhiteSpace(sex))
             patientItem.setSex(sex);
         if (age != null) {
+
             patientItem.setAge(dateUtils.getAge(age));//age (int)
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
         }
         if (StringUtils.isNotNullOrWhiteSpace(pathToPatientPhoto) && photoId != null) {
+
             patientItem.setPathToPhoto(pathToPatientPhoto);
             patientItem.setPhotoId(photoId);
         }
@@ -187,11 +202,16 @@ public class ItemMapper {
      * @return a new PatientEncounterItem
      */
     public static PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter) {
+
         if (patientEncounter == null || patientEncounter.getPatient() == null) {
+
             return null;
         }
+
         PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
+
         for (IChiefComplaint cc : patientEncounter.getChiefComplaints()) {
+
             patientEncounterItem.addChiefComplaint(cc.getValue());
         }
         patientEncounterItem.setId(patientEncounter.getId());
@@ -203,12 +223,12 @@ public class ItemMapper {
         if (patientEncounter.getDateOfPharmacyVisit() != null)
             patientEncounterItem.setPharmacyDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfPharmacyVisit()));
         patientEncounterItem.setIsClosed(LogicDoer.isEncounterClosed(patientEncounter));
-
         patientEncounterItem.setNurseEmailAddress(patientEncounter.getNurse().getEmail());
         if (patientEncounter.getDoctor() != null)
             patientEncounterItem.setPhysicianEmailAddress(patientEncounter.getDoctor().getEmail());
         if (patientEncounter.getPharmacist() != null)
             patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
+
         return patientEncounterItem;
     }
 
@@ -226,6 +246,7 @@ public class ItemMapper {
         }
 
         PrescriptionItem prescriptionItem = new PrescriptionItem();
+
         prescriptionItem.setName(prescriptionName);
 
         return prescriptionItem;
@@ -248,6 +269,7 @@ public class ItemMapper {
         }
 
         PhotoItem photoItem = new PhotoItem();
+
         photoItem.setId(id);
         photoItem.setImageDesc(description);
         photoItem.setImageUrl(imageURL);
@@ -273,6 +295,7 @@ public class ItemMapper {
         }
 
         PrescriptionItem prescriptionItem = new PrescriptionItem();
+
         prescriptionItem.setId(id);
         prescriptionItem.setName(name);
         prescriptionItem.setReplacementId(replacementId);
@@ -295,6 +318,7 @@ public class ItemMapper {
         }
 
         PrescriptionItem prescriptionItem = new PrescriptionItem();
+
         prescriptionItem.setId(id);
         prescriptionItem.setName(name);
 
@@ -315,6 +339,7 @@ public class ItemMapper {
         }
 
         ProblemItem problemItem = new ProblemItem();
+
         problemItem.setName(name);
 
         return problemItem;
@@ -348,7 +373,6 @@ public class ItemMapper {
 
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
-
         filterItem.setMedicationName(filterViewModel.getMedicationName());
 
         return filterItem;
@@ -408,10 +432,12 @@ public class ItemMapper {
         }
 
         TabItem tabItem = new TabItem();
+
         tabItem.setName(name);
         tabItem.setCustom(isCustom);
         tabItem.setLeftColumnSize(leftColumnSize);
         tabItem.setRightColumnSize(rightColumnSize);
+
         return tabItem;
     }
 
@@ -442,6 +468,7 @@ public class ItemMapper {
         }
 
         TabFieldItem tabFieldItem = new TabFieldItem();
+
         tabFieldItem.setName(name);
         if (StringUtils.isNotNullOrWhiteSpace(placeholder))
             tabFieldItem.setPlaceholder(placeholder);
@@ -471,10 +498,12 @@ public class ItemMapper {
     public static TeamItem createTeamItem(String name, String location, String description) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
+
             return null;
         }
 
         TeamItem teamItem = new TeamItem();
+
         teamItem.setName(name);
         teamItem.setLocation(location);
         teamItem.setDescription(description);
@@ -500,10 +529,12 @@ public class ItemMapper {
                 StringUtils.isNullOrWhiteSpace(tripCountry) ||
                 startDate == null ||
                 endDate == null) {
+
             return null;
         }
 
         TripItem tripItem = new TripItem();
+
         tripItem.setTeamName(teamName);
         tripItem.setTripCity(tripCity);
         tripItem.setTripCountry(tripCountry);
@@ -520,10 +551,14 @@ public class ItemMapper {
      * @return new userItem
      */
     public static UserItem createUserItem(IUser user) {
+
         if (user == null) {
+
             return null;
         }
+
         UserItem userItem = new UserItem();
+
         userItem.setId(user.getId());
         userItem.setEmail(user.getEmail());
         userItem.setFirstName(user.getFirstName());
@@ -537,6 +572,7 @@ public class ItemMapper {
         userItem.setNotes(user.getNotes());
         userItem.setDeleted(user.getDeleted());
         userItem.setPasswordReset(user.getPasswordReset());
+
         return userItem;
     }
 
@@ -553,7 +589,9 @@ public class ItemMapper {
 
             return null;
         }
+
         VitalItem vitalItem = new VitalItem();
+
         vitalItem.setName(name);
         vitalItem.setValue(value);
 
@@ -572,8 +610,11 @@ public class ItemMapper {
 
             return null;
         }
+
         VitalItem vitalItem = new VitalItem();
+
         vitalItem.setName(name);
+
         return vitalItem;
     }
 }

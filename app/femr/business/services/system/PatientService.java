@@ -21,12 +21,12 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
-import femr.common.ItemMapper;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
@@ -41,16 +41,16 @@ public class PatientService implements IPatientService {
 
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                          DomainMapper domainMapper) {
+                          DataModelMapper dataModelMapper) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -105,7 +105,7 @@ public class PatientService implements IPatientService {
                 photoPath = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
             }
-            PatientItem patientItem = ItemMapper.createPatientItem(savedPatient.getId(),
+            PatientItem patientItem = UIModelMapper.createPatientItem(savedPatient.getId(),
                     savedPatient.getFirstName(),
                     savedPatient.getLastName(),
                     savedPatient.getCity(),
@@ -140,7 +140,7 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = domainMapper.createPatient(patient);
+            IPatient newPatient = dataModelMapper.createPatient(patient);
             newPatient = patientRepository.create(newPatient);
             String photoPath = null;
             Integer photoId = null;
@@ -149,7 +149,7 @@ public class PatientService implements IPatientService {
                 photoId = newPatient.getPhoto().getId();
             }
             response.setResponseObject(
-                    ItemMapper.createPatientItem(newPatient.getId(),
+                    UIModelMapper.createPatientItem(newPatient.getId(),
                             newPatient.getFirstName(),
                             newPatient.getLastName(),
                             newPatient.getCity(),

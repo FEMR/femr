@@ -19,15 +19,15 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPhotoService;
-import femr.common.ItemMapper;
+import femr.common.UIModelMapper;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
 import femr.common.models.PhotoItem;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterPhoto;
@@ -48,24 +48,25 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PhotoService implements IPhotoService {
+
     private String _profilePhotoPath;
     private String _encounterPhotoPath;
     private IRepository<IPhoto> patientPhotoRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
-    private DomainMapper domainMapper;
+    private DataModelMapper dataModelMapper;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
-                        DomainMapper domainMapper) {
+                        DataModelMapper dataModelMapper) {
+
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
 
         this.Init();
     }
@@ -106,7 +107,7 @@ public class PhotoService implements IPhotoService {
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
                 if (patient.getPhoto() == null) {
                     //Create new photo Id record
-                    IPhoto pPhoto = domainMapper.createPhoto("", imageFileName);
+                    IPhoto pPhoto = dataModelMapper.createPhoto("", imageFileName);
                     pPhoto = patientPhotoRepository.create(pPhoto);
                     patient.setPhoto(pPhoto);
                     patientRepository.update(patient);
@@ -280,7 +281,7 @@ public class PhotoService implements IPhotoService {
                             .eq("id", pep.getPhotoId());
                     try {
                         IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
-                        returnList.add(ItemMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                        returnList.add(UIModelMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
                     } catch (Exception ex) {
                         response.addError("", ex.getMessage());
                         return response;

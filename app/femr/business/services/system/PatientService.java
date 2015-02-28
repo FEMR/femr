@@ -140,7 +140,7 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = dataModelMapper.createPatient(patient);
+            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
             newPatient = patientRepository.create(newPatient);
             String photoPath = null;
             Integer photoId = null;

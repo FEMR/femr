@@ -135,7 +135,7 @@ public class InventoryService implements IInventoryService {
             }
 
 
-            IMedication medication = dataModelMapper.createMedication(medicationItem, medicationActiveDrugs, medicationForm);
+            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
             MedicationItem newMedicationItem = UIModelMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);

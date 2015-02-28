@@ -64,30 +64,30 @@ public class DataModelMapper {
 
     @Inject
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
-                        Provider<IMedication> medicationProvider,
-                        Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
-                        Provider<IMedicationForm> medicationFormProvider,
-                        Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
-                        Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
-                        Provider<IMissionCity> missionCityProvider,
-                        Provider<IMissionCountry> missionCountryProvider,
-                        Provider<IMissionTeam> missionTeamProvider,
-                        Provider<IMissionTrip> missionTripProvider,
-                        Provider<IPatient> patientProvider,
-                        Provider<IPatientAgeClassification> patientAgeClassificationProvider,
-                        Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
-                        Provider<IPatientEncounter> patientEncounterProvider,
-                        Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
-                        Provider<IPatientEncounterVital> patientEncounterVitalProvider,
-                        Provider<IPatientPrescription> patientPrescriptionProvider,
-                        Provider<IPhoto> photoProvider,
-                        Provider<IRole> roleProvider,
-                        Provider<ITabField> tabFieldProvider,
-                        Provider<ITabFieldSize> tabFieldSizeProvider,
-                        Provider<ITabFieldType> tabFieldTypeProvider,
-                        Provider<ITab> tabProvider,
-                        Provider<IUser> userProvider,
-                        Provider<IVital> vitalProvider) {
+                           Provider<IMedication> medicationProvider,
+                           Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
+                           Provider<IMedicationForm> medicationFormProvider,
+                           Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
+                           Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
+                           Provider<IMissionCity> missionCityProvider,
+                           Provider<IMissionCountry> missionCountryProvider,
+                           Provider<IMissionTeam> missionTeamProvider,
+                           Provider<IMissionTrip> missionTripProvider,
+                           Provider<IPatient> patientProvider,
+                           Provider<IPatientAgeClassification> patientAgeClassificationProvider,
+                           Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
+                           Provider<IPatientEncounter> patientEncounterProvider,
+                           Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
+                           Provider<IPatientEncounterVital> patientEncounterVitalProvider,
+                           Provider<IPatientPrescription> patientPrescriptionProvider,
+                           Provider<IPhoto> photoProvider,
+                           Provider<IRole> roleProvider,
+                           Provider<ITabField> tabFieldProvider,
+                           Provider<ITabFieldSize> tabFieldSizeProvider,
+                           Provider<ITabFieldType> tabFieldTypeProvider,
+                           Provider<ITab> tabProvider,
+                           Provider<IUser> userProvider,
+                           Provider<IVital> vitalProvider) {
 
         this.chiefComplaintProvider = chiefComplaintProvider;
         this.patientEncounterProvider = patientEncounterProvider;
@@ -116,6 +116,14 @@ public class DataModelMapper {
         this.vitalProvider = vitalProvider;
     }
 
+    /**
+     * Generate and provide an implementation of IChiefComplaint.
+     *
+     * @param value              the chief complaint itself, not null
+     * @param patientEncounterId id of the encounter that the chief complaint belongs to, not null
+     * @param sortOrder          the order in which the chief complaint is sorted(when dealing with >1 chief complaint), may be null
+     * @return an implementation of IChiefComplaint or null if processing fails
+     */
     public IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder) {
 
         if (StringUtils.isNullOrWhiteSpace(value)) {
@@ -132,15 +140,20 @@ public class DataModelMapper {
     }
 
     /**
-     * Creates an IMedication
-     * TODO: this should be a prescription, not a medication
+     * Generate and provide an implementation of IMedication.
      *
-     * @param name name of the medication
-     * @return a new IMedication
+     * @param name name of the medication, not null
+     * @return an implementation of IMedication or null if processing fails
      */
     public IMedication createMedication(String name) {
 
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
         IMedication medication = medicationProvider.get();
+
         medication.setName(name);
         medication.setIsDeleted(false);
 
@@ -148,23 +161,27 @@ public class DataModelMapper {
     }
 
     /**
-     * Creates a brand new medication that is being added to the inventory
+     * Generate and provide an implementation of IMedication for use in adding to inventory.
      *
-     * @param medicationItem medication item without active ingredients, separate active ingredients in the service
-     * @return a new MedicationItem
+     * @param name                  name of the medication, not null
+     * @param total                 the total quantity of the medication, not null
+     * @param current               the current quantity of the medication, not null
+     * @param medicationActiveDrugs active drugs in the medication, may be null
+     * @param medicationForm        the medications form e.g. cream/chewable/pill, may be null
+     * @return an implementation of IMedication or null if processing fails
      */
-    public IMedication createMedication(MedicationItem medicationItem, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
+    public IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
 
-        if (medicationItem == null) {
+        if (StringUtils.isNullOrWhiteSpace(name) || total == null || current == null) {
 
             return null;
         }
 
         IMedication medication = medicationProvider.get();
 
-        medication.setName(medicationItem.getName());
-        medication.setQuantity_total(medicationItem.getQuantity_total());
-        medication.setQuantity_current(medicationItem.getQuantity_current());
+        medication.setName(name);
+        medication.setQuantity_total(total);
+        medication.setQuantity_current(current);
         medication.setIsDeleted(false);
         medication.setMedicationActiveDrugs(medicationActiveDrugs);
         medication.setMedicationForm(medicationForm);
@@ -173,13 +190,13 @@ public class DataModelMapper {
     }
 
     /**
-     * Creates a new active drug
+     * Generate and provide an implementation of IMedicationActiveDrug.
      *
-     * @param value                    strength of the drug
-     * @param isDenominator            is the drug a denominator
-     * @param activeDrugUnitId         id of the unit for measurement of the drug
-     * @param medicationActiveDrugName the drug name
-     * @return new active drug
+     * @param value                    strength of the drug, not null
+     * @param isDenominator            is the drug a denominator, not null
+     * @param activeDrugUnitId         id of the unit for measurement of the drug, not null
+     * @param medicationActiveDrugName the drug name, may be null
+     * @return an implementation of IMedicationActiveDrug
      */
     public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
 
@@ -193,7 +210,18 @@ public class DataModelMapper {
         return medicationActiveDrug;
     }
 
+    /**
+     * Generate and provide an implementation of IMedicationActiveDrugName.
+     *
+     * @param name name of the drug, not null
+     * @return an implementation of IMedicationActiveDrugName or null if processing fails
+     */
     public IMedicationActiveDrugName createMedicationActiveDrugName(String name) {
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
 
         IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameProvider.get();
 
@@ -202,7 +230,18 @@ public class DataModelMapper {
         return medicationActiveDrugName;
     }
 
+    /**
+     * Generate and provide an implementation of IMedicationForm.
+     *
+     * @param name name of the form e.g. cream/chewable/pill, not null
+     * @return an implementation of IMedicationForm or null if processing fails
+     */
     public IMedicationForm createMedicationForm(String name) {
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
 
         IMedicationForm medicationForm = medicationFormProvider.get();
 
@@ -212,6 +251,13 @@ public class DataModelMapper {
         return medicationForm;
     }
 
+    /**
+     * Generate and provide an implementation of IMissionCity.
+     *
+     * @param name           name of the city, not null
+     * @param missionCountry the country model, not null
+     * @return an implementation of IMissionCity or null if processing fails
+     */
     public IMissionCity createMissionCity(String name, IMissionCountry missionCountry) {
 
         if (StringUtils.isNullOrWhiteSpace(name) || missionCountry == null) {
@@ -227,20 +273,14 @@ public class DataModelMapper {
         return missionCity;
     }
 
-    public IMissionCountry createMissionCountry(String name) {
-
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-
-            return null;
-        }
-
-        IMissionCountry missionCountry = missionCountryProvider.get();
-
-        missionCountry.setName(name);
-
-        return missionCountry;
-    }
-
+    /**
+     * Generate and provide an implementation of IMissionTeam.
+     *
+     * @param name        the team name, not null
+     * @param location    where the team is based out of, may be null
+     * @param description a description of the team, may be null
+     * @return an implementation of IMissionTeam or null if processing fails
+     */
     public IMissionTeam createMissionTeam(String name, String location, String description) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -258,14 +298,14 @@ public class DataModelMapper {
     }
 
     /**
-     * Create a new mission trip
+     * Generate and provide an implementation of IMissionTrip.
      *
-     * @param startDate   start date of the trip
-     * @param endDate     end date of the trip
-     * @param isCurrent   is this the current trip?
-     * @param missionCity the city where the trip is taking place
-     * @param missionTeam the country where the trip is taking place
-     * @return a brand spankin' new freakin' mission trip
+     * @param startDate   start date of the trip, not null
+     * @param endDate     end date of the trip, not null
+     * @param isCurrent   is this the current trip?, not null
+     * @param missionCity the city where the trip is taking place, not null
+     * @param missionTeam the country where the trip is taking place, not null
+     * @return an implementation of IMissionTrip or null if processing fails
      */
     public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam) {
 
@@ -285,50 +325,67 @@ public class DataModelMapper {
         return missionTrip;
     }
 
-    public IPatient createPatient(PatientItem patientItem) {
+    /**
+     * Generate and provide an implementation of IPatient.
+     *
+     * @param userID    id of the user creating the patient, not null
+     * @param firstName first name of the patient, not null
+     * @param lastName  last name of the patient, not null
+     * @param birthday  the patients birthday, may be null
+     * @param sex       the sex of the patient, may be null
+     * @param address   the address of the patients residence, may be null
+     * @param city      the city of the patient, may be null
+     * @param photoID   the id of a photo of the patient, may be null
+     * @return an implementation of IPatient or null if processing fails
+     */
+    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID) {
 
-        if (patientItem == null) {
+        if (userID < 0 || StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName)) {
 
             return null;
         }
 
         IPatient patient = patientProvider.get();
 
-        patient.setUserId(patientItem.getUserId());
-        patient.setFirstName(patientItem.getFirstName());
-        patient.setLastName(patientItem.getLastName());
-        if (patientItem.getBirth() != null)
-            patient.setAge(patientItem.getBirth());
-        patient.setSex(patientItem.getSex());
-        patient.setAddress(patientItem.getAddress());
-        patient.setCity(patientItem.getCity());
-        if (patientItem.getPhotoId() != null)
-            patient.setPhoto(Ebean.getReference(photoProvider.get().getClass(), patientItem.getPhotoId()));
+        patient.setUserId(userID);
+        patient.setFirstName(firstName);
+        patient.setLastName(lastName);
+        if (birthday != null)
+            patient.setAge(birthday);
+        patient.setSex(sex);
+        patient.setAddress(address);
+        patient.setCity(city);
+        if (photoID != null)
+            patient.setPhoto(Ebean.getReference(photoProvider.get().getClass(), photoID));
 
         return patient;
     }
 
     /**
-     * Create a new PatientEncounter (DAO)
+     * Generate and provide an implementation of IPatientEncounter.
      *
-     * @param patientEncounterItem patient encounter DTO
-     * @param userId               id of the user creating the encounter
-     * @return a new PatientEncounter
+     * @param patientID                  id of the patient, not null
+     * @param date                       date of checking for triage, not null
+     * @param weeksPregnant              weeks pregnant of the patient, may be null
+     * @param userId                     id of the user creating the encounter, not null
+     * @param patientAgeClassificationId id of the age classification, may be null
+     * @param tripId                     id of the trip, may be null
+     * @return an implementation of IPatientEncounter or null if processing fails
      */
-    public IPatientEncounter createPatientEncounter(PatientEncounterItem patientEncounterItem, int userId, Integer patientAgeClassificationId, Integer tripId) {
+    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId) {
 
-        if (patientEncounterItem == null || userId < 1) {
+        if (patientID < 1 || userId < 1 || date == null) {
 
             return null;
         }
 
         IPatientEncounter patientEncounter = patientEncounterProvider.get();
 
-        patientEncounter.setDateOfTriageVisit(DateTime.now());
+        patientEncounter.setDateOfTriageVisit(date);
         //provide a proxy patient for the encounter
-        patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientEncounterItem.getPatientId()));
+        patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientID));
         patientEncounter.setNurse(Ebean.getReference(userProvider.get().getClass(), userId));
-        patientEncounter.setWeeksPregnant(patientEncounterItem.getWeeksPregnant());
+        patientEncounter.setWeeksPregnant(weeksPregnant);
         if (patientAgeClassificationId != null)
             patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
         if (tripId != null)
@@ -338,17 +395,19 @@ public class DataModelMapper {
     }
 
     /**
-     * Creates a new patientEncounterTabField
+     * Generate and provide an implementation of IPatientEncounterTabField
      *
-     * @param tabFieldId  id of the tab field
-     * @param userId      id of the user filling out the value
-     * @param value       value of the field
-     * @param encounterId encounter id of the visit
-     * @return a new patient encounter tab field!!
+     * @param tabFieldId       id of the field, not null
+     * @param userId           id of the user creating the field, not null
+     * @param value            value of the field, not null
+     * @param encounterId      id of the encounter, not null
+     * @param dateTaken        date the field was recorded, not null
+     * @param chiefComplaintId id of the chief complaint, may be null
+     * @return an implementation of IPatientEncounterTabfield or null if processing fails
      */
     public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId) {
 
-        if (StringUtils.isNullOrWhiteSpace(value)) {
+        if (tabFieldId < 1 || userId < 1 || StringUtils.isNullOrWhiteSpace(value) || encounterId < 1 || dateTaken == null) {
 
             return null;
         }
@@ -366,9 +425,19 @@ public class DataModelMapper {
         return patientEncounterTabField;
     }
 
-    public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, IVital vital, float vitalKey) {
+    /**
+     * Generate and provide an implementation of IPatientEncounterVital
+     *
+     * @param encounterId id of the encounter, not null
+     * @param userId      id of the user creating the vital value, not null
+     * @param time        when the vital was recorded, not null
+     * @param vitalID     id of the vital field, not null
+     * @param value       value of the vital, not null
+     * @return an implementation of IPatientEncounterVital or null if processing fails
+     */
+    public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, int vitalID, float value) {
 
-        if (vital == null || encounterId < 1 || userId < 1) {
+        if (encounterId < 1 || userId < 1 || StringUtils.isNullOrWhiteSpace(time) || vitalID < 1) {
 
             return null;
         }
@@ -378,26 +447,26 @@ public class DataModelMapper {
         patientEncounterVital.setPatientEncounterId(encounterId);
         patientEncounterVital.setUserId(userId);
         patientEncounterVital.setDateTaken(time);
-        patientEncounterVital.setVital(vital);
-        patientEncounterVital.setVitalValue(vitalKey);
+        patientEncounterVital.setVital(Ebean.getReference(vitalProvider.get().getClass(), vitalID));
+        patientEncounterVital.setVitalValue(value);
 
         return patientEncounterVital;
     }
 
     /**
-     * Creates a new IPatientPrescription
+     * Generate and provide an implementation of IPatientPrescription
      *
-     * @param amount        amount of medication dispensed
-     * @param medication    the medication
-     * @param userId        id of the user creating the prescription
-     * @param encounterId   encounter id of the prescription
-     * @param replacementId id of the prescription being replaced OR null
-     * @param isDispensed   is the patient prescription dispensed to the patient yet
-     * @return a new IPatientPrescription
+     * @param amount        amount of medication dispensed, not null
+     * @param medicationID  the medication id, not null
+     * @param userId        id of the user creating the prescription, not null
+     * @param encounterId   encounter id of the prescription, not null
+     * @param replacementId id of the prescription being replaced, may be null
+     * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
+     * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
+    public IPatientPrescription createPatientPrescription(int amount, int medicationID, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
 
-        if (medication == null || StringUtils.isNullOrWhiteSpace(medication.getName()) || userId < 1 || encounterId < 1) {
+        if (medicationID < 1 || userId < 1 || encounterId < 1) {
 
             return null;
         }
@@ -407,7 +476,7 @@ public class DataModelMapper {
         patientPrescription.setAmount(amount);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        patientPrescription.setMedication(medication);
+        patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationID));
         patientPrescription.setReplacementId(replacementId);
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         patientPrescription.setDispensed(isDispensed);
@@ -417,15 +486,15 @@ public class DataModelMapper {
     }
 
     /**
-     * Create a new photo
+     * Generate and provide an implementation of IPhoto.
      *
-     * @param description
-     * @param filePath
-     * @return
+     * @param description description of the photo, may be null
+     * @param filePath    path to the file, not null
+     * @return an implementation of IPhoto or null if processing fails
      */
     public IPhoto createPhoto(String description, String filePath) {
 
-        if (StringUtils.isNullOrWhiteSpace(filePath)){
+        if (StringUtils.isNullOrWhiteSpace(filePath)) {
 
             return null;
         }
@@ -449,27 +518,30 @@ public class DataModelMapper {
     }
 
     /**
-     * Create a new Tab (DAO)
+     * Generate and provide an implementation of ITab.
      *
-     * @param tabItem   tab DTO
-     * @param isDeleted whether or not the tab is considered deleted
-     * @param userId    id of the user creating the tab
-     * @return a new Tab
+     * @param date      date of creation, not null
+     * @param leftSize  left column size, not null
+     * @param rightSize right column size, not null
+     * @param name      name of the tab, not null
+     * @param isDeleted is the tab deleted, not null
+     * @param userId    id of the user creating the tab, not null
+     * @return an implementation of ITab or null if processing fails
      */
-    public ITab createTab(TabItem tabItem, Boolean isDeleted, int userId) {
+    public ITab createTab(DateTime date, int leftSize, int rightSize, String name, boolean isDeleted, int userId) {
 
-        if (tabItem == null) {
+        if (date == null || StringUtils.isNullOrWhiteSpace(name) || userId < 1) {
 
             return null;
         }
 
         ITab tab = tabProvider.get();
 
-        tab.setDateCreated(dateUtils.getCurrentDateTime());
+        tab.setDateCreated(date);
         tab.setIsDeleted(isDeleted);
-        tab.setLeftColumnSize(tabItem.getLeftColumnSize());
-        tab.setRightColumnSize(tabItem.getRightColumnSize());
-        tab.setName(tabItem.getName());
+        tab.setLeftColumnSize(leftSize);
+        tab.setRightColumnSize(rightSize);
+        tab.setName(name);
         tab.setUserId(userId);
         //this will always be true if a tab is being programmatically created by a user
         tab.setIsCustom(true);
@@ -478,17 +550,20 @@ public class DataModelMapper {
     }
 
     /**
-     * Create a new TabField (DAO)
+     * Generate and provide an implementation of ITabField
      *
-     * @param tabFieldItem  the new TabFieldItem (DTO)
-     * @param isDeleted     whether or not the tab field is considered deleted
-     * @param iTabFieldSize size of the TabField
-     * @param iTabFieldType type of the TabField
-     * @return
+     * @param name           name of the field, not null
+     * @param order          order of the field, may be null
+     * @param placeholder    placeholder for the field, may be null
+     * @param isDeleted      is the field deleted, not null
+     * @param tabFieldSizeID id of {@link femr.data.models.core.ITabFieldSize}, not null
+     * @param tabFieldTypeID id of {@link femr.data.models.core.ITabFieldType}, not null
+     * @param tabID          id of {@link femr.data.models.core.ITab}, not null
+     * @return an implementation of ITabField or null if processing fails
      */
-    public ITabField createTabField(TabFieldItem tabFieldItem, Boolean isDeleted, ITabFieldSize iTabFieldSize, ITabFieldType iTabFieldType, ITab tab) {
+    public ITabField createTabField(String name, Integer order, String placeholder, boolean isDeleted, int tabFieldSizeID, int tabFieldTypeID, int tabID) {
 
-        if (tabFieldItem == null || iTabFieldSize == null || iTabFieldType == null || tab == null) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
@@ -496,37 +571,47 @@ public class DataModelMapper {
         ITabField tabField = tabFieldProvider.get();
 
         tabField.setIsDeleted(isDeleted);
-        tabField.setName(tabFieldItem.getName());
-        tabField.setOrder(tabFieldItem.getOrder());
-        tabField.setPlaceholder(tabFieldItem.getPlaceholder());
-        tabField.setTabFieldSize(iTabFieldSize);
-        tabField.setTabFieldType(iTabFieldType);
-        tabField.setTab(tab);
+        tabField.setName(name);
+        tabField.setOrder(order);
+        tabField.setPlaceholder(placeholder);
+        tabField.setTabFieldSize(Ebean.getReference(tabFieldSizeProvider.get().getClass(), tabFieldSizeID));
+        tabField.setTabFieldType(Ebean.getReference(tabFieldTypeProvider.get().getClass(), tabFieldTypeID));
+        tabField.setTab(Ebean.getReference(tabProvider.get().getClass(), tabID));
 
         return tabField;
     }
 
     /**
-     * Create a new user - MAKE SURE YOU ENCRYPT THE PASSWORD
+     * Generate and provide an implementation of IUser
      *
-     * @param userItem        useritem from the UI
-     * @param password        unencrypted password
-     * @param isDeleted       is the user deleted
-     * @param isPasswordReset does the user need to do a password reset
-     * @return
+     * @param firstName       first name of the user, not null
+     * @param lastName        last name of the user, may be null
+     * @param email           email address of the user, not null
+     * @param date            date of last login, not null
+     * @param notes           notes about who the user is, may be null
+     * @param password        password for the user, not null
+     * @param isDeleted       is the user deleted, not null
+     * @param isPasswordReset is the users password marked for a reset the next time they log in, not null
+     * @param roles           a list of roles, must have at least one, not null
+     * @return an implementation of IUser or null if processing fails
      */
-    public IUser createUser(UserItem userItem, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles) {
+    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles) {
+
+        if (StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(password) || StringUtils.isNullOrWhiteSpace(email) || date == null || roles == null || roles.size() < 1) {
+
+            return null;
+        }
 
         IUser user = userProvider.get();
 
-        user.setFirstName(userItem.getFirstName());
-        user.setLastName(userItem.getLastName());
-        user.setEmail(userItem.getEmail());
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
         user.setPassword(password);
-        user.setLastLogin(dateUtils.getCurrentDateTime());
+        user.setLastLogin(date);
         user.setDeleted(isDeleted);
         user.setPasswordReset(isPasswordReset);
-        user.setNotes(userItem.getNotes());
+        user.setNotes(notes);
         user.setRoles(roles);
 
         return user;

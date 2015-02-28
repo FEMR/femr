@@ -69,7 +69,7 @@ public class MedicationService implements IMedicationService {
 
             //create new prescription
             IMedication medication = dataModelMapper.createMedication(prescriptionItem.getName());
-            IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
+            IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(0, medication.getId(), userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
             //replace the old prescription
@@ -99,7 +99,7 @@ public class MedicationService implements IMedicationService {
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         for (String script : prescriptionNames) {
             IMedication medication = dataModelMapper.createMedication(script);
-            patientPrescriptions.add(dataModelMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
+            patientPrescriptions.add(dataModelMapper.createPatientPrescription(0, medication.getId(), userId, encounterId, null, isDispensed, isCounseled));
         }
 
         try {

@@ -31,6 +31,7 @@ import femr.data.models.core.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
+import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
 
@@ -70,7 +71,7 @@ public class UserService implements IUserService {
             List<? extends IRole> roles = roleRepository.find(query);
 
 
-            IUser newUser = dataModelMapper.createUser(user, password, false, false, roles);
+            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles);
             encryptAndSetUserPassword(newUser);
 
 

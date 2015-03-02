@@ -24,7 +24,6 @@ GET         /admin/configure                   @femr.ui.controllers.admin.Config
 POST        /admin/configure                   @femr.ui.controllers.admin.ConfigureController.indexPost()
 GET         /admin                             @femr.ui.controllers.admin.AdminController.index()
 #Pharmacy
-GET         /pharmacy/typeahead                @femr.ui.controllers.PharmaciesController.typeaheadJSONGet()
 GET         /pharmacy/edit/:id                 @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id                 @femr.ui.controllers.PharmaciesController.editPost(id: Integer)
 GET         /pharmacy                          @femr.ui.controllers.PharmaciesController.indexGet()

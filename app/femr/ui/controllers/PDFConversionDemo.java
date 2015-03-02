@@ -1,4 +1,5 @@
 package femr.ui.controllers;
+import femr.business.services.core.*;
 import femr.common.models.*;
 import femr.ui.models.history.IndexEncounterMedicalViewModel;
 import java.io.File;
@@ -21,12 +22,8 @@ import com.itextpdf.text.pdf.parser.LineSegment;
 import com.itextpdf.text.pdf.parser.PdfImageObject;
 import com.itextpdf.text.pdf.fonts.otf.TableHeader;
 
-import femr.business.services.core.IEncounterService;
-import femr.business.services.core.IPhotoService;
-import femr.business.services.core.ISearchService;
 import femr.data.models.mysql.PatientEncounter;
 import femr.ui.controllers.PhotoController;
-import femr.business.services.core.ISessionService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.data.models.mysql.PatientEncounterPhoto;
@@ -68,13 +65,15 @@ public class PDFConversionDemo extends Controller {
 
     private final ISearchService searchService;
     private final IEncounterService encounterService;
-
-
+    private final ITabService tabService;
+    private final IVitalService vitalService;
     @Inject
-    public PDFConversionDemo(ISearchService searchService, IEncounterService encounterService) {
+    public PDFConversionDemo(ISearchService searchService, IEncounterService encounterService, ITabService tabService, IVitalService vitalService) {
 
         this.searchService = searchService;
         this.encounterService= encounterService;
+        this.tabService = tabService;
+        this.vitalService = vitalService;
 
     }
 
@@ -159,61 +158,61 @@ public class PDFConversionDemo extends Controller {
 
     private PdfPTable getAssessments(TabFieldMultiMap treatmentFields){
 
-        PdfPTable assesmenttable = new PdfPTable(new float[]{0.25f, 0.25f, 0.3f, 0.2f});
+        PdfPTable assesmentTable = new PdfPTable(new float[]{0.25f, 0.25f, 0.3f, 0.2f});
 
 
-        assesmenttable.setWidthPercentage(100);
-        assesmenttable.setSpacingBefore(4);
-        assesmenttable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        assesmentTable.setWidthPercentage(100);
+        assesmentTable.setSpacingBefore(4);
+        assesmentTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
 
 
-        assesmenttable.addCell(StyledPhrase("Onset: ", outputStringOrNA(treatmentFields.getMostRecent("onset", null))));
-        assesmenttable.addCell(StyledPhrase("quality: ", outputStringOrNA(treatmentFields.getMostRecent("quality", null))));
-        assesmenttable.addCell(StyledPhrase("severity: ", outputStringOrNA(treatmentFields.getMostRecent("severity", null))));
+        assesmentTable.addCell(StyledPhrase("Onset: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("onset", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("quality: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("quality", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("severity: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("severity", null).getValue())));
 
-        assesmenttable.addCell(StyledPhrase("radiation: ", outputStringOrNA(treatmentFields.getMostRecent("radiation", null))));
-        assesmenttable.addCell(StyledPhrase("provokes: ", outputStringOrNA(treatmentFields.getMostRecent("provokes", null))));
-        assesmenttable.addCell(StyledPhrase("palliates: ", outputStringOrNA(treatmentFields.getMostRecent("palliates", null))));
-        assesmenttable.addCell(StyledPhrase("timeOfDay: ", outputStringOrNA(treatmentFields.getMostRecent("timeOfDay", null))));
-        assesmenttable.addCell(StyledPhrase("narrative: ", outputStringOrNA(treatmentFields.getMostRecent("narrative", null))));
+        assesmentTable.addCell(StyledPhrase("radiation: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("radiation", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("provokes: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("provokes", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("palliates: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("palliates", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("timeOfDay: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("timeOfDay", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("narrative: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("narrative", null).getValue())));
 
-        assesmenttable.addCell(StyledPhrase("physicalExamination: ", outputStringOrNA(treatmentFields.getMostRecent("physicalExamination", null))));
-        assesmenttable.addCell(StyledPhrase("physicalExamination: ", outputStringOrNA(treatmentFields.getMostRecent("physicalExamination", null))));
-        assesmenttable.addCell(StyledPhrase("assessment: ", outputStringOrNA(treatmentFields.getMostRecent("assessment", null))));
-        assesmenttable.addCell(StyledPhrase("treatment: ", outputStringOrNA(treatmentFields.getMostRecent("treatment", null))));
+        assesmentTable.addCell(StyledPhrase("physicalExamination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("physicalExamination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("assessment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("assessment", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("treatment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("treatment", null).getValue())));
 
-        assesmenttable.addCell(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecent("medicalSurgicalHistory", null))));
+        assesmentTable.addCell(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue())));
         //assesmenttable.addCell(StyledPhrase("socialHistory", outputStringOrNA(treatmentFields.getMostRecent("socialHistory", null))));
-        assesmenttable.addCell("");
-        assesmenttable.addCell(StyledPhrase("currentMedications", outputStringOrNA(treatmentFields.getMostRecent("currentMedications", null))));
-        assesmenttable.addCell(StyledPhrase("familyHistory", outputStringOrNA(treatmentFields.getMostRecent("familyHistory", null))));
+        assesmentTable.addCell("");
+        assesmentTable.addCell(StyledPhrase("currentMedications", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("familyHistory", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("familyHistory", null).getValue())));
 
 
 
 
-        PdfPCell cell1 = new PdfPCell(new Phrase(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecent("medicalSurgicalHistory", null)))));
+        PdfPCell cell1 = new PdfPCell(new Phrase(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue()))));
         cell1.setColspan(2);
         cell1.setPadding(5);
-        PdfPCell cell2 = new PdfPCell(new Phrase(StyledPhrase("currentMedications: ", outputStringOrNA(treatmentFields.getMostRecent("currentMedications", null)))));
+        PdfPCell cell2 = new PdfPCell(new Phrase(StyledPhrase("currentMedications: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue()))));
         cell2.setColspan(2);
-        assesmenttable.addCell(cell1);
-        assesmenttable.addCell(cell2);
-        assesmenttable.completeRow();
+        assesmentTable.addCell(cell1);
+        assesmentTable.addCell(cell2);
+        assesmentTable.completeRow();
 
 
-        PdfPCell cell3 = new PdfPCell(new Phrase(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecent("medicalSurgicalHistory", null)))));
+        PdfPCell cell3 = new PdfPCell(new Phrase(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue()))));
         cell1.setColspan(2);
         cell1.setPadding(5);
-        PdfPCell cell4 = new PdfPCell(new Phrase(StyledPhrase("currentMedications: ", outputStringOrNA(treatmentFields.getMostRecent("currentMedications", null)))));
+        PdfPCell cell4 = new PdfPCell(new Phrase(StyledPhrase("currentMedications: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue()))));
         cell2.setColspan(2);
-        assesmenttable.addCell(cell3);
-        assesmenttable.addCell(cell4);
-        assesmenttable.completeRow();
+        assesmentTable.addCell(cell3);
+        assesmentTable.addCell(cell4);
+        assesmentTable.completeRow();
 
 
 
-        return (assesmenttable);
+        return (assesmentTable);
     }
 
 
@@ -233,11 +232,11 @@ public class PDFConversionDemo extends Controller {
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByEncounterId(Eid);
 
         VitalMultiMap patientVitals;
-        ServiceResponse<VitalMultiMap> VitalMultiMapServiceResponse = searchService.getVitalMultiMap(Eid);
+        ServiceResponse<VitalMultiMap> VitalMultiMapServiceResponse = vitalService.findVitalMultiMap(Eid);
 
         // GET Assesments
 
-        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = searchService.getTabFieldMultiMap(Eid);
+        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.findTabFieldMultiMap(Eid);
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         }

@@ -40,6 +40,7 @@ public class SessionService implements ISessionService {
     @Inject
     public SessionService(IUserService userService, IPasswordEncryptor passwordEncryptor,
                           ISessionHelper sessionHelper, IRepository<IUser> userRepository) {
+
         this.userService = userService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;

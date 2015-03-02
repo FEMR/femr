@@ -20,10 +20,11 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.common.models.MedicationItem;
 import femr.data.models.core.*;
@@ -36,23 +37,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryService implements IInventoryService {
+
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private DomainMapper domainMapper;
+    private DataModelMapper dataModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                             IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
-                            DomainMapper domainMapper) {
+                            DataModelMapper dataModelMapper) {
+
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
         this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -76,7 +79,7 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
         for (IMedication m : medications) {
-            medicationItems.add(DomainMapper.createMedicationItem(m));
+            medicationItems.add(UIModelMapper.createMedicationItem(m));
         }
         response.setResponseObject(medicationItems);
 
@@ -110,10 +113,10 @@ public class InventoryService implements IInventoryService {
                     IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationActiveDrugName == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
-                        medicationActiveDrugName = domainMapper.createMedicationActiveDrugName(miac.getName());
+                        medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
                     }
                     if (medicationMeasurementUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = domainMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
+                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
                         medicationActiveDrugs.add(medicationActiveDrug);
                     }
 
@@ -128,13 +131,13 @@ public class InventoryService implements IInventoryService {
                     .eq("name", medicationItem.getForm());
             IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
             if (medicationForm == null){
-                medicationForm = domainMapper.createMedicationForm(medicationItem.getForm());
+                medicationForm = dataModelMapper.createMedicationForm(medicationItem.getForm());
             }
 
 
-            IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs, medicationForm);
+            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = DomainMapper.createMedicationItem(medication);
+            MedicationItem newMedicationItem = UIModelMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);
         } catch (Exception ex) {
             response.addError("", "error creating medication");

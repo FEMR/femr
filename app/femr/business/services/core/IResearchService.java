@@ -20,15 +20,19 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.ui.models.research.json.ResearchGraphDataItem;
-
-import java.util.Map;
+import femr.ui.models.research.json.ResearchGraphDataModel;
 
 /**
  * Interface for the Research Service
  */
 public interface IResearchService {
 
-    public ServiceResponse<Map<Integer, String>> getAllMedications();
-    public ServiceResponse<ResearchGraphDataItem> getGraphData(ResearchFilterItem filterItem);
+
+    /**
+     * Take filters and build matching data for graph
+     *
+     * @param filterItem object representing chosen filters
+     * @return Graph data bundled for display
+     */
+    public ServiceResponse<ResearchResultSetItem> getGraphData(ResearchFilterItem filterItem);
 }

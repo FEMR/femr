@@ -24,7 +24,6 @@ GET         /admin/configure                 @femr.ui.controllers.admin.Configur
 POST        /admin/configure                 @femr.ui.controllers.admin.ConfigureController.indexPost()
 GET         /admin                           @femr.ui.controllers.admin.AdminController.index()
 #Pharmacy
-GET         /pharmacy/typeahead              @femr.ui.controllers.PharmaciesController.typeaheadJSONGet()
 GET         /pharmacy/edit/:id               @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id               @femr.ui.controllers.PharmaciesController.editPost(id: Integer)
 GET         /pharmacy                        @femr.ui.controllers.PharmaciesController.indexGet()
@@ -37,6 +36,7 @@ GET         /search/:page                    @femr.ui.controllers.SearchControll
 GET         /search/check/:query             @femr.ui.controllers.SearchController.doesPatientExist(query: String)
 GET         /search/typeahead/patients       @femr.ui.controllers.SearchController.typeaheadPatientsJSONGet()
 GET         /search/typeahead/diagnoses      @femr.ui.controllers.SearchController.typeaheadDiagnosisJSONGet()
+GET         /search/typeahead/medications    @femr.ui.controllers.SearchController.typeaheadMedicationsJSONGet()
 #Photo
 GET         /photo/patient/:id               @femr.ui.controllers.PhotoController.GetPatientPhoto(id: Integer, showDefault: Boolean)
 GET         /photo/encounter/:id             @femr.ui.controllers.PhotoController.GetPhoto(id: Int)
@@ -53,6 +53,7 @@ POST        /medical/edit/:id                @femr.ui.controllers.MedicalControl
 GET         /medical                         @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                         @femr.ui.controllers.MedicalController.indexPost()
 #Research
+GET         /research/typeahead              @femr.ui.controllers.ResearchController.typeaheadJSONGet()
 GET         /research                        @femr.ui.controllers.ResearchController.indexGet()
 POST        /research/graph                  @femr.ui.controllers.ResearchController.getGraphPost()
 GET         /research/generateData           @femr.ui.controllers.ResearchController.generateData()

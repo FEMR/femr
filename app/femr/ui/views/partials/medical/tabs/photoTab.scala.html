@@ -1,6 +1,6 @@
-@(viewModel: femr.ui.models.medical.EditViewModelGet)
+@(photos: List[femr.common.models.PhotoItem])
 
-<div class="controlWrap hidden" id="photoControl">
+<div class="controlWrap hidden" id="photosControl">
     <div class="form-group">
         <label for="btnAddPhoto" class="control-label">Add Photo:</label>
         <div id="photoInputContainer">
@@ -8,7 +8,7 @@
         </div>
     </div>
     <div id="patientImageList" class="row">
-    @for(photoRec <- viewModel.getPhotos) {
+    @for(photoRec <- photos) {
         <div class="col-xs-12 col-sm-6 col-md-4">
             <div class="thumbnail">
                 <img src="@photoRec.getImageUrl">

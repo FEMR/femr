@@ -3,11 +3,9 @@ var medicalFieldValidator = {
     isValid : true,
     validatePrescriptions : function(){
         var prescriptions = [];
-        prescriptions.push(medicalFields.prescription1.val());
-        prescriptions.push(medicalFields.prescription2.val());
-        prescriptions.push(medicalFields.prescription3.val());
-        prescriptions.push(medicalFields.prescription4.val());
-        prescriptions.push(medicalFields.prescription5.val());
+        $(prescriptionFeature.allPrescriptions).each(function(){
+            prescriptions.push($(this).val());
+        });
         prescriptions.sort();
         var last = prescriptions[0];
         for (var i=1; i<prescriptions.length; i++){

@@ -19,17 +19,22 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IVitalService;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.IVital;
+import femr.data.models.mysql.PatientEncounterVital;
 import femr.data.models.mysql.Vital;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.dateUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,16 +43,16 @@ public class VitalService implements IVitalService {
 
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IVital> vitalRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                         IRepository<IVital> vitalRepository,
-                        DomainMapper domainMapper){
+                        DataModelMapper dataModelMapper){
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -72,7 +77,7 @@ public class VitalService implements IVitalService {
 
                 query = QueryProvider.getVitalQuery().where().eq("name", key);
                 vital = vitalRepository.findOne(query);
-                patientEncounterVitals.add(domainMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital, patientEncounterVitalMap.get(key)));
+                patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
             }
         }
 
@@ -80,7 +85,8 @@ public class VitalService implements IVitalService {
             List<VitalItem> vitalItems = new ArrayList<>();
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             for (IPatientEncounterVital pev : newPatientEncounterVitals) {
-                vitalItems.add(DomainMapper.createVitalItem(pev));
+                if (pev.getVital() != null)
+                    vitalItems.add(UIModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
@@ -101,7 +107,7 @@ public class VitalService implements IVitalService {
             List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IVital v : vitals) {
-                vitalItems.add(DomainMapper.createVitalItem(v));
+                vitalItems.add(UIModelMapper.createVitalItem(v.getName(), null));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
@@ -137,14 +143,15 @@ public class VitalService implements IVitalService {
 
                     query = QueryProvider.getVitalQuery().where().eq("name", key);
                     vital = vitalRepository.findOne(query);
-                    patientEncounterVitals.add(domainMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital, patientEncounterVitalMap.get(key)));
+                    patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
                 }
             }
 
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IPatientEncounterVital pev : patientEncounterVitals) {
-                vitalItems.add(DomainMapper.createVitalItem(pev));
+                if (pev.getVital() != null)
+                    vitalItems.add(UIModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
 
             response.setResponseObject(vitalItems);
@@ -152,6 +159,35 @@ public class VitalService implements IVitalService {
             response.addError("exception", ex.getMessage());
         }
 
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<VitalMultiMap> findVitalMultiMap(int encounterId) {
+        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
+        VitalMultiMap vitalMultiMap = new VitalMultiMap();
+
+        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
+        try {
+            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+
+            if (patientEncounterVitals != null) {
+                for (IPatientEncounterVital vitalData : patientEncounterVitals) {
+                    vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
+                }
+            }
+        } catch (Exception ex) {
+            response.addError("", "bad query");
+        }
+
+        response.setResponseObject(vitalMultiMap);
         return response;
     }
 }

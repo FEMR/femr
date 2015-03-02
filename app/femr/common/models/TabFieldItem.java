@@ -26,9 +26,10 @@ public class TabFieldItem {
     private String placeholder;
     private String value;
     private Boolean isCustom;
-    //chief complaint is used to identify which chief complaint the tab field falls under.
-    //this is not always relevant (sometimes they fall under all chief complaints)
-    private String chiefComplaint;
+    private String chiefComplaint; //TODO: is this needed
+    //since the total number of tabfields is dependant on the number of chief complaints,
+    //this assigns each tabfielditem an index for the html name element attribute
+    private Integer index;
 
     public String getName() {
         return name;
@@ -92,5 +93,13 @@ public class TabFieldItem {
 
     public void setChiefComplaint(String chiefComplaint) {
         this.chiefComplaint = chiefComplaint;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }

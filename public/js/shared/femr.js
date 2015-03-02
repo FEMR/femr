@@ -1,3 +1,5 @@
+var typeaheadData = [];
+
 $(document).on('blur', 'input, textarea', function () {
     //this is a hacky fix for the navigation bar dropping on iPads. After the keyboard
     //appears and disappears, the navigation bar would fall to the center of the screen and
@@ -8,50 +10,50 @@ $(document).on('blur', 'input, textarea', function () {
 });
 
 $(document).ready(function () {
-    $('.hamburger').click(function(){
+    $('.hamburger').click(function () {
         var navMenu = $('.navigationItemsWrap');
-        if ($(navMenu).css("display") == "none"){
+        if ($(navMenu).css("display") == "none") {
             //$('.navigationItemsWrap').css("display", "block");
             $(navMenu).slideDown();
-        }else{
+        } else {
             $(navMenu).slideUp();
         }
 
     });
-  var $id = $('#id');
-  $id.change(function () {
-    var idString = $id.val();
-    var intRegex = /^\d+$/;
-    if (intRegex.test(idString)) {
-      $('#id').css('border', '');
-    } else {
-      $id.val('');
-      $id.css('border-color', 'red');
-      $id.attr('placeholder', 'Invalid Id');
-    }
-  });
+    var $id = $('#id');
+    $id.change(function () {
+        var idString = $id.val();
+        var intRegex = /^\d+$/;
+        if (intRegex.test(idString)) {
+            $('#id').css('border', '');
+        } else {
+            $id.val('');
+            $id.css('border-color', 'red');
+            $id.attr('placeholder', 'Invalid Id');
+        }
+    });
 
-  $('.idSearch').click(function () {
-    var idString = $id.val();
-    var intRegex = /^\d+$/;
-    if (intRegex.test(idString)) {
-      $('#id').css('border', '');
-    } else {
-      $id.val('');
-      $id.css('border-color', 'red');
-      $id.attr('placeholder', 'Invalid Id');
-      return false;
-    }
-  });
+    $('.idSearch').click(function () {
+        var idString = $id.val();
+        var intRegex = /^\d+$/;
+        if (intRegex.test(idString)) {
+            $('#id').css('border', '');
+        } else {
+            $id.val('');
+            $id.css('border-color', 'red');
+            $id.attr('placeholder', 'Invalid Id');
+            return false;
+        }
+    });
 
-    $('#searchBtn').click(function(){
+    $('#searchBtn').click(function () {
         var searchValue = $('#nameOrIdSearchForm').val().trim();
         var isValid = true;
 
-        if (!searchValue){
+        if (!searchValue) {
             $('#nameOrIdSearchForm').css('border', '1px solid red');
             return false;
-        }else{
+        } else {
 
             $.ajax({
                 url: '/search/check/' + searchValue,
@@ -59,7 +61,7 @@ $(document).ready(function () {
                 dataType: 'text',
                 async: false,
                 success: function (test) {
-                    if (test === "false"){
+                    if (test === "false") {
                         isValid = false;
                         $('#nameOrIdSearchForm').css('border', '1px solid red');
                         $('#nameOrIdSearchForm').val("");
@@ -76,7 +78,7 @@ $(document).ready(function () {
     });
 
     /* Search typeahead */
-    if( $("#patientSearchContainer").length > 0 ) {
+    if ($("#patientSearchContainer").length > 0) {
 
         var patient_data = [];
 
@@ -89,23 +91,23 @@ $(document).ready(function () {
 
             var patients = new Bloodhound({
                 /*
+                 datumTokenizer: function (d) {
+                 // tokenize the fields that will need to be searched
+                 return Bloodhound.tokenizers.whitespace(d.firstName);
+                 },
+                 */
                 datumTokenizer: function (d) {
-                    // tokenize the fields that will need to be searched
-                    return Bloodhound.tokenizers.whitespace(d.firstName);
-                },
-                */
-                datumTokenizer: function(d) {
 
                     // break apart first/last name into separate words
-                    var words = Bloodhound.tokenizers.whitespace(d.firstName+" "+d.lastName);
+                    var words = Bloodhound.tokenizers.whitespace(d.firstName + " " + d.lastName);
 
                     // make all possible substring words
                     // Original Word: Name
                     // Add  ame, me, e to the list also
-                    $.each(words,function(k,v){
+                    $.each(words, function (k, v) {
                         var i = 0;
-                        while( (i+1) < v.length ){
-                            words.push(v.substr(i,v.length));
+                        while ((i + 1) < v.length) {
+                            words.push(v.substr(i, v.length));
                             i++;
                         }
                     });
@@ -138,11 +140,11 @@ $(document).ready(function () {
                         'No matching patients found',
                         '</div>'
                     ].join('\n'),
-                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">'+
-                            '<img class="photo" src="{{photo}}" height="80" width="80">' +
-                            '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
-                            '<span class="age">{{age}}</span>' +
-                            '</a></p>')
+                    suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">' +
+                        '<img class="photo" src="{{photo}}" height="80" width="80">' +
+                        '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
+                        '<span class="age">{{age}}</span>' +
+                        '</a></p>')
                 }
             });
 
@@ -163,36 +165,80 @@ $(document).ready(function () {
  * 1.1
  */
 function decimalCheck(wonkyDeci) {
-  var regexDecimal = /^\d+(\.\d{1,2})?$/;
-  return regexDecimal.test(wonkyDeci);
+    var regexDecimal = /^\d+(\.\d{1,2})?$/;
+    return regexDecimal.test(wonkyDeci);
 }
 /*
  * positive integer numbers
  * excludes 1.
  */
 function integerCheck(wonkyInt) {
-  var regexInt = /^\d+$/;
-  return regexInt.test(wonkyInt);
+    var regexInt = /^\d+$/;
+    return regexInt.test(wonkyInt);
 }
 
 /*
  * Checks if value of input is equal to NaN
  */
 function randomString(strVal) {
-  return isNaN(strVal);
+    return isNaN(strVal);
 }
 
 /*
  * Typeahead initalizer
  */
 var typeaheadFeature = {
-    initalizeTypeAhead: function(elementSelector, name, data){
-        $(elementSelector).typeahead({
-            name: name,
-            local: data
+
+    substringMatcher: function (strs) {
+
+        return function findMatches(q, cb) {
+            var matches, substrRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function (i, str) {
+                if (substrRegex.test(str)) {
+                    // the typeahead jQuery plugin expects suggestions to a
+                    // JavaScript object, refer to typeahead docs for more info
+                    matches.push({ value: str });
+                }
+            });
+
+            cb(matches);
+        };
+    },
+    /**
+     * Sets a global variable for the typeahead data
+     *
+     * @param post_URL url to retrieve the data from the server via json
+     */
+    setGlobalVariable: function (post_URL) {
+
+        return $.getJSON(post_URL, function (data) {
+            typeaheadData = data
         });
     },
-    destroyTypeAhead: function(elementSelector){
+    initalizeTypeAhead: function (element, name, hint, highlight) {
+        //the error happens in here when initating typeahead VVVVV
+        //need to restructure the medicine JSON from the server to match
+        //the json from diagnoses
+        $(element).typeahead({
+                hint: hint,
+                highlight: highlight
+            },
+            {
+                name: name,
+                source: typeaheadFeature.substringMatcher(typeaheadData)
+            });
+
+    },
+    destroyTypeAhead: function (elementSelector) {
         $(elementSelector).typeahead('destroy');
     }
 };

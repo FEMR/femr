@@ -18,63 +18,220 @@
 */
 package femr.util.DataStructure.Mapping;
 
-import java.util.List;
+import femr.common.models.TabFieldItem;
+import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.collections.MapIterator;
+import org.apache.commons.collections.keyvalue.MultiKey;
+
+import java.util.*;
 
 /**
- * Contains all available tab fields and their values. (Includes old and new)
+ * Contains all available tab fields and their values. (Includes old and new). In the following format:
+ * =key1,key2,key3,value
+ * where
+ * <ul>
+ * <li>key1 = name of the field</li>
+ * <li>key2 = date the field was recorded (null if empty field)</li>
+ * <li>key3 = chief complaint the field belongs to (null if n/a)</li>
+ * <li>key = TabFieldItem matching the keys</li>
+ * </ul>
+ *
+ * If you need to sort any fields by sort order then your on your own! muhahahaha
  */
 public class TabFieldMultiMap extends AbstractMultiMap {
+
+    //a list of all chief complaints available in the multimap - not in any order
+    private final List<String> chiefComplaintList = new ArrayList<>();
+    //keeps track of an order for the chief complaints
+    private final Map<Integer, String> chiefComplaintListOrderMap = new TreeMap<>();
+    //tracks the names of custom fields that have been added by a superuser
+    private final List<String> customFieldNames = new ArrayList<>();
+
     /**
-     * Puts a value into the map and associatres the name and date as the two keys to the value
+     * Puts a value into the map and associates the name, date, and chief complaint
+     * as the two keys to the value.
      *
-     * @param tabFieldName   The name of the vital
-     * @param date           The date the vital was taken
-     * @param value          The value of the vital
+     * @param fieldName      The name of the tab field, can not be null
+     * @param date           The date the tab field was taken, can be null if empty field
+     * @param value          The value of the tab field
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
      */
-    public void put(String tabFieldName, String date, String chiefComplaint, Object value) {
-        map.put(tabFieldName, date, chiefComplaint, value);
-        // check if the dated is already in the dateList if so don't add it
-        if (!dateList.contains(date)) {
-            dateList.add(date);
+    public void put(String fieldName, String date, String chiefComplaint, Object value) {
+
+        if (!(value instanceof TabFieldItem) || StringUtils.isNullOrWhiteSpace(fieldName)) {
+            //don't do a gd thing
+        } else {
+
+            TabFieldItem tabFieldItem = (TabFieldItem) value;
+            map.put(fieldName, date, chiefComplaint, value);
+            //check if the date is already in the comprehensive date list, if so don't add it
+            if (!dateList.contains(date) && StringUtils.isNotNullOrWhiteSpace(date)) {
+                dateList.add(date);
+            }
+            //check if the chief complaint is already in the comprehensive chief complaint list, if so don't add it
+            if (!chiefComplaintList.contains(chiefComplaint) && StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                chiefComplaintList.add(chiefComplaint);
+            }
+            if (tabFieldItem.getIsCustom() != null && tabFieldItem.getIsCustom() && !customFieldNames.contains(tabFieldItem.getName())) {
+                customFieldNames.add(tabFieldItem.getName());
+            }
         }
     }
 
     /**
-     * Given the tab field name and date and chief complaint return the tab field value
-     * if the keys do not exist it returns null
+     * Sets a sort order for the chief complaints. If this doesn't happen then they can appear
+     * in a random order
      *
-     * @param tabFieldName   the name of the vital
-     * @param date           the date the vital was taken
-     * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
-     * @return the value of the vital as on type Object or null if not found
+     * @param chiefComplaint the chief complaint (it must already exist in the multi map)
+     * @param sortOrder      the chief complaints sort order
+     * @return true if successfull, false if you f*cked up
      */
-    public String get(String tabFieldName, String date, String chiefComplaint) {
-        if (map.containsKey(tabFieldName, date, chiefComplaint)) {
-            return map.get(tabFieldName, date, chiefComplaint).toString();
-        }
-        return null;
-    }
+    public boolean setChiefComplaintOrder(String chiefComplaint, Integer sortOrder) {
 
-    /**
-     * Given the tab field name and chief complaint return the most recent tab field value
-     * if the keys do not exist it returns null
-     *
-     * @param tabFieldName   the name of the vital
-     * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
-     * @return the value of the vital as on type Object or null if not found
-     */
-    public String getMostRecent(String tabFieldName, String chiefComplaint){
-        Object value;
-        List<String> dateList = this.getDateList();
-
-        for (String s : dateList){
-            if (map.containsKey(tabFieldName, s, chiefComplaint)){
-                value = map.get(tabFieldName, s, chiefComplaint);
-                return value.toString();
+        if (StringUtils.isNullOrWhiteSpace(chiefComplaint))
+            return false;
+        if (!chiefComplaintList.contains(chiefComplaint))
+            return false;
+        for (Integer key : chiefComplaintListOrderMap.keySet()) {
+            if (key == sortOrder) {
+                return false;
             }
         }
 
+        chiefComplaintListOrderMap.put(sortOrder, chiefComplaint);
+        return true;
+    }
+
+    /**
+     * Finds any field value
+     *
+     * @param fieldName      the name of the tab field
+     * @param date           the date the tab field was taken
+     * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
+     * @return the tab field or null if not found
+     */
+    public TabFieldItem get(String fieldName, String date, String chiefComplaint) {
+
+        if (map.containsKey(fieldName, date, chiefComplaint)) {
+
+            return (TabFieldItem) map.get(fieldName, date, chiefComplaint);
+        }
+
         return null;
+    }
+
+    /**
+     * Finds the most recent field value
+     *
+     * @param fieldName      the name of the tab field
+     * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
+     * @return the tab field with or without a value or null if it doesn't exist
+     */
+    public TabFieldItem getMostRecentOrEmpty(String fieldName, String chiefComplaint) {
+
+        List<String> dateList = this.getDateList();
+        TabFieldItem tabFieldItem = null;
+
+        try {
+            //datelist is already sorted :)
+            for (String s : dateList) {
+                if (map.containsKey(fieldName, s, chiefComplaint)) {
+
+                    tabFieldItem = (TabFieldItem) map.get(fieldName, s, chiefComplaint);
+                    break;
+                }
+            }
+            //no field exists with a date, find the blank field
+            if (tabFieldItem == null) {
+
+                tabFieldItem = (TabFieldItem) map.get(fieldName, null, chiefComplaint);
+            }
+        } catch (Exception ex) {
+            //death
+            tabFieldItem = null;
+        }
+
+        return tabFieldItem;
+    }
+
+    /**
+     * Get the available chief complaints in proper sort order
+     *
+     * @return a string list of chief complaints inside the map
+     */
+    public List<String> getChiefComplaintList() {
+
+        List<String> orderedChiefComplaints = new ArrayList<>();
+        for (Integer key : chiefComplaintListOrderMap.keySet()) {
+
+            orderedChiefComplaints.add(chiefComplaintListOrderMap.get(key));
+        }
+
+        for (String chiefComplaint : chiefComplaintList) {
+
+            if (!orderedChiefComplaints.contains(chiefComplaint))
+                orderedChiefComplaints.add(chiefComplaint);
+        }
+
+        return orderedChiefComplaints;
+    }
+
+    /**
+     * Returns a list of available custom fields
+     *
+     * @return all strings, yo
+     */
+    public List<String> getCustomFieldNameList() {
+
+        return customFieldNames;
+    }
+
+    /**
+     * Checks to see if the map contains an entry for a field
+     *
+     * @param fieldName name of the field
+     * @return true if the field has an entry, false otherwise
+     */
+    public boolean containsTabField(String fieldName) {
+
+        MapIterator multiMapIterator = this.getMultiMapIterator();
+        while (multiMapIterator.hasNext()) {
+
+            multiMapIterator.next();
+            MultiKey mk = (MultiKey) multiMapIterator.getKey();
+            if (mk.getKey(0) != null) {
+
+                if (fieldName.equals(mk.getKey(0))) {
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if the map contains any entries for a field
+     *
+     * @param fieldName      name of the field
+     * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
+     * @return true if the field has an entry, false otherwise
+     */
+    public boolean containsTabField(String fieldName, String chiefComplaint) {
+
+        MapIterator multiMapIterator = this.getMultiMapIterator();
+        while (multiMapIterator.hasNext()) {
+
+            multiMapIterator.next();
+            MultiKey mk = (MultiKey) multiMapIterator.getKey();
+            if (mk.getKey(0) != null && mk.getKey(2) != null) {
+
+                if (fieldName.equals(mk.getKey(0)) && chiefComplaint.equals(mk.getKey(2))) {
+
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -233,14 +233,17 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 .customLeft{
     width: 50%;
     float: left;
+    padding: 5px;
 }
 .customRight{
     width: 50%;
     float: left;
+    padding: 5px;
 }
 .customBottom{
     width: 100%;
     float: left;
+    padding: 5px;
 }
 
 

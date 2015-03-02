@@ -19,6 +19,7 @@
 package femr.util.DataStructure.Mapping;
 
 import femr.util.stringhelpers.StringUtils;
+import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.map.MultiKeyMap;
 
 import java.util.Collections;
@@ -33,6 +34,19 @@ import java.util.List;
 public abstract class AbstractMultiMap {
     protected final MultiKeyMap map = new MultiKeyMap();
     protected final List<String> dateList = new LinkedList<>();
+
+    /**
+     * Get an iterator for iterating over the map
+     *
+     * @return the gd iterator
+     */
+    public MapIterator getMultiMapIterator() {
+        return map.mapIterator();
+    }
+
+    public int getSize() {
+        return map.size();
+    }
 
     /**
      * Gets a list of Date Keys and sorts them in descending order
@@ -81,4 +95,5 @@ public abstract class AbstractMultiMap {
         }
         return StringUtils.FormatDateTime(dateList.get(i));
     }
+
 }

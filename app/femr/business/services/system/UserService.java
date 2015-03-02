@@ -20,16 +20,18 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUserService;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
+import femr.data.DataModelMapper;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
+import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
 
@@ -41,14 +43,18 @@ public class UserService implements IUserService {
     private final IRepository<IUser> userRepository;
     private final IPasswordEncryptor passwordEncryptor;
     private final IRepository<IRole> roleRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
-    public UserService(IRepository<IUser> userRepository, IPasswordEncryptor passwordEncryptor, IRepository<IRole> roleRepository, DomainMapper domainMapper) {
+    public UserService(IRepository<IUser> userRepository,
+                       IPasswordEncryptor passwordEncryptor,
+                       IRepository<IRole> roleRepository,
+                       DataModelMapper dataModelMapper) {
+
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
         this.roleRepository = roleRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -65,7 +71,7 @@ public class UserService implements IUserService {
             List<? extends IRole> roles = roleRepository.find(query);
 
 
-            IUser newUser = domainMapper.createUser(user, password, false, false, roles);
+            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles);
             encryptAndSetUserPassword(newUser);
 
 
@@ -75,7 +81,7 @@ public class UserService implements IUserService {
             }
 
             newUser = userRepository.create(newUser);
-            response.setResponseObject(DomainMapper.createUserItem(newUser));
+            response.setResponseObject(UIModelMapper.createUserItem(newUser));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -100,7 +106,7 @@ public class UserService implements IUserService {
         List<UserItem> userItems = new ArrayList<>();
         if (users.size() > 0) {
             for (IUser user : users) {
-                userItems.add(DomainMapper.createUserItem(user));
+                userItems.add(UIModelMapper.createUserItem(user));
             }
             response.setResponseObject(userItems);
         } else {
@@ -120,7 +126,7 @@ public class UserService implements IUserService {
             IUser user = userRepository.findOne(query);
             user.setDeleted(!user.getDeleted());
             user = userRepository.update(user);
-            response.setResponseObject(DomainMapper.createUserItem(user));
+            response.setResponseObject(UIModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -139,7 +145,7 @@ public class UserService implements IUserService {
         try {
             IUser user = userRepository.findOne(query);
             UserItem userItem;
-            userItem = DomainMapper.createUserItem(user);
+            userItem = UIModelMapper.createUserItem(user);
             response.setResponseObject(userItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -181,7 +187,7 @@ public class UserService implements IUserService {
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
             user = userRepository.update(user);
-            response.setResponseObject(DomainMapper.createUserItem(user));
+            response.setResponseObject(UIModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }

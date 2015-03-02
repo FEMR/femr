@@ -16,21 +16,37 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.medical.json;
+package femr.data.models.core.research;
 
-/**
- * Used to get custom tab fields in addition to hpi fields
- * when multiple chief complaints exist
- */
-public class JCustomField {
-    String name;
-    String value;
+import femr.data.models.core.IVital;
+import femr.data.models.mysql.PatientEncounter;
+import femr.data.models.mysql.research.ResearchEncounter;
 
-    public String getName() {
-        return name;
-    }
+public interface IResearchEncounterVital {
 
-    public String getValue() {
-        return value;
-    }
+    int getId();
+
+    int getUserId();
+
+    ResearchEncounter getPatientEncounter();
+
+    void setPatientEncounter(ResearchEncounter patientEncounterId);
+
+    int getVitalId();
+
+    void setVitalId(int vitalId);
+
+    IVital getVital();
+    void setVital(IVital vital);
+
+    Float getVitalValue();
+
+    void setVitalValue(float vitalValue);
+
+    String getDateTaken();
+
+    void setDateTaken(String dateTaken);
+
+    void setUserId(int userId);
+
 }

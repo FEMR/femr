@@ -21,11 +21,12 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
 import java.util.List;
-import java.util.Map;
 
-public interface ICustomTabService {
+public interface ITabService {
+
     /**
      * Edit a tab field
      *
@@ -44,6 +45,15 @@ public interface ICustomTabService {
      */
     ServiceResponse<TabItem> editTab(TabItem customTabItem, int userId);
 
+    /**
+     * Finds all tabs with respective fields
+     *
+     * @param encounterId id of the current encounter
+     * @param isActive is the tab turned on?
+     * @return a list of tab items including the fields
+
+    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
+     */
     /**
      * Deletes or un-Deletes a tab
      *
@@ -128,10 +138,17 @@ public interface ICustomTabService {
     ServiceResponse<Boolean> doesTabExist(String tabName);
 
     /**
-     * Maps a list of TabFieldItems to their respective tab
+     * Create a map of tabs and their fields where the key is the name, date, and chief complaint.
+     * Chief complaint is null if it doesn't exist.
      *
-     * @param encounterId current encounter id
-     * @return TabFieldItems mapped to their respective tab
+     * @param encounterId id of the encounter
+     * @return a "TabFieldMultiMap" that contains all tab fields and their values. <strong>It will also contain empty fields.</strong>
      */
-    ServiceResponse<Map<String, List<TabFieldItem>>> getTabFields(int encounterId);
+    ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId);
+
+    /**
+     * Get all available tabs for use
+     * @return list of available tabs
+     */
+    ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted);
 }

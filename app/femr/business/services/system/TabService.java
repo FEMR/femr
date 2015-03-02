@@ -21,48 +21,51 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
-import femr.business.services.core.ICustomTabService;
+import femr.business.services.core.ITabService;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class CustomTabService implements ICustomTabService {
+public class TabService implements ITabService {
 
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
+    private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<ITab> tabRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
-    public CustomTabService(IRepository<IChiefComplaint> chiefComplaintRepository,
-                            IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
-                            IRepository<ITab> tabRepository,
-                            IRepository<ITabField> tabFieldRepository,
-                            IRepository<ITabFieldType> tabFieldTypeRepository,
-                            IRepository<ITabFieldSize> tabFieldSizeRepository,
-                            DomainMapper domainMapper) {
+    public TabService(IRepository<IChiefComplaint> chiefComplaintRepository,
+                      IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
+                      IRepository<ISystemSetting> systemSettingRepository,
+                      IRepository<ITab> tabRepository,
+                      IRepository<ITabField> tabFieldRepository,
+                      IRepository<ITabFieldType> tabFieldTypeRepository,
+                      IRepository<ITabFieldSize> tabFieldSizeRepository,
+                      DataModelMapper DataModelMapper) {
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
+        this.systemSettingRepository = systemSettingRepository;
         this.tabRepository = tabRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldTypeRepository = tabFieldTypeRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = DataModelMapper;
     }
 
     /**
@@ -94,7 +97,7 @@ public class CustomTabService implements ICustomTabService {
             return response;
         }
 
-        TabItem tabItem = DomainMapper.createTabItem(tab);
+        TabItem tabItem = UIModelMapper.createTabItem(tab.getName(), tab.getIsCustom(), tab.getLeftColumnSize(), tab.getRightColumnSize());
         response.setResponseObject(tabItem);
         return response;
     }
@@ -109,7 +112,7 @@ public class CustomTabService implements ICustomTabService {
             response.addError("", "bad parameters, wtf are you doing?");
             return response;
         }
-        ITab tab = domainMapper.createTab(newTab, false, userId);
+        ITab tab = dataModelMapper.createTab(dateUtils.getCurrentDateTime(), newTab.getLeftColumnSize(), newTab.getRightColumnSize(), newTab.getName(), false, userId);
 
         ExpressionList<Tab> query = QueryProvider.getTabQuery()
                 .where()
@@ -158,7 +161,7 @@ public class CustomTabService implements ICustomTabService {
 
         List<TabItem> tabItems = new ArrayList<>();
         for (ITab t : tabs) {
-            tabItems.add(DomainMapper.createTabItem(t));
+            tabItems.add(UIModelMapper.createTabItem(t.getName(), t.getIsCustom(), t.getLeftColumnSize(), t.getRightColumnSize()));
         }
         response.setResponseObject(tabItems);
 
@@ -186,8 +189,20 @@ public class CustomTabService implements ICustomTabService {
         try {
             List<? extends ITabField> tabFields = tabFieldRepository.find(query);
             List<TabFieldItem> customFieldItems = new ArrayList<>();
+            String size = null;
             for (ITabField tf : tabFields) {
-                customFieldItems.add(DomainMapper.createTabFieldItem(tf));
+
+                if (tf.getTabFieldSize() != null)
+                    size = tf.getTabFieldSize().getName();
+
+                customFieldItems.add(UIModelMapper.createTabFieldItem(tf.getName(),
+                        tf.getTabFieldType().getName(),
+                        size,
+                        tf.getOrder(),
+                        tf.getPlaceholder(),
+                        null,
+                        null,
+                        true));
             }
             response.setResponseObject(customFieldItems);
         } catch (Exception ex) {
@@ -201,65 +216,9 @@ public class CustomTabService implements ICustomTabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Map<String, List<TabFieldItem>>> getTabFields(int encounterId) {
-        ServiceResponse<Map<String, List<TabFieldItem>>> response = new ServiceResponse<>();
-        if (encounterId < 1) {
-            response.addError("", "encounterId must be greater than 0");
-            return response;
-        }
-        Map<String, List<TabFieldItem>> customFieldMap = new HashMap<>();
-        ExpressionList<Tab> query = QueryProvider.getTabQuery()
-                .where()
-                .eq("isDeleted", false);
-        try {
-            //O(n^2) because who gives a fuck
-            List<? extends ITab> customTabs = tabRepository.find(query);
-            for (ITab ct : customTabs) {
-                Query<TabField> query2 = QueryProvider.getTabFieldQuery()
-                        .fetch("tab")
-                        .where()
-                        .eq("isDeleted", false)
-                        .eq("tab.name", ct.getName())
-                        .order()
-                        .asc("sort_order");
-
-
-                List<? extends ITabField> customFields = tabFieldRepository.find(query2);
-                List<TabFieldItem> customFieldItems = new ArrayList<>();
-                for (ITabField cf : customFields) {
-                    Query<PatientEncounterTabField> query3 = QueryProvider.getPatientEncounterTabFieldQuery()
-                            .where()
-                            .eq("tabField", cf)//somethings fucky
-                            .eq("patient_encounter_id", encounterId)
-                            .order()
-                            .desc("date_taken");
-
-                    List<? extends IPatientEncounterTabField> patientEncounterCustomField = patientEncounterTabFieldRepository.find(query3);
-                    if (patientEncounterCustomField != null && patientEncounterCustomField.size() > 0) {
-                        customFieldItems.add(DomainMapper.createTabFieldItem(patientEncounterCustomField.get(0)));
-                    } else {
-                        customFieldItems.add(DomainMapper.createTabFieldItem(cf));
-                    }
-
-
-                }
-                customFieldMap.put(ct.getName(), customFieldItems);
-
-            }
-            response.setResponseObject(customFieldMap);
-        } catch (Exception ex) {
-            response.addError("", "error");
-            return response;
-        }
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ServiceResponse<TabFieldItem> toggleTabField(String fieldName, String tabName) {
+
+        //TODO: properly mark tabs as custom
         ServiceResponse<TabFieldItem> response = new ServiceResponse<>();
         if (StringUtils.isNullOrWhiteSpace(fieldName) || StringUtils.isNullOrWhiteSpace(tabName)) {
             response.addError("", "bad parameters, wtf are you doing?");
@@ -275,9 +234,20 @@ public class CustomTabService implements ICustomTabService {
             ITabField tabField = tabFieldRepository.findOne(query);
             tabField.setIsDeleted(!tabField.getIsDeleted());
             //delete the sort order when the tab gets deactivated
-            if (tabField.getIsDeleted() == true) tabField.setOrder(null);
+            if (tabField.getIsDeleted()) tabField.setOrder(null);
             tabField = tabFieldRepository.update(tabField);
-            TabFieldItem tabFieldItem = domainMapper.createTabFieldItem(tabField);
+            String size = null;
+            if (tabField.getTabFieldSize() != null)
+                size = tabField.getTabFieldSize().getName();
+
+            TabFieldItem tabFieldItem = UIModelMapper.createTabFieldItem(tabField.getName(),
+                    tabField.getTabFieldType().getName(),
+                    size,
+                    tabField.getOrder(),
+                    tabField.getPlaceholder(),
+                    null,
+                    null,
+                    true);
             response.setResponseObject(tabFieldItem);
 
         } catch (Exception ex) {
@@ -308,7 +278,7 @@ public class CustomTabService implements ICustomTabService {
             newTab.setRightColumnSize(tabItem.getRightColumnSize());
             newTab.setUserId(userId);
             newTab = tabRepository.update(newTab);
-            TabItem newTabItem = domainMapper.createTabItem(newTab);
+            TabItem newTabItem = UIModelMapper.createTabItem(newTab.getName(), newTab.getIsCustom(), newTab.getLeftColumnSize(), newTab.getRightColumnSize());
             response.setResponseObject(newTabItem);
         } catch (Exception ex) {
             response.addError("", "error");
@@ -354,7 +324,20 @@ public class CustomTabService implements ICustomTabService {
             }
             tabField = tabFieldRepository.update(tabField);
 
-            TabFieldItem newTabFieldItem = domainMapper.createTabFieldItem(tabField);
+            String size = null;
+
+            if (tabField.getTabFieldSize() != null)
+                size = tabField.getTabFieldSize().getName();
+
+            TabFieldItem newTabFieldItem = UIModelMapper.createTabFieldItem(tabField.getName(),
+                    tabField.getTabFieldType().getName(),
+                    size,
+                    tabField.getOrder(),
+                    tabField.getPlaceholder(),
+                    null,
+                    null,
+                    true);
+
             response.setResponseObject(newTabFieldItem);
 
         } catch (Exception ex) {
@@ -421,11 +404,24 @@ public class CustomTabService implements ICustomTabService {
             return response;
         }
 
-        ITabField customField = domainMapper.createTabField(tabFieldItem, false, tabFieldSize, tabFieldType, tab);
+        ITabField customField = dataModelMapper.createTabField(tabFieldItem.getName(), tabFieldItem.getOrder(), tabFieldItem.getPlaceholder(), false, tabFieldSize.getId(), tabFieldType.getId(), tab.getId());
 
         try {
             customField = tabFieldRepository.create(customField);
-            TabFieldItem newTabFieldItem = domainMapper.createTabFieldItem(customField);
+            String size = null;
+
+            if (customField.getTabFieldSize() != null)
+                size = customField.getTabFieldSize().getName();
+
+            TabFieldItem newTabFieldItem = UIModelMapper.createTabFieldItem(customField.getName(),
+                    customField.getTabFieldType().getName(),
+                    size,
+                    customField.getOrder(),
+                    customField.getPlaceholder(),
+                    null,
+                    null,
+                    true);
+
             response.setResponseObject(newTabFieldItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -520,4 +516,172 @@ public class CustomTabService implements ICustomTabService {
         }
         return response;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId) {
+
+        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
+        TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId, null);
+        if (tabFieldMultiMap != null)
+            response.setResponseObject(tabFieldMultiMap);
+        else
+            response.addError("", "there was an issue building the multi map");
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted) {
+
+        ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
+        List<TabItem> tabItems = new ArrayList<>();
+        ExpressionList<Tab> tabExpressionList = QueryProvider.getTabQuery()
+                .where()
+                .eq("isDeleted", isDeleted);
+
+        try {
+
+            List<? extends ITab> tabs = tabRepository.find(tabExpressionList);
+            for (ITab tab : tabs) {
+                tabItems.add(UIModelMapper.createTabItem(tab.getName(), tab.getIsCustom(), tab.getLeftColumnSize(), tab.getRightColumnSize()));
+            }
+            response.setResponseObject(tabItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+
+    private TabFieldMultiMap mapTabFields(int encounterId, String tabName) {
+
+        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
+        String tabFieldName;
+        Query<ChiefComplaint> chiefComplaintExpressionList;
+        ExpressionList<TabField> tabFieldQuery;
+        Query<PatientEncounterTabField> patientEncounterTabFieldQuery;
+
+        if (StringUtils.isNullOrWhiteSpace(tabName)) {//do all tab fields, don't filter by tab name
+
+            //get all tab fields!
+            tabFieldQuery = QueryProvider.getTabFieldQuery()
+                    .where()
+                    .eq("isDeleted", false);
+
+            //get all tab fields with values!
+            patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .where()
+                    .eq("patient_encounter_id", encounterId)
+                    .order()
+                    .desc("date_taken");
+        } else { //only get tab fields for a specific tab
+
+            //get all tab fields that belong to a tab
+            tabFieldQuery = QueryProvider.getTabFieldQuery()
+                    .fetch("tab")
+                    .where()
+                    .eq("isDeleted", false)
+                    .eq("tab.name", tabName);
+
+            //get all tab fields that have value which belong to a tab
+            patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .fetch("tabField")
+                    .fetch("tabField.tab")
+                    .where()
+                    .eq("tabField.tab.name", tabName)
+                    .eq("patient_encounter_id", encounterId)
+                    .order()
+                    .desc("date_taken");
+        }
+
+        //need all chief complaints regardless
+        chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .asc("sortOrder");
+
+
+        try {
+
+            List<? extends ITabField> tabFields = tabFieldRepository.find(tabFieldQuery);
+            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+            //Collections.reverse(patientEncounterTabFields);
+
+            //all fields that have values
+            for (IPatientEncounterTabField petf : patientEncounterTabFields) {
+                String tabFieldSize = null;
+                String chiefComplaint = null;
+                boolean isCustom = petf.getTabField().getTab().getIsCustom();
+                if (petf.getTabField().getTabFieldSize() != null)
+                    tabFieldSize = petf.getTabField().getTabFieldSize().getName();
+                if (petf.getChiefComplaint() != null)
+                    chiefComplaint = petf.getChiefComplaint().getValue();
+
+                tabFieldName = petf.getTabField().getName();
+
+                if (petf.getTabField().getTab().getName().equals("HPI")) {
+
+                    if (chiefComplaints != null && chiefComplaints.size() > 0) {
+
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom));
+                    } else {
+
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null, isCustom));
+                    }
+                } else {
+
+                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom));
+                }
+
+
+            }
+
+            //all empty fields
+
+            for (ITabField tf : tabFields) {
+                String tabFieldSize = null;
+                boolean isCustom = tf.getTab().getIsCustom();
+                if (tf.getTabFieldSize() != null)
+                    tabFieldSize = tf.getTabFieldSize().getName();
+
+                //hpi gets special treatment for each chief complaint
+                if (tf.getTab().getName().equals("HPI")) {
+
+                    if (chiefComplaints != null && chiefComplaints.size() > 0) {
+                        for (IChiefComplaint cc : chiefComplaints) {
+                            if (!tabFieldMultiMap.containsTabField(tf.getName(), cc.getValue())) {
+                                tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), UIModelMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom));
+                            }
+                        }
+                    } else {
+                        tabFieldMultiMap.put(tf.getName(), null, null, UIModelMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom));
+                    }
+
+                } else {
+                    if (!tabFieldMultiMap.containsTabField(tf.getName())) {
+                        tabFieldMultiMap.put(tf.getName(), null, null, UIModelMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom));
+                    }
+                }
+            }
+
+            //sort the chief complaints
+            for (IChiefComplaint cc : chiefComplaints) {
+                tabFieldMultiMap.setChiefComplaintOrder(cc.getValue(), cc.getSortOrder());
+            }
+        } catch (Exception ex) {
+
+            return null;
+        }
+
+        return tabFieldMultiMap;
+    }
+
+
 }

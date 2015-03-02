@@ -1,13 +1,22 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.ui.models.research;
-
-import play.data.validation.ValidationError;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class FilterViewModel {
 
@@ -18,10 +27,9 @@ public class FilterViewModel {
     private String endDate;
     private boolean groupPrimary;
     private Integer groupFactor;
-    private Float rangeStart;
-    private Float rangeEnd;
-    private Integer medicationId;
-    private Map<Integer, String> medicationsList;
+    private Float filterRangeStart;
+    private Float filterRangeEnd;
+    private String medicationName;
 
     /*
     public List<ValidationError> validate() {
@@ -118,19 +126,16 @@ public class FilterViewModel {
 
     public void setGroupFactor(Integer groupFactor) { this.groupFactor = groupFactor; }
 
-    public Float getRangeStart() { return rangeStart; }
+    public Float getFilterRangeStart() { return filterRangeStart; }
 
-    public void setRangeStart(Float rangeStart) { this.rangeStart = rangeStart; }
+    public void setFilterRangeStart(Float filterRangeStart) { this.filterRangeStart = filterRangeStart; }
 
-    public Float getRangeEnd() { return rangeEnd; }
+    public Float getFilterRangeEnd() { return filterRangeEnd; }
 
-    public void setRangeEnd(Float rangeEnd) { this.rangeEnd = rangeEnd; }
+    public void setFilterRangeEnd(Float filterRangeEnd) { this.filterRangeEnd = filterRangeEnd; }
 
-    public Integer getMedicationId() { return medicationId; }
+    public String getMedicationName() { return medicationName; }
 
-    public void setMedicationId(Integer medicationId) { this.medicationId = medicationId; }
+    public void setMedicationName(String medicationId) { this.medicationName = medicationId; }
 
-    public Map<Integer, String> getMedicationsList() { return medicationsList; }
-
-    public void setMedicationsList(Map<Integer, String> medicationsList) { this.medicationsList = medicationsList; }
 }

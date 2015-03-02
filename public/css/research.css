@@ -103,6 +103,17 @@
     margin-bottom: 15px;
 }
 
+.nav-sidebar li.controls span.medication label{
+
+    display: block;
+    width: 100%;
+}
+
+.nav-sidebar li.controls span.medication input[type="text"]{
+
+    width: 100%;
+}
+
 .nav-sidebar li.controls span.medication select{
 
     display: block;
@@ -458,6 +469,11 @@
     font-size: 1.1em;
     margin: 0 0 5px 0;
     display: none;
+}
+
+.graph-header #total{
+
+    display: block;
 }
 
 .chart{

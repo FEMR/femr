@@ -19,62 +19,34 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.*;
-import com.google.gson.JsonObject;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
+import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
+import femr.data.DataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IPatientPrescription;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.PatientPrescription;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationService implements IMedicationService {
 
-    private final IRepository<IMedication> medicationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private final DomainMapper domainMapper;
+    private final DataModelMapper dataModelMapper;
 
     @Inject
-    public MedicationService(IRepository<IMedication> medicationRepository,
-                             IRepository<IPatientPrescription> patientPrescriptionRepository,
-                             DomainMapper domainMapper) {
-        this.medicationRepository = medicationRepository;
+    public MedicationService(IRepository<IPatientPrescription> patientPrescriptionRepository,
+                             DataModelMapper dataModelMapper) {
+
         this.patientPrescriptionRepository = patientPrescriptionRepository;
-        this.domainMapper = domainMapper;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<String> getMedicationNames() {
-
-        ServiceResponse<String> response = new ServiceResponse<>();
-
-        try {
-            List<String> medicationNames = new ArrayList<>();
-            List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
-
-            JsonObject jsonObject = new JsonObject();
-            if (medications != null) {
-                for (int medicationIndex = 0; medicationIndex < medications.size(); medicationIndex++) {
-                    jsonObject.addProperty("medicine" + medicationIndex, medications.get(medicationIndex).getName());
-                }
-            }
-
-            response.setResponseObject(jsonObject.toString());
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
-
-        return response;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
@@ -96,15 +68,15 @@ public class MedicationService implements IMedicationService {
             IPatientPrescription oldPatientPrescription = patientPrescriptionRepository.findOne(query);
 
             //create new prescription
-            IMedication medication = domainMapper.createMedication(prescriptionItem.getName());
-            IPatientPrescription newPatientPrescription = domainMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
+            IMedication medication = dataModelMapper.createMedication(prescriptionItem.getName());
+            IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
             //replace the old prescription
             oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
             patientPrescriptionRepository.update(oldPatientPrescription);
 
-            PrescriptionItem newPrescriptionItem = domainMapper.createPrescriptionItem(newPatientPrescription);
+            PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(newPatientPrescription.getId(), newPatientPrescription.getMedication().getName(), newPatientPrescription.getReplacementId(), newPatientPrescription.getPhysician().getFirstName(), newPatientPrescription.getPhysician().getLastName());
             response.setResponseObject(newPrescriptionItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -117,27 +89,29 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptionItems, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
+    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        if (prescriptionItems == null || userId < 1 || encounterId < 1) {
+        if (prescriptionNames == null || prescriptionNames.size() < 1 || userId < 1 || encounterId < 1) {
             response.addError("", "invalid parameters");
             return response;
         }
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
-        for (PrescriptionItem pi : prescriptionItems) {
-            IMedication medication = domainMapper.createMedication(pi.getName());
-            patientPrescriptions.add(domainMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
+        for (String script : prescriptionNames) {
+            IMedication medication = dataModelMapper.createMedication(script);
+            patientPrescriptions.add(dataModelMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
         }
 
         try {
             List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
-                newPrescriptionItems.add(domainMapper.createPatientPrescriptionItem(pp));
+                if (pp.getMedication() != null)
+                    newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(pp.getId(), pp.getMedication().getName(), pp.getReplacementId(), pp.getPhysician().getFirstName(), pp.getPhysician().getLastName()));
             }
             response.setResponseObject(newPrescriptionItems);
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
 
@@ -162,7 +136,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId(), patientPrescription.getPhysician().getFirstName(), patientPrescription.getPhysician().getLastName()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);
@@ -192,7 +166,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setCounseled(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(domainMapper.createPrescriptionItem(patientPrescription));
+                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId(), patientPrescription.getPhysician().getFirstName(), patientPrescription.getPhysician().getLastName()));
                 }
             }
             response.setResponseObject(updatedPrescriptions);

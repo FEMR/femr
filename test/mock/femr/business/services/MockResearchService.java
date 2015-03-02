@@ -2,14 +2,14 @@ package mock.femr.business.services;
 
 import femr.common.dto.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
-import femr.ui.models.research.json.ResearchGraphDataItem;
+import femr.ui.models.research.json.ResearchGraphDataModel;
 
 
 public class MockResearchService {
 
-    public ServiceResponse<ResearchGraphDataItem> getGraphData(ResearchFilterItem filters){
+    public ServiceResponse<ResearchGraphDataModel> getGraphData(ResearchFilterItem filters){
 
-        ResearchGraphDataItem graphDataItem = new ResearchGraphDataItem();
+        ResearchGraphDataModel graphDataItem = new ResearchGraphDataModel();
 
         if( filters.getPrimaryDataset().equals("age") ) {
 
@@ -25,7 +25,7 @@ public class MockResearchService {
 
 
 
-        ServiceResponse<ResearchGraphDataItem> response = new ServiceResponse<>();
+        ServiceResponse<ResearchGraphDataModel> response = new ServiceResponse<>();
         response.setResponseObject(graphDataItem);
 
         return response;

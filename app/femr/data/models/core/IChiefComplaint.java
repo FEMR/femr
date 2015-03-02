@@ -34,4 +34,8 @@ public interface IChiefComplaint {
     IPatientEncounter getPatientEncounter();
 
     void setPatientEncounter(IPatientEncounter patientEncounter);
+
+    Integer getSortOrder();
+
+    void setSortOrder(Integer sortOrder);
 }

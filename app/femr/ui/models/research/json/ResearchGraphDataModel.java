@@ -1,18 +1,35 @@
-package femr.ui.models.research.json;
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
 
-import femr.common.models.ResearchItem;
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
+package femr.ui.models.research.json;
 
 import java.util.List;
 import java.util.Map;
 
 //technically shared in the service layer right now
-public class ResearchGraphDataItem {
+public class ResearchGraphDataModel {
 
     private float average;
     private float median;
     private float rangeLow;
     private float rangeHigh;
-    private List<ResearchItem> graphData;
+    private float total;
+    private List<ResearchItemModel> graphData;
     private String xAxisTitle;
     private String yAxisTitle;
     private String unitOfMeasurement;
@@ -51,6 +68,14 @@ public class ResearchGraphDataItem {
         this.rangeHigh = rangeHigh;
     }
 
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
     public String getxAxisTitle() {
         return xAxisTitle;
     }
@@ -71,11 +96,11 @@ public class ResearchGraphDataItem {
         this.unitOfMeasurement = unitOfMeasurement;
     }
 
-    public List<ResearchItem> getGraphData() {
+    public List<ResearchItemModel> getGraphData() {
         return graphData;
     }
 
-    public void setGraphData(List<ResearchItem> graphData) {
+    public void setGraphData(List<ResearchItemModel> graphData) {
         this.graphData = graphData;
     }
 

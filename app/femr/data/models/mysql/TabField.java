@@ -31,7 +31,7 @@ public class TabField implements ITabField {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
@@ -44,9 +44,9 @@ public class TabField implements ITabField {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "size_id", nullable = false)
     private TabFieldSize tabFieldSize;
-    @Column(name = "sort_order", nullable = true, unique = false)
+    @Column(name = "sort_order", unique = false, nullable = true)
     private Integer order;
-    @Column(name = "placeholder", nullable = true, unique = false)
+    @Column(name = "placeholder", unique = false, nullable = true)
     private String placeholder;
 
     @Override

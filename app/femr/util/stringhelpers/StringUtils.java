@@ -92,4 +92,39 @@ public class StringUtils {
         );
     }
 
+    public static String outputStringOrNA(String str) {
+        if (StringUtils.isNullOrWhiteSpace(str)) return "N/A";
+        else return str;
+    }
+
+    public static String outputIntOrNA(Integer value) {
+        if (value == null) return "N/A";
+        else return value.toString();
+    }
+
+    public static String outputHeightOrNA(Integer feet, Integer inches) {
+        if(feet == null && inches == null){
+            return "N/A";
+        } else {
+            String output = "";
+            if(feet != null){
+                output += feet + "'";
+            }
+            if(inches != null){
+                output += inches + "\"";
+            }
+            return output;
+        }
+    }
+
+    public static String outputFloatOrNA(Float value) {
+        if (value == null) return "N/A";
+        else return value.toString();
+    }
+
+    public static String outputBloodPressureOrNA(String systolic, String diastolic) {
+        if (systolic == null && diastolic == null) return "N/A";
+        else return systolic + " / " + diastolic;
+    }
+
 }

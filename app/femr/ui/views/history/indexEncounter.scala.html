@@ -7,6 +7,8 @@
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
     @import collection.JavaConversions._
+    @import femr.ui.controllers.routes.PDFConversionDemo
+
 
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
@@ -22,7 +24,11 @@
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
                     (@viewModel.getPatientItem.getId)</p>
-
+                <div>
+                @helper.form(action = PDFConversionDemo.index(viewModel.getPatientItem.getId, viewModel.getPatientEncounterItem.getId)) {  @* Replaced .getID with .getPatientId  *@
+                    <button type="submit" id="historyButton" class="fButton fOtherButton pull-right">Print</button>
+                }
+                </div>
             </div>
 
             <div class="encounterViewBodyHeader">
@@ -53,7 +59,7 @@
                     <p><span class="infoLabel">Nurse:</span> @encounter.getNurseEmailAddress</p>
                     <br>
                     <p><span class="infoLabel">Medical Visit:</span> @encounter.getMedicalDateOfVisit</p>
-                    <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>
+                        <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>
                     <br>
                     <p><span class="infoLabel">Pharmacy Visit:</span> @encounter.getPharmacyDateOfVisit</p>
                     <p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistEmailAddress</p>
@@ -84,7 +90,7 @@
                         <span class="infoLabel">Heart Rate:</span>
                         @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                             <span>
-                            @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
+                                @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
                             </span>
                         }
                     </p>

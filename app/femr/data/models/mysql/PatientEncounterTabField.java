@@ -44,13 +44,6 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chief_complaint_id", nullable = true)
     private ChiefComplaint chiefComplaint;
-    @JoinColumn(name = "medical_history", nullable = true)
-    private ChiefComplaint medicalSurgicalHistory;
-    @JoinColumn(name = "social_history", nullable = true)
-    private ChiefComplaint socialHistory;
-    @JoinColumn(name = "family_history", nullable = true)
-    private ChiefComplaint currentMedication;
-    @JoinColumn(name = "current_medication", nullable = true)
 
 
     @Override

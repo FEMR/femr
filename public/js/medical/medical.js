@@ -277,7 +277,10 @@ function setupModal(titleText, descText, imgSrcVal, onSave) {
     if (!window.isFileReader) {
         //add warnings for non FileReader compliant browsers
         $('#modalImg').hide();
-        $('#modalImg').parent().append("<p>Image Preview is not supported in your browser.</p>")
+        $('#modalImg').parent(
+
+
+        ).append("<p>Image Preview is not supported in your browser.</p>")
     }
     if (titleText != null) {
         $('#myModalLabel').text(titleText);

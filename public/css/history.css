@@ -71,6 +71,8 @@
 
 .infoLabel {
     font-weight: bold;
+    Height: 30px;
+    Width: 300px;
 }
 
 .encounterViewBodyLeft {
@@ -252,6 +254,31 @@
 }
 
 
+#edit-form{
+
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 350px;
+    height: 200px;
+    margin-left: -175px;
+    margin-top: -100px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    background-color: #ffffff;
+
+
+
+}
+
+#edit-form input[type="text"]{
+
+    margin-bottom: 10px;
+    display: inline-block;
+    whitespace: nowrap;
+
+}
 
 
 

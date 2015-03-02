@@ -294,6 +294,13 @@ var triageFields = {
         weight: $('#weight'),
         heightFeet: $('#heightFeet'),
         heightInches: $('#heightInches'),
+
+        /*Alaa Serhan*/
+        celsiusTemperature: $('#celsiusTemperature'),
+        kgWeight: $('#kgWeight'),
+        heightMeters: $('#heightMeters'),
+        heightCentimeters: $('#heightCentimeters'),
+
         glucose: $('#glucose'),
         weeksPregnant: $('#weeksPregnant')
     },
@@ -568,6 +575,27 @@ window.setInterval(function () {
         $('#bmi').val(Math.round((weight_lbs / (height_in * height_in)) * 703));
 
     }
+
+}, 500);
+
+/* Alaa Serhan */
+/* BMI auto- calculator */
+window.setInterval(function () {
+
+    if ($('#heightMeters').val() && $('#kgWeight').val()) {
+        var weight_kgs = parseInt($('#kgWeight').val());
+        var height_cm = parseInt($('#heightCentimeters').val());
+        var height_m = parseInt($('#heightMeters').val());
+
+        if (!$('#heightCentimeters').val()) {
+            height_cm = 0;
+        }
+
+        var total_height = height_m + "." + height_cm;
+        $('#bmi').val(Math.round((weight_kgs / (total_height * total_height))));
+
+    }
+
 }, 500);
 
 

@@ -23,6 +23,8 @@ public class SettingItem {
     private boolean isPmhTab;
     private boolean isPhotoTab;
     private boolean isConsolidateHPI;
+    // Alaa Serhan  - adding setting for isMetric
+    private boolean isMetric;
 
 
     public boolean isMultipleChiefComplaint() {
@@ -56,4 +58,9 @@ public class SettingItem {
     public void setConsolidateHPI(boolean isConsolidateHPI) {
         this.isConsolidateHPI = isConsolidateHPI;
     }
+
+    public boolean isMetric(){ return isMetric;} //getter
+
+    public void setMetric(boolean isMetric) { this.isMetric = isMetric; }
+
 }

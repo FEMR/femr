@@ -385,6 +385,9 @@ public class UIModelMapper {
                     case "Medical HPI Consolidate":
                         settingItem.setConsolidateHPI(ss.isActive());
                         break;
+                    case "Metric System Option": //Alaa Serhan - set the metric system option
+                        settingItem.setMetric(ss.isActive());
+                        break;
                 }
             }
         }

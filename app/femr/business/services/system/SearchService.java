@@ -492,6 +492,7 @@ public class SearchService implements ISearchService {
 
                 SettingItem settingItem = UIModelMapper.createSettingItem(systemSettings);
                 response.setResponseObject(settingItem);
+
             }
 
         } catch (Exception ex) {

@@ -37,12 +37,28 @@ public class IndexViewModelPost {
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;
+
     private Float temperature;
+
+    //Alaa Serhan
+    private Float celsiusTemperature;
+
     private Integer respiratoryRate;
     private Float oxygenSaturation;
+
     private Integer heightFeet;
     private Integer heightInches;
+
+    //Alaa Serhan
+    private Integer heightMeters;
+    private Integer heightCentimeters;
+
+
     private Float weight;
+
+    //Alaa Serhan
+    private Float kgWeight;
+
     private Integer glucose;
     //begin encounter
     private String chiefComplaint;
@@ -141,6 +157,7 @@ public class IndexViewModelPost {
         this.heartRate = heartRate;
     }
 
+
     public Float getTemperature() {
         return temperature;
     }
@@ -148,6 +165,18 @@ public class IndexViewModelPost {
     public void setTemperature(Float temperature) {
         this.temperature = temperature;
     }
+
+
+    // Alaa Serhan
+    public Float getCelsiusTemperature() {
+        //returns farenheit because you want to save it in the database like that
+        return celsiusTemperature * 9/5 + 32;
+    }
+
+    public void setCelsiusTemperature(Float celsiusTemperature) {
+        this.celsiusTemperature = celsiusTemperature;
+    }
+
 
     public Integer getHeightFeet() {
         return heightFeet;
@@ -172,6 +201,46 @@ public class IndexViewModelPost {
     public void setWeight(Float weight) {
         this.weight = weight;
     }
+
+
+    //Alaa Serhan
+    public Float getHeightMeters()
+    {
+        return heightMeters * 3.2808f;
+    }
+
+    public void setHeightMeters(Integer heightMeters)
+    {
+        this.heightMeters = heightMeters;
+    }
+
+    public Float getHeightCentimeters()
+    {
+        // Alaa - actually returns the height in inches
+        return heightCentimeters * (0.39370f);
+    }
+
+    public void setHeightCentimeters(Integer heightCentimeters)
+    {
+        this.heightCentimeters = heightCentimeters;
+    }
+
+    public Float getWeightKg()
+    {
+        if(kgWeight != null){
+            return kgWeight * 2;
+        } else {
+            return (100000000f);
+        }
+
+    }
+
+    public void setWeightKg(Float kgWeight)
+    {
+        this.kgWeight = kgWeight;
+    }
+
+
 
     public String getChiefComplaint() {
         return chiefComplaint;

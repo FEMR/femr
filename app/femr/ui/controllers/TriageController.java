@@ -202,6 +202,19 @@ public class TriageController extends Controller {
         if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }
+        //Alaa Serhan
+        if (viewModel.getCelsiusTemperature() != null) {
+            newVitals.put("celsiusTemperature", viewModel.getCelsiusTemperature());
+        }
+        if (viewModel.getHeightMeters() != null) {
+            newVitals.put("heightMeters", viewModel.getHeightMeters().floatValue());
+        }
+        if (viewModel.getHeightCentimeters() != null) {
+            newVitals.put("heightCentimeters", viewModel.getHeightCentimeters().floatValue());
+        }
+        if (viewModel.getWeightKg() != null) {
+            newVitals.put("kgWeight", viewModel.getWeightKg());
+        }
 
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {

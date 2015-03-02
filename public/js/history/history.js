@@ -12,12 +12,83 @@ $(document).ready(function () {
         window.location = "/triage";
     });
 
+    $(".infoLabel").click(function () {
+
+        //var label = $(this).parent("p").find("span");
+        //var label = $(this).parent("p").child("span.medicalSurgicalHistory");
+
+        // Get Label text from top html
+        var label = $(this).text();
+        //put label text in form label
+        $("#edit-form").find(".form-label").text(label);
+
+        // get value from top html
+        var value = $(this).parent("p").find(".value").text();
+        // put value in form
+        ($("#edit-form").find("input.value").val(value);
+
+        // need to get form text field name
+
+        $("#edit-form").show();
+    });
+
+
+
+   // $("#saveEncounterBtn").on('click', function() {
+
+     //   var that = $(this)
+
+
+
+
+
+
+   // });
+
+
+    $("#saveEncounterBtn").click(function() {
+
+        var form = $(this);
+        var label = $(this).text();
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize()
+        }).done(function() {
+            //alert("Saved Successfully");
+            var value = $(this).parent("p").find(".value").text();
+
+
+            var value2 = $("#edit-form").find("input.value").val(value);
+
+         value = value2;
+
+            $("#edit-form").hide();
+
+
+
+        })
+
+
+    });
+
+
+
+
+
+
+
+    $("#cancelEncounterBtn").click(function(){
+
+        $("#edit-form").hide();
+    });
+
     $('#historySaveBtn').click(function () {
         var newAssessments = {};
 
         var patientAssessments = {
             //this object is sent to the vital validator which uses
-            //the names of these fields
+            //the names of these field
             MedicalSurgicalHistory: $('#MedicalSurgicalHistory'),
             SocialHistory: $('#SocialHistory'),
             CurrentMedications: $('#CurrentMedications'),

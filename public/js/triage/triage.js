@@ -582,17 +582,18 @@ window.setInterval(function () {
 /* BMI auto- calculator */
 window.setInterval(function () {
 
-    if ($('#heightMeters').val() && $('#kgWeight').val()) {
-        var weight_kgs = parseInt($('#kgWeight').val());
-        var height_cm = parseInt($('#heightCentimeters').val());
-        var height_m = parseInt($('#heightMeters').val());
+    if ($('#heightFeet').val() && $('#weight').val()) {
 
-        if (!$('#heightCentimeters').val()) {
-            height_cm = 0;
+        var weight_lbs = parseInt($('#weight').val());
+        var height_in = parseInt($('#heightInches').val());
+        var height_ft = parseInt($('#heightFeet').val());
+
+        if (!$('#heightInches').val()) {
+            height_in = 0;
         }
 
-        var total_height = height_m + "." + height_cm;
-        $('#bmi').val(Math.round((weight_kgs / (total_height * total_height))));
+        var total_height = height_ft + "." + height_in;
+        $('#bmi').val(Math.round((weight_lbs / (total_height * total_height))));
 
     }
 

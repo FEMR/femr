@@ -104,6 +104,8 @@ public class TriageController extends Controller {
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
+
+
         PatientItem patient = patientItemServiceResponse.getResponseObject();
 
         //get the settings
@@ -135,6 +137,17 @@ public class TriageController extends Controller {
 
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        //Alaa Serhan
+        //Get the settings
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+
+        if (settingItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+
+        SettingItem settings = settingItemServiceResponse.getResponseObject();
 
         //create a new patient
         //or get current patient for new encounter
@@ -178,20 +191,60 @@ public class TriageController extends Controller {
         if (viewModel.getHeartRate() != null) {
             newVitals.put("heartRate", viewModel.getHeartRate().floatValue());
         }
+
+        //Alaa Serhan
         if (viewModel.getTemperature() != null) {
-            newVitals.put("temperature", viewModel.getTemperature());
+
+            Float temperature = viewModel.getTemperature();
+            if( settings.isMetric() ){
+
+                // Value Entered in Celsius - Will be Returned Back As Metric to User, Converted to Fahrenheit when Saving
+                temperature = temperature * 9/5 + 32;
+            }
+
+            newVitals.put("temperature", temperature);
         }
         if (viewModel.getOxygenSaturation() != null) {
             newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
-        if (viewModel.getHeightFeet() != null) {
-            newVitals.put("heightFeet", viewModel.getHeightFeet().floatValue());
+
+        //Alaa Serhan
+        if (viewModel.getHeightFeet() != null){
+
+            Float heightFeet = viewModel.getHeightFeet().floatValue();
+
+            if (settings.isMetric()){
+
+                //Value Entered in Meters - Will be Converted Back in Feet
+                heightFeet = heightFeet * 3.2808f;
+            }
+            newVitals.put("heightFeet", heightFeet);
         }
+
+        //Alaa Serhan
         if (viewModel.getHeightInches() != null) {
-            newVitals.put("heightInches", viewModel.getHeightInches().floatValue());
+
+            Float heightInches = viewModel.getHeightInches().floatValue();
+
+            if (settings.isMetric()){
+
+                //Value Entered in Centimeters - Will be Converted Back in Inches
+                heightInches = heightInches * (0.39370f);
+            }
+            newVitals.put("heightInches", heightInches);
         }
+
+        //Alaa Serhan
         if (viewModel.getWeight() != null) {
-            newVitals.put("weight", viewModel.getWeight());
+
+            Float weight = viewModel.getWeight();
+
+            if (settings.isMetric()){
+
+                //Value Entered in Kilograms - Will be Converted back in Pounds
+                weight = weight * (2.204f);
+            }
+            newVitals.put("weight", weight);
         }
         if (viewModel.getBloodPressureSystolic() != null) {
             newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
@@ -201,19 +254,6 @@ public class TriageController extends Controller {
         }
         if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
-        }
-        //Alaa Serhan
-        if (viewModel.getCelsiusTemperature() != null) {
-            newVitals.put("celsiusTemperature", viewModel.getCelsiusTemperature());
-        }
-        if (viewModel.getHeightMeters() != null) {
-            newVitals.put("heightMeters", viewModel.getHeightMeters().floatValue());
-        }
-        if (viewModel.getHeightCentimeters() != null) {
-            newVitals.put("heightCentimeters", viewModel.getHeightCentimeters().floatValue());
-        }
-        if (viewModel.getWeightKg() != null) {
-            newVitals.put("kgWeight", viewModel.getWeightKg());
         }
 
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());

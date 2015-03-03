@@ -731,6 +731,13 @@ public class DatabaseSeeder {
             systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }
+
+        if (systemSettings != null && !containSetting(systemSettings, "Metric System Option")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Metric System Option");
+            systemSetting.setActive(false);
+            systemSettingRepository.create(systemSetting);
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-
+@(viewModel: femr.ui.models.medical.EditViewModelGet)
 
 <link rel="stylesheet" href="@routes.Assets.at("css/medical/newVitals.css")" xmlns="http://www.w3.org/1999/xhtml">
 <script type="text/javascript" src="@routes.Assets.at("js/medical/newVitals.js")"></script>
@@ -17,7 +17,11 @@
         <br/>
         <label>T</label>
         <br/>
-        <input type="number" class="fInput" id="temperature" placeholder="F"/>
+        @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
+            <input type="number" class="fInput" id="temperature" placeholder="C"/>
+        } else {
+            <input type="number" class="fInput" id="temperature" placeholder="F"/>
+        }
         <br/>
         <label>RR</label>
         <br/>
@@ -36,13 +40,21 @@
         <br/>
         <label>Ht</label>
         <br/>
-        <input type="number" class="fInput" id="heightFt" placeholder="ft"/>
-        <input type="number" class="fInput" id="heightIn" placeholder="in"/>
+        @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
+            <input type="number" class="fInput" id="heightFt" placeholder="m"/>
+            <input type="number" class="fInput" id="heightIn" placeholder="cm"/>
+        } else {
+            <input type="number" class="fInput" id="heightFt" placeholder="ft"/>
+            <input type="number" class="fInput" id="heightIn" placeholder="in"/>
+        }
         <br/>
         <label>Wt</label>
         <br/>
-        <input type="number" class="fInput" id="newWeight" placeholder="lbs"/>
-
+        @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
+            <input type="number" class="fInput" id="newWeight" placeholder="kgs"/>
+        } else {
+            <input type="number" class="fInput" id="newWeight" placeholder="lbs"/>
+        }
     </div>
     <div id="theButtons">
         <button type="button" id="saveVitalsBtn" class="fButton">Save</button>

@@ -11,6 +11,9 @@ function calculateBMI() {
     var $heights = $('#height td');
     var height_in = null;
     var height_ft = null;
+
+
+
     $($weights.get().reverse()).each(function () {
         if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
             weight_lbs = parseInt($(this).html());
@@ -26,7 +29,24 @@ function calculateBMI() {
         }
     });
 
+
+/*    //Metric Height - Alaa Serhan
+     var height_met = Math.round((height_ft) + "." + (height_in/100));
+
+     $($heights.get().reverse()).each(function () {
+
+     if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
+     height_met = parseInt($(this).html());
+     return false;
+     }
+
+     });*/
+
+
     var bmi = Math.round(( weight_lbs / ( ( height_ft * 12 + height_in ) * ( height_ft * 12 + height_in ) ) ) * 703);
+
+//    //BMI for Metric - Alaa Serhan
+//    var bmi = Math.round(( weight_lbs / ( ( height_ft + height_in ) * ( height_ft + height_in ) ) ) );
 
     if (!isFinite(bmi) || bmi === '' || bmi === null){
         $('#bmi').text("N/A");

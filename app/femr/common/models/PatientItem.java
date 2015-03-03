@@ -38,11 +38,6 @@ public class PatientItem {
     private Integer heightInches;
     private Float weight;
 
-    //Alaa Serhan
-    private Integer heightMeters;
-    private Integer heightCentimeters;
-    private Float kgWeight;
-
 
 
     public PatientItem(){
@@ -169,31 +164,6 @@ public class PatientItem {
 
     public void setWeight(Float weight) {
         this.weight = weight;
-    }
-
-    //Alaa Serhan
-    public Integer getHeightMeters() {
-        return heightMeters;
-    }
-
-    public void setHeightMeters(Integer heightMeters) {
-        this.heightMeters = heightMeters;
-    }
-
-    public Integer getHeightCentimeters() {
-        return heightCentimeters;
-    }
-
-    public void setHeightCentimeters(Integer heightCentimeters) {
-        this.heightCentimeters = heightCentimeters;
-    }
-
-    public Float getkgWeight() {
-        return kgWeight;
-    }
-
-    public void setkgWeight(Float kgWeight) {
-        this.kgWeight = kgWeight;
     }
 
     public String getFriendlyDateOfBirth() {

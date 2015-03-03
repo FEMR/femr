@@ -204,10 +204,10 @@ public class MedicalController extends Controller {
         ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
 
-        //Alaa Serhan - Purple
+        //Alaa Serhan - Purple Attempt
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
-        // check if metric is set
-        // if metric, get values from map, convert and put back into map
+        // Check if Metric is Set
+        // If Metric, GET values from map, convert and put BACK Into MAP
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet));
     }
@@ -215,7 +215,7 @@ public class MedicalController extends Controller {
     public Result editPost(int patientId) {
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
-        //alaa
+        //Alaa - I need to Add Stuff Here
 
 
 
@@ -334,7 +334,8 @@ public class MedicalController extends Controller {
 
     //partials
     public Result newVitalsGet() {
-        // Alaa Serhan - add view model to get the settings to see if metric systems are set or not
+
+        // Alaa Serhan - Add View Model to Get the Settings to see if METRIC SYSTEM are set or not
         EditViewModelGet viewModelGet = new EditViewModelGet();
         ServiceResponse<SettingItem> response = searchService.getSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
@@ -357,8 +358,9 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
 
-        // check if metric is set
-        // if metric, get values from map, convert and put back into map
+        //Alaa Serhan
+        // Check if Metric is Set
+        // If metric, Get Values from Map, Convert and Put Back Into Map
         if(viewModelGet.getSettings().isMetric() ) {
             UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
             Map<String, Float> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel);
@@ -367,7 +369,8 @@ public class MedicalController extends Controller {
             Float celsius = (temperature - 32)/(1.800f);
 
             patientEncounterVitals.put("temperature", celsius); // puts it back into map
-            // but map doesn't go back to the multi map
+
+            // But Map Doesn't go Back to the Multi Map --------------?
         }
 
 

@@ -41,8 +41,9 @@
                     </div>
                     <div class="encounterViewBodyLeftHalf">
                         <p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>
-                        <p><span class="infoLabel">
-                            Height:</span> @outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches)</p>
+
+                            <!---  Alaa Serhan - Need to Make Changes Here -->
+                        <p><span class="infoLabel">Height:</span> @outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches)</p>
                         <p><span class="infoLabel">Weight:</span> @outputFloatOrNA(patient.getWeight)</p>
                     </div>
                 }
@@ -65,6 +66,7 @@
                 @defining(viewModelMedical.getVitalList) { vitalMap =>
                     <p>
                         <span class="infoLabel">Temperature:</span>
+
                         @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                             <span>
                             @outputStringOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)))

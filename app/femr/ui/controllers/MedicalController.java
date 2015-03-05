@@ -361,20 +361,20 @@ public class MedicalController extends Controller {
         //Alaa Serhan
         // Check if Metric is Set
         // If metric, Get Values from Map, Convert and Put Back Into Map
+        VitalMultiMap vitalMap = vitalMultiMapServiceResponse.getResponseObject();
         if(viewModelGet.getSettings().isMetric() ) {
-            UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
-            Map<String, Float> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel);
-
-            Float temperature = patientEncounterVitals.get("temperature");
-            Float celsius = (temperature - 32)/(1.800f);
-
-            patientEncounterVitals.put("temperature", celsius); // puts it back into map
-
             // But Map Doesn't go Back to the Multi Map --------------?
+            for(int dateIndex = 0; dateIndex <= vitalMap.getDateList().size(); dateIndex++) {
+                String temp = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
+                Float tempC = Float.parseFloat(temp);
+                // (°F - 32) x 5/9 = °C
+                tempC = (tempC - 32) * 5/9;
+                // 2015-03-03 16:59:14.0 date format
+                vitalMap.put("temperature", vitalMap.getDate(dateIndex), tempC);
+            }
         }
 
-
-        return ok(listVitals.render(vitalMultiMapServiceResponse.getResponseObject()));
+        return ok(listVitals.render(vitalMap));
     }
 
     /**

@@ -12,7 +12,8 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.history.*;
 import femr.ui.models.medical.EditViewModelPost;
-import femr.ui.models.medical.json.JCustomField;
+
+import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.ui.views.html.history.editEncounterGet;
@@ -36,6 +37,7 @@ import play.mvc.Security;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class HistoryController extends Controller {
     private final Form<IndexPatientViewModelPost> EditEncounterForm = Form.form(IndexPatientViewModelPost.class);
+    private final Form<fieldValueViewModel> fieldValueViewModelForm = Form.form(fieldValueViewModel.class);
     private final IMedicationService medicationService;
     private final IEncounterService encounterService;
     private final ISessionService sessionService;
@@ -43,9 +45,11 @@ public class HistoryController extends Controller {
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
+    private final IEncounterService assessmentService;
 
     @Inject
     public HistoryController(IEncounterService encounterService,
+                             IEncounterService assessmentService,
                              ISessionService sessionService,
                              IMedicationService medicationService,
                              ISearchService searchService,
@@ -54,6 +58,7 @@ public class HistoryController extends Controller {
                              IVitalService vitalService) {
 
         this.encounterService = encounterService;
+        this.assessmentService = assessmentService;
         this.sessionService = sessionService;
         this.medicationService = medicationService;
         this.searchService = searchService;
@@ -106,196 +111,10 @@ public class HistoryController extends Controller {
 
         return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems));
     }
-    public Result editEncounterGet(int encounterId ) {
-
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
-
-        IndexEncounterViewModel indexEncounterViewModel = new IndexEncounterViewModel();
-        IndexEncounterMedicalViewModel indexEncounterMedicalViewModel = new IndexEncounterMedicalViewModel();
-        IndexEncounterPharmacyViewModel indexEncounterPharmacyViewModel = new IndexEncounterPharmacyViewModel();
-
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByEncounterId(encounterId);
-        if (patientItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
-        patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
-        indexEncounterViewModel.setPatientItem(patientItem);
-
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemByEncounterId(encounterId);
-        if (patientEncounterItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        indexEncounterViewModel.setPatientEncounterItem(patientEncounterItemServiceResponse.getResponseObject());
-
-        //get vitals
-        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = searchService.getVitalMultiMap(encounterId);
-        if (patientEncounterVitalMapResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        indexEncounterMedicalViewModel.setVitalList(patientEncounterVitalMapResponse.getResponseObject());
-
-        //get photos
-        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(encounterId);
-        if (photoListResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        indexEncounterMedicalViewModel.setPhotos(photoListResponse.getResponseObject());
-
-        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = searchService.getTabFieldMultiMap(encounterId);
-        if (patientEncounterTabFieldResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
-
-        //extract the most recent treatment fields
-        Map<String, String> treatmentFields = new HashMap<>();
-        treatmentFields.put("assessment", tabFieldMultiMap.getMostRecent("assessment", null));
-        treatmentFields.put("treatment", tabFieldMultiMap.getMostRecent("treatment", null));
-        indexEncounterMedicalViewModel.setTreatmentFields(treatmentFields);
-
-        //extract the most recent pmh fields
-        Map<String, String> pmhFields = new HashMap<>();
-        pmhFields.put("medicalSurgicalHistory", tabFieldMultiMap.getMostRecent("medicalSurgicalHistory", null));
-        pmhFields.put("socialHistory", tabFieldMultiMap.getMostRecent("socialHistory", null));
-        pmhFields.put("currentMedications", tabFieldMultiMap.getMostRecent("currentMedications", null));
-        pmhFields.put("familyHistory", tabFieldMultiMap.getMostRecent("familyHistory", null));
-        indexEncounterMedicalViewModel.setPmhFields(pmhFields);
-
-        //extract the most recent hpi fields
-        if (patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints().size() > 1) {
-            indexEncounterMedicalViewModel.setHpiFieldsWithMultipleChiefComplaints(extractHpiFieldsWithMultipleChiefComplaints(tabFieldMultiMap, patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints()));
-            indexEncounterMedicalViewModel.setIsMultipleChiefComplaints(true);
-        }else{
-            Map<String,String> hpiFields = new HashMap<>();
-            hpiFields.put("onset", tabFieldMultiMap.getMostRecent("onset", null));
-            hpiFields.put("quality", tabFieldMultiMap.getMostRecent("quality", null));
-            hpiFields.put("radiation", tabFieldMultiMap.getMostRecent("radiation", null));
-            hpiFields.put("severity", tabFieldMultiMap.getMostRecent("severity", null));
-            hpiFields.put("provokes", tabFieldMultiMap.getMostRecent("provokes", null));
-            hpiFields.put("palliates", tabFieldMultiMap.getMostRecent("palliates", null));
-            hpiFields.put("timeOfDay", tabFieldMultiMap.getMostRecent("timeOfDay", null));
-            hpiFields.put("narrative", tabFieldMultiMap.getMostRecent("narrative", null));
-            hpiFields.put("physicalExamination", tabFieldMultiMap.getMostRecent("physicalExamination", null));
-            indexEncounterMedicalViewModel.setHpiFieldsWithoutMultipleChiefComplaints(hpiFields);
-            indexEncounterMedicalViewModel.setIsMultipleChiefComplaints(false);
-        }
-
-        //extract the most recent custom fields
-        indexEncounterMedicalViewModel.setCustomFields(extractCustomFields(tabFieldMultiMap));
-
-        //get problems
-        List<String> problems = new ArrayList<>();
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(encounterId);
-        if (problemItemServiceResponse.hasErrors()){
-            throw new RuntimeException();
-        }
-        for (ProblemItem pi : problemItemServiceResponse.getResponseObject()){
-            problems.add(pi.getName());
-        }
-        indexEncounterPharmacyViewModel.setProblems(problems);
-
-        //get prescriptions
-        List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findDispensedPrescriptionItems(encounterId);
-        if (prescriptionItemServiceResponse.hasErrors()){
-            throw new RuntimeException();
-        }
-        for (PrescriptionItem prescriptionItem : prescriptionItemServiceResponse.getResponseObject()){
-            prescriptions.add(prescriptionItem.getName());
-        }
-        indexEncounterPharmacyViewModel.setPrescriptions(prescriptions);
-
-
-        return ok(editEncounterGet.render(currentUser, indexEncounterViewModel, indexEncounterMedicalViewModel, indexEncounterPharmacyViewModel));
-    }
-
-    public Result editEncounterPost(int encounterId) {
-
-
-        // Will get the current user in session
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
-
-
-       IndexPatientViewModelPost patientViewModelPost = EditEncounterForm.bindFromRequest().get();
-       //get current encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(encounterId);
-        if (patientEncounterServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
-        patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
-        //update patient encounter
-
-        //Maps the dynamic tab name to the field list
-        Gson gson = new Gson();
-        Map<String, List<JCustomField>> customFieldInformation = gson.fromJson(patientViewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
-        }.getType());
-
-        List<TabFieldItem> customFieldItems = new ArrayList<>();
-        for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
-            List<JCustomField> fields = entry.getValue();
-            for (JCustomField jcf : fields) {
-                TabFieldItem tabFieldItem = new TabFieldItem();
-                tabFieldItem.setName(jcf.getName());
-                tabFieldItem.setValue(jcf.getValue());
-                tabFieldItem.setIsCustom(true);
-                customFieldItems.add(tabFieldItem);
-            }
-        }
-
-        //save the custom fields, if any
-        if (customFieldItems.size() > 0) {
-            ServiceResponse<List<TabFieldItem>> customFieldItemResponse =
-                    encounterService.createPatientEncounterTabFields(customFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
-            if (customFieldItemResponse.hasErrors()) {
-                throw new RuntimeException();
-            }
-        }
-
-        List<TabFieldItem> nonCustomFieldItems = new ArrayList<>();
-
-        //multiple chief complaints
-        if (StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getMultipleHpiJSON())) {
-            //iterate over all values, adding them to the list with the respective chief complaint
-            nonCustomFieldItems.addAll(mapHpiFieldItemsFromJSON(patientViewModelPost.getMultipleHpiJSON()));
-
-        } else {//one or less chief complaints
-            nonCustomFieldItems.addAll(mapHpiFieldItems(patientViewModelPost));
-        }
-
-        nonCustomFieldItems.addAll(mapPmhFieldItems(patientViewModelPost));
-        nonCustomFieldItems.addAll(mapTreatmentFieldItems(patientViewModelPost));
-
-        if (nonCustomFieldItems.size() > 0) {
-            ServiceResponse<List<TabFieldItem>> nonCustomFieldItemResponse =
-                    encounterService.createPatientEncounterTabFields(nonCustomFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
-            if (nonCustomFieldItemResponse.hasErrors()) {
-                throw new RuntimeException();
-            }
-        }
-
-
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(encounterId);
-        if (patientItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
-
-
-        List<Http.MultipartFormData.FilePart> fps = request().body().asMultipartFormData().getFiles();
-
-        //wtf is this
-     //   photoService.HandleEncounterPhotos(fps, patientEncounterItem, patientViewModelPost);
 
 
 
-        String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 
-
-
-        return ok(editEncounterPost.render());
-    }
 
     public Result indexEncounterGet(int encounterId) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -448,28 +267,6 @@ public class HistoryController extends Controller {
 
     }
 
-    private List<TabFieldItem> mapHpiFieldItemsFromJSON(String JSON) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        Gson gson = new Gson();
-        //get values from JSON, assign list of values to chief complaint
-        Map<String, List<JCustomField>> hpiTabInformation = gson.fromJson(JSON, new TypeToken<Map<String, List<JCustomField>>>() {
-        }.getType());
-
-        for (Map.Entry<String, List<JCustomField>> entry : hpiTabInformation.entrySet()) {
-            List<JCustomField> fields = entry.getValue();
-
-            for (JCustomField jcf : fields) {
-                TabFieldItem tabFieldItem = new TabFieldItem();
-                tabFieldItem.setName(jcf.getName());
-                tabFieldItem.setChiefComplaint(entry.getKey().trim());
-                tabFieldItem.setIsCustom(false);
-                tabFieldItem.setValue(jcf.getValue());
-                tabFieldItems.add(tabFieldItem);
-            }
-        }
-        return tabFieldItems;
-    }
-
     private List<TabFieldItem> mapHpiFieldItems(IndexPatientViewModelPost patientViewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //hpi fields
@@ -538,4 +335,44 @@ public class HistoryController extends Controller {
             tabFieldItems.add(createTabFieldItem("treatment", patientViewModelPost.getTreatment()));
         return tabFieldItems;
     }
+
+
+
+    public Result updateFieldPost(int id) {
+        CurrentUser currentUser = sessionService.getCurrentUserSession();
+
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.findRecentPatientEncounterItemByPatientId(id);
+        if (currentEncounterByPatientId.hasErrors()) {
+            throw new RuntimeException();
+        }
+        //update date_of_medical_visit when a vital is updated
+        encounterService.checkPatientInToMedical(currentEncounterByPatientId.getResponseObject().getId(), currentUser.getId());
+
+        PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
+
+        fieldValueViewModel fieldValueViewModel = fieldValueViewModelForm.bindFromRequest().get();
+
+      //  Map<String,Integer> patientEncounterAssessments = getPatientAssessments(fieldValueViewModel);
+      //ServiceResponse<List<AssessmentItem>> patientEncounterAssessmentsServiceResponse =
+            //    assessmentService.updatePatientEncounterTabFields(currentUser.getId(),patientEncounter.getId());
+      //  if (patientEncounterAssessmentsServiceResponse.hasErrors()) {
+        //    throw new RuntimeException();
+       //}
+
+        return ok("true");
+    }
+
+    private Map< String,Integer> getPatientAssessments(fieldValueViewModel viewModel) {
+        Map<String,Integer> newAssessments = new HashMap<>();
+        if (viewModel.getFieldName() != null) {
+            newAssessments.put("fieldName", viewModel.getFieldName());
+        }
+        if (viewModel.getFieldValue() != null) {
+            newAssessments.put("fieldValue", viewModel.getFieldValue());
+        }
+
+
+        return newAssessments;
+    }
+
 }

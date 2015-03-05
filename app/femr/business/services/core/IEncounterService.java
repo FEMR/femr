@@ -19,10 +19,13 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.AssessmentItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 
+
 import java.util.List;
+import java.util.Map;
 
 public interface IEncounterService {
 
@@ -65,8 +68,8 @@ public interface IEncounterService {
      * Gives values to a bunch of fields
      *
      * @param tabFieldItems the fields, required attributes:<ul><li>name</li><li>value</li></ul>
-     * @param encounterId id of the current encounter
-     * @param userId id of the user saving the fields
+     * @param encounterId   id of the current encounter
+     * @param userId        id of the user saving the fields
      * @return updated list of items
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
@@ -75,8 +78,8 @@ public interface IEncounterService {
      * Create all problems
      *
      * @param problemValues each problem
-     * @param encounterId id of the current encounter
-     * @param userId id of the user saving the problems
+     * @param encounterId   id of the current encounter
+     * @param userId        id of the user saving the problems
      * @return updated problems
      */
     ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId);
@@ -89,4 +92,8 @@ public interface IEncounterService {
      */
     ServiceResponse<List<ProblemItem>> findProblemItems(int encounterId);
 
+   // ServiceResponse<List<AssessmentItem>>updatePatientEncounterTabFields( int encounterId, int userId);
+
 }
+
+

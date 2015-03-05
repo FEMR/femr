@@ -20,6 +20,7 @@ package femr.data;
 
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
+import femr.business.services.core.IEncounterService;
 import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
@@ -50,6 +51,7 @@ public class DataModelMapper {
     private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
     private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
+    private final Provider<IEncounterService> patientEncounterTabField;
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
@@ -77,6 +79,7 @@ public class DataModelMapper {
                            Provider<IPatientAgeClassification> patientAgeClassificationProvider,
                            Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
                            Provider<IPatientEncounter> patientEncounterProvider,
+                           Provider<IEncounterService> patientEncounterTabField,
                            Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                            Provider<IPatientPrescription> patientPrescriptionProvider,
@@ -101,6 +104,7 @@ public class DataModelMapper {
         this.missionTeamProvider = missionTeamProvider;
         this.missionTripProvider = missionTripProvider;
         this.patientProvider = patientProvider;
+        this.patientEncounterTabField = patientEncounterTabField;
         this.patientAgeClassificationProvider = patientAgeClassificationProvider;
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;

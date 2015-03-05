@@ -56,7 +56,7 @@ public class ConfigureController extends Controller {
         IndexViewModelGet indexViewModel = new IndexViewModelGet();
 
 
-        ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.getCurrentSettings();
+        ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.retrieveCurrentSettings();
         if (systemSettingsResponse.hasErrors()) {
             throw new RuntimeException();
         }

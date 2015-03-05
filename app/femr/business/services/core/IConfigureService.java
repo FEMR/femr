@@ -24,16 +24,19 @@ import femr.data.models.core.ISystemSetting;
 import java.util.List;
 
 public interface IConfigureService {
-    /**
-     * Get all user settings
-     * @return
-     */
-    ServiceResponse<List<? extends ISystemSetting>> getCurrentSettings();
 
     /**
-     * Update more than one system setting
+     * Retrieve available settings.
+     *
+     * @return a list of current system settings.
+     */
+    ServiceResponse<List<? extends ISystemSetting>> retrieveCurrentSettings();
+
+    /**
+     * Update more than one system setting.
+     *
      * @param systemSettings a list of active system setting names. system settings that don't exist in this list are assumed to be inactive
-     * @return
+     * @return a list of system settings after the update.
      */
     ServiceResponse<List<? extends ISystemSetting>> updateSystemSettings(List<String> systemSettings);
 }

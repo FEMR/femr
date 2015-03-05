@@ -309,7 +309,14 @@ public class MedicalController extends Controller {
     }
 
     public Result updateVitalsPost(int id) {
+
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        // Alaa Serhan
+        EditViewModelGet viewModelGet = new EditViewModelGet();
+        ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
+        viewModelGet.setSettings(response.getResponseObject());
+
 
         ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(id);
         if (currentEncounterByPatientId.hasErrors()) {
@@ -327,6 +334,25 @@ public class MedicalController extends Controller {
                 vitalService.createPatientEncounterVitals(patientEncounterVitals, currentUser.getId(), patientEncounter.getId());
         if (patientEncounterVitalsServiceResponse.hasErrors()) {
             throw new RuntimeException();
+        }
+
+        if( viewModelGet.getSettings().isMetric() ) {
+            //Alaa Serhan
+            Float temperature = patientEncounterVitals.get("temperature");
+            Float celsius = (temperature - 32)/(1.800f);
+            patientEncounterVitals.put("temperature", celsius); // puts it back into map
+
+            Float feet = patientEncounterVitals.get("heightFeet");
+            Float meters = feet/ (3.2808f);
+            patientEncounterVitals.put("heightFeet", meters); // puts it back into map
+
+            Float inches = patientEncounterVitals.get("heightInches");
+            Float cm = inches/ (0.39370f);
+            patientEncounterVitals.put("heightInches", cm); // puts it back into map
+
+            Float lbs = patientEncounterVitals.get("weight");
+            Float kgs = lbs/ (2.2046f);
+            patientEncounterVitals.put("weight", kgs); // puts it back into map
         }
 
         return ok("true");
@@ -363,13 +389,10 @@ public class MedicalController extends Controller {
         // If metric, Get Values from Map, Convert and Put Back Into Map
         VitalMultiMap vitalMap = vitalMultiMapServiceResponse.getResponseObject();
         if( viewModelGet.getSettings().isMetric() ) {
-            // But Map Doesn't go Back to the Multi Map --------------?
-
             // changed: dateIndex <= vitalMap.getDateList().size()
             // -- using this gives an out of bounds error
             // -- .size() is the size of an array at starting index 0
-            for(int dateIndex = 0; dateIndex < vitalMap.getDateList().size(); dateIndex++) {
-
+            for(int dateIndex = 0; dateIndex < vitalMap.getDateListChronological().size(); dateIndex++) {
                 // You are only converting temperature here, need to do the same for the other vitals within this loop
                 // Other than the OutOfBoundsException I was getting, this seems to be working fine
                 String temp = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
@@ -378,6 +401,21 @@ public class MedicalController extends Controller {
                 tempC = (tempC - 32) * 5/9;
                 // 2015-03-03 16:59:14.0 date format
                 vitalMap.put("temperature", vitalMap.getDate(dateIndex), tempC);
+
+                String feetS = vitalMap.get("heightFeet", vitalMap.getDate(dateIndex));
+                Float feet = Float.parseFloat(feetS);
+                Float meters = feet/ (3.2808f);
+                vitalMap.put("heightFeet", vitalMap.getDate(dateIndex),meters); // puts it back into map
+
+                String inchesS = vitalMap.get("heightInches", vitalMap.getDate(dateIndex));
+                Float inches = Float.parseFloat(inchesS);
+                Float cm = inches/ (0.39370f);
+                vitalMap.put("heightInches", vitalMap.getDate(dateIndex),cm); // puts it back into map
+
+                String lb = vitalMap.get("heightInches", vitalMap.getDate(dateIndex));
+                Float lbs = Float.parseFloat(lb);
+                Float kgs = lbs/ (2.2046f);
+                vitalMap.put("weight", vitalMap.getDate(dateIndex), kgs); // puts it back into map
             }
         }
 

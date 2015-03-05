@@ -49,7 +49,7 @@ function calculateBMI() {
 //    var bmi = Math.round(( weight_lbs / ( ( height_ft + height_in ) * ( height_ft + height_in ) ) ) );
 
     if (!isFinite(bmi) || bmi === '' || bmi === null){
-        $('#bmi').text("N/A");
+       $('#bmi').text("N/A");
     }else{
         $('#bmi').text(bmi);
     }

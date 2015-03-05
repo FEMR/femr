@@ -26,23 +26,29 @@ import java.util.Map;
 public interface IPatientService {
 
     /**
-     * Finds all possible age classifications for a patient
-     */
-    ServiceResponse<Map<String,String>> findPossibleAgeClassifications();
-    /**
-     * Retrieve patient and update the patients sex. Used when a user submits a sex for
-     * a patient with a previously unidentified sex.
+     * Retrieves all possible age classifications for a patient.
      *
-     * @param id the id of the patient
-     * @param sex the sex of the patient
-     * @return the updated patient
+     * @return a service response that contains a map that maps age classifications to their respective desriptions
+     * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> findPatientAndUpdateSex(int id, String sex);
+    ServiceResponse<Map<String,String>> retrieveAgeClassifications();
 
     /**
-     * Creates a new patient
-     * @param patient patient to be created
-     * @return patient with an assigned Id (pk)
+     * Updates a patients sex if that patient does not previously have one assigned.
+     *
+     * @param id the id of the patient, not null
+     * @param sex the sex of the patient, not null
+     * @return a service response that contains a PatientItem representing the patient that was updated
+     * and/or errors if they exist.
+     */
+    ServiceResponse<PatientItem> updateSex(int id, String sex);
+
+    /**
+     * Creates a new patient.
+     *
+     * @param patient patient to be created. TODO: separate this into parameters
+     * @return a service response that contains a PatientItem representing the patient that was created
+     * and/or errors if they exist.
      */
     ServiceResponse<PatientItem> createPatient(PatientItem patient);
 }

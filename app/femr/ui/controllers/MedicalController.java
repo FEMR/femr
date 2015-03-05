@@ -362,9 +362,16 @@ public class MedicalController extends Controller {
         // Check if Metric is Set
         // If metric, Get Values from Map, Convert and Put Back Into Map
         VitalMultiMap vitalMap = vitalMultiMapServiceResponse.getResponseObject();
-        if(viewModelGet.getSettings().isMetric() ) {
+        if( viewModelGet.getSettings().isMetric() ) {
             // But Map Doesn't go Back to the Multi Map --------------?
-            for(int dateIndex = 0; dateIndex <= vitalMap.getDateList().size(); dateIndex++) {
+
+            // changed: dateIndex <= vitalMap.getDateList().size()
+            // -- using this gives an out of bounds error
+            // -- .size() is the size of an array at starting index 0
+            for(int dateIndex = 0; dateIndex < vitalMap.getDateList().size(); dateIndex++) {
+
+                // You are only converting temperature here, need to do the same for the other vitals within this loop
+                // Other than the OutOfBoundsException I was getting, this seems to be working fine
                 String temp = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
                 Float tempC = Float.parseFloat(temp);
                 // (°F - 32) x 5/9 = °C

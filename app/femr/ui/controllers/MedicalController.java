@@ -89,7 +89,7 @@ public class MedicalController extends Controller {
         }
 
         //check if the doc has already seen the patient today
-        ServiceResponse<UserItem> userItemServiceResponse = encounterService.getPhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
+        ServiceResponse<UserItem> userItemServiceResponse = encounterService.retrievePhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
         if (userItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -143,7 +143,7 @@ public class MedicalController extends Controller {
         viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
 
         //get problems
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounter.getId());
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounter.getId());
         if (problemItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();

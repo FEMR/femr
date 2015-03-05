@@ -127,7 +127,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
         //find patient problems, they do not have to exist.
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounterItem.getId());
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {

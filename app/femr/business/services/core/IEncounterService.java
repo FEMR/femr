@@ -27,66 +27,71 @@ import java.util.List;
 public interface IEncounterService {
 
     /**
-     * Create a patient encounter. Chief complaint sort order is the same as
-     * the order they exist in the list
+     * Create a new patient encounter. Chief complaint sort order is the same as
+     * the order they exist in the list.
      *
-     * @param patientEncounterItem the patient encounter
-     * @return the patient encounter with id (pk)
+     * @param patientEncounterItem the new patient encounter, not null TODO: separate this into parameters.
+     * @return a service response that contains a PatientEncounterItem representing the patient encounter that was created
+     * and/or errors if they exist.
      */
     ServiceResponse<PatientEncounterItem> createPatientEncounter(PatientEncounterItem patientEncounterItem);
 
     /**
-     * Checks a patient into medical (updates date_of_medical_visit and the user checking them in)
+     * Checks a patient into medical by updating the time of their visit and the user who saw them.
      *
-     * @param encounterId current encounter id
-     * @param userId      id of the physician
-     * @return updated patient encounter
+     * @param encounterId current encounter id, not null
+     * @param userId      id of the physician, not null
+     * @return a service response that contains a PatientEncounterItem representing the patient encounter that was updated
+     * and/or errors if they exist.
      */
     ServiceResponse<PatientEncounterItem> checkPatientInToMedical(int encounterId, int userId);
 
     /**
-     * Checks a patient into pharmacy (updates date_of_pharmacy_visit and identifies the user)
+     * Checks a patient into pharmacy by updating the time of their visit and the user who saw them.
      *
-     * @param encounterId current encounter
-     * @param userId      id of the pharmacist
-     * @return updated patient encounter
+     * @param encounterId current encounter id, not null
+     * @param userId      id of the pharmacist, not null
+     * @return a service response that contains an IPatientEncounter representing the patient encounter that was updated
+     * and/or errors if they exist. TODO: remove the data model here
      */
     ServiceResponse<IPatientEncounter> checkPatientInToPharmacy(int encounterId, int userId);
 
     /**
-     * Gets the physician that saw a patient in medical.
+     * Retrieves the physician that saw a patient in medical.
      *
-     * @param encounterId id of the encounter to check
-     * @return the physician or null
+     * @param encounterId id of the encounter, not null
+     * @return a service response that contains the user and/or errors if they exist.
      */
-    ServiceResponse<UserItem> getPhysicianThatCheckedInPatientToMedical(int encounterId);
+    ServiceResponse<UserItem> retrievePhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * Gives values to a bunch of fields
+     * Creates a list of fields.
      *
-     * @param tabFieldItems the fields, required attributes:<ul><li>name</li><li>value</li></ul>
-     * @param encounterId id of the current encounter
-     * @param userId id of the user saving the fields
-     * @return updated list of items
+     * @param tabFieldItems the fields, not null, required attributes:<ul><li>name</li><li>value</li></ul>
+     * @param encounterId id of the current encounter, not null
+     * @param userId id of the user saving the fields, not null
+     * @return a service response that contains a list of TabFieldItems representing the fields that were created
+     * and/or errors if they exist.
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
 
     /**
-     * Create all problems
+     * Create a list of problems.
      *
-     * @param problemValues each problem
-     * @param encounterId id of the current encounter
-     * @param userId id of the user saving the problems
-     * @return updated problems
+     * @param problemValues each problem TODO: filter out empty/null values
+     * @param encounterId id of the current encounter, not null
+     * @param userId id of the user saving the problems, not null
+     * @return a service response that contains a list of ProblemItems representing the problems that were created
+     * and/or errors if they exist.
      */
     ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId);
 
     /**
-     * Find all problems
+     * Retrieves all problems.
      *
-     * @param encounterId id of the encounter
-     * @return list of problems
+     * @param encounterId id of the encounter, not null
+     * @return a service response that contains a list of ProblemItems that exist
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<ProblemItem>> findProblemItems(int encounterId);
-
+    ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId);
 }

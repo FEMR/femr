@@ -177,7 +177,7 @@ public class HistoryController extends Controller {
 
         //get problems
         List<String> problems = new ArrayList<>();
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(encounterId);
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(encounterId);
         if (problemItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }

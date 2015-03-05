@@ -1,6 +1,7 @@
 package femr.ui.controllers;
 import femr.business.services.core.*;
 import femr.common.models.*;
+import femr.data.models.mysql.*;
 import femr.ui.models.history.IndexEncounterMedicalViewModel;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,12 +23,9 @@ import com.itextpdf.text.pdf.parser.LineSegment;
 import com.itextpdf.text.pdf.parser.PdfImageObject;
 import com.itextpdf.text.pdf.fonts.otf.TableHeader;
 
-import femr.data.models.mysql.PatientEncounter;
 import femr.ui.controllers.PhotoController;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
-import femr.data.models.mysql.PatientEncounterPhoto;
-import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 
@@ -37,6 +35,8 @@ import femr.ui.models.history.IndexEncounterPharmacyViewModel;
 import femr.ui.models.history.IndexEncounterViewModel;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.dependencyinjection.providers.PatientPrescriptionProvider;
+import org.springframework.beans.factory.parsing.Problem;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -46,7 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 
-//import static play.modules.pdf.PDF.*;
+
 
 import com.itextpdf.text.pdf.PdfContentByte;
 import scala.xml.PrettyPrinter;
@@ -67,13 +67,15 @@ public class PDFConversionDemo extends Controller {
     private final IEncounterService encounterService;
     private final ITabService tabService;
     private final IVitalService vitalService;
+    private final IMedicationService medicationService;
     @Inject
-    public PDFConversionDemo(ISearchService searchService, IEncounterService encounterService, ITabService tabService, IVitalService vitalService) {
+    public PDFConversionDemo(ISearchService searchService, IEncounterService encounterService, ITabService tabService, IVitalService vitalService, IMedicationService medicationService) {
 
         this.searchService = searchService;
         this.encounterService= encounterService;
         this.tabService = tabService;
         this.vitalService = vitalService;
+        this.medicationService= medicationService;
 
     }
 
@@ -132,7 +134,7 @@ public class PDFConversionDemo extends Controller {
         BIVtable.addCell(StyledPhrase("Weight: ", outputFloatOrNA(P_item.getWeight()) + " lbs"));
 
         BIVtable.addCell(StyledPhrase("Address: ", outputStringOrNA(P_item.getAddress())));
-        BIVtable.addCell(StyledPhrase("Nurse: ", encounter.getNurseEmailAddress()));
+        BIVtable.addCell(StyledPhrase("Nurse: ",  outputStringOrNA(encounter.getNurseEmailAddress())));
         BIVtable.addCell(StyledPhrase("Blood Pressure", GetBloodPressure(P_vitals)));
         BIVtable.addCell(StyledPhrase("Address: ", outputStringOrNA(P_item.getAddress())));
 
@@ -142,14 +144,16 @@ public class PDFConversionDemo extends Controller {
         BIVtable.addCell(StyledPhrase("Oxygen Saturation: ", fromVitalMap("oxygenSaturation", P_vitals)));
         BIVtable.addCell(StyledPhrase("Glucose: ", fromVitalMap("glucose", P_vitals)));
 
-        BIVtable.addCell(StyledPhrase("Nurse: ", encounter.getNurseEmailAddress()));
-        BIVtable.addCell(StyledPhrase("Pharmacist: ", encounter.getPharmacistEmailAddress()));
-        BIVtable.addCell(StyledPhrase("Physician: ", encounter.getPhysicianEmailAddress()));
+        BIVtable.addCell(StyledPhrase("Nurse: ", outputStringOrNA(encounter.getNurseEmailAddress())));
+        BIVtable.addCell(StyledPhrase("Pharmacist: ", outputStringOrNA(encounter.getPharmacistEmailAddress())));
+        BIVtable.addCell(StyledPhrase("Physician: ", outputStringOrNA(encounter.getPhysicianEmailAddress())));
         BIVtable.addCell(StyledPhrase("", ""));
 
-        BIVtable.addCell(StyledPhrase("Triage Visit: ", encounter.getTriageDateOfVisit()));
-        BIVtable.addCell(StyledPhrase("Medical Visit: ", encounter.getMedicalDateOfVisit()));
-        BIVtable.addCell(StyledPhrase("Pharmacy Visit: ", encounter.getPharmacyDateOfVisit()));
+
+
+        BIVtable.addCell(StyledPhrase("Triage Visit: ", outputStringOrNA(encounter.getTriageDateOfVisit())));
+        BIVtable.addCell(StyledPhrase("Medical Visit: ", outputStringOrNA(encounter.getMedicalDateOfVisit())));
+        BIVtable.addCell(StyledPhrase("Pharmacy Visit: ", outputStringOrNA(encounter.getPharmacyDateOfVisit())));
         BIVtable.addCell(StyledPhrase("Pregnancy Status: ", outputIntOrNA(encounter.getWeeksPregnant())));
 
 
@@ -165,52 +169,52 @@ public class PDFConversionDemo extends Controller {
         assesmentTable.setSpacingBefore(4);
         assesmentTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-
-
         assesmentTable.addCell(StyledPhrase("Onset: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("onset", null).getValue())));
         assesmentTable.addCell(StyledPhrase("quality: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("quality", null).getValue())));
         assesmentTable.addCell(StyledPhrase("severity: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("severity", null).getValue())));
-
         assesmentTable.addCell(StyledPhrase("radiation: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("radiation", null).getValue())));
+
         assesmentTable.addCell(StyledPhrase("provokes: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("provokes", null).getValue())));
         assesmentTable.addCell(StyledPhrase("palliates: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("palliates", null).getValue())));
         assesmentTable.addCell(StyledPhrase("timeOfDay: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("timeOfDay", null).getValue())));
         assesmentTable.addCell(StyledPhrase("narrative: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("narrative", null).getValue())));
 
-        assesmentTable.addCell(StyledPhrase("physicalExamination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", null).getValue())));
-        assesmentTable.addCell(StyledPhrase("physicalExamination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", null).getValue())));
         assesmentTable.addCell(StyledPhrase("assessment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("assessment", null).getValue())));
         assesmentTable.addCell(StyledPhrase("treatment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("treatment", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("MEDS: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedication", null).getValue())));
+        assesmentTable.addCell(StyledPhrase("Problems: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("problem", null).getValue())));
 
-        assesmentTable.addCell(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue())));
-        //assesmenttable.addCell(StyledPhrase("socialHistory", outputStringOrNA(treatmentFields.getMostRecent("socialHistory", null))));
-        assesmentTable.addCell("");
-        assesmentTable.addCell(StyledPhrase("currentMedications", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue())));
-        assesmentTable.addCell(StyledPhrase("familyHistory", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("familyHistory", null).getValue())));
+        assesmentTable.addCell(" ");
+        assesmentTable.addCell(" ");
+        assesmentTable.addCell(" ");
+        assesmentTable.addCell(" ");
+        //assesmentTable.addCell(StyledPhrase("currentMedications", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue())));
 
+        PdfPCell cellMSH = new PdfPCell(new Phrase(StyledPhrase("Medical Surgical History: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue()))));
+        cellMSH.setColspan(2);
+        cellMSH.setPadding(5);
 
+        PdfPCell cellFH = new PdfPCell(new Phrase(StyledPhrase("Family History: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("familyHistory", null).getValue()))));
+        cellFH.setColspan(2);
+        cellFH.setPadding(5);
 
-
-        PdfPCell cell1 = new PdfPCell(new Phrase(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue()))));
-        cell1.setColspan(2);
-        cell1.setPadding(5);
-        PdfPCell cell2 = new PdfPCell(new Phrase(StyledPhrase("currentMedications: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue()))));
-        cell2.setColspan(2);
-        assesmentTable.addCell(cell1);
-        assesmentTable.addCell(cell2);
+        assesmentTable.addCell(cellMSH);
+        assesmentTable.addCell(cellFH);
         assesmentTable.completeRow();
 
 
-        PdfPCell cell3 = new PdfPCell(new Phrase(StyledPhrase("medicalSurgicalHistory: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue()))));
-        cell1.setColspan(2);
-        cell1.setPadding(5);
-        PdfPCell cell4 = new PdfPCell(new Phrase(StyledPhrase("currentMedications: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedications", null).getValue()))));
-        cell2.setColspan(2);
-        assesmentTable.addCell(cell3);
-        assesmentTable.addCell(cell4);
+        PdfPCell cellPE = new PdfPCell(new Phrase(StyledPhrase("Physical Examination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", null).getValue()))));
+        cellPE.setColspan(2);
+        cellPE.setPadding(5);
+
+        PdfPCell cellSH = new PdfPCell(new Phrase(StyledPhrase("Social History: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("socialHistory", null).getValue()))));
+        cellSH.setColspan(2);
+        cellSH.setPadding(5);
+
+        assesmentTable.addCell(cellPE);
+        assesmentTable.addCell(cellSH);
+
         assesmentTable.completeRow();
-
-
 
         return (assesmentTable);
     }
@@ -219,14 +223,8 @@ public class PDFConversionDemo extends Controller {
 
     private byte[] main(int id, int Eid) {
 
-        //   PatientEncounterItem patientEncounter;
-        //  ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(id);
-
         PatientEncounterItem patientEncounterONE;
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponseONE = searchService.findPatientEncounterItemByEncounterId(Eid);
-
-        //  PatientItem patientItem;
-        //   ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(id);
 
         PatientItem patientItem;
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByEncounterId(Eid);
@@ -234,43 +232,22 @@ public class PDFConversionDemo extends Controller {
         VitalMultiMap patientVitals;
         ServiceResponse<VitalMultiMap> VitalMultiMapServiceResponse = vitalService.findVitalMultiMap(Eid);
 
-        // GET Assesments
-
         ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.findTabFieldMultiMap(Eid);
-        if (patientEncounterTabFieldResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
+
+
 //////////////////////
 
-/**       // GET PROBLEMS
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(Eid);
-        if (problemItemServiceResponse.hasErrors()){
-            throw new RuntimeException();
-        }
-
-**/
-
-
-
-
-        //extract the most recent treatment fields
-     //   Map<String, String> treatmentFields = new HashMap<>();
-      //  treatmentFields.put("assessment", tabFieldMultiMap.getMostRecent("assessment", null));
-       // treatmentFields.put("treatment", tabFieldMultiMap.getMostRecent("treatment", null));
-
-
-
-
-            if (patientItemServiceResponse.hasErrors() || patientEncounterItemServiceResponseONE.hasErrors()) {
+            if (patientItemServiceResponse.hasErrors() || patientEncounterItemServiceResponseONE.hasErrors()
+                    || patientEncounterTabFieldResponse.hasErrors() || VitalMultiMapServiceResponse.hasErrors()) {
                 throw new RuntimeException();
             }
 
-            //  patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+
             patientItem = patientItemServiceResponse.getResponseObject();
             patientVitals = VitalMultiMapServiceResponse.getResponseObject();
             patientEncounterONE = patientEncounterItemServiceResponseONE.getResponseObject();
-            // Assess = ServiceResponse.;
+            TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
+
 
 
             ByteArrayOutputStream baosPDF = new ByteArrayOutputStream();
@@ -308,11 +285,12 @@ public class PDFConversionDemo extends Controller {
                 //cb.showText("Patient ID: " + patientItem.getId());
                 cb.endText();
 
-                Paragraph Patient_FirstName = new Paragraph("First Name : " + patientItem.getFirstName());
-                Paragraph Patient_LastName = new Paragraph("Last Name : " + patientItem.getLastName());
-                Paragraph Patient_Birthday = new Paragraph("Birthday     : " + patientItem.getFriendlyDateOfBirth());
-                Paragraph Patient_Age = new Paragraph("Age            : " + patientItem.getAge());
-                Paragraph Patient_Sex = new Paragraph("Sex            : " + patientItem.getSex());
+                Paragraph Patient_ID = new Paragraph(StyledPhrase("Patient ID : "  , patientItem.getId()));
+                Paragraph Patient_FirstName = new Paragraph(StyledPhrase("First Name : "  , patientItem.getFirstName()));
+                Paragraph Patient_LastName = new Paragraph(StyledPhrase("Last Name  : "    , patientItem.getLastName()));
+                Paragraph Patient_Birthday = new Paragraph(StyledPhrase("Birthday     : " , patientItem.getFriendlyDateOfBirth()));
+                Paragraph Patient_Age = new Paragraph(StyledPhrase("Age              : "    , patientItem.getAge()));
+                Paragraph Patient_Sex = new Paragraph(StyledPhrase("Sex               : "    , patientItem.getSex()));
 
 
                 document.add(Title);
@@ -321,6 +299,7 @@ public class PDFConversionDemo extends Controller {
                 document.add(line);
                 document.add(new Paragraph(" "));
 
+                document.add(Patient_ID);
                 document.add(Patient_FirstName);
                 document.add(Patient_LastName);
                 document.add(Patient_Sex);
@@ -335,7 +314,6 @@ public class PDFConversionDemo extends Controller {
 
                 document.add(new Paragraph(" "));
                 document.add(new LineSeparator(1, 45, BaseColor.BLACK, Element.ALIGN_CENTER, 10));
-
                 document.add(getBasicInfoAndVitalsTable(patientItem, patientEncounterONE, patientVitals));
 
                 document.add(new Paragraph(" "));
@@ -347,14 +325,6 @@ public class PDFConversionDemo extends Controller {
                 document.add(getAssessments(tabFieldMultiMap));
 
 
-                // Adding Image to Document
-                // String imageUrl = "http://jenkov.com/images/" + "20081123-20081123-3E1W7902-small-portrait.jpg";
-                // Image image = Image.getInstance(new URL(imageUrl));
-                //  image.setAbsolutePosition(450f, 665f); //absolute positioning (float absoluteX, float absoluteY);
-                // document.add(image);
-
-
-                //document.add(withSpacingBefore(centeredParagraph("Assessment", new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.NORMAL, BaseColor.BLACK)), 15));
 
 
                 document.close();
@@ -365,6 +335,7 @@ public class PDFConversionDemo extends Controller {
             } catch (Exception e) {
 
                 e.printStackTrace();
+
             }
 
             return baosPDF.toByteArray();

@@ -19,10 +19,13 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.AssessmentItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 
+
 import java.util.List;
+import java.util.Map;
 
 public interface IEncounterService {
 
@@ -93,5 +96,12 @@ public interface IEncounterService {
      * @return a service response that contains a list of ProblemItems that exist
      * and/or errors if they exist.
      */
+
     ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId);
+
+   // ServiceResponse<List<AssessmentItem>>updatePatientEncounterTabFields( int encounterId, int userId);
+
+
 }
+
+

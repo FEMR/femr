@@ -25,46 +25,28 @@ $(document).ready(function () {
         // get value from top html
         var value = $(this).parent("p").find(".value").text();
         // put value in form
-        ($("#edit-form").find("input.value").val(value);
+        $("#edit-form").find("input.value").val(value);
 
         // need to get form text field name
+        var id = $(this).parent("p").find(".value").attr("id");
+        $("#edit-form").find("input.fieldId").val(id);
 
         $("#edit-form").show();
     });
 
-
-
-   // $("#saveEncounterBtn").on('click', function() {
-
-     //   var that = $(this)
-
-
-
-
-
-
-   // });
-
-
-    $("#saveEncounterBtn").click(function() {
-
-        var form = $(this);
-        var label = $(this).text();
+    $("#saveEncounterBtn").click(function () {
+        var fieldValue = $('#editInput').val();
+        // var form = $(this);
+        //var label = $(this).text();
+        var fieldName = $('#fieldIdInput').val();
+        //
         $.ajax({
-            type: form.attr('method'),
-            url: form.attr('action'),
-            data: form.serialize()
-        }).done(function() {
-            //alert("Saved Successfully");
-            var value = $(this).parent("p").find(".value").text();
-
-
-            var value2 = $("#edit-form").find("input.value").val(value);
-
-         value = value2;
+            type: "Post",
+            url: 'history/encounter/updateField/' + $('#patientEncounterId').val(),
+            data: {fieldValue: fieldValue, fieldName: fieldName}
+        }).done(function () {
 
             $("#edit-form").hide();
-
 
 
         })
@@ -73,132 +55,16 @@ $(document).ready(function () {
     });
 
 
-
-
-
-
-
-    $("#cancelEncounterBtn").click(function(){
+    $("#cancelEncounterBtn").click(function () {
 
         $("#edit-form").hide();
     });
 
-    $('#historySaveBtn').click(function () {
-        var newAssessments = {};
 
-        var patientAssessments = {
-            //this object is sent to the vital validator which uses
-            //the names of these field
-            MedicalSurgicalHistory: $('#MedicalSurgicalHistory'),
-            SocialHistory: $('#SocialHistory'),
-            CurrentMedications: $('#CurrentMedications'),
-            FamilyHistory: $('#FamilyHistory'),
-            Assessment: $('#Assessment'),
-            Treatment: $('#Treatment'),
-            Onset: $('#Onset'),
-            Quality: $('#Quality'),
-            Radiation: $('#Radiation'),
-            Severity: $('#Severity'),
-            Provokes: $('#Provokes'),
-            Palliates: $('#Palliates'),
-            TimeOfDay: $('#TimeOfDay'),
-            Narrative: $('#Narrative'),
-            PhysicalExamination: $('#PhysicalExamination')
+    function closeDialog(name) {
+        $('#' + name).dialog("close");
 
-        };
-
-
-
-    var isValid = vitalClientValidator(patientAssessments);
-
-    if (isValid === true) {
-        if (patientAssessments.MedicalSurgicalHistory.val() !== '') {
-            newAssessments.MedicalSurgicalHistory = patientAssessments.MedicalSurgicalHistory.val();
-        }
-
-        if (patientVitals.SocialHistory.val() !== '') {
-            newAssessments.SocialHistory = patientAssessments.SocialHistory.val();
-        }
-
-        if (patientVitals.CurrentMedications.val() !== '') {
-            newAssessments.CurrentMedications = patientAssessments.CurrentMedications.val();
-        }
-
-        if (patientVitals.FamilyHistory.val() !== '') {
-            newAssessments.FamilyHistory = patientAssessments.FamilyHistory.val();
-        }
-
-        if (patientVitals.Assessment.val() !== '') {
-            newAssessments.Assessment = patientAssessments.Assessment.val();
-        }
-
-        if (patientVitals.Treatment.val() !== '') {
-            newAssessments.Treatment = patientAssessments.Treatment.val();
-        }
-
-        if (patientVitals.Onset.val() !== '') {
-            newAssessments.Onset = patientAssessments.Onset.val();
-        }
-
-        if (patientVitals.Quality.val() !== '') {
-            newAssessments.Quality = patientAssessments.Quality.val();
-        }
-
-        if (patientVitals.Radiation.val() !== '') {
-            newAssessments.Radiation = patientAssessments.Radiation.val();
-        }
-
-        if (patientVitals.Severity.val() !== '') {
-            newAssessments.Severity = patientAssessments.Severity.val();
-        }
-
-        if (patientVitals.Provokes.val() !== '') {
-            newAssessments.Provokes = patientAssessments.Provokes.val();
-        }
-
-        if (patientVitals.Palliates.val() !== '') {
-            newAssessments.Palliates = patientAssessments.Palliates.val();
-        }
-
-        if (patientVitals.TimeOfDay.val() !== '') {
-            newAssessments.TimeOfDay = patientAssessments.TimeOfDay.val();
-
-        }
-
-        if (patientVitals.Narrative.val() !== '') {
-            newAssessments.Narrative = patientAssessments.Narrative.val();
-        }
-
-
-        if (patientVitals.PhysicalExamination.val() !== '') {
-            newAssessments.PhysicalExamination = patientAssessments.PhysicalExamination.val();
-
-
-        }
-
-        $.ajax({
-            url: '/history/encounter/' + $("#patientId").val(),
-            type: 'POST',
-            data: newAssessments,
-            dataType: 'json'
-        }).done(function () {
-            closeDialog("newAssessmentDialog");
-            $.ajax({
-                url: '/history/edit-encounter/' + $('#patientId').val(),
-                type: 'GET',
-                success: function (partialView) {
-                    $('#assessmentsPartial').html(partialView);
-                }
-            })
-        });
     }
-        });
- });
-
-function closeDialog(name) {
-    $('#' + name).dialog("close");
-
-}
 
 
-
+});

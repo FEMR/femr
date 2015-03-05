@@ -295,7 +295,8 @@ var triageFields = {
         heightFeet: $('#heightFeet'),
         heightInches: $('#heightInches'),
         glucose: $('#glucose'),
-        weeksPregnant: $('#weeksPregnant')
+        weeksPregnant: $('#weeksPregnant'),
+        vitalUnits: $('#vitalUnits') /* Alaa Serhan - Metric BMI*/
     },
     chiefComplaint: {
 
@@ -554,7 +555,7 @@ $(function () {
 /* BMI auto- calculator */
 window.setInterval(function () {
     if ($('#heightFeet').val() && $('#weight').val()) {
-
+        var vitalsUnits = $('#vitalsUnits').val(); /* Alaa Serhan */
         var weight_lbs = parseInt($('#weight').val());
         var height_in = parseInt($('#heightInches').val());
         var height_ft = parseInt($('#heightFeet').val());
@@ -563,13 +564,18 @@ window.setInterval(function () {
             height_in = 0;
         }
 
-        height_in = height_in + height_ft * 12;
-
-        $('#bmi').val(Math.round((weight_lbs / (height_in * height_in)) * 703));
-
+        /* Alaa Serhan */
+        if (vitalsUnits == "metric") {
+            var total_height = height_ft + "." + height_in;
+            $('#bmi').val(Math.round((weight_lbs / (total_height * total_height))));
+        } else {
+            height_in = height_in + height_ft * 12;
+            $('#bmi').val(Math.round((weight_lbs / (height_in * height_in)) * 703));
+        }
     }
 
 }, 500);
+
 //
 ///* Alaa Serhan - Metric BMI*/
 ///* BMI auto- calculator */

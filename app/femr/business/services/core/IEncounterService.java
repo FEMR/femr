@@ -19,10 +19,13 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.AssessmentItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 
+
 import java.util.List;
+import java.util.Map;
 
 public interface IEncounterService {
 
@@ -72,12 +75,14 @@ public interface IEncounterService {
      * @param userId id of the user saving the fields, not null
      * @return a service response that contains a list of TabFieldItems representing the fields that were created
      * and/or errors if they exist.
+
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
 
     /**
      * Create a list of problems.
      *
+
      * @param problemValues each problem TODO: filter out empty/null values
      * @param encounterId id of the current encounter, not null
      * @param userId id of the user saving the problems, not null
@@ -93,5 +98,12 @@ public interface IEncounterService {
      * @return a service response that contains a list of ProblemItems that exist
      * and/or errors if they exist.
      */
+
     ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId);
+
+   // ServiceResponse<List<AssessmentItem>>updatePatientEncounterTabFields( int encounterId, int userId);
+
+
 }
+
+

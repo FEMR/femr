@@ -318,7 +318,20 @@ public class UIModelMapper {
 
         return problemItem;
     }
+    public static AssessmentItem assessmentProblemItem(String name) {
 
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        AssessmentItem assessmentItem = new AssessmentItem();
+
+        assessmentItem.getFieldName();
+        assessmentItem.getFieldValue();
+
+        return assessmentItem;
+    }
     /**
      * Generate and provide an instance of ResearchFilterItem.
      *

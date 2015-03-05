@@ -22,7 +22,7 @@
             <div id="encounterViewHeader">
 
 
-                <a href="/history/edit-encounter/@viewModel.getPatientEncounterItem.getId" class="btn btn-default pull-right">Edit history </a>
+           <!--    <a href="/history/edit-encounter/@viewModel.getPatientEncounterItem.getId" class="btn btn-default pull-right">Edit history </a> -->
 
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
@@ -166,8 +166,8 @@
                 @if(viewModelMedical.isMultipleChiefComplaints) {
                     @for((key, value) <- viewModelMedical.getHpiFieldsWithMultipleChiefComplaints) {
                         <h4>Chief Complaint: @key</h4>
-                        <p> <a class = "infoLabel">Onset:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))</span></p>
+                        <p> <a class="infoLabel">Onset:</a>
+                            <span id="onset" class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))</span></p>
 
                         <p> <a class="infoLabel"> Quality: </a>
                             <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))</span></p>
@@ -255,8 +255,8 @@
             <div id="edit-form" >
 
                 <p class="form-label"></p>
-                <input type="text" class="form-control input-sm pull-left value" name="edit-value" onKeyPress="white_space(edit-value)" value=""/>
-                <input type="hidden" name="edit-field-name" value="" />
+                <input type="text" id="editInput" class="form-control input-sm pull-left value" name="edit-value"  value=""/>
+                <input  id = "fieldIdInput" class= "fieldId" type="hidden" name="edit-field-name" value="" />
 
                 <button type="button" id="saveEncounterBtn" class="fButton">Save</button>
                 <button type="button" id="cancelEncounterBtn" class="fButton">Cancel</button>

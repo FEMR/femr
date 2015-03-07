@@ -59,21 +59,21 @@ public class InventoryController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
         InventoryViewModelGet viewModel = new InventoryViewModelGet();
-        ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.getMedicationInventory();
+        ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventory();
         if (medicationServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
             viewModel.setMedications(medicationServiceResponse.getResponseObject());
         }
 
-        ServiceResponse<List<String>> availableMedicationUnitsResponse = inventoryService.getAvailableUnits();
+        ServiceResponse<List<String>> availableMedicationUnitsResponse = inventoryService.retrieveAvailableUnits();
         if (availableMedicationUnitsResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
             viewModel.setAvailableUnits(availableMedicationUnitsResponse.getResponseObject());
         }
 
-        ServiceResponse<List<String>> availableMedicationFormsResponse = inventoryService.getAvailableForms();
+        ServiceResponse<List<String>> availableMedicationFormsResponse = inventoryService.retrieveAvailableForms();
         if (availableMedicationFormsResponse.hasErrors()) {
             throw new RuntimeException();
         } else {

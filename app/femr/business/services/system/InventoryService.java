@@ -62,7 +62,7 @@ public class InventoryService implements IInventoryService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MedicationItem>> getMedicationInventory() {
+    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory() {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
@@ -130,7 +130,7 @@ public class InventoryService implements IInventoryService {
                     .where()
                     .eq("name", medicationItem.getForm());
             IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
-            if (medicationForm == null){
+            if (medicationForm == null) {
                 medicationForm = dataModelMapper.createMedicationForm(medicationItem.getForm());
             }
 
@@ -149,7 +149,7 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<List<String>> getAvailableUnits() {
+    public ServiceResponse<List<String>> retrieveAvailableUnits() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
             List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
@@ -167,7 +167,7 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<List<String>> getAvailableForms() {
+    public ServiceResponse<List<String>> retrieveAvailableForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
             List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);

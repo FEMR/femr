@@ -26,27 +26,35 @@ import java.util.List;
 public interface IInventoryService {
 
     /**
-     * Gets all medicine that is currently not deleted
+     * Retrieves a list of all medications in the system, including duplicates.
      *
-     * @return list of MedicationItems for use by controller
+     * @return a service response that contains a list of MedicationItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<MedicationItem>> getMedicationInventory();
+    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory();
 
     /**
-     * Add a new medication to the inventory
+     * Creates a new medication in the inventory.
      *
-     * @param medicationItem the medication
-     * @return
+     * @param medicationItem the medication TODO: separate this into parameters
+     * @return a service response that contains a MedicationItem representing the medication that was just created
+     * and/or errors if they exist.
      */
     ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem);
 
     /**
-     * Get a list of available units for the user
+     * Retrieve a list of all available units for measuring.
+     *
+     * @return a service response that contains a list of strings that are the available units
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<String>> getAvailableUnits();
+    ServiceResponse<List<String>> retrieveAvailableUnits();
 
     /**
-     * Get a list of available forms for the user
+     * Retrieve a list of all available forms of medication
+     *
+     * @return a service response that contains a list of strings that are the available forms
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<String>> getAvailableForms();
+    ServiceResponse<List<String>> retrieveAvailableForms();
 }

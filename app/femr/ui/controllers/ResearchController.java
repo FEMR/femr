@@ -159,7 +159,7 @@ public class ResearchController extends Controller {
 
     public Result typeaheadJSONGet(){
 
-        ServiceResponse<List<String>> medicationServiceResponse = medicationService.findAllMedications();
+        ServiceResponse<List<String>> medicationServiceResponse = medicationService.retrieveAllMedications();
         if (medicationServiceResponse.hasErrors()) {
             return ok("");
         }

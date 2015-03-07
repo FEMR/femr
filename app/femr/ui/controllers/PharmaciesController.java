@@ -240,13 +240,13 @@ public class PharmaciesController extends Controller {
         }
 
         //update non-replaced prescriptions to dispensed
-        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.markPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
+        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.flagPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
         if (prescriptionDispensedResponse.hasErrors()) {
             throw new RuntimeException();
         }
         //update non-replaced prescriptions that the patient was counseled on
         if (isCounseled){
-            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.markPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
+            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.flagPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
             if (prescriptionCounseledResponse.hasErrors()){
                 throw new RuntimeException();
             }

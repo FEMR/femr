@@ -69,19 +69,19 @@ public class SuperuserController extends Controller {
     public Result tripsGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.findAllTripInformation();
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
         if (missionItemServiceResponse.hasErrors())
             throw new RuntimeException();
 
-        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.findAvailableTeams();
+        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.retrieveAvailableTeams();
         if (availableTeamsServiceResponse.hasErrors())
             throw new RuntimeException();
 
-        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.findAvailableCities();
+        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
         if (availableCitiesServiceResponse.hasErrors())
             throw new RuntimeException();
 
-        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.findAvailableCountries();
+        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.retrieveAvailableCountries();
         if (availableCountriesServiceResponse.hasErrors())
             throw new RuntimeException();
 

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Tracks a mission (name, location, dates, etc)
+ */
 public class MissionItem {
 
     private String teamName;

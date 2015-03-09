@@ -141,10 +141,9 @@ public class ResearchController extends Controller {
     public Result getGraphPost(){
 
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
-        //TODO: domain mapper out of scope
         ResearchFilterItem researchFilterItem = UIModelMapper.createResearchFilterItem(filterViewModel);
 
-        ServiceResponse<ResearchResultSetItem> response = researchService.getGraphData(researchFilterItem);
+        ServiceResponse<ResearchResultSetItem> response = researchService.retrieveGraphData(researchFilterItem);
         ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
         if( !response.hasErrors() ) {
 

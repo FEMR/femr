@@ -76,7 +76,7 @@ public class ResearchService implements IResearchService {
 
 
     @Override
-    public ServiceResponse<ResearchResultSetItem> getGraphData(ResearchFilterItem filters){
+    public ServiceResponse<ResearchResultSetItem> retrieveGraphData(ResearchFilterItem filters){
 
         ServiceResponse<ResearchResultSetItem> response = new ServiceResponse<>();
 

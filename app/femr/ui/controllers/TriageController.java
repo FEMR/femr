@@ -151,7 +151,7 @@ public class TriageController extends Controller {
         patientItem = patientServiceResponse.getResponseObject();
 
 
-        photoService.SavePatientPhotoAndUpdatePatient(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
+        photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
         //V code for saving photo without javascript
         //currently javascript is required
         //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");

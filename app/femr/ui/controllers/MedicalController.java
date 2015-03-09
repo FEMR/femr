@@ -192,7 +192,7 @@ public class MedicalController extends Controller {
         viewModelGet.setTabItems(tabItems);
         viewModelGet.setChiefComplaints(tabFieldMultiMap.getChiefComplaintList());
 
-        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
+        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.retrieveEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -278,7 +278,7 @@ public class MedicalController extends Controller {
 
 
         //create patient encounter photos
-        photoService.HandleEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
+        photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
         //create prescriptions
         List<String> prescriptions = new ArrayList<>();

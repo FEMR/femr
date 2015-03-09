@@ -124,7 +124,7 @@ public class HistoryController extends Controller {
         indexEncounterMedicalViewModel.setVitalList(patientEncounterVitalMapResponse.getResponseObject());
 
         //get photos
-        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(encounterId);
+        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.retrieveEncounterPhotos(encounterId);
         if (photoListResponse.hasErrors()) {
             throw new RuntimeException();
         }

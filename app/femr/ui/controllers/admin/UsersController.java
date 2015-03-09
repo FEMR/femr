@@ -75,7 +75,7 @@ public class UsersController extends Controller {
     public Result createGet() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -87,7 +87,7 @@ public class UsersController extends Controller {
     public Result createPost() {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         Form<CreateViewModel> form = createViewModelForm.bindFromRequest();
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -137,7 +137,7 @@ public class UsersController extends Controller {
         editViewModelForm = editViewModelForm.fill(editUserViewModel);
 
 
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             return internalServerError();
         }
@@ -154,7 +154,7 @@ public class UsersController extends Controller {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
         Form<EditViewModel> form = editViewModelForm.bindFromRequest();
 
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             return internalServerError();
         }
@@ -188,7 +188,7 @@ public class UsersController extends Controller {
             }
 
             if (viewModel.getRoles().size() > 0) {
-                ServiceResponse<List<String>> allRolesServiceResponse = roleService.getAllRolesString();
+                ServiceResponse<List<String>> allRolesServiceResponse = roleService.retrieveAllRoles();
                 List<String> allRoles = allRolesServiceResponse.getResponseObject();
                 List<String> userRoles = new ArrayList<>();
                 for (String role : allRoles) {

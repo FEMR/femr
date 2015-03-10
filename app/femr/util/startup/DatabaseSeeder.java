@@ -886,6 +886,71 @@ public class DatabaseSeeder {
         tabFieldRepository.createAll(tabFieldsToAdd);
     }
 
+    private void seedDefaultTabNames() {
+
+        List<? extends ITab> tabs = tabRepository.findAll(Tab.class);
+        List<Tab> tabsToAdd = new ArrayList<>();
+
+        if (tabs != null) {
+
+            Tab tab;
+            if (!containTab(tabs, "HPI")) {
+
+                tab = new Tab();
+                tab.setName("HPI");
+                tab.setId(1);
+                tab.setIsDeleted(false);
+                tab.setDateCreated(dateUtils.getCurrentDateTime());
+                tab.setUserId(null);
+                tab.setLeftColumnSize(2);
+                tab.setRightColumnSize(2);
+                tab.setIsCustom(false);
+                tabsToAdd.add(tab);
+            }
+            if (!containTab(tabs, "PMH")) {
+
+                tab = new Tab();
+                tab.setName("PMH");
+                tab.setId(2);
+                tab.setIsDeleted(false);
+                tab.setDateCreated(dateUtils.getCurrentDateTime());
+                tab.setUserId(null);
+                tab.setLeftColumnSize(0);
+                tab.setRightColumnSize(0);
+                tab.setIsCustom(false);
+                tabsToAdd.add(tab);
+            }
+            if (!containTab(tabs, "Treatment")) {
+
+                tab = new Tab();
+                tab.setName("Treatment");
+                tab.setId(3);
+                tab.setIsDeleted(false);
+                tab.setDateCreated(dateUtils.getCurrentDateTime());
+                tab.setUserId(null);
+                tab.setLeftColumnSize(0);
+                tab.setRightColumnSize(0);
+                tab.setIsCustom(false);
+                tabsToAdd.add(tab);
+            }
+            if (!containTab(tabs, "Photos")) {
+
+                tab = new Tab();
+                tab.setName("Photos");
+                tab.setId(4);
+                tab.setIsDeleted(false);
+                tab.setDateCreated(dateUtils.getCurrentDateTime());
+                tab.setUserId(null);
+                tab.setLeftColumnSize(0);
+                tab.setRightColumnSize(0);
+                tab.setIsCustom(false);
+                tabsToAdd.add(tab);
+            }
+        }
+
+        tabRepository.createAll(tabsToAdd);
+    }
+
     private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries, String countryName) {
         for (IMissionCountry mc : missionCountries) {
             if (mc.getName().toLowerCase().equals(countryName.toLowerCase())) {
@@ -976,57 +1041,13 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private void seedDefaultTabNames() {
-        int sizeCount = tabRepository.count(Tab.class);
-        if (sizeCount == 0) {
-            List<Tab> tabs = new ArrayList<>();
-            Tab tab = new Tab();
-            tab.setName("HPI");
-            tab.setId(1);
-            tab.setIsDeleted(false);
-            tab.setDateCreated(dateUtils.getCurrentDateTime());
-            tab.setUserId(null);
-            tab.setLeftColumnSize(2);
-            tab.setRightColumnSize(2);
-            tab.setIsCustom(false);
-            tabs.add(tab);
-
-            tab = new Tab();
-            tab.setName("PMH");
-            tab.setId(2);
-            tab.setIsDeleted(false);
-            tab.setDateCreated(dateUtils.getCurrentDateTime());
-            tab.setUserId(null);
-            tab.setLeftColumnSize(0);
-            tab.setRightColumnSize(0);
-            tab.setIsCustom(false);
-            tabs.add(tab);
-
-            tab = new Tab();
-            tab.setName("Treatment");
-            tab.setId(3);
-            tab.setIsDeleted(false);
-            tab.setDateCreated(dateUtils.getCurrentDateTime());
-            tab.setUserId(null);
-            tab.setLeftColumnSize(0);
-            tab.setRightColumnSize(0);
-            tab.setIsCustom(false);
-            tabs.add(tab);
-
-            tab = new Tab();
-            tab.setName("Photos");
-            tab.setId(4);
-            tab.setIsDeleted(false);
-            tab.setDateCreated(dateUtils.getCurrentDateTime());
-            tab.setUserId(null);
-            tab.setLeftColumnSize(0);
-            tab.setRightColumnSize(0);
-            tab.setIsCustom(false);
-            tabs.add(tab);
-
-            tabRepository.createAll(tabs);
+    private static boolean containTab(List<? extends ITab> tabs, String tab) {
+        for (ITab t : tabs) {
+            if (t.getName().equals(tab)) {
+                return true;
+            }
         }
-
+        return false;
     }
 
     /**

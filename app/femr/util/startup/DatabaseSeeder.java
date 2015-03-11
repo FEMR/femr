@@ -30,7 +30,7 @@ import play.Play;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO: stop assigning primary keys
 public class DatabaseSeeder {
 
     private final Repository<Diagnosis> diagnosisRepository;
@@ -66,11 +66,13 @@ public class DatabaseSeeder {
     }
 
     public void seed() {
+
         seedMissionTripInformation();
         seedSystemSettings();
         seedAdminUser();
         seedDefaultTabNames();
-        seedTabFieldTypesAndSizes();
+        seedDefaultTabFieldSizes();
+        seedDefaultTabFieldTypes();
         seedDefaultTabFields();
         seedMedicationUnits();
         seedMedicationForms();
@@ -951,6 +953,59 @@ public class DatabaseSeeder {
         tabRepository.createAll(tabsToAdd);
     }
 
+    private void seedDefaultTabFieldTypes() {
+
+        List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
+        List<TabFieldType> tabFieldTypesToAdd = new ArrayList<>();
+
+        if (tabFieldTypes != null){
+
+            TabFieldType tabFieldType;
+            if (!containTabFieldType(tabFieldTypes, "text")){
+
+                tabFieldType = new TabFieldType();
+                tabFieldType.setName("text");
+                tabFieldType.setId(1);
+                tabFieldTypesToAdd.add(tabFieldType);
+            }
+            if (!containTabFieldType(tabFieldTypes, "number")){
+
+                tabFieldType = new TabFieldType();
+                tabFieldType.setName("number");
+                tabFieldType.setId(2);
+                tabFieldTypesToAdd.add(tabFieldType);
+            }
+
+            tabFieldTypeRepository.createAll(tabFieldTypesToAdd);
+        }
+    }
+
+    private void seedDefaultTabFieldSizes() {
+
+        List<? extends ITabFieldSize> tabFieldSizes = tabFieldSizeRepository.findAll(TabFieldSize.class);
+        List<TabFieldSize> tabFieldSizesToAdd = new ArrayList<>();
+
+
+        if (tabFieldSizes != null) {
+
+            TabFieldSize tabFieldSize;
+            if (!containTabFieldSize(tabFieldSizes, "medium")) {
+
+                tabFieldSize = new TabFieldSize();
+                tabFieldSize.setName("medium");
+                tabFieldSizesToAdd.add(tabFieldSize);
+            }
+            if (!containTabFieldSize(tabFieldSizes, "large")) {
+
+                tabFieldSize = new TabFieldSize();
+                tabFieldSize.setName("large");
+                tabFieldSizesToAdd.add(tabFieldSize);
+            }
+        }
+
+        tabFieldSizeRepository.createAll(tabFieldSizesToAdd);
+    }
+
     private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries, String countryName) {
         for (IMissionCountry mc : missionCountries) {
             if (mc.getName().toLowerCase().equals(countryName.toLowerCase())) {
@@ -1050,45 +1105,22 @@ public class DatabaseSeeder {
         return false;
     }
 
-    /**
-     * Seed initial tab field values
-     */
-    private void seedTabFieldTypesAndSizes() {
-        int sizeCount = tabFieldSizeRepository.count(TabFieldSize.class);
-        if (sizeCount == 0) {
-            List<TabFieldSize> tabFieldSizes = new ArrayList<>();
-            TabFieldSize tabFieldSize = new TabFieldSize();
-            //not using small right now
-//            tabFieldSize.setName("small");
-//            tabFieldSizes.add(tabFieldSize);
-
-            tabFieldSize = new TabFieldSize();
-            tabFieldSize.setName("medium");
-            tabFieldSizes.add(tabFieldSize);
-
-            tabFieldSize = new TabFieldSize();
-            tabFieldSize.setName("large");
-            tabFieldSizes.add(tabFieldSize);
-
-            tabFieldSizeRepository.createAll(tabFieldSizes);
+    private static boolean containTabFieldType(List<? extends ITabFieldType> tabFieldTypes, String tabFieldType) {
+        for (ITabFieldType tft : tabFieldTypes) {
+            if (tft.getName().equals(tabFieldType)) {
+                return true;
+            }
         }
-        sizeCount = tabFieldTypeRepository.count(TabFieldType.class);
-        if (sizeCount == 0) {
-            List<TabFieldType> tabFieldTypes = new ArrayList<>();
+        return false;
+    }
 
-            TabFieldType tabFieldType = new TabFieldType();
-            tabFieldType.setName("text");
-            tabFieldType.setId(1);
-            tabFieldTypes.add(tabFieldType);
-
-            tabFieldType = new TabFieldType();
-            tabFieldType.setName("number");
-            tabFieldType.setId(2);
-            tabFieldTypes.add(tabFieldType);
-
-            tabFieldTypeRepository.createAll(tabFieldTypes);
+    private static boolean containTabFieldSize(List<? extends ITabFieldSize> tabFieldSizes, String tabFieldSize) {
+        for (ITabFieldSize tfs : tabFieldSizes) {
+            if (tfs.getName().equals(tabFieldSize)) {
+                return true;
+            }
         }
-
+        return false;
     }
 
     /**

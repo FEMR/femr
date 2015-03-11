@@ -775,10 +775,10 @@ public class DatabaseSeeder {
                 tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
                 tabFieldsToAdd.add(tabField);
             }
-            if (!containTabField(tabFields, "quality")) {
+            if (!containTabField(tabFields, "provokes")) {
 
                 tabField = new TabField();
-                tabField.setName("quality");
+                tabField.setName("provokes");
                 tabField.setIsDeleted(false);
                 tabField.setTab(Ebean.getReference(Tab.class, 1));
                 tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));

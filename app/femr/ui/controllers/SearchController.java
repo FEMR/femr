@@ -44,7 +44,7 @@ public class SearchController extends Controller {
 
         String patientSearchQuery = request().getQueryString("patientSearchQuery");
 
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(patientSearchQuery);
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(patientSearchQuery);
         if (patientResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -88,7 +88,7 @@ public class SearchController extends Controller {
      */
     public Result doesPatientExist(String query){
 
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(query);
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
         if (patientResponse.hasErrors() || patientResponse.getResponseObject().size() == 0) {
             return ok("false");
         }
@@ -97,7 +97,7 @@ public class SearchController extends Controller {
 
     public Result typeaheadPatientsJSONGet(){
 
-        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.findPatientsForSearch();
+        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch();
 
         if (patientItemsServiceResponse.hasErrors()){
             return ok("");

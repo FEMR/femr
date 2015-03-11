@@ -65,7 +65,7 @@ public class TriageController extends Controller {
         PatientItem patientItem = new PatientItem();
 
         //get settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -100,14 +100,14 @@ public class TriageController extends Controller {
         }
 
         //get the patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         PatientItem patient = patientItemServiceResponse.getResponseObject();
 
         //get the settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

@@ -26,10 +26,12 @@ import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
+import org.h2.expression.ExpressionList;
 import play.Play;
 
 import java.util.ArrayList;
 import java.util.List;
+
 //TODO: stop assigning primary keys
 public class DatabaseSeeder {
 
@@ -731,8 +733,48 @@ public class DatabaseSeeder {
         }
     }
 
+    /**
+     * Uses references to HPI, PMH, and Treatment Tabs
+     * Uses references to both number and text TabFieldTypes
+     */
     private void seedDefaultTabFields() {
         List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
+
+        //get the id references for tabs
+        List<? extends ITab> tabs = tabRepository.findAll(Tab.class);
+        int hpiId = -1;
+        int pmhId = -1;
+        int treatmentId = -1;
+        for (ITab t : tabs) {
+            switch (t.getName()) {
+                case "HPI":
+                    hpiId = t.getId();
+                    break;
+                case "PMH":
+                    pmhId = t.getId();
+                    break;
+                case "Treatment":
+                    treatmentId = t.getId();
+                    break;
+            }
+        }
+
+
+        //get the id references for tab field types
+        List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
+        int numberId = -1;
+        int textId = -1;
+        for (ITabFieldType tft : tabFieldTypes) {
+            switch (tft.getName()) {
+                case "number":
+                    numberId = tft.getId();
+                    break;
+                case "text":
+                    textId = tft.getId();
+                    break;
+            }
+        }
+
 
         List<TabField> tabFieldsToAdd = new ArrayList<>();
 
@@ -744,8 +786,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("onset");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "severity")) {
@@ -753,8 +795,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("severity");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 2));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, numberId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "radiation")) {
@@ -762,8 +804,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("radiation");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "quality")) {
@@ -771,8 +813,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("quality");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "provokes")) {
@@ -780,8 +822,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("provokes");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "palliates")) {
@@ -789,8 +831,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("palliates");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "timeOfDay")) {
@@ -798,8 +840,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("timeOfDay");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "physicalExamination")) {
@@ -807,8 +849,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("physicalExamination");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "narrative")) {
@@ -816,8 +858,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("narrative");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 1));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, hpiId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "assessment")) {
@@ -825,8 +867,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("assessment");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 3));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, treatmentId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "problem")) {
@@ -834,8 +876,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("problem");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 3));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, treatmentId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "treatment")) {
@@ -843,8 +885,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("treatment");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 3));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, treatmentId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "medicalSurgicalHistory")) {
@@ -852,8 +894,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("medicalSurgicalHistory");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 2));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, pmhId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "socialHistory")) {
@@ -861,8 +903,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("socialHistory");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 2));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, pmhId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "currentMedication")) {
@@ -870,8 +912,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("currentMedication");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 2));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, pmhId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
             if (!containTabField(tabFields, "familyHistory")) {
@@ -879,8 +921,8 @@ public class DatabaseSeeder {
                 tabField = new TabField();
                 tabField.setName("familyHistory");
                 tabField.setIsDeleted(false);
-                tabField.setTab(Ebean.getReference(Tab.class, 2));
-                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, 1));
+                tabField.setTab(Ebean.getReference(Tab.class, pmhId));
+                tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
         }
@@ -900,7 +942,6 @@ public class DatabaseSeeder {
 
                 tab = new Tab();
                 tab.setName("HPI");
-                tab.setId(1);
                 tab.setIsDeleted(false);
                 tab.setDateCreated(dateUtils.getCurrentDateTime());
                 tab.setUserId(null);
@@ -913,7 +954,6 @@ public class DatabaseSeeder {
 
                 tab = new Tab();
                 tab.setName("PMH");
-                tab.setId(2);
                 tab.setIsDeleted(false);
                 tab.setDateCreated(dateUtils.getCurrentDateTime());
                 tab.setUserId(null);
@@ -926,7 +966,6 @@ public class DatabaseSeeder {
 
                 tab = new Tab();
                 tab.setName("Treatment");
-                tab.setId(3);
                 tab.setIsDeleted(false);
                 tab.setDateCreated(dateUtils.getCurrentDateTime());
                 tab.setUserId(null);
@@ -939,7 +978,6 @@ public class DatabaseSeeder {
 
                 tab = new Tab();
                 tab.setName("Photos");
-                tab.setId(4);
                 tab.setIsDeleted(false);
                 tab.setDateCreated(dateUtils.getCurrentDateTime());
                 tab.setUserId(null);
@@ -958,21 +996,19 @@ public class DatabaseSeeder {
         List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
         List<TabFieldType> tabFieldTypesToAdd = new ArrayList<>();
 
-        if (tabFieldTypes != null){
+        if (tabFieldTypes != null) {
 
             TabFieldType tabFieldType;
-            if (!containTabFieldType(tabFieldTypes, "text")){
+            if (!containTabFieldType(tabFieldTypes, "text")) {
 
                 tabFieldType = new TabFieldType();
                 tabFieldType.setName("text");
-                tabFieldType.setId(1);
                 tabFieldTypesToAdd.add(tabFieldType);
             }
-            if (!containTabFieldType(tabFieldTypes, "number")){
+            if (!containTabFieldType(tabFieldTypes, "number")) {
 
                 tabFieldType = new TabFieldType();
                 tabFieldType.setName("number");
-                tabFieldType.setId(2);
                 tabFieldTypesToAdd.add(tabFieldType);
             }
 

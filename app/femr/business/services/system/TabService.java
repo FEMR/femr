@@ -108,7 +108,7 @@ public class TabService implements ITabService {
     @Override
     public ServiceResponse<TabItem> createTab(TabItem newTab, int userId) {
         ServiceResponse<TabItem> response = new ServiceResponse<>();
-        if (newTab == null || StringUtils.isNullOrWhiteSpace(newTab.getName()) || userId < 1) {
+        if (newTab == null || StringUtils.isNullOrWhiteSpace(newTab.getName())) {
             response.addError("", "bad parameters, wtf are you doing?");
             return response;
         }
@@ -144,7 +144,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabItem>> getCustomTabs(Boolean isDeleted) {
+    public ServiceResponse<List<TabItem>> retrieveCustomTabs(boolean isDeleted) {
         ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
 
         ExpressionList<Tab> query = QueryProvider.getTabQuery()
@@ -172,7 +172,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabFieldItem>> getTabFieldsByTabName(String tabName, Boolean isDeleted) {
+    public ServiceResponse<List<TabFieldItem>> retrieveTabFieldsByTabName(String tabName, boolean isDeleted) {
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
         if (StringUtils.isNullOrWhiteSpace(tabName)) {
             response.addError("", "bad parameters, wtf are you doing?");
@@ -261,7 +261,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TabItem> editTab(TabItem tabItem, int userId) {
+    public ServiceResponse<TabItem> updateTab(TabItem tabItem, int userId) {
         ServiceResponse<TabItem> response = new ServiceResponse<>();
         if (tabItem == null || StringUtils.isNullOrWhiteSpace(tabItem.getName()) || userId < 1) {
             response.addError("", "bad parameters, wtf are you doing?");
@@ -291,7 +291,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TabFieldItem> editTabField(TabFieldItem tabFieldItem) {
+    public ServiceResponse<TabFieldItem> updateTabField(TabFieldItem tabFieldItem) {
         ServiceResponse<TabFieldItem> response = new ServiceResponse<>();
         if (tabFieldItem == null || tabFieldItem.getName() == null) {
             response.addError("", "bad parameters, wtf are you doing?");
@@ -434,7 +434,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> getTypes() {
+    public ServiceResponse<List<String>> retrieveTypes() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         List<String> fields = new ArrayList<>();
 
@@ -455,7 +455,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> getSizes() {
+    public ServiceResponse<List<String>> retrieveSizes() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         List<String> fields = new ArrayList<>();
 
@@ -521,7 +521,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId) {
+    public ServiceResponse<TabFieldMultiMap> retrieveTabFieldMultiMap(int encounterId) {
 
         ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
         TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId, null);
@@ -536,7 +536,7 @@ public class TabService implements ITabService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted) {
+    public ServiceResponse<List<TabItem>> retrieveAvailableTabs(boolean isDeleted) {
 
         ServiceResponse<List<TabItem>> response = new ServiceResponse<>();
         List<TabItem> tabItems = new ArrayList<>();

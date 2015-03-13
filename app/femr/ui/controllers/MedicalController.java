@@ -158,13 +158,13 @@ public class MedicalController extends Controller {
         }
 
         //get all fields and their values
-        ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.findTabFieldMultiMap(patientEncounter.getId());
+        ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.retrieveTabFieldMultiMap(patientEncounter.getId());
         if (tabFieldMultiMapResponse.hasErrors()) {
 
             throw new RuntimeException();
         }
         TabFieldMultiMap tabFieldMultiMap = tabFieldMultiMapResponse.getResponseObject();
-        ServiceResponse<List<TabItem>> tabItemServiceResponse = tabService.findAvailableTabs(false);
+        ServiceResponse<List<TabItem>> tabItemServiceResponse = tabService.retrieveAvailableTabs(false);
         if (tabItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();

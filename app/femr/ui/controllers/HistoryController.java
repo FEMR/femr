@@ -130,7 +130,7 @@ public class HistoryController extends Controller {
         }
         indexEncounterMedicalViewModel.setPhotos(photoListResponse.getResponseObject());
 
-        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.findTabFieldMultiMap(encounterId);
+        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(encounterId);
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         }

@@ -45,7 +45,7 @@ public class PharmaciesController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUserSession, null, 0));
     }
 
@@ -55,7 +55,7 @@ public class PharmaciesController extends Controller {
      * @return redirect to editGet
      */
     public Result indexPost() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
@@ -89,7 +89,7 @@ public class PharmaciesController extends Controller {
     }
 
     public Result editGet(int patientId) {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
         String message;
@@ -140,7 +140,7 @@ public class PharmaciesController extends Controller {
     }
 
     public Result editPost(int id) {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         EditViewModelPost createViewModelPost = populatedViewModelPostForm.bindFromRequest().get();
 
         //get patient encounter

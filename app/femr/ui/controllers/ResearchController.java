@@ -128,13 +128,13 @@ public class ResearchController extends Controller {
         today.add(Calendar.DAY_OF_MONTH, -120);
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUserSession, filterViewModel));
     }
 
     public Result generateData() {
         FilterViewModel viewModel = FilterViewModelForm.bindFromRequest().get();
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         return ok(generatedata.render(currentUserSession, viewModel));
     }
 

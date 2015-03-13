@@ -117,7 +117,7 @@
 //
 //    @Test
 //    public void testGetSessionReturnsNullIfNoSessionKeyFound() {
-//        CurrentUser currentUser = sessionService.getCurrentUserSession();
+//        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 //        assertThat(currentUser).isNull();
 //        assertThat(mockUserService.findByIdWasCalled).isFalse();
 //    }
@@ -125,7 +125,7 @@
 //    @Test
 //    public void testGetSessionReturnsNullOnFailedCast() {
 //        mockSessionHelper.session.put("currentUser", "hello");
-//        CurrentUser currentUser = sessionService.getCurrentUserSession();
+//        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 //        assertThat(currentUser).isNull();
 //        assertThat(mockUserService.findByIdWasCalled).isFalse();
 //    }
@@ -145,7 +145,7 @@
 //        expectedUser.email = "my@whitehouse.com";
 //        mockUserService.findByIdReturnObject = expectedUser;
 //
-//        CurrentUser currentUser = sessionService.getCurrentUserSession();
+//        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 //
 //        assertThat(mockSessionHelper.sessionKeyPassedIn).isEqualTo(expectedSessionKey);
 //        assertThat(mockUserService.findByIdWasCalled).isTrue();

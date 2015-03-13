@@ -58,7 +58,7 @@ public class UsersController extends Controller {
 
     //Manage all users
     public Result manageGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<List<UserItem>> userServiceResponse = userService.findAllUsers();
         if (userServiceResponse.hasErrors()) {
@@ -73,7 +73,7 @@ public class UsersController extends Controller {
 
     //Create a new User
     public Result createGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
@@ -85,7 +85,7 @@ public class UsersController extends Controller {
 
     //Create a new User
     public Result createPost() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         Form<CreateViewModel> form = createViewModelForm.bindFromRequest();
         ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
@@ -119,7 +119,7 @@ public class UsersController extends Controller {
         if (id == null){
             return internalServerError();
         }
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         EditViewModel editUserViewModel = new EditViewModel();
 
         ServiceResponse<UserItem> userItemServiceResponse = userService.findUser(id);
@@ -151,7 +151,7 @@ public class UsersController extends Controller {
         if (id == null){
             return internalServerError();
         }
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         Form<EditViewModel> form = editViewModelForm.bindFromRequest();
 
         ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();

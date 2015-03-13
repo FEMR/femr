@@ -58,13 +58,13 @@ public class MedicalController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         return ok(index.render(currentUserSession, null, 0));
     }
 
     public Result indexPost() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
@@ -106,7 +106,7 @@ public class MedicalController extends Controller {
 
     public Result editGet(int patientId) {
 
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
 
@@ -208,7 +208,7 @@ public class MedicalController extends Controller {
     }
 
     public Result editPost(int patientId) {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
@@ -300,7 +300,7 @@ public class MedicalController extends Controller {
     }
 
     public Result updateVitalsPost(int id) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(id);
         if (currentEncounterByPatientId.hasErrors()) {

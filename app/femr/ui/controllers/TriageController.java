@@ -52,7 +52,7 @@ public class TriageController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
@@ -91,7 +91,7 @@ public class TriageController extends Controller {
     and wants to create a new encounter
      */
     public Result indexPopulatedGet(int patientId) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve vitals names for dynamic html element naming
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
@@ -133,7 +133,7 @@ public class TriageController extends Controller {
     */
     public Result indexPost(int id) {
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //create a new patient
         //or get current patient for new encounter

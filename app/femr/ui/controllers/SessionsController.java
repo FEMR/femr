@@ -26,7 +26,7 @@ public class SessionsController extends Controller {
     }
 
     public Result createGet() {
-        CurrentUser currentUser = sessionsService.getCurrentUserSession();
+        CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
 
         if (currentUser != null) {
             return redirect(routes.HomeController.index());
@@ -64,7 +64,7 @@ public class SessionsController extends Controller {
 
     public Result editPasswordPost(){
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        CurrentUser currentUser = sessionsService.getCurrentUserSession();
+        CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
         IUser user = userService.findById(currentUser.getId());
         Boolean isNewPassword = false;
 

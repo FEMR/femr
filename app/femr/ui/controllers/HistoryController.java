@@ -54,7 +54,7 @@ public class HistoryController extends Controller {
     }
 
     public Result indexPatientGet(String query) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         boolean error = false;
 
 
@@ -96,7 +96,7 @@ public class HistoryController extends Controller {
     }
 
     public Result indexEncounterGet(int encounterId) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         IndexEncounterViewModel indexEncounterViewModel = new IndexEncounterViewModel();
         IndexEncounterMedicalViewModel indexEncounterMedicalViewModel = new IndexEncounterMedicalViewModel();

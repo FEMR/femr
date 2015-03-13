@@ -13,7 +13,7 @@ public class MockSessionsService implements ISessionService {
     }
 
     @Override
-    public CurrentUser getCurrentUserSession() {
+    public CurrentUser retrieveCurrentUserSession() {
         return null;
     }
 

@@ -47,6 +47,9 @@ public class SessionService implements ISessionService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<CurrentUser> createSession(String email, String password) {
         IUser userWithEmail = userService.findByEmail(email);
@@ -66,13 +69,16 @@ public class SessionService implements ISessionService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CurrentUser getCurrentUserSession() {
+    public CurrentUser retrieveCurrentUserSession() {
         int currentUserId = sessionHelper.getInt("currentUser");
 
         if (currentUserId > 0) {
             IUser userFoundById = userService.findById(currentUserId);
-            if (userFoundById == null){
+            if (userFoundById == null) {
                 return null;
             }
 
@@ -82,6 +88,9 @@ public class SessionService implements ISessionService {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void invalidateCurrentUserSession() {
         sessionHelper.delete("currentUser");

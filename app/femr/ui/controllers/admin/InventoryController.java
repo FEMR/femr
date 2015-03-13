@@ -56,7 +56,7 @@ public class InventoryController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         InventoryViewModelGet viewModel = new InventoryViewModelGet();
         ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventory();

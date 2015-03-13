@@ -62,12 +62,12 @@ public class SuperuserController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUser));
     }
 
     public Result tripsGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
         if (missionItemServiceResponse.hasErrors())
@@ -97,7 +97,7 @@ public class SuperuserController extends Controller {
 
     public Result toggleCurrentTripPost(int tripId) {
 
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<TripItem> tripItemUpdateServiceResponse = missionTripService.updateCurrentTrip(tripId);
         if (tripItemUpdateServiceResponse.hasErrors()) {
@@ -109,7 +109,7 @@ public class SuperuserController extends Controller {
 
     public Result tripsPost() {
 
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
 
         //creating a new team or trip or city-
@@ -158,7 +158,7 @@ public class SuperuserController extends Controller {
     }
 
     public Result tabsGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ServiceResponse<List<TabItem>> response;
 
         response = tabService.getCustomTabs(false);
@@ -180,7 +180,7 @@ public class SuperuserController extends Controller {
     }
 
     public Result tabsPost() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TabsViewModelPost viewModelPost = TabsViewModelForm.bindFromRequest().get();
 
         //becomes new or edit
@@ -222,7 +222,7 @@ public class SuperuserController extends Controller {
 
     //name = tab name
     public Result contentGet(String name) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ContentViewModelGet viewModelGet = new ContentViewModelGet();
 
         viewModelGet.setName(name);
@@ -260,7 +260,7 @@ public class SuperuserController extends Controller {
 
     //name = tab name
     public Result contentPost(String name) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ContentViewModelPost viewModelPost = ContentViewModelForm.bindFromRequest().get();
 
         //adding/editing a field

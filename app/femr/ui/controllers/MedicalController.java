@@ -151,7 +151,7 @@ public class MedicalController extends Controller {
         viewModelGet.setProblemItems(problemItemServiceResponse.getResponseObject());
 
         //get vitals
-        ServiceResponse<VitalMultiMap> vitalMapResponse = vitalService.findVitalMultiMap(patientEncounter.getId());
+        ServiceResponse<VitalMultiMap> vitalMapResponse = vitalService.retrieveVitalMultiMap(patientEncounter.getId());
         if (vitalMapResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -335,7 +335,7 @@ public class MedicalController extends Controller {
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = vitalService.findVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
+        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = vitalService.retrieveVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
         if (vitalMultiMapServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

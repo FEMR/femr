@@ -117,7 +117,7 @@ public class HistoryController extends Controller {
         indexEncounterViewModel.setPatientEncounterItem(patientEncounterItemServiceResponse.getResponseObject());
 
         //get vitals
-        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.findVitalMultiMap(encounterId);
+        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.retrieveVitalMultiMap(encounterId);
         if (patientEncounterVitalMapResponse.hasErrors()) {
             throw new RuntimeException();
         }

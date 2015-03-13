@@ -56,7 +56,7 @@ public class TriageController extends Controller {
 
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -94,7 +94,7 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve vitals names for dynamic html element naming
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

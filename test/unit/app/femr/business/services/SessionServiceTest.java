@@ -70,7 +70,7 @@
 //        MockUser mockUser = new MockUser();
 //        mockUserService.findByEmailReturnUser = mockUser;
 //
-//        assertThat(mockUserService.findByEmail("")).isNotNull();
+//        assertThat(mockUserService.retrieveByEmail("")).isNotNull();
 //        ServiceResponse<CurrentUser> response = sessionService.createSession("", "");
 //        assertThat(response.hasErrors()).isTrue();
 //        assertThat(response.getErrors().size()).isEqualTo(1);

@@ -42,7 +42,7 @@ public class SessionsController extends Controller {
         if (response.hasErrors()) {
             return ok(create.render(createViewModelForm));
         }else{
-            IUser user = userService.findById(response.getResponseObject().getId());
+            IUser user = userService.retrieveById(response.getResponseObject().getId());
             user.setLastLogin(dateUtils.getCurrentDateTime());
             ServiceResponse<IUser> userResponse = userService.update(user, false);
             if (userResponse.hasErrors()){
@@ -65,7 +65,7 @@ public class SessionsController extends Controller {
     public Result editPasswordPost(){
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
-        IUser user = userService.findById(currentUser.getId());
+        IUser user = userService.retrieveById(currentUser.getId());
         Boolean isNewPassword = false;
 
         if (viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())){

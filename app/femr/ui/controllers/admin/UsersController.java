@@ -60,7 +60,7 @@ public class UsersController extends Controller {
     public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<List<UserItem>> userServiceResponse = userService.findAllUsers();
+        ServiceResponse<List<UserItem>> userServiceResponse = userService.retrieveAllUsers();
         if (userServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -122,7 +122,7 @@ public class UsersController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         EditViewModel editUserViewModel = new EditViewModel();
 
-        ServiceResponse<UserItem> userItemServiceResponse = userService.findUser(id);
+        ServiceResponse<UserItem> userItemServiceResponse = userService.retrieveUser(id);
         if (userItemServiceResponse.hasErrors()) {
             return internalServerError();
         }
@@ -164,7 +164,7 @@ public class UsersController extends Controller {
             return badRequest(edit.render(currentUser, form, roleServiceResponse.getResponseObject(), new ArrayList<String>()));
         }else{
             EditViewModel viewModel = form.bindFromRequest().get();
-            ServiceResponse<UserItem> userServiceResponse = userService.findUser(id);
+            ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(id);
 
             if (userServiceResponse.hasErrors()){
                 return internalServerError();

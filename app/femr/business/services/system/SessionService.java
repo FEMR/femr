@@ -52,7 +52,7 @@ public class SessionService implements ISessionService {
      */
     @Override
     public ServiceResponse<CurrentUser> createSession(String email, String password) {
-        IUser userWithEmail = userService.findByEmail(email);
+        IUser userWithEmail = userService.retrieveByEmail(email);
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
         //user doesn't exist OR
@@ -77,7 +77,7 @@ public class SessionService implements ISessionService {
         int currentUserId = sessionHelper.getInt("currentUser");
 
         if (currentUserId > 0) {
-            IUser userFoundById = userService.findById(currentUserId);
+            IUser userFoundById = userService.retrieveById(currentUserId);
             if (userFoundById == null) {
                 return null;
             }

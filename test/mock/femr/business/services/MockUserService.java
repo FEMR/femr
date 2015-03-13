@@ -58,21 +58,21 @@ public class MockUserService implements IUserService {
     }
 
     @Override
-    public IUser findByEmail(String email) {
+    public IUser retrieveByEmail(String email) {
         findByEmailWasCalled = true;
         emailPassedIn = email;
         return findByEmailReturnUser;
     }
 
     @Override
-    public IUser findById(int id) {
+    public IUser retrieveById(int id) {
         findByIdWasCalled = true;
         idPassedIn = id;
         return findByIdReturnObject;
     }
 
     @Override
-    public ServiceResponse<UserItem> findUser(int id) {
+    public ServiceResponse<UserItem> retrieveUser(int id) {
 
         /*
         ServiceResponse<UserItem> response = new ServiceResponse<>();
@@ -94,7 +94,7 @@ public class MockUserService implements IUserService {
     }
 
     @Override
-    public ServiceResponse<List<UserItem>> findAllUsers(){
+    public ServiceResponse<List<UserItem>> retrieveAllUsers(){
 
         ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
         response.setResponseObject(null);
@@ -172,7 +172,7 @@ public class MockUserService implements IUserService {
     }
 
     @Override
-    public List<? extends IRole> findRolesForUser(int id) {
+    public List<? extends IRole> retrieveRolesForUser(int id) {
         return null;
     }
 }

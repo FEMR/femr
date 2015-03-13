@@ -26,7 +26,7 @@ public class AllowedRolesAction extends Action<AllowedRoles> {
         int[] roleIds = configuration.value();
         List<Integer> arrayListOfRoleIds = createArrayListOfRoleIds(roleIds);
 
-        List<? extends IRole> response = userService.findRolesForUser(currentUserId);
+        List<? extends IRole> response = userService.retrieveRolesForUser(currentUserId);
 
         boolean isUserInAuthorizedRoleGroup = false;
 

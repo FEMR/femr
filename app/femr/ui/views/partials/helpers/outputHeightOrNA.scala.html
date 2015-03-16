@@ -1,12 +1,23 @@
-@(feet: java.lang.Integer, inches: java.lang.Integer)
+@(feet: java.lang.Integer, inches: java.lang.Integer, isMetric: java.lang.Boolean = false)
 
 @if(feet == null && inches == null){
     N/A
-}else{
-    @if(feet != null){
-        @feet'
-    }
-    @if(inches != null){
-        @inches"
+}else {
+    @if(isMetric) {
+        @if(feet == null || inches == null) {
+            N/A
+        } else {
+            @("%.0f.%02d".format(
+                Math.floor((feet * 12 + inches) / 39.70),
+                math.round((feet * 12 + inches) * 2.54f) % 100
+            ))
+        }
+    } else {
+        @if(feet != null) {
+            @feet'
+        }
+        @if(inches != null) {
+            @inches"
+        }
     }
 }

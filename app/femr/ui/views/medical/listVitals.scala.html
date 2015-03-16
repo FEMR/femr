@@ -1,4 +1,4 @@
-@(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap)
+@(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap, viewModel: femr.ui.models.medical.EditViewModelGet)
 
 <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
 <link rel="stylesheet" href="@routes.Assets.at("css/medical/listVitals.css")">
@@ -57,9 +57,19 @@
             <th>Ht</th>
             <!--- Change metric output here --->
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                    <td>@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))
-                        ' @vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))</td>
+                <td data-feet="@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))"
+                    data-inches="@vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))">
 
+                @if(viewModel.getSettings.isMetric) {
+                    @String.format("%s.%s",
+                        vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
+                        vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1))
+                    )
+                } else {
+                    @vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))
+                        ' @vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))
+                }
+                </td>
             <!---  Alaa Serhan Must Format Output -->
 @*          @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                     <td>@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))
@@ -69,7 +79,13 @@
         <tr id="weight">
             <th>Wt</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))</td>
+                <td data-weight="@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))">
+                @if(viewModel.getSettings.isMetric) {
+                    @vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1))
+                } else {
+                    @vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))
+                }
+                </td>
             }
         </tr>
     </tbody>

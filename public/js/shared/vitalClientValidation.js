@@ -1,4 +1,5 @@
 var vitalClientValidator = function (vitalElements) {
+    var isMetric = ($("#vitalsUnits").val() == "metric");
     var isValid = true;
     //Respirations
     if ($.trim(vitalElements.respiratoryRate.val().length) > 0 && integerCheck(vitalElements.respiratoryRate.val()) == false) {
@@ -46,9 +47,10 @@ var vitalClientValidator = function (vitalElements) {
         vitalElements.heightInches.css('border-color', 'red');
         isValid = false;
     }
-    //Height - Inches less than 12
-    if ($.trim(vitalElements.heightInches.val()) >= 12) {
-        vitalElements.heightInches.attr("placeholder", "Max value: 11");
+    //Height - Inches less than 12, CM less than 100
+    var maxHeight = (isMetric) ? 100 : 12;
+    if ($.trim(vitalElements.heightInches.val()) >= maxHeight) {
+        vitalElements.heightInches.attr("placeholder", "Max value: " + (maxHeight - 1));
         vitalElements.heightInches.css('border-color', 'red');
         isValid = false;
     }

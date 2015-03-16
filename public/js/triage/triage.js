@@ -566,7 +566,8 @@ window.setInterval(function () {
 
         /* Alaa Serhan */
         if (vitalsUnits == "metric") {
-            var total_height = height_ft + "." + height_in;
+            var total_height = (height_ft * 100 + height_in) / 100;
+            //var total_height = height_ft + "." + height_in;
             $('#bmi').val(Math.round((weight_lbs / (total_height * total_height))));
         } else {
             height_in = height_in + height_ft * 12;

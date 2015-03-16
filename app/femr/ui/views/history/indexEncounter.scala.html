@@ -5,6 +5,7 @@
     @import femr.ui.views.html.partials.helpers.outputStringOrNA
     @import femr.ui.views.html.partials.helpers.outputIntOrNA
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
+    @import femr.ui.views.html.partials.helpers.outputWeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
     @import collection.JavaConversions._
 
@@ -43,8 +44,8 @@
                         <p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>
 
                             <!---  Alaa Serhan - Need to Make Changes Here -->
-                        <p><span class="infoLabel">Height:</span> @outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches)</p>
-                        <p><span class="infoLabel">Weight:</span> @outputFloatOrNA(patient.getWeight)</p>
+                        <p><span class="infoLabel">Height:</span> @outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches, viewModelMedical.getSettings.isMetric)</p>
+                        <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(patient.getWeight, viewModelMedical.getSettings.isMetric)</p>
                     </div>
                 }
                 </div>

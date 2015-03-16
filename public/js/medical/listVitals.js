@@ -6,48 +6,36 @@ $(document).ready(function () {
 
 
 function calculateBMI() {
-    var $weights = $('#weight td');
+    var $weight;
+    var weight = null
     var weight_lbs = null;
-    var $heights = $('#height td');
+    var $height;
+    var feet = null;
+    var inches = null;
     var height_in = null;
     var height_ft = null;
 
 
+    $weight = $("#weight td:last-child");
+    weight = $weight.attr("data-weight");
+    if (weight !== null && weight !== '' && typeof ( weight ) !== 'undefined') {
+        weight_lbs = parseFloat(weight);
+    }
 
-    $($weights.get().reverse()).each(function () {
-        if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
-            weight_lbs = parseInt($(this).html());
-            return false;
-        }
-    });
-    $($heights.get().reverse()).each(function () {
-        if (height_ft === null || height_ft === '' || isNaN(height_ft)) {
-            height_ft = parseInt($(this).html().split("'")[ 0 ].trim());
-        }
-        if (height_in === null || height_in === '' || isNaN(height_in)) {
-            height_in = parseInt($(this).html().split("'")[ 1 ].trim());
-        }
-    });
+    $height = $("#height td:last-child");
+    feet = $height.attr("data-feet");
+    inches = $height.attr("data-inches");
+    if (feet !== null && feet !== '' && typeof ( feet ) !== 'undefined') {
+        height_ft = parseFloat(feet);
+    }
+    if (inches !== null && inches !== '' && typeof ( inches ) !== 'undefined') {
+        height_in = parseFloat(inches);
+    }
 
-
-/*    //Metric Height - Alaa Serhan
-     var height_met = Math.round((height_ft) + "." + (height_in/100));
-
-     $($heights.get().reverse()).each(function () {
-
-     if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
-     height_met = parseInt($(this).html());
-     return false;
-     }
-
-     });*/
-
-
-    var bmi = Math.round(( weight_lbs / ( ( height_ft * 12 + height_in ) * ( height_ft * 12 + height_in ) ) ) * 703);
+    var totalInches = height_in + height_ft * 12;
 
 //    //BMI for Metric - Alaa Serhan
-//    var bmi = Math.round(( weight_lbs / ( ( height_ft + height_in ) * ( height_ft + height_in ) ) ) );
-
+    var bmi = Math.round((weight_lbs / (totalInches * totalInches)) * 703);
     if (!isFinite(bmi) || bmi === '' || bmi === null){
        $('#bmi').text("N/A");
     }else{

@@ -16,6 +16,7 @@ import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.calculations.VitalUnitConverter;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -102,7 +103,13 @@ public class HistoryController extends Controller {
         IndexEncounterMedicalViewModel indexEncounterMedicalViewModel = new IndexEncounterMedicalViewModel();
         IndexEncounterPharmacyViewModel indexEncounterPharmacyViewModel = new IndexEncounterPharmacyViewModel();
 
+
+        /* Alaa Serhan */
+        ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
+        indexEncounterMedicalViewModel.setSettings(response.getResponseObject());
+
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByEncounterId(encounterId);
+
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -121,7 +128,13 @@ public class HistoryController extends Controller {
         if (patientEncounterVitalMapResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        indexEncounterMedicalViewModel.setVitalList(patientEncounterVitalMapResponse.getResponseObject());
+
+        /* Alaa Serhan */
+        if (indexEncounterMedicalViewModel.getSettings().isMetric()) {
+            indexEncounterMedicalViewModel.setVitalList(VitalUnitConverter.toMetric(patientEncounterVitalMapResponse.getResponseObject()));
+        } else {
+            indexEncounterMedicalViewModel.setVitalList(patientEncounterVitalMapResponse.getResponseObject());
+        }
 
         //get photos
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.retrieveEncounterPhotos(encounterId);

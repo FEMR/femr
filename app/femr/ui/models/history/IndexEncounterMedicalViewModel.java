@@ -18,6 +18,7 @@
 */
 package femr.ui.models.history;
 
+import femr.common.models.*; /* Alaa Serhan */
 import femr.common.models.PhotoItem;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import java.util.List;
@@ -40,6 +41,7 @@ public class IndexEncounterMedicalViewModel {
     private Map<String, Map<String,String>> hpiFieldsWithMultipleChiefComplaints;
     private Map<String, String> hpiFieldsWithoutMultipleChiefComplaints;
 
+    private SettingItem settings; /* Alaa Serhan */
 
 
     public List<PhotoItem> getPhotos() {
@@ -116,5 +118,13 @@ public class IndexEncounterMedicalViewModel {
 
     public void setHpiFieldsWithoutMultipleChiefComplaints(Map<String, String> hpiFieldsWithoutMultipleChiefComplaints) {
         this.hpiFieldsWithoutMultipleChiefComplaints = hpiFieldsWithoutMultipleChiefComplaints;
+    }
+
+    /* Alaa Serhan */
+    public SettingItem getSettings() {
+        return settings;
+    }
+    public void setSettings(SettingItem settings) {
+        this.settings = settings;
     }
 }

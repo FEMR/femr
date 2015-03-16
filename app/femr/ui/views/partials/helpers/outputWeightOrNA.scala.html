@@ -1,0 +1,12 @@
+@(number: java.lang.Float, isMetric: java.lang.Boolean)
+
+
+@if(number == null){
+    N/A
+}else{
+    @if(isMetric) {
+        @("%.2f".format(number / 2.2046))
+    } else {
+        @number
+    }
+}

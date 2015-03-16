@@ -15,6 +15,7 @@ import femr.common.models.PatientItem;
 import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
+import femr.util.calculations.VitalUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
@@ -209,20 +210,24 @@ public class TriageController extends Controller {
         }
 
         //Alaa Serhan
-        if (viewModel.getHeightFeet() != null){
-
+        if (viewModel.getHeightFeet() != null && viewModel.getHeightInches() != null) {
             Float heightFeet = viewModel.getHeightFeet().floatValue();
+            Float heightInches = viewModel.getHeightInches().floatValue();
 
-            if (settings.isMetric()){
+            if(settings.isMetric() ){
+                Float heightMetres = heightFeet;
+                Float heightCentimetres = heightInches;
 
-                //Value Entered in Meters - Will be Converted Back in Feet
-                heightFeet = heightFeet * 3.2808f;
+                heightFeet = VitalUnitConverter.getFeet(heightMetres, heightCentimetres);
+                heightInches = VitalUnitConverter.getInches(heightMetres, heightCentimetres);
+                // heightFeet = heightFeet * 3.2808f;
             }
             newVitals.put("heightFeet", heightFeet);
+            newVitals.put("heightInches", heightInches);
         }
 
         //Alaa Serhan
-        if (viewModel.getHeightInches() != null) {
+        /*if (viewModel.getHeightInches() != null) {
 
             Float heightInches = viewModel.getHeightInches().floatValue();
 
@@ -232,7 +237,7 @@ public class TriageController extends Controller {
                 heightInches = heightInches * (0.39370f);
             }
             newVitals.put("heightInches", heightInches);
-        }
+        }*/
 
         //Alaa Serhan
         if (viewModel.getWeight() != null) {
@@ -240,9 +245,9 @@ public class TriageController extends Controller {
             Float weight = viewModel.getWeight();
 
             if (settings.isMetric()){
-
                 //Value Entered in Kilograms - Will be Converted back in Pounds
-                weight = weight * (2.204f);
+                //weight = weight * (2.204f);
+                weight = VitalUnitConverter.getLbs(weight);
             }
             newVitals.put("weight", weight);
         }

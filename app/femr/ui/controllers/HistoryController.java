@@ -18,6 +18,7 @@ import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.ui.views.html.history.editEncounterGet;
 import femr.ui.views.html.history.editEncounterPost;
+import femr.ui.views.html.history.listTabFieldHistory;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
@@ -341,38 +342,53 @@ public class HistoryController extends Controller {
     public Result updateFieldPost(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
-        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.findRecentPatientEncounterItemByPatientId(id);
-        if (currentEncounterByPatientId.hasErrors()) {
+        ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.findPatientEncounterItemByEncounterId(id);
+        if (patientEncounterByEncounterId.hasErrors()) {
             throw new RuntimeException();
         }
+
+        PatientEncounterItem patientEncounter = patientEncounterByEncounterId.getResponseObject();
+
         //update date_of_medical_visit when a vital is updated
-        encounterService.checkPatientInToMedical(currentEncounterByPatientId.getResponseObject().getId(), currentUser.getId());
+        encounterService.checkPatientInToMedical(patientEncounter.getId(), currentUser.getId());
 
-        PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
+        /* Populate model with request data */
+        fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 
-        fieldValueViewModel fieldValueViewModel = fieldValueViewModelForm.bindFromRequest().get();
+        /* Create a list of submitted tab fields */
+        List<TabFieldItem> items = new ArrayList<TabFieldItem>();
+        items.add(createTabFieldItem(fields.getFieldName(), fields.getFieldValue()));
 
-      //  Map<String,Integer> patientEncounterAssessments = getPatientAssessments(fieldValueViewModel);
-      //ServiceResponse<List<AssessmentItem>> patientEncounterAssessmentsServiceResponse =
-            //    assessmentService.updatePatientEncounterTabFields(currentUser.getId(),patientEncounter.getId());
-      //  if (patientEncounterAssessmentsServiceResponse.hasErrors()) {
-        //    throw new RuntimeException();
-       //}
+        /* Create encounter tab fields */
+        ServiceResponse<List<TabFieldItem>> patientEncounterTabFieldsServiceResponse =
+               encounterService.createPatientEncounterTabFields(items, patientEncounter.getId(),currentUser.getId());
+
+        if (patientEncounterTabFieldsServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
 
         return ok("true");
     }
 
-    private Map< String,Integer> getPatientAssessments(fieldValueViewModel viewModel) {
-        Map<String,Integer> newAssessments = new HashMap<>();
-        if (viewModel.getFieldName() != null) {
-            newAssessments.put("fieldName", viewModel.getFieldName());
+    public Result listTabFieldHistoryGet(int encounterID) {
+
+        /* Retrieve patient encounter */
+        ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.findPatientEncounterItemByEncounterId(encounterID);
+        if (patientEncounterByEncounterId.hasErrors()) {
+            throw new RuntimeException();
         }
-        if (viewModel.getFieldValue() != null) {
-            newAssessments.put("fieldValue", viewModel.getFieldValue());
+        PatientEncounterItem patientEncounter = patientEncounterByEncounterId.getResponseObject();
+
+        /* Populate model with request data */
+        fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
+
+        ServiceResponse<TabFieldMultiMap> tabFieldsReponseObject =
+                tabService.findTabFieldMultiMap(patientEncounter.getId(), fields.getFieldName());
+        if (tabFieldsReponseObject.hasErrors()) {
+            throw new RuntimeException();
         }
 
-
-        return newAssessments;
+        return ok(listTabFieldHistory.render(fields.getFieldName(), tabFieldsReponseObject.getResponseObject()));
     }
 
 }

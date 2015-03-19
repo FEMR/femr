@@ -19,8 +19,8 @@ function calculateBMI() {
 
     $($weights.get().reverse()).each(function () {
         if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
-            weight_lbs = xarseInt($(this).html());
 
+            weight_lbs = parseInt($(this).html());
             return false;
         }
     });

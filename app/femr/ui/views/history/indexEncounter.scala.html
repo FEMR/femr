@@ -12,9 +12,12 @@
 
 
     @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-2.0.3.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
     }
     @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
         <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
     }
 
@@ -40,6 +43,7 @@
                 <p>Basic Information and Vitals</p>
             </div>
             <div class="encounterViewBody">
+                <input type="hidden" id="patientEncounterId" value="@viewModel.getPatientEncounterItem.getId" />
                 <div class="encounterViewBodyLeft">
                 @defining(viewModel.getPatientItem) { patient =>
                     <div class="encounterViewBodyLeftHalf">
@@ -142,21 +146,21 @@
                     @*Pmh and treatment tab fields are listed here*@
                     @defining(viewModelMedical.getPmhFields) { pmhFieldMap =>
                         <p><a class="infoLabel"> Medical/Surgical History:</a>
-                            <span class="value"> @outputStringOrNA(pmhFieldMap.get("medicalSurgicalHistory"))</span> </p>
+                            <span class="value" data-id="medicalSurgicalHistory"> @outputStringOrNA(pmhFieldMap.get("medicalSurgicalHistory"))</span> </p>
                         <p><a class="infoLabel"> Social History:</a>
-                            <span class="value"> @outputStringOrNA(pmhFieldMap.get("socialHistory"))</span></p>
+                            <span class="value" data-id="socialHistory"> @outputStringOrNA(pmhFieldMap.get("socialHistory"))</span></p>
                         <p><a class="infoLabel">Current Medications:</a>
-                            <span class="value"> @outputStringOrNA(pmhFieldMap.get("currentMedications"))</span></p>
+                            <span class="value" data-id="currentMedications"> @outputStringOrNA(pmhFieldMap.get("currentMedications"))</span></p>
 
                         <p><a class="infoLabel"> Family History: </a>
-                            <span class="infoLabel"> @outputStringOrNA(pmhFieldMap.get("familyHistory"))</span></p>
+                            <span class="infoLabel" data-id="familyHistory"> @outputStringOrNA(pmhFieldMap.get("familyHistory"))</span></p>
                     }
                     @defining(viewModelMedical.getTreatmentFields) { treatmentFieldMap =>
                         <p><a  class="infoLabel"> Assessment: </a>
-                            <span class="value"> @outputStringOrNA(treatmentFieldMap.get("assessment"))</span></p>
+                            <span class="value" data-id="assessment"> @outputStringOrNA(treatmentFieldMap.get("assessment"))</span></p>
 
                         <p><a class="infoLabel">Treatment:</a>
-                            <span class="value"> @outputStringOrNA(treatmentFieldMap.get("treatment"))</span></p>
+                            <span class="value" data-id="treatment"> @outputStringOrNA(treatmentFieldMap.get("treatment"))</span></p>
                     }
                     @for(problemIterator <- 1 to viewModelPharmacy.getProblems.size){
                         <p><a class="infoLabel">Diagnosis:</a>
@@ -173,26 +177,26 @@
                     @for((key, value) <- viewModelMedical.getHpiFieldsWithMultipleChiefComplaints) {
                         <h4>Chief Complaint: @key</h4>
                         <p> <a class="infoLabel">Onset:</a>
-                            <span id="onset" class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))</span></p>
+                            <span id="onset" class="value" data-id="onset">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))</span></p>
 
                         <p> <a class="infoLabel"> Quality: </a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))</span></p>
+                            <span class="value" data-id="quality">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))</span></p>
                         <p> <a class="infoLabel">Radiation:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))</span></p>
+                            <span class="value" data-id="radiation">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))</span></p>
                         <p> <a class="infoLabel">Severity:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))</span></p>
+                            <span class="value" data-id="severity">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))</span></p>
                         <p> <a class="infoLabel">Provokes:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))</span></p>
+                            <span class="value" data-id="provokes">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))</span></p>
                         <p> <a class="infoLabel">Palliates:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))</span></p>
+                            <span class="value" data-id="palliates">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))</span></p>
 
                         <p> <a class="infoLabel">Narrative:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))</span></p>
+                            <span class="value" data-id="narrative">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))</span></p>
                         <p> <a class="infoLabel">Time Of Day:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))</span></p>
+                            <span class="value" data-id="timeOfDay">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))</span></p>
 
                         <p> <a class="infoLabel">Physical Examination:</a>
-                            <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))</span></p>
+                            <span class="value" data-id="physicalExamination">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))</span></p>
 
 
                         <br>
@@ -200,29 +204,29 @@
                 } else {
                     @if(viewModel.getPatientEncounterItem.getChiefComplaints != null && viewModel.getPatientEncounterItem.getChiefComplaints.size > 0){<h4>Chief Complaint: @viewModel.getPatientEncounterItem.getChiefComplaints.get(0) </h4>}
                     <p> <a class= "infoLabel">Onset:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))</span></p>
+                        <span class="value" data-id="onset">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))</span></p>
                     <p> <a class= "infoLabel">Quality:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))</span></p>
+                        <span class="value" data-id="quality">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))</span></p>
 
                     <p> <a class= "infoLabel">Radiation:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))</span></p>
+                        <span class="value" data-id="radiation">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))</span></p>
 
                     <p> <a class= "infoLabel">Severity:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))</span></p>
+                        <span class="value" data-id="severity">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))</span></p>
 
                     <p> <a class= "infoLabel">Provokes:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))</span></p>
+                        <span class="value" data-id="provokes">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))</span></p>
 
                     <p> <a class= "infoLabel">Palliates:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))</span></p>
+                        <span class="value" data-id="palliates">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))</span></p>
 
                     <p> <a class= "infoLabel">Time Of Day:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))</span></p>
+                        <span class="value" data-id="timeOfDay">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))</span></p>
                     <p> <a class= "infoLabel">Narrative:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))</span></p>
+                        <span class="value" data-id="narrative">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))</span></p>
 
                     <p> <a class= "infoLabel">Physical Examination:</a>
-                        <span class="value">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))</span></p>
+                        <span class="value" data-id="physicalExamination">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))</span></p>
 
 
 
@@ -266,6 +270,11 @@
 
                 <button type="button" id="saveEncounterBtn" class="fButton">Save</button>
                 <button type="button" id="cancelEncounterBtn" class="fButton">Cancel</button>
+
+                <div>
+                    <table id="tabFieldHistory" cellspacing="0">
+                    </table>
+                </div>
             </div>
 
         </div>

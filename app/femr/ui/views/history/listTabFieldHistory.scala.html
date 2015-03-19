@@ -1,0 +1,18 @@
+@(tabFieldName:java.lang.String, tabFieldMap:femr.util.DataStructure.Mapping.TabFieldMultiMap)
+
+
+
+<tbody>
+    <tr class="first">
+        <th></th>
+        @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
+            <td>@tabFieldMap.getFormatedDateTime(dateIndex - 1)</td>
+        }
+    </tr>
+    <tr>
+        <th>VAL</th>
+        @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
+            <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getValue</td>
+        }
+    </tr>
+</tbody>

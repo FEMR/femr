@@ -532,6 +532,17 @@ public class TabService implements ITabService {
         return response;
     }
 
+    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName) {
+        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
+        TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId, tabName);
+        if (tabFieldMultiMap != null)
+            response.setResponseObject(tabFieldMultiMap);
+        else
+            response.addError("", "there was an issue building the multi map");
+        return response;
+    }
+
+
     /**
      * {@inheritDoc}
      */
@@ -590,10 +601,10 @@ public class TabService implements ITabService {
 
             //get all tab fields that have value which belong to a tab
             patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .fetch("tabField")
-                    .fetch("tabField.tab")
+                    //.fetch("tabField")
+                    //.fetch("tabField.tab")
                     .where()
-                    .eq("tabField.tab.name", tabName)
+                    .eq("tabField.name", tabName)
                     .eq("patient_encounter_id", encounterId)
                     .order()
                     .desc("date_taken");

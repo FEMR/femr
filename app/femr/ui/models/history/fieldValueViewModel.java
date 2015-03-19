@@ -7,22 +7,22 @@ import femr.common.models.PatientItem;
  * Created by amneyiskandar on 3/2/15.
  */
 public class fieldValueViewModel {
-    private Integer id;
-    private Integer value;
+    private String name;
+    private String value;
 
-    public Integer getFieldName() {
-        return id;
+    public String getFieldName() {
+        return name;
     }
 
-    public void setFieldName(Integer id) {
-        this.id = id;
+    public void setFieldName(String name) {
+        this.name = name;
     }
 
-    public Integer  getFieldValue() {
+    public String  getFieldValue() {
         return value;
     }
 
-    public void setFieldValue(Integer value) {
+    public void setFieldValue(String value) {
         this.value = value;
     }
 }

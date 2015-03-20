@@ -62,26 +62,26 @@ public class SuperuserController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUser));
     }
 
     public Result tripsGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.findAllTripInformation();
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
         if (missionItemServiceResponse.hasErrors())
             throw new RuntimeException();
 
-        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.findAvailableTeams();
+        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.retrieveAvailableTeams();
         if (availableTeamsServiceResponse.hasErrors())
             throw new RuntimeException();
 
-        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.findAvailableCities();
+        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
         if (availableCitiesServiceResponse.hasErrors())
             throw new RuntimeException();
 
-        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.findAvailableCountries();
+        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.retrieveAvailableCountries();
         if (availableCountriesServiceResponse.hasErrors())
             throw new RuntimeException();
 
@@ -97,7 +97,7 @@ public class SuperuserController extends Controller {
 
     public Result toggleCurrentTripPost(int tripId) {
 
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<TripItem> tripItemUpdateServiceResponse = missionTripService.updateCurrentTrip(tripId);
         if (tripItemUpdateServiceResponse.hasErrors()) {
@@ -109,7 +109,7 @@ public class SuperuserController extends Controller {
 
     public Result tripsPost() {
 
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
 
         //creating a new team or trip or city-
@@ -158,10 +158,10 @@ public class SuperuserController extends Controller {
     }
 
     public Result tabsGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ServiceResponse<List<TabItem>> response;
 
-        response = tabService.getCustomTabs(false);
+        response = tabService.retrieveCustomTabs(false);
         if (response.hasErrors()) {
             throw new RuntimeException();
         }
@@ -170,7 +170,7 @@ public class SuperuserController extends Controller {
         viewModelGet.setCurrentTabs(response.getResponseObject());
 
         //get deleted tabs
-        response = tabService.getCustomTabs(true);
+        response = tabService.retrieveCustomTabs(true);
         if (response.hasErrors()) {
             throw new RuntimeException();
         }
@@ -180,7 +180,7 @@ public class SuperuserController extends Controller {
     }
 
     public Result tabsPost() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TabsViewModelPost viewModelPost = TabsViewModelForm.bindFromRequest().get();
 
         //becomes new or edit
@@ -203,7 +203,7 @@ public class SuperuserController extends Controller {
                 else tabItem.setRightColumnSize(viewModelPost.getAddTabRight());
 
                 tabItem.setName(viewModelPost.getAddTabName());
-                ServiceResponse<TabItem> response = tabService.editTab(tabItem, currentUser.getId());
+                ServiceResponse<TabItem> response = tabService.updateTab(tabItem, currentUser.getId());
                 if (response.hasErrors()) {
                     throw new RuntimeException();
                 }
@@ -222,34 +222,34 @@ public class SuperuserController extends Controller {
 
     //name = tab name
     public Result contentGet(String name) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ContentViewModelGet viewModelGet = new ContentViewModelGet();
 
         viewModelGet.setName(name);
 
         //get current custom fields
-        ServiceResponse<List<TabFieldItem>> currentFieldItemsResponse = tabService.getTabFieldsByTabName(name, false);
+        ServiceResponse<List<TabFieldItem>> currentFieldItemsResponse = tabService.retrieveTabFieldsByTabName(name, false);
         if (currentFieldItemsResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setCurrentCustomFieldItemList(currentFieldItemsResponse.getResponseObject());
 
         //get removed custom fields
-        ServiceResponse<List<TabFieldItem>> removedFieldItemsResponse = tabService.getTabFieldsByTabName(name, true);
+        ServiceResponse<List<TabFieldItem>> removedFieldItemsResponse = tabService.retrieveTabFieldsByTabName(name, true);
         if (currentFieldItemsResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setRemovedCustomFieldItemList(removedFieldItemsResponse.getResponseObject());
 
         //get available field types
-        ServiceResponse<List<String>> fieldTypesResponse = tabService.getTypes();
+        ServiceResponse<List<String>> fieldTypesResponse = tabService.retrieveTypes();
         if (fieldTypesResponse.hasErrors()) {
             throw new RuntimeException();
         }
         viewModelGet.setCustomFieldTypes(fieldTypesResponse.getResponseObject());
 
         //get available fields sizes
-        ServiceResponse<List<String>> fieldSizesResponse = tabService.getSizes();
+        ServiceResponse<List<String>> fieldSizesResponse = tabService.retrieveSizes();
         if (fieldSizesResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -260,7 +260,7 @@ public class SuperuserController extends Controller {
 
     //name = tab name
     public Result contentPost(String name) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ContentViewModelPost viewModelPost = ContentViewModelForm.bindFromRequest().get();
 
         //adding/editing a field
@@ -273,7 +273,7 @@ public class SuperuserController extends Controller {
             tabFieldItem.setPlaceholder(viewModelPost.getAddPlaceholder());
             //edit
             if (tabService.doesTabFieldExist(viewModelPost.getAddName()).getResponseObject()) {
-                tabService.editTabField(tabFieldItem);
+                tabService.updateTabField(tabFieldItem);
             } else {
 
                 ServiceResponse<TabFieldItem> response = tabService.createTabField(tabFieldItem, currentUser.getId(), name);

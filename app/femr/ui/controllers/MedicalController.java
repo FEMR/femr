@@ -58,13 +58,13 @@ public class MedicalController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         return ok(index.render(currentUserSession, null, 0));
     }
 
     public Result indexPost() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
@@ -75,7 +75,7 @@ public class MedicalController extends Controller {
         Integer patientId = idQueryStringResponse.getResponseObject();
 
         //get the patient's encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
 
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
@@ -89,7 +89,7 @@ public class MedicalController extends Controller {
         }
 
         //check if the doc has already seen the patient today
-        ServiceResponse<UserItem> userItemServiceResponse = encounterService.getPhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
+        ServiceResponse<UserItem> userItemServiceResponse = encounterService.retrievePhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
         if (userItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -106,13 +106,13 @@ public class MedicalController extends Controller {
 
     public Result editGet(int patientId) {
 
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
 
         //Get Patient Encounter
         PatientEncounterItem patientEncounter;
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -127,7 +127,7 @@ public class MedicalController extends Controller {
         }
 
         //get patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -135,7 +135,7 @@ public class MedicalController extends Controller {
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
 
         //get prescriptions
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounter.getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -143,7 +143,7 @@ public class MedicalController extends Controller {
         viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
 
         //get problems
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounter.getId());
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounter.getId());
         if (problemItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -151,20 +151,20 @@ public class MedicalController extends Controller {
         viewModelGet.setProblemItems(problemItemServiceResponse.getResponseObject());
 
         //get vitals
-        ServiceResponse<VitalMultiMap> vitalMapResponse = vitalService.findVitalMultiMap(patientEncounter.getId());
+        ServiceResponse<VitalMultiMap> vitalMapResponse = vitalService.retrieveVitalMultiMap(patientEncounter.getId());
         if (vitalMapResponse.hasErrors()) {
 
             throw new RuntimeException();
         }
 
         //get all fields and their values
-        ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.findTabFieldMultiMap(patientEncounter.getId());
+        ServiceResponse<TabFieldMultiMap> tabFieldMultiMapResponse = tabService.retrieveTabFieldMultiMap(patientEncounter.getId());
         if (tabFieldMultiMapResponse.hasErrors()) {
 
             throw new RuntimeException();
         }
         TabFieldMultiMap tabFieldMultiMap = tabFieldMultiMapResponse.getResponseObject();
-        ServiceResponse<List<TabItem>> tabItemServiceResponse = tabService.findAvailableTabs(false);
+        ServiceResponse<List<TabItem>> tabItemServiceResponse = tabService.retrieveAvailableTabs(false);
         if (tabItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -192,7 +192,7 @@ public class MedicalController extends Controller {
         viewModelGet.setTabItems(tabItems);
         viewModelGet.setChiefComplaints(tabFieldMultiMap.getChiefComplaintList());
 
-        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(patientEncounter.getId());
+        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.retrieveEncounterPhotos(patientEncounter.getId());
         if (photoListResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -201,26 +201,26 @@ public class MedicalController extends Controller {
             viewModelGet.setPhotos(photoListResponse.getResponseObject());
         }
 
-        ServiceResponse<SettingItem> response = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
 
         return ok(edit.render(currentUserSession, vitalMapResponse.getResponseObject(), viewModelGet));
     }
 
     public Result editPost(int patientId) {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
         //get current patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
         //get current encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -278,7 +278,7 @@ public class MedicalController extends Controller {
 
 
         //create patient encounter photos
-        photoService.HandleEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
+        photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
         //create prescriptions
         List<String> prescriptions = new ArrayList<>();
@@ -300,9 +300,9 @@ public class MedicalController extends Controller {
     }
 
     public Result updateVitalsPost(int id) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.findRecentPatientEncounterItemByPatientId(id);
+        ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(id);
         if (currentEncounterByPatientId.hasErrors()) {
             throw new RuntimeException();
         }
@@ -331,11 +331,11 @@ public class MedicalController extends Controller {
     public Result listVitalsGet(Integer id) {
 
 
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(id);
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(id);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = vitalService.findVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
+        ServiceResponse<VitalMultiMap> vitalMultiMapServiceResponse = vitalService.retrieveVitalMultiMap(patientEncounterServiceResponse.getResponseObject().getId());
         if (vitalMultiMapServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

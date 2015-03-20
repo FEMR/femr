@@ -80,7 +80,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> findPatientItemByPatientId(int patientId) {
+    public ServiceResponse<PatientItem> retrievePatientItemByPatientId(int patientId) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (patientId < 0) {
             response.addError("", "id can not be null or less than 1");
@@ -144,7 +144,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> findPatientItemByEncounterId(int encounterId) {
+    public ServiceResponse<PatientItem> retrievePatientItemByEncounterId(int encounterId) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (encounterId < 0) {
             response.addError("", "invalid id");
@@ -196,7 +196,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientEncounterItem> findPatientEncounterItemByEncounterId(int encounterId) {
+    public ServiceResponse<PatientEncounterItem> retrievePatientEncounterItemByEncounterId(int encounterId) {
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
         if (encounterId < 1) {
             response.addError("", "invalid ID");
@@ -220,7 +220,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientEncounterItem> findRecentPatientEncounterItemByPatientId(int patientId) {
+    public ServiceResponse<PatientEncounterItem> retrieveRecentPatientEncounterItemByPatientId(int patientId) {
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
         if (patientId < 1) {
             response.addError("", "Invalid patient ID.");
@@ -252,7 +252,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsByPatientId(int patientId) {
+    public ServiceResponse<List<PatientEncounterItem>> retrievePatientEncounterItemsByPatientId(int patientId) {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
@@ -277,7 +277,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> findUnreplacedPrescriptionItems(int encounterId) {
+    public ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .where()
@@ -312,7 +312,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId) {
+    public ServiceResponse<List<PrescriptionItem>> retrieveDispensedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .fetch("patientEncounter")
@@ -370,7 +370,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery) {
+    public ServiceResponse<List<PatientItem>> retrievePatientsFromQueryString(String patientSearchQuery) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
         if (StringUtils.isNullOrWhiteSpace(patientSearchQuery)) {
             response.addError("", "bad parameters");
@@ -480,7 +480,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<SettingItem> getSystemSettings() {
+    public ServiceResponse<SettingItem> retrieveSystemSettings() {
         ServiceResponse<SettingItem> response = new ServiceResponse<>();
         try {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
@@ -506,7 +506,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> findPatientsForSearch() {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch() {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {

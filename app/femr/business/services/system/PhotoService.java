@@ -92,7 +92,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(String imageString, int patientId, Boolean deleteFlag) {
+    public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
 
 
@@ -146,7 +146,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getPhotoPathForPatient(int patientId) {
+    public ServiceResponse<String> retrievePatientPhotoPath(int patientId) {
         ServiceResponse<String> response = new ServiceResponse<>();
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
@@ -169,7 +169,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getPhotoPath(int photoId) {
+    public ServiceResponse<String> retrievePhotoPath(int photoId) {
         ServiceResponse<String> response = new ServiceResponse<>();
         ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
                 .where()
@@ -187,7 +187,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
+    public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try {
             int count = mod.getPhotoId().size();
@@ -252,7 +252,7 @@ public class PhotoService implements IPhotoService {
             sr.setResponseObject(true);
         } catch (Exception ex) {
             sr.setResponseObject(false);
-            sr.addError("HandleEncounterPhotos()", ex.getMessage());
+            sr.addError("createEncounterPhotos()", ex.getMessage());
         }
 
         return sr;
@@ -263,7 +263,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PhotoItem>> GetEncounterPhotos(int encounterId) {
+    public ServiceResponse<List<PhotoItem>> retrieveEncounterPhotos(int encounterId) {
 
         ServiceResponse<List<PhotoItem>> response = new ServiceResponse<>();
         try {

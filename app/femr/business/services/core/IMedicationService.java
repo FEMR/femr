@@ -26,44 +26,51 @@ import java.util.List;
 public interface IMedicationService {
 
     /**
-     * Create a new prescription and replace an old one with it
+     * Create a new prescription that replaces an old one.
      *
-     * @param prescriptionItem new prescription to replace the old one
+     * @param prescriptionItem new prescription to replace the old one, not null TODO: separate into parameters
      * @param oldScriptId      id of the old prescription that is being replaced
-     * @return updated new prescription
+     * @return a service response that contains a PrescriptionItem that was created
+     * and/or errors if they exist.
      */
     ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId, boolean isCounseled);
 
     /**
-     * creates multiple prescriptions
+     * Creates multiple new prescriptions.
      *
-     * @param prescriptionItems list of prescription items
-     * @param userId            id of the user saving the prescriptions
-     * @param encounterId       id of the current encounter
-     * @return updated prescription list
+     * @param prescriptionNames names of the prescriptions, not null, greater than 0
+     * @param userId            id of the user creating the prescriptions, not null
+     * @param encounterId       id of the encounter, not null
+     * @param isDispensed       true if the prescription was dispensed, not null
+     * @param isCounseled       true if the patient was counseled about the prescription, not null
+     * @return a service response that contains a list of updated PrescriptionItems that were created
+     * and/or errors if they exist.
      */
     ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
 
     /**
-     * Mark prescriptions as filled
+     * Flags a prescription to say that it was filled.
      *
-     * @param prescriptionIds a list of prescription ids to fill
-     * @return prescription items that were filled
+     * @param prescriptionIds a list of prescription ids to identify as filled
+     * @return a service response that contains a list of updated PrescriptionItems that were filled
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsFilled(List<Integer> prescriptionIds);
+    ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsFilled(List<Integer> prescriptionIds);
 
     /**
-     * Mark prescriptions as having the patient counseled
+     * Flags a prescription to say that the patient was counseled before dispensing it.
      *
      * @param prescriptionIds a list of prescription ids to identify as counseled
-     * @return prescription items that were marked as counseled
+     * @return a service response that contains a list of updated PrescriptionItems that were flagged
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsCounseled(List<Integer> prescriptionIds);
+    ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsCounseled(List<Integer> prescriptionIds);
 
     /**
-     * Retrieve all medication names for typeahead
+     * Retrieves a list of all medications in the system, excluding duplicates.
      *
-     * @return
+     * @return a service response that contains a list of Strings
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<String>> findAllMedications();
+    ServiceResponse<List<String>> retrieveAllMedications();
 }

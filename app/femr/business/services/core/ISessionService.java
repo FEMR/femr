@@ -22,9 +22,26 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 
 public interface ISessionService {
+
+    /**
+     * Creates a new user session.
+     *
+     * @param email    the username of the user (doesn't necessarily have to be email), not null
+     * @param password a valid password for the user, not null
+     * @return a service response that contains a CurrentUser representing the sessions's current user
+     * and/or errors if they exist.
+     */
     ServiceResponse<CurrentUser> createSession(String email, String password);
 
-    CurrentUser getCurrentUserSession();
+    /**
+     * Gets the user that is currently logged in.
+     *
+     * @return a CurrentUser
+     */
+    CurrentUser retrieveCurrentUserSession();
 
+    /**
+     * invalidate the current user session - log the user out.
+     */
     void invalidateCurrentUserSession();
 }

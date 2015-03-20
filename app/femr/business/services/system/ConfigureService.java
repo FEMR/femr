@@ -40,7 +40,7 @@ public class ConfigureService implements IConfigureService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<? extends ISystemSetting>> getCurrentSettings() {
+    public ServiceResponse<List<? extends ISystemSetting>> retrieveCurrentSettings() {
         ServiceResponse<List<? extends ISystemSetting>> response = new ServiceResponse<>();
         try {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);

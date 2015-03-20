@@ -26,53 +26,84 @@ import femr.data.models.core.IUser;
 import java.util.List;
 
 public interface IUserService {
+
     /**
-     * Create a brand new user
-     * @param user user to be created
-     * @param password the users password to be encrypted
-     * @return a new user
+     * Create a brand new user.
+     *
+     * @param user user to be created, TODO: change to parameters
+     * @param password the users password to be encrypted, nto null
+     * @return ServiceResponse that contains the new UserItem
+     * and/or errors if they exist.
      */
     ServiceResponse<UserItem> createUser(UserItem user, String password);
 
     /**
+     * Find all users.
      *
-     * @return all users that exist
+     * @return ServiceResponse that contains a list of all UserItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<UserItem>> findAllUsers();
+    ServiceResponse<List<UserItem>> retrieveAllUsers();
 
     /**
      * If a user is deactivated, activate them and vice versa
      *
-     * @param id primary id of the user
-     * @return
+     * @param id primary id of the user, not null
+     * @return ServiceResponse that contains the toggled UserItem
+     * and/or errors if they exist.
      */
     ServiceResponse<UserItem> toggleUser(int id);
 
     /**
      * Find a user by their ID
-     * @param id primary id of the user
-     * @return
+     *
+     * @param id primary id of the user, not null
+     * @return ServiceResponse that contains the UserItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<UserItem> findUser(int id);
+    ServiceResponse<UserItem> retrieveUser(int id);
 
     /**
      * Updates a user based on ID. Email can be changed.
      *
-     * @param userItem user item where id is the identifier
+     * @param userItem user item where id is the identifier, TODO: change to parameters
      * @param newPassword if not null, changes the users password
-     * @return
+     * @return ServiceResponse that contains the updated UserItem
+     * and/or errors if they exist.
      */
     ServiceResponse<UserItem> updateUser(UserItem userItem, String newPassword);
 
-    IUser findByEmail(String email);
+    /**
+     * Retrieves a user by their email address. TODO: stop returning data models
+     *
+     * @param email email address of the user aka username, not null
+     * @return the IUser
+     */
+    IUser retrieveByEmail(String email);
 
-    IUser findById(int id);
+    /**
+     * Retrieves a user by their id. TODO: stop returning data models
+     *
+     * @param id id of the user, not null
+     * @return the IUser
+     */
+    IUser retrieveById(int id);
 
-    List<? extends IRole> findRolesForUser(int id);
+    /**
+     * Retrieves all the roles for a user. TODO: stop returning data models
+     *
+     * @param id id of the user, not null
+     * @return a list of IRoles
+     */
+    List<? extends IRole> retrieveRolesForUser(int id);
 
-
-
-
-
+    /**
+     * Update the user
+     *
+     * @param currentUser the current user, not null
+     * @param isNewPassword if the password is new, may be null
+     * @return ServiceResponse that contains the updated IUser
+     * and/or errors if they exist.
+     */
     ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword);
 }

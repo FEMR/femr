@@ -97,7 +97,7 @@ public class EncounterService implements IEncounterService {
                 patientAgeClassificationId = patientAgeClassification.getId();
 
             //find the current trip, if one exists
-            IMissionTrip missionTrip = missionTripService.findCurrentMissionTrip();
+            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
             Integer missionTripId = null;
             if (missionTrip != null)
                 missionTripId = missionTrip.getId();
@@ -194,7 +194,7 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<UserItem> getPhysicianThatCheckedInPatientToMedical(int encounterId) {
+    public ServiceResponse<UserItem> retrievePhysicianThatCheckedInPatientToMedical(int encounterId) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         if (encounterId < 1) {
             response.addError("", "encounter id must be greater than 0");
@@ -382,7 +382,7 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<ProblemItem>> findProblemItems(int encounterId) {
+    public ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId) {
         ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();
         List<ProblemItem> problemItems = new ArrayList<>();
         Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()

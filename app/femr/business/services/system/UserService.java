@@ -94,7 +94,7 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<UserItem>> findAllUsers() {
+    public ServiceResponse<List<UserItem>> retrieveAllUsers() {
 
         ExpressionList<User> query = QueryProvider.getUserQuery()
                 .fetch("roles")
@@ -139,7 +139,7 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<UserItem> findUser(int id) {
+    public ServiceResponse<UserItem> retrieveUser(int id) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
         try {
@@ -194,27 +194,39 @@ public class UserService implements IUserService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IUser findByEmail(String email) {
+    public IUser retrieveByEmail(String email) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("email", email);
 
         return userRepository.findOne(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IUser findById(int id) {
+    public IUser retrieveById(int id) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
 
         return userRepository.findOne(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<? extends IRole> findRolesForUser(int id) {
+    public List<? extends IRole> retrieveRolesForUser(int id) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
         IUser user = userRepository.findOne(query);
         return user.getRoles();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword) {
         ServiceResponse<IUser> response = new ServiceResponse<>();
@@ -238,7 +250,7 @@ public class UserService implements IUserService {
     }
 
     private boolean userExistsWithEmail(String email) {
-        IUser existingUser = findByEmail(email);
+        IUser existingUser = retrieveByEmail(email);
         return existingUser != null;
     }
 }

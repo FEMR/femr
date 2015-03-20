@@ -35,7 +35,7 @@ public class PhotoController {
         String pathToPhoto = "";
 
         if (patientId != null) {
-            ServiceResponse<String> pathToPhotoResponse = photoService.getPhotoPathForPatient(patientId);
+            ServiceResponse<String> pathToPhotoResponse = photoService.retrievePatientPhotoPath(patientId);
             if (pathToPhotoResponse.hasErrors()) {
                 throw new RuntimeException();
             }
@@ -70,7 +70,7 @@ public class PhotoController {
      */
     public Result GetPhoto(int photoId) {
         if (photoId > 0) {
-            ServiceResponse<String> pathToPhotoResponse = photoService.getPhotoPath(photoId);
+            ServiceResponse<String> pathToPhotoResponse = photoService.retrievePhotoPath(photoId);
             if (pathToPhotoResponse.hasErrors()) {
                 throw new RuntimeException();
             }

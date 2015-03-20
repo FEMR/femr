@@ -45,7 +45,7 @@ public class PharmaciesController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUserSession, null, 0));
     }
 
@@ -55,7 +55,7 @@ public class PharmaciesController extends Controller {
      * @return redirect to editGet
      */
     public Result indexPost() {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
@@ -65,7 +65,7 @@ public class PharmaciesController extends Controller {
         Integer patientId = idQueryStringResponse.getResponseObject();
 
         //get the patient's encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patientId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
         }
@@ -77,7 +77,7 @@ public class PharmaciesController extends Controller {
         }
 
         //ensure prescriptions exist for that patient
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItemServiceResponse.getResponseObject().getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItemServiceResponse.getResponseObject().getId());
         if (prescriptionItemsResponse.hasErrors()) {
             throw new RuntimeException();
 
@@ -89,13 +89,13 @@ public class PharmaciesController extends Controller {
     }
 
     public Result editGet(int patientId) {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelGet viewModelGet = new EditViewModelGet();
         String message;
 
         //Get Patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             message = patientItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
@@ -104,7 +104,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setPatient(patient);
 
         //get the patient encounter item
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(patient.getId());
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patient.getId());
         if (patientEncounterItemServiceResponse.hasErrors()) {
             message = patientEncounterItemServiceResponse.getErrors().get("");
             return ok(index.render(currentUserSession, message, 0));
@@ -118,7 +118,7 @@ public class PharmaciesController extends Controller {
 
 
         //find patient prescriptions, they do have to exist
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findUnreplacedPrescriptionItems(patientEncounterItem.getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
@@ -127,7 +127,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
         //find patient problems, they do not have to exist.
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(patientEncounterItem.getId());
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -140,18 +140,18 @@ public class PharmaciesController extends Controller {
     }
 
     public Result editPost(int id) {
-        CurrentUser currentUserSession = sessionService.getCurrentUserSession();
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         EditViewModelPost createViewModelPost = populatedViewModelPostForm.bindFromRequest().get();
 
         //get patient encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findRecentPatientEncounterItemByPatientId(id);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(id);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
         //get patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientEncounterItem.getPatientId());
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientEncounterItem.getPatientId());
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -240,13 +240,13 @@ public class PharmaciesController extends Controller {
         }
 
         //update non-replaced prescriptions to dispensed
-        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.markPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
+        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.flagPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
         if (prescriptionDispensedResponse.hasErrors()) {
             throw new RuntimeException();
         }
         //update non-replaced prescriptions that the patient was counseled on
         if (isCounseled){
-            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.markPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
+            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.flagPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
             if (prescriptionCounseledResponse.hasErrors()){
                 throw new RuntimeException();
             }

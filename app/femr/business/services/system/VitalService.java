@@ -48,7 +48,7 @@ public class VitalService implements IVitalService {
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                         IRepository<IVital> vitalRepository,
-                        DataModelMapper dataModelMapper){
+                        DataModelMapper dataModelMapper) {
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
@@ -100,7 +100,7 @@ public class VitalService implements IVitalService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<VitalItem>> findAllVitalItems() {
+    public ServiceResponse<List<VitalItem>> retrieveAllVitalItems() {
         ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
 
         try {
@@ -123,7 +123,7 @@ public class VitalService implements IVitalService {
     @Override
     public ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
         ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
-        if (patientEncounterVitalMap == null || userId < 1 || encounterId < 1) {
+        if (patientEncounterVitalMap == null) {
             response.addError("", "bad parameters");
             return response;
         }
@@ -166,7 +166,7 @@ public class VitalService implements IVitalService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<VitalMultiMap> findVitalMultiMap(int encounterId) {
+    public ServiceResponse<VitalMultiMap> retrieveVitalMultiMap(int encounterId) {
         ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
         VitalMultiMap vitalMultiMap = new VitalMultiMap();
 

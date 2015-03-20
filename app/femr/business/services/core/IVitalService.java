@@ -28,37 +28,41 @@ import java.util.Map;
 public interface IVitalService {
 
     /**
-     * Create all vitals for an encounter
+     * Create all vitals for an encounter.
      *
-     * @param patientEncounterVitalMap A <name,value> keypair of vitals to be created
-     * @param userId                   User creating the vitals
-     * @param encounterId              Encounter that the vitals are for
-     * @return List of vitals that were created
+     * @param patientEncounterVitalMap A <name,value> keypair of vitals to be created, not null
+     * @param userId                   User creating the vitals, not null
+     * @param encounterId              Encounter that the vitals are for, not null
+     * @return a service response that contains a list of VitalItems that were created
+     * and/or errors if they exist.
      */
     ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId);
 
     /**
-     * Creates all patient encounter vitals
+     * Create all vitals for an encounter. TODO: how is this different from createPatientEncounterVitalItems?
      *
-     * @param patientEncounterVital list of vitals for saving
-     * @param userId                id of the user saving the vitals
-     * @param encounterId           id of the current encounter
-     * @return vitals that were saved
+     * @param patientEncounterVital A <name,value> keypair of vitals to be created, not null
+     * @param userId                User creating the vitals, not null
+     * @param encounterId           Encounter that the vitals are for, not null
+     * @return a service response that contains a list of VitalItems that were created
+     * and/or errors if they exist.
      */
     ServiceResponse<List<VitalItem>> createPatientEncounterVitals(Map<String, Float> patientEncounterVital, int userId, int encounterId);
 
     /**
      * Gets vital items, but only the names
      *
-     * @return Returns a list of all vitals without values
+     * @return a service response that contains a list of VitalItems with no values
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<VitalItem>> findAllVitalItems();
+    ServiceResponse<List<VitalItem>> retrieveAllVitalItems();
 
     /**
-     * Create linked hash map of vitals where the key is the date as well as the name
+     * Retrieve a map of vitals where the key is the date as well as the name
      *
-     * @param encounterId the id of the encounter to get vitals for
-     * @return vitals and dates related to encounter
+     * @param encounterId the id of the encounter to get vitals for, not null
+     * @return a service response that contains a VitalMultiMap
+     * and/or errors if they exist.
      */
-    ServiceResponse<VitalMultiMap> findVitalMultiMap(int encounterId);
+    ServiceResponse<VitalMultiMap> retrieveVitalMultiMap(int encounterId);
 }

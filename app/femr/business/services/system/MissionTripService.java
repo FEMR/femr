@@ -70,7 +70,7 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public IMissionTrip findCurrentMissionTrip() {
+    public IMissionTrip retrieveCurrentMissionTrip() {
 
         return getCurrentMissionTrip();
     }
@@ -79,17 +79,22 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> findAvailableTeams() {
+    public ServiceResponse<List<String>> retrieveAvailableTeams() {
 
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         List<String> teams = new ArrayList<>();
+
         Query<MissionTeam> missionTeamQuery = QueryProvider.getMissionTeamQuery()
                 .orderBy("name");
         List<? extends IMissionTeam> missionTeams = missionTeamRepository.find(missionTeamQuery);
+
         for (IMissionTeam mt : missionTeams) {
+
             teams.add(mt.getName());
         }
+
         response.setResponseObject(teams);
+
         return response;
     }
 
@@ -97,17 +102,22 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<CityItem>> findAvailableCities() {
+    public ServiceResponse<List<CityItem>> retrieveAvailableCities() {
 
         ServiceResponse<List<CityItem>> response = new ServiceResponse<>();
         List<CityItem> cities = new ArrayList<>();
+
         Query<MissionCity> missionCityQuery = QueryProvider.getMissionCityQuery()
                 .orderBy("name");
         List<? extends IMissionCity> missionCities = missionCityRepository.find(missionCityQuery);
+
         for (IMissionCity mc : missionCities) {
+
             cities.add(UIModelMapper.createCityItem(mc.getName(), mc.getMissionCountry().getName()));
         }
+
         response.setResponseObject(cities);
+
         return response;
     }
 
@@ -115,7 +125,7 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> findAvailableCountries() {
+    public ServiceResponse<List<String>> retrieveAvailableCountries() {
 
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         List<String> countries = new ArrayList<>();
@@ -133,7 +143,7 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MissionItem>> findAllTripInformation() {
+    public ServiceResponse<List<MissionItem>> retrieveAllTripInformation() {
 
         ServiceResponse<List<MissionItem>> response = new ServiceResponse<>();
         List<MissionItem> missionItems = new ArrayList<>();
@@ -143,6 +153,7 @@ public class MissionTripService implements IMissionTripService {
             //you might miss some teams that don't have a trip, yet.
             List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
             for (IMissionTeam missionTeam : missionTeams) {
+
                 missionItems.add(UIModelMapper.createMissionItem(missionTeam));
             }
 
@@ -247,12 +258,14 @@ public class MissionTripService implements IMissionTripService {
      * @return null if none or more than one exists
      */
     private IMissionTrip getCurrentMissionTrip() {
+
         ExpressionList<MissionTrip> missionTripQuery = QueryProvider.getMissionTripQuery()
                 .where()
                 .eq("isCurrent", true);
         IMissionTrip missionTrip = null;
 
         try {
+
             missionTrip = missionTripRepository.findOne(missionTripQuery);
         } catch (Exception ex) {
 
@@ -281,13 +294,13 @@ public class MissionTripService implements IMissionTripService {
                 //check for duplicate
                 List<? extends IMissionCity> missionCities = missionCityRepository.findAll(MissionCity.class);
                 boolean isDuplicate = false;
-                for (IMissionCity mc : missionCities){
-                    if (mc.getName().toUpperCase().equals(cityName.toUpperCase())){
+                for (IMissionCity mc : missionCities) {
+                    if (mc.getName().toUpperCase().equals(cityName.toUpperCase())) {
                         isDuplicate = true;
                         response.addError("", "duplicate city");
                     }
                 }
-                if (!isDuplicate){
+                if (!isDuplicate) {
                     IMissionCity missionCity = dataModelMapper.createMissionCity(cityName, missionCountry);
                     missionCity = missionCityRepository.create(missionCity);
                     response.setResponseObject(UIModelMapper.createCityItem(missionCity.getName(), missionCity.getMissionCountry().getName()));

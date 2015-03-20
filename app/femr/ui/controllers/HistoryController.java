@@ -54,7 +54,7 @@ public class HistoryController extends Controller {
     }
 
     public Result indexPatientGet(String query) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         boolean error = false;
 
 
@@ -62,7 +62,7 @@ public class HistoryController extends Controller {
 
         //how do we show more than one?
         query = query.replace("-", " ");
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(query);
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
         if (patientResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -80,7 +80,7 @@ public class HistoryController extends Controller {
         viewModel.setPatientItems(patientItems);
         viewModel.setPatientItem(patientItems.get(0));
 
-        ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.findPatientEncounterItemsByPatientId(patientItems.get(0).getId());
+        ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.retrievePatientEncounterItemsByPatientId(patientItems.get(0).getId());
         if (patientEncountersServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -96,13 +96,13 @@ public class HistoryController extends Controller {
     }
 
     public Result indexEncounterGet(int encounterId) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         IndexEncounterViewModel indexEncounterViewModel = new IndexEncounterViewModel();
         IndexEncounterMedicalViewModel indexEncounterMedicalViewModel = new IndexEncounterMedicalViewModel();
         IndexEncounterPharmacyViewModel indexEncounterPharmacyViewModel = new IndexEncounterPharmacyViewModel();
 
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByEncounterId(encounterId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByEncounterId(encounterId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -110,27 +110,27 @@ public class HistoryController extends Controller {
         patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
         indexEncounterViewModel.setPatientItem(patientItem);
 
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.findPatientEncounterItemByEncounterId(encounterId);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrievePatientEncounterItemByEncounterId(encounterId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         indexEncounterViewModel.setPatientEncounterItem(patientEncounterItemServiceResponse.getResponseObject());
 
         //get vitals
-        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.findVitalMultiMap(encounterId);
+        ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.retrieveVitalMultiMap(encounterId);
         if (patientEncounterVitalMapResponse.hasErrors()) {
             throw new RuntimeException();
         }
         indexEncounterMedicalViewModel.setVitalList(patientEncounterVitalMapResponse.getResponseObject());
 
         //get photos
-        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.GetEncounterPhotos(encounterId);
+        ServiceResponse<List<PhotoItem>> photoListResponse = photoService.retrieveEncounterPhotos(encounterId);
         if (photoListResponse.hasErrors()) {
             throw new RuntimeException();
         }
         indexEncounterMedicalViewModel.setPhotos(photoListResponse.getResponseObject());
 
-        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.findTabFieldMultiMap(encounterId);
+        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(encounterId);
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -177,7 +177,7 @@ public class HistoryController extends Controller {
 
         //get problems
         List<String> problems = new ArrayList<>();
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(encounterId);
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(encounterId);
         if (problemItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -188,7 +188,7 @@ public class HistoryController extends Controller {
 
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findDispensedPrescriptionItems(encounterId);
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }

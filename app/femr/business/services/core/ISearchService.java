@@ -26,66 +26,74 @@ import java.util.List;
 public interface ISearchService {
 
     /**
-     * Find a patient by patient id
+     * Find a patient by patient id.
      *
      * @param patientId id of the patient
-     * @return the patient
+     * @return a service response that contains a PatientItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> findPatientItemByPatientId(int patientId);
+    ServiceResponse<PatientItem> retrievePatientItemByPatientId(int patientId);
 
     /**
-     * Find a patient by encounter id
+     * Retrieve a patient by encounter id.
      *
      * @param encounterId id of an encounter
-     * @return the patient
+     * @return a service response that contains a PatientItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> findPatientItemByEncounterId(int encounterId);
+    ServiceResponse<PatientItem> retrievePatientItemByEncounterId(int encounterId);
 
     /**
-     * Find an encounter by its ID
+     * Retrieve an encounter by encounter id
      *
      * @param encounterId the id of the encounter
-     * @return the encounter
+     * @return a service response that contains a PatientEncounterItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<PatientEncounterItem> findPatientEncounterItemByEncounterId(int encounterId);
+    ServiceResponse<PatientEncounterItem> retrievePatientEncounterItemByEncounterId(int encounterId);
 
     /**
-     * Find the most current patient encounter by patient id
+     * Retrieve the most current patient encounter for a patient
      *
      * @param patientId id of the patient
-     * @return the patient's encounter with a field indicating whether or not it is open
+     * @return a service response that contains a PatientEncounterItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<PatientEncounterItem> findRecentPatientEncounterItemByPatientId(int patientId);
+    ServiceResponse<PatientEncounterItem> retrieveRecentPatientEncounterItemByPatientId(int patientId);
 
     /**
-     * Find all patient encounters by patient id
+     * Retrieve all patient encounters by patient id
      *
      * @param patientId id of the patient
-     * @return all encounters of patient in descending order
+     * @return a service response that contains a list of PatientEncounterItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsByPatientId(int patientId);
+    ServiceResponse<List<PatientEncounterItem>> retrievePatientEncounterItemsByPatientId(int patientId);
 
     /**
      * Find all prescriptions that have not been replaced. This does not imply they have been dispensed.
      *
      * @param encounterId id of the encounter
-     * @return all prescriptions that have not been replaced
+     * @return a service response that contains a list of PrescriptionItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> findUnreplacedPrescriptionItems(int encounterId);
+    ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId);
 
     /**
-     * Find all prescriptions that have been dispensed to the patient.
+     * Find all prescriptions that have been dispensed.
      *
      * @param encounterId id of the encounter
-     * @return all prescriptions that have been dispensed
+     * @return a service response that contains a list of PrescriptionItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId);
+    ServiceResponse<List<PrescriptionItem>> retrieveDispensedPrescriptionItems(int encounterId);
 
     /**
-     * Parses an integer from a query string
+     * Parses an integer from a query string. TODO: this probably shouldn't be in the business layer?
      *
      * @param query the query string
-     * @return the integer
+     * @return a service response that contains an Integer
+     * and/or errors if they exist.
      */
     ServiceResponse<Integer> parseIdFromQueryString(String query);
 
@@ -94,28 +102,33 @@ public interface ISearchService {
      * based on id then first/last name
      *
      * @param patientSearchQuery search query for a patient
-     * @return list of patients
+     * @return a service response that contains a list of PatientItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery);
+    ServiceResponse<List<PatientItem>> retrievePatientsFromQueryString(String patientSearchQuery);
 
     /**
      * Get all current system setting values, only works for one right now.
      * Will need to be expanded later
-     * @return
+     *
+     * @return a service response that contains a SettingItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<SettingItem> getSystemSettings();
+    ServiceResponse<SettingItem> retrieveSystemSettings();
 
     /**
      * Get all patient information for searching users.
      *
-     * @return patient item for json serialization
+     * @return a service response that contains a list of PatientItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PatientItem>> findPatientsForSearch();
+    ServiceResponse<List<PatientItem>> retrievePatientsForSearch();
 
     /**
      * Get all diagnosis for help on problem input fields in medical
      *
-     * @return ALL STRINGS, BABY
+     * @return a service response that contains a list of Strings
+     * and/or errors if they exist.
      */
     ServiceResponse<List<String>> findDiagnosisForSearch();
 }

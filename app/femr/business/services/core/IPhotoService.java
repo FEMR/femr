@@ -29,47 +29,52 @@ import java.util.List;
 public interface IPhotoService {
 
     /**
-     * Retrieve all photos for the medical page
+     * Retrieve all photos for an encounter. Not patient photos.
      *
-     * @param encounterId
-     * @return
+     * @param encounterId id of the encounter, not null
+     * @return a service response that contains a list of PhotoItems that were found
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<PhotoItem>> GetEncounterPhotos(int encounterId);
+    ServiceResponse<List<PhotoItem>> retrieveEncounterPhotos(int encounterId);
 
     /**
-     * Saves photos from the medical page
+     * Creates photos for an encounter. Replaces/deletes them as necessary Not patient photos.
      *
-     * @param encounterImages
-     * @param patientEncounterItem
-     * @param mod
-     * @return
+     * @param encounterImages       list of images to save
+     * @param patientEncounterItem, the patient encounter, TODO: change to parameters
+     * @param mod,                  the viewmodel, TODO: change to parameters
+     * @return a service response that contains true if creation successful, false if not
+     * and/or errors if they exist.
      */
-    ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod);
+    ServiceResponse<Boolean> createEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod);
 
     /**
      * Saves a patient's photo and updates the patients photoId field to point
-     * to the updated photo
+     * to the updated photo.
      *
-     * @param img        image to save
-     * @param patientId  id of the patient
-     * @param deleteFlag true if photo is being deleted instead of saved
-     * @return i have no idea
-     */
-    ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(String imageString, int patientId, Boolean deleteFlag);
+     * @param imageString image to save as a base64 encoded string, TODO: make not null
+     * @param patientId   id of the patient, not null
+     * @param deleteFlag  true if photo is being deleted instead of saved, not null
+     * @return a service response that contains true if creation successful, false if not
+     * and/or errors if they exist.
+     * */
+    ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
 
     /**
-     * Gets the path to a patients photo
+     * Gets the filesystem path to a patients photo.
      *
-     * @param patientId id of the patient
-     * @return the patient's photo
-     */
-    ServiceResponse<String> getPhotoPathForPatient(int patientId);
+     * @param patientId id of the patient, not null
+     * @return a service response that contains a string to the photo's file location
+     * and/or errors if they exist.
+     * */
+    ServiceResponse<String> retrievePatientPhotoPath(int patientId);
 
     /**
-     * Gets the path to a photo
+     * Gets the filesystem path to any photo.
      *
-     * @param photoId id of the photo
-     * @return the photo path
-     */
-    ServiceResponse<String> getPhotoPath(int photoId);
+     * @param photoId id of the photo, not null
+     * @return a service response that contains a string to the photo's file location
+     * and/or errors if they exist.
+     * */
+    ServiceResponse<String> retrievePhotoPath(int photoId);
 }

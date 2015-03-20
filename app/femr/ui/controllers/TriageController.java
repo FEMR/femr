@@ -52,11 +52,11 @@ public class TriageController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -65,13 +65,13 @@ public class TriageController extends Controller {
         PatientItem patientItem = new PatientItem();
 
         //get settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.findPossibleAgeClassifications();
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
         if (patientAgeClassificationsResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -91,29 +91,29 @@ public class TriageController extends Controller {
     and wants to create a new encounter
      */
     public Result indexPopulatedGet(int patientId) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve vitals names for dynamic html element naming
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         //get the patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         PatientItem patient = patientItemServiceResponse.getResponseObject();
 
         //get the settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.findPossibleAgeClassifications();
+        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
         if (patientAgeClassificationsResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -133,7 +133,7 @@ public class TriageController extends Controller {
     */
     public Result indexPost(int id) {
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //create a new patient
         //or get current patient for new encounter
@@ -143,7 +143,7 @@ public class TriageController extends Controller {
             patientItem = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = patientService.createPatient(patientItem);
         } else {
-            patientServiceResponse = patientService.findPatientAndUpdateSex(id, viewModel.getSex());
+            patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -151,7 +151,7 @@ public class TriageController extends Controller {
         patientItem = patientServiceResponse.getResponseObject();
 
 
-        photoService.SavePatientPhotoAndUpdatePatient(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
+        photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
         //V code for saving photo without javascript
         //currently javascript is required
         //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");

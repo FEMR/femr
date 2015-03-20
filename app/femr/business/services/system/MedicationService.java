@@ -91,7 +91,7 @@ public class MedicationService implements IMedicationService {
     @Override
     public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        if (prescriptionNames == null || prescriptionNames.size() < 1 || userId < 1 || encounterId < 1) {
+        if (prescriptionNames == null || prescriptionNames.size() < 1 || encounterId < 1) {
             response.addError("", "invalid parameters");
             return response;
         }
@@ -122,7 +122,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsFilled(List<Integer> prescriptionIds) {
+    public ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsFilled(List<Integer> prescriptionIds) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
         List<PrescriptionItem> updatedPrescriptions = new ArrayList<>();
@@ -152,7 +152,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> markPrescriptionsAsCounseled(List<Integer> prescriptionIds) {
+    public ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsCounseled(List<Integer> prescriptionIds) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
         List<PrescriptionItem> updatedPrescriptions = new ArrayList<>();
@@ -182,7 +182,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> findAllMedications() {
+    public ServiceResponse<List<String>> retrieveAllMedications() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
 
         try {

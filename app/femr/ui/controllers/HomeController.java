@@ -18,7 +18,7 @@ public class HomeController extends Controller {
     }
 
     public Result index() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         if (currentUser != null) {
             return ok(index.render(currentUser));

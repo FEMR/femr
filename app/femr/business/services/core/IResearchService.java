@@ -29,10 +29,11 @@ public interface IResearchService {
 
 
     /**
-     * Take filters and build matching data for graph
+     * Take filters and build matching data for graph.
      *
      * @param filterItem object representing chosen filters
-     * @return Graph data bundled for display
+     * @return a service response that contains graph data bundled for display
+     * and/or errors if they exist.
      */
-    public ServiceResponse<ResearchResultSetItem> getGraphData(ResearchFilterItem filterItem);
+    public ServiceResponse<ResearchResultSetItem> retrieveGraphData(ResearchFilterItem filterItem);
 }

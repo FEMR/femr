@@ -56,10 +56,13 @@ public class PatientService implements IPatientService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<Map<String, String>> findPossibleAgeClassifications() {
+    public ServiceResponse<Map<String, String>> retrieveAgeClassifications() {
+
         ServiceResponse<Map<String, String>> response = new ServiceResponse<>();
+
         Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
+
             Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
                     .eq("isDeleted", false)
@@ -67,10 +70,12 @@ public class PatientService implements IPatientService {
                     .asc("sortOrder");
             List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
+
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
             }
             response.setResponseObject(patientAgeClassificationStrings);
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
         return response;
@@ -80,10 +85,13 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> findPatientAndUpdateSex(int id, String sex) {
+    public ServiceResponse<PatientItem> updateSex(int id, String sex) {
+
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
-        if (id < 1) {
-            response.addError("", "patient id can not be less than 1");
+
+        if (StringUtils.isNullOrWhiteSpace(sex)){
+
+            response.addError("sex", "you must provide a sex to update with");
             return response;
         }
 

@@ -28,112 +28,115 @@ import java.util.List;
 public interface ITabService {
 
     /**
-     * Edit a tab field
+     * Edit a tab field.
      *
-     * @param customFieldItem new tab field item being created
-     * @return ServiceResponse object containing the new TabFieldItem with possible exceptions
+     * @param customFieldItem new tab field item being created TODO: separate into parameters
+     * @return ServiceResponse that contains the new TabFieldItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<TabFieldItem> editTabField(TabFieldItem customFieldItem);
+    ServiceResponse<TabFieldItem> updateTabField(TabFieldItem customFieldItem);
 
     /**
      * Edit a tab - updates the date created, left column size, right column size,
-     * userId
+     * userId.
      *
-     * @param customTabItem new tab item being created
+     * @param customTabItem new tab item being created TODO: separate into parameters
      * @param userId user editing the tab
-     * @return ServiceResponse object containing the new TabItem with possible exceptions
+     * @return ServiceResponse that contains the new TabItem
+     * and/or errors if they exist.
      */
-    ServiceResponse<TabItem> editTab(TabItem customTabItem, int userId);
+    ServiceResponse<TabItem> updateTab(TabItem customTabItem, int userId);
 
     /**
-     * Finds all tabs with respective fields
+     * Deletes or un-Deletes a tab.
      *
-     * @param encounterId id of the current encounter
-     * @param isActive is the tab turned on?
-     * @return a list of tab items including the fields
-
-    ServiceResponse<List<TabItem>> findAllTabsAndFieldsByEncounterId(int encounterId, boolean isActive);
-     */
-    /**
-     * Deletes or un-Deletes a tab
-     *
-     * @param name name of the tab (unique identifier)
-     * @return ServiceResponse object containing TabItem with possible exceptions
+     * @param name name of the tab (unique identifier), not null
+     * @return ServiceResponse that contains the toggled TabItem
+     * and/or errors if they exist.
      */
     ServiceResponse<TabItem> toggleTab(String name);
 
     /**
-     * Deletes or un-Deletes a tab field
+     * Deletes or un-Deletes a tab field.
      *
-     * @param fieldName name of the field to toggle
-     * @param tabName name of the tab the fields is in
-     * @return ServuceResponse object and TabFieldItem that was toggled with possible expceptions
+     * @param fieldName name of the field to toggle, not null
+     * @param tabName name of the tab the fields is in, not null
+     * @return ServiceResponse that contains the toggled TabItemItem
+     * and/or errors if they exist.
      */
     ServiceResponse<TabFieldItem> toggleTabField(String fieldName, String tabName);
 
     /**
-     * Create a new tab
+     * Create a new tab.
      *
-     * @param newTab the new TabItem being created
-     * @param userId id of the user that is creating the tab
-     * @return ServiceResponse containing the same TabItem with possible exceptions
+     * @param newTab the new TabItem being created, not null
+     * @param userId id of the user that is creating the tab, not null
+     * @return ServiceResponse that contains the new TabItem
+     * and/or errors if they exist.
      */
     ServiceResponse<TabItem> createTab(TabItem newTab, int userId);
 
     /**
-     * Create a new tab field
+     * Create a new tab field.
      *
-     * @param customFieldItem the new TabFieldItem being created
-     * @param userId id of the user that is creating the tab field
-     * @param tabName name of the tab the fields is in
-     * @return a new TabFieldItem based on the saved TabField with possible exceptions
+     * @param customFieldItem the new TabFieldItem being created TODO: separate into parameters
+     * @param userId id of the user that is creating the tab field, not null
+     * @param tabName name of the tab the fields is in, not null
+     * @return ServiceResponse that contains the new TabFieldItem
+     * and/or errors if they exist.
      */
     ServiceResponse<TabFieldItem> createTabField(TabFieldItem customFieldItem, int userId, String tabName);
 
     /**
-     * Get all Tabs based on whether or not they are deleted
+     * Get all custom Tabs based on whether or not they are deleted.
      *
-     * @param isDeleted whether or not the tabs are deleted
-     * @return a list of all TabItems with possible exceptions
+     * @param isDeleted whether or not the tabs are deleted, not null
+     * @return ServiceResponse that contains a list of custom TabItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<TabItem>> getCustomTabs(Boolean isDeleted);
+    ServiceResponse<List<TabItem>> retrieveCustomTabs(boolean isDeleted);
 
     /**
-     * Get all fields for one tab
+     * Get all fields for one tab.
      *
-     * @param tabName name of the tab to get fields for
-     * @param isDeleted whether or not the fields are deleted
-     * @return a list of fields for the tab with possible exceptions
+     * @param tabName name of the tab to get fields for, not null
+     * @param isDeleted whether or not the fields are deleted, not null
+     * @return ServiceResponse that contains a list of TabFieldItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<TabFieldItem>> getTabFieldsByTabName(String tabName, Boolean isDeleted);
+    ServiceResponse<List<TabFieldItem>> retrieveTabFieldsByTabName(String tabName, boolean isDeleted);
 
     /**
-     * Get all possible types of tab fields
+     * Get all possible types of tab fields.
      *
-     * @return list of the names of the tab field types with possible exceptions
+     * @return ServiceResponse that contains a list of Strings representing types
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<String>> getTypes();
+    ServiceResponse<List<String>> retrieveTypes();
 
     /**
-     * Get all possible sizes of tab fields
+     * Get all possible sizes of tab fields.
      *
-     * @return list of the names of the tab field sizes with possible exceptions
+     * @return ServiceResponse that contains a list of Strings representing sizes
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<String>> getSizes();
+    ServiceResponse<List<String>> retrieveSizes();
 
     /**
-     * Checks to see if a tab field exists
+     * Checks to see if a tab field exists.
      *
-     * @param fieldName name of the field (unique identifier)
-     * @return Service response indicating whether or not it exists
+     * @param fieldName name of the field (unique identifier), TODO: check for null
+     * @return ServiceResponse that contains true if the field exists
+     * and/or errors if they exist.
      */
     ServiceResponse<Boolean> doesTabFieldExist(String fieldName);
 
     /**
-     * Checks to see if a tab exists
+     * Checks to see if a tab exists.
      *
      * @param tabName name of the tab (unique identifier)
-     * @return Service response indicating whether or not it exists
+     * @return ServiceResponse that contains true if the tab exists
+     * and/or errors if they exist.
      */
     ServiceResponse<Boolean> doesTabExist(String tabName);
 
@@ -141,14 +144,18 @@ public interface ITabService {
      * Create a map of tabs and their fields where the key is the name, date, and chief complaint.
      * Chief complaint is null if it doesn't exist.
      *
-     * @param encounterId id of the encounter
-     * @return a "TabFieldMultiMap" that contains all tab fields and their values. <strong>It will also contain empty fields.</strong>
+     * @param encounterId id of the encounter, not null
+     * @return a ServiceResponse that contains a TabFieldMultiMap which contains all
+     * tab fields and their values. <strong>It will also contain empty fields.</strong>
+     * and/or errors if they exist.
      */
-    ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId);
+    ServiceResponse<TabFieldMultiMap> retrieveTabFieldMultiMap(int encounterId);
 
     /**
-     * Get all available tabs for use
-     * @return list of available tabs
+     * Get all available tabs for use.
+     *
+     * @return a ServiceResponse that contains a list of TabItems
+     * and/or errors if they exist.
      */
-    ServiceResponse<List<TabItem>> findAvailableTabs(boolean isDeleted);
+    ServiceResponse<List<TabItem>> retrieveAvailableTabs(boolean isDeleted);
 }

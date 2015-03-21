@@ -14,6 +14,7 @@ object ApplicationBuild extends Build {
     javaJdbc,
     javaEbean,
     "com.google.inject" % "guice" % "3.0",
+    "com.google.guiceberry" % "guiceberry" % "3.0.4",
     "mysql" % "mysql-connector-java" % "5.1.34",
     "org.mindrot" % "jbcrypt" % "0.3m",
     "commons-collections" % "commons-collections" % "3.2.1",

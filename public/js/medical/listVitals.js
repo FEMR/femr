@@ -34,7 +34,7 @@ function calculateBMI() {
 
     var totalInches = height_in + height_ft * 12;
 
-//    //BMI for Metric - Alaa Serhan
+    // BMI for Metric - Alaa Serhan
     var bmi = Math.round((weight_lbs / (totalInches * totalInches)) * 703);
     if (!isFinite(bmi) || bmi === '' || bmi === null){
        $('#bmi').text("N/A");

@@ -142,7 +142,6 @@ public class TriageController extends Controller {
         //Alaa Serhan
         //Get the settings
         ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
-
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -198,13 +197,14 @@ public class TriageController extends Controller {
 
             Float temperature = viewModel.getTemperature();
             if( settings.isMetric() ){
-
-                // Value Entered in Celsius - Will be Returned Back As Metric to User, Converted to Fahrenheit when Saving
-                temperature = temperature * 9/5 + 32;
+                //Convert temperature from metric(C) to imperial(F) for storing
+                VitalUnitConverter.getFahrenheit(temperature);
+//                temperature = temperature * 9/5 + 32;
             }
 
             newVitals.put("temperature", temperature);
         }
+
         if (viewModel.getOxygenSaturation() != null) {
             newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
@@ -214,49 +214,41 @@ public class TriageController extends Controller {
             Float heightFeet = viewModel.getHeightFeet().floatValue();
             Float heightInches = viewModel.getHeightInches().floatValue();
 
+            // If metric convert height to imperial for storage
             if(settings.isMetric() ){
+                // Store height in variables so we can overwrite original
                 Float heightMetres = heightFeet;
                 Float heightCentimetres = heightInches;
 
+                // Convert and store in original height varibles
                 heightFeet = VitalUnitConverter.getFeet(heightMetres, heightCentimetres);
                 heightInches = VitalUnitConverter.getInches(heightMetres, heightCentimetres);
-                // heightFeet = heightFeet * 3.2808f;
             }
+
             newVitals.put("heightFeet", heightFeet);
             newVitals.put("heightInches", heightInches);
         }
 
         //Alaa Serhan
-        /*if (viewModel.getHeightInches() != null) {
-
-            Float heightInches = viewModel.getHeightInches().floatValue();
-
-            if (settings.isMetric()){
-
-                //Value Entered in Centimeters - Will be Converted Back in Inches
-                heightInches = heightInches * (0.39370f);
-            }
-            newVitals.put("heightInches", heightInches);
-        }*/
-
-        //Alaa Serhan
         if (viewModel.getWeight() != null) {
-
             Float weight = viewModel.getWeight();
 
+            // If metric(KG) convert weight to imperial(LBS)
             if (settings.isMetric()){
-                //Value Entered in Kilograms - Will be Converted back in Pounds
-                //weight = weight * (2.204f);
                 weight = VitalUnitConverter.getLbs(weight);
             }
+
             newVitals.put("weight", weight);
         }
+
         if (viewModel.getBloodPressureSystolic() != null) {
             newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
         }
+
         if (viewModel.getBloodPressureDiastolic() != null) {
             newVitals.put("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic().floatValue());
         }
+
         if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }

@@ -103,9 +103,9 @@ public class HistoryController extends Controller {
         IndexEncounterMedicalViewModel indexEncounterMedicalViewModel = new IndexEncounterMedicalViewModel();
         IndexEncounterPharmacyViewModel indexEncounterPharmacyViewModel = new IndexEncounterPharmacyViewModel();
 
-
         /* Alaa Serhan */
         ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
+
         indexEncounterMedicalViewModel.setSettings(response.getResponseObject());
 
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByEncounterId(encounterId);
@@ -130,11 +130,14 @@ public class HistoryController extends Controller {
         }
 
         /* Alaa Serhan */
+        // Get patient vitals
+        VitalMultiMap vitalMultiMap = patientEncounterVitalMapResponse.getResponseObject();
+
+        // If metric view is enabled convert vitals to metric
         if (indexEncounterMedicalViewModel.getSettings().isMetric()) {
-            indexEncounterMedicalViewModel.setVitalList(VitalUnitConverter.toMetric(patientEncounterVitalMapResponse.getResponseObject()));
-        } else {
-            indexEncounterMedicalViewModel.setVitalList(patientEncounterVitalMapResponse.getResponseObject());
+            vitalMultiMap = VitalUnitConverter.toMetric(vitalMultiMap);
         }
+        indexEncounterMedicalViewModel.setVitalList(vitalMultiMap);
 
         //get photos
         ServiceResponse<List<PhotoItem>> photoListResponse = photoService.retrieveEncounterPhotos(encounterId);
@@ -143,7 +146,10 @@ public class HistoryController extends Controller {
         }
         indexEncounterMedicalViewModel.setPhotos(photoListResponse.getResponseObject());
 
+
+        // Get patient encounter tab fields
         ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(encounterId);
+
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         }

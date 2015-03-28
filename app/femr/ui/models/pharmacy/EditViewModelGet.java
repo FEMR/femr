@@ -18,14 +18,12 @@
 */
 package femr.ui.models.pharmacy;
 
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.PatientItem;
-import femr.common.models.PrescriptionItem;
-import femr.common.models.ProblemItem;
+import femr.common.models.*;
 
 import java.util.List;
 
 public class EditViewModelGet {
+    private SettingItem settings;
     private PatientItem patient;
     private PatientEncounterItem patientEncounterItem;
     //Prescriptions
@@ -64,4 +62,8 @@ public class EditViewModelGet {
     public void setProblems(List<ProblemItem> problems) {
         this.problems = problems;
     }
+
+    // Alaa Serhan
+    public SettingItem getSettings() { return settings; }
+    public void setSettings(SettingItem settings) { this.settings = settings; }
 }

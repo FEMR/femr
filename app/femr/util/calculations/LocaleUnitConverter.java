@@ -1,13 +1,14 @@
 package femr.util.calculations;
 
+import femr.common.models.PatientItem;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 
-import java.math.BigDecimal;
+import java.math.BigDecimal; //Importing for converting
 
 /**
  * Created by owner1 on 3/11/2015.
  */
-public class VitalUnitConverter {
+public class LocaleUnitConverter {
     /**
      * Converts all imperial values in a VitalMultiMap to metric values
      * @param vitalMap MultiMap to get imperial values from and store metric values into
@@ -34,7 +35,7 @@ public class VitalUnitConverter {
                 Integer cm = getCentimetres(feetS, inchesS);
 
                 // Store metric height in multimap as heightMeters and heightCm
-                vitalMap.put("heightMeters", vitalMap.getDate(dateIndex), meters); // puts it back into ma
+                vitalMap.put("heightMeters", vitalMap.getDate(dateIndex), meters); // puts it back into map
                 vitalMap.put("heightCm", vitalMap.getDate(dateIndex), String.format("%02d", cm)); // puts it back into map
             }
 
@@ -47,6 +48,35 @@ public class VitalUnitConverter {
         }
 
         return vitalMap;
+    }
+
+    /**
+     * Converts all imperial values in a PatientItem to metric values
+     * @param patient PatientItem to get imperial values from and store metric values into
+     * @return PatientItem with metric values
+     */
+    public static PatientItem toMetric(PatientItem patient) {
+        if (patient == null) return patient;
+
+        // Store seperate height variables temporarily
+        // Wish getHeightFeet() and getHeightInches() were'nt stored as Integer in PatientItem.
+        // Causes issues with precision when value stored in database as a non whole number
+        if (patient.getHeightFeet() != null && patient.getHeightInches() != null) {
+            Integer feet = patient.getHeightFeet();
+            Integer inches = patient.getHeightInches();
+
+            // Overwrite patient height feet with meters
+            patient.setHeightFeet(LocaleUnitConverter.getMeters(feet, inches));
+
+            // Overwrite patient height inches with centimeters
+            patient.setHeightInches(LocaleUnitConverter.getCentimetres(feet, inches));
+        }
+
+        // Overwrite patients weight with kg
+        if (patient.getWeight() != null)
+            patient.setWeight(LocaleUnitConverter.getKgs(patient.getWeight()).floatValue());
+
+        return patient;
     }
 
     /**
@@ -150,7 +180,7 @@ public class VitalUnitConverter {
     public static Integer getCentimetres(String Feet, String Inches) {
         if (Feet == null || Inches == null)
             return 0;
-        return getCentimetres(Math.round(Float.parseFloat(Feet)), Math.round(Float.parseFloat(Inches)));
+        return getCentimetres(Float.parseFloat(Feet), Float.parseFloat(Inches));
     }
 
     /**

@@ -16,9 +16,9 @@ import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
-import femr.util.calculations.VitalUnitConverter;
+//Alaa Serhan - Importing Vital Unit Converter
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
-import org.apache.commons.collections.MapIterator;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -206,12 +206,12 @@ public class MedicalController extends Controller {
         ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
 
-        //Alaa Serhan - Purple Attempt
+        //Alaa Serhan
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
         // Check if Metric is Set
         // If Metric, GET values from map, convert and put BACK Into MAP
         if (viewModelGet.getSettings().isMetric()) {
-            vitalMultiMap = VitalUnitConverter.toMetric(vitalMultiMap);
+            vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
         }
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet));
@@ -219,10 +219,6 @@ public class MedicalController extends Controller {
 
     public Result editPost(int patientId) {
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-
-        //Alaa - I need to Add Stuff Here
-
-
 
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
@@ -312,6 +308,7 @@ public class MedicalController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         // Alaa Serhan
+        // Add View Model to Get the Settings to see if METRIC SYSTEM are set or not
         EditViewModelGet viewModelGet = new EditViewModelGet();
         ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
@@ -353,7 +350,7 @@ public class MedicalController extends Controller {
     }
 
     public Result listVitalsGet(Integer id) {
-        // Alaa Serhan
+        // Alaa Serhan - Add View Model to Get the Settings to see if METRIC SYSTEM are set or not
         EditViewModelGet viewModelGet = new EditViewModelGet();
         ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
@@ -374,7 +371,7 @@ public class MedicalController extends Controller {
         // Check if Metric is Set
         // If metric, Get Values from Map, Convert and Put Back Into Map
         if (viewModelGet.getSettings().isMetric()) {
-            vitalMap = VitalUnitConverter.toMetric(vitalMap);
+            vitalMap = LocaleUnitConverter.toMetric(vitalMap);
         }
 
         return ok(listVitals.render(vitalMap, viewModelGet));
@@ -404,9 +401,9 @@ public class MedicalController extends Controller {
         if (viewModel.getTemperature() != null) {
             Float temperature = viewModel.getTemperature();
 
-            // If temp is metric(C) convert to imperial(F)
+            // AS - If temp is metric(C) convert to imperial(F)- Using the Vital Unit Converter
             if(viewModelGet.getSettings().isMetric() ){
-                temperature = VitalUnitConverter.getFahrenheit(temperature);
+                temperature = LocaleUnitConverter.getFahrenheit(temperature);
             }
 
             newVitals.put("temperature", temperature);
@@ -420,15 +417,15 @@ public class MedicalController extends Controller {
             Float heightFeet = viewModel.getHeightFeet().floatValue();
             Float heightInches = viewModel.getHeightInches().floatValue();
 
-            // If metric convert height to imperial for storage
+            //AS - If metric convert height to imperial for storage
             if(viewModelGet.getSettings().isMetric() ){
-                // Store height in variables so we can overwrite original
+                //AS - Store height in variables so we can overwrite original
                 Float heightMetres = heightFeet;
                 Float heightCentimetres = heightInches;
 
-                // Convert and store in original height varibles
-                heightFeet = VitalUnitConverter.getFeet(heightMetres, heightCentimetres);
-                heightInches = VitalUnitConverter.getInches(heightMetres, heightCentimetres);
+                // AS - Convert and store in original height varibles
+                heightFeet = LocaleUnitConverter.getFeet(heightMetres, heightCentimetres);
+                heightInches = LocaleUnitConverter.getInches(heightMetres, heightCentimetres);
             }
             newVitals.put("heightFeet", heightFeet);
             newVitals.put("heightInches", heightInches);
@@ -438,9 +435,9 @@ public class MedicalController extends Controller {
         if (viewModel.getWeight() != null) {
             Float weight = viewModel.getWeight();
 
-            // If weight is metric (KG) convert to imperial (LBS)
+            // AS - If weight is metric (KG) convert to imperial (LBS)
             if(viewModelGet.getSettings().isMetric() ){
-                weight = VitalUnitConverter.getLbs(weight);
+                weight = LocaleUnitConverter.getLbs(weight);
             }
             newVitals.put("weight", weight);
         }

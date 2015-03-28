@@ -102,6 +102,11 @@
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
+                        @if(viewModel.getSettings.isMetric) { <!-- Alaa Serhan -->
+                            <input type="hidden" id="vitalsUnits" value="metric" />
+                        } else {
+                            <input type="hidden" id="vitalUnits" value="imp" />
+                        }
 
                         <div class="vitalWrap">
                             <label for="temperature">Temperature</label> <!---  Alaa Serhan -->
@@ -165,7 +170,7 @@
                             <div class="doubleVital">
                                 @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
                                     <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" max="11" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    <input type="number" step="number" min="0" max="99" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
                                 } else {
                                     <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
                                     <input type="number" step="number" min="0" max="11" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>

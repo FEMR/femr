@@ -16,7 +16,8 @@ import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
-import femr.util.calculations.VitalUnitConverter;
+//Alaa Serhan VitaUnit Converter for Metric
+import femr.util.calculations.LocaleUnitConverter;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -133,9 +134,10 @@ public class HistoryController extends Controller {
         // Get patient vitals
         VitalMultiMap vitalMultiMap = patientEncounterVitalMapResponse.getResponseObject();
 
-        // If metric view is enabled convert vitals to metric
+        // If metric view is enabled convert vitals and patientItem to metric
         if (indexEncounterMedicalViewModel.getSettings().isMetric()) {
-            vitalMultiMap = VitalUnitConverter.toMetric(vitalMultiMap);
+            vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
+            patientItem = LocaleUnitConverter.toMetric(patientItem);
         }
         indexEncounterMedicalViewModel.setVitalList(vitalMultiMap);
 

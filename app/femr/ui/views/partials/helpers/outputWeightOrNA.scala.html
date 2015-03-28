@@ -1,12 +1,13 @@
-@(number: java.lang.Float, isMetric: java.lang.Boolean)
+@(weight: java.lang.String, isMetric: java.lang.Boolean = false, emptyValue: java.lang.String = "NA")
 
 
-@if(number == null){
-    N/A
+@if(weight == null || weight.equals("null")){
+    @emptyValue
 }else{
     @if(isMetric) {
-        @("%.2f".format(number / 2.2046))
+        @weight.replaceAll("\\..*", "")kg
     } else {
-        @number
+        @* Truncate weight at period so weight in lbs is a whole value *@
+        @weight.replaceAll("\\..*", "")lbs
     }
 }

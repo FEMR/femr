@@ -47,8 +47,8 @@ public class PatientServiceTest {
 
         Injector injector = Guice.createInjector(new ServiceTestModule());
 
-        //mockPatientRepository = new MockRepository<>();
-        //mockPatientAgeClassificationRepository = new MockRepository<>();
+        mockPatientRepository = new MockRepository<>();
+        mockPatientAgeClassificationRepository = new MockRepository<>();
 
         dataModelMapper = injector.getInstance(DataModelMapper.class);
         patientService = injector.getInstance(PatientService.class);
@@ -105,11 +105,11 @@ public class PatientServiceTest {
         //assert
 
         // Make sure create was called in the repository
-        //assertThat(mockPatientRepository.createWasCalled);
+        assertThat(mockPatientRepository.createWasCalled);
 
         // Should be no errors returned
         assertThat(response.getResponseObject()).isNotNull();
-        //assertThat(response.hasErrors()).isFalse();
+        assertThat(response.hasErrors()).isFalse();
 
         // Patient Item fields should match what was passed in
         PatientItem createdPatient = response.getResponseObject();
@@ -122,6 +122,59 @@ public class PatientServiceTest {
         assertThat(createdPatient.getSex().equals(sex)).isTrue();
 
     }
+
+    @Test
+    public void UpdateSex_nullSex_Fails() throws Exception{
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updateSex(0, null);
+
+        //assert
+        assertThat(response.hasErrors()).isTrue();
+
+    }
+
+    @Test
+    public void UpdateSex_patientItem_Returned() throws Exception{
+
+        // arrange
+        ServiceResponse<PatientItem> response;
+        String firstName = "Test";
+        String lastName = "Patient";
+        String city = "Detroit";
+        String address = "1234 Main St.";
+        int userID = 1;
+        Calendar cal = Calendar.getInstance();
+        cal.set(1990, Calendar.JANUARY, 1);
+        Date birth = cal.getTime();
+
+        String sex = "Female";
+
+        PatientItem newPatient = new PatientItem();
+        newPatient.setFirstName(firstName);
+        newPatient.setLastName(lastName);
+        newPatient.setCity(city);
+        newPatient.setAddress(address);
+        newPatient.setBirth(birth);
+        newPatient.setUserId(userID);
+        newPatient.setSex(sex);
+
+
+        // put patient in mock repository, update sex with service
+        // make sure response matches expected
+
+
+        // act
+
+
+        // assert
+
+
+    }
+
 
     public class ServiceTestModule extends AbstractModule {
         @Override

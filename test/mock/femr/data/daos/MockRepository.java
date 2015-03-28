@@ -24,6 +24,9 @@ public class MockRepository<T> implements IRepository<T> {
     public T create(T entity) {
         createWasCalled = true;
         entityPassedIn = entity;
+
+        //entitiesPassedIn.add(entity);
+
         return entityPassedIn;
     }
     @Override

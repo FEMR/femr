@@ -15,7 +15,8 @@ import femr.common.models.PatientItem;
 import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
-import femr.util.calculations.VitalUnitConverter;
+//Alaa Serhan - Importing Vital Unit Converter
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
@@ -197,8 +198,8 @@ public class TriageController extends Controller {
 
             Float temperature = viewModel.getTemperature();
             if( settings.isMetric() ){
-                //Convert temperature from metric(C) to imperial(F) for storing
-                VitalUnitConverter.getFahrenheit(temperature);
+                // AS - Convert temperature from metric(C) to imperial(F) for storing
+                temperature = LocaleUnitConverter.getFahrenheit(temperature);
 //                temperature = temperature * 9/5 + 32;
             }
 
@@ -214,15 +215,15 @@ public class TriageController extends Controller {
             Float heightFeet = viewModel.getHeightFeet().floatValue();
             Float heightInches = viewModel.getHeightInches().floatValue();
 
-            // If metric convert height to imperial for storage
+            // AS - If metric convert height to imperial for storage
             if(settings.isMetric() ){
                 // Store height in variables so we can overwrite original
                 Float heightMetres = heightFeet;
                 Float heightCentimetres = heightInches;
 
-                // Convert and store in original height varibles
-                heightFeet = VitalUnitConverter.getFeet(heightMetres, heightCentimetres);
-                heightInches = VitalUnitConverter.getInches(heightMetres, heightCentimetres);
+                // AS - Convert and store in original height variables
+                heightFeet = LocaleUnitConverter.getFeet(heightMetres, heightCentimetres);
+                heightInches = LocaleUnitConverter.getInches(heightMetres, heightCentimetres);
             }
 
             newVitals.put("heightFeet", heightFeet);
@@ -233,9 +234,9 @@ public class TriageController extends Controller {
         if (viewModel.getWeight() != null) {
             Float weight = viewModel.getWeight();
 
-            // If metric(KG) convert weight to imperial(LBS)
+            // AS - If metric(KG) convert weight to imperial(LBS) - Store It
             if (settings.isMetric()){
-                weight = VitalUnitConverter.getLbs(weight);
+                weight = LocaleUnitConverter.getLbs(weight);
             }
 
             newVitals.put("weight", weight);

@@ -14,6 +14,7 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.pharmacy.*;
 import femr.ui.views.html.pharmacies.index;
 import femr.ui.views.html.pharmacies.edit;
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -94,6 +95,13 @@ public class PharmaciesController extends Controller {
         EditViewModelGet viewModelGet = new EditViewModelGet();
         String message;
 
+        // Get settings
+        ServiceResponse<SettingItem> response = searchService.getSystemSettings();
+        if (response.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setSettings(response.getResponseObject());
+
         //Get Patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
@@ -102,6 +110,11 @@ public class PharmaciesController extends Controller {
         }
         PatientItem patient = patientItemServiceResponse.getResponseObject();
         viewModelGet.setPatient(patient);
+
+        // Convert patients attributes to Metric if metric setting is on
+        if (viewModelGet.getSettings().isMetric()) {
+            patient = LocaleUnitConverter.toMetric(patient);
+        }
 
         //get the patient encounter item
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patient.getId());

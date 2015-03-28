@@ -1,12 +1,12 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.history.IndexEncounterViewModel, viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel, viewModelPharmacy: femr.ui.models.history.IndexEncounterPharmacyViewModel)
 
     @import femr.ui.views.html.layouts.main
-    @import femr.ui.views.html.partials.helpers.outputFloatOrNA
     @import femr.ui.views.html.partials.helpers.outputStringOrNA
     @import femr.ui.views.html.partials.helpers.outputIntOrNA
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
     @import femr.ui.views.html.partials.helpers.outputWeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
+    @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
     @import collection.JavaConversions._
 
     @additionalScripts = {
@@ -44,8 +44,12 @@
                         <p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>
 
                             <!---  Alaa Serhan - Need to Make Changes Here -->
-                        <p><span class="infoLabel">Height:</span> @outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches, viewModelMedical.getSettings.isMetric)</p>
-                        <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(patient.getWeight, viewModelMedical.getSettings.isMetric)</p>
+                        <p><span class="infoLabel">Height:</span> @outputHeightOrNA(
+                            String.valueOf(patient.getHeightFeet),
+                            String.valueOf(patient.getHeightInches),
+                            viewModelMedical.getSettings.isMetric
+                        )</p>
+                        <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
                     </div>
                 }
                 </div>
@@ -70,7 +74,7 @@
 
                         @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                             <span>
-                            @outputStringOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)))
+                            @outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric)
                             </span>
                         }
                         </p>

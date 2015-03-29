@@ -15,43 +15,66 @@
 */
 package unit.app.femr.business.services;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
 import femr.business.services.core.IPatientService;
 import femr.business.services.system.PatientService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.DataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.models.core.*;
-import femr.util.dependencyinjection.providers.*;
+import femr.data.models.mysql.Patient;
 import mock.femr.data.daos.MockRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import play.test.FakeApplication;
+import play.test.Helpers;
+import play.test.WithApplication;
+import femr.util.startup.Global;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class PatientServiceTest {
+public class PatientServiceTest extends WithApplication {
 
     private IPatientService patientService;
     private MockRepository<IPatient> mockPatientRepository;
     private MockRepository<IPatientAgeClassification> mockPatientAgeClassificationRepository;
 
+    @Inject
     private DataModelMapper dataModelMapper;
+
+    @Override
+    protected play.test.FakeApplication provideFakeApplication() {
+
+        Map<String,String> fakeConf = new HashMap<>();
+        //fakeConf.put("Dconfig.file", "conf/application.test.conf");
+        fakeConf.put("db.default.url", "jdbc:mysql://localhost/femr_test?characterEncoding=UTF-8");
+        fakeConf.put("db.default.user", "femr_test");
+        fakeConf.put("db.default.password", "PnhcTUQ9xpraJf7e");
+
+//        Global global = null;
+//        try {
+//            global = (Global) Class.forName("femr.util.startup.Global").newInstance();
+//
+//        } catch(Exception e) {}
+
+        return Helpers.fakeApplication(fakeConf);
+    }
+
 
     @Before
     public void setUp() throws Exception {
 
-        Injector injector = Guice.createInjector(new ServiceTestModule());
-
         mockPatientRepository = new MockRepository<>();
         mockPatientAgeClassificationRepository = new MockRepository<>();
 
-        dataModelMapper = injector.getInstance(DataModelMapper.class);
-        patientService = injector.getInstance(PatientService.class);
+        patientService = new PatientService(mockPatientRepository,
+                                            mockPatientAgeClassificationRepository,
+                                            dataModelMapper);
 
     }
 
@@ -72,7 +95,13 @@ public class PatientServiceTest {
 
         //assert
         assertThat(response.hasErrors()).isTrue();
+
+        assertThat(response.getResponseObject() != null);
+        assertThat(mockPatientRepository.findOneWasCalled);
+        assertThat(mockPatientRepository.updateWasCalled);
+
     }
+
 
     @Test
     public void CreatePatient_patientItem_Returned() throws Exception {
@@ -120,98 +149,96 @@ public class PatientServiceTest {
         assertThat(createdPatient.getBirth().compareTo(birth) == 0).isTrue();
         assertThat(createdPatient.getUserId() == userID).isTrue();
         assertThat(createdPatient.getSex().equals(sex)).isTrue();
-
     }
-
+    
+    /*
     @Test
     public void UpdateSex_nullSex_Fails() throws Exception{
 
-        //arrange
-        ServiceResponse<PatientItem> response;
+        Map<String,String> fakeConf = new HashMap<>();
+        // @TODO - These will not be the same for everyone
+        //fakeConf.put("db.default.driver", "com.mysql.jdbc.Driver");
+        fakeConf.put("db.default.url", "jdbc:mysql://localhost/femr_test?characterEncoding=UTF-8");
+        fakeConf.put("db.default.user", "femr_test");
+        fakeConf.put("db.default.password", "PnhcTUQ9xpraJf7e");
 
-        //act
-        response = patientService.updateSex(0, null);
+        running(fakeApplication(fakeConf), new Runnable(){
 
-        //assert
-        assertThat(response.hasErrors()).isTrue();
+            @Override
+            public void run() {
+
+                //arrange
+                ServiceResponse<PatientItem> response;
+
+                //act
+                response = patientService.updateSex(0, null);
+
+                //assert
+                assertThat(response.hasErrors()).isTrue();
+            }
+
+        });
+
+
 
     }
 
     @Test
     public void UpdateSex_patientItem_Returned() throws Exception{
 
-        // arrange
-        ServiceResponse<PatientItem> response;
-        String firstName = "Test";
-        String lastName = "Patient";
-        String city = "Detroit";
-        String address = "1234 Main St.";
-        int userID = 1;
-        Calendar cal = Calendar.getInstance();
-        cal.set(1990, Calendar.JANUARY, 1);
-        Date birth = cal.getTime();
+        Map<String,String> fakeConf = new HashMap<>();
+        // @TODO - These will not be the same for everyone
+        //fakeConf.put("db.default.driver", "com.mysql.jdbc.Driver");
+        fakeConf.put("db.default.url", "jdbc:mysql://localhost/femr_test?characterEncoding=UTF-8");
+        fakeConf.put("db.default.user", "femr_test");
+        fakeConf.put("db.default.password", "PnhcTUQ9xpraJf7e");
 
-        String sex = "Female";
+        running(fakeApplication(fakeConf), new Runnable(){
 
-        PatientItem newPatient = new PatientItem();
-        newPatient.setFirstName(firstName);
-        newPatient.setLastName(lastName);
-        newPatient.setCity(city);
-        newPatient.setAddress(address);
-        newPatient.setBirth(birth);
-        newPatient.setUserId(userID);
-        newPatient.setSex(sex);
+            @Override
+            public void run() {
+
+                // arrange
+
+                // Make Test Patient
+                ServiceResponse<PatientItem> response;
+                String firstName = "Test";
+                String lastName = "Patient";
+                String city = "Detroit";
+                String address = "1234 Main St.";
+                int userID = 1;
+                Calendar cal = Calendar.getInstance();
+                cal.set(1990, Calendar.JANUARY, 1);
+                Date birth = cal.getTime();
+
+                String sex = "Female";
+
+                IPatient newPatient = new Patient();
+                newPatient.setFirstName(firstName);
+                newPatient.setLastName(lastName);
+                newPatient.setCity(city);
+                newPatient.setAddress(address);
+                newPatient.setAge(birth);
+                newPatient.setUserId(userID);
+                newPatient.setSex(sex);
+
+                // put patient in mock repository, update sex with service
+                newPatient = mockPatientRepository.create(newPatient);
+
+                response = patientService.updateSex(newPatient.getId(), "Male");
+
+                //assert
 
 
-        // put patient in mock repository, update sex with service
-        // make sure response matches expected
+                // make sure response matches expected
 
+                assertThat(response.getResponseObject() != null);
+                assertThat(mockPatientRepository.findOneWasCalled);
+                assertThat(mockPatientRepository.updateWasCalled);
+            }
 
-        // act
-
-
-        // assert
-
+        });
 
     }
-
-
-    public class ServiceTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-
-            bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<MockRepository<IPatient>>() {});
-            bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<MockRepository<IPatientAgeClassification>>() {});
-
-            bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
-            bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
-            bind(IMedication.class).toProvider(MedicationProvider.class);
-            bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
-            bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
-            bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
-            bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
-            bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
-            bind(IMissionCity.class).toProvider(MissionCityProvider.class);
-            bind(IMissionCountry.class).toProvider(MissionCountryProvider.class);
-            bind(IMissionTeam.class).toProvider(MissionTeamProvider.class);
-            bind(IMissionTrip.class).toProvider(MissionTripProvider.class);
-            bind(IPatient.class).toProvider(PatientProvider.class);
-            bind(IPatientAgeClassification.class).toProvider(PatientAgeClassificationProvider.class);
-            bind(IPatientEncounter.class).toProvider(PatientEncounterProvider.class);
-            bind(IPatientEncounterPhoto.class).toProvider(PatientEncounterPhotoProvider.class);
-            bind(IPatientEncounterTabField.class).toProvider(PatientEncounterTabFieldProvider.class);
-            bind(IPatientEncounterVital.class).toProvider(PatientEncounterVitalProvider.class);
-            bind(IPatientPrescription.class).toProvider(PatientPrescriptionProvider.class);
-            bind(IPhoto.class).toProvider(PhotoProvider.class);
-            bind(IRole.class).toProvider(RoleProvider.class);
-            bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
-            bind(ITab.class).toProvider(TabProvider.class);
-            bind(ITabField.class).toProvider(TabFieldProvider.class);
-            bind(ITabFieldType.class).toProvider(TabFieldTypeProvider.class);
-            bind(ITabFieldSize.class).toProvider(TabFieldSizeProvider.class);
-            bind(IUser.class).toProvider(UserProvider.class);
-            bind(IVital.class).toProvider(VitalProvider.class);
-        }
-    }
-
+     */
 }

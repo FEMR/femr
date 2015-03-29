@@ -32,9 +32,7 @@
     margin-top: -6px;
 }
 
-.medication span {
-    width: 100%;
-}
+
 
 .medication input {
     width: 100%;
@@ -186,4 +184,53 @@ input[style] {
 
 #prescriber{
     font-size: 10px;
+}
+
+
+.prescriptionHeader {
+    width: 75%;
+}
+.prescriptionRow > span {
+    display: inline-block;
+}
+.prescriptionRow input {
+    margin-top: 0;
+}
+.prescriptionName {
+    width: 50%;
+}
+
+.prescriptionAdministrationName {
+    width: 25%;
+}
+
+.prescriptionInput .prescriptionAdministrationName {
+    width: 12%;
+}
+.prescriptionInput .prescriptionAdministrationName select {
+    padding: 0;
+}
+.prescriptionInput .prescriptionAdministrationDays {
+    width: 12%;
+}
+
+.prescriptionAmount {
+    width: 20%;
+}
+.prescriptionInput > span {
+    vertical-align: top;
+}
+
+.medicationRemaining {
+    font-size: 10px;
+}
+.lowMedication {
+    color: #FF0000;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.medication_ingredient {
+    font-size: 8px;
+    padding-left: 5px;
 }

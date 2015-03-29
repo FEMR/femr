@@ -91,6 +91,7 @@ public interface IDataModelMapper {
      */
     IMedicationForm createMedicationForm(String name);
 
+
     /**
      * Generate and provide an implementation of IMissionCity.
      *
@@ -180,13 +181,14 @@ public interface IDataModelMapper {
      *
      * @param amount        amount of medication dispensed, not null
      * @param medication    the medication, not null
+     * @param medicationAdministrationId  ID of Administration type of the prescription
      * @param userId        id of the user creating the prescription, not null
      * @param encounterId   encounter id of the prescription, not null
      * @param replacementId id of the prescription being replaced, may be null
      * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
+    IPatientPrescription createPatientPrescription(int amount, IMedication medication, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
 
     /**
      * Generate and provide an implementation of IPhoto.

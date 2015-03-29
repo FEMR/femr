@@ -18,12 +18,15 @@
 */
 package femr.ui.models.history;
 
+import femr.common.models.PrescriptionItem;
+
 import java.util.List;
 
 public class IndexEncounterPharmacyViewModel {
 
     private List<String> problems;
-    private List<String> prescriptions;
+
+    private List<PrescriptionItem> prescriptions;
 
     public List<String> getProblems() {
         return problems;
@@ -33,11 +36,11 @@ public class IndexEncounterPharmacyViewModel {
         this.problems = problems;
     }
 
-    public List<String> getPrescriptions() {
+    public List<PrescriptionItem> getPrescriptions() {
         return prescriptions;
     }
 
-    public void setPrescriptions(List<String> prescriptions) {
+    public void setPrescriptions(List<PrescriptionItem> prescriptions) {
         this.prescriptions = prescriptions;
     }
 }

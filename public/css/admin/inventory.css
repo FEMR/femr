@@ -121,3 +121,11 @@
 .remove span:hover{
     cursor: pointer;
 }
+
+#currentMedicationsGrid a {
+    cursor: pointer;
+}
+
+.medication_ingredient {
+    font-size: 9px;
+}

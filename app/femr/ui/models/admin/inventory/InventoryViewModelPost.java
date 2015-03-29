@@ -34,12 +34,16 @@ public class InventoryViewModelPost {
 
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
-        if (medicationQuantity == null)
-            errors.add(new ValidationError("medicationQuantity", "quantity is a required field"));
+        if (medicationQuantity == null) {
+            medicationQuantity = 0;
+            //errors.add(new ValidationError("medicationQuantity", "quantity is a required field"));
+        }
+
         if (StringUtils.isNullOrWhiteSpace(medicationName))
             errors.add(new ValidationError("medicationName", "name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(medicationForm))
             errors.add(new ValidationError("medicationForm", "a form is required"));
+        /*
         for (Integer i : medicationStrength){
             if (i == null)
                 errors.add(new ValidationError("medicationStrength", "all strength fields are required"));
@@ -52,7 +56,7 @@ public class InventoryViewModelPost {
             if (StringUtils.isNullOrWhiteSpace(mi))
                 errors.add(new ValidationError("medicationIngredient", "all ingredients required"));
         }
-
+*/
         return errors.isEmpty() ? null : errors;
     }
 

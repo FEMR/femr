@@ -18,6 +18,7 @@
 */
 package femr.business.services.core;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
 
@@ -38,7 +39,7 @@ public interface IMedicationService {
     /**
      * Creates multiple new prescriptions.
      *
-     * @param prescriptionNames names of the prescriptions, not null, greater than 0
+     * @param prescriptions     prescriptions, not null, greater than 0
      * @param userId            id of the user creating the prescriptions, not null
      * @param encounterId       id of the encounter, not null
      * @param isDispensed       true if the prescription was dispensed, not null
@@ -46,7 +47,7 @@ public interface IMedicationService {
      * @return a service response that contains a list of updated PrescriptionItems that were created
      * and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
+    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptions, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
 
     /**
      * Flags a prescription to say that it was filled.
@@ -73,4 +74,11 @@ public interface IMedicationService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> retrieveAllMedications();
+
+    /**
+     * Retrieves a ObjectNode of all medications in the system
+     * @return a service response that contains a list of ObjectNode's
+     * and/or errors if they exist
+     */
+    ServiceResponse<ObjectNode> retrieveAllMedicationsWithID();
 }

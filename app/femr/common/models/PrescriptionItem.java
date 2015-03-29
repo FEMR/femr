@@ -18,19 +18,31 @@
 */
 package femr.common.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PrescriptionItem {
     private int id;
     private String name;
     private Integer replacementId;
     private String prescriberFirstName;
     private String prescriberLastName;
+    private Integer administrationId;
+    private String administrationName;
+    private Float administrationModifier;
+    private Integer amount;
+    private Integer medicationID;
+    private String medicationForm;
+    private Integer medicationRemaining;
+    private List<MedicationItem.ActiveIngredient> medicationActiveDrugs;
 
     public PrescriptionItem(String name){
+        medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
         this.name = name;
     }
 
     public PrescriptionItem() {
-
+        medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
     }
 
     public String getName() {
@@ -71,5 +83,71 @@ public class PrescriptionItem {
 
     public void setPrescriberLastName(String prescriberLastName) {
         this.prescriberLastName = prescriberLastName;
+    }
+
+    public Integer getAdministrationId() {
+        return administrationId;
+    }
+
+    public void setAdministrationId(Integer administrationId) {
+        this.administrationId = administrationId;
+    }
+
+    public String getAdministrationName() {
+        return administrationName;
+    }
+
+    public void setAdministrationName(String administrationName) {
+        this.administrationName = administrationName;
+    }
+
+    public Float getAdministrationModifier() {
+        return administrationModifier;
+    }
+
+    public void setAdministrationModifier(Float administrationModifier) {
+        this.administrationModifier = administrationModifier;
+    }
+
+    public Integer getAmount() {
+        if (amount == null) return 0;
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public Integer getMedicationID() {
+        return medicationID;
+    }
+
+    public void setMedicationID(Integer medicationID) {
+        this.medicationID = medicationID;
+    }
+
+    public String getMedicationForm() {
+        return medicationForm;
+    }
+
+    public void setMedicationForm(String medicationForm) {
+        this.medicationForm = medicationForm;
+    }
+
+    public Integer getMedicationRemaining() {
+        if (medicationRemaining == null) return 0;
+        return medicationRemaining;
+    }
+
+    public void setMedicationRemaining(Integer medicationRemaining) {
+        this.medicationRemaining = medicationRemaining;
+    }
+
+    public List<MedicationItem.ActiveIngredient> getMedicationActiveDrugs() {
+        return medicationActiveDrugs;
+    }
+
+    public void setMedicationActiveDrugs(List<MedicationItem.ActiveIngredient> medicationActiveDrugs) {
+        this.medicationActiveDrugs = medicationActiveDrugs;
     }
 }

@@ -18,6 +18,9 @@
 */
 package femr.ui.controllers.admin;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -26,14 +29,16 @@ import femr.business.services.core.ISessionService;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.inventory.InventoryViewModelGet;
+import femr.ui.models.admin.inventory.*;
 import femr.common.models.MedicationItem;
-import femr.ui.models.admin.inventory.InventoryViewModelPost;
 import femr.ui.views.html.admin.inventory.index;
 import play.data.Form;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +50,7 @@ import java.util.List;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
     private final Form<InventoryViewModelPost> inventoryViewModelPostForm = Form.form(InventoryViewModelPost.class);
+    private final Form<InventoryViewModelDataQuery> inventoryViewModelDataQueryForm = Form.form(InventoryViewModelDataQuery.class);
     private final ISessionService sessionService;
     private final IInventoryService inventoryService;
 
@@ -85,11 +91,14 @@ public class InventoryController extends Controller {
 
     public Result indexPost() {
         Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
-        if (form.hasErrors()){
+        if (form.hasErrors()) {
+            System.out.println(form.errors().toString());
             //if the request gets past the javascript validation and fails validation in the viewmodel, then
             //don't proceed to save anything. In the future, this should alert the user as to what they did
             //wrong.
-            return redirect("/admin/inventory");
+            /* Should be validated client side and server-side throws error */
+            throw new RuntimeException();
+            //return redirect("/admin/inventory");
         }
 
         InventoryViewModelPost inventoryViewModelPost = form.bindFromRequest().get();
@@ -102,12 +111,16 @@ public class InventoryController extends Controller {
         medicationItem.setForm(inventoryViewModelPost.getMedicationForm());
 
         for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++) {
-            medicationItem.addActiveIngredient(
-                    inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
-                    inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
-                    inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex),
-                    false
-            );
+            if (inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex) != null &&
+                    inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex) != null &&
+                    inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex) != null) {
+                medicationItem.addActiveIngredient(
+                        inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
+                        inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
+                        inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex),
+                        false
+                );
+            }
         }
 
         ServiceResponse<MedicationItem> medicationItemServiceResponse = inventoryService.createMedication(medicationItem);
@@ -118,4 +131,39 @@ public class InventoryController extends Controller {
         return redirect("/admin/inventory");
     }
 
+      /* Andre Farah - Updated  */
+    public Result ajaxGet() {
+
+        //Andre Farah - Changed from bindFromRequest() to bind(reqqest().body().asJson()) to properly bind
+        //              the json objects passed from bs_grid
+        Form<InventoryViewModelDataQuery> form = inventoryViewModelDataQueryForm.bind(request().body().asJson());
+        if (form.hasErrors()){
+            throw new RuntimeException();
+        }
+        InventoryViewModelDataQuery dataQuery = form.get();
+
+        // Get paginated rows
+        ServiceResponse<ObjectNode> medicationServiceResponse = inventoryService.getPaginatedMedicationInventory(
+                dataQuery.getPage_num(),
+                dataQuery.getRows_per_page(),
+                dataQuery.getSorting(), //Andre Farah - Added for Sorting
+                dataQuery.getFilter_rules()// Andre Farah - Added for Filtering
+        );
+        if (medicationServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        ObjectNode result = medicationServiceResponse.getResponseObject();
+
+        return ok(result);
+
+    }
+
+    public Result ajaxDelete(int medicationID) {
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteMedication(medicationID);
+        if (inventoryServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        return ok("true");
+    }
 }

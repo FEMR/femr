@@ -249,7 +249,8 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName) {
+    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -267,6 +268,28 @@ public class ItemModelMapper implements IItemModelMapper {
         if (StringUtils.isNotNullOrWhiteSpace(lastName))
             prescriptionItem.setPrescriberLastName(lastName);
 
+        if (medicationAdministration != null) {
+            prescriptionItem.setAdministrationId(medicationAdministration.getId());
+            prescriptionItem.setAdministrationName(medicationAdministration.getName());
+            prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
+        }
+        if (amount != null)
+            prescriptionItem.setAmount(amount);
+
+        if (medication != null) {
+            MedicationItem medicationItem = UIModelMapper.createMedicationItem(medication);
+            prescriptionItem.setMedicationID(medicationItem.getId());
+
+            if (medicationItem.getForm() != null)
+                prescriptionItem.setMedicationForm(medicationItem.getForm());
+
+            prescriptionItem.setMedicationRemaining(medicationItem.getQuantity_current());
+
+
+
+            if (medicationItem.getActiveIngredients() != null)
+                prescriptionItem.setMedicationActiveDrugs(medicationItem.getActiveIngredients());
+        }
         return prescriptionItem;
     }
 
@@ -498,5 +521,18 @@ public class ItemModelMapper implements IItemModelMapper {
             vitalItem.setValue(value);
 
         return vitalItem;
+    }
+
+    public static MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+        if (medicationAdministration == null)
+            return null;
+
+        MedicationAdministrationItem medicationAdministrationItem = new MedicationAdministrationItem(
+                medicationAdministration.getId(),
+                medicationAdministration.getName(),
+                medicationAdministration.getDailyModifier()
+        );
+
+        return medicationAdministrationItem;
     }
 }

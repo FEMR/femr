@@ -42,6 +42,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
     private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
+    private final Provider<IMedicationAdministration> medicationAdministrationProvider;
     private final Provider<IMedicationForm> medicationFormProvider;
     private final Provider<IMissionCity> missionCityProvider;
     private final Provider<IMissionCountry> missionCountryProvider;
@@ -72,6 +73,7 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IMedicationForm> medicationFormProvider,
                            Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                            Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
+                           Provider<IMedicationAdministration> medicationAdministrationProvider,
                            Provider<IMissionCity> missionCityProvider,
                            Provider<IMissionCountry> missionCountryProvider,
                            Provider<IMissionTeam> missionTeamProvider,
@@ -98,6 +100,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
         this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
+        this.medicationAdministrationProvider = medicationAdministrationProvider;
         this.medicationFormProvider = medicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
         this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
@@ -256,6 +259,7 @@ public class DataModelMapper implements IDataModelMapper{
 
         return medicationForm;
     }
+
 
     /**
      * {@inheritDoc}
@@ -421,7 +425,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
+    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
 
         if (medication == null || userId < 1 || encounterId < 1) {
 
@@ -434,6 +438,8 @@ public class DataModelMapper implements IDataModelMapper{
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
         patientPrescription.setMedication(medication);
+        if (medicationAdministrationId != null)
+            patientPrescription.setMedicationAdministration(Ebean.getReference(medicationAdministrationProvider.get().getClass(), medicationAdministrationId));
         patientPrescription.setReplacementId(replacementId);
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         patientPrescription.setDispensed(isDispensed);

@@ -1,10 +1,7 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.services.core.IEncounterService;
-import femr.business.services.core.IMedicationService;
-import femr.business.services.core.ISearchService;
-import femr.business.services.core.ISessionService;
+import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -32,16 +29,19 @@ public class PharmaciesController extends Controller {
     private final IMedicationService medicationService;
     private final ISessionService sessionService;
     private final ISearchService searchService;
+    private final IInventoryService inventoryService;
 
     @Inject
     public PharmaciesController(IEncounterService encounterService,
                                 IMedicationService medicationService,
                                 ISessionService sessionService,
-                                ISearchService searchService) {
+                                ISearchService searchService,
+                                IInventoryService inventoryService) {
         this.encounterService = encounterService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.inventoryService = inventoryService;
     }
 
     public Result indexGet() {
@@ -133,6 +133,15 @@ public class PharmaciesController extends Controller {
         }
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
+        //get MedicationAdministrationItems
+        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
+                inventoryService.retrieveAvailableAdministrations();
+        if (medicationAdministrationItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setMedicationAdministrationItems(medicationAdministrationItemServiceResponse.getResponseObject());
+
+
         //find patient problems, they do not have to exist.
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
@@ -164,87 +173,31 @@ public class PharmaciesController extends Controller {
         }
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
-        //after replacing the prescriptions, this list will contain the non-replaced prescriptions that need
-        //to be identified as dispensed. The service layer checks for an ID of 0. Also, this is a cluster fuck
-        //and some of the logic needs to be moved up to the service layer.
-        List<Integer> prescriptionToMarkAsDispensedOrCounseled = new ArrayList<>();
         boolean isCounseled = StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getDisclaimer());
-        //replace prescription 1
-        PrescriptionItem prescriptionItem = new PrescriptionItem();
-        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication1())) {
-            prescriptionItem.setName(createViewModelPost.getReplacementMedication1());
-            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
-                    prescriptionItem,
-                    createViewModelPost.getId_prescription1(),
-                    currentUserSession.getId(),
-                    isCounseled
-            );
-            if (response.hasErrors()) {
-                throw new RuntimeException();
+        //after replacing the prescriptions, this list will contain the non-replaced prescriptions that need
+        //to be identified as dispensed.
+        List<Integer> prescriptionToMarkAsDispensedOrCounseled = new ArrayList<>();
+
+        for(PrescriptionItem script : createViewModelPost.getPrescriptions()) {
+            //If getMedicationID is not null then a replacement is being done
+            if (script.getMedicationID() != null) {
+                // Create the replacement prescription
+                ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
+                        script,
+                        script.getId(),
+                        currentUserSession.getId(),
+                        isCounseled
+                );
+                if (response.hasErrors()) {
+                    throw new RuntimeException();
+                }
+            } else {
+                // No replacement to be done. Add to list of prescriptions to mark
+                // as dispensed
+                prescriptionToMarkAsDispensedOrCounseled.add(script.getId());
             }
-        } else {
-            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription1());
         }
-        //replace prescription 2
-        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication2())) {
-            prescriptionItem.setName(createViewModelPost.getReplacementMedication2());
-            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
-                    prescriptionItem,
-                    createViewModelPost.getId_prescription2(),
-                    currentUserSession.getId(),
-                    isCounseled
-            );
-            if (response.hasErrors()) {
-                throw new RuntimeException();
-            }
-        } else {
-            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription2());
-        }
-        //replace prescription 3
-        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication3())) {
-            prescriptionItem.setName(createViewModelPost.getReplacementMedication3());
-            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
-                    prescriptionItem,
-                    createViewModelPost.getId_prescription3(),
-                    currentUserSession.getId(),
-                    isCounseled
-            );
-            if (response.hasErrors()) {
-                throw new RuntimeException();
-            }
-        } else {
-            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription3());
-        }
-        //replace prescription 4
-        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication4())) {
-            prescriptionItem.setName(createViewModelPost.getReplacementMedication4());
-            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
-                    prescriptionItem,
-                    createViewModelPost.getId_prescription4(),
-                    currentUserSession.getId(),
-                    isCounseled
-            );
-            if (response.hasErrors()) {
-                throw new RuntimeException();
-            }
-        } else {
-            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription4());
-        }
-        //replace prescription 5
-        if (StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getReplacementMedication5())) {
-            prescriptionItem.setName(createViewModelPost.getReplacementMedication5());
-            ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
-                    prescriptionItem,
-                    createViewModelPost.getId_prescription5(),
-                    currentUserSession.getId(),
-                    isCounseled
-            );
-            if (response.hasErrors()) {
-                throw new RuntimeException();
-            }
-        } else {
-            prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription5());
-        }
+
 
         //update non-replaced prescriptions to dispensed
         ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.flagPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);

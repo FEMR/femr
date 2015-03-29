@@ -76,7 +76,7 @@ public abstract class AbstractMultiMap {
      */
     public String getDate(int i) {
         // check that the index specified
-        if (dateList.size() < i || i < 0) {
+        if (dateList.size() <= i || i < 0) {
             return null;
         }
         return dateList.get(i);
@@ -90,7 +90,7 @@ public abstract class AbstractMultiMap {
      */
     public String getFormatedDateTime(int i) {
         // check that the index specified
-        if (dateList.size() < i || i < 0) {
+        if (dateList.size() <= i || i < 0) {
             return null;
         }
         return StringUtils.FormatDateTime(dateList.get(i));

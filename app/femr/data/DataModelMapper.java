@@ -20,7 +20,6 @@ package femr.data;
 
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
-import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -34,7 +33,7 @@ import java.util.List;
  * Responsible for creating model objects (data/models).
  * Only visible to data & service layer.
  */
-public class DataModelMapper {
+public class DataModelMapper implements IDataModelMapper{
 
     private final Provider<IChiefComplaint> chiefComplaintProvider;
     private final Provider<IMedication> medicationProvider;
@@ -117,13 +116,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IChiefComplaint.
-     *
-     * @param value              the chief complaint itself, not null
-     * @param patientEncounterId id of the encounter that the chief complaint belongs to, not null
-     * @param sortOrder          the order in which the chief complaint is sorted(when dealing with >1 chief complaint), may be null
-     * @return an implementation of IChiefComplaint or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder) {
 
         if (StringUtils.isNullOrWhiteSpace(value)) {
@@ -140,11 +135,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMedication.
-     *
-     * @param name name of the medication, not null
-     * @return an implementation of IMedication or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMedication createMedication(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -161,15 +154,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMedication for use in adding to inventory.
-     *
-     * @param name                  name of the medication, not null
-     * @param total                 the total quantity of the medication, not null
-     * @param current               the current quantity of the medication, not null
-     * @param medicationActiveDrugs active drugs in the medication, may be null
-     * @param medicationForm        the medications form e.g. cream/chewable/pill, may be null
-     * @return an implementation of IMedication or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
 
         if (StringUtils.isNullOrWhiteSpace(name) || total == null || current == null) {
@@ -190,14 +177,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMedicationActiveDrug.
-     *
-     * @param value                    strength of the drug, not null
-     * @param isDenominator            is the drug a denominator, not null
-     * @param activeDrugUnitId         id of the unit for measurement of the drug, not null
-     * @param medicationActiveDrugName the drug name, may be null
-     * @return an implementation of IMedicationActiveDrug
+     * {@inheritDoc}
      */
+    @Override
     public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
 
         IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
@@ -211,11 +193,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMedicationActiveDrugName.
-     *
-     * @param name name of the drug, not null
-     * @return an implementation of IMedicationActiveDrugName or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMedicationActiveDrugName createMedicationActiveDrugName(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -231,11 +211,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMedicationForm.
-     *
-     * @param name name of the form e.g. cream/chewable/pill, not null
-     * @return an implementation of IMedicationForm or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMedicationForm createMedicationForm(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -252,12 +230,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMissionCity.
-     *
-     * @param name           name of the city, not null
-     * @param missionCountry the country model, not null
-     * @return an implementation of IMissionCity or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMissionCity createMissionCity(String name, IMissionCountry missionCountry) {
 
         if (StringUtils.isNullOrWhiteSpace(name) || missionCountry == null) {
@@ -274,13 +249,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMissionTeam.
-     *
-     * @param name        the team name, not null
-     * @param location    where the team is based out of, may be null
-     * @param description a description of the team, may be null
-     * @return an implementation of IMissionTeam or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMissionTeam createMissionTeam(String name, String location, String description) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -298,15 +269,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IMissionTrip.
-     *
-     * @param startDate   start date of the trip, not null
-     * @param endDate     end date of the trip, not null
-     * @param isCurrent   is this the current trip?, not null
-     * @param missionCity the city where the trip is taking place, not null
-     * @param missionTeam the country where the trip is taking place, not null
-     * @return an implementation of IMissionTrip or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam) {
 
         if (startDate == null || endDate == null || missionCity == null || missionTeam == null) {
@@ -326,18 +291,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IPatient.
-     *
-     * @param userID    id of the user creating the patient, not null
-     * @param firstName first name of the patient, not null
-     * @param lastName  last name of the patient, not null
-     * @param birthday  the patients birthday, may be null
-     * @param sex       the sex of the patient, may be null
-     * @param address   the address of the patients residence, may be null
-     * @param city      the city of the patient, may be null
-     * @param photoID   the id of a photo of the patient, may be null
-     * @return an implementation of IPatient or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID) {
 
         if (userID < 0 || StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName)) {
@@ -362,16 +318,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IPatientEncounter.
-     *
-     * @param patientID                  id of the patient, not null
-     * @param date                       date of checking for triage, not null
-     * @param weeksPregnant              weeks pregnant of the patient, may be null
-     * @param userId                     id of the user creating the encounter, not null
-     * @param patientAgeClassificationId id of the age classification, may be null
-     * @param tripId                     id of the trip, may be null
-     * @return an implementation of IPatientEncounter or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId) {
 
         if (patientID < 1 || userId < 1 || date == null) {
@@ -395,16 +344,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IPatientEncounterTabField
-     *
-     * @param tabFieldId       id of the field, not null
-     * @param userId           id of the user creating the field, not null
-     * @param value            value of the field, not null
-     * @param encounterId      id of the encounter, not null
-     * @param dateTaken        date the field was recorded, not null
-     * @param chiefComplaintId id of the chief complaint, may be null
-     * @return an implementation of IPatientEncounterTabfield or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId) {
 
         if (tabFieldId < 1 || userId < 1 || StringUtils.isNullOrWhiteSpace(value) || encounterId < 1 || dateTaken == null) {
@@ -426,15 +368,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IPatientEncounterVital
-     *
-     * @param encounterId id of the encounter, not null
-     * @param userId      id of the user creating the vital value, not null
-     * @param time        when the vital was recorded, not null
-     * @param vitalID     id of the vital field, not null
-     * @param value       value of the vital, not null
-     * @return an implementation of IPatientEncounterVital or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, int vitalID, float value) {
 
         if (encounterId < 1 || userId < 1 || StringUtils.isNullOrWhiteSpace(time) || vitalID < 1) {
@@ -454,16 +390,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IPatientPrescription
-     *
-     * @param amount        amount of medication dispensed, not null
-     * @param medication    the medication, not null
-     * @param userId        id of the user creating the prescription, not null
-     * @param encounterId   encounter id of the prescription, not null
-     * @param replacementId id of the prescription being replaced, may be null
-     * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
-     * @return an implementation of IPatientPrescription or null if processing fails, not null
+     * {@inheritDoc}
      */
+    @Override
     public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
 
         if (medication == null || userId < 1 || encounterId < 1) {
@@ -486,12 +415,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IPhoto.
-     *
-     * @param description description of the photo, may be null
-     * @param filePath    path to the file, not null
-     * @return an implementation of IPhoto or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IPhoto createPhoto(String description, String filePath) {
 
         if (StringUtils.isNullOrWhiteSpace(filePath)) {
@@ -508,26 +434,23 @@ public class DataModelMapper {
         return photo;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IRole createRole(String name) {
 
+        // @TODO - Check for null name
         IRole role = roleProvider.get();
-
         role.setName(name);
 
         return role;
     }
 
     /**
-     * Generate and provide an implementation of ITab.
-     *
-     * @param date      date of creation, not null
-     * @param leftSize  left column size, not null
-     * @param rightSize right column size, not null
-     * @param name      name of the tab, not null
-     * @param isDeleted is the tab deleted, not null
-     * @param userId    id of the user creating the tab, not null
-     * @return an implementation of ITab or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public ITab createTab(DateTime date, int leftSize, int rightSize, String name, boolean isDeleted, int userId) {
 
         if (date == null || StringUtils.isNullOrWhiteSpace(name) || userId < 1) {
@@ -550,17 +473,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of ITabField
-     *
-     * @param name           name of the field, not null
-     * @param order          order of the field, may be null
-     * @param placeholder    placeholder for the field, may be null
-     * @param isDeleted      is the field deleted, not null
-     * @param tabFieldSizeID id of {@link femr.data.models.core.ITabFieldSize}, not null
-     * @param tabFieldTypeID id of {@link femr.data.models.core.ITabFieldType}, not null
-     * @param tabID          id of {@link femr.data.models.core.ITab}, not null
-     * @return an implementation of ITabField or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public ITabField createTabField(String name, Integer order, String placeholder, boolean isDeleted, int tabFieldSizeID, int tabFieldTypeID, int tabID) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -582,19 +497,9 @@ public class DataModelMapper {
     }
 
     /**
-     * Generate and provide an implementation of IUser
-     *
-     * @param firstName       first name of the user, not null
-     * @param lastName        last name of the user, may be null
-     * @param email           email address of the user, not null
-     * @param date            date of last login, not null
-     * @param notes           notes about who the user is, may be null
-     * @param password        password for the user, not null
-     * @param isDeleted       is the user deleted, not null
-     * @param isPasswordReset is the users password marked for a reset the next time they log in, not null
-     * @param roles           a list of roles, must have at least one, not null
-     * @return an implementation of IUser or null if processing fails
+     * {@inheritDoc}
      */
+    @Override
     public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(password) || StringUtils.isNullOrWhiteSpace(email) || date == null || roles == null || roles.size() < 1) {

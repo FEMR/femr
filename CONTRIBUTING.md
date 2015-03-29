@@ -23,7 +23,7 @@
     activator clean compile
 
 ### Setting up IntelliJ IDEA 14
-1. Install Plugins: Scala
+1. Install Plugin: Scala
 2. File -> Import
 3. Select the femr folder, click next
 4. Ensure the Project SDK is java version 1.7, click finish

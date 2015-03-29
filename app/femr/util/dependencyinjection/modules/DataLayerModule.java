@@ -20,6 +20,8 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -31,6 +33,10 @@ public class DataLayerModule extends AbstractModule {
 
     @Override
     protected void configure() {
+
+        // DataModelMapper Injection
+        bind(IDataModelMapper.class).to(DataModelMapper.class);
+
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);

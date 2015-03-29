@@ -25,7 +25,7 @@ import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.models.core.research.IResearchEncounter;
 import femr.data.models.core.research.IResearchEncounterVital;
 import femr.data.models.mysql.PatientPrescription;
@@ -49,7 +49,7 @@ public class ResearchService implements IResearchService {
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> prescriptionRepository;
     private final IRepository<IMedication> medicationRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     /**
      * Initializes the research service and injects the dependence
@@ -62,7 +62,7 @@ public class ResearchService implements IResearchService {
                            IRepository<IVital> vitalRepository,
                            IRepository<IPatientPrescription> prescriptionRepository,
                            IRepository<IMedication> medicationRepository,
-                           DataModelMapper dataModelMapper) {
+                           IDataModelMapper dataModelMapper) {
 
         this.researchEncounterRepository = researchEncounterRepository;
         this.researchEncounterVitalRepository = researchEncounterVitalRepository;

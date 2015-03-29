@@ -26,7 +26,7 @@ import femr.business.services.core.IPatientService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
@@ -41,12 +41,12 @@ public class PatientService implements IPatientService {
 
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                          DataModelMapper dataModelMapper) {
+                          IDataModelMapper dataModelMapper) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;

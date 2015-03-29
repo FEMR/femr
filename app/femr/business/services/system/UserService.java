@@ -25,7 +25,7 @@ import femr.business.services.core.IUserService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import femr.data.daos.IRepository;
@@ -43,13 +43,13 @@ public class UserService implements IUserService {
     private final IRepository<IUser> userRepository;
     private final IPasswordEncryptor passwordEncryptor;
     private final IRepository<IRole> roleRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public UserService(IRepository<IUser> userRepository,
                        IPasswordEncryptor passwordEncryptor,
                        IRepository<IRole> roleRepository,
-                       DataModelMapper dataModelMapper) {
+                       IDataModelMapper dataModelMapper) {
 
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;

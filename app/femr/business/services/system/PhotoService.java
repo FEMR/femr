@@ -27,7 +27,7 @@ import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
 import femr.common.models.PhotoItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterPhoto;
@@ -55,13 +55,13 @@ public class PhotoService implements IPhotoService {
     private IRepository<IPhoto> patientPhotoRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
-    private DataModelMapper dataModelMapper;
+    private IDataModelMapper dataModelMapper;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
-                        DataModelMapper dataModelMapper) {
+                        IDataModelMapper dataModelMapper) {
 
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;

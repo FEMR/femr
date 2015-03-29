@@ -27,7 +27,7 @@ import femr.business.services.core.IMissionTripService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -46,7 +46,7 @@ public class EncounterService implements IEncounterService {
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IUser> userRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public EncounterService(IMissionTripService missionTripService,
@@ -56,7 +56,7 @@ public class EncounterService implements IEncounterService {
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IRepository<IUser> userRepository,
-                            DataModelMapper dataModelMapper) {
+                            IDataModelMapper dataModelMapper) {
 
         this.missionTripService = missionTripService;
         this.chiefComplaintRepository = chiefComplaintRepository;

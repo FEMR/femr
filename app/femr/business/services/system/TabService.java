@@ -27,7 +27,7 @@ import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -47,7 +47,7 @@ public class TabService implements ITabService {
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public TabService(IRepository<IChiefComplaint> chiefComplaintRepository,
@@ -57,7 +57,7 @@ public class TabService implements ITabService {
                       IRepository<ITabField> tabFieldRepository,
                       IRepository<ITabFieldType> tabFieldTypeRepository,
                       IRepository<ITabFieldSize> tabFieldSizeRepository,
-                      DataModelMapper DataModelMapper) {
+                      IDataModelMapper DataModelMapper) {
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.systemSettingRepository = systemSettingRepository;

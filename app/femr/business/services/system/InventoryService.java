@@ -24,7 +24,7 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.common.models.MedicationItem;
 import femr.data.models.core.*;
@@ -42,14 +42,14 @@ public class InventoryService implements IInventoryService {
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private DataModelMapper dataModelMapper;
+    private IDataModelMapper dataModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                             IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
-                            DataModelMapper dataModelMapper) {
+                            IDataModelMapper dataModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;

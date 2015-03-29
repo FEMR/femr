@@ -28,7 +28,7 @@ import femr.business.services.core.ISearchService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -48,7 +48,7 @@ public class SearchService implements ISearchService {
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IVital> vitalRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
@@ -61,7 +61,7 @@ public class SearchService implements ISearchService {
                          IRepository<IVital> vitalRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IRepository<ITabField> tabFieldRepository,
-                         DataModelMapper dataModelMapper) {
+                         IDataModelMapper dataModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
         this.medicationRepository = medicationRepository;

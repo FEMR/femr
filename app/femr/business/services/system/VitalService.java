@@ -26,7 +26,7 @@ import femr.business.services.core.IVitalService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.IVital;
@@ -43,12 +43,12 @@ public class VitalService implements IVitalService {
 
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IVital> vitalRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                         IRepository<IVital> vitalRepository,
-                        DataModelMapper dataModelMapper) {
+                        IDataModelMapper dataModelMapper) {
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;

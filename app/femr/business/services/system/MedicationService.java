@@ -25,7 +25,7 @@ import femr.business.services.core.IMedicationService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IPatientPrescription;
@@ -39,11 +39,11 @@ import java.util.List;
 public class MedicationService implements IMedicationService {
 
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public MedicationService(IRepository<IPatientPrescription> patientPrescriptionRepository,
-                             DataModelMapper dataModelMapper) {
+                             IDataModelMapper dataModelMapper) {
 
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.dataModelMapper = dataModelMapper;

@@ -29,7 +29,7 @@ import femr.common.models.CityItem;
 import femr.common.models.MissionItem;
 import femr.common.models.TeamItem;
 import femr.common.models.TripItem;
-import femr.data.DataModelMapper;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IMissionCity;
 import femr.data.models.core.IMissionCountry;
@@ -50,14 +50,14 @@ public class MissionTripService implements IMissionTripService {
     private final IRepository<IMissionCountry> missionCountryRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
-    private final DataModelMapper dataModelMapper;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public MissionTripService(IRepository<IMissionCity> missionCityRepository,
                               IRepository<IMissionCountry> missionCountryRepository,
                               IRepository<IMissionTeam> missionTeamRepository,
                               IRepository<IMissionTrip> missionTripRepository,
-                              DataModelMapper dataModelMapper) {
+                              IDataModelMapper dataModelMapper) {
 
         this.missionCityRepository = missionCityRepository;
         this.missionCountryRepository = missionCountryRepository;

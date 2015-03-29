@@ -18,7 +18,15 @@
 */
 package femr.business.services.system;
 
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Junction;
+import com.avaje.ebean.Query;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
@@ -32,7 +40,12 @@ import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.MedicationActiveDrugName;
 import femr.data.models.mysql.MedicationForm;
 import femr.data.models.mysql.MedicationMeasurementUnit;
+import femr.ui.models.admin.inventory.DataGridFilter;
+import femr.ui.models.admin.inventory.DataGridSorting;
+import org.apache.commons.lang3.StringUtils;
+import play.libs.Json;
 
+import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,8 +100,126 @@ public class InventoryService implements IInventoryService {
     }
 
     /**
+     *
+     *  {@inheritDoc}
+     *
+     */
+    //Andre Farah - Start Code
+    public ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters) {
+        ServiceResponse<ObjectNode> response = new ServiceResponse<>();
+        /* Create a data object to store all the information */
+        ObjectNode data = Json.newObject();
+        ArrayNode page_data = data.putArray("page_data");
+        response.setResponseObject(data);
+
+        /* Create ordering string for query based on sorting */
+        String orderBy = StringUtils.join(sorting, ", ");
+
+        ExpressionList<Medication> query = QueryProvider.getMedicationQuery().where();
+        query.where().eq("isDeleted", false);
+        query.orderBy(orderBy);
+
+        if (filters != null && filters.size() > 0) {
+            Junction<Medication> subJunction;
+            String filterOp = filters.get(0).getLogical_operator();
+
+            /* Create a junction AND/OR based of filter operator */
+            if (filterOp.equals("AND")) {
+                subJunction = query.where().conjunction();
+            } else {
+                subJunction = query.where().disjunction();
+            }
+
+
+            for (DataGridFilter f : filters) {
+                String operator = f.getCondition().getOperator();
+                String field = f.getCondition().getField();
+                List<String> values = f.getCondition().getFilterValue();
+                String value = (values == null || values.size() == 0) ? "" : values.get(0);
+
+                /* Individual filter types. Definitly need refactoring */
+                if (operator.equalsIgnoreCase("equal"))
+                    subJunction.add(Expr.eq(field, value));
+                else if (operator.equalsIgnoreCase("not_equal"))
+                    subJunction.add(Expr.ne(field, value));
+                /*else if (f.getCondition().getOperator().equalsIgnoreCase("in"))
+                    subJunction.add();
+                else if (f.getCondition().getOperator().equalsIgnoreCase("not_in"))
+                    subJunction.add();*/
+                else if (operator.equalsIgnoreCase("begins_with"))
+                    subJunction.add(Expr.startsWith(field, value));
+                else if (operator.equalsIgnoreCase("not_begins_with"))
+                    subJunction.add(Expr.not(Expr.istartsWith(field, value)));
+                else if (operator.equalsIgnoreCase("contains"))
+                    subJunction.add(Expr.icontains(field, value));
+                else if (operator.equalsIgnoreCase("not_contains"))
+                    subJunction.add(Expr.not(Expr.icontains(field, value)));
+                else if (operator.equalsIgnoreCase("ends_with"))
+                    subJunction.add(Expr.iendsWith(field, value));
+                else if (operator.equalsIgnoreCase("not_ends_with"))
+                    subJunction.add(Expr.not(Expr.iendsWith(field, value)));
+                else if (operator.equalsIgnoreCase("is_empty"))
+                    subJunction.add(Expr.eq(field, ""));
+                else if (operator.equalsIgnoreCase("is_not_empty"))
+                    subJunction.add(Expr.ne(field, ""));
+                else if (operator.equalsIgnoreCase("is_null"))
+                    subJunction.add(Expr.isNull(field));
+                else if (operator.equalsIgnoreCase("is_not_null"))
+                    subJunction.add(Expr.isNotNull(field));
+
+
+            }
+        }
+
+        List<? extends IMedication> medications;
+        try {
+            medications = medicationRepository.find(query);
+        } catch (Exception ex) {
+            //response.addError("exception", ex.getMessage());
+            data.put("total_rows", 0);
+            return response;
+        }
+
+        int totalMedication = medications.size();
+
+        /* Store TOTAL number of medications in object */
+        data.put("total_rows", totalMedication);
+
+        /* Get start and to index of records we want */
+        int fromIndex = (pageNum - 1) * rowsPerPage;
+        int toIndex = fromIndex + rowsPerPage;
+
+        /* If toIndex is greater than totalMedication then reduce to last index in result */
+        if (toIndex > totalMedication) toIndex = fromIndex + (totalMedication % rowsPerPage);
+
+        medications = medications.subList(fromIndex, toIndex);
+
+
+
+
+
+        /* create array to hold the medication */
+
+        for (IMedication m : medications) {
+            /* Create node to customize return values */
+            ObjectNode js = page_data.addObject();
+            js.put("id", m.getId());
+            js.put("name", m.getName());
+            js.put("quantity_current", m.getQuantity_current());
+            js.put("quantity_total", m.getQuantity_total());
+
+            if (m.getMedicationForm() != null)
+                js.put("form", m.getMedicationForm().getName());
+        }
+
+        return response;
+    }
+    //Andre Farah End Code
+
+    /**
      * {@inheritDoc}
      */
+    //Creates the Medication
     public ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem) {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 

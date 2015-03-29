@@ -1,4 +1,45 @@
 $(document).ready(function () {
+    /* Alaa Serhan */
+    $("#currentMedicationsGrid").bs_grid({
+        ajaxFetchDataURL: "/admin/inventory/get",
+        columns: [
+            { field: "id", header: "ID" },
+            { field: "name", header: "Medication" },
+            { field: "quantity_current", header: "Current Quantity" },
+            { field: "quantity_total", header: "Total Quantity" },
+            { field: "form", header: "Form" }
+        ],
+        sorting: [
+            { sortingName: "Medication", field: "name", order: "Ascending" }
+        ],
+        filterOptions: {
+            filters: [
+                {
+                    filterName: "Medication",
+                    filterType: "text",
+                    field: "name",
+                    filterLabel: "Medication",
+                    filter_interface: [
+                        {
+                            filter_element: "input",
+                            filter_element_attributes: {"type": "text"}
+                        }
+                    ]
+                },
+                {
+                    filterName: "Quantity",
+                    filterType: "number",
+                    numberType: "integer",
+                    field: "quantity_current",
+                    filterLabel: "Current Quantity"
+                }
+
+            ]
+        },
+        onDatagridError: function(e) {
+        }
+    });
+
     medicationInventoryFeature.bindAddNewIngredientButton();
     medicationInventoryFeature.bindSubmitMedicationButton();
 });

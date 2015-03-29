@@ -18,8 +18,11 @@
 */
 package femr.business.services.core;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
+import femr.ui.models.admin.inventory.DataGridFilter;
+import femr.ui.models.admin.inventory.DataGridSorting;
 
 import java.util.List;
 
@@ -34,7 +37,21 @@ public interface IInventoryService {
     ServiceResponse<List<MedicationItem>> retrieveMedicationInventory();
 
     /**
+
      * Creates a new medication in the inventory.
+
+     * Gets medicine that is currently not deleted, but paginated.
+     * @param pageNum Page number to retrieve
+     * @param rowsPerPage Rows per page
+     * @param sorting List of sorts to apply to query
+     * @param filters List of filters to apply to query
+     * @return list of MedicationItems for use by controller
+     */
+    ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters);
+
+    /**
+     * Add a new medication to the inventory
+
      *
      * @param medicationItem the medication TODO: separate this into parameters
      * @return a service response that contains a MedicationItem representing the medication that was just created

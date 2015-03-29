@@ -1,3 +1,7 @@
+#Community
+1. [JIRA](https://teamfemr.atlassian.net)
+2. IRC - irc.freenode.net:6667 | #femr
+
 #Installation and Configuration using IntelliJ IDEA 14
 
 ### Required downloads
@@ -23,11 +27,11 @@
 2. File -> Import
 3. Select the femr folder, click next
 4. Ensure the Project SDK is java version 1.7, click finish
-3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your username and password.
-4. Create a database in mySQL with the same name as the database in the connection string inside of application.conf
-5. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // /absolute/location/to/conf/application.dev.conf to the enviroment variables.
-6. Run!
-
+3. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
+4. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
+5. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // /absolute/location/to/conf/application.dev.conf to the environment variables.
+6. Run
+7. If you're a contributor and you need a liscense key for IntelliJ Ultimate, contact kevin.zurek@teamfemr.org
 
 
 # Git

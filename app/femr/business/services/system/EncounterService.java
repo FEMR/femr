@@ -416,30 +416,6 @@ public  class EncounterService implements IEncounterService {
 
         return response;
     }
-/*
-    @Override
-    public ServiceResponse<List<AssessmentItem>> updatePatientEncounterTabFields(int fieldName, int fieldValue,int encounterId, int userId) {
 
-        ServiceResponse<List<AssessmentItem>> response = new ServiceResponse<>();
-        List<AssessmentItem> assessmentItems = new ArrayList<>();
-        Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
-                .fetch("fieldName")
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .eq("fieldName.name", "problem")
-                .order()
-                .asc("date_taken");
-
-
-
-
-
-        return null;
-
-
-
-    }
-
-    */
 
 }

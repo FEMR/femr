@@ -32,6 +32,9 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     private int id;
     @Column(name = "user_id", nullable = false)
     private int userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", insertable = false, nullable = false)
+    private User user;
     @Column(name = "patient_encounter_id", nullable = false)
     private int patientEncounterId;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -65,6 +68,12 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String getUserName() { return user.getFirstName() + " " + user.getLastName(); }
+
+    @Override
+    public void setUser(User user) { this.user = user; }
 
     @Override
     public int getPatientEncounterId() {

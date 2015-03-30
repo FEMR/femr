@@ -355,28 +355,32 @@ public class HistoryController extends Controller {
     public Result updateFieldPost(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
 
+
+        //If there is no patient Id or Error
         ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.findPatientEncounterItemByEncounterId(id);
         if (patientEncounterByEncounterId.hasErrors()) {
             throw new RuntimeException();
         }
 
+        //Get Patient Encounter
         PatientEncounterItem patientEncounter = patientEncounterByEncounterId.getResponseObject();
 
         //update date_of_medical_visit when a vital is updated
         encounterService.checkPatientInToMedical(patientEncounter.getId(), currentUser.getId());
 
-        /* Populate model with request data */
+        //Populate model with request data
         fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 
-        /* Create a list of submitted tab fields */
+        //Create a list of submitted tab fields
         List<TabFieldItem> items = new ArrayList<TabFieldItem>();
         items.add(createTabFieldItem(fields.getFieldName(), fields.getFieldValue()));
 
-        /* Create encounter tab fields */
+        //Create encounter tab fields with the item , patient encounter, current User
         ServiceResponse<List<TabFieldItem>> patientEncounterTabFieldsServiceResponse =
                encounterService.createPatientEncounterTabFields(items, patientEncounter.getId(),currentUser.getId());
 
         if (patientEncounterTabFieldsServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         }
 
@@ -385,14 +389,16 @@ public class HistoryController extends Controller {
 
     public Result listTabFieldHistoryGet(int encounterID) {
 
-        /* Retrieve patient encounter */
+        //Retrieve patient encounter
         ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.findPatientEncounterItemByEncounterId(encounterID);
+        //If patient has errors
         if (patientEncounterByEncounterId.hasErrors()) {
+
             throw new RuntimeException();
         }
         PatientEncounterItem patientEncounter = patientEncounterByEncounterId.getResponseObject();
 
-        /* Populate model with request data */
+        //Populate model with request data that was changed
         fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 
         ServiceResponse<TabFieldMultiMap> tabFieldsReponseObject =

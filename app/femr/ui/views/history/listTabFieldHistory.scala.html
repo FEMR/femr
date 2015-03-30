@@ -3,16 +3,22 @@
 
 
 <tbody>
-    <tr class="first">
-        <th></th>
+    <tr class="first">r
+        <th>Date:</th>
         @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
             <td>@tabFieldMap.getFormatedDateTime(dateIndex - 1)</td>
         }
     </tr>
     <tr>
-        <th>VAL</th>
+        <th>Value:</th>
         @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
             <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getValue</td>
+        }
+    </tr>
+    <tr>
+        <th>User:</th>
+        @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
+            <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getUserName</td>
         }
     </tr>
 </tbody>

@@ -12,7 +12,7 @@ $(document).ready(function () {
         window.location = "/triage";
     });
 
-    $('#tabFieldHistory').tableScroll({ height: 670, width: 2500 });
+    $('#tabFieldHistory').tableScroll({ height: 700});
 
     var loadAssessmentHistory = function(encounterID, fieldName) {
         $.ajax({
@@ -44,7 +44,7 @@ $(document).ready(function () {
 
         $("#edit-form").show();
 
-        /* Set focus to input */
+        // Set focus to input
         $("#edit-form").find("input.value").focus().select();
     });
 
@@ -53,16 +53,16 @@ $(document).ready(function () {
         // var form = $(this);
         //var label = $(this).text();
         var fieldName = $('#fieldIdInput').val();
-
+        console.log(fieldName, " ", fieldValue);
         $.ajax({
             type: "POST",
             url: '/history/encounter/updateField/' + $('#patientEncounterId').val(),
             data: { FieldValue: fieldValue, FieldName: fieldName}
         }).done(function (data) {
-            /* Update field to new value */
+            // Update field to new value
             $(".encounterViewBody span[data-id='" + fieldName + "']").text(fieldValue);
 
-            /* Close edit form */
+            // Close edit form
             $("#edit-form").hide();
         });
 

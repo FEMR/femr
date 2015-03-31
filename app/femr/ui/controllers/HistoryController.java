@@ -337,7 +337,7 @@ public class HistoryController extends Controller {
         return tabFieldItems;
     }
 
-
+    //Added by Amney Iskandar //
 
     public Result updateFieldPost(int id) {
         CurrentUser currentUser = sessionService.getCurrentUserSession();
@@ -374,6 +374,7 @@ public class HistoryController extends Controller {
         return ok("true");
     }
 
+    //Added by Amney Iskandar //
     public Result listTabFieldHistoryGet(int encounterID) {
 
         //Retrieve patient encounter

@@ -5,20 +5,16 @@
 <tbody>
     <tr class="first">r
         <th>Date:</th>
-        @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
-            <td>@tabFieldMap.getFormatedDateTime(dateIndex - 1)</td>
-        }
-    </tr>
-    <tr>
         <th>Value:</th>
-        @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
-            <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getValue</td>
-        }
-    </tr>
-    <tr>
         <th>User:</th>
         @for(dateIndex <- 1 to tabFieldMap.getDateListChronological.size) {
+        <tr>
+            <td>@tabFieldMap.getFormatedDateTime(dateIndex - 1)</td>
+            <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getValue</td>
             <td>@tabFieldMap.get(tabFieldName, tabFieldMap.getDate(dateIndex - 1), null).getUserName</td>
+        </tr>
         }
-    </tr>
+
+
+
 </tbody>

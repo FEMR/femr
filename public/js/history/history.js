@@ -12,7 +12,7 @@ $(document).ready(function () {
         window.location = "/triage";
     });
 
-    $('#tabFieldHistory').tableScroll({ height: 700});
+   // $('#tabFieldHistory').tableScroll({ height: 800});
 
     var loadAssessmentHistory = function(encounterID, fieldName) {
         $.ajax({

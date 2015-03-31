@@ -259,11 +259,11 @@
     display: none;
     position: fixed;
     top: 50%;
-    left: 40%;
+    left: 50%;
     width: 500px;
-    height: 300px;
-    margin-left: -100px;
-    margin-top: -50px;
+    height: 350px;
+    margin-left: -250px;
+    margin-top: -150px;
     border: 1px solid #ccc;
     padding: 15px;
     background-color: gray;
@@ -271,8 +271,20 @@
 
 
 
+
 }
 
+.form-history{
+
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    margin-top: 10px;
+
+}
+.form-history table{
+    width: 100%;
+}
 #edit-form input[type="text"]{
 
     margin-bottom: 10px;

@@ -153,7 +153,7 @@
                             <span class="value" data-id="currentMedications"> @outputStringOrNA(pmhFieldMap.get("currentMedications"))</span></p>
 
                         <p><a class="infoLabel"> Family History: </a>
-                            <span class="infoLabel" data-id="familyHistory"> @outputStringOrNA(pmhFieldMap.get("familyHistory"))</span></p>
+                            <span class="value" data-id="familyHistory"> @outputStringOrNA(pmhFieldMap.get("familyHistory"))</span></p>
                     }
                     @defining(viewModelMedical.getTreatmentFields) { treatmentFieldMap =>
                         <p><a  class="infoLabel"> Assessment: </a>
@@ -266,12 +266,13 @@
 
                 <p class="form-label"></p>
                 <input type="text" id="editInput" class="form-control input-sm pull-left value" name="edit-value"  value=""/>
+
                 <input  id = "fieldIdInput" class= "fieldId" type="hidden" name="edit-field-name" value="" />
 
                 <button type="button" id="saveEncounterBtn" class="fButton">Save</button>
                 <button type="button" id="cancelEncounterBtn" class="fButton">Cancel</button>
 
-                <div>
+                <div    class="form-history">
                     <table id="tabFieldHistory" cellspacing="0">
                     </table>
                 </div>

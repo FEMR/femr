@@ -89,12 +89,6 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        if (StringUtils.isNullOrWhiteSpace(sex)){
-
-            response.addError("sex", "you must provide a sex to update with");
-            return response;
-        }
-
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", id);

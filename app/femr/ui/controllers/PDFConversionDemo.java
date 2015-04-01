@@ -147,7 +147,7 @@ public class PDFConversionDemo extends Controller {
         BIVtable.addCell(StyledPhrase("Weight: ", outputFloatOrNA(P_item.getWeight()) + " lbs"));
 
         BIVtable.addCell(StyledPhrase("Address: ", outputStringOrNA(P_item.getAddress())));
-        BIVtable.addCell(StyledPhrase("Nurse: ",  outputStringOrNA(encounter.getNurseEmailAddress())));
+        BIVtable.addCell(StyledPhrase("Pregnancy Status: ", outputIntOrNA(encounter.getWeeksPregnant())));
         BIVtable.addCell(StyledPhrase("Blood Pressure", GetBloodPressure(P_vitals)));
         BIVtable.addCell(StyledPhrase("Address: ", outputStringOrNA(P_item.getAddress())));
 
@@ -167,7 +167,7 @@ public class PDFConversionDemo extends Controller {
         BIVtable.addCell(StyledPhrase("Triage Visit: ", outputStringOrNA(encounter.getTriageDateOfVisit())));
         BIVtable.addCell(StyledPhrase("Medical Visit: ", outputStringOrNA(encounter.getMedicalDateOfVisit())));
         BIVtable.addCell(StyledPhrase("Pharmacy Visit: ", outputStringOrNA(encounter.getPharmacyDateOfVisit())));
-        BIVtable.addCell(StyledPhrase("Pregnancy Status: ", outputIntOrNA(encounter.getWeeksPregnant())));
+
 
 
         return (BIVtable);
@@ -175,19 +175,53 @@ public class PDFConversionDemo extends Controller {
 
     private PdfPTable getAssessments(TabFieldMultiMap treatmentFields){
 
+
+
         PdfPTable assesmentTable = new PdfPTable(new float[]{0.25f, 0.25f, 0.3f});
 
         assesmentTable.setWidthPercentage(100);
         assesmentTable.setSpacingBefore(4);
         assesmentTable.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-
+        CustomField(treatmentFields);
         /**
          * Extracts the most recent custom fields from the tabfieldmultimap.
 
          */
-           CustomField(treatmentFields);
 
+        // No chief Complaints
+        if(treatmentFields.getChiefComplaintList().size() == 0)
+        {
+            assesmentTable.addCell(StyledPhrase("Onset: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("onset", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("Quality: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("quality", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("Severity: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("severity", null).getValue())));
+
+
+            assesmentTable.addCell(StyledPhrase("Provokes: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("provokes", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("palliates: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("palliates", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("TimeOfDay: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("timeOfDay", null).getValue())));
+
+            assesmentTable.addCell(StyledPhrase("Assessment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("assessment", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("Treatment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("treatment", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("MEDS: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedication", null).getValue())));
+
+            assesmentTable.addCell(StyledPhrase("Radiation: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("radiation", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("Treatment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("treatment", null).getValue())));
+            assesmentTable.addCell(StyledPhrase("MEDS: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedication", null).getValue())));
+
+            Map<String, String> customFields = CustomField(treatmentFields);
+            Iterator it = customFields.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                String key = (String) pair.getKey();
+                String val = (String) pair.getValue();
+
+                assesmentTable.addCell(StyledPhrase(key, outputStringOrNA(val)));
+                assesmentTable.completeRow();
+
+            }
+
+        }
 
         // ** Added by Ken
         // These fields are mapped via Chief Complaint and can be listed multiple times per encounter
@@ -195,92 +229,92 @@ public class PDFConversionDemo extends Controller {
         // Add Physical Examination to this section - it is also mapped via Chief Complaint
         // Make table 3 columns instead of 4
         // Make Physical Examination and Narrative span 3 columns in their own row
-        for( String chiefComplaint : treatmentFields.getChiefComplaintList() ) {
-
-            PdfPCell cellNarrative = new PdfPCell(new Phrase(StyledPhrase("Narrative: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("narrative", chiefComplaint).getValue()))));
-            PdfPCell cellPE = new PdfPCell(new Phrase(StyledPhrase("Physical Examination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", chiefComplaint).getValue()))));
-            PdfPCell cellProb = new PdfPCell(new Phrase(StyledPhrase("Problems: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("problem", null).getValue()))));
-
-            cellPE.setColspan(3);
-            cellPE.setPadding(5);
-            cellPE.setBorder(PdfPCell.NO_BORDER);
-
-            cellNarrative.setColspan(3);
-            cellNarrative.setPadding(5);
-            cellNarrative.setBorder(PdfPCell.NO_BORDER);
-
-            cellProb.setColspan(2);
-            cellProb.setPadding(5);
-            cellProb.setBorder(PdfPCell.NO_BORDER);
-
-            String thechiefcomplaint = chiefComplaint;
-            PdfPCell cellCC = new PdfPCell(new Phrase(StyledPhrase("Chief Complaint: ", outputStringOrNA(chiefComplaint))));
-            cellCC.setColspan(3);
-            cellCC.setPaddingBottom(5);
 
 
-
-            assesmentTable.addCell(cellCC);
-            assesmentTable.completeRow();
-
-            assesmentTable.addCell(StyledPhrase("Onset: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("onset", chiefComplaint).getValue())));
-            assesmentTable.addCell(StyledPhrase("Quality: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("quality", chiefComplaint).getValue())));
-            assesmentTable.addCell(StyledPhrase("Severity: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("severity", chiefComplaint).getValue())));
+        if (treatmentFields.getChiefComplaintList().size() >=1) {
 
 
-            assesmentTable.addCell(StyledPhrase("Provokes: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("provokes", chiefComplaint).getValue())));
-            assesmentTable.addCell(StyledPhrase("palliates: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("palliates", chiefComplaint).getValue())));
-            assesmentTable.addCell(StyledPhrase("TimeOfDay: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("timeOfDay", chiefComplaint).getValue())));
+            for (String chiefComplaint : treatmentFields.getChiefComplaintList()) {
 
-            assesmentTable.addCell(StyledPhrase("Assessment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("assessment", null).getValue())));
-            assesmentTable.addCell(StyledPhrase("Treatment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("treatment", null).getValue())));
-            assesmentTable.addCell(StyledPhrase("MEDS: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedication", null).getValue())));
+                PdfPCell cellNarrative = new PdfPCell(new Phrase(StyledPhrase("Narrative: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("narrative", chiefComplaint).getValue()))));
+                PdfPCell cellPE = new PdfPCell(new Phrase(StyledPhrase("Physical Examination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", chiefComplaint).getValue()))));
+                PdfPCell cellProb = new PdfPCell(new Phrase(StyledPhrase("Problems: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("problem", null).getValue()))));
 
-            assesmentTable.addCell(StyledPhrase("Radiation: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("radiation", chiefComplaint).getValue())));
+                cellPE.setColspan(3);
+                cellPE.setPadding(5);
+                cellPE.setBorder(PdfPCell.NO_BORDER);
+
+                cellNarrative.setColspan(3);
+                cellNarrative.setPadding(5);
+                cellNarrative.setBorder(PdfPCell.NO_BORDER);
+
+                cellProb.setColspan(2);
+                cellProb.setPadding(5);
+                cellProb.setBorder(PdfPCell.NO_BORDER);
+
+                String thechiefcomplaint = chiefComplaint;
+                PdfPCell cellCC = new PdfPCell(new Phrase(StyledPhrase("Chief Complaint: ", outputStringOrNA(chiefComplaint))));
+                cellCC.setColspan(3);
+                cellCC.setPaddingBottom(5);
 
 
-            Map<String, String> customFields = CustomField(treatmentFields);
-            Iterator it = customFields.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                String key = (String)pair.getKey();
-                String val = (String)pair.getValue();
-
-                assesmentTable.addCell(StyledPhrase(key, outputStringOrNA(val)));
+                assesmentTable.addCell(cellCC);
                 assesmentTable.completeRow();
 
+
+                assesmentTable.addCell(StyledPhrase("Onset: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("onset", chiefComplaint).getValue())));
+                assesmentTable.addCell(StyledPhrase("Quality: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("quality", chiefComplaint).getValue())));
+                assesmentTable.addCell(StyledPhrase("Severity: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("severity", chiefComplaint).getValue())));
+
+
+                assesmentTable.addCell(StyledPhrase("Provokes: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("provokes", chiefComplaint).getValue())));
+                assesmentTable.addCell(StyledPhrase("palliates: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("palliates", chiefComplaint).getValue())));
+                assesmentTable.addCell(StyledPhrase("TimeOfDay: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("timeOfDay", chiefComplaint).getValue())));
+
+                assesmentTable.addCell(StyledPhrase("Assessment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("assessment", null).getValue())));
+                assesmentTable.addCell(StyledPhrase("Treatment: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("treatment", null).getValue())));
+                assesmentTable.addCell(StyledPhrase("MEDS: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("currentMedication", null).getValue())));
+
+                assesmentTable.addCell(StyledPhrase("Radiation: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("radiation", chiefComplaint).getValue())));
+
+
+                Map<String, String> customFields = CustomField(treatmentFields);
+                Iterator it = customFields.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    String key = (String) pair.getKey();
+                    String val = (String) pair.getValue();
+
+                    assesmentTable.addCell(StyledPhrase(key, outputStringOrNA(val)));
+                    assesmentTable.completeRow();
+
+                }
+
+
+                assesmentTable.addCell(cellProb);
+
+                assesmentTable.completeRow();
+                assesmentTable.addCell(cellPE);
+                assesmentTable.addCell(cellNarrative);
+
+
+                assesmentTable.completeRow();
+
+                // assesmentTable.addCell(StyledPhrase("Physical Examination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", chiefComplaint).getValue())));
+
+                //assesmentTable.addCell(StyledPhrase("narrative: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("narrative", chiefComplaint).getValue())));
             }
-
-
-
-
-            assesmentTable.addCell(cellProb);
-
-            assesmentTable.completeRow();
-            assesmentTable.addCell(cellPE);
-            assesmentTable.addCell(cellNarrative);
-
-
-
-            assesmentTable.completeRow();
-
-           // assesmentTable.addCell(StyledPhrase("Physical Examination: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("physicalExamination", chiefComplaint).getValue())));
-
-            //assesmentTable.addCell(StyledPhrase("narrative: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("narrative", chiefComplaint).getValue())));
         }
-
 
         PdfPCell cellMSH = new PdfPCell(new Phrase(StyledPhrase("Medical Surgical History: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("medicalSurgicalHistory", null).getValue()))));
         cellMSH.setColspan(2);
         cellMSH.setPadding(5);
-       // assesmentTable.addCell(cellMSH);
+        assesmentTable.addCell(cellMSH);
 
         PdfPCell cellFH = new PdfPCell(new Phrase(StyledPhrase("Family History: ", outputStringOrNA(treatmentFields.getMostRecentOrEmpty("familyHistory", null).getValue()))));
         cellFH.setColspan(2);
         cellFH.setPadding(5);
-
-
-      //  assesmentTable.addCell(cellFH);
+         assesmentTable.addCell(cellFH);
         assesmentTable.completeRow();
 
 

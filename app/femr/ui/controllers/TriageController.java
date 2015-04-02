@@ -71,8 +71,8 @@ public class TriageController extends Controller {
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
-        if (patientAgeClassificationsResponse.hasErrors()){
+        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
@@ -113,8 +113,8 @@ public class TriageController extends Controller {
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
-        if (patientAgeClassificationsResponse.hasErrors()){
+        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
@@ -132,6 +132,7 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result indexPost(int id) {
+
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 

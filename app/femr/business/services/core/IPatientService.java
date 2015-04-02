@@ -34,10 +34,11 @@ public interface IPatientService {
     ServiceResponse<Map<String,String>> retrieveAgeClassifications();
 
     /**
-     * Updates a patients sex if that patient does not previously have one assigned.
+     * Updates a patients sex if that patient does not previously have one assigned. If sex is null then it just gets and
+     * returns the patient.
      *
      * @param id the id of the patient, not null
-     * @param sex the sex of the patient, not null
+     * @param sex the sex of the patient, may be null
      * @return a service response that contains a PatientItem representing the patient that was updated
      * and/or errors if they exist.
      */

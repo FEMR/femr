@@ -59,8 +59,6 @@ public class PatientServiceTest extends WithApplication {
     @Inject
     private static IDataModelMapper mockDataModelMapper;
 
-
-
     @Override
     protected play.test.FakeApplication provideFakeApplication() {
 

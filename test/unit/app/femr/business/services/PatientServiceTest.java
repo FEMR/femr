@@ -26,17 +26,16 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
-import mock.femr.data.MockDataModelMapper;
-import mock.femr.data.daos.MockRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import play.test.Helpers;
 import play.test.WithApplication;
 import util.dependencyinjection.modules.TestBusinessLayerModule;
 import util.dependencyinjection.modules.TestDataLayerModule;
 import util.dependencyinjection.modules.TestUtilitiesModule;
-import util.startup.TestGlobal;
+import util.runners.GuiceJUnitRunner;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -45,49 +44,37 @@ import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class PatientServiceTest extends WithApplication {
-//public class PatientServiceTest{
+@RunWith(GuiceJUnitRunner.class)
+@GuiceJUnitRunner.GuiceModules({TestBusinessLayerModule.class, TestDataLayerModule.class, TestUtilitiesModule.class})
+public class PatientServiceTest{ //} extends WithApplication{
 
-    private static final Injector INJECTOR = createInjector();
+    private IPatientService patientService;
+    private IRepository<IPatient> mockPatientRepository;
+    private IRepository<IPatientAgeClassification> mockPatientAgeClassificationRepository;
+    private IDataModelMapper mockDataModelMapper;
 
-    @Inject
-    private static IPatientService patientService;
-    @Inject
-    private static IRepository<IPatient> mockPatientRepository;
-    @Inject
-    private static IRepository<IPatientAgeClassification> mockPatientAgeClassificationRepository;
-    @Inject
-    private static IDataModelMapper mockDataModelMapper;
-
-    @Override
-    protected play.test.FakeApplication provideFakeApplication() {
-
-        Map<String,String> fakeConf = new HashMap<>();
-        //fakeConf.put("Dconfig.file", "conf/application.test.conf");
-        fakeConf.put("db.default.url", "jdbc:mysql://localhost/femr_test?characterEncoding=UTF-8");
-        fakeConf.put("db.default.user", "femr_test");
-        fakeConf.put("db.default.password", "PnhcTUQ9xpraJf7e");
-
-//        TestGlobal global = null;
-//        try {
-//            global = (TestGlobal) Class.forName("unit.app.femr.util.startup.TestGlobal").newInstance();
+//    @Override
+//    protected play.test.FakeApplication provideFakeApplication() {
 //
-//        } catch(Exception e) {
+////        Map<String,String> fakeConf = new HashMap<>();
+////        fakeConf.put("db.default.url", "jdbc:mysql://localhost/femr_test?characterEncoding=UTF-8");
+////        fakeConf.put("db.default.user", "femr_test");
+////        fakeConf.put("db.default.password", "PnhcTUQ9xpraJf7e");
 //
-//            e.printStackTrace();
-//
-//        }
+////        return Helpers.fakeApplication(fakeConf);
+//        return Helpers.fakeApplication();
+//    }
 
-        return Helpers.fakeApplication(fakeConf, new TestGlobal());
+    @Inject
+    public void setService(IPatientService patientService) {
+        this.patientService = patientService;
     }
-
 
 
     @Before
     public void setUp() throws Exception {
 
-        //mockDataModelMapper = INJECTOR.getInstance(IDataModelMapper.class);
-        patientService = INJECTOR.getInstance(IPatientService.class);
+
     }
 
     @After
@@ -109,8 +96,8 @@ public class PatientServiceTest extends WithApplication {
         assertThat(response.hasErrors()).isTrue();
 
         assertThat(response.getResponseObject() != null);
-//        assertThat(mockPatientRepository.findOneWasCalled);
-//        assertThat(mockPatientRepository.updateWasCalled);
+        assertThat(mockPatientRepository.findOneWasCalled);
+        assertThat(mockPatientRepository.updateWasCalled);
 
     }
 

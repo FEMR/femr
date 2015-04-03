@@ -18,6 +18,8 @@ package unit.app.femr.business.services;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import femr.business.services.core.IPatientService;
 import femr.business.services.system.PatientService;
 import femr.common.dtos.ServiceResponse;
@@ -30,6 +32,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import play.Configuration;
 import play.test.Helpers;
 import play.test.WithApplication;
 import util.dependencyinjection.modules.TestBusinessLayerModule;
@@ -37,6 +40,7 @@ import util.dependencyinjection.modules.TestDataLayerModule;
 import util.dependencyinjection.modules.TestUtilitiesModule;
 import util.runners.GuiceJUnitRunner;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,24 +50,20 @@ import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(GuiceJUnitRunner.class)
 @GuiceJUnitRunner.GuiceModules({TestBusinessLayerModule.class, TestDataLayerModule.class, TestUtilitiesModule.class})
-public class PatientServiceTest{ //} extends WithApplication{
+public class PatientServiceTest extends WithApplication{
 
     private IPatientService patientService;
     private IRepository<IPatient> mockPatientRepository;
     private IRepository<IPatientAgeClassification> mockPatientAgeClassificationRepository;
     private IDataModelMapper mockDataModelMapper;
 
-//    @Override
-//    protected play.test.FakeApplication provideFakeApplication() {
-//
-////        Map<String,String> fakeConf = new HashMap<>();
-////        fakeConf.put("db.default.url", "jdbc:mysql://localhost/femr_test?characterEncoding=UTF-8");
-////        fakeConf.put("db.default.user", "femr_test");
-////        fakeConf.put("db.default.password", "PnhcTUQ9xpraJf7e");
-//
-////        return Helpers.fakeApplication(fakeConf);
-//        return Helpers.fakeApplication();
-//    }
+    @Override
+    protected play.test.FakeApplication provideFakeApplication() {
+
+        Config additionalConfig = ConfigFactory.parseFile(new File("conf/application.dev.conf"));
+        Configuration additionalConfigurations = new Configuration(additionalConfig);
+        return Helpers.fakeApplication(additionalConfigurations.asMap());
+    }
 
     @Inject
     public void setService(IPatientService patientService) {
@@ -96,8 +96,8 @@ public class PatientServiceTest{ //} extends WithApplication{
         assertThat(response.hasErrors()).isTrue();
 
         assertThat(response.getResponseObject() != null);
-        assertThat(mockPatientRepository.findOneWasCalled);
-        assertThat(mockPatientRepository.updateWasCalled);
+        //assertThat(mockPatientRepository.findOneWasCalled);
+        //assertThat(mockPatientRepository.updateWasCalled);
 
     }
 
@@ -167,6 +167,8 @@ public class PatientServiceTest{ //} extends WithApplication{
     @Test
     public void UpdateSex_patientItem_Returned() throws Exception{
 
+        // @TODO - finish
+
         // arrange
 
         // Make Test Patient
@@ -193,7 +195,6 @@ public class PatientServiceTest{ //} extends WithApplication{
 
         // put patient in mock repository, update sex with service
         //newPatient = mockPatientRepository.create(newPatient);
-
         //response = patientService.updateSex(newPatient.getId(), "Male");
 
         //assert
@@ -203,11 +204,5 @@ public class PatientServiceTest{ //} extends WithApplication{
 //      assertThat(mockPatientRepository.findOneWasCalled);
 //      assertThat(mockPatientRepository.updateWasCalled);
 
-
-    }
-
-
-    private static Injector createInjector() {
-        return Guice.createInjector(new TestBusinessLayerModule(), new TestDataLayerModule(), new TestUtilitiesModule());
     }
 }

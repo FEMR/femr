@@ -142,7 +142,7 @@ public class TriageController extends Controller {
 
         //Alaa Serhan
         //Get the settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

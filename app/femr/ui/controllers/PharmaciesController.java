@@ -96,7 +96,7 @@ public class PharmaciesController extends Controller {
         String message;
 
         // Get settings
-        ServiceResponse<SettingItem> response = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         if (response.hasErrors()) {
             throw new RuntimeException();
         }

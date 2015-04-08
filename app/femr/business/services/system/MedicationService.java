@@ -39,14 +39,17 @@ import java.util.List;
 public class MedicationService implements IMedicationService {
 
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private final IRepository<IMedication> medicationRepository;
     private final IDataModelMapper dataModelMapper;
 
     @Inject
     public MedicationService(IRepository<IPatientPrescription> patientPrescriptionRepository,
-                             IDataModelMapper dataModelMapper) {
+                             IDataModelMapper dataModelMapper,
+                             IRepository<IMedication> medicationRepository) {
 
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.dataModelMapper = dataModelMapper;
+        this.medicationRepository = medicationRepository;
     }
 
     /**
@@ -98,7 +101,10 @@ public class MedicationService implements IMedicationService {
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         for (String script : prescriptionNames) {
-            IMedication medication = dataModelMapper.createMedication(script);
+            ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("id", script);
+            IMedication medication = medicationRepository.findOne(query);
             patientPrescriptions.add(dataModelMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
         }
 

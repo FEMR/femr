@@ -21,7 +21,7 @@ GET         /admin/users                         @femr.ui.controllers.admin.User
 GET         /admin/inventory                     @femr.ui.controllers.admin.InventoryController.indexGet()
 POST        /admin/inventory                     @femr.ui.controllers.admin.InventoryController.indexPost()
 #// Alaa Serhan - Added route for bs_grid ajax post
-POST         /admin/inventory/get                 @femr.ui.controllers.admin.InventoryController.ajaxGet()
+POST        /admin/inventory/get                 @femr.ui.controllers.admin.InventoryController.ajaxGet()
 GET         /admin/configure                     @femr.ui.controllers.admin.ConfigureController.indexGet()
 POST        /admin/configure                     @femr.ui.controllers.admin.ConfigureController.indexPost()
 GET         /admin                               @femr.ui.controllers.admin.AdminController.index()
@@ -54,6 +54,7 @@ GET         /medical/edit/:id                    @femr.ui.controllers.MedicalCon
 POST        /medical/edit/:id                    @femr.ui.controllers.MedicalController.editPost(id: Integer)
 GET         /medical                             @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                             @femr.ui.controllers.MedicalController.indexPost()
+GET         /medical/getMedication              @femr.ui.controllers.MedicalController.medicationsGetJSON(term: String ?= "")
 #Research
 GET         /research/typeahead                  @femr.ui.controllers.ResearchController.typeaheadJSONGet()
 GET         /research                            @femr.ui.controllers.ResearchController.indexGet()

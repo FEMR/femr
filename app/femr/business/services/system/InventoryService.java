@@ -113,11 +113,12 @@ public class InventoryService implements IInventoryService {
         response.setResponseObject(data);
 
         /* Create ordering string for query based on sorting */
-        String orderBy = StringUtils.join(sorting, ", ");
+        String orderBy = StringUtils.join(sorting, ", ").trim();
 
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery().where();
         query.where().eq("isDeleted", false);
-        query.orderBy(orderBy);
+        if (orderBy != "")
+            query.orderBy(orderBy);
 
         if (filters != null && filters.size() > 0) {
             Junction<Medication> subJunction;
@@ -132,6 +133,7 @@ public class InventoryService implements IInventoryService {
 
 
             for (DataGridFilter f : filters) {
+                if (f.getCondition() == null) continue;
                 String operator = f.getCondition().getOperator();
                 String field = f.getCondition().getField();
                 List<String> values = f.getCondition().getFilterValue();

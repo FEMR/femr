@@ -1,5 +1,6 @@
 package femr.ui.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -9,6 +10,9 @@ import femr.data.models.mysql.Roles;
 import femr.ui.controllers.helpers.FieldHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.admin.inventory.DataGridFilter;
+import femr.ui.models.admin.inventory.DataGridFilterCondition;
+import femr.ui.models.admin.inventory.DataGridSorting;
 import femr.ui.models.medical.*;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;
@@ -38,6 +42,7 @@ public class MedicalController extends Controller {
     private final ISearchService searchService;
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
+    private final IInventoryService inventoryService;
 
     @Inject
     public MedicalController(ITabService tabService,
@@ -46,7 +51,8 @@ public class MedicalController extends Controller {
                              IPhotoService photoService,
                              ISessionService sessionService,
                              ISearchService searchService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IInventoryService inventoryService) {
         this.tabService = tabService;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -55,6 +61,7 @@ public class MedicalController extends Controller {
         this.photoService = photoService;
         this.vitalService = vitalService;
         this.fieldHelper = new FieldHelper();
+        this.inventoryService = inventoryService;
     }
 
     public Result indexGet() {
@@ -343,6 +350,42 @@ public class MedicalController extends Controller {
         return ok(listVitals.render(vitalMultiMapServiceResponse.getResponseObject()));
     }
 
+    public Result medicationsGetJSON(String term) {
+        List<DataGridFilter> filters = new ArrayList<DataGridFilter>();
+
+        /* If term from combobox is not empty, create a filter with begins_with and the term as value */
+        if (term != "") {
+            DataGridFilter filter = new DataGridFilter();
+            filter.setLogical_operator("AND");
+
+            DataGridFilterCondition condition = new DataGridFilterCondition();
+            condition.setField("name");
+            condition.setOperator("begins_with");
+            condition.setFilterValue(Arrays.asList(term));
+
+            filter.setCondition(condition);
+            filters.add(filter);
+        }
+
+        /* Apply sorting by medication name, ascending */
+        DataGridSorting sort = new DataGridSorting();
+        sort.setField("name");
+        sort.setOrder("ascending");
+
+        /* Query the medication */
+        ServiceResponse<ObjectNode> medicationServiceResponse = inventoryService.getPaginatedMedicationInventory(
+                1,
+                10,
+                Arrays.asList(sort),
+                filters
+        );
+        if (medicationServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        ObjectNode result = medicationServiceResponse.getResponseObject();
+        return ok(result);
+    }
     /**
      * Maps vitals from view model to a Map structure
      *

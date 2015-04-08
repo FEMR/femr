@@ -132,6 +132,20 @@
                 elem_html += '<div id="' + tools_id + '" class="' + settings.toolsClass + '"></div>';
 
                 elem_html += '<div id="' + table_container_id + '" class="' + settings.dataTableContainerClass + '">';
+
+                /* Alaa Serhan - Moved filter container to BEFORE data table */
+                if(settings.useFilters) {
+                    elem_html += '<div id="' + filter_container_id + '" class="' + settings.filterContainerClass + '">';
+
+                    elem_html += '<div id="' + filter_rules_id + '"></div>';
+
+                    elem_html += '<div id="' + filter_tools_id + '" class="' + settings.filterToolsClass + '">';
+                    elem_html += '<button class="' + settings.filterApplyBtnClass + '">' + rsc_bs_dg.filters_apply + '</button>';
+                    elem_html += '<button class="' + settings.filterResetBtnClass + '">' + rsc_bs_dg.filters_reset + '</button>';
+
+                    elem_html += '</div></div>';
+                }
+
                 elem_html += '<table id="' + table_id + '" class="' + settings.dataTableClass + '"></table>';
                 elem_html += '</div>';
 
@@ -147,17 +161,7 @@
                     elem_html += '<div id="' + custom_html2_id + '"></div>';
                 }
 
-                if(settings.useFilters) {
-                    elem_html += '<div id="' + filter_container_id + '" class="' + settings.filterContainerClass + '">';
 
-                    elem_html += '<div id="' + filter_rules_id + '"></div>';
-
-                    elem_html += '<div id="' + filter_tools_id + '" class="' + settings.filterToolsClass + '">';
-                    elem_html += '<button class="' + settings.filterApplyBtnClass + '">' + rsc_bs_dg.filters_apply + '</button>';
-                    elem_html += '<button class="' + settings.filterResetBtnClass + '">' + rsc_bs_dg.filters_reset + '</button>';
-
-                    elem_html += '</div>';
-                }
 
                 elem_html += '</div>';
 

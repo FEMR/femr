@@ -33,6 +33,8 @@ public class MedicationAdministration implements IMedicationAdministration {
     private int id;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
+    @Column(name = "daily_modifier", unique = false, nullable = false)
+    private float dailyModifier;
 
     @Override
     public int getId() {
@@ -48,4 +50,10 @@ public class MedicationAdministration implements IMedicationAdministration {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public float getDailyModifier() { return dailyModifier; };
+
+    @Override
+    public void setDailyModifier(float dailyModifier) { this.dailyModifier = dailyModifier; }
 }

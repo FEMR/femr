@@ -149,6 +149,14 @@ public class MedicalController extends Controller {
         }
         viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
 
+        //get MedicationAdministrationItems
+        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
+                inventoryService.retrieveAvailableAdministrations();
+        if (medicationAdministrationItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setMedicationAdministrationItems(medicationAdministrationItemServiceResponse.getResponseObject());
+
         //get problems
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounter.getId());
         if (problemItemServiceResponse.hasErrors()) {
@@ -288,13 +296,14 @@ public class MedicalController extends Controller {
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
         //create prescriptions
+        /*
         List<String> prescriptions = new ArrayList<>();
         for (PrescriptionItem pi : viewModelPost.getPrescriptions()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
                 prescriptions.add(pi.getName());
-        }
-        if (prescriptions.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicationService.createPatientPrescriptions(prescriptions, currentUserSession.getId(), patientEncounterItem.getId(), false, false);
+        }*/
+        if (viewModelPost.getPrescriptions().size() > 0) {
+            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicationService.createPatientPrescriptions(viewModelPost.getPrescriptions(), currentUserSession.getId(), patientEncounterItem.getId(), false, false);
             if (prescriptionResponse.hasErrors()) {
                 throw new RuntimeException();
             }

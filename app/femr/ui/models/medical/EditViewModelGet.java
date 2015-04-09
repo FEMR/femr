@@ -35,6 +35,7 @@ public class EditViewModelGet {
     private SettingItem settings;
     private List<TabItem> tabItems;
     private List<String> chiefComplaints;
+    private List<MedicationAdministrationItem> medicationAdministrationItems;
 
     public PatientItem getPatientItem() {
         return patientItem;
@@ -106,5 +107,13 @@ public class EditViewModelGet {
 
     public void setChiefComplaints(List<String> chiefComplaints) {
         this.chiefComplaints = chiefComplaints;
+    }
+
+    public List<MedicationAdministrationItem> getMedicationAdministrationItems() {
+        return medicationAdministrationItems;
+    }
+
+    public void setMedicationAdministrationItems(List<MedicationAdministrationItem> medicationAdministrationItems) {
+        this.medicationAdministrationItems = medicationAdministrationItems;
     }
 }

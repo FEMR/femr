@@ -20,7 +20,9 @@ package femr.business.services.core;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.MedicationItem;
+import femr.data.models.mysql.MedicationAdministration;
 import femr.ui.models.admin.inventory.DataGridFilter;
 import femr.ui.models.admin.inventory.DataGridSorting;
 
@@ -74,4 +76,13 @@ public interface IInventoryService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> retrieveAvailableForms();
+
+
+    /**
+     * Retrieve a list of all available Administrations for medication
+     *
+     * @return a service response that contains a list of available Administrations that are available
+     * and/or errors if they exist
+     */
+    ServiceResponse<List<MedicationAdministrationItem>> retrieveAvailableAdministrations();
 }

@@ -32,14 +32,13 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MedicationAdministrationItem;
+import femr.data.DataModelMapper;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.common.models.MedicationItem;
 import femr.data.models.core.*;
-import femr.data.models.mysql.Medication;
-import femr.data.models.mysql.MedicationActiveDrugName;
-import femr.data.models.mysql.MedicationForm;
-import femr.data.models.mysql.MedicationMeasurementUnit;
+import femr.data.models.mysql.*;
 import femr.ui.models.admin.inventory.DataGridFilter;
 import femr.ui.models.admin.inventory.DataGridSorting;
 import org.apache.commons.lang3.StringUtils;
@@ -55,6 +54,7 @@ public class InventoryService implements IInventoryService {
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
+    private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
     private IDataModelMapper dataModelMapper;
 
     @Inject
@@ -62,12 +62,14 @@ public class InventoryService implements IInventoryService {
                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                             IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
+                            IRepository<IMedicationAdministration> medicationAdministrationRepository,
                             IDataModelMapper dataModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
         this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
+        this.medicationAdministrationRepository = medicationAdministrationRepository;
         this.dataModelMapper = dataModelMapper;
     }
 
@@ -315,4 +317,21 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public ServiceResponse<List<MedicationAdministrationItem>> retrieveAvailableAdministrations() {
+        ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
+        try {
+            List<? extends IMedicationAdministration> medicationAdministrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
+            List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
+            for (IMedicationAdministration ma : medicationAdministrations) {
+                availableAdministrations.add(UIModelMapper.createMedicationAdministrationItem(ma));
+            }
+            response.setResponseObject(availableAdministrations);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
 }

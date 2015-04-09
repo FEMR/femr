@@ -75,7 +75,7 @@
                     <div id="tabContentWrap">
                         @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI, viewModel.getChiefComplaints)
 
-                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getProblemItems)
+                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getMedicationAdministrationItems, viewModel.getProblemItems)
 
                         @if(viewModel.getSettings.isPmhTab) {
                             @pmhTab(viewModel.getTabItemByName("pmh"))

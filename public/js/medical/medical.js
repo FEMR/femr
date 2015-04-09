@@ -38,40 +38,75 @@ var problemFeature = {
     }
 };
 var prescriptionFeature = {
-    allPrescriptions: $('.prescriptionWrap > input'),
+    allPrescriptions: $('.prescriptionWrap > .prescriptionRow'),
     refreshSelectors: function () {
         prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions.selector);
     },
-    initialize: function() {
-        prescriptionFeature.allPrescriptions.last().combobox({
+    setupNewPrescriptionRow: function() {
+        prescriptionFeature.refreshSelectors();
+
+        /* Turn the input into a custom combobox */
+        prescriptionFeature.allPrescriptions.last().find(".prescriptionName > input").combobox({
             select: function(event, ui) {
                 $(this).val(ui.item.id);
             }
         });
+
+        /* Setup calculate to days input on keyup/change events */
+        prescriptionFeature.allPrescriptions.last().find(".prescriptionAdministrationDays > input").on("keyup change",
+            prescriptionFeature.calculateTotalPrescriptionAmount
+        );
+        prescriptionFeature.allPrescriptions.last().find(".prescriptionAdministrationName > select").on("change",
+            prescriptionFeature.calculateTotalPrescriptionAmount
+        );
     },
     getNumberOfNonReadonlyPrescriptionFields: function () {
         prescriptionFeature.refreshSelectors();
         var number = 0;
-        $(prescriptionFeature.allPrescriptions).each(function () {
+        $(prescriptionFeature.allPrescriptions).find(".prescriptionName > input").each(function () {
             if (!$(this).is('[readonly]')) {
                 number++;
             }
         });
         return number;
     },
+    calculateTotalPrescriptionAmount: function() {
+        var $prescriptionRow = $(this).closest(".prescriptionRow");
+        var $amountInput = $prescriptionRow.find(".prescriptionAmount input");
+        var modifier = parseFloat($prescriptionRow.find(".prescriptionAdministrationName select option:selected").attr("data-modifier"));
+        var days = parseFloat($prescriptionRow.find(".prescriptionAdministrationDays input").val());
+
+        $amountInput.val(Math.ceil(modifier * days));
+    },
     addPrescriptionField: function () {
         var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
-        var $newPrescription = $("<input name='prescriptions[" + scriptIndex + "].name' type='text' class='form-control input-sm'/>");
 
-        $(".prescriptionWrap").append($newPrescription);
+        var $prescriptionRow = $("<div>").addClass("prescriptionRow prescriptionInput");
 
-        /* Turn the input into a custom combobox */
-        $newPrescription.combobox({
-            select: function(event, ui) {
-                $(this).val(ui.item.id);
-            }
-        });
+        var $prescriptionInput = $("<input name='prescriptions[" + scriptIndex + "].name' type='text' class='form-control input-sm'/>");
+        $prescriptionRow.append(
+            $("<span class='prescriptionName'></span>").append($prescriptionInput)
+        );
 
+        var $cloneSelect = $("select[name='prescriptions[0].administrationId']").clone();
+        $cloneSelect.attr("name", "prescriptions[" + scriptIndex + "].administrationId");
+        $prescriptionRow.append(
+            $("<span class='prescriptionAdministrationName'></span>").append($cloneSelect)
+        );
+
+        var $daysInput = $("<input type='number' placeholder='days'  class='form-control input-sm' />");
+        $prescriptionRow.append(
+            $("<span class='prescriptionAdministrationDays'></span>").append($daysInput)
+        );
+
+
+        $prescriptionRow.append(
+            $("<span class='prescriptionAmount'><input name='prescriptions[0].amount' type='number' class='form-control input-sm'/></span> ")
+        );
+
+        $(".prescriptionWrap").append($prescriptionRow);
+
+        prescriptionFeature.setupNewPrescriptionRow();
     },
     removePrescriptionField: function () {
         prescriptionFeature.refreshSelectors();
@@ -148,7 +183,7 @@ $(document).ready(function () {
     $('#subtractPrescriptionButton').click(function () {
         prescriptionFeature.removePrescriptionField();
     });
-    prescriptionFeature.initialize();
+    prescriptionFeature.setupNewPrescriptionRow();
 
     //hide/unhide problems
     $('#addProblemButton').click(function () {

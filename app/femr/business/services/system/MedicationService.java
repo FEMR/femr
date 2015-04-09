@@ -72,14 +72,33 @@ public class MedicationService implements IMedicationService {
 
             //create new prescription
             IMedication medication = dataModelMapper.createMedication(prescriptionItem.getName());
-            IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
+            IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(
+                    oldPatientPrescription.getAmount(),
+                    medication,
+                    oldPatientPrescription.getMedicationAdministration().getId(),
+                    userId,
+                    oldPatientPrescription.getPatientEncounter().getId(),
+                    null,
+                    true,
+                    isCounseled
+            );
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
             //replace the old prescription
             oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
             patientPrescriptionRepository.update(oldPatientPrescription);
 
-            PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(newPatientPrescription.getId(), newPatientPrescription.getMedication().getName(), newPatientPrescription.getReplacementId(), newPatientPrescription.getPhysician().getFirstName(), newPatientPrescription.getPhysician().getLastName());
+            PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(
+                    newPatientPrescription.getId(),
+                    newPatientPrescription.getMedication().getName(),
+                    newPatientPrescription.getReplacementId(),
+                    newPatientPrescription.getPhysician().getFirstName(),
+                    newPatientPrescription.getPhysician().getLastName(),
+                    newPatientPrescription.getMedicationAdministration().getId(),
+                    newPatientPrescription.getMedicationAdministration().getName(),
+                    newPatientPrescription.getMedicationAdministration().getDailyModifier(),
+                    newPatientPrescription.getAmount()
+            );
             response.setResponseObject(newPrescriptionItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -92,20 +111,20 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
+    public ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<PrescriptionItem> prescriptions, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        if (prescriptionNames == null || prescriptionNames.size() < 1 || encounterId < 1) {
+        if (prescriptions == null || prescriptions.size() < 1 || encounterId < 1) {
             response.addError("", "invalid parameters");
             return response;
         }
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
-        for (String script : prescriptionNames) {
+        for (PrescriptionItem script : prescriptions) {
             ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
                     .where()
-                    .eq("id", script);
+                    .eq("id", script.getName());
             IMedication medication = medicationRepository.findOne(query);
-            patientPrescriptions.add(dataModelMapper.createPatientPrescription(0, medication, userId, encounterId, null, isDispensed, isCounseled));
+            patientPrescriptions.add(dataModelMapper.createPatientPrescription(script.getAmount(), medication, script.getAdministrationId(), userId, encounterId, null, isDispensed, isCounseled));
         }
 
         try {
@@ -113,7 +132,17 @@ public class MedicationService implements IMedicationService {
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
                 if (pp.getMedication() != null)
-                    newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(pp.getId(), pp.getMedication().getName(), pp.getReplacementId(), pp.getPhysician().getFirstName(), pp.getPhysician().getLastName()));
+                    newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getMedication().getName(),
+                            pp.getReplacementId(),
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration().getId(),
+                            pp.getMedicationAdministration().getName(),
+                            pp.getMedicationAdministration().getDailyModifier(),
+                            pp.getAmount()
+                    ));
             }
             response.setResponseObject(newPrescriptionItems);
         } catch (Exception ex) {
@@ -142,7 +171,17 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId(), patientPrescription.getPhysician().getFirstName(), patientPrescription.getPhysician().getLastName()));
+                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(
+                            patientPrescription.getId(),
+                            patientPrescription.getMedication().getName(),
+                            patientPrescription.getReplacementId(),
+                            patientPrescription.getPhysician().getFirstName(),
+                            patientPrescription.getPhysician().getLastName(),
+                            patientPrescription.getMedicationAdministration().getId(),
+                            patientPrescription.getMedicationAdministration().getName(),
+                            patientPrescription.getMedicationAdministration().getDailyModifier(),
+                            patientPrescription.getAmount()
+                    ));
                 }
             }
             response.setResponseObject(updatedPrescriptions);
@@ -172,7 +211,17 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setCounseled(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(patientPrescription.getId(), patientPrescription.getMedication().getName(), patientPrescription.getReplacementId(), patientPrescription.getPhysician().getFirstName(), patientPrescription.getPhysician().getLastName()));
+                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(
+                            patientPrescription.getId(),
+                            patientPrescription.getMedication().getName(),
+                            patientPrescription.getReplacementId(),
+                            patientPrescription.getPhysician().getFirstName(),
+                            patientPrescription.getPhysician().getLastName(),
+                            patientPrescription.getMedicationAdministration().getId(),
+                            patientPrescription.getMedicationAdministration().getName(),
+                            patientPrescription.getMedicationAdministration().getDailyModifier(),
+                            patientPrescription.getAmount()
+                    ));
                 }
             }
             response.setResponseObject(updatedPrescriptions);

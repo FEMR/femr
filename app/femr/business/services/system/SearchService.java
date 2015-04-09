@@ -295,7 +295,11 @@ public class SearchService implements ISearchService {
                                 pp.getMedication().getName(),
                                 pp.getReplacementId(),
                                 pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName()
+                                pp.getPhysician().getLastName(),
+                                pp.getMedicationAdministration().getId(),
+                                pp.getMedicationAdministration().getName(),
+                                pp.getMedicationAdministration().getDailyModifier(),
+                                pp.getAmount()
                         )
                 );
             }
@@ -332,7 +336,11 @@ public class SearchService implements ISearchService {
                                 pp.getMedication().getName(),
                                 pp.getReplacementId(),
                                 pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName()
+                                pp.getPhysician().getLastName(),
+                                pp.getMedicationAdministration().getId(),
+                                pp.getMedicationAdministration().getName(),
+                                pp.getMedicationAdministration().getDailyModifier(),
+                                pp.getAmount()
                         )
                 );
             }
@@ -583,5 +591,4 @@ public class SearchService implements ISearchService {
 
         return response;
     }
-
 }

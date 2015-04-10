@@ -18,10 +18,7 @@
 */
 package femr.ui.models.pharmacy;
 
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.PatientItem;
-import femr.common.models.PrescriptionItem;
-import femr.common.models.ProblemItem;
+import femr.common.models.*;
 
 import java.util.List;
 
@@ -32,6 +29,7 @@ public class EditViewModelGet {
     private List<PrescriptionItem> medications;
     //Problems
     private List<ProblemItem> problems;
+    private List<MedicationAdministrationItem> medicationAdministrationItems;
 
     public List<PrescriptionItem> getMedications() {
         return medications;
@@ -63,5 +61,13 @@ public class EditViewModelGet {
 
     public void setProblems(List<ProblemItem> problems) {
         this.problems = problems;
+    }
+
+    public List<MedicationAdministrationItem> getMedicationAdministrationItems() {
+        return medicationAdministrationItems;
+    }
+
+    public void setMedicationAdministrationItems(List<MedicationAdministrationItem> medicationAdministrationItems) {
+        this.medicationAdministrationItems = medicationAdministrationItems;
     }
 }

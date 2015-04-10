@@ -6,8 +6,8 @@ $(document).ready(function () {
             { field: "id", header: "ID" },
             { field: "name", header: "Medication" },
             { field: "quantity_current", header: "Current Quantity" },
-            { field: "quantity_total", header: "Total Quantity" },
-            { field: "form", header: "Form" }
+            { field: "quantity_initial", header: "Total Quantity" },
+            { field: "medicationForm.name", header: "Form" }
         ],
         sorting: [
             { sortingName: "Medication", field: "name", order: "Ascending" }

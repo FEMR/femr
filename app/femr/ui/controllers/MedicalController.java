@@ -384,7 +384,7 @@ public class MedicalController extends Controller {
         /* Query the medication */
         ServiceResponse<ObjectNode> medicationServiceResponse = inventoryService.getPaginatedMedicationInventory(
                 1,
-                10,
+                10, /* Rows per page. Can define a "MAX" to show */
                 Arrays.asList(sort),
                 filters
         );

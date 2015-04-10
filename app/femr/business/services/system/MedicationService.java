@@ -70,12 +70,17 @@ public class MedicationService implements IMedicationService {
 
             IPatientPrescription oldPatientPrescription = patientPrescriptionRepository.findOne(query);
 
+            //Retrieve the medication item
+            ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("id", prescriptionItem.getName());
+            IMedication medication = medicationRepository.findOne(medicationQuery);
+
             //create new prescription
-            IMedication medication = dataModelMapper.createMedication(prescriptionItem.getName());
             IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(
-                    oldPatientPrescription.getAmount(),
+                    prescriptionItem.getAmount(),
                     medication,
-                    oldPatientPrescription.getMedicationAdministration().getId(),
+                    prescriptionItem.getAdministrationId(),
                     userId,
                     oldPatientPrescription.getPatientEncounter().getId(),
                     null,
@@ -125,6 +130,10 @@ public class MedicationService implements IMedicationService {
                     .eq("id", script.getName());
             IMedication medication = medicationRepository.findOne(query);
             patientPrescriptions.add(dataModelMapper.createPatientPrescription(script.getAmount(), medication, script.getAdministrationId(), userId, encounterId, null, isDispensed, isCounseled));
+
+            /* Update medication count in medication table */
+            medication.setQuantity_current(medication.getQuantity_current() - script.getAmount());
+            medicationRepository.update(medication);
         }
 
         try {

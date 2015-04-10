@@ -117,7 +117,8 @@ public class InventoryService implements IInventoryService {
         /* Create ordering string for query based on sorting */
         String orderBy = StringUtils.join(sorting, ", ").trim();
 
-        ExpressionList<Medication> query = QueryProvider.getMedicationQuery().where();
+        ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
+                .fetch("medicationForm").where();
         query.where().eq("isDeleted", false);
         if (orderBy != "")
             query.orderBy(orderBy);
@@ -210,10 +211,13 @@ public class InventoryService implements IInventoryService {
             js.put("id", m.getId());
             js.put("name", m.getName());
             js.put("quantity_current", m.getQuantity_current());
-            js.put("quantity_total", m.getQuantity_total());
+            js.put("quantity_initial", m.getQuantity_total());
 
-            if (m.getMedicationForm() != null)
+            if (m.getMedicationForm() != null) {
                 js.put("form", m.getMedicationForm().getName());
+                //Redundant form name... hack for bs_grid to work without changing it's code further
+                js.put("medicationForm.name", m.getMedicationForm().getName());
+            }
         }
 
         return response;

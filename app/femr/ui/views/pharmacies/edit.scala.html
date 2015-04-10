@@ -6,12 +6,16 @@
 @import femr.ui.views.html.partials.patientOverview
 
     @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.combobox.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacyClientValidation.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
     }
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.combobox.css")">
     }
 
 @main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
@@ -44,7 +48,7 @@
 
 
 
-            <div id="medicationWrap">
+            <div id="medicationWrap" class="form-group">
                 <h4>List of Medications</h4>
                 <ol id="medicationList">
                 @for(x <- 1 to viewModel.getMedications.size) {
@@ -58,8 +62,23 @@
                                 <span id="prescriber">
                                     Prescriber: @medication.getPrescriberLastName, @medication.getPrescriberFirstName</span>
                             </div>
-                            <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement"/>
-                            <input type="text" class="hidden" name="id_prescription@x" value="@medication.getId"/>
+                            <div class="replacement hidden">
+                                <input type="hidden" name="prescriptions[@x].id" value="@medication.getId" />
+                                <div class="prescriptionRow prescriptionInput">
+                                    <span class="prescriptionName"><input name="prescriptions[@x].name" type="text" class="form-control input-sm"/></span
+                                    ><span class="prescriptionAdministrationName">
+                                    <select name="prescriptions[@x].administrationId" class="form-control input-sm">
+                                        @for(item <- viewModel.getMedicationAdministrationItems) {
+                                            <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
+                                        }
+                                    </select>
+                                </span
+                                ><span class="prescriptionAdministrationDays">
+                                    <input type="number" placeholder="days"  class="form-control input-sm" />
+                                </span
+                                ><span class="prescriptionAmount"><input name="prescriptions[@x].amount" type="number" placeholder="Amount" value="0" class="form-control input-sm"/></span>
+                                </div>
+                            </div>
                         </li>
                     }
 

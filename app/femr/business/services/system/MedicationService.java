@@ -76,6 +76,7 @@ public class MedicationService implements IMedicationService {
                     .eq("id", prescriptionItem.getName());
             IMedication medication = medicationRepository.findOne(medicationQuery);
 
+
             //create new prescription
             IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(
                     prescriptionItem.getAmount(),
@@ -89,10 +90,11 @@ public class MedicationService implements IMedicationService {
             );
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
-            //replace the old prescription
-            oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
-            patientPrescriptionRepository.update(oldPatientPrescription);
+            // Subtract new prescription amount from medication amount in medications
+            medication.setQuantity_current(medication.getQuantity_current() - newPatientPrescription.getAmount());
+            medicationRepository.update(medication);
 
+            // Map new prescription item to be returned to UI View
             PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(
                     newPatientPrescription.getId(),
                     newPatientPrescription.getMedication().getName(),
@@ -105,6 +107,22 @@ public class MedicationService implements IMedicationService {
                     newPatientPrescription.getAmount()
             );
             response.setResponseObject(newPrescriptionItem);
+
+
+            //replace the old prescription
+            oldPatientPrescription.setReplacementId(newPatientPrescription.getId());
+            patientPrescriptionRepository.update(oldPatientPrescription);
+
+            //Retrieve the medication item for old prescription
+            medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("id", oldPatientPrescription.getMedication().getId());
+            medication = medicationRepository.findOne(medicationQuery);
+
+            // Restore the amount of medication in the inventory as it will never be dispensed
+            medication.setQuantity_current(medication.getQuantity_current() + oldPatientPrescription.getAmount());
+            medicationRepository.update(medication);
+
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

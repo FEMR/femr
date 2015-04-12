@@ -8,6 +8,20 @@ public class DataGridFilter {
     private DataGridFilterCondition condition;
     private String logicalOperator;
 
+    // Constructor with no arguments
+    public DataGridFilter() {}
+
+    // Constructor that takes just logical operator
+    public DataGridFilter(String logicalOperator) {
+        this.logicalOperator = logicalOperator;
+    }
+
+    // Constructor that takes logical operator and a condition as arguments
+    public DataGridFilter(String logicalOperator, DataGridFilterCondition condition) {
+        this.logicalOperator = logicalOperator;
+        this.condition = condition;
+    }
+
     public DataGridFilterCondition getCondition() {
         return condition;
     }

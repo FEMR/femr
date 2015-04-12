@@ -171,6 +171,10 @@ public class InventoryService implements IInventoryService {
                     subJunction.add(Expr.isNull(field));
                 else if (operator.equalsIgnoreCase("is_not_null"))
                     subJunction.add(Expr.isNotNull(field));
+                else if (operator.equalsIgnoreCase("greater_than"))
+                    subJunction.add(Expr.gt(field, value));
+                else if (operator.equalsIgnoreCase("less_than"))
+                    subJunction.add(Expr.lt(field, value));
 
 
             }

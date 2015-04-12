@@ -364,17 +364,22 @@ public class MedicalController extends Controller {
 
         /* If term from combobox is not empty, create a filter with begins_with and the term as value */
         if (term != "") {
-            DataGridFilter filter = new DataGridFilter();
-            filter.setLogical_operator("AND");
-
-            DataGridFilterCondition condition = new DataGridFilterCondition();
-            condition.setField("name");
-            condition.setOperator("begins_with");
-            condition.setFilterValue(Arrays.asList(term));
-
-            filter.setCondition(condition);
-            filters.add(filter);
+            filters.add(new DataGridFilter(
+                    "AND",
+                    new DataGridFilterCondition("name", "begins_with", term)
+            ));
         }
+
+        // Filter out medication that are empty (current_quantity <= 0)
+        filters.add(new DataGridFilter(
+           "AND",
+           new DataGridFilterCondition("quantity_current", "greater_than", "0")
+        ));
+        //DataGridFilter qtyFilter = new DataGridFilter();
+        //qtyFilter.setLogical_operator("AND");
+
+        //qtyFilter.setCondition(new DataGridFilterCondition("quantity_current", "", "0"));
+
 
         /* Apply sorting by medication name, ascending */
         DataGridSorting sort = new DataGridSorting();

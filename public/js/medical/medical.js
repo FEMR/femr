@@ -49,6 +49,8 @@ var prescriptionFeature = {
         prescriptionFeature.allPrescriptions.last().find(".prescriptionName > input").combobox({
             select: function(event, ui) {
                 $(this).val(ui.item.id);
+                $(this).attr("data-qty", ui.item.qty);
+                $(this).closest(".prescriptionRow").find(".prescriptionAmount input").removeClass("lowMedication");
             },
             source:  function(request, response) {
                 $.ajax({
@@ -61,7 +63,8 @@ var prescriptionFeature = {
                                 label: item.name + " (" + item.form + ")",
                                 value: item.name + " (" + item.form + ")",
                                 name: item.name,
-                                id: item.id
+                                id: item.id,
+                                qty: item.quantity_current
                             }
                         }));
                     }
@@ -90,10 +93,21 @@ var prescriptionFeature = {
     calculateTotalPrescriptionAmount: function() {
         var $prescriptionRow = $(this).closest(".prescriptionRow");
         var $amountInput = $prescriptionRow.find(".prescriptionAmount input");
+
+        // Quantity of medication left
+        var qty = $prescriptionRow.find(".prescriptionName input").attr("data-qty");
+        // Modifer per day for administration type
         var modifier = parseFloat($prescriptionRow.find(".prescriptionAdministrationName select option:selected").attr("data-modifier"));
+        // Days to prescribe
         var days = parseFloat($prescriptionRow.find(".prescriptionAdministrationDays input").val());
 
-        $amountInput.val(Math.ceil(modifier * days));
+        var amount = Math.ceil(modifier * days);
+        $amountInput.val(amount);
+
+        if (amount > qty)
+            $amountInput.addClass("lowMedication");
+        else
+            $amountInput.removeClass("lowMedication");
     },
     addPrescriptionField: function () {
         var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
@@ -118,7 +132,7 @@ var prescriptionFeature = {
 
 
         $prescriptionRow.append(
-            $("<span class='prescriptionAmount'><input name='prescriptions[0].amount' type='number' class='form-control input-sm'/></span> ")
+            $("<span class='prescriptionAmount'><input name='prescriptions[" + scriptIndex + "].amount' type='number' class='form-control input-sm'/></span> ")
         );
 
         $(".prescriptionWrap").append($prescriptionRow);

@@ -1,5 +1,6 @@
 package femr.ui.models.admin.inventory;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,6 +12,14 @@ public class DataGridFilterCondition {
     private String filterType;
     private List<String> filterValue;
     private String operator;
+
+    public DataGridFilterCondition() {}
+
+    public DataGridFilterCondition(String field, String operator, String filterValue) {
+        this.field = field;
+        this.operator = operator;
+        this.filterValue = Arrays.asList(filterValue);
+    }
 
     public String getField() {
         return field;

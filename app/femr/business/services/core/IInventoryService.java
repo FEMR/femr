@@ -85,4 +85,11 @@ public interface IInventoryService {
      * and/or errors if they exist
      */
     ServiceResponse<List<MedicationAdministrationItem>> retrieveAvailableAdministrations();
+
+    /**
+     * Deletes/marks deleted a medication by it's ID
+     * @param medicationID The ID of the medication
+     * @return
+     */
+    ServiceResponse<MedicationItem> deleteMedication(int medicationID);
 }

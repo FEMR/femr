@@ -3,9 +3,17 @@ var medicalFieldValidator = {
     isValid : true,
     validatePrescriptions : function(){
         var prescriptions = [];
+        prescriptionFeature.refreshSelectors();
         $(prescriptionFeature.allPrescriptions).each(function(){
-            prescriptions.push($(this).val());
+            var $prescriptionName = $(this).find(".prescriptionName > input");
+            var $prescriptionAmount = $(this).find(".prescriptionAmount > input");
+
+            // Set prescriptionAmount to 0 if it is NAN
+            if ($.trim($prescriptionAmount.val()) == "") $prescriptionAmount.val("0");
+
+            prescriptions.push($prescriptionName.val());
         });
+
         prescriptions.sort();
         var last = prescriptions[0];
         for (var i=1; i<prescriptions.length; i++){
@@ -25,7 +33,5 @@ function validate(){
         medicalFieldValidator.isValid = true;
         return false;
     }
-
-
-
+    return true;
 }

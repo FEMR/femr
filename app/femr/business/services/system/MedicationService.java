@@ -90,7 +90,7 @@ public class MedicationService implements IMedicationService {
             );
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
-            // Subtract new prescription amount from medication amount in medications
+            // Subtract prescription amount from medication amount in medications (Dispensed)
             medication.setQuantity_current(medication.getQuantity_current() - newPatientPrescription.getAmount());
             medicationRepository.update(medication);
 
@@ -104,7 +104,9 @@ public class MedicationService implements IMedicationService {
                     newPatientPrescription.getMedicationAdministration().getId(),
                     newPatientPrescription.getMedicationAdministration().getName(),
                     newPatientPrescription.getMedicationAdministration().getDailyModifier(),
-                    newPatientPrescription.getAmount()
+                    newPatientPrescription.getAmount(),
+                    newPatientPrescription.getMedication().getId(),
+                    newPatientPrescription.getMedication().getMedicationForm().getName()
             );
             response.setResponseObject(newPrescriptionItem);
 
@@ -118,10 +120,6 @@ public class MedicationService implements IMedicationService {
                     .where()
                     .eq("id", oldPatientPrescription.getMedication().getId());
             medication = medicationRepository.findOne(medicationQuery);
-
-            // Restore the amount of medication in the inventory as it will never be dispensed
-            medication.setQuantity_current(medication.getQuantity_current() + oldPatientPrescription.getAmount());
-            medicationRepository.update(medication);
 
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -148,10 +146,6 @@ public class MedicationService implements IMedicationService {
                     .eq("id", script.getName());
             IMedication medication = medicationRepository.findOne(query);
             patientPrescriptions.add(dataModelMapper.createPatientPrescription(script.getAmount(), medication, script.getAdministrationId(), userId, encounterId, null, isDispensed, isCounseled));
-
-            /* Update medication count in medication table */
-            medication.setQuantity_current(medication.getQuantity_current() - script.getAmount());
-            medicationRepository.update(medication);
         }
 
         try {
@@ -168,7 +162,9 @@ public class MedicationService implements IMedicationService {
                             pp.getMedicationAdministration().getId(),
                             pp.getMedicationAdministration().getName(),
                             pp.getMedicationAdministration().getDailyModifier(),
-                            pp.getAmount()
+                            pp.getAmount(),
+                            pp.getMedication().getId(),
+                            pp.getMedication().getMedicationForm().getName()
                     ));
             }
             response.setResponseObject(newPrescriptionItems);
@@ -207,8 +203,20 @@ public class MedicationService implements IMedicationService {
                             patientPrescription.getMedicationAdministration().getId(),
                             patientPrescription.getMedicationAdministration().getName(),
                             patientPrescription.getMedicationAdministration().getDailyModifier(),
-                            patientPrescription.getAmount()
+                            patientPrescription.getAmount(),
+                            patientPrescription.getMedication().getId(),
+                            patientPrescription.getMedication().getMedicationForm().getName()
                     ));
+
+                    //Retrieve the medication item
+                    ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                            .where()
+                            .eq("id", patientPrescription.getMedication().getId());
+                    IMedication medication = medicationRepository.findOne(medicationQuery);
+
+                    // Subtract prescription amount from the medication (dispensed)
+                    medication.setQuantity_current(medication.getQuantity_current() - patientPrescription.getAmount());
+                    medicationRepository.update(medication);
                 }
             }
             response.setResponseObject(updatedPrescriptions);
@@ -247,7 +255,9 @@ public class MedicationService implements IMedicationService {
                             patientPrescription.getMedicationAdministration().getId(),
                             patientPrescription.getMedicationAdministration().getName(),
                             patientPrescription.getMedicationAdministration().getDailyModifier(),
-                            patientPrescription.getAmount()
+                            patientPrescription.getAmount(),
+                            patientPrescription.getMedication().getId(),
+                            patientPrescription.getMedication().getMedicationForm().getName()
                     ));
                 }
             }
@@ -270,8 +280,12 @@ public class MedicationService implements IMedicationService {
         try {
             List<String> medicationNames = new ArrayList<>();
 
-            //List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
+            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("isDeleted", false).orderBy("name");
+            List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
+            /*
             //use raw sql to temporarily filter out the duplicate medication names
             //after implementing the inventory tracking feature, this shouldn't be needed
             //as duplicates will never exist.
@@ -283,7 +297,7 @@ public class MedicationService implements IMedicationService {
             medicationQuery.setRawSql(rawSql);
 
             List<? extends IMedication> medications = medicationQuery.findList();
-
+            */
 
             for (IMedication m : medications) {
                 medicationNames.add(m.getName());

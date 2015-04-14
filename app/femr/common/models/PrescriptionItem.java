@@ -28,6 +28,8 @@ public class PrescriptionItem {
     private String administrationName;
     private float administrationModifier;
     private int amount;
+    private int medicationID;
+    private String medicationForm;
 
     public PrescriptionItem(String name){
         this.name = name;
@@ -107,5 +109,21 @@ public class PrescriptionItem {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public int getMedicationID() {
+        return medicationID;
+    }
+
+    public void setMedicationID(int medicationID) {
+        this.medicationID = medicationID;
+    }
+
+    public String getMedicationForm() {
+        return medicationForm;
+    }
+
+    public void setMedicationForm(String medicationForm) {
+        this.medicationForm = medicationForm;
     }
 }

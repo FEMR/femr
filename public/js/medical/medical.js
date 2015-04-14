@@ -214,7 +214,9 @@ $(document).ready(function () {
     $('#subtractPrescriptionButton').click(function () {
         prescriptionFeature.removePrescriptionField();
     });
+
     prescriptionFeature.setupNewPrescriptionRow();
+
 
     //hide/unhide problems
     $('#addProblemButton').click(function () {
@@ -286,9 +288,18 @@ $(document).ready(function () {
         multipleChiefComplaintFeature.slideChiefComplaintLeft();
     });
 
-
+/*
     $('#medicalSubmitBtn').click(function () {
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
+    });
+*/
+    $("form").submit(function(event) {
+        //validate from medicalClientValidation.js
+        if (!photoNameFixup() || !validate()) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
     });
 
     typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {

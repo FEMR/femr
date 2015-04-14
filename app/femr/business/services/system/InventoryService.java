@@ -55,6 +55,7 @@ public class InventoryService implements IInventoryService {
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
+    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private IDataModelMapper dataModelMapper;
 
     @Inject
@@ -63,6 +64,7 @@ public class InventoryService implements IInventoryService {
                             IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
                             IRepository<IMedicationAdministration> medicationAdministrationRepository,
+                            IRepository<IPatientPrescription> patientPrescriptionRepository,
                             IDataModelMapper dataModelMapper) {
 
         this.medicationRepository = medicationRepository;
@@ -70,6 +72,7 @@ public class InventoryService implements IInventoryService {
         this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.medicationAdministrationRepository = medicationAdministrationRepository;
+        this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.dataModelMapper = dataModelMapper;
     }
 
@@ -340,6 +343,43 @@ public class InventoryService implements IInventoryService {
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
+        return response;
+    }
+
+    public ServiceResponse<MedicationItem> deleteMedication(int medicationID) {
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        // Get the medication Item
+        IMedication medication;
+        ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                .where()
+                .eq("id", medicationID);
+        try {
+            medication = medicationRepository.findOne(medicationQuery);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+            return response;
+        }
+
+        // Get patient prescriptions that use this medication
+        /*
+        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
+                .where()
+                .eq("medication_id", medicationID);
+        List<? extends IPatientPrescription> prescriptions = patientPrescriptionRepository.find(query);
+
+        if (prescriptions.size() == 0) {
+            //Can delete medication from table since no prescriptions rely on it
+            medicationRepository.delete(medication);
+        } else {
+        */
+
+
+        //Prescriptions have medication as a FK. Need to set isDeleted to 1
+        medication.setIsDeleted(true);
+        medicationRepository.update(medication);
+
+
         return response;
     }
 }

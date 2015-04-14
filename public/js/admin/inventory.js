@@ -2,12 +2,14 @@ $(document).ready(function () {
     /* Alaa Serhan */
     $("#currentMedicationsGrid").bs_grid({
         ajaxFetchDataURL: "/admin/inventory/get",
+        row_primary_key: "id",
+        rowSelectionMode: false,
         columns: [
             { field: "id", header: "ID" },
             { field: "name", header: "Medication" },
             { field: "quantity_current", header: "Current Quantity" },
             { field: "quantity_initial", header: "Total Quantity" },
-            { field: "medicationForm.name", header: "Form" }
+            { field: "medicationForm.name", header: "Form" },
         ],
         sorting: [
             { sortingName: "Medication", field: "name", order: "Ascending" }
@@ -37,6 +39,35 @@ $(document).ready(function () {
             ]
         },
         onDatagridError: function(e) {
+        },
+        onDisplay: function() {
+            var table_id_prefix = $("#currentMedicationsGrid").bs_grid("getOption", "table_id_prefix");
+            var table_id = table_id_prefix + "currentMedicationsGrid";
+
+            // Add an empty cell to tables thead
+            $("#" + table_id + " thead tr").append("<td></td>");
+
+            // Add a delete button to each row
+            $("#" + table_id + " tbody tr").each(function() {
+                var $delete = $("<a>delete</a>").click(function() {
+                    var $tr = $(this).closest("tr");
+
+                    // get medication from tr's ID
+                    var match = /(\d+)$/.exec($tr.attr("id"));
+                    if (match && match.length > 0) {
+                        var medicationId = match[1];
+                        $.ajax({
+                            url: '/admin/inventory/delete/' + medicationId,
+                            type: 'POST',
+                            dataType: 'json'
+                        }).done(function (data) {
+                            $("#currentMedicationsGrid").bs_grid('displayGrid', true);
+                        });
+                    }
+                });
+
+                $(this).append($("<td></td>").append($delete));
+            });
         }
     });
 

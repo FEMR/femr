@@ -290,6 +290,9 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     width: 25%;
 }
 
+.prescriptionInput > span {
+    vertical-align: top;
+}
 .prescriptionInput .prescriptionAdministrationName {
     width: 12%;
 }

@@ -71,6 +71,15 @@
 
 .infoLabel {
     font-weight: bold;
+    Height: 30px;
+    Width: 300px;
+}
+.infoLabel.nonEditable {
+    color: inherit;
+}
+.infoLabel.nonEditable:hover {
+    color: inherit;
+    text-decoration: inherit;
 }
 
 .encounterViewBodyLeft {
@@ -218,6 +227,11 @@
 .inputRow {
     font-size: 12px;
 }
+.submit {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
 
 .inputLabel {
     display: inline-block;
@@ -247,6 +261,44 @@
 }
 
 
+#edit-form{
+
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 350px;
+    margin-left: -250px;
+    margin-top: -150px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    background-color: gray;
+
+
+
+
+
+}
+
+.form-history{
+
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    margin-top: 10px;
+
+}
+.form-history table{
+    width: 100%;
+}
+#edit-form input[type="text"]{
+
+    margin-bottom: 10px;
+    display: inline-block;
+    whitespace: nowrap;
+
+}
 
 
 

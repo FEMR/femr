@@ -19,6 +19,7 @@
 package femr.data.models.core;
 
 import femr.data.models.mysql.ChiefComplaint;
+import femr.data.models.mysql.User;
 import org.joda.time.DateTime;
 
 /**
@@ -32,6 +33,10 @@ public interface IPatientEncounterTabField {
     int getUserId();
 
     void setUserId(int userId);
+
+    String getUserName();
+
+    void setUser(User user);
 
     int getPatientEncounterId();
 

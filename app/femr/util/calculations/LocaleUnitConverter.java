@@ -1,9 +1,12 @@
 package femr.util.calculations;
 
 import femr.common.models.PatientItem;
+import femr.common.models.VitalItem;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 
 import java.math.BigDecimal; //Importing for converting
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by owner1 on 3/11/2015.
@@ -77,6 +80,30 @@ public class LocaleUnitConverter {
             patient.setWeight(LocaleUnitConverter.getKgs(patient.getWeight()).floatValue());
 
         return patient;
+    }
+
+    /**
+     * Converts vitals to imperial (Map<String, Float> used when user is submitting vitals
+     * @param vitalMap Map of all patient vitals
+     * @return The Map with the vitals converted to imperial
+     */
+    public static Map<String, Float> toImperial(Map<String, Float> vitalMap) {
+        if (vitalMap.containsKey("temperature"))
+            vitalMap.put("temperature", getFahrenheit(vitalMap.get("temperature")));
+
+        if (vitalMap.containsKey("heightFeet") && vitalMap.containsKey("heightInches")) {
+            Float heightMetres = vitalMap.get("heightFeet");
+            Float heightCentimetres = vitalMap.get("heightInches");
+
+            // AS - Convert and store in original height variables
+            vitalMap.put("heightFeet" ,getFeet(heightMetres, heightCentimetres));
+            vitalMap.put("heightInches", getInches(heightMetres, heightCentimetres));
+        }
+
+        if (vitalMap.containsKey("weight"))
+            vitalMap.put("weight", getLbs(vitalMap.get("weight")));
+
+        return vitalMap;
     }
 
     /**

@@ -29,10 +29,13 @@ import femr.common.models.VitalItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatientEncounterVital;
+import femr.data.models.core.ISystemSetting;
 import femr.data.models.core.IVital;
 import femr.data.models.mysql.PatientEncounterVital;
+import femr.data.models.mysql.SystemSetting;
 import femr.data.models.mysql.Vital;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
@@ -44,15 +47,18 @@ public class VitalService implements IVitalService {
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IVital> vitalRepository;
     private final IDataModelMapper dataModelMapper;
+    private final IRepository<ISystemSetting> systemSettingRepository;
 
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                         IRepository<IVital> vitalRepository,
-                        IDataModelMapper dataModelMapper) {
+                        IDataModelMapper dataModelMapper,
+                        IRepository<ISystemSetting> settingsReposity) {
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
         this.dataModelMapper = dataModelMapper;
+        this.systemSettingRepository = settingsReposity;
     }
 
     /**
@@ -72,9 +78,12 @@ public class VitalService implements IVitalService {
         ExpressionList<Vital> query;
         String currentTime = dateUtils.getCurrentDateTimeString();
 
+        // Convert vitals to imperial for storing in DB
+        if (isMetric())
+            LocaleUnitConverter.toImperial(patientEncounterVitalMap);
+
         for (String key : patientEncounterVitalMap.keySet()) {
             if (patientEncounterVitalMap.get(key) != null) {
-
                 query = QueryProvider.getVitalQuery().where().eq("name", key);
                 vital = vitalRepository.findOne(query);
                 patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
@@ -88,6 +97,7 @@ public class VitalService implements IVitalService {
                 if (pev.getVital() != null)
                     vitalItems.add(UIModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
+
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -134,6 +144,10 @@ public class VitalService implements IVitalService {
 
         ExpressionList<Vital> query;
         String currentTime = dateUtils.getCurrentDateTimeString();
+
+        // Convert vitals to imperial for storing in DB
+        if (isMetric())
+            LocaleUnitConverter.toImperial(patientEncounterVitalMap);
 
         try {
 
@@ -183,11 +197,29 @@ public class VitalService implements IVitalService {
                     vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
                 }
             }
+
+            // If metric convert the multimap to metric
+            if (isMetric()) {
+                vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
+            }
+
         } catch (Exception ex) {
             response.addError("", "bad query");
         }
 
         response.setResponseObject(vitalMultiMap);
         return response;
+    }
+
+    /**
+     * Gets isActive of the metric setting
+     * @return
+     */
+    private boolean isMetric() {
+        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
+                .where()
+                .eq("name", "Metric System Option");
+        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        return isMetric.isActive();
     }
 }

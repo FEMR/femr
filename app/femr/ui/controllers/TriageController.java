@@ -15,8 +15,6 @@ import femr.common.models.PatientItem;
 import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
-//Alaa Serhan - Importing Vital Unit Converter
-import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
@@ -195,13 +193,7 @@ public class TriageController extends Controller {
 
         //Alaa Serhan
         if (viewModel.getTemperature() != null) {
-
             Float temperature = viewModel.getTemperature();
-            if( settings.isMetric() ){
-                // AS - Convert temperature from metric(C) to imperial(F) for storing
-                temperature = LocaleUnitConverter.getFahrenheit(temperature);
-//                temperature = temperature * 9/5 + 32;
-            }
 
             newVitals.put("temperature", temperature);
         }
@@ -215,17 +207,6 @@ public class TriageController extends Controller {
             Float heightFeet = viewModel.getHeightFeet().floatValue();
             Float heightInches = viewModel.getHeightInches().floatValue();
 
-            // AS - If metric convert height to imperial for storage
-            if(settings.isMetric() ){
-                // Store height in variables so we can overwrite original
-                Float heightMetres = heightFeet;
-                Float heightCentimetres = heightInches;
-
-                // AS - Convert and store in original height variables
-                heightFeet = LocaleUnitConverter.getFeet(heightMetres, heightCentimetres);
-                heightInches = LocaleUnitConverter.getInches(heightMetres, heightCentimetres);
-            }
-
             newVitals.put("heightFeet", heightFeet);
             newVitals.put("heightInches", heightInches);
         }
@@ -233,11 +214,6 @@ public class TriageController extends Controller {
         //Alaa Serhan
         if (viewModel.getWeight() != null) {
             Float weight = viewModel.getWeight();
-
-            // AS - If metric(KG) convert weight to imperial(LBS) - Store It
-            if (settings.isMetric()){
-                weight = LocaleUnitConverter.getLbs(weight);
-            }
 
             newVitals.put("weight", weight);
         }

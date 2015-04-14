@@ -32,6 +32,7 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.*;
@@ -132,6 +133,10 @@ public class SearchService implements ISearchService {
                 patientItem.setPathToPhoto("/photo/patient/" + patientId + "?showDefault=false");
             }
 
+            // If metric setting enabled convert response patientItem to metric
+            if (isMetric())
+                patientItem = LocaleUnitConverter.toMetric(patientItem);
+
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -184,6 +189,11 @@ public class SearchService implements ISearchService {
                     pathToPhoto,
                     photoId
             );
+
+            // If metric setting enabled convert response patientItem to metric
+            if (isMetric())
+                patientItem = LocaleUnitConverter.toMetric(patientItem);
+
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -585,4 +595,15 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    /**
+     * Gets isActive of the metric setting
+     * @return
+     */
+    private boolean isMetric() {
+        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
+                .where()
+                .eq("name", "Metric System Option");
+        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        return isMetric.isActive();
+    }
 }

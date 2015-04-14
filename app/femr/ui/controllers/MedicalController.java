@@ -16,8 +16,6 @@ import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
-//Alaa Serhan - Importing Vital Unit Converter
-import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
@@ -208,11 +206,6 @@ public class MedicalController extends Controller {
 
         //Alaa Serhan
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
-        // Check if Metric is Set
-        // If Metric, GET values from map, convert and put BACK Into MAP
-        if (viewModelGet.getSettings().isMetric()) {
-            vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
-        }
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet));
     }
@@ -368,12 +361,6 @@ public class MedicalController extends Controller {
         //Alaa Serhan
         VitalMultiMap vitalMap = vitalMultiMapServiceResponse.getResponseObject();
 
-        // Check if Metric is Set
-        // If metric, Get Values from Map, Convert and Put Back Into Map
-        if (viewModelGet.getSettings().isMetric()) {
-            vitalMap = LocaleUnitConverter.toMetric(vitalMap);
-        }
-
         return ok(listVitals.render(vitalMap, viewModelGet));
     }
 
@@ -401,11 +388,6 @@ public class MedicalController extends Controller {
         if (viewModel.getTemperature() != null) {
             Float temperature = viewModel.getTemperature();
 
-            // AS - If temp is metric(C) convert to imperial(F)- Using the Vital Unit Converter
-            if(viewModelGet.getSettings().isMetric() ){
-                temperature = LocaleUnitConverter.getFahrenheit(temperature);
-            }
-
             newVitals.put("temperature", temperature);
         }
         if (viewModel.getOxygenSaturation() != null) {
@@ -417,16 +399,6 @@ public class MedicalController extends Controller {
             Float heightFeet = viewModel.getHeightFeet().floatValue();
             Float heightInches = viewModel.getHeightInches().floatValue();
 
-            //AS - If metric convert height to imperial for storage
-            if(viewModelGet.getSettings().isMetric() ){
-                //AS - Store height in variables so we can overwrite original
-                Float heightMetres = heightFeet;
-                Float heightCentimetres = heightInches;
-
-                // AS - Convert and store in original height varibles
-                heightFeet = LocaleUnitConverter.getFeet(heightMetres, heightCentimetres);
-                heightInches = LocaleUnitConverter.getInches(heightMetres, heightCentimetres);
-            }
             newVitals.put("heightFeet", heightFeet);
             newVitals.put("heightInches", heightInches);
         }
@@ -435,10 +407,6 @@ public class MedicalController extends Controller {
         if (viewModel.getWeight() != null) {
             Float weight = viewModel.getWeight();
 
-            // AS - If weight is metric (KG) convert to imperial (LBS)
-            if(viewModelGet.getSettings().isMetric() ){
-                weight = LocaleUnitConverter.getLbs(weight);
-            }
             newVitals.put("weight", weight);
         }
 

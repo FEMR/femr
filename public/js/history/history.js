@@ -24,7 +24,7 @@ $(document).ready(function () {
         });
     }
 
-    $(".infoLabel").click(function () {
+    $(".infoLabel.editable").click(function () {
         // Get Label text from top html
         var label = $(this).text();
 

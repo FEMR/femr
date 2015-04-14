@@ -74,6 +74,13 @@
     Height: 30px;
     Width: 300px;
 }
+.infoLabel.nonEditable {
+    color: inherit;
+}
+.infoLabel.nonEditable:hover {
+    color: inherit;
+    text-decoration: inherit;
+}
 
 .encounterViewBodyLeft {
     width: 33%;

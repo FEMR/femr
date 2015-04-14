@@ -6,7 +6,11 @@
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
     @import femr.ui.views.html.partials.helpers.outputWeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
+
     @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
+
+    @import femr.ui.views.html.partials.encounter.dynamicTabSpan
+
     @import collection.JavaConversions._
 
     @additionalScripts = {
@@ -19,13 +23,13 @@
         <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
     }
 
+    @* editClass is nonEditable or editable depending on whether encounter is closed.  *@
+    @editClass = @{if(viewModel.getPatientEncounterItem.getIsClosed) "editable" else "nonEditable" }
 
     @main("History", currentUser, scripts = additionalScripts, styles = additionalStyles) {
         <div class="sectionBackground backgroundForWrap" id="encounterViewWrap">
             <div id="encounterViewHeader">
 
-
-           <!--    <a href="/history/edit-encounter/@viewModel.getPatientEncounterItem.getId" class="btn btn-default pull-right">Edit history </a> -->
 
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
@@ -139,29 +143,29 @@
                 <div class="encounterViewBodyLeft">
                     @*Pmh and treatment tab fields are listed here*@
                     @defining(viewModelMedical.getPmhFields) { pmhFieldMap =>
-                        <p><a class="infoLabel"> Medical/Surgical History:</a>
-                            <span class="value" data-id="medicalSurgicalHistory"> @outputStringOrNA(pmhFieldMap.get("medicalSurgicalHistory"))</span> </p>
-                        <p><a class="infoLabel"> Social History:</a>
-                            <span class="value" data-id="socialHistory"> @outputStringOrNA(pmhFieldMap.get("socialHistory"))</span></p>
-                        <p><a class="infoLabel">Current Medications:</a>
-                            <span class="value" data-id="currentMedications"> @outputStringOrNA(pmhFieldMap.get("currentMedications"))</span></p>
-
-                        <p><a class="infoLabel"> Family History: </a>
-                            <span class="value" data-id="familyHistory"> @outputStringOrNA(pmhFieldMap.get("familyHistory"))</span></p>
+                        <p><a class="infoLabel @editClass"> Medical/Surgical History:</a>
+                            @dynamicTabSpan(pmhFieldMap.get("medicalSurgicalHistory"))
+                        </p>
+                        <p><a class="infoLabel @editClass"> Social History:</a>
+                            @dynamicTabSpan(pmhFieldMap.get("socialHistory"))
+                        <p><a class="infoLabel @editClass">Current Medications:</a>
+                            @dynamicTabSpan(pmhFieldMap.get("currentMedications"))
+                        <p><a class="infoLabel @editClass"> Family History: </a>
+                            @dynamicTabSpan(pmhFieldMap.get("familyHistory"))
                     }
                     @defining(viewModelMedical.getTreatmentFields) { treatmentFieldMap =>
-                        <p><a  class="infoLabel"> Assessment: </a>
-                            <span class="value" data-id="assessment"> @outputStringOrNA(treatmentFieldMap.get("assessment"))</span></p>
+                        <p><a  class="infoLabel @editClass"> Assessment: </a>
+                            @dynamicTabSpan(treatmentFieldMap.get("assessment"))
 
-                        <p><a class="infoLabel">Treatment:</a>
-                            <span class="value" data-id="treatment"> @outputStringOrNA(treatmentFieldMap.get("treatment"))</span></p>
+                        <p><a class="infoLabel @editClass">Treatment:</a>
+                            @dynamicTabSpan(treatmentFieldMap.get("treatment"))
                     }
                     @for(problemIterator <- 1 to viewModelPharmacy.getProblems.size){
-                        <p><a class="infoLabel">Diagnosis:</a>
+                        <p><a class="infoLabel nonEditable">Diagnosis:</a>
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
                     }
                     @for(prescriptionIterator <- 1 to viewModelPharmacy.getPrescriptions.size){
-                        <p><a class = "infoLabel">Dispensed Medication:</a>
+                        <p><a class = "infoLabel nonEditable">Dispensed Medication:</a>
                             <span class="value"> @outputStringOrNA(viewModelPharmacy.getPrescriptions.get(prescriptionIterator - 1))</span></p>
                     }
 
@@ -170,57 +174,74 @@
                 @if(viewModelMedical.isMultipleChiefComplaints) {
                     @for((key, value) <- viewModelMedical.getHpiFieldsWithMultipleChiefComplaints) {
                         <h4>Chief Complaint: @key</h4>
-                        <p> <a class="infoLabel">Onset:</a>
-                            <span id="onset" class="value" data-id="onset">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))</span></p>
+                        <p> <a class="infoLabel @editClass">Onset:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))
+                        </p>
+                        <p> <a class="infoLabel @editClass"> Quality: </a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Radiation:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Severity:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Provokes:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Palliates:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))
+                        </p>
 
-                        <p> <a class="infoLabel"> Quality: </a>
-                            <span class="value" data-id="quality">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("quality"))</span></p>
-                        <p> <a class="infoLabel">Radiation:</a>
-                            <span class="value" data-id="radiation">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("radiation"))</span></p>
-                        <p> <a class="infoLabel">Severity:</a>
-                            <span class="value" data-id="severity">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("severity"))</span></p>
-                        <p> <a class="infoLabel">Provokes:</a>
-                            <span class="value" data-id="provokes">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("provokes"))</span></p>
-                        <p> <a class="infoLabel">Palliates:</a>
-                            <span class="value" data-id="palliates">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("palliates"))</span></p>
+                        <p> <a class="infoLabel @editClass">Narrative:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))
+                        </p>
+                        <p> <a class="infoLabel @editClass">Time Of Day:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))
+                        </p>
 
-                        <p> <a class="infoLabel">Narrative:</a>
-                            <span class="value" data-id="narrative">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("narrative"))</span></p>
-                        <p> <a class="infoLabel">Time Of Day:</a>
-                            <span class="value" data-id="timeOfDay">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("timeOfDay"))</span></p>
-
-                        <p> <a class="infoLabel">Physical Examination:</a>
-                            <span class="value" data-id="physicalExamination">@outputStringOrNA(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))</span></p>
+                        <p> <a class="infoLabel @editClass">Physical Examination:</a>
+                            @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))
+                        </p>
 
 
                         <br>
                     }
                 } else {
                     @if(viewModel.getPatientEncounterItem.getChiefComplaints != null && viewModel.getPatientEncounterItem.getChiefComplaints.size > 0){<h4>Chief Complaint: @viewModel.getPatientEncounterItem.getChiefComplaints.get(0) </h4>}
-                    <p> <a class= "infoLabel">Onset:</a>
-                        <span class="value" data-id="onset">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))</span></p>
-                    <p> <a class= "infoLabel">Quality:</a>
-                        <span class="value" data-id="quality">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Onset:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))
+                    </p>
+                    <p> <a class= "infoLabel @editClass">Quality:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("quality"))
+                    </p>
 
-                    <p> <a class= "infoLabel">Radiation:</a>
-                        <span class="value" data-id="radiation">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Radiation:</a>
+                    @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("radiation"))
+                    </p>
 
-                    <p> <a class= "infoLabel">Severity:</a>
-                        <span class="value" data-id="severity">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Severity:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("severity"))
+                    </p>
 
-                    <p> <a class= "infoLabel">Provokes:</a>
-                        <span class="value" data-id="provokes">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Provokes:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("provokes"))
+                    </p>
 
-                    <p> <a class= "infoLabel">Palliates:</a>
-                        <span class="value" data-id="palliates">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Palliates:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("palliates"))
+                    </p>
 
-                    <p> <a class= "infoLabel">Time Of Day:</a>
-                        <span class="value" data-id="timeOfDay">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))</span></p>
-                    <p> <a class= "infoLabel">Narrative:</a>
-                        <span class="value" data-id="narrative">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Time Of Day:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("timeOfDay"))
+                    </p>
+                    <p> <a class= "infoLabel @editClass">Narrative:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("narrative"))
+                    </p>
 
-                    <p> <a class= "infoLabel">Physical Examination:</a>
-                        <span class="value" data-id="physicalExamination">@outputStringOrNA(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))</span></p>
+                    <p> <a class= "infoLabel @editClass">Physical Examination:</a>
+                        @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))
+                    </p>
 
 
 
@@ -233,10 +254,10 @@
                 <div class="encounterViewBodyRight">
                     @*Custom tab fields are listed here*@
                     @for((key, value) <- viewModelMedical.getCustomFields) {
-                        <p><span class="infoLabel">
+                        <p><span class="infoLabel nonEditable">
                             @key:
                         </span>
-                            @outputStringOrNA(viewModelMedical.getCustomFields.get(key))
+                            @outputStringOrNA(viewModelMedical.getCustomFields.get(key).getValue)
                         </p>
                     }
 

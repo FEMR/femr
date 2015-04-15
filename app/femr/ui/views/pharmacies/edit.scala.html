@@ -8,14 +8,12 @@
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.combobox.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacyClientValidation.js")"></script>
     }
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
         <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.combobox.css")">
     }
 
 @main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
@@ -69,7 +67,8 @@
                             <div class="replacement hidden">
                                 <input type="hidden" name="prescriptions[@x].id" value="@medication.getId" />
                                 <div class="prescriptionRow prescriptionInput">
-                                    <span class="prescriptionName"><input name="prescriptions[@x].name" type="text" class="form-control input-sm"/></span
+                                    <input type="hidden" class="medicationID" name="prescriptions[@x].medicationID" value="" />
+                                    <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
                                     ><span class="prescriptionAdministrationName">
                                     <select name="prescriptions[@x].administrationId" class="form-control input-sm">
                                         @for(item <- viewModel.getMedicationAdministrationItems) {

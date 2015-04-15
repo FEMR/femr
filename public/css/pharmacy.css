@@ -193,6 +193,9 @@ input[style] {
 .prescriptionRow > span {
     display: inline-block;
 }
+.prescriptionRow input {
+    margin-top: 0;
+}
 .prescriptionName {
     width: 50%;
 }
@@ -213,6 +216,9 @@ input[style] {
 
 .prescriptionAmount {
     width: 20%;
+}
+.prescriptionInput > span {
+    vertical-align: top;
 }
 
 .medicationRemaining {

@@ -288,6 +288,12 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
+                String formName;
+                if (pp.getMedication().getMedicationForm() == null) {
+                    formName = "";
+                } else {
+                    formName = pp.getMedication().getMedicationForm().getName();
+                }
 
                 prescriptionItems.add(
                         UIModelMapper.createPrescriptionItem(
@@ -301,7 +307,7 @@ public class SearchService implements ISearchService {
                                 pp.getMedicationAdministration().getDailyModifier(),
                                 pp.getAmount(),
                                 pp.getMedication().getId(),
-                                pp.getMedication().getMedicationForm().getName(),
+                                formName,
                                 pp.getMedication().getQuantity_current()
 
                         )

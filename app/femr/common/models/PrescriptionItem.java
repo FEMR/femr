@@ -28,7 +28,7 @@ public class PrescriptionItem {
     private String administrationName;
     private float administrationModifier;
     private int amount;
-    private int medicationID;
+    private Integer medicationID;
     private String medicationForm;
     private int medicationRemaining;
 
@@ -112,11 +112,11 @@ public class PrescriptionItem {
         this.amount = amount;
     }
 
-    public int getMedicationID() {
+    public Integer getMedicationID() {
         return medicationID;
     }
 
-    public void setMedicationID(int medicationID) {
+    public void setMedicationID(Integer medicationID) {
         this.medicationID = medicationID;
     }
 

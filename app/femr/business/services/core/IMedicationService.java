@@ -18,6 +18,7 @@
 */
 package femr.business.services.core;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
 
@@ -73,4 +74,11 @@ public interface IMedicationService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> retrieveAllMedications();
+
+    /**
+     * Retrieves a ObjectNode of all medications in the system
+     * @return a service response that contains a list of ObjectNode's
+     * and/or errors if they exist
+     */
+    ServiceResponse<ObjectNode> retrieveAllMedicationsWithID();
 }

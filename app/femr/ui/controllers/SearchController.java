@@ -146,4 +146,17 @@ public class SearchController extends Controller {
 
         return ok(new Gson().toJson(medicationServiceResponse.getResponseObject()));
     }
+
+    /**
+     * Used for typeahead where more data is needed other than just the name
+     * Call via ajax
+     * @return JSON object of medications that exist int he medcations table
+     */
+    public Result typeaheadMedicationsWithIDJSONGet() {
+        ServiceResponse<ObjectNode> medicationServiceResponse = medicationService.retrieveAllMedicationsWithID();
+        if (medicationServiceResponse.hasErrors()) {
+            return ok("");
+        }
+        return ok(medicationServiceResponse.getResponseObject());
+    }
 }

@@ -172,7 +172,9 @@ public class PharmaciesController extends Controller {
         List<Integer> prescriptionToMarkAsDispensedOrCounseled = new ArrayList<>();
 
         for(PrescriptionItem script : createViewModelPost.getPrescriptions()) {
-            if (StringUtils.isNotNullOrWhiteSpace(script.getName())) {
+            //If getMedicationID is not null then a replacement is being done
+            if (script.getMedicationID() != null) {
+                // Create the replacement prescription
                 ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
                         script,
                         script.getId(),
@@ -183,6 +185,8 @@ public class PharmaciesController extends Controller {
                     throw new RuntimeException();
                 }
             } else {
+                // No replacement to be done. Add to list of prescriptions to mark
+                // as dispensed
                 prescriptionToMarkAsDispensedOrCounseled.add(script.getId());
             }
         }

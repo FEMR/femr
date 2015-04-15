@@ -42,35 +42,41 @@ var prescriptionFeature = {
     refreshSelectors: function () {
         prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions.selector);
     },
+    customTypeAheadMatcher: function (strs) {
+        return function findMatches(q, cb) {
+            var matches, substrRegex;
+            // an array that will be populated with substring matches
+            matches = [];
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs.medication, function (i, med) {
+                if (substrRegex.test(med.name)) {
+                    // the typeahead jQuery plugin expects suggestions to a
+                    // JavaScript object, refer to typeahead docs for more info
+                    matches.push({ id: med.id, value: med.name + " (" + med.form + ")" });
+                }
+            });
+
+            cb(matches);
+        };
+    },
     setupNewPrescriptionRow: function() {
         prescriptionFeature.refreshSelectors();
 
-        /* Turn the input into a custom combobox */
-        prescriptionFeature.allPrescriptions.last().find(".prescriptionName > input").combobox({
-            select: function(event, ui) {
-                $(this).val(ui.item.id);
-                $(this).attr("data-qty", ui.item.qty);
-                $(this).closest(".prescriptionRow").find(".prescriptionAmount input").removeClass("lowMedication");
-            },
-            source:  function(request, response) {
-                $.ajax({
-                    url: "/medical/getMedication?term=" + request.term,
-                    type: "GET",
-                    dataType: "json",
-                    success: function (data) {
-                        response($.map(data.page_data, function (item) {
-                            return {
-                                label: item.name + " (" + item.form + ")",
-                                value: item.name + " (" + item.form + ")",
-                                name: item.name,
-                                id: item.id,
-                                qty: item.quantity_current
-                            }
-                        }));
-                    }
-                })
+        var $prescriptionElement = prescriptionFeature.allPrescriptions.last().find(".medicationName");
+        typeaheadFeature.initalizeTypeAhead($prescriptionElement,
+            'medication',
+            true,
+            true,
+            prescriptionFeature.customTypeAheadMatcher,
+            function(event, item) {
+                var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
+                $medicationID.val(item.id);
             }
-        });
+        );
 
         /* Setup calculate to days input on keyup/change events */
         prescriptionFeature.allPrescriptions.last().find(".prescriptionAdministrationDays > input").on("keyup change",
@@ -83,7 +89,7 @@ var prescriptionFeature = {
     getNumberOfNonReadonlyPrescriptionFields: function () {
         prescriptionFeature.refreshSelectors();
         var number = 0;
-        $(prescriptionFeature.allPrescriptions).find(".prescriptionName > input").each(function () {
+        $(prescriptionFeature.allPrescriptions).find(".medicationName").each(function () {
             if (!$(this).is('[readonly]')) {
                 number++;
             }
@@ -114,10 +120,11 @@ var prescriptionFeature = {
 
         var $prescriptionRow = $("<div>").addClass("prescriptionRow prescriptionInput");
 
-        var $prescriptionInput = $("<input name='prescriptions[" + scriptIndex + "].name' type='text' class='form-control input-sm'/>");
+        var $typeAhead = $("<input type='text' class='medicationName form-control input-sm'/>");
         $prescriptionRow.append(
-            $("<span class='prescriptionName'></span>").append($prescriptionInput)
+            $("<span class='prescriptionName'></span>").append($typeAhead)
         );
+        $prescriptionRow.append("<input class='medicationID' name='prescriptions[" + scriptIndex + "].medicationID' type='hidden' />");
 
         var $cloneSelect = $("select[name='prescriptions[0].administrationId']").clone();
         $cloneSelect.attr("name", "prescriptions[" + scriptIndex + "].administrationId");
@@ -215,7 +222,6 @@ $(document).ready(function () {
         prescriptionFeature.removePrescriptionField();
     });
 
-    prescriptionFeature.setupNewPrescriptionRow();
 
 
     //hide/unhide problems
@@ -302,6 +308,9 @@ $(document).ready(function () {
         return true;
     });
 
+    typeaheadFeature.setGlobalVariable("/search/typeahead/medicationsWithID").then(function() {
+        prescriptionFeature.setupNewPrescriptionRow();
+    });
     typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {
         typeaheadFeature.initalizeTypeAhead(problemFeature.newProblems.first(), 'diagnoses', true, true);
     });

@@ -5,13 +5,13 @@ var medicalFieldValidator = {
         var prescriptions = [];
         prescriptionFeature.refreshSelectors();
         $(prescriptionFeature.allPrescriptions).each(function(){
-            var $prescriptionName = $(this).find(".prescriptionName > input");
+            var $medicationID = $(this).find(".medicationID");
             var $prescriptionAmount = $(this).find(".prescriptionAmount > input");
 
             // Set prescriptionAmount to 0 if it is NAN
             if ($.trim($prescriptionAmount.val()) == "") $prescriptionAmount.val("0");
 
-            prescriptions.push($prescriptionName.val());
+            prescriptions.push($medicationID.val());
         });
 
         prescriptions.sort();

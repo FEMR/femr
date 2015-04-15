@@ -16,7 +16,7 @@ function checkReplacementPrescriptions() {
 
     $(".medication").each(function() {
         if ($(this).has(".replacement") && !$(this).find(".replacement").hasClass("hidden")) {
-            var $medicationID = $(this).find(".prescriptionName > input");
+            var $medicationID = $(this).find(".medicationID");
             var $prescriptionAmount = $(this).find(".prescriptionAmount > input");
 
             // Set prescriptionAmount to 0 if it is NAN

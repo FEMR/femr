@@ -44,8 +44,9 @@
             <div class="col-xs-9 col-sm-9 col-md-9 prescriptionWrap">
                 @for(script <- prescriptions) {
                     <div class="prescriptionRow">
+                        <input class='medicationID' value='@script.getMedicationID' type='hidden' />
                         <span class="prescriptionName">
-                            <input type="text" class="form-control input-sm" value="@script.getName" readonly/>
+                            <input type="text" class="medicationName form-control input-sm" value="@script.getName (@script.getMedicationForm)" readonly/>
                         </span
                         ><span class="prescriptionAdministrationName">
                             <input type="text" class="form-control input-sm" value="@script.getAdministrationName" readonly/>
@@ -56,7 +57,8 @@
                     </div>
                 }
                 <div class="prescriptionRow prescriptionInput">
-                    <span class="prescriptionName"><input name="prescriptions[0].name" type="text" class="form-control input-sm"/></span
+                    <input class='medicationID' name='prescriptions[0].medicationID' type='hidden' />
+                    <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
                     ><span class="prescriptionAdministrationName">
                         <select name="prescriptions[0].administrationId" class="form-control input-sm">
                             @for(item <- medicationAdministrationItems) {

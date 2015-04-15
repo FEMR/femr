@@ -359,47 +359,6 @@ public class MedicalController extends Controller {
         return ok(listVitals.render(vitalMultiMapServiceResponse.getResponseObject()));
     }
 
-    public Result medicationsGetJSON(String term) {
-        List<DataGridFilter> filters = new ArrayList<DataGridFilter>();
-
-        /* If term from combobox is not empty, create a filter with begins_with and the term as value */
-        if (term != "") {
-            filters.add(new DataGridFilter(
-                    "AND",
-                    new DataGridFilterCondition("name", "begins_with", term)
-            ));
-        }
-
-        // Filter out medication that are empty (current_quantity <= 0)
-        filters.add(new DataGridFilter(
-           "AND",
-           new DataGridFilterCondition("quantity_current", "greater_than", "0")
-        ));
-        //DataGridFilter qtyFilter = new DataGridFilter();
-        //qtyFilter.setLogical_operator("AND");
-
-        //qtyFilter.setCondition(new DataGridFilterCondition("quantity_current", "", "0"));
-
-
-        /* Apply sorting by medication name, ascending */
-        DataGridSorting sort = new DataGridSorting();
-        sort.setField("name");
-        sort.setOrder("ascending");
-
-        /* Query the medication */
-        ServiceResponse<ObjectNode> medicationServiceResponse = inventoryService.getPaginatedMedicationInventory(
-                1,
-                10, /* Rows per page. Can define a "MAX" to show */
-                Arrays.asList(sort),
-                filters
-        );
-        if (medicationServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-
-        ObjectNode result = medicationServiceResponse.getResponseObject();
-        return ok(result);
-    }
     /**
      * Maps vitals from view model to a Map structure
      *

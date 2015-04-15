@@ -19,6 +19,8 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.*;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
@@ -32,6 +34,7 @@ import femr.data.models.core.IPatientPrescription;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.PatientPrescription;
 import femr.util.stringhelpers.StringUtils;
+import play.libs.Json;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +61,7 @@ public class MedicationService implements IMedicationService {
     @Override
     public ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId, boolean isCounseled) {
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
-        if (prescriptionItem == null || StringUtils.isNullOrWhiteSpace(prescriptionItem.getName()) || oldScriptId < 1 || userId < 1) {
+        if (prescriptionItem == null || prescriptionItem.getMedicationID() == null || oldScriptId < 1 || userId < 1) {
             response.addError("", "bad parameters");
             return response;
         }
@@ -73,7 +76,7 @@ public class MedicationService implements IMedicationService {
             //Retrieve the medication item
             ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                     .where()
-                    .eq("id", prescriptionItem.getName());
+                    .eq("id", prescriptionItem.getMedicationID());
             IMedication medication = medicationRepository.findOne(medicationQuery);
 
 
@@ -94,6 +97,12 @@ public class MedicationService implements IMedicationService {
             medication.setQuantity_current(medication.getQuantity_current() - newPatientPrescription.getAmount());
             medicationRepository.update(medication);
 
+            String formName;
+            if (newPatientPrescription.getMedication().getMedicationForm() == null) {
+                formName = "";
+            } else {
+                formName = newPatientPrescription.getMedication().getMedicationForm().getName();
+            }
             // Map new prescription item to be returned to UI View
             PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(
                     newPatientPrescription.getId(),
@@ -106,7 +115,7 @@ public class MedicationService implements IMedicationService {
                     newPatientPrescription.getMedicationAdministration().getDailyModifier(),
                     newPatientPrescription.getAmount(),
                     newPatientPrescription.getMedication().getId(),
-                    newPatientPrescription.getMedication().getMedicationForm().getName(),
+                    formName,
                     newPatientPrescription.getMedication().getQuantity_current()
             );
             response.setResponseObject(newPrescriptionItem);
@@ -142,18 +151,27 @@ public class MedicationService implements IMedicationService {
 
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         for (PrescriptionItem script : prescriptions) {
-            ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
-                    .where()
-                    .eq("id", script.getName());
-            IMedication medication = medicationRepository.findOne(query);
-            patientPrescriptions.add(dataModelMapper.createPatientPrescription(script.getAmount(), medication, script.getAdministrationId(), userId, encounterId, null, isDispensed, isCounseled));
+            if (script.getMedicationID() != null) {
+                System.out.println(script.getMedicationID());
+                ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
+                        .where()
+                        .eq("id", script.getMedicationID());
+                IMedication medication = medicationRepository.findOne(query);
+                patientPrescriptions.add(dataModelMapper.createPatientPrescription(script.getAmount(), medication, script.getAdministrationId(), userId, encounterId, null, isDispensed, isCounseled));
+            }
         }
 
         try {
             List<? extends IPatientPrescription> newPatientPrescriptions = patientPrescriptionRepository.createAll(patientPrescriptions);
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
-                if (pp.getMedication() != null)
+                if (pp.getMedication() != null) {
+                    String formName;
+                    if (pp.getMedication().getMedicationForm() == null) {
+                        formName = "";
+                    } else {
+                        formName = pp.getMedication().getMedicationForm().getName();
+                    }
                     newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),
@@ -165,9 +183,10 @@ public class MedicationService implements IMedicationService {
                             pp.getMedicationAdministration().getDailyModifier(),
                             pp.getAmount(),
                             pp.getMedication().getId(),
-                            pp.getMedication().getMedicationForm().getName(),
+                            formName,
                             pp.getMedication().getQuantity_current()
                     ));
+                }
             }
             response.setResponseObject(newPrescriptionItems);
         } catch (Exception ex) {
@@ -196,6 +215,14 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
+
+                    String formName;
+                    if (patientPrescription.getMedication().getMedicationForm() == null) {
+                        formName = "";
+                    } else {
+                        formName = patientPrescription.getMedication().getMedicationForm().getName();
+                    }
+
                     updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(
                             patientPrescription.getId(),
                             patientPrescription.getMedication().getName(),
@@ -207,7 +234,7 @@ public class MedicationService implements IMedicationService {
                             patientPrescription.getMedicationAdministration().getDailyModifier(),
                             patientPrescription.getAmount(),
                             patientPrescription.getMedication().getId(),
-                            patientPrescription.getMedication().getMedicationForm().getName(),
+                            formName,
                             patientPrescription.getMedication().getQuantity_current()
                     ));
 
@@ -289,25 +316,44 @@ public class MedicationService implements IMedicationService {
                     .eq("isDeleted", false).orderBy("name");
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
-            /*
-            //use raw sql to temporarily filter out the duplicate medication names
-            //after implementing the inventory tracking feature, this shouldn't be needed
-            //as duplicates will never exist.
-            //Also - ebeans "setDistinct" method has known bugs in it hence rawsql crap
-            String rawSqlString = "SELECT id, name FROM medications GROUP BY name";
-            RawSql rawSql = RawSqlBuilder.parse(rawSqlString).create();
-
-            Query<Medication> medicationQuery = Ebean.find(Medication.class);
-            medicationQuery.setRawSql(rawSql);
-
-            List<? extends IMedication> medications = medicationQuery.findList();
-            */
-
             for (IMedication m : medications) {
                 medicationNames.add(m.getName());
             }
             response.setResponseObject(medicationNames);
         } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID() {
+        ServiceResponse<ObjectNode> response = new ServiceResponse<>();
+        ObjectNode returnObject = Json.newObject();
+        ArrayNode allMedications = returnObject.putArray("medication");
+
+        try {
+            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("isDeleted", false).orderBy("name");
+            List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
+
+            for (IMedication m : medications) {
+                ObjectNode medication = Json.newObject();
+
+                medication.put("id", m.getId());
+                medication.put("name", m.getName());
+
+                if (m.getMedicationForm() != null)
+                    medication.put("form", m.getMedicationForm().getName());
+                else
+                    medication.put("form", "N/A");
+
+                allMedications.add(medication);
+            }
+            response.setResponseObject(returnObject);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             response.addError("exception", ex.getMessage());
         }
 

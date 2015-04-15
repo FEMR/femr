@@ -224,7 +224,10 @@ var typeaheadFeature = {
             typeaheadData = data
         });
     },
-    initalizeTypeAhead: function (element, name, hint, highlight) {
+    initalizeTypeAhead: function (element, name, hint, highlight, customMatcher, customSelect) {
+        var matcher = customMatcher || typeaheadFeature.substringMatcher;
+        var select = customSelect || function() {};
+
         //the error happens in here when initating typeahead VVVVV
         //need to restructure the medicine JSON from the server to match
         //the json from diagnoses
@@ -234,8 +237,8 @@ var typeaheadFeature = {
             },
             {
                 name: name,
-                source: typeaheadFeature.substringMatcher(typeaheadData)
-            });
+                source: matcher(typeaheadData)
+            }).on('typeahead:selected', select);
 
     },
     destroyTypeAhead: function (elementSelector) {

@@ -110,12 +110,16 @@ public class InventoryController extends Controller {
         medicationItem.setForm(inventoryViewModelPost.getMedicationForm());
 
         for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++) {
-            medicationItem.addActiveIngredient(
-                    inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
-                    inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
-                    inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex),
-                    false
-            );
+            if (inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex) != null &&
+                    inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex) != null &&
+                    inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex) != null) {
+                medicationItem.addActiveIngredient(
+                        inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
+                        inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
+                        inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex),
+                        false
+                );
+            }
         }
 
         ServiceResponse<MedicationItem> medicationItemServiceResponse = inventoryService.createMedication(medicationItem);

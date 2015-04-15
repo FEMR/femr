@@ -301,7 +301,9 @@ public class SearchService implements ISearchService {
                                 pp.getMedicationAdministration().getDailyModifier(),
                                 pp.getAmount(),
                                 pp.getMedication().getId(),
-                                pp.getMedication().getMedicationForm().getName()
+                                pp.getMedication().getMedicationForm().getName(),
+                                pp.getMedication().getQuantity_current()
+
                         )
                 );
             }
@@ -344,7 +346,8 @@ public class SearchService implements ISearchService {
                                 pp.getMedicationAdministration().getDailyModifier(),
                                 pp.getAmount(),
                                 pp.getMedication().getId(),
-                                pp.getMedication().getMedicationForm().getName()
+                                pp.getMedication().getMedicationForm().getName(),
+                                pp.getMedication().getQuantity_current()
                         )
                 );
             }

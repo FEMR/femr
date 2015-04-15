@@ -62,6 +62,10 @@
                                 <span id="prescriber">
                                     Prescriber: @medication.getPrescriberLastName, @medication.getPrescriberFirstName</span>
                             </div>
+                            @if(medication.getAmount > medication.getMedicationRemaining) {
+                                <div class="medicationRemaining">Current Quantity: @medication.getMedicationRemaining</div>
+                                <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
+                            }
                             <div class="replacement hidden">
                                 <input type="hidden" name="prescriptions[@x].id" value="@medication.getId" />
                                 <div class="prescriptionRow prescriptionInput">

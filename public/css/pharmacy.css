@@ -214,3 +214,12 @@ input[style] {
 .prescriptionAmount {
     width: 20%;
 }
+
+.medicationRemaining {
+    font-size: 10px;
+}
+.lowMedication {
+    color: #FF0000;
+    font-size: 10px;
+    font-weight: bold;
+}

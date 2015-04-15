@@ -49,7 +49,7 @@ $(document).ready(function () {
 
             // Add a delete button to each row
             $("#" + table_id + " tbody tr").each(function() {
-                var $delete = $("<a>delete</a>").click(function() {
+                var $delete = $("<a>Remove</a>").click(function() {
                     var $tr = $(this).closest("tr");
 
                     // get medication from tr's ID
@@ -113,15 +113,15 @@ var medicationInventoryFeature = {
     },
     validateMedication: function () {
         var pass = true;
-        if ($.trim(inventoryFields.newMedication.quantity.val()) === "")
-            pass = false;
-        if ($.trim(inventoryFields.newMedication.form.val()) === null)
+        /*if ($.trim(inventoryFields.newMedication.quantity.val()) === "")
+            pass = false;*/
+        if ($.trim(inventoryFields.newMedication.form.val()) === "")
             pass = false;
         if ($.trim(inventoryFields.newMedication.name.val()) === "")
             pass = false;
 
         inventoryFields.newMedication.refreshFields();
-
+        /*
         $(inventoryFields.newMedication.strength).each(function () {
             if ($.trim($(this).val()) === "")
                 pass = false;
@@ -134,12 +134,17 @@ var medicationInventoryFeature = {
             if ($.trim($(this).val()) === "")
                 pass = false;
         });
-
-        return true;
+        */
+        return pass;
     },
     bindSubmitMedicationButton: function () {
-        $('#submitMedicationButton').click(function () {
-            return medicationInventoryFeature.validateMedication();
+        $("form").submit(function(event) {
+            if (!medicationInventoryFeature.validateMedication()) {
+                alert("Must provide at least a form and medication name");
+                event.preventDefault();
+                return false;
+            }
+            return true;
         });
     },
     bindAddNewIngredientButton: function () {

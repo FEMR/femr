@@ -283,11 +283,13 @@ public class UIModelMapper {
      * @param amount                    Total amount of medication prescribed
      * @param medicationID              Medication ID
      * @param medicationForm            Medication Form
+     * @param medicationRemaining       The quantity_current of the medication
      * @return a new PrescriptionItem or null if processing fails
      */
     public static PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
                                                           Integer administrationId, String administrationName, Float administrationModifier,
-                                                          Integer amount, Integer medicationID, String medicationForm) {
+                                                          Integer amount, Integer medicationID, String medicationForm,
+                                                          Integer medicationRemaining) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -319,6 +321,9 @@ public class UIModelMapper {
 
         if (medicationForm != null)
             prescriptionItem.setMedicationForm(medicationForm);
+
+        if (medicationRemaining != null)
+            prescriptionItem.setMedicationRemaining(medicationRemaining);
 
         return prescriptionItem;
     }

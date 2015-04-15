@@ -30,6 +30,7 @@ public class PrescriptionItem {
     private int amount;
     private int medicationID;
     private String medicationForm;
+    private int medicationRemaining;
 
     public PrescriptionItem(String name){
         this.name = name;
@@ -125,5 +126,13 @@ public class PrescriptionItem {
 
     public void setMedicationForm(String medicationForm) {
         this.medicationForm = medicationForm;
+    }
+
+    public int getMedicationRemaining() {
+        return medicationRemaining;
+    }
+
+    public void setMedicationRemaining(int medicationRemaining) {
+        this.medicationRemaining = medicationRemaining;
     }
 }

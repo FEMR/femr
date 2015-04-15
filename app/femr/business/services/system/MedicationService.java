@@ -106,7 +106,8 @@ public class MedicationService implements IMedicationService {
                     newPatientPrescription.getMedicationAdministration().getDailyModifier(),
                     newPatientPrescription.getAmount(),
                     newPatientPrescription.getMedication().getId(),
-                    newPatientPrescription.getMedication().getMedicationForm().getName()
+                    newPatientPrescription.getMedication().getMedicationForm().getName(),
+                    newPatientPrescription.getMedication().getQuantity_current()
             );
             response.setResponseObject(newPrescriptionItem);
 
@@ -164,7 +165,8 @@ public class MedicationService implements IMedicationService {
                             pp.getMedicationAdministration().getDailyModifier(),
                             pp.getAmount(),
                             pp.getMedication().getId(),
-                            pp.getMedication().getMedicationForm().getName()
+                            pp.getMedication().getMedicationForm().getName(),
+                            pp.getMedication().getQuantity_current()
                     ));
             }
             response.setResponseObject(newPrescriptionItems);
@@ -205,7 +207,8 @@ public class MedicationService implements IMedicationService {
                             patientPrescription.getMedicationAdministration().getDailyModifier(),
                             patientPrescription.getAmount(),
                             patientPrescription.getMedication().getId(),
-                            patientPrescription.getMedication().getMedicationForm().getName()
+                            patientPrescription.getMedication().getMedicationForm().getName(),
+                            patientPrescription.getMedication().getQuantity_current()
                     ));
 
                     //Retrieve the medication item
@@ -257,7 +260,8 @@ public class MedicationService implements IMedicationService {
                             patientPrescription.getMedicationAdministration().getDailyModifier(),
                             patientPrescription.getAmount(),
                             patientPrescription.getMedication().getId(),
-                            patientPrescription.getMedication().getMedicationForm().getName()
+                            patientPrescription.getMedication().getMedicationForm().getName(),
+                            patientPrescription.getMedication().getQuantity_current()
                     ));
                 }
             }

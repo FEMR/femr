@@ -353,11 +353,11 @@ public class HistoryController extends Controller {
     //Added by Amney Iskandar //
 
     public Result updateFieldPost(int id) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
 
         //If there is no patient Id or Error
-        ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.findPatientEncounterItemByEncounterId(id);
+        ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.retrievePatientEncounterItemByEncounterId(id);
         if (patientEncounterByEncounterId.hasErrors()) {
             throw new RuntimeException();
         }
@@ -391,7 +391,7 @@ public class HistoryController extends Controller {
     public Result listTabFieldHistoryGet(int encounterID) {
 
         //Retrieve patient encounter
-        ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.findPatientEncounterItemByEncounterId(encounterID);
+        ServiceResponse<PatientEncounterItem> patientEncounterByEncounterId = searchService.retrievePatientEncounterItemByEncounterId(encounterID);
         //If patient has errors
         if (patientEncounterByEncounterId.hasErrors()) {
 

@@ -102,7 +102,9 @@
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
-                        @if(viewModel.getSettings.isMetric) { <!-- Alaa Serhan -->
+                        <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
+                            as well as in vitalClientValidation.js for validating height inputs -->
+                        @if(viewModel.getSettings.isMetric) {
                             <input type="hidden" id="vitalsUnits" value="metric" />
                         } else {
                             <input type="hidden" id="vitalUnits" value="imp" />

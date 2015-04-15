@@ -69,14 +69,15 @@
                     data-inches="@vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))">
 
                 @if(viewModel.getSettings.isMetric) {
+                    @* Output height formatted as metric (1.4m) *@
                     @outputHeightOrNA(
                         vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
                         vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1)),
                         viewModel.getSettings.isMetric,
                         ""
                     )
-
                 } else {
+                    @* Output height formatted as imperial (5' 6") *@
                     @outputHeightOrNA(
                         vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1)),
                         vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1)),
@@ -85,10 +86,6 @@
                     )
                 }
                 </td>
-            <!---  Alaa Serhan Must Format Output -->
-@*          @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                    <td>@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))
-                        . @vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))</td>*@
             }
         </tr>
         <tr id="weight">

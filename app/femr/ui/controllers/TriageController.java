@@ -138,16 +138,6 @@ public class TriageController extends Controller {
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        //Alaa Serhan
-        //Get the settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
-        if (settingItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-
-
-        SettingItem settings = settingItemServiceResponse.getResponseObject();
-
         //create a new patient
         //or get current patient for new encounter
         ServiceResponse<PatientItem> patientServiceResponse;

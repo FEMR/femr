@@ -340,18 +340,18 @@ public class PDFConversionDemo extends Controller {
     private byte[] main(int id, int Eid) {
 
         PatientEncounterItem patientEncounterONE;
-        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponseONE = searchService.findPatientEncounterItemByEncounterId(Eid);
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponseONE = searchService.retrievePatientEncounterItemByEncounterId(Eid);
 
         PatientItem patientItem;
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByEncounterId(Eid);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByEncounterId(Eid);
 
         VitalMultiMap patientVitals;
-        ServiceResponse<VitalMultiMap> VitalMultiMapServiceResponse = vitalService.findVitalMultiMap(Eid);
+        ServiceResponse<VitalMultiMap> VitalMultiMapServiceResponse = vitalService.retrieveVitalMultiMap(Eid);
 
-        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.findTabFieldMultiMap(Eid);
+        ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(Eid);
 
         List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.findDispensedPrescriptionItems(Eid);
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(Eid);
         if (prescriptionItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -367,7 +367,7 @@ public class PDFConversionDemo extends Controller {
 
 
         List<String> problems = new ArrayList<>();
-        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.findProblemItems(Eid);
+        ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(Eid);
         if (problemItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }

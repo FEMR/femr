@@ -45,6 +45,7 @@
                 @for(script <- prescriptions) {
                     <div class="prescriptionRow">
                         <input class='medicationID' value='@script.getMedicationID' type='hidden' />
+                        <input class='administrationID' value='@script.getAdministrationId' type='hidden' />
                         <span class="prescriptionName">
                             <input type="text" class="medicationName form-control input-sm" value="@script.getName (@script.getMedicationForm)" readonly/>
                         </span
@@ -58,16 +59,10 @@
                 }
                 <div class="prescriptionRow prescriptionInput">
                     <input class='medicationID' name='prescriptions[0].medicationID' type='hidden' />
+                    <input class='administrationID' name="prescriptions[0].administrationId" type='hidden' />
                     <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
-                    ><span class="prescriptionAdministrationName">
-                        <select name="prescriptions[0].administrationId" class="form-control input-sm">
-                            @for(item <- medicationAdministrationItems) {
-                                <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
-                            }
-                        </select>
-                    </span
-                    ><span class="prescriptionAdministrationDays">
-                        <input type="number" placeholder="days"  class="form-control input-sm" />
+                    ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
+                    ><span class="prescriptionAdministrationDays"><input type="number" placeholder="days"  class="form-control input-sm" />
                     </span
                     ><span class="prescriptionAmount"><input name="prescriptions[0].amount" type="number" class="form-control input-sm"/></span>
                 </div>

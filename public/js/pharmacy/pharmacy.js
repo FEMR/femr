@@ -1,64 +1,108 @@
-$(document).ready(function () {
-    $('.replaceBtn').click(replaceClick);
 
-    var customTypeAheadMatcher = function (strs) {
+var prescriptionFeature = {
+    medicationTypeaheadData: [],
+    administrationTypeaheadData: [],
+    initializeAdministrationTypeahead: function() {
+        return $.getJSON("/search/typeahead/medicationAdministrations", function (data) {
+            prescriptionFeature.administrationTypeaheadData = data;
+        });
+    },
+    administrationTypeaheadMatcher: function(strs) {
         return function findMatches(q, cb) {
-            var matches, substrRegex;
-            // an array that will be populated with substring matches
-            matches = [];
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
+            var substrRegex = new RegExp(q, 'i'); //Regex used to determine if a string contains substring 'q'
+            var matches = []; //Array to be populated with matches
+            //Iterate through administrations and find matches
+            $.each(strs, function (i, administration) {
+                if (substrRegex.test(administration.name)) {
+                    matches.push({
+                        id: administration.Id,
+                        modifier: administration.dailyModifier,
+                        value: administration.name
+                    });
+                }
+            });
+            cb(matches);
+        };
+    },
+    addAdministrationTypeahead: function() {
+        $(".prescriptionRow .administrationName").each(function() {
+            $(this).typeahead({ hint: true, highlight: true },
+                {
+                    name: "administration",
+                    source: prescriptionFeature.administrationTypeaheadMatcher(prescriptionFeature.administrationTypeaheadData)
+                }).on('typeahead:selected', function(event, item) {
+                    var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
+                    $administrationID.val(item.id); // Set ID in the field to be submitted
 
-            // iterate through the pool of medication for any name that
-            // contains the substring `q`, add it to the `matches` array
+                    // Set modifier to attribute for calculating total med
+                    $administrationID.attr("data-modifier", item.modifier);
+                    prescriptionFeature.calculateTotalPrescriptionAmount.call(this);
+                }
+            );
+        });
+
+    },
+    initializeMedicationTypeahead: function() {
+        return $.getJSON("/search/typeahead/medicationsWithID", function (data) {
+            prescriptionFeature.medicationTypeaheadData = data;
+        });
+    },
+    medicationTypeaheadMatcher: function(strs) {
+        return function findMatches(q, cb) {
+            var substrRegex = new RegExp(q, 'i'); //Regex used to determine if a string contains substring 'q'
+            var matches = []; //Array to be populated with matches
+
+            //Iterate through medication and find matches
             $.each(strs.medication, function (i, med) {
                 if (substrRegex.test(med.name)) {
-                    // the typeahead jQuery plugin expects suggestions to a
-                    // JavaScript object, refer to typeahead docs for more info
                     matches.push({ id: med.id, value: med.name + " (" + med.form + ")" });
                 }
             });
-
             cb(matches);
         };
-    }
-
-    typeaheadFeature.setGlobalVariable("/search/typeahead/medicationsWithID").then(function() {
-        // Initialize typeahead for all medicationName's
-        $(".medicationName").each(function() {
-            typeaheadFeature.initalizeTypeAhead($(this),
-                'medication',
-                true,
-                true,
-                customTypeAheadMatcher, //Custom matcher for typeahead
-                function (event, item) { //Custom on select function for typeahead
+    },
+    addMedicationTypeahead: function() {
+        $(".prescriptionRow .medicationName").each(function() {
+            $(this).typeahead({ hint: true, highlight: true },
+                {
+                    name: "medications",
+                    source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData)
+                }).on('typeahead:selected', function(event, item) {
                     var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
                     $medicationID.val(item.id);
                 }
             );
         });
+    },
+    calculateTotalPrescriptionAmount: function() {
+        var $prescriptionRow = $(this).closest(".prescriptionRow");
+        var $amountInput = $prescriptionRow.find(".prescriptionAmount input");
+
+        // Modifer per day for administration type
+        var modifier = parseFloat($prescriptionRow.find(".administrationID").attr("data-modifier"));
+
+        // Days to prescribe
+        var days = parseFloat($prescriptionRow.find(".prescriptionAdministrationDays input").val());
+
+        var amount = Math.ceil(modifier * days);
+        $amountInput.val(amount);
+    }
+};
+$(document).ready(function () {
+    $('.replaceBtn').click(replaceClick);
+
+    /* Setup calculate to days input on keyup/change events */
+    $(".prescriptionRow .prescriptionAdministrationDays > input").on("keyup change",
+        prescriptionFeature.calculateTotalPrescriptionAmount
+    );
+    prescriptionFeature.initializeMedicationTypeahead().then(function() {
+        prescriptionFeature.addMedicationTypeahead();
     });
-
-    // Recalculate amount when days input is changed
-    $(".prescriptionAdministrationDays > input").on("keyup change",
-        calculateTotalPrescriptionAmount
-    );
-
-    // Recalculate amount when Administration is changed
-    $(".prescriptionAdministrationName > select").on("change",
-        calculateTotalPrescriptionAmount
-    );
+    prescriptionFeature.initializeAdministrationTypeahead().then(function() {
+        prescriptionFeature.addAdministrationTypeahead();
+    });
 });
 
-// Recalculate the  Amount based on days and Administration type
-function calculateTotalPrescriptionAmount() {
-    var $prescriptionRow = $(this).closest(".prescriptionRow");
-    var $amountInput = $prescriptionRow.find(".prescriptionAmount input");
-    var modifier = parseFloat($prescriptionRow.find(".prescriptionAdministrationName select option:selected").attr("data-modifier"));
-    var days = parseFloat($prescriptionRow.find(".prescriptionAdministrationDays input").val());
-
-    $amountInput.val(Math.ceil(modifier * days));
-}
 
 
 // Show/hide the replacement div

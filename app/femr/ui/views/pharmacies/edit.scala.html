@@ -68,14 +68,9 @@
                                 <input type="hidden" name="prescriptions[@x].id" value="@medication.getId" />
                                 <div class="prescriptionRow prescriptionInput">
                                     <input type="hidden" class="medicationID" name="prescriptions[@x].medicationID" value="" />
+                                    <input type="hidden" class="administrationID" name="prescriptions[@x].administrationId" value="" />
                                     <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
-                                    ><span class="prescriptionAdministrationName">
-                                    <select name="prescriptions[@x].administrationId" class="form-control input-sm">
-                                        @for(item <- viewModel.getMedicationAdministrationItems) {
-                                            <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
-                                        }
-                                    </select>
-                                </span
+                                    ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
                                 ><span class="prescriptionAdministrationDays">
                                     <input type="number" placeholder="days"  class="form-control input-sm" />
                                 </span

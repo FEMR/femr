@@ -27,6 +27,8 @@
 @main(title, currentUser, adminStyles, adminScripts) {
     <div id="admin-panels">
         <div id="admin-left-panel">
+            <a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
+                Inventory Tracking</a>
             <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
                 Manage Users</a>
             <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
@@ -34,8 +36,6 @@
             <a href="@ConfigureController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
             @if(currentUser.getEmail == "superuser"){
-                <a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
-                    Inventory Tracking</a>
                 <a href="@SuperuserController.tripsGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-globe"></span>
                     Trip Tracking</a>
                 <a href="@SuperuserController.tabsGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-wrench"></span>

@@ -38,32 +38,152 @@ var problemFeature = {
     }
 };
 var prescriptionFeature = {
-    allPrescriptions: $('.prescriptionWrap input'),
+    medicationTypeaheadData: [],
+    administrationTypeaheadData: [],
+    allPrescriptions: $('.prescriptionWrap > .prescriptionRow'),
     refreshSelectors: function () {
         prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions.selector);
+    },
+    initializeAdministrationTypeahead: function() {
+        return $.getJSON("/search/typeahead/medicationAdministrations", function (data) {
+            prescriptionFeature.administrationTypeaheadData = data;
+        });
+    },
+    administrationTypeaheadMatcher: function(strs) {
+        return function findMatches(q, cb) {
+            var substrRegex = new RegExp(q, 'i'); //Regex used to determine if a string contains substring 'q'
+            var matches = []; //Array to be populated with matches
+            //Iterate through administrations and find matches
+            $.each(strs, function (i, administration) {
+                if (substrRegex.test(administration.name)) {
+                    matches.push({
+                        id: administration.Id,
+                        modifier: administration.dailyModifier,
+                        value: administration.name
+                    });
+                }
+            });
+            cb(matches);
+        };
+    },
+    addAdministrationTypeahead: function() {
+        var $element = prescriptionFeature.allPrescriptions.last().find(".administrationName");
+        $element.typeahead({ hint: true, highlight: true },
+            {
+                name: "administration",
+                source: prescriptionFeature.administrationTypeaheadMatcher(prescriptionFeature.administrationTypeaheadData)
+            }).on('typeahead:selected', function(event, item) {
+                var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
+                $administrationID.val(item.id); // Set ID in the field to be submitted
+
+                // Set modifier to attribute for calculating total med
+                $administrationID.attr("data-modifier", item.modifier);
+                prescriptionFeature.calculateTotalPrescriptionAmount.call(this);
+            }
+        );
+    },
+    initializeMedicationTypeahead: function() {
+        return $.getJSON("/search/typeahead/medicationsWithID", function (data) {
+            prescriptionFeature.medicationTypeaheadData = data;
+        });
+    },
+    medicationTypeaheadMatcher: function(strs) {
+        return function findMatches(q, cb) {
+            var substrRegex = new RegExp(q, 'i'); //Regex used to determine if a string contains substring 'q'
+            var matches = []; //Array to be populated with matches
+
+            //Iterate through medication and find matches
+            $.each(strs.medication, function (i, med) {
+                if (substrRegex.test(med.name)) {
+                    matches.push({ id: med.id, value: med.name + " (" + med.form + ")" });
+                }
+            });
+            cb(matches);
+        };
+    },
+    addMedicationTypeahead: function() {
+        var $element = prescriptionFeature.allPrescriptions.last().find(".medicationName");
+        $element.typeahead({ hint: true, highlight: true },
+            {
+                name: "medications",
+                source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData)
+            }).on('typeahead:selected', function(event, item) {
+                var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
+                $medicationID.val(item.id);
+            }
+        );
+    },
+    setupNewPrescriptionRow: function(skipTypeahead) {
+        prescriptionFeature.refreshSelectors();
+
+        /* Setup calculate to days input on keyup/change events */
+        prescriptionFeature.allPrescriptions.last().find(".prescriptionAdministrationDays > input").on("keyup change",
+            prescriptionFeature.calculateTotalPrescriptionAmount
+        );
+
+        if (skipTypeahead !== true) {
+            prescriptionFeature.addMedicationTypeahead();
+            prescriptionFeature.addAdministrationTypeahead();
+        }
     },
     getNumberOfNonReadonlyPrescriptionFields: function () {
         prescriptionFeature.refreshSelectors();
         var number = 0;
-        $(prescriptionFeature.allPrescriptions).each(function () {
+        $(prescriptionFeature.allPrescriptions).find(".medicationName").each(function () {
             if (!$(this).is('[readonly]')) {
                 number++;
             }
         });
         return number;
     },
+    calculateTotalPrescriptionAmount: function() {
+        var $prescriptionRow = $(this).closest(".prescriptionRow");
+        var $amountInput = $prescriptionRow.find(".prescriptionAmount input");
+
+        // Modifer per day for administration type
+        var modifier = parseFloat($prescriptionRow.find(".administrationID").attr("data-modifier"));
+
+        // Days to prescribe
+        var days = parseFloat($prescriptionRow.find(".prescriptionAdministrationDays input").val());
+
+        var amount = Math.ceil(modifier * days);
+        $amountInput.val(amount);
+    },
     addPrescriptionField: function () {
         var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
-        $(prescriptionFeature.allPrescriptions)
-            .parent()
-            .append("<input name='prescriptions[" + scriptIndex + "].name' type='text' class='form-control input-sm'/>");
+        var $prescriptionRow = $("<div>").addClass("prescriptionRow prescriptionInput");
+
+        var $medicationTypeAhead = $("<input type='text' class='medicationName form-control input-sm'/>");
+        $prescriptionRow.append(
+            $("<span class='prescriptionName'></span>").append($medicationTypeAhead)
+        );
+        $prescriptionRow.append("<input class='medicationID' name='prescriptions[" + scriptIndex + "].medicationID' type='hidden' />");
+
+        var $administrationTypeAhead = $("<input type='text' class='administrationName form-control input-sm' />");
+        $prescriptionRow.append(
+          $("<span class='prescriptionAdministrationName'></span>").append($administrationTypeAhead)
+        );
+        $prescriptionRow.append(" <input class='administrationID' name='prescriptions[" + scriptIndex + "].administrationId' type='hidden' />");
+
+
+        var $daysInput = $("<input type='number' placeholder='days'  class='form-control input-sm' />");
+        $prescriptionRow.append(
+            $("<span class='prescriptionAdministrationDays'></span>").append($daysInput)
+        );
+
+        $prescriptionRow.append(
+            $("<span class='prescriptionAmount'><input name='prescriptions[" + scriptIndex + "].amount' type='number' class='form-control input-sm'/></span> ")
+        );
+
+        $(".prescriptionWrap").append($prescriptionRow);
+
+        prescriptionFeature.setupNewPrescriptionRow();
     },
     removePrescriptionField: function () {
         prescriptionFeature.refreshSelectors();
         var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
         if ($(prescriptionFeature.allPrescriptions).size() > 1) {
             if (!$(lastPrescription).is('[readonly]')) {
-                ;
                 $(lastPrescription).remove();
             }
         } else {
@@ -135,6 +255,8 @@ $(document).ready(function () {
         prescriptionFeature.removePrescriptionField();
     });
 
+
+
     //hide/unhide problems
     $('#addProblemButton').click(function () {
         problemFeature.addProblemField();
@@ -205,9 +327,26 @@ $(document).ready(function () {
         multipleChiefComplaintFeature.slideChiefComplaintLeft();
     });
 
-
+/*
     $('#medicalSubmitBtn').click(function () {
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
+    });
+*/
+    $("form").submit(function(event) {
+        //validate from medicalClientValidation.js
+        if (!photoNameFixup() || !validate()) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    });
+
+    prescriptionFeature.setupNewPrescriptionRow(true);
+    prescriptionFeature.initializeMedicationTypeahead().then(function() {
+        prescriptionFeature.addMedicationTypeahead();
+    });
+    prescriptionFeature.initializeAdministrationTypeahead().then(function() {
+        prescriptionFeature.addAdministrationTypeahead();
     });
 
     typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {
@@ -422,5 +561,3 @@ function photoNameFixup() {
 
     return true;
 }
-
-

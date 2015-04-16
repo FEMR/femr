@@ -24,6 +24,13 @@ public class PrescriptionItem {
     private Integer replacementId;
     private String prescriberFirstName;
     private String prescriberLastName;
+    private int administrationId;
+    private String administrationName;
+    private float administrationModifier;
+    private int amount;
+    private Integer medicationID;
+    private String medicationForm;
+    private int medicationRemaining;
 
     public PrescriptionItem(String name){
         this.name = name;
@@ -71,5 +78,61 @@ public class PrescriptionItem {
 
     public void setPrescriberLastName(String prescriberLastName) {
         this.prescriberLastName = prescriberLastName;
+    }
+
+    public int getAdministrationId() {
+        return administrationId;
+    }
+
+    public void setAdministrationId(int administrationId) {
+        this.administrationId = administrationId;
+    }
+
+    public String getAdministrationName() {
+        return administrationName;
+    }
+
+    public void setAdministrationName(String administrationName) {
+        this.administrationName = administrationName;
+    }
+
+    public float getAdministrationModifier() {
+        return administrationModifier;
+    }
+
+    public void setAdministrationModifier(float administrationModifier) {
+        this.administrationModifier = administrationModifier;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public Integer getMedicationID() {
+        return medicationID;
+    }
+
+    public void setMedicationID(Integer medicationID) {
+        this.medicationID = medicationID;
+    }
+
+    public String getMedicationForm() {
+        return medicationForm;
+    }
+
+    public void setMedicationForm(String medicationForm) {
+        this.medicationForm = medicationForm;
+    }
+
+    public int getMedicationRemaining() {
+        return medicationRemaining;
+    }
+
+    public void setMedicationRemaining(int medicationRemaining) {
+        this.medicationRemaining = medicationRemaining;
     }
 }

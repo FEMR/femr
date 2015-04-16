@@ -276,3 +276,36 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     height: 300px;
 }
 
+.prescriptionHeader {
+    width: 75%;
+}
+.prescriptionRow > span {
+    display: inline-block;
+}
+.prescriptionName {
+    width: 50%;
+}
+.prescriptionName input {
+    width: 100%;
+}
+
+.prescriptionAdministrationName {
+    width: 25%;
+}
+
+.prescriptionInput > span {
+    vertical-align: top;
+}
+.prescriptionInput .prescriptionAdministrationName {
+    width: 12%;
+}
+.prescriptionInput .prescriptionAdministrationName select {
+    padding: 0;
+}
+.prescriptionInput .prescriptionAdministrationDays {
+    width: 12%;
+}
+
+.prescriptionAmount {
+    width: 20%;
+}

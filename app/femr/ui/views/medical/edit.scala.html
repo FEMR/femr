@@ -18,10 +18,10 @@
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/handlebars.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
     }
 
 @main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical")) {
@@ -75,7 +75,7 @@
                     <div id="tabContentWrap">
                         @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI, viewModel.getChiefComplaints)
 
-                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getProblemItems)
+                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getMedicationAdministrationItems, viewModel.getProblemItems)
 
                         @if(viewModel.getSettings.isPmhTab) {
                             @pmhTab(viewModel.getTabItemByName("pmh"))

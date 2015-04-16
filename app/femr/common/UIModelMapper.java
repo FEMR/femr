@@ -21,6 +21,7 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.MedicationAdministration;
 import femr.ui.models.research.FilterViewModel;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -271,14 +272,18 @@ public class UIModelMapper {
     /**
      * Generate and provide an instance of PrescriptionItem
      *
-     * @param id            id of the prescription, not null
-     * @param name          name of the prescription, not null
-     * @param replacementId id of the prescription that replaced this prescription, may be null
-     * @param firstName     first name of the person that prescribed the medication, may be null
-     * @param lastName      last name of the person that prescribed the medication, may be null
+     * @param id                        id of the prescription, not null
+     * @param name                      name of the prescription, not null
+     * @param replacementId             id of the prescription that replaced this prescription, may be null
+     * @param firstName                 first name of the person that prescribed the medication, may be null
+     * @param lastName                  last name of the person that prescribed the medication, may be null
+     * @param medicationAdministration  The medication administration of this prescription
+     * @param amount                    Total amount of medication prescribed
+     * @param medication                The medication of this prescription
      * @return a new PrescriptionItem or null if processing fails
      */
-    public static PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName) {
+    public static PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+                                                          IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -296,6 +301,22 @@ public class UIModelMapper {
         if (StringUtils.isNotNullOrWhiteSpace(lastName))
             prescriptionItem.setPrescriberLastName(lastName);
 
+        if (medicationAdministration != null) {
+            prescriptionItem.setAdministrationId(medicationAdministration.getId());
+            prescriptionItem.setAdministrationName(medicationAdministration.getName());
+            prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
+        }
+        if (amount != null)
+            prescriptionItem.setAmount(amount);
+
+        if (medication != null) {
+            prescriptionItem.setMedicationID(medication.getId());
+
+            if (medication.getMedicationForm() != null)
+                prescriptionItem.setMedicationForm(medication.getMedicationForm().getName());
+
+            prescriptionItem.setMedicationRemaining(medication.getQuantity_current());
+        }
         return prescriptionItem;
     }
 
@@ -577,5 +598,18 @@ public class UIModelMapper {
             vitalItem.setValue(value);
 
         return vitalItem;
+    }
+
+    public static MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+        if (medicationAdministration == null)
+            return null;
+
+        MedicationAdministrationItem medicationAdministrationItem = new MedicationAdministrationItem(
+                medicationAdministration.getId(),
+                medicationAdministration.getName(),
+                medicationAdministration.getDailyModifier()
+        );
+
+        return medicationAdministrationItem;
     }
 }

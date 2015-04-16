@@ -288,14 +288,17 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
-
                 prescriptionItems.add(
                         UIModelMapper.createPrescriptionItem(
                                 pp.getId(),
                                 pp.getMedication().getName(),
                                 pp.getReplacementId(),
                                 pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName()
+                                pp.getPhysician().getLastName(),
+                                pp.getMedicationAdministration(),
+                                pp.getAmount(),
+                                pp.getMedication()
+
                         )
                 );
             }
@@ -332,7 +335,10 @@ public class SearchService implements ISearchService {
                                 pp.getMedication().getName(),
                                 pp.getReplacementId(),
                                 pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName()
+                                pp.getPhysician().getLastName(),
+                                pp.getMedicationAdministration(),
+                                pp.getAmount(),
+                                pp.getMedication()
                         )
                 );
             }
@@ -583,5 +589,4 @@ public class SearchService implements ISearchService {
 
         return response;
     }
-
 }

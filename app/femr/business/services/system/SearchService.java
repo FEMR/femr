@@ -288,13 +288,6 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
-                String formName;
-                if (pp.getMedication().getMedicationForm() == null) {
-                    formName = "";
-                } else {
-                    formName = pp.getMedication().getMedicationForm().getName();
-                }
-
                 prescriptionItems.add(
                         UIModelMapper.createPrescriptionItem(
                                 pp.getId(),
@@ -302,13 +295,9 @@ public class SearchService implements ISearchService {
                                 pp.getReplacementId(),
                                 pp.getPhysician().getFirstName(),
                                 pp.getPhysician().getLastName(),
-                                pp.getMedicationAdministration().getId(),
-                                pp.getMedicationAdministration().getName(),
-                                pp.getMedicationAdministration().getDailyModifier(),
+                                pp.getMedicationAdministration(),
                                 pp.getAmount(),
-                                pp.getMedication().getId(),
-                                formName,
-                                pp.getMedication().getQuantity_current()
+                                pp.getMedication()
 
                         )
                 );
@@ -347,13 +336,9 @@ public class SearchService implements ISearchService {
                                 pp.getReplacementId(),
                                 pp.getPhysician().getFirstName(),
                                 pp.getPhysician().getLastName(),
-                                pp.getMedicationAdministration().getId(),
-                                pp.getMedicationAdministration().getName(),
-                                pp.getMedicationAdministration().getDailyModifier(),
+                                pp.getMedicationAdministration(),
                                 pp.getAmount(),
-                                pp.getMedication().getId(),
-                                pp.getMedication().getMedicationForm().getName(),
-                                pp.getMedication().getQuantity_current()
+                                pp.getMedication()
                         )
                 );
             }

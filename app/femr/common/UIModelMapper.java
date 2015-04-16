@@ -277,19 +277,13 @@ public class UIModelMapper {
      * @param replacementId             id of the prescription that replaced this prescription, may be null
      * @param firstName                 first name of the person that prescribed the medication, may be null
      * @param lastName                  last name of the person that prescribed the medication, may be null
-     * @param administrationId          Id of the Medication Administration
-     * @param administrationName        Name of the Medication Administration
-     * @param administrationModifier    Medication administration modifier
+     * @param medicationAdministration  The medication administration of this prescription
      * @param amount                    Total amount of medication prescribed
-     * @param medicationID              Medication ID
-     * @param medicationForm            Medication Form
-     * @param medicationRemaining       The quantity_current of the medication
+     * @param medication                The medication of this prescription
      * @return a new PrescriptionItem or null if processing fails
      */
     public static PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
-                                                          Integer administrationId, String administrationName, Float administrationModifier,
-                                                          Integer amount, Integer medicationID, String medicationForm,
-                                                          Integer medicationRemaining) {
+                                                          IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -307,24 +301,22 @@ public class UIModelMapper {
         if (StringUtils.isNotNullOrWhiteSpace(lastName))
             prescriptionItem.setPrescriberLastName(lastName);
 
-        if (administrationId != null)
-            prescriptionItem.setAdministrationId(administrationId);
-        if (StringUtils.isNotNullOrWhiteSpace(administrationName))
-            prescriptionItem.setAdministrationName(administrationName);
-        if (administrationModifier != null)
-            prescriptionItem.setAdministrationModifier(administrationModifier);
+        if (medicationAdministration != null) {
+            prescriptionItem.setAdministrationId(medicationAdministration.getId());
+            prescriptionItem.setAdministrationName(medicationAdministration.getName());
+            prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
+        }
         if (amount != null)
             prescriptionItem.setAmount(amount);
 
-        if (medicationID != null)
-            prescriptionItem.setMedicationID(medicationID);
+        if (medication != null) {
+            prescriptionItem.setMedicationID(medication.getId());
 
-        if (medicationForm != null)
-            prescriptionItem.setMedicationForm(medicationForm);
+            if (medication.getMedicationForm() != null)
+                prescriptionItem.setMedicationForm(medication.getMedicationForm().getName());
 
-        if (medicationRemaining != null)
-            prescriptionItem.setMedicationRemaining(medicationRemaining);
-
+            prescriptionItem.setMedicationRemaining(medication.getQuantity_current());
+        }
         return prescriptionItem;
     }
 

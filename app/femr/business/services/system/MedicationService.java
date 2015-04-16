@@ -97,12 +97,6 @@ public class MedicationService implements IMedicationService {
             medication.setQuantity_current(medication.getQuantity_current() - newPatientPrescription.getAmount());
             medicationRepository.update(medication);
 
-            String formName;
-            if (newPatientPrescription.getMedication().getMedicationForm() == null) {
-                formName = "";
-            } else {
-                formName = newPatientPrescription.getMedication().getMedicationForm().getName();
-            }
             // Map new prescription item to be returned to UI View
             PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(
                     newPatientPrescription.getId(),
@@ -110,13 +104,9 @@ public class MedicationService implements IMedicationService {
                     newPatientPrescription.getReplacementId(),
                     newPatientPrescription.getPhysician().getFirstName(),
                     newPatientPrescription.getPhysician().getLastName(),
-                    newPatientPrescription.getMedicationAdministration().getId(),
-                    newPatientPrescription.getMedicationAdministration().getName(),
-                    newPatientPrescription.getMedicationAdministration().getDailyModifier(),
+                    newPatientPrescription.getMedicationAdministration(),
                     newPatientPrescription.getAmount(),
-                    newPatientPrescription.getMedication().getId(),
-                    formName,
-                    newPatientPrescription.getMedication().getQuantity_current()
+                    newPatientPrescription.getMedication()
             );
             response.setResponseObject(newPrescriptionItem);
 
@@ -166,25 +156,15 @@ public class MedicationService implements IMedicationService {
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
                 if (pp.getMedication() != null) {
-                    String formName;
-                    if (pp.getMedication().getMedicationForm() == null) {
-                        formName = "";
-                    } else {
-                        formName = pp.getMedication().getMedicationForm().getName();
-                    }
                     newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),
                             pp.getReplacementId(),
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration().getId(),
-                            pp.getMedicationAdministration().getName(),
-                            pp.getMedicationAdministration().getDailyModifier(),
+                            pp.getMedicationAdministration(),
                             pp.getAmount(),
-                            pp.getMedication().getId(),
-                            formName,
-                            pp.getMedication().getQuantity_current()
+                            pp.getMedication()
                     ));
                 }
             }
@@ -216,26 +196,15 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
 
-                    String formName;
-                    if (patientPrescription.getMedication().getMedicationForm() == null) {
-                        formName = "";
-                    } else {
-                        formName = patientPrescription.getMedication().getMedicationForm().getName();
-                    }
-
                     updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(
                             patientPrescription.getId(),
                             patientPrescription.getMedication().getName(),
                             patientPrescription.getReplacementId(),
                             patientPrescription.getPhysician().getFirstName(),
                             patientPrescription.getPhysician().getLastName(),
-                            patientPrescription.getMedicationAdministration().getId(),
-                            patientPrescription.getMedicationAdministration().getName(),
-                            patientPrescription.getMedicationAdministration().getDailyModifier(),
+                            patientPrescription.getMedicationAdministration(),
                             patientPrescription.getAmount(),
-                            patientPrescription.getMedication().getId(),
-                            formName,
-                            patientPrescription.getMedication().getQuantity_current()
+                            patientPrescription.getMedication()
                     ));
 
                     //Retrieve the medication item
@@ -282,13 +251,9 @@ public class MedicationService implements IMedicationService {
                             patientPrescription.getReplacementId(),
                             patientPrescription.getPhysician().getFirstName(),
                             patientPrescription.getPhysician().getLastName(),
-                            patientPrescription.getMedicationAdministration().getId(),
-                            patientPrescription.getMedicationAdministration().getName(),
-                            patientPrescription.getMedicationAdministration().getDailyModifier(),
+                            patientPrescription.getMedicationAdministration(),
                             patientPrescription.getAmount(),
-                            patientPrescription.getMedication().getId(),
-                            patientPrescription.getMedication().getMedicationForm().getName(),
-                            patientPrescription.getMedication().getQuantity_current()
+                            patientPrescription.getMedication()
                     ));
                 }
             }

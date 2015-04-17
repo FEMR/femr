@@ -37,12 +37,17 @@ public class IndexViewModelPost {
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;
+
     private Float temperature;
+
     private Integer respiratoryRate;
     private Float oxygenSaturation;
+
     private Integer heightFeet;
     private Integer heightInches;
+
     private Float weight;
+
     private Integer glucose;
     //begin encounter
     private String chiefComplaint;
@@ -140,6 +145,7 @@ public class IndexViewModelPost {
     public void setHeartRate(Integer heartRate) {
         this.heartRate = heartRate;
     }
+
 
     public Float getTemperature() {
         return temperature;

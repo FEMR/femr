@@ -6,36 +6,41 @@ $(document).ready(function () {
 
 
 function calculateBMI() {
-    var $weight;
-    var weight = null
-    var weight_lbs = null;
-    var $height;
-    var feet = null;
-    var inches = null;
+    var weight = null;
     var height_in = null;
     var height_ft = null;
+    
+    // Search vitals from most recent to least for one containing a valid weight
+    $($("#weight td").get().reverse()).each(function() {
+        var tryParse = parseFloat($(this).attr("data-weight"));
+        if (!isNaN(tryParse)) {
+            weight = tryParse;
+            return false;
+        }
+    });
 
+    // Search vitals from most recent to least for one containing a valid height
+    $($("#height td").get().reverse()).each(function() {
+        var tryParseFeet = parseFloat($(this).attr("data-feet"));
+        var tryParseInches = parseFloat($(this).attr("data-inches"));
+        if (!isNaN(tryParseFeet) && !isNaN(tryParseInches)) {
+            height_ft = tryParseFeet;
+            height_in = tryParseInches;
+            return false;
+        }
+    });
 
-    $weight = $("#weight td:last-child");
-    weight = $weight.attr("data-weight");
-    if (weight !== null && weight !== '' && typeof ( weight ) !== 'undefined') {
-        weight_lbs = parseFloat(weight);
+    // Problem finding weight and height
+    if (height_ft === null || height_in === null || weight === null) {
+        $("#bmi").text("N/A");
+        return;
     }
 
-    $height = $("#height td:last-child");
-    feet = $height.attr("data-feet");
-    inches = $height.attr("data-inches");
-    if (feet !== null && feet !== '' && typeof ( feet ) !== 'undefined') {
-        height_ft = parseFloat(feet);
-    }
-    if (inches !== null && inches !== '' && typeof ( inches ) !== 'undefined') {
-        height_in = parseFloat(inches);
-    }
-
+    // Calculate total inches by combinning feet and inches
     var totalInches = height_in + height_ft * 12;
 
     // BMI for Metric - Alaa Serhan
-    var bmi = Math.round((weight_lbs / (totalInches * totalInches)) * 703);
+    var bmi = Math.round((weight / (totalInches * totalInches)) * 703);
     if (!isFinite(bmi) || bmi === '' || bmi === null){
        $('#bmi').text("N/A");
     }else{

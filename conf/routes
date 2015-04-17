@@ -57,11 +57,8 @@ GET         /research/typeahead              @femr.ui.controllers.ResearchContro
 GET         /research                        @femr.ui.controllers.ResearchController.indexGet()
 POST        /research/graph                  @femr.ui.controllers.ResearchController.getGraphPost()
 GET         /research/generateData           @femr.ui.controllers.ResearchController.generateData()
-GET         /research                          @femr.ui.controllers.ResearchController.indexGet()
-POST        /research/graph                    @femr.ui.controllers.ResearchController.getGraphPost()
-GET         /research/generateData             @femr.ui.controllers.ResearchController.generateData()
 #Pdf
-GET         /PDFtest/:id/:idE                  @femr.ui.controllers.PDFConversion.index(id: Integer, idE : Integer)
+GET         /PDF/Pid=:id/Eid=:idE                  @femr.ui.controllers.PDFConversion.index(id: Integer, idE : Integer)
 #Sessions
 GET         /logout                            @femr.ui.controllers.SessionsController.delete()
 POST        /login/reset                       @femr.ui.controllers.SessionsController.editPasswordPost()

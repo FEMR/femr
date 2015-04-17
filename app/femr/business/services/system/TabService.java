@@ -532,9 +532,29 @@ public class TabService implements ITabService {
         return response;
     }
 
-    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName) {
+    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName, String chiefComplaintName) {
         ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
-        TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId, tabName);
+        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
+
+        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                .where()
+                .eq("tabField.name", tabName)
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
+
+        List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+
+        for(IPatientEncounterTabField tf : patientEncounterTabFields) {
+            if (tf.getChiefComplaint() != null && tf.getChiefComplaint().getValue().equals(chiefComplaintName)) {
+                //Only add tabFields for the request chief complaint
+                tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
+            } else if (chiefComplaintName == null) {
+                //No chief complaint, so put all matching fields
+                tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
+            }
+        }
+
         if (tabFieldMultiMap != null)
             response.setResponseObject(tabFieldMultiMap);
         else

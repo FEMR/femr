@@ -14,11 +14,11 @@ $(document).ready(function () {
 
    // $('#tabFieldHistory').tableScroll({ height: 800});
 
-    var loadAssessmentHistory = function(encounterID, fieldName) {
+    var loadAssessmentHistory = function(encounterID, fieldName, complaint) {
         $.ajax({
             type: "GET",
             url: '/history/encounter/listTabFieldHistory/' + encounterID,
-            data: { FieldName: fieldName }
+            data: { FieldName: fieldName, ChiefComplaintName: complaint }
         }).done(function (partialView) {
             $("#tabFieldHistory").html(partialView);
         });
@@ -40,7 +40,10 @@ $(document).ready(function () {
         var fieldName = $(this).parent("p").find(".value").attr("data-id");
         $("#fieldIdInput").val(fieldName);
 
-        loadAssessmentHistory($('#patientEncounterId').val(), fieldName);
+        var complaint = $(this).parent().siblings("h4").attr("data-complaint");
+        $("#complaintInput").val(complaint);
+
+        loadAssessmentHistory($('#patientEncounterId').val(), fieldName, complaint);
 
         $("#edit-form").show();
 
@@ -50,14 +53,13 @@ $(document).ready(function () {
 
     $("#saveEncounterBtn").click(function () {
         var fieldValue = $('#editInput').val();
-        // var form = $(this);
-        //var label = $(this).text();
         var fieldName = $('#fieldIdInput').val();
-        console.log(fieldName, " ", fieldValue);
+        var complaint = $("#complaintInput").val();
+
         $.ajax({
             type: "POST",
             url: '/history/encounter/updateField/' + $('#patientEncounterId').val(),
-            data: { FieldValue: fieldValue, FieldName: fieldName}
+            data: { FieldValue: fieldValue, FieldName: fieldName, ChiefComplaintName: complaint }
         }).done(function (data) {
             // Update field to new value
             $(".encounterViewBody span[data-id='" + fieldName + "']").text(fieldValue);

@@ -179,7 +179,8 @@
                 <div class="encounterViewBodyMiddle">
                 @if(viewModelMedical.isMultipleChiefComplaints) {
                     @for((key, value) <- viewModelMedical.getHpiFieldsWithMultipleChiefComplaints) {
-                        <h4>Chief Complaint: @key</h4>
+                        <div>
+                        <h4 data-complaint="@key">Chief Complaint: @key</h4>
                         <p> <a class="infoLabel @editClass">Onset:</a>
                             @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("onset"))
                         </p>
@@ -210,11 +211,14 @@
                             @dynamicTabSpan(viewModelMedical.getHpiFieldsWithMultipleChiefComplaints.get(key).get("physicalExamination"))
                         </p>
 
-
+                        </div>
                         <br>
                     }
                 } else {
-                    @if(viewModel.getPatientEncounterItem.getChiefComplaints != null && viewModel.getPatientEncounterItem.getChiefComplaints.size > 0){<h4>Chief Complaint: @viewModel.getPatientEncounterItem.getChiefComplaints.get(0) </h4>}
+                    <div>
+                    @if(viewModel.getPatientEncounterItem.getChiefComplaints != null && viewModel.getPatientEncounterItem.getChiefComplaints.size > 0){
+                        <h4 data-complaint="@viewModel.getPatientEncounterItem.getChiefComplaints.get(0)">Chief Complaint: @viewModel.getPatientEncounterItem.getChiefComplaints.get(0) </h4>
+                    }
                     <p> <a class= "infoLabel @editClass">Onset:</a>
                         @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("onset"))
                     </p>
@@ -248,7 +252,7 @@
                     <p> <a class= "infoLabel @editClass">Physical Examination:</a>
                         @dynamicTabSpan(viewModelMedical.getHpiFieldsWithoutMultipleChiefComplaints.get("physicalExamination"))
                     </p>
-
+                    </div>
 
 
 
@@ -287,7 +291,7 @@
 
                 <p class="form-label"></p>
                 <input type="text" id="editInput" class="form-control input-sm pull-left value" name="edit-value"  value=""/>
-
+                <input type="hidden" id="complaintInput" value="" />
                 <input  id = "fieldIdInput" class= "fieldId" type="hidden" name="edit-field-name" value="" />
 
                 <button type="button" id="saveEncounterBtn" class="fButton">Save</button>

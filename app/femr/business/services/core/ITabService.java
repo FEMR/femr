@@ -161,9 +161,10 @@ public interface ITabService {
      *
      * @param encounterId id of the encounter
      * @param tabName Name of tab
+     * @param chiefComplaintName Chief complaint name
      * @return a "TabFieldMultiMap" that contains tab field and values. <strong>It will also contain empty fields.</strong>
      */
-    ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName);
+    ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName, String chiefComplaintName);
 
     /**
      * Get all available tabs for use

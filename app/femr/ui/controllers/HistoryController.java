@@ -317,6 +317,11 @@ public class HistoryController extends Controller {
         tabFieldItem.setValue(value.trim());
         return tabFieldItem;
     }
+    private TabFieldItem createTabFieldItemWithChiefComplaint(String name, String value, String complaint) {
+        TabFieldItem tabFieldItem = createTabFieldItem(name, value);
+        tabFieldItem.setChiefComplaint(complaint);
+        return tabFieldItem;
+    }
     private List<TabFieldItem> mapPmhFieldItems(IndexPatientViewModelPost patientViewModelPost) {
         List<TabFieldItem> tabFieldItems = new ArrayList<>();
         //Pmh_fields
@@ -373,7 +378,10 @@ public class HistoryController extends Controller {
 
         //Create a list of submitted tab fields
         List<TabFieldItem> items = new ArrayList<TabFieldItem>();
-        items.add(createTabFieldItem(fields.getFieldName(), fields.getFieldValue()));
+        if (StringUtils.isNullOrWhiteSpace(fields.getChiefComplaintName()))
+            items.add(createTabFieldItem(fields.getFieldName(), fields.getFieldValue()));
+        else
+            items.add(createTabFieldItemWithChiefComplaint(fields.getFieldName(), fields.getFieldValue(), fields.getChiefComplaintName()));
 
         //Create encounter tab fields with the item , patient encounter, current User
         ServiceResponse<List<TabFieldItem>> patientEncounterTabFieldsServiceResponse =
@@ -403,7 +411,7 @@ public class HistoryController extends Controller {
         fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 
         ServiceResponse<TabFieldMultiMap> tabFieldsReponseObject =
-                tabService.findTabFieldMultiMap(patientEncounter.getId(), fields.getFieldName());
+                tabService.findTabFieldMultiMap(patientEncounter.getId(), fields.getFieldName(), fields.getChiefComplaintName());
         if (tabFieldsReponseObject.hasErrors()) {
             throw new RuntimeException();
         }

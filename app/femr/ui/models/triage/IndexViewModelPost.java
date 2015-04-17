@@ -37,17 +37,12 @@ public class IndexViewModelPost {
     private Integer bloodPressureSystolic;
     private Integer bloodPressureDiastolic;
     private Integer heartRate;
-
     private Float temperature;
-
     private Integer respiratoryRate;
     private Float oxygenSaturation;
-
     private Integer heightFeet;
     private Integer heightInches;
-
     private Float weight;
-
     private Integer glucose;
     //begin encounter
     private String chiefComplaint;
@@ -146,7 +141,6 @@ public class IndexViewModelPost {
         this.heartRate = heartRate;
     }
 
-
     public Float getTemperature() {
         return temperature;
     }
@@ -218,7 +212,6 @@ public class IndexViewModelPost {
     public void setGlucose(Integer glucose) {
         this.glucose = glucose;
     }
-
 
     public String getChiefComplaintsJSON() {
         return chiefComplaintsJSON;

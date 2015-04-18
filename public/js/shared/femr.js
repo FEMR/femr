@@ -87,19 +87,12 @@ $(document).ready(function () {
 
             patient_data = data;
 
-            //console.log(patient_data);
-
             var patients = new Bloodhound({
-                /*
-                 datumTokenizer: function (d) {
-                 // tokenize the fields that will need to be searched
-                 return Bloodhound.tokenizers.whitespace(d.firstName);
-                 },
-                 */
+
                 datumTokenizer: function (d) {
 
                     // break apart first/last name into separate words
-                    var words = Bloodhound.tokenizers.whitespace(d.firstName + " " + d.lastName);
+                    var words = Bloodhound.tokenizers.whitespace(d.id + " " + d.firstName + " " + d.lastName);
 
                     // make all possible substring words
                     // Original Word: Name
@@ -111,6 +104,7 @@ $(document).ready(function () {
                             i++;
                         }
                     });
+
                     return words;
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,

@@ -59,7 +59,7 @@
                     <p><span class="infoLabel">Nurse:</span> @encounter.getNurseEmailAddress</p>
                     <br>
                     <p><span class="infoLabel">Medical Visit:</span> @encounter.getMedicalDateOfVisit</p>
-                        <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>
+                    <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>
                     <br>
                     <p><span class="infoLabel">Pharmacy Visit:</span> @encounter.getPharmacyDateOfVisit</p>
                     <p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistEmailAddress</p>
@@ -90,7 +90,7 @@
                         <span class="infoLabel">Heart Rate:</span>
                         @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                             <span>
-                                @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
+                             @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
                             </span>
                         }
                     </p>

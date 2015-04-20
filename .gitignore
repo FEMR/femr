@@ -30,3 +30,7 @@ server.pid
 *.eml
 Upload
 dist
+
+# Ignore OS specific Files #
+.DS_Store
+Thumbs.db

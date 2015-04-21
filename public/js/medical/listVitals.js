@@ -9,13 +9,13 @@ function calculateBMI() {
     var weight = null;
     var height_in = null;
     var height_ft = null;
-    
+
+   
     // Search vitals from most recent to least for one containing a valid weight
     $($("#weight td").get().reverse()).each(function() {
         var tryParse = parseFloat($(this).attr("data-weight"));
         if (!isNaN(tryParse)) {
             weight = tryParse;
-            return false;
         }
     });
 

@@ -22,11 +22,14 @@ public class ConfigureViewModelPost {
     private String ss1;//multiple chief complaints
     private String ss2;//medical pmh tab
     private String ss3;//medical photo tab
-    private String ss4;//Metric Conversion Option
+
+    private String ss4;//Imperial System of Measurement
+    private String ss5;//Metric System of Measurement
 
     public String getSs1() {
         return ss1;
     }
+
 
     public void setSs1(String ss1) {
         this.ss1 = ss1;
@@ -49,7 +52,7 @@ public class ConfigureViewModelPost {
         this.ss3 = ss3;
     }
 
-    //Alaa Serhan Metric Conversion Option
+
     public String getSs4()
     {
         return ss4;
@@ -59,4 +62,12 @@ public class ConfigureViewModelPost {
     {
         this.ss4 = ss4;
     }
+    public String getSs5() {
+        return ss5;
+    }
+
+    public void setSs5(String ss5) {
+        this.ss5 = ss5;
+    }
+
 }

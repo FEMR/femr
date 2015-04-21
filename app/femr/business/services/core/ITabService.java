@@ -156,6 +156,19 @@ public interface ITabService {
      *
      * @return a ServiceResponse that contains a list of TabItems
      * and/or errors if they exist.
+     * Create a map for a specific tab where the key is the name, date, and chief complaint.
+     * Chief complaint is null if it doesn't exist.
+     *
+     * @param encounterId id of the encounter
+     * @param tabName Name of tab
+     * @param chiefComplaintName Chief complaint name
+     * @return a "TabFieldMultiMap" that contains tab field and values. <strong>It will also contain empty fields.</strong>
+     */
+    ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName, String chiefComplaintName);
+
+    /**
+     * Get all available tabs for use
+     * @return list of available tabs
      */
     ServiceResponse<List<TabItem>> retrieveAvailableTabs(boolean isDeleted);
 }

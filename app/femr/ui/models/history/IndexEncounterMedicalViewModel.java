@@ -20,6 +20,7 @@ package femr.ui.models.history;
 
 import femr.common.models.*; /* Alaa Serhan */
 import femr.common.models.PhotoItem;
+import femr.common.models.TabFieldItem;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,14 @@ public class IndexEncounterMedicalViewModel {
 
     private List<String> chiefComplaints;
     //Map<fieldName, fieldValue>
-    private Map<String, String> pmhFields;
-    private Map<String, String> treatmentFields;
-    private Map<String, String> customFields;
+    private Map<String, TabFieldItem> pmhFields;
+    private Map<String, TabFieldItem> treatmentFields;
+    private Map<String, TabFieldItem> customFields;
 
     //Map<chiefComplaint, Map<fieldName, fieldValue>>
     private boolean isMultipleChiefComplaints;
-    private Map<String, Map<String,String>> hpiFieldsWithMultipleChiefComplaints;
-    private Map<String, String> hpiFieldsWithoutMultipleChiefComplaints;
+    private Map<String, Map<String, TabFieldItem>> hpiFieldsWithMultipleChiefComplaints;
+    private Map<String, TabFieldItem> hpiFieldsWithoutMultipleChiefComplaints;
 
     private SettingItem settings; /* Alaa Serhan */
 
@@ -72,27 +73,27 @@ public class IndexEncounterMedicalViewModel {
         this.chiefComplaints = chiefComplaints;
     }
 
-    public Map<String, String> getPmhFields() {
+    public Map<String, TabFieldItem> getPmhFields() {
         return pmhFields;
     }
 
-    public void setPmhFields(Map<String, String> pmhFields) {
+    public void setPmhFields(Map<String, TabFieldItem> pmhFields) {
         this.pmhFields = pmhFields;
     }
 
-    public Map<String, String> getTreatmentFields() {
+    public Map<String, TabFieldItem> getTreatmentFields() {
         return treatmentFields;
     }
 
-    public void setTreatmentFields(Map<String, String> treatmentFields) {
+    public void setTreatmentFields(Map<String, TabFieldItem> treatmentFields) {
         this.treatmentFields = treatmentFields;
     }
 
-    public Map<String, String> getCustomFields() {
+    public Map<String, TabFieldItem> getCustomFields() {
         return customFields;
     }
 
-    public void setCustomFields(Map<String, String> customFields) {
+    public void setCustomFields(Map<String, TabFieldItem> customFields) {
         this.customFields = customFields;
     }
 
@@ -104,19 +105,19 @@ public class IndexEncounterMedicalViewModel {
         this.isMultipleChiefComplaints = isMultipleChiefComplaints;
     }
 
-    public Map<String, Map<String, String>> getHpiFieldsWithMultipleChiefComplaints() {
+    public Map<String, Map<String, TabFieldItem>> getHpiFieldsWithMultipleChiefComplaints() {
         return hpiFieldsWithMultipleChiefComplaints;
     }
 
-    public void setHpiFieldsWithMultipleChiefComplaints(Map<String, Map<String, String>> hpiFieldsWithMultipleChiefComplaints) {
+    public void setHpiFieldsWithMultipleChiefComplaints(Map<String, Map<String, TabFieldItem>> hpiFieldsWithMultipleChiefComplaints) {
         this.hpiFieldsWithMultipleChiefComplaints = hpiFieldsWithMultipleChiefComplaints;
     }
 
-    public Map<String, String> getHpiFieldsWithoutMultipleChiefComplaints() {
+    public Map<String, TabFieldItem> getHpiFieldsWithoutMultipleChiefComplaints() {
         return hpiFieldsWithoutMultipleChiefComplaints;
     }
 
-    public void setHpiFieldsWithoutMultipleChiefComplaints(Map<String, String> hpiFieldsWithoutMultipleChiefComplaints) {
+    public void setHpiFieldsWithoutMultipleChiefComplaints(Map<String, TabFieldItem> hpiFieldsWithoutMultipleChiefComplaints) {
         this.hpiFieldsWithoutMultipleChiefComplaints = hpiFieldsWithoutMultipleChiefComplaints;
     }
 

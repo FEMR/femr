@@ -532,6 +532,37 @@ public class TabService implements ITabService {
         return response;
     }
 
+    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName, String chiefComplaintName) {
+        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
+        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
+
+        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                .where()
+                .eq("tabField.name", tabName)
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
+
+        List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
+
+        for(IPatientEncounterTabField tf : patientEncounterTabFields) {
+            if (tf.getChiefComplaint() != null && tf.getChiefComplaint().getValue().equals(chiefComplaintName)) {
+                //Only add tabFields for the request chief complaint
+                tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
+            } else if (chiefComplaintName == null) {
+                //No chief complaint, so put all matching fields
+                tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
+            }
+        }
+
+        if (tabFieldMultiMap != null)
+            response.setResponseObject(tabFieldMultiMap);
+        else
+            response.addError("", "there was an issue building the multi map");
+        return response;
+    }
+
+
     /**
      * {@inheritDoc}
      */
@@ -590,10 +621,10 @@ public class TabService implements ITabService {
 
             //get all tab fields that have value which belong to a tab
             patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .fetch("tabField")
-                    .fetch("tabField.tab")
+                    //.fetch("tabField")
+                    //.fetch("tabField.tab")
                     .where()
-                    .eq("tabField.tab.name", tabName)
+                    .eq("tabField.name", tabName)
                     .eq("patient_encounter_id", encounterId)
                     .order()
                     .desc("date_taken");
@@ -630,14 +661,14 @@ public class TabService implements ITabService {
 
                     if (chiefComplaints != null && chiefComplaints.size() > 0) {
 
-                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom));
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom, petf.getUserName()));
                     } else {
 
-                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null, isCustom));
+                        tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), null, isCustom, petf.getUserName()));
                     }
                 } else {
 
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom));
+                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), tabFieldSize, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom, petf.getUserName()));
                 }
 
 

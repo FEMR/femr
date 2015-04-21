@@ -318,7 +318,21 @@ public class UIModelMapper {
 
         return problemItem;
     }
+    //Assessment Items
+    public static AssessmentItem assessmentProblemItem(String name) {
 
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        AssessmentItem assessmentItem = new AssessmentItem();
+
+        assessmentItem.getFieldName();
+        assessmentItem.getFieldValue();
+
+        return assessmentItem;
+    }
     /**
      * Generate and provide an instance of ResearchFilterItem.
      *
@@ -470,6 +484,34 @@ public class UIModelMapper {
         return tabFieldItem;
     }
 
+    /**
+     * Generate and provide an instance of TabFieldItem overloaded to include userName
+     *
+     * @param name           the name of the field, not null
+     * @param type           the fields type e.g. number, text, may be null
+     * @param size           the size of the field e.g. small, med, large, may be null
+     * @param order          sorting order for the field, may be null
+     * @param placeholder    placeholder text for the field, may be null
+     * @param value          current value of the field, may be null
+     * @param chiefComplaint what chief complaint the field belongs to,, may be null
+     * @param isCustom       identifies if the tabfielditem is custom made, not null
+     * @param userName       User Name of user who created the TabFieldItem
+     * @return a new TabFieldItem or null if processing fails
+     */
+    public static TabFieldItem createTabFieldItem(String name,
+                                                  String type,
+                                                  String size,
+                                                  Integer order,
+                                                  String placeholder,
+                                                  String value,
+                                                  String chiefComplaint,
+                                                  boolean isCustom,
+                                                  String userName) {
+        TabFieldItem temp = createTabFieldItem(name, type, size, order, placeholder, value, chiefComplaint, isCustom);
+        if (StringUtils.isNotNullOrWhiteSpace(userName))
+            temp.setUserName(userName);
+        return temp;
+    }
     /**
      * Generate and provide an instance of TeamItem.
      *

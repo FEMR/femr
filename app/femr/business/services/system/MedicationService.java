@@ -94,7 +94,8 @@ public class MedicationService implements IMedicationService {
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
 
             // Subtract prescription amount from medication amount in medications (Dispensed)
-            medication.setQuantity_current(medication.getQuantity_current() - newPatientPrescription.getAmount());
+            int quantityCurrent = (medication.getQuantity_current() == null) ? 0 : medication.getQuantity_current();
+            medication.setQuantity_current(quantityCurrent - newPatientPrescription.getAmount());
             medicationRepository.update(medication);
 
             // Map new prescription item to be returned to UI View
@@ -214,7 +215,8 @@ public class MedicationService implements IMedicationService {
                     IMedication medication = medicationRepository.findOne(medicationQuery);
 
                     // Subtract prescription amount from the medication (dispensed)
-                    medication.setQuantity_current(medication.getQuantity_current() - patientPrescription.getAmount());
+                    int quantityCurrent = (medication.getQuantity_current() == null) ? 0 : medication.getQuantity_current();
+                    medication.setQuantity_current(quantityCurrent - patientPrescription.getAmount());
                     medicationRepository.update(medication);
                 }
             }

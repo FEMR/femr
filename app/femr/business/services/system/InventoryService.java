@@ -130,14 +130,14 @@ public class InventoryService implements IInventoryService {
             Junction<Medication> subJunction;
             String filterOp = filters.get(0).getLogical_operator();
 
-            /* Create a junction AND/OR based of filter operator */
+            // Create a junction AND/OR based on the filter operator
             if (filterOp.equals("AND")) {
                 subJunction = query.where().conjunction();
             } else {
                 subJunction = query.where().disjunction();
             }
 
-
+            // Iterate through all filters and add them to the sub junction
             for (DataGridFilter f : filters) {
                 if (f.getCondition() == null) continue;
                 String operator = f.getCondition().getOperator();
@@ -334,11 +334,16 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<List<MedicationAdministrationItem>> retrieveAvailableAdministrations() {
         ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
         try {
+            // Retrieve a list of all medicationAdministrations from the database
             List<? extends IMedicationAdministration> medicationAdministrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
+
+            // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
             for (IMedicationAdministration ma : medicationAdministrations) {
                 availableAdministrations.add(UIModelMapper.createMedicationAdministrationItem(ma));
             }
+
+            // Set the response object to the list of MedicationAdministrationItem's. The Response is what is sent back to the controller
             response.setResponseObject(availableAdministrations);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -349,12 +354,14 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<MedicationItem> deleteMedication(int medicationID) {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        // Get the medication Item
+        // Get the medication Item by it's ID
         IMedication medication;
         ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                 .where()
                 .eq("id", medicationID);
+
         try {
+            // Find one medication (should only be 1 with the ID) from the database
             medication = medicationRepository.findOne(medicationQuery);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -375,8 +382,10 @@ public class InventoryService implements IInventoryService {
         */
 
 
-        //Prescriptions have medication as a FK. Need to set isDeleted to 1
+        // Set the isDeleted column of the medication to true
         medication.setIsDeleted(true);
+
+        // Update the medication item in the database
         medicationRepository.update(medication);
 
 

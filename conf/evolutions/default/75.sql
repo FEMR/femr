@@ -23,7 +23,7 @@ REFERENCES `medication_administrations` (`id`)
 
 ALTER TABLE `medication_administrations` DROP COLUMN `daily_modifier`;
 
-  ALTER TABLE `patient_prescriptions`
+ALTER TABLE `patient_prescriptions`
 DROP FOREIGN KEY `fk_patient_prescriptions_medication_administrations`;
 
 ALTER TABLE `medication_administrations`

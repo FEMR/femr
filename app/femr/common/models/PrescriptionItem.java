@@ -24,13 +24,13 @@ public class PrescriptionItem {
     private Integer replacementId;
     private String prescriberFirstName;
     private String prescriberLastName;
-    private int administrationId;
+    private Integer administrationId;
     private String administrationName;
-    private float administrationModifier;
-    private int amount;
+    private Float administrationModifier;
+    private Integer amount;
     private Integer medicationID;
     private String medicationForm;
-    private int medicationRemaining;
+    private Integer medicationRemaining;
 
     public PrescriptionItem(String name){
         this.name = name;
@@ -80,11 +80,11 @@ public class PrescriptionItem {
         this.prescriberLastName = prescriberLastName;
     }
 
-    public int getAdministrationId() {
+    public Integer getAdministrationId() {
         return administrationId;
     }
 
-    public void setAdministrationId(int administrationId) {
+    public void setAdministrationId(Integer administrationId) {
         this.administrationId = administrationId;
     }
 
@@ -96,19 +96,20 @@ public class PrescriptionItem {
         this.administrationName = administrationName;
     }
 
-    public float getAdministrationModifier() {
+    public Float getAdministrationModifier() {
         return administrationModifier;
     }
 
-    public void setAdministrationModifier(float administrationModifier) {
+    public void setAdministrationModifier(Float administrationModifier) {
         this.administrationModifier = administrationModifier;
     }
 
-    public int getAmount() {
+    public Integer getAmount() {
+        if (amount == null) return 0;
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 
@@ -128,11 +129,12 @@ public class PrescriptionItem {
         this.medicationForm = medicationForm;
     }
 
-    public int getMedicationRemaining() {
+    public Integer getMedicationRemaining() {
+        if (medicationRemaining == null) return 0;
         return medicationRemaining;
     }
 
-    public void setMedicationRemaining(int medicationRemaining) {
+    public void setMedicationRemaining(Integer medicationRemaining) {
         this.medicationRemaining = medicationRemaining;
     }
 }

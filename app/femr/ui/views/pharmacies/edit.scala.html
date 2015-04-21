@@ -4,6 +4,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.views.html.partials.patientOverview
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
 
     @additionalScripts = {
         <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
@@ -54,7 +55,7 @@
                         <li class="medication" id="med@x" data-medID="@medication.getMedicationID">
                             <button type="button" class="fButton fOtherButton replaceBtn">R</button>
                             <div>
-                                <span>@medication.getAmount @medication.getName (@medication.getMedicationForm)</span>
+                                <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim())</span>
                             </div>
                             <div>
                                 <span id="prescriber">

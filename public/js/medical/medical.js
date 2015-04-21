@@ -70,12 +70,12 @@ var prescriptionFeature = {
         var $element = prescriptionFeature.allPrescriptions.last().find(".administrationName");
         $element.typeahead({ hint: true, highlight: true },
             {
+                displayKey: 'value',
                 name: "administration",
                 source: prescriptionFeature.administrationTypeaheadMatcher(prescriptionFeature.administrationTypeaheadData)
             }).on('typeahead:selected', function(event, item) {
                 var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
                 $administrationID.val(item.id); // Set ID in the field to be submitted
-
                 // Set modifier to attribute for calculating total med
                 $administrationID.attr("data-modifier", item.modifier);
                 prescriptionFeature.calculateTotalPrescriptionAmount.call(this);

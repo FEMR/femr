@@ -1,5 +1,7 @@
 @(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem], problems: List[femr.common.models.ProblemItem])
 
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
+
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
         <label for="assessment">Assessment</label>
@@ -47,7 +49,7 @@
                         <input class='medicationID' value='@script.getMedicationID' type='hidden' />
                         <input class='administrationID' value='@script.getAdministrationId' type='hidden' />
                         <span class="prescriptionName">
-                            <input type="text" class="medicationName form-control input-sm" value="@script.getName (@script.getMedicationForm)" readonly/>
+                            <input type="text" class="medicationName form-control input-sm" value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly/>
                         </span
                         ><span class="prescriptionAdministrationName">
                             <input type="text" class="form-control input-sm" value="@script.getAdministrationName" readonly/>

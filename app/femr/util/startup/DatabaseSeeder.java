@@ -1142,7 +1142,7 @@ public class DatabaseSeeder {
             if (!containMedicationAdministration(administrations, "QID")) {
                 medicationAdministration = new MedicationAdministration();
                 medicationAdministration.setName("QID");
-                medicationAdministration.setDailyModifier(6f);
+                medicationAdministration.setDailyModifier(4f);
                 medicationAdministrationsToAdd.add(medicationAdministration);
             }
             if (!containMedicationAdministration(administrations, "q5min")) {

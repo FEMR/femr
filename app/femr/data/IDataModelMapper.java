@@ -180,7 +180,7 @@ public interface IDataModelMapper {
      * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
+    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
 
     /**
      * Generate and provide an implementation of IPhoto.

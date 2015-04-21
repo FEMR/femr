@@ -61,8 +61,13 @@ $(document).ready(function () {
             url: '/history/encounter/updateField/' + $('#patientEncounterId').val(),
             data: { FieldValue: fieldValue, FieldName: fieldName, ChiefComplaintName: complaint }
         }).done(function (data) {
+            $("h4[data-complaint='" + complaint + "']")
+                .parent()
+                .find("span[data-id='" + fieldName + "']")
+                .text(fieldValue);
+
             // Update field to new value
-            $(".encounterViewBody span[data-id='" + fieldName + "']").text(fieldValue);
+            //$(".encounterViewBody span[data-id='" + fieldName + "']").text(fieldValue);
 
             // Close edit form
             $("#edit-form").hide();

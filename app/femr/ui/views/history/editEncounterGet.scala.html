@@ -59,7 +59,7 @@
                 <div class="encounterViewBodyLeftHalf">
                     <p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>
                     <p><span class="infoLabel">
-                        Height:</span> @outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches)</p>
+                        Height:</span> @outputHeightOrNA(patient.getHeightFeet.toString, patient.getHeightInches.toString)</p>
                     <p><span class="infoLabel">Weight:</span> @outputFloatOrNA(patient.getWeight)</p>
                 </div>
             }

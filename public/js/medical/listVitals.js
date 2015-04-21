@@ -16,12 +16,6 @@ function calculateBMI() {
         var tryParse = parseFloat($(this).attr("data-weight"));
         if (!isNaN(tryParse)) {
             weight = tryParse;
-
-    $($weights.get().reverse()).each(function () {
-        if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
-
-            weight_lbs = parseInt($(this).html());
-            return false;
         }
     });
 

@@ -7,6 +7,7 @@
 @import femr.ui.views.html.partials.helpers.outputStringOrNA
 
     @additionalScripts = {
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/handlebars.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
@@ -73,7 +74,7 @@
                                     <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
                                     ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
                                 ><span class="prescriptionAdministrationDays">
-                                    <input type="number" placeholder="days"  class="form-control input-sm" />
+                                    <input type="number" placeholder="X"  class="form-control input-sm" />
                                 </span
                                 ><span class="prescriptionAmount"><input name="prescriptions[@x].amount" type="number" placeholder="Amount" value="0" class="form-control input-sm"/></span>
                                 </div>

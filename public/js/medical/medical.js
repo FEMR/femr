@@ -79,8 +79,13 @@ var prescriptionFeature = {
                 // Set modifier to attribute for calculating total med
                 $administrationID.attr("data-modifier", item.modifier);
                 prescriptionFeature.calculateTotalPrescriptionAmount.call(this);
+            }).on('typeahead:autocompleted', function(event, item, data) {
+                $(this).trigger("typeahead:selected", item);
             }
-        );
+        ).on("change", function() {
+                var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
+                $administrationID.val(""); //Remove value if it is not one from typeahead
+        });
     },
     initializeMedicationTypeahead: function() {
         return $.getJSON("/search/typeahead/medicationsWithID", function (data) {
@@ -95,7 +100,10 @@ var prescriptionFeature = {
             //Iterate through medication and find matches
             $.each(strs.medication, function (i, med) {
                 if (substrRegex.test(med.name)) {
-                    matches.push({ id: med.id, value: med.name + " (" + med.form + ")" });
+                    med.value = med.name + " (" + med.form + ")";
+                    matches.push(
+                        med
+                    );
                 }
             });
             cb(matches);
@@ -105,13 +113,22 @@ var prescriptionFeature = {
         var $element = prescriptionFeature.allPrescriptions.last().find(".medicationName");
         $element.typeahead({ hint: true, highlight: true },
             {
+                displayKey: 'value',
                 name: "medications",
-                source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData)
+                source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData),
+                templates: {
+                    suggestion: Handlebars.compile("<div>{{value}} {{#each ingredients}}<div class='medication_ingredient'>{{name}} {{value}}{{unit}}</div>{{/each}}</div>")
+                }
             }).on('typeahead:selected', function(event, item) {
                 var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
                 $medicationID.val(item.id);
+            }).on('typeahead:autocompleted', function(event, item, data) {
+                    $(this).trigger("typeahead:selected", item);
             }
-        );
+        ).on("change", function() {
+                var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
+                $medicationID.val("");  //Remove value if it is not one from typeahead
+        });
     },
     setupNewPrescriptionRow: function(skipTypeahead) {
         prescriptionFeature.refreshSelectors();
@@ -166,7 +183,7 @@ var prescriptionFeature = {
         $prescriptionRow.append(" <input class='administrationID' name='prescriptions[" + scriptIndex + "].administrationId' type='hidden' />");
 
 
-        var $daysInput = $("<input type='number' placeholder='days'  class='form-control input-sm' />");
+        var $daysInput = $("<input type='number' placeholder='X'  class='form-control input-sm' />");
         $prescriptionRow.append(
             $("<span class='prescriptionAdministrationDays'></span>").append($daysInput)
         );

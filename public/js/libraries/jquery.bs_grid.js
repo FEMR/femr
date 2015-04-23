@@ -1221,7 +1221,7 @@
                     methods.selectedRows.call(elem, "update_counter");
 
                     // trigger event onDisplay
-                    elem.triggerHandler("onDisplay");
+                    elem.triggerHandler("onDisplay", data);
 
                 }
             });

@@ -30,6 +30,7 @@ import femr.common.models.PrescriptionItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IMedication;
+import femr.data.models.core.IMedicationActiveDrug;
 import femr.data.models.core.IPatientPrescription;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.PatientPrescription;
@@ -143,7 +144,6 @@ public class MedicationService implements IMedicationService {
         List<IPatientPrescription> patientPrescriptions = new ArrayList<>();
         for (PrescriptionItem script : prescriptions) {
             if (script.getMedicationID() != null) {
-                System.out.println(script.getMedicationID());
                 ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
                         .where()
                         .eq("id", script.getMedicationID());
@@ -311,10 +311,31 @@ public class MedicationService implements IMedicationService {
                 medication.put("id", m.getId());
                 medication.put("name", m.getName());
 
+                if (m.getQuantity_current() != null) {
+                    medication.put("quantityCurrent", m.getQuantity_current());
+                } else {
+                    medication.put("quantityCurrent", 0);
+                }
+
                 if (m.getMedicationForm() != null)
                     medication.put("form", m.getMedicationForm().getName());
                 else
                     medication.put("form", "N/A");
+
+                ArrayNode ingredientsArray = medication.putArray("ingredients");
+                // Add all the important information about ingredients to the medications object node
+                if (m.getMedicationActiveDrugs() != null) {
+                    List<IMedicationActiveDrug> ingredients = m.getMedicationActiveDrugs();
+                    for (IMedicationActiveDrug i : ingredients) {
+                        ObjectNode ingredientNode = ingredientsArray.addObject();
+
+                        if (i.getMedicationActiveDrugName() != null)
+                            ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
+                        if (i.getMedicationMeasurementUnit() != null)
+                            ingredientNode.put("unit", i.getMedicationMeasurementUnit().getName());
+                        ingredientNode.put("value", i.getValue());
+                    }
+                }
 
                 allMedications.add(medication);
             }

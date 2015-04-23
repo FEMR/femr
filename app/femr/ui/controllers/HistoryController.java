@@ -192,10 +192,7 @@ public class HistoryController extends Controller {
         if (prescriptionItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
-        for (PrescriptionItem prescriptionItem : prescriptionItemServiceResponse.getResponseObject()){
-            prescriptions.add(prescriptionItem.getName());
-        }
-        indexEncounterPharmacyViewModel.setPrescriptions(prescriptions);
+        indexEncounterPharmacyViewModel.setPrescriptions(prescriptionItemServiceResponse.getResponseObject());
 
 
         return ok(indexEncounter.render(currentUser, indexEncounterViewModel, indexEncounterMedicalViewModel, indexEncounterPharmacyViewModel));

@@ -18,6 +18,9 @@
 */
 package femr.common.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PrescriptionItem {
     private int id;
     private String name;
@@ -31,13 +34,15 @@ public class PrescriptionItem {
     private Integer medicationID;
     private String medicationForm;
     private Integer medicationRemaining;
+    private List<MedicationItem.ActiveIngredient> medicationActiveDrugs;
 
     public PrescriptionItem(String name){
+        medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
         this.name = name;
     }
 
     public PrescriptionItem() {
-
+        medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
     }
 
     public String getName() {
@@ -136,5 +141,13 @@ public class PrescriptionItem {
 
     public void setMedicationRemaining(Integer medicationRemaining) {
         this.medicationRemaining = medicationRemaining;
+    }
+
+    public List<MedicationItem.ActiveIngredient> getMedicationActiveDrugs() {
+        return medicationActiveDrugs;
+    }
+
+    public void setMedicationActiveDrugs(List<MedicationItem.ActiveIngredient> medicationActiveDrugs) {
+        this.medicationActiveDrugs = medicationActiveDrugs;
     }
 }

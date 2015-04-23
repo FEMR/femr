@@ -246,7 +246,13 @@
     font-weight: bold;
 }
 
-
+.activeDrug {
+    display: list-item;
+    list-style-type: square;
+    margin-left: 175px;
+    font-size: 10px;
+    font-style: italic;
+}
 
 
 

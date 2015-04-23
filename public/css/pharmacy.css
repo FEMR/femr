@@ -229,3 +229,8 @@ input[style] {
     font-size: 10px;
     font-weight: bold;
 }
+
+.medication_ingredient {
+    font-size: 8px;
+    padding-left: 5px;
+}

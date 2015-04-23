@@ -28,18 +28,24 @@ var prescriptionFeature = {
         $(".prescriptionRow .administrationName").each(function() {
             $(this).typeahead({ hint: true, highlight: true },
                 {
-                    name: "administration",
-                    source: prescriptionFeature.administrationTypeaheadMatcher(prescriptionFeature.administrationTypeaheadData)
-                }).on('typeahead:selected', function(event, item) {
-                    var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
-                    $administrationID.val(item.id); // Set ID in the field to be submitted
+                displayKey: 'value',
+                name: "administration",
+                source: prescriptionFeature.administrationTypeaheadMatcher(prescriptionFeature.administrationTypeaheadData)
+            }).on('typeahead:selected', function(event, item) {
+                var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
+                $administrationID.val(item.id); // Set ID in the field to be submitted
 
-                    // Set modifier to attribute for calculating total med
-                    $administrationID.attr("data-modifier", item.modifier);
-                    prescriptionFeature.calculateTotalPrescriptionAmount.call(this);
+                // Set modifier to attribute for calculating total med
+                $administrationID.attr("data-modifier", item.modifier);
+                prescriptionFeature.calculateTotalPrescriptionAmount.call(this);
+            }).on('typeahead:autocompleted', function(event, item, data) {
+                    $(this).trigger("typeahead:selected", item);
                 }
-            );
-        });
+            ).on("change", function() {
+                    var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
+                    $administrationID.val(""); //Remove value if it is not one from typeahead
+            })
+        })
 
     },
     initializeMedicationTypeahead: function() {
@@ -55,7 +61,10 @@ var prescriptionFeature = {
             //Iterate through medication and find matches
             $.each(strs.medication, function (i, med) {
                 if (substrRegex.test(med.name)) {
-                    matches.push({ id: med.id, value: med.name + " (" + med.form + ")" });
+                    med.value = med.name + " (" + med.form + ")";
+                    matches.push(
+                        med
+                    );
                 }
             });
             cb(matches);
@@ -65,14 +74,22 @@ var prescriptionFeature = {
         $(".prescriptionRow .medicationName").each(function() {
             $(this).typeahead({ hint: true, highlight: true },
                 {
+                    displayKey: 'value',
                     name: "medications",
-                    source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData)
-                }).on('typeahead:selected', function(event, item) {
+                    source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData),
+                    templates: {
+                        suggestion: Handlebars.compile("<div>{{value}} {{#each ingredients}}<div class='medication_ingredient'>{{name}} {{value}}{{unit}}</div>{{/each}}</div>")
+                    }
+                }).on('typeahead:selected', function (event, item) {
                     var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
                     $medicationID.val(item.id);
-                }
-            );
-        });
+                }).on('typeahead:autocompleted', function (event, item, data) {
+                    $(this).trigger("typeahead:selected", item);
+                }).on("change", function () {
+                    var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
+                    $medicationID.val("");  //Remove value if it is not one from typeahead
+                });
+        })
     },
     calculateTotalPrescriptionAmount: function() {
         var $prescriptionRow = $(this).closest(".prescriptionRow");

@@ -142,8 +142,15 @@
                     @for(problemIterator <- 1 to viewModelPharmacy.getProblems.size){
                         <p><span class="infoLabel">Diagnosis:</span>@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</p>
                     }
-                    @for(prescriptionIterator <- 1 to viewModelPharmacy.getPrescriptions.size){
-                        <p><span class="infoLabel">Dispensed Medication:</span>@outputStringOrNA(viewModelPharmacy.getPrescriptions.get(prescriptionIterator - 1))</p>
+                    @for(prescription <- viewModelPharmacy.getPrescriptions){
+                        <p>
+                            <span class="infoLabel">Dispensed Medication:</span>
+                            @prescription.getAmount @outputStringOrNA(prescription.getName) (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
+                            @for(activeDrug <- prescription.getMedicationActiveDrugs) {
+                                <span class='activeDrug'> @activeDrug.getName @activeDrug.getValue@activeDrug.getUnit </span>
+                            }
+
+                        </p>
                     }
 
                 </div>

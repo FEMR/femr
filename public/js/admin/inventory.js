@@ -40,15 +40,27 @@ $(document).ready(function () {
         },
         onDatagridError: function(e) {
         },
-        onDisplay: function() {
+        onDisplay: function(event, data) {
             var table_id_prefix = $("#currentMedicationsGrid").bs_grid("getOption", "table_id_prefix");
             var table_id = table_id_prefix + "currentMedicationsGrid";
 
             // Add an empty cell to tables thead
-            $("#" + table_id + " thead tr").append("<td></td>");
+            $("#" + table_id + " thead tr").append("<th>Ingredients</th>");
+            $("#" + table_id + " thead tr").append("<th></th>");
 
-            // Add a delete button to each row
-            $("#" + table_id + " tbody tr").each(function() {
+            // Add ingredients and a delete button to each row
+            $("#" + table_id + " tbody tr").each(function(i) {
+                // Add Ingredients
+                var $ingredientsTD = $("<td></td>");
+                if (data.page_data && data.page_data[i] && data.page_data[i].ingredients) {
+                    $.each(data.page_data[i].ingredients, function(i, ingredient) {
+                        $ingredientsTD.append("<div class='medication_ingredient'>" + ingredient.name + " " + ingredient.value + ingredient.unit + "</div>");
+                    });
+                }
+
+                $(this).append($ingredientsTD);
+
+                // Add delete button
                 var $delete = $("<a>Remove</a>").click(function() {
                     var $tr = $(this).closest("tr");
 

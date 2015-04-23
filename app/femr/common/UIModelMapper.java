@@ -21,6 +21,7 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.MedicationAdministration;
 import femr.ui.models.research.FilterViewModel;
 import femr.util.calculations.dateUtils;
@@ -310,12 +311,18 @@ public class UIModelMapper {
             prescriptionItem.setAmount(amount);
 
         if (medication != null) {
-            prescriptionItem.setMedicationID(medication.getId());
+            MedicationItem medicationItem = UIModelMapper.createMedicationItem(medication);
+            prescriptionItem.setMedicationID(medicationItem.getId());
 
-            if (medication.getMedicationForm() != null)
-                prescriptionItem.setMedicationForm(medication.getMedicationForm().getName());
+            if (medicationItem.getForm() != null)
+                prescriptionItem.setMedicationForm(medicationItem.getForm());
 
-            prescriptionItem.setMedicationRemaining(medication.getQuantity_current());
+            prescriptionItem.setMedicationRemaining(medicationItem.getQuantity_current());
+
+
+
+            if (medicationItem.getActiveIngredients() != null)
+                prescriptionItem.setMedicationActiveDrugs(medicationItem.getActiveIngredients());
         }
         return prescriptionItem;
     }

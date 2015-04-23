@@ -225,6 +225,21 @@ public class InventoryService implements IInventoryService {
                 //Redundant form name... hack for bs_grid to work without changing it's code further
                 js.put("medicationForm.name", m.getMedicationForm().getName());
             }
+
+            ArrayNode ingredientsArray = js.putArray("ingredients");
+            // Add all the important information about ingredients to the medications object node
+            if (m.getMedicationActiveDrugs() != null) {
+                List<IMedicationActiveDrug> ingredients = m.getMedicationActiveDrugs();
+                for (IMedicationActiveDrug i : ingredients) {
+                    ObjectNode ingredientNode = ingredientsArray.addObject();
+
+                    if (i.getMedicationActiveDrugName() != null)
+                        ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
+                    if (i.getMedicationMeasurementUnit() != null)
+                        ingredientNode.put("unit", i.getMedicationMeasurementUnit().getName());
+                    ingredientNode.put("value", i.getValue());
+                }
+            }
         }
 
         return response;

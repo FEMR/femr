@@ -8,6 +8,8 @@
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
     @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
     @import collection.JavaConversions._
+    @import femr.ui.controllers.routes.PDFConversion
+
 
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
@@ -23,7 +25,11 @@
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
                     (@viewModel.getPatientItem.getId)</p>
-
+                <div>
+                @helper.form(action = PDFConversion.index(viewModel.getPatientItem.getId, viewModel.getPatientEncounterItem.getId)) {  @* Replaced .getID with .getPatientId  *@
+                    <button type="submit" id="historyButton" class="fButton fOtherButton pull-right">Generate PDF</button>
+                }
+                </div>
             </div>
 
             <div class="encounterViewBodyHeader">
@@ -91,7 +97,7 @@
                         <span class="infoLabel">Heart Rate:</span>
                         @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                             <span>
-                            @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
+                             @outputStringOrNA(vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1)))
                             </span>
                         }
                     </p>

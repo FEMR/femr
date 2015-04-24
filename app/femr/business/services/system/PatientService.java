@@ -94,13 +94,21 @@ public class PatientService implements IPatientService {
                 .eq("id", id);
 
         try {
+
             IPatient savedPatient = patientRepository.findOne(query);
-            //if a patient doesn't have a sex and the
-            //user is trying to identify the patients sex
-            if (StringUtils.isNullOrWhiteSpace(savedPatient.getSex()) && StringUtils.isNotNullOrWhiteSpace(sex)) {
+
+            if( savedPatient == null ){
+
+                response.addError("exception", "Patient Not Found");
+                return response;
+            }
+
+            // sex can be changed, but not set to null
+            if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.update(savedPatient);
             }
+
             String photoPath = null;
             Integer photoId = null;
             if (savedPatient.getPhoto() != null) {

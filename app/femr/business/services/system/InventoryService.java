@@ -296,10 +296,65 @@ public class InventoryService implements IInventoryService {
             }
 
 
-            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
-            medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = UIModelMapper.createMedicationItem(medication);
-            response.setResponseObject(newMedicationItem);
+            // Retrieve all medication with the same name
+            Query<Medication> query = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("name", medicationItem.getName())
+                    .orderBy("isDeleted asc");
+
+            IMedication matchingMedication = null;
+            List<? extends IMedication> medications;
+            medications = medicationRepository.find(query);
+
+            // Attempt to find a matching medication
+            for(IMedication medication : medications) {
+                // Check if the medications name match
+                if (!medication.getName().equalsIgnoreCase(medicationItem.getName())) continue;
+
+                // Check if the medications form match
+                if (medication.getMedicationForm().getId() != medicationForm.getId()) continue;
+
+                // Check if the medication ingredients match
+                boolean allDrugsMatch = true;
+                for(IMedicationActiveDrug newMedicationDrug : medicationActiveDrugs) {
+                    boolean drugMatch = false;
+                    for(IMedicationActiveDrug drug : medication.getMedicationActiveDrugs()) {
+                        if (newMedicationDrug.getMedicationActiveDrugName().getId() == drug.getMedicationActiveDrugName().getId()
+                                && newMedicationDrug.getMedicationMeasurementUnit().getId() == drug.getMedicationMeasurementUnit().getId()) {
+                            drugMatch = true;
+                        }
+                        if (!drugMatch) allDrugsMatch = false;
+                    }
+
+                    // No match so break early.
+                    if (!allDrugsMatch) break;
+                }
+                if (!allDrugsMatch) continue;
+
+                // Everything matches so set matchingMedication and break out of loop
+                matchingMedication = medication;
+                break;
+            }
+
+            // There exist a matching medication in the database, so update that one rather then create new one
+            if (matchingMedication != null) {
+                // Update the quantity
+                int quantity = (matchingMedication.getQuantity_current() != null) ? matchingMedication.getQuantity_current() : 0;
+                matchingMedication.setQuantity_current(quantity + medicationItem.getQuantity_current());
+
+                // Update isDeleted to false
+                matchingMedication.setIsDeleted(false);
+
+                medicationRepository.update(matchingMedication);
+                response.setResponseObject(UIModelMapper.createMedicationItem(matchingMedication));
+            } else {
+                // Create a new medication in the DB
+                IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
+                medication = medicationRepository.create(medication);
+                MedicationItem newMedicationItem = UIModelMapper.createMedicationItem(medication);
+                response.setResponseObject(newMedicationItem);
+            }
+
         } catch (Exception ex) {
             response.addError("", "error creating medication");
         }

@@ -62,6 +62,7 @@ $(document).ready(function () {
 
                 // Add delete button
                 var $delete = $("<a>Remove</a>").click(function() {
+                    if (!confirm("Are you sure you would like to remove this medication?")) return;
                     var $tr = $(this).closest("tr");
 
                     // get medication from tr's ID

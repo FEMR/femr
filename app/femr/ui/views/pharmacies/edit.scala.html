@@ -56,7 +56,7 @@
                         <li class="medication" id="med@x" data-medID="@medication.getMedicationID">
                             <button type="button" class="fButton fOtherButton replaceBtn">R</button>
                             <div>
-                                <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim())</span>
+                                <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim()) - @medication.getAdministrationName </span>
                             </div>
                             <div>
                                 <span id="prescriber">

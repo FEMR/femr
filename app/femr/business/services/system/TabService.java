@@ -549,7 +549,7 @@ public class TabService implements ITabService {
             if (tf.getChiefComplaint() != null && tf.getChiefComplaint().getValue().equals(chiefComplaintName)) {
                 //Only add tabFields for the request chief complaint
                 tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
-            } else if (chiefComplaintName == null) {
+            } else if (chiefComplaintName == null || chiefComplaintName.isEmpty()) {
                 //No chief complaint, so put all matching fields
                 tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, UIModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
             }

@@ -370,9 +370,6 @@ public class HistoryController extends Controller {
         //Get Patient Encounter
         PatientEncounterItem patientEncounter = patientEncounterByEncounterId.getResponseObject();
 
-        //update date_of_medical_visit when a vital is updated
-        encounterService.checkPatientInToMedical(patientEncounter.getId(), currentUser.getId());
-
         //Populate model with request data
         fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 

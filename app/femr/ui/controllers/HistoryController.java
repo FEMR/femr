@@ -1,67 +1,51 @@
 package femr.ui.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import femr.ui.helpers.security.AllowedRoles;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.mysql.Roles;
-import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.history.*;
-import femr.ui.models.medical.EditViewModelPost;
-
-import femr.ui.models.medical.UpdateVitalsModel;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
-import femr.ui.views.html.history.editEncounterGet;
-import femr.ui.views.html.history.editEncounterPost;
 import femr.ui.views.html.history.listTabFieldHistory;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
-import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.Result;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import play.mvc.Security;
+import play.mvc.Controller;
+import play.mvc.Result;
 import java.util.List;
 import java.util.Map;
-
-import play.mvc.Security;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class HistoryController extends Controller {
-    private final Form<IndexPatientViewModelPost> EditEncounterForm = Form.form(IndexPatientViewModelPost.class);
+
     private final Form<fieldValueViewModel> fieldValueViewModelForm = Form.form(fieldValueViewModel.class);
-    private final IMedicationService medicationService;
     private final IEncounterService encounterService;
     private final ISessionService sessionService;
     private final ISearchService searchService;
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
-    private final IEncounterService assessmentService;
 
     @Inject
     public HistoryController(IEncounterService encounterService,
-                             IEncounterService assessmentService,
                              ISessionService sessionService,
-                             IMedicationService medicationService,
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
                              IVitalService vitalService) {
 
         this.encounterService = encounterService;
-        this.assessmentService = assessmentService;
         this.sessionService = sessionService;
-        this.medicationService = medicationService;
         this.searchService = searchService;
         this.tabService = tabService;
         this.photoService = photoService;
@@ -112,10 +96,6 @@ public class HistoryController extends Controller {
 
         return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems));
     }
-
-
-
-
 
     public Result indexEncounterGet(int encounterId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
@@ -281,31 +261,6 @@ public class HistoryController extends Controller {
 
     }
 
-    private List<TabFieldItem> mapHpiFieldItems(IndexPatientViewModelPost patientViewModelPost) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //hpi fields
-        if (patientViewModelPost.getOnset() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getOnset()))
-            tabFieldItems.add(createTabFieldItem("onset", patientViewModelPost.getOnset()));
-        if (patientViewModelPost.getOnsetTime() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getOnsetTime()))
-            tabFieldItems.add(createTabFieldItem("onsetTime", patientViewModelPost.getOnsetTime()));
-        if (patientViewModelPost.getSeverity() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getSeverity()))
-            tabFieldItems.add(createTabFieldItem("severity", patientViewModelPost.getSeverity()));
-        if (patientViewModelPost.getRadiation() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getRadiation()))
-            tabFieldItems.add(createTabFieldItem("radiation", patientViewModelPost.getRadiation()));
-        if (patientViewModelPost.getQuality() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getQuality()))
-            tabFieldItems.add(createTabFieldItem("quality", patientViewModelPost.getQuality()));
-        if (patientViewModelPost.getProvokes() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProvokes()))
-            tabFieldItems.add(createTabFieldItem("provokes", patientViewModelPost.getProvokes()));
-        if (patientViewModelPost.getPalliates() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getPalliates()))
-            tabFieldItems.add(createTabFieldItem("palliates", patientViewModelPost.getPalliates()));
-        if (patientViewModelPost.getTimeOfDay() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getTimeOfDay()))
-            tabFieldItems.add(createTabFieldItem("timeOfDay", patientViewModelPost.getTimeOfDay()));
-        if (patientViewModelPost.getPhysicalExamination() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getPhysicalExamination()))
-            tabFieldItems.add(createTabFieldItem("physicalExamination", patientViewModelPost.getPhysicalExamination()));
-        if (patientViewModelPost.getNarrative() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getNarrative()))
-            tabFieldItems.add(createTabFieldItem("narrative", patientViewModelPost.getNarrative()));
-        return tabFieldItems;
-    }
     private TabFieldItem createTabFieldItem(String name, String value) {
         TabFieldItem tabFieldItem = new TabFieldItem();
         tabFieldItem.setIsCustom(false);
@@ -321,38 +276,6 @@ public class HistoryController extends Controller {
         TabFieldItem tabFieldItem = createTabFieldItem(name, value);
         tabFieldItem.setChiefComplaint(complaint);
         return tabFieldItem;
-    }
-    private List<TabFieldItem> mapPmhFieldItems(IndexPatientViewModelPost patientViewModelPost) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //Pmh_fields
-        if (patientViewModelPost.getMedicalSurgicalHistory() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getMedicalSurgicalHistory()))
-            tabFieldItems.add(createTabFieldItem("medicalSurgicalHistory", patientViewModelPost.getMedicalSurgicalHistory()));
-        if (patientViewModelPost.getSocialHistory() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getSocialHistory()))
-            tabFieldItems.add(createTabFieldItem("socialHistory", patientViewModelPost.getSocialHistory()));
-        if (patientViewModelPost.getCurrentMedication() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getCurrentMedication()))
-            tabFieldItems.add(createTabFieldItem("currentMedication", patientViewModelPost.getCurrentMedication()));
-        if (patientViewModelPost.getFamilyHistory() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getFamilyHistory()))
-            tabFieldItems.add(createTabFieldItem("familyHistory", patientViewModelPost.getFamilyHistory()));
-        return tabFieldItems;
-    }
-    private List<TabFieldItem> mapTreatmentFieldItems(IndexPatientViewModelPost patientViewModelPost) {
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //treatment fields
-        if (patientViewModelPost.getAssessment() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getAssessment()))
-            tabFieldItems.add(createTabFieldItem("assessment", patientViewModelPost.getAssessment()));
-        if (patientViewModelPost.getProblem1() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem1()))
-            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem1()));
-        if (patientViewModelPost.getProblem2() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem2()))
-            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem2()));
-        if (patientViewModelPost.getProblem3() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem3()))
-            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem3()));
-        if (patientViewModelPost.getProblem4() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem4()))
-            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem4()));
-        if (patientViewModelPost.getProblem5() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getProblem5()))
-            tabFieldItems.add(createTabFieldItem("problem", patientViewModelPost.getProblem5()));
-        if (patientViewModelPost.getTreatment() != null && StringUtils.isNotNullOrWhiteSpace(patientViewModelPost.getTreatment()))
-            tabFieldItems.add(createTabFieldItem("treatment", patientViewModelPost.getTreatment()));
-        return tabFieldItems;
     }
 
     //Added by Amney Iskandar //

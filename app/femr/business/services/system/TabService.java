@@ -621,8 +621,6 @@ public class TabService implements ITabService {
 
             //get all tab fields that have value which belong to a tab
             patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                    //.fetch("tabField")
-                    //.fetch("tabField.tab")
                     .where()
                     .eq("tabField.name", tabName)
                     .eq("patient_encounter_id", encounterId)

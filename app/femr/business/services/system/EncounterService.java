@@ -40,7 +40,6 @@ import java.util.*;
 public  class EncounterService implements IEncounterService {
 
     private IMissionTripService missionTripService;
-    //private final IRepository<IEncounterService> patientEncounterTabField;
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
@@ -53,7 +52,6 @@ public  class EncounterService implements IEncounterService {
     public EncounterService(IMissionTripService missionTripService,
                             IRepository<IChiefComplaint> chiefComplaintRepository,
                             IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                           // IRepository<IEncounterService> patientEncounterTabField,
                             IRepository<IPatientEncounter> patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
@@ -63,8 +61,6 @@ public  class EncounterService implements IEncounterService {
         this.missionTripService = missionTripService;
         this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
-        //this.patientEncounterTabField = patientEncounterTabField;
-
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.tabFieldRepository = tabFieldRepository;
@@ -257,7 +253,6 @@ public  class EncounterService implements IEncounterService {
     /**
      * {@inheritDoc}
      */
-
     public ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId) {
 
         ServiceResponse<List<TabFieldItem>> response = new ServiceResponse<>();
@@ -385,7 +380,6 @@ public  class EncounterService implements IEncounterService {
     /**
      * {@inheritDoc}
      */
-
     @Override
     public ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId) {
         ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();

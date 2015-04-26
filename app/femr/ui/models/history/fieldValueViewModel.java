@@ -1,8 +1,5 @@
 package femr.ui.models.history;
 
-import femr.common.models.PatientEncounterItem;
-import femr.common.models.PatientItem;
-
 /**
  * Created by amneyiskandar on 3/2/15.
  */

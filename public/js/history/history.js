@@ -40,8 +40,12 @@ $(document).ready(function () {
         var fieldName = $(this).parent("p").find(".value").attr("data-id");
         $("#fieldIdInput").val(fieldName);
 
-        var complaint = $(this).parent().siblings("h4").attr("data-complaint");
-        $("#complaintInput").val(complaint);
+        // Set complaint to chiefComplaint (if there is one)
+        var complaint = null;
+        var $complaintHeader = $(this).parent().siblings("h4");
+        if ($complaintHeader.length > 0)
+            complaint = $complaintHeader.attr("data-complaint");
+        $("#edit-form").data("complaint", complaint);
 
         loadAssessmentHistory($('#patientEncounterId').val(), fieldName, complaint);
 
@@ -54,17 +58,20 @@ $(document).ready(function () {
     $("#saveEncounterBtn").click(function () {
         var fieldValue = $('#editInput').val();
         var fieldName = $('#fieldIdInput').val();
-        var complaint = $("#complaintInput").val();
+        var complaint = $("#edit-form").data("complaint");
 
         $.ajax({
             type: "POST",
             url: '/history/encounter/updateField/' + $('#patientEncounterId').val(),
             data: { FieldValue: fieldValue, FieldName: fieldName, ChiefComplaintName: complaint }
         }).done(function (data) {
-            $("h4[data-complaint='" + complaint + "']")
-                .parent()
-                .find("span[data-id='" + fieldName + "']")
-                .text(fieldValue);
+            if (complaint == null) // No chief complaint. Easy to update fields value
+                $("span[data-id='" + fieldName + "']").text(fieldValue);
+            else //Chief complaint so we need to update value of specific complaint's field
+                $("h4[data-complaint='" + complaint + "']")
+                    .parent()
+                    .find("span[data-id='" + fieldName + "']")
+                    .text(fieldValue);
 
             // Update field to new value
             //$(".encounterViewBody span[data-id='" + fieldName + "']").text(fieldValue);

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
@@ -216,7 +217,21 @@ public class InventoryService implements IInventoryService {
             /* Create node to customize return values */
             ObjectNode js = page_data.addObject();
             js.put("id", m.getId());
-            js.put("name", m.getName());
+            //js.put("name", m.getName());
+            String medicationDisplayName = m.getName();
+            //Create list of drug name/unit/values to append to the medication name
+            List<String> formattedDrugNames = new ArrayList<String>();
+            for(IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+                formattedDrugNames.add(String.format("%s%s %s",
+                                drug.getValue(),
+                                drug.getMedicationMeasurementUnit().getName(),
+                                drug.getMedicationActiveDrugName().getName())
+                );
+            }
+            if (formattedDrugNames.size() > 0)
+                medicationDisplayName += " " + Joiner.on("/").join(formattedDrugNames);
+            js.put("name", medicationDisplayName);
+
             js.put("quantity_current", m.getQuantity_current());
             js.put("quantity_initial", m.getQuantity_total());
 

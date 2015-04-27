@@ -78,7 +78,7 @@ var prescriptionFeature = {
                     name: "medications",
                     source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData),
                     templates: {
-                        suggestion: Handlebars.compile("<div>{{value}} {{#each ingredients}}<div class='medication_ingredient'>{{name}} {{value}}{{unit}}</div>{{/each}}</div>")
+                        //suggestion: Handlebars.compile("<div>{{value}} {{#each ingredients}}<div class='medication_ingredient'>{{name}} {{value}}{{unit}}</div>{{/each}}</div>")
                     }
                 }).on('typeahead:selected', function (event, item) {
                     var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");

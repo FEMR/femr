@@ -21,6 +21,7 @@ package femr.business.services.system;
 import com.avaje.ebean.*;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
@@ -309,7 +310,20 @@ public class MedicationService implements IMedicationService {
                 ObjectNode medication = Json.newObject();
 
                 medication.put("id", m.getId());
-                medication.put("name", m.getName());
+                //medication.put("name", m.getName());
+                String medicationDisplayName = m.getName();
+                //Create list of drug name/unit/values to append to the medication name
+                List<String> formattedDrugNames = new ArrayList<String>();
+                for(IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+                    formattedDrugNames.add(String.format("%s%s %s",
+                                    drug.getValue(),
+                                    drug.getMedicationMeasurementUnit().getName(),
+                                    drug.getMedicationActiveDrugName().getName())
+                    );
+                }
+                if (formattedDrugNames.size() > 0)
+                    medicationDisplayName += " " + Joiner.on("/").join(formattedDrugNames);
+                medication.put("name", medicationDisplayName);
 
                 if (m.getQuantity_current() != null) {
                     medication.put("quantityCurrent", m.getQuantity_current());

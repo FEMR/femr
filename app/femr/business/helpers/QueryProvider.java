@@ -58,10 +58,6 @@ public class QueryProvider {
 
     public static Query<MissionTeam> getMissionTeamQuery() { return Ebean.find(MissionTeam.class);}
 
-    public static Query<Patient> getPatientQuery() {
-        return Ebean.find(Patient.class);
-    }
-
     public static Query<PatientAgeClassification> getPatientAgeClassificationQuery() {
         return Ebean.find(PatientAgeClassification.class);
     }

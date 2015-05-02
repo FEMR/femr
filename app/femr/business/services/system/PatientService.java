@@ -18,7 +18,6 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -29,8 +28,8 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 
@@ -40,21 +39,21 @@ import java.util.Map;
 
 public class PatientService implements IPatientService {
 
-    private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
+    private final IPatientRepository patientRepository;
 
     @Inject
-    public PatientService(IRepository<IPatient> patientRepository,
+    public PatientService(IPatientRepository patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
-        this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
+        this.patientRepository = patientRepository;
     }
 
     /**
@@ -93,22 +92,18 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", id);
-
         try {
 
-            IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.findById(id);
 
-            if( savedPatient == null ){
+            if (savedPatient == null) {
 
                 response.addError("exception", "Patient Not Found");
                 return response;
             }
 
             // sex can be changed, but not set to null
-            if(StringUtils.isNotNullOrWhiteSpace(sex)) {
+            if (StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.update(savedPatient);
             }

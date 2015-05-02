@@ -19,7 +19,6 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
@@ -30,6 +29,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.LocaleUnitConverter;
@@ -40,36 +40,30 @@ import java.util.*;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
-    private final IRepository<IPatient> patientRepository_old;
-    private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IItemModelMapper itemModelMapper;
     private final IPatientRepository patientRepository;
-
-
-
+    private final IPatientEncounterRepository patientEncounterRepository;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
-                         IRepository<IPatient> patientRepository_old,
-                         IRepository<IPatientEncounter> patientEncounterRepository,
+                         IPatientEncounterRepository patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         @Named("identified") IItemModelMapper itemModelMapper,
-                         IPatientRepository patientRepository) {
+                         IPatientRepository patientRepository,
+                         @Named("identified") IItemModelMapper itemModelMapper){
 
-
-        this.patientRepository_old = patientRepository_old;
-        this.patientEncounterRepository = patientEncounterRepository;
+        this.diagnosisRepository = diagnosisRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
-        this.itemModelMapper = itemModelMapper;
         this.patientRepository = patientRepository;
-        this.diagnosisRepository = diagnosisRepository;
+        this.patientEncounterRepository = patientEncounterRepository;
+        this.itemModelMapper = itemModelMapper;
+
     }
 
     /**
@@ -83,15 +77,10 @@ public class SearchService implements ISearchService {
             return response;
         }
 
-        //get patient encounters so we can use the newest one
-        Query<PatientEncounter> peQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("patient_id", patientId)
-                .order()
-                .desc("date_of_triage_visit");
         try {
-            //IPatient savedPatient = patientRepository_old.findOne(query);
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(peQuery);
+
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+
             if (patientEncounters.size() < 1) throw new Exception();
 
             IPatientEncounter recentEncounter = patientEncounters.get(0);
@@ -151,12 +140,10 @@ public class SearchService implements ISearchService {
             return response;
         }
 
-        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
-
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+
             IPatient patient = patientEncounter.getPatient();
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
@@ -207,15 +194,16 @@ public class SearchService implements ISearchService {
             response.addError("", "invalid ID");
             return response;
         }
-        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
 
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
             PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
+
             response.setResponseObject(patientEncounterItem);
+
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
         return response;
@@ -231,13 +219,15 @@ public class SearchService implements ISearchService {
             response.addError("", "Invalid patient ID.");
             return response;
         }
-        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("patient_id", patientId)
-                .order()
-                .asc("date_of_triage_visit");
+//        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+//                .where()
+//                .eq("patient_id", patientId)
+//                .order()
+//                .asc("date_of_triage_visit");
         try {
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+//            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
             if (patientEncounters.size() < 1) {
                 response.addError("", "That patient does not exist.");
                 return response;
@@ -259,13 +249,16 @@ public class SearchService implements ISearchService {
     @Override
     public ServiceResponse<List<PatientEncounterItem>> retrievePatientEncounterItemsByPatientId(int patientId) {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
-        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("patient_id", patientId)
-                .order()
-                .desc("date_of_triage_visit");
+//        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+//                .where()
+//                .eq("patient_id", patientId)
+//                .order()
+//                .desc("date_of_triage_visit");
         try {
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+//            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
                 patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(pe));

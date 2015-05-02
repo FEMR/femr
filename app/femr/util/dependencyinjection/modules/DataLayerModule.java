@@ -24,6 +24,8 @@ import femr.data.DataModelMapper;
 import femr.data.IDataModelMapper;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.system.PatientRepository;
+import femr.data.daos.core.IPatientEncounterRepository;
+import femr.data.daos.system.PatientEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -70,6 +72,7 @@ public class DataLayerModule extends AbstractModule {
 
         //non-generic Repository Injection
         bind(IPatientRepository.class).to(PatientRepository.class);
+        bind(IPatientEncounterRepository.class).to(PatientEncounterRepository.class);
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {
@@ -105,5 +108,8 @@ public class DataLayerModule extends AbstractModule {
         // Research
         bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});
         bind(new TypeLiteral<IRepository<IResearchEncounterVital>>() {}).to(new TypeLiteral<Repository<IResearchEncounterVital>>() {});
+
+
+        bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
     }
 }

@@ -30,6 +30,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
@@ -43,10 +44,11 @@ public  class EncounterService implements IEncounterService {
     private IMissionTripService missionTripService;
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
-    private final IRepository<IPatientEncounter> patientEncounterRepository;
+    private final IPatientEncounterRepository patientEncounterRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IUser> userRepository;
+
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -54,7 +56,7 @@ public  class EncounterService implements IEncounterService {
     public EncounterService(IMissionTripService missionTripService,
                             IRepository<IChiefComplaint> chiefComplaintRepository,
                             IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                            IRepository<IPatientEncounter> patientEncounterRepository,
+                            IPatientEncounterRepository patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IRepository<IUser> userRepository,
@@ -77,6 +79,7 @@ public  class EncounterService implements IEncounterService {
      */
     @Override
     public ServiceResponse<PatientEncounterItem> createPatientEncounter(PatientEncounterItem patientEncounterItem) {
+
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
         if (patientEncounterItem == null) {
             response.addError("", "no patient encounter item specified");
@@ -141,12 +144,10 @@ public  class EncounterService implements IEncounterService {
             return response;
         }
 
-        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
-
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+
+
             patientEncounter.setDateOfMedicalVisit(DateTime.now());
             ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
                     .where()
@@ -177,8 +178,8 @@ public  class EncounterService implements IEncounterService {
         }
 
         try {
-            ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().eq("id", encounterId);
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
             patientEncounter.setDateOfPharmacyVisit(DateTime.now());
             ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
                     .where()
@@ -205,10 +206,8 @@ public  class EncounterService implements IEncounterService {
             return response;
         }
         try {
-            ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                    .where()
-                    .eq("id", encounterId);
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {

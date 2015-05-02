@@ -18,7 +18,6 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
@@ -29,8 +28,8 @@ import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.LocaleUnitConverter;
@@ -41,29 +40,36 @@ import java.util.*;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
-    private final IRepository<IPatient> patientRepository;
+    private final IRepository<IPatient> patientRepository_old;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
+    private final IPatientRepository patientRepository;
+
+
+
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
-                         IRepository<IPatient> patientRepository,
+                         IRepository<IPatient> patientRepository_old,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         @Named("identified") IItemModelMapper itemModelMapper) {
+                         @Named("identified") IItemModelMapper itemModelMapper,
+                         IPatientRepository patientRepository) {
 
-        this.diagnosisRepository = diagnosisRepository;
-        this.patientRepository = patientRepository;
+
+        this.patientRepository_old = patientRepository_old;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.itemModelMapper = itemModelMapper;
+        this.patientRepository = patientRepository;
+        this.diagnosisRepository = diagnosisRepository;
     }
 
     /**
@@ -84,7 +90,7 @@ public class SearchService implements ISearchService {
                 .order()
                 .desc("date_of_triage_visit");
         try {
-            //IPatient savedPatient = patientRepository.findOne(query);
+            //IPatient savedPatient = patientRepository_old.findOne(query);
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(peQuery);
             if (patientEncounters.size() < 1) throw new Exception();
 
@@ -96,7 +102,7 @@ public class SearchService implements ISearchService {
 
             String pathToPhoto = null;
             Integer photoId = null;
-            if (savedPatient.getPhoto() != null){
+            if (savedPatient.getPhoto() != null) {
                 pathToPhoto = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
             }
@@ -158,7 +164,7 @@ public class SearchService implements ISearchService {
 
             String pathToPhoto = null;
             Integer photoId = null;
-            if (patient.getPhoto() != null){
+            if (patient.getPhoto() != null) {
                 pathToPhoto = patient.getPhoto().getFilePath();
                 photoId = patient.getPhoto().getId();
             }
@@ -403,44 +409,28 @@ public class SearchService implements ISearchService {
         }
 
 
-        //Build the Query
-        Query<Patient> query = null;
+        List<IPatient> patients = new ArrayList<>();
         if (id != null) {
             //if we have an id, that is all we need.
             //this is the most ideal scenario
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("id", id)
-                    .order()
-                    .desc("id");
+            IPatient patient = patientRepository.findById(id);
+            patients.add(patient);
 
         } else if (StringUtils.isNotNullOrWhiteSpace(firstName) && StringUtils.isNotNullOrWhiteSpace(lastName)) {
             //if we have a first and last name
             //this is the second most ideal scenario
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("first_name", firstName)
-                    .eq("last_name", lastName)
-                    .order()
-                    .desc("id");
+            patients = patientRepository.findByFirstNameAndLastName(firstName, lastName);
 
         } else if (StringUtils.isNotNullOrWhiteSpace(firstOrLastName)) {
             //if we have a word that could either be a first name or a last name
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .or(
-                            Expr.eq("first_name", firstOrLastName),
-                            Expr.eq("last_name", firstOrLastName))
-                    .order()
-                    .desc("id");
-
+            patients = patientRepository.findByFirstNameOrLastName(firstOrLastName);
         } else {
             response.addError("", "too many parameters in query");
         }
 
         //Execute the query
         try {
-            List<? extends IPatient> patients = patientRepository.find(query);
+
             List<PatientItem> patientItems = new ArrayList<>();
             for (IPatient patient : patients) {
                 //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
@@ -466,12 +456,13 @@ public class SearchService implements ISearchService {
                         pathToPhoto,
                         photoId
                 ));
+
+                response.setResponseObject(patientItems);
+
             }
-            response.setResponseObject(patientItems);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
-
         return response;
     }
 
@@ -510,7 +501,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
-            List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
+            List<? extends IPatient> allPatients = patientRepository_old.findAll(Patient.class);
             List<PatientItem> patientItems = new ArrayList<>();
 
             for (IPatient patient : allPatients) {
@@ -570,7 +561,7 @@ public class SearchService implements ISearchService {
             List<? extends IDiagnosis> allDiagnoses = diagnosisRepository.findAll(Diagnosis.class);
             List<String> diagnoses = new ArrayList<>();
 
-            for (IDiagnosis d : allDiagnoses){
+            for (IDiagnosis d : allDiagnoses) {
                 if (StringUtils.isNotNullOrWhiteSpace(d.getName()))
                     diagnoses.add(d.getName());
             }
@@ -586,8 +577,10 @@ public class SearchService implements ISearchService {
 
     /**
      * Gets isActive of the metric setting
+     *
      * @return
      */
+
     private boolean isMetric() {
         ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
                 .where()

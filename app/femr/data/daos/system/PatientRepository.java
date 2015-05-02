@@ -19,6 +19,7 @@
 package femr.data.daos.system;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
@@ -26,17 +27,16 @@ import femr.data.daos.Repository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.mysql.Patient;
-
 import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatientRepository extends Repository<IPatient> implements IPatientRepository {
 
-    private final Provider<IPatient> patientProvider;
-
     @Inject
-    public PatientRepository(Provider<IPatient> patientProvider){
+    public PatientRepository() {
 
-        this.patientProvider = patientProvider;
+
     }
 
     @Override
@@ -46,14 +46,59 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .where()
                 .eq("id", id);
 
-        return findOne(query);
+        return super.findOne(query);
     }
 
     @Override
-    public IPatient update(IPatient patient){
+    public List<IPatient> findByFirstNameAndLastName(String firstName, String lastName) {
 
-        return update(patient);
+        Query<Patient> query = getPatientQuery()
+                .where()
+                .eq("first_name", firstName)
+                .eq("last_name", lastName)
+                .order()
+                .desc("id");
+        //generic repository returns "? extends IPatient"
+        List<? extends IPatient> patients_covariant = super.find(query);
+
+        //use a for loop to convert
+        List<IPatient> patients_static = new ArrayList<>();
+        //this will circumvent any warnings
+        for (IPatient patient : patients_covariant){
+            patients_static.add(patient);
+        }
+
+        return patients_static;
     }
+
+    @Override
+    public List<IPatient> findByFirstNameOrLastName(String firstOrLastName) {
+
+        Query<Patient> query = getPatientQuery()
+                .where()
+                .or(
+                        Expr.eq("first_name", firstOrLastName),
+                        Expr.eq("last_name", firstOrLastName))
+                .order()
+                .desc("id");
+
+        List<? extends IPatient> patients_covariant = super.find(query);
+
+        List<IPatient> patients_static = new ArrayList<>();
+        //this will circumvent any warnings
+        for (IPatient patient : patients_covariant){
+            patients_static.add(patient);
+        }
+
+        return patients_static;
+    }
+
+    @Override
+    public IPatient update(IPatient patient) {
+
+        return super.update(patient);
+    }
+
 
     private static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);

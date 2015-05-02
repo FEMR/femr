@@ -20,9 +20,15 @@ package femr.data.daos.core;
 
 import femr.data.models.core.IPatient;
 
+import java.util.List;
+
 public interface IPatientRepository {
 
      IPatient findById(int id);
+
+     List<IPatient> findByFirstNameAndLastName(String firstName, String lastName);
+
+     List<IPatient> findByFirstNameOrLastName(String firstOrLastName);
 
      IPatient update(IPatient patient);
 

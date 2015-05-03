@@ -26,6 +26,7 @@ import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.mysql.PatientEncounter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientEncounterRepository extends Repository<IPatientEncounter> implements IPatientEncounterRepository{
@@ -56,7 +57,7 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId){
+    public List<IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId){
 
         Query<PatientEncounter> query = getPatientEncounterQuery();
         query.where()
@@ -64,7 +65,16 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
                 .order()
                 .desc("date_of_triage_visit");
 
-        return super.find(query);
+        //covariant list from eBean
+        List<? extends IPatientEncounter> patientEncountersResponse = super.find(query);
+
+        //use a for loop to "cast" and circumvent warnings
+        List<IPatientEncounter> patientEncounters = new ArrayList<>();
+        for (IPatientEncounter patientEncounter : patientEncountersResponse){
+            patientEncounters.add(patientEncounter);
+        }
+
+        return patientEncounters;
 
     }
 

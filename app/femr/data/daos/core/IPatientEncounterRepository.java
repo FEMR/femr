@@ -18,10 +18,7 @@
 */
 package femr.data.daos.core;
 
-
 import femr.data.models.core.IPatientEncounter;
-import femr.data.models.mysql.PatientEncounter;
-
 import java.util.List;
 
 public interface IPatientEncounterRepository {
@@ -48,7 +45,7 @@ public interface IPatientEncounterRepository {
       * @param patientId the patient to search for
       * @return a list of patient encounters
       */
-     List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId);
+     List<IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId);
 
      /**
       * Upates a patient encounter

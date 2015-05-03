@@ -79,7 +79,7 @@ public class SearchService implements ISearchService {
 
         try {
 
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            List<IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
 
             if (patientEncounters.size() < 1) throw new Exception();
 
@@ -219,15 +219,9 @@ public class SearchService implements ISearchService {
             response.addError("", "Invalid patient ID.");
             return response;
         }
-//        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-//                .where()
-//                .eq("patient_id", patientId)
-//                .order()
-//                .asc("date_of_triage_visit");
-        try {
-//            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
 
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+        try {
+            List<IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
             if (patientEncounters.size() < 1) {
                 response.addError("", "That patient does not exist.");
                 return response;
@@ -249,15 +243,9 @@ public class SearchService implements ISearchService {
     @Override
     public ServiceResponse<List<PatientEncounterItem>> retrievePatientEncounterItemsByPatientId(int patientId) {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
-//        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-//                .where()
-//                .eq("patient_id", patientId)
-//                .order()
-//                .desc("date_of_triage_visit");
-        try {
-//            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
 
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+        try {
+            List<IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
 
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {

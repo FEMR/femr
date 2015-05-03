@@ -50,16 +50,17 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
 
     @Override
     public List<IPatient> findAll(){
-        List<? extends IPatient> patients_covariant = super.findAll(Patient.class);
 
-        //use a for loop to convert
-        List<IPatient> patients_static = new ArrayList<>();
-        //this will circumvent any warnings
-        for (IPatient patient : patients_covariant){
-            patients_static.add(patient);
+        //covariant list from eBean
+        List<? extends IPatient> patientsResponse = super.findAll(Patient.class);
+
+        //use a for loop to "cast" and circumvent warnings
+        List<IPatient> patients = new ArrayList<>();
+        for (IPatient patient : patientsResponse){
+            patients.add(patient);
         }
 
-        return patients_static;
+        return patients;
     }
 
     @Override
@@ -71,17 +72,17 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .eq("last_name", lastName)
                 .order()
                 .desc("id");
-        //generic repository returns "? extends IPatient"
-        List<? extends IPatient> patients_covariant = super.find(query);
 
-        //use a for loop to convert
-        List<IPatient> patients_static = new ArrayList<>();
-        //this will circumvent any warnings
-        for (IPatient patient : patients_covariant){
-            patients_static.add(patient);
+        //covariant list from eBean
+        List<? extends IPatient> patientsResponse = super.find(query);
+
+        //use a for loop to "cast" and circumvent warnings
+        List<IPatient> patients = new ArrayList<>();
+        for (IPatient patient : patientsResponse){
+            patients.add(patient);
         }
 
-        return patients_static;
+        return patients;
     }
 
     @Override
@@ -95,15 +96,16 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .order()
                 .desc("id");
 
-        List<? extends IPatient> patients_covariant = super.find(query);
+        //covariant list from eBean
+        List<? extends IPatient> patientsResponse = super.find(query);
 
-        List<IPatient> patients_static = new ArrayList<>();
-        //this will circumvent any warnings
-        for (IPatient patient : patients_covariant){
-            patients_static.add(patient);
+        //use a for loop to "cast" and circumvent warnings
+        List<IPatient> patients = new ArrayList<>();
+        for (IPatient patient : patientsResponse){
+            patients.add(patient);
         }
 
-        return patients_static;
+        return patients;
     }
 
     @Override

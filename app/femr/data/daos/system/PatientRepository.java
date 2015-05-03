@@ -27,7 +27,6 @@ import femr.data.daos.Repository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.mysql.Patient;
-import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +46,20 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .eq("id", id);
 
         return super.findOne(query);
+    }
+
+    @Override
+    public List<IPatient> findAll(){
+        List<? extends IPatient> patients_covariant = super.findAll(Patient.class);
+
+        //use a for loop to convert
+        List<IPatient> patients_static = new ArrayList<>();
+        //this will circumvent any warnings
+        for (IPatient patient : patients_covariant){
+            patients_static.add(patient);
+        }
+
+        return patients_static;
     }
 
     @Override

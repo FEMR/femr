@@ -54,7 +54,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IPatientRepository patientRepository,
-                         @Named("identified") IItemModelMapper itemModelMapper){
+                         @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
@@ -494,7 +494,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
-            List<? extends IPatient> allPatients = patientRepository_old.findAll(Patient.class);
+            List<IPatient> allPatients = patientRepository.findAll();
             List<PatientItem> patientItems = new ArrayList<>();
 
             for (IPatient patient : allPatients) {

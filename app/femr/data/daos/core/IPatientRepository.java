@@ -26,6 +26,8 @@ public interface IPatientRepository {
 
      IPatient findById(int id);
 
+     List<IPatient> findAll();
+
      List<IPatient> findByFirstNameAndLastName(String firstName, String lastName);
 
      List<IPatient> findByFirstNameOrLastName(String firstOrLastName);

@@ -24,15 +24,51 @@ import java.util.List;
 
 public interface IPatientRepository {
 
+     /**
+      * Finds one patient by the patient's id.
+      *
+      * @param id the id of the patient
+      * @return the patient
+      */
      IPatient findById(int id);
 
+     /**
+      * Find all patients in the database.
+      *
+      * @return a list of patients
+      */
      List<IPatient> findAll();
 
+     /**
+      * Finds a patient by their first and last name.
+      *
+      * @param firstName the first name of the patient, not null
+      * @param lastName the last name of the patient, not null
+      * @return a list of patients that match the criteria
+      */
      List<IPatient> findByFirstNameAndLastName(String firstName, String lastName);
 
+     /**
+      * Finds a patient by their first or last name. This will search the first and last name for a matching string
+      *
+      * @param firstOrLastName the first/last name of a patient, not null
+      * @return a list of patients that match the criteria
+      */
      List<IPatient> findByFirstNameOrLastName(String firstOrLastName);
 
+     /**
+      * Update a patient in the database
+      *
+      * @param patient the patient to be updated based on ID, not null
+      * @return the updated patient
+      */
      IPatient update(IPatient patient);
 
+     /**
+      * Create a new patient in the database
+      *
+      * @param patient the patient to be created, not null
+      * @return the new patient with  their ID
+      */
      IPatient create(IPatient patient);
 }

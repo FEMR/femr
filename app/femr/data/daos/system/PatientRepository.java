@@ -38,6 +38,9 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IPatient findById(int id) {
 
@@ -48,6 +51,9 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
         return super.findOne(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IPatient> findAll(){
 
@@ -63,6 +69,9 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
         return patients;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IPatient> findByFirstNameAndLastName(String firstName, String lastName) {
 
@@ -85,6 +94,9 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
         return patients;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IPatient> findByFirstNameOrLastName(String firstOrLastName) {
 
@@ -108,12 +120,14 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
         return patients;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IPatient update(IPatient patient) {
 
         return super.update(patient);
     }
-
 
     private static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);

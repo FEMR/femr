@@ -39,7 +39,16 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
     @Override
     public IPatientEncounter create(IPatientEncounter patientEncounter) {
 
-        return super.create(patientEncounter);
+        IPatientEncounter encounter = null;
+        try{
+
+            encounter = super.create(patientEncounter);
+        }
+        catch( Exception ex ){
+
+            Logger.error("PatientEncounterRepository-create", ex);
+        }
+        return encounter;
     }
 
     /**
@@ -52,7 +61,16 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
                 .where()
                 .eq("id", encounterId);
 
-        return super.findOne(query);
+        IPatientEncounter encounter = null;
+        try {
+            encounter = super.findOne(query);
+        }
+        catch( Exception ex ){
+
+            Logger.error("PatientEncounterRepository-findOneById", ex);
+        }
+
+        return encounter;
     }
 
     /**
@@ -113,7 +131,15 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
     @Override
     public IPatientEncounter update(IPatientEncounter patientEncounter) {
 
-        return super.update(patientEncounter);
+        IPatientEncounter encounter = null;
+        try {
+            encounter = super.update(patientEncounter);
+        }
+        catch( Exception ex ){
+
+            Logger.error("PatientEncounterRepository-update", ex);
+        }
+        return encounter;
     }
 
 

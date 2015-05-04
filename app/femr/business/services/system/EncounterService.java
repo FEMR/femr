@@ -30,6 +30,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IChiefComplaintRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -42,7 +43,7 @@ import java.util.*;
 public  class EncounterService implements IEncounterService {
 
     private IMissionTripService missionTripService;
-    private final IRepository<IChiefComplaint> chiefComplaintRepository;
+    private final IChiefComplaintRepository chiefComplaintRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
@@ -54,7 +55,7 @@ public  class EncounterService implements IEncounterService {
 
     @Inject
     public EncounterService(IMissionTripService missionTripService,
-                            IRepository<IChiefComplaint> chiefComplaintRepository,
+                            IChiefComplaintRepository chiefComplaintRepository,
                             IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                             IPatientEncounterRepository patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
@@ -278,7 +279,12 @@ public  class EncounterService implements IEncounterService {
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
             //get all chief complaints for an encounter to find reference IDs
-            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.findAllByPatientEncounterId(encounterId);
+            //find fields that have already been saved so we don't duplicate
+            List<? extends IPatientEncounterTabField> existingtabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldExpressionList);
+            //foreign key IDs for patientEncounterTabField referencing
+            Integer tabFieldId = null;
+            Integer chiefComplaintId = null;
 
             //removes a tab field from the map to be saved if it contains the same name and value as an entry that
             //already exists in the database. This can be a problem if a user tries to change the value then change it back.

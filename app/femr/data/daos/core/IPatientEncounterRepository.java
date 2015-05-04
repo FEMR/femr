@@ -27,7 +27,7 @@ public interface IPatientEncounterRepository {
       * Create a new patient encounter
       *
       * @param patientEncounter the encounter to create
-      * @return the newly created patient encounter
+      * @return the newly created patient encounter or null if the save failed
       */
      IPatientEncounter create(IPatientEncounter patientEncounter);
 
@@ -35,7 +35,7 @@ public interface IPatientEncounterRepository {
       * Gets a patient encounter
       *
       * @param encounterId the id for the encounter to retrieve
-      * @return the patient encounter
+      * @return the patient encounter or null if none found
       */
      IPatientEncounter findOneById(int encounterId);
 
@@ -51,7 +51,7 @@ public interface IPatientEncounterRepository {
       * Gets a patient's encounters sorted by most recent first
       *
       * @param patientId the patient to search for
-      * @return a list of patient encounters
+      * @return a list of patient encounters or null if there was an error
       */
      List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId);
 
@@ -59,7 +59,7 @@ public interface IPatientEncounterRepository {
       * Upates a patient encounter
       *
       * @param patientEncounter the encounter and info to update
-      * @return the updated patient encounter
+      * @return the updated patient encounter or null if there was an error updating
       */
      IPatientEncounter update(IPatientEncounter patientEncounter);
 }

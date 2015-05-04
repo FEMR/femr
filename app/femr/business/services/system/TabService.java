@@ -30,6 +30,7 @@ import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IChiefComplaintRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
@@ -41,7 +42,7 @@ import java.util.*;
 
 public class TabService implements ITabService {
 
-    private final IRepository<IChiefComplaint> chiefComplaintRepository;
+    private final IChiefComplaintRepository chiefComplaintRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITab> tabRepository;
     private final IRepository<ITabField> tabFieldRepository;
@@ -51,7 +52,7 @@ public class TabService implements ITabService {
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public TabService(IRepository<IChiefComplaint> chiefComplaintRepository,
+    public TabService(IChiefComplaintRepository chiefComplaintRepository,
                       IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                       IRepository<ITab> tabRepository,
                       IRepository<ITabField> tabFieldRepository,
@@ -603,7 +604,6 @@ public class TabService implements ITabService {
 
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
         String tabFieldName;
-        Query<ChiefComplaint> chiefComplaintExpressionList;
         ExpressionList<TabField> tabFieldQuery;
         Query<PatientEncounterTabField> patientEncounterTabFieldQuery;
 
@@ -619,19 +619,15 @@ public class TabService implements ITabService {
                 .order()
                 .desc("date_taken");
 
-        //need all chief complaints regardless
-        chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .asc("sortOrder");
-
-
         try {
 
             List<? extends ITabField> tabFields = tabFieldRepository.find(tabFieldQuery);
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
-            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.find(chiefComplaintExpressionList);
+
+            //need all chief complaints regardless
+            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.findAllByPatientEncounterIdOrderBySortOrderAsc(encounterId);
+
+
             //Collections.reverse(patientEncounterTabFields);
 
             //all fields that have values

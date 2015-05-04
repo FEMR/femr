@@ -45,7 +45,7 @@ public interface IPatientEncounterRepository {
       * @param patientId the patient to search for
       * @return a list of patient encounters
       */
-     List<IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId);
+     List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId);
 
      /**
       * Upates a patient encounter

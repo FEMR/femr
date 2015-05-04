@@ -79,7 +79,7 @@ public class SearchService implements ISearchService {
 
         try {
 
-            List<IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
 
             if (patientEncounters.size() < 1) throw new Exception();
 
@@ -221,7 +221,7 @@ public class SearchService implements ISearchService {
         }
 
         try {
-            List<IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
             if (patientEncounters.size() < 1) {
                 response.addError("", "That patient does not exist.");
                 return response;
@@ -245,7 +245,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
 
         try {
-            List<IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
 
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
@@ -400,11 +400,16 @@ public class SearchService implements ISearchService {
         } else if (StringUtils.isNotNullOrWhiteSpace(firstName) && StringUtils.isNotNullOrWhiteSpace(lastName)) {
             //if we have a first and last name
             //this is the second most ideal scenario
-            patients = patientRepository.findByFirstNameAndLastName(firstName, lastName);
+            List<? extends IPatient> patientsResponse = patientRepository.findByFirstNameAndLastName(firstName, lastName);
+            for (IPatient patient : patientsResponse)
+                patients.add(patient);
+
 
         } else if (StringUtils.isNotNullOrWhiteSpace(firstOrLastName)) {
             //if we have a word that could either be a first name or a last name
-            patients = patientRepository.findByFirstNameOrLastName(firstOrLastName);
+            List<? extends IPatient> patientsResponse = patientRepository.findByFirstNameOrLastName(firstOrLastName);
+            for (IPatient patient : patientsResponse)
+                patients.add(patient);
         } else {
             response.addError("", "too many parameters in query");
         }
@@ -482,7 +487,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
-            List<IPatient> allPatients = patientRepository.findAll();
+            List<? extends IPatient> allPatients = patientRepository.findAll();
             List<PatientItem> patientItems = new ArrayList<>();
 
             for (IPatient patient : allPatients) {

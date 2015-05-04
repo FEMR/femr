@@ -27,7 +27,7 @@ import femr.data.daos.Repository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.mysql.Patient;
-import java.util.ArrayList;
+import play.Logger;
 import java.util.List;
 
 public class PatientRepository extends Repository<IPatient> implements IPatientRepository {
@@ -48,22 +48,33 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .where()
                 .eq("id", id);
 
-        return super.findOne(query);
+        IPatient patient = null;
+
+        try {
+
+            patient = super.findOne(query);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-findById", ex.getMessage());
+        }
+
+        return patient;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<IPatient> findAll(){
+    public List<? extends IPatient> findAll() {
 
-        //covariant list from eBean
-        List<? extends IPatient> patientsResponse = super.findAll(Patient.class);
+        List<? extends IPatient> patients = null;
 
-        //use a for loop to "cast" and circumvent warnings
-        List<IPatient> patients = new ArrayList<>();
-        for (IPatient patient : patientsResponse){
-            patients.add(patient);
+        try {
+
+            patients = super.findAll(Patient.class);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-findAll", ex.getMessage());
         }
 
         return patients;
@@ -73,7 +84,7 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
      * {@inheritDoc}
      */
     @Override
-    public List<IPatient> findByFirstNameAndLastName(String firstName, String lastName) {
+    public List<? extends IPatient> findByFirstNameAndLastName(String firstName, String lastName) {
 
         Query<Patient> query = getPatientQuery()
                 .where()
@@ -82,13 +93,14 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .order()
                 .desc("id");
 
-        //covariant list from eBean
-        List<? extends IPatient> patientsResponse = super.find(query);
+        List<? extends IPatient> patients = null;
 
-        //use a for loop to "cast" and circumvent warnings
-        List<IPatient> patients = new ArrayList<>();
-        for (IPatient patient : patientsResponse){
-            patients.add(patient);
+        try {
+
+            patients = super.find(query);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-findByFirstNameAndLastName", ex.getMessage());
         }
 
         return patients;
@@ -98,7 +110,7 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
      * {@inheritDoc}
      */
     @Override
-    public List<IPatient> findByFirstNameOrLastName(String firstOrLastName) {
+    public List<? extends IPatient> findByFirstNameOrLastName(String firstOrLastName) {
 
         Query<Patient> query = getPatientQuery()
                 .where()
@@ -108,13 +120,14 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
                 .order()
                 .desc("id");
 
-        //covariant list from eBean
-        List<? extends IPatient> patientsResponse = super.find(query);
+        List<? extends IPatient> patients = null;
 
-        //use a for loop to "cast" and circumvent warnings
-        List<IPatient> patients = new ArrayList<>();
-        for (IPatient patient : patientsResponse){
-            patients.add(patient);
+        try {
+
+            patients = super.find(query);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-findByFirstNameOrLastName", ex.getMessage());
         }
 
         return patients;
@@ -126,7 +139,16 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
     @Override
     public IPatient update(IPatient patient) {
 
-        return super.update(patient);
+        try {
+
+            patient = super.update(patient);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-update", ex.getMessage());
+            patient = null;
+        }
+
+        return patient;
     }
 
     private static Query<Patient> getPatientQuery() {

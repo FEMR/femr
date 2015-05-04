@@ -19,16 +19,23 @@
 package femr.data.daos.core;
 
 import femr.data.models.core.IPatient;
-
 import java.util.List;
 
 public interface IPatientRepository {
 
      /**
+      * Create a new patient in the database
+      *
+      * @param patient the patient to be created, not null
+      * @return the new patient with their ID or null if the save failed
+      */
+     IPatient create(IPatient patient);
+
+     /**
       * Finds one patient by the patient's id.
       *
       * @param id the id of the patient
-      * @return the patient
+      * @return the patient or null if none found
       */
      IPatient findById(int id);
 
@@ -37,7 +44,7 @@ public interface IPatientRepository {
       *
       * @return a list of patients
       */
-     List<IPatient> findAll();
+     List<? extends IPatient> findAll();
 
      /**
       * Finds a patient by their first and last name.
@@ -46,7 +53,7 @@ public interface IPatientRepository {
       * @param lastName the last name of the patient, not null
       * @return a list of patients that match the criteria
       */
-     List<IPatient> findByFirstNameAndLastName(String firstName, String lastName);
+     List<? extends IPatient> findByFirstNameAndLastName(String firstName, String lastName);
 
      /**
       * Finds a patient by their first or last name. This will search the first and last name for a matching string
@@ -54,21 +61,13 @@ public interface IPatientRepository {
       * @param firstOrLastName the first/last name of a patient, not null
       * @return a list of patients that match the criteria
       */
-     List<IPatient> findByFirstNameOrLastName(String firstOrLastName);
+     List<? extends IPatient> findByFirstNameOrLastName(String firstOrLastName);
 
      /**
       * Update a patient in the database
       *
       * @param patient the patient to be updated based on ID, not null
-      * @return the updated patient
+      * @return the updated patient or null if there was an error updating.
       */
      IPatient update(IPatient patient);
-
-     /**
-      * Create a new patient in the database
-      *
-      * @param patient the patient to be created, not null
-      * @return the new patient with  their ID
-      */
-     IPatient create(IPatient patient);
 }

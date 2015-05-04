@@ -25,17 +25,19 @@ import femr.data.daos.Repository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.IPatientEncounter;
 import femr.data.models.mysql.PatientEncounter;
+import play.Logger;
 
+import javax.xml.bind.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientEncounterRepository extends Repository<IPatientEncounter> implements IPatientEncounterRepository{
+public class PatientEncounterRepository extends Repository<IPatientEncounter> implements IPatientEncounterRepository {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter create(IPatientEncounter patientEncounter){
+    public IPatientEncounter create(IPatientEncounter patientEncounter) {
 
         return super.create(patientEncounter);
     }
@@ -44,7 +46,7 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter findOneById(int encounterId){
+    public IPatientEncounter findOneById(int encounterId) {
 
         ExpressionList<PatientEncounter> query = getPatientEncounterQuery()
                 .where()
@@ -57,7 +59,7 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
      * {@inheritDoc}
      */
     @Override
-    public List<IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId){
+    public List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId) {
 
         Query<PatientEncounter> query = getPatientEncounterQuery();
         query.where()
@@ -65,24 +67,25 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
                 .order()
                 .desc("date_of_triage_visit");
 
-        //covariant list from eBean
-        List<? extends IPatientEncounter> patientEncountersResponse = super.find(query);
+        List<? extends IPatientEncounter> patientEncounters = null;
 
-        //use a for loop to "cast" and circumvent warnings
-        List<IPatientEncounter> patientEncounters = new ArrayList<>();
-        for (IPatientEncounter patientEncounter : patientEncountersResponse){
-            patientEncounters.add(patientEncounter);
+        try {
+
+            patientEncounters = super.find(query);
+        } catch (Exception ex) {
+
+            Logger.error(ex.getMessage());
         }
 
-        return patientEncounters;
 
+        return patientEncounters;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter update(IPatientEncounter patientEncounter){
+    public IPatientEncounter update(IPatientEncounter patientEncounter) {
 
         return super.update(patientEncounter);
     }

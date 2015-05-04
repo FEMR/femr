@@ -62,10 +62,6 @@ public class QueryProvider {
         return Ebean.find(PatientAgeClassification.class);
     }
 
-    public static Query<PatientEncounter> getPatientEncounterQuery() {
-        return Ebean.find(PatientEncounter.class);
-    }
-
     public static Query<PatientEncounterPhoto> getPatientEncounterPhotoQuery() {
         return Ebean.find(PatientEncounterPhoto.class);
     }
@@ -112,10 +108,6 @@ public class QueryProvider {
 
     public static Query<User> getUserQuery() {
         return Ebean.find(User.class);
-    }
-
-    public static Query<Vital> getVitalQuery() {
-        return Ebean.find(Vital.class);
     }
 
 

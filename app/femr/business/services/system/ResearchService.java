@@ -25,17 +25,14 @@ import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.IDataModelMapper;
+import femr.data.daos.core.IVitalRepository;
 import femr.data.models.core.research.IResearchEncounter;
-import femr.data.models.core.research.IResearchEncounterVital;
 import femr.data.models.mysql.PatientPrescription;
-import femr.data.models.mysql.Vital;
 import femr.data.models.mysql.research.ResearchEncounter;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.research.ResearchEncounterVital;
 import femr.util.calculations.dateUtils;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,19 +40,18 @@ import java.util.*;
 public class ResearchService implements IResearchService {
 
     private final IRepository<IResearchEncounter> researchEncounterRepository;
-    private final IRepository<IVital> vitalRepository;
+    private final IVitalRepository vitalRepository;
 
     /**
      * Initializes the research service and injects the dependence
      */
     @Inject
     public ResearchService(IRepository<IResearchEncounter> researchEncounterRepository,
-                           IRepository<IVital> vitalRepository) {
+                           IVitalRepository vitalRepository) {
 
         this.researchEncounterRepository = researchEncounterRepository;
         this.vitalRepository = vitalRepository;
     }
-
 
     @Override
     public ServiceResponse<ResearchResultSetItem> retrieveGraphData(ResearchFilterItem filters){
@@ -459,8 +455,7 @@ public class ResearchService implements IResearchService {
 
         // Get vital obj to use vitalId in Encounter vital_value map
         String vitalName = filters.getPrimaryDataset();
-        ExpressionList<Vital> query = QueryProvider.getVitalQuery().where().eq("name", vitalName);
-        IVital vital = vitalRepository.findOne(query);
+        IVital vital = vitalRepository.findByName(vitalName);
 
         if( vital == null ){
 
@@ -653,13 +648,12 @@ public class ResearchService implements IResearchService {
 
         // Get vital obj to use vitalId in Encounter vital_value map
         String vitalName = filters.getPrimaryDataset();
-        ExpressionList<Vital> query = QueryProvider.getVitalQuery().where().eq("name", "heightFeet");
-        IVital vital = vitalRepository.findOne(query);
+
+        IVital vital = vitalRepository.findHeightFeet();
 
         Integer heightFeetId = vital.getId();
 
-        query = QueryProvider.getVitalQuery().where().eq("name", "heightInches");
-        vital = vitalRepository.findOne(query);
+        vital = vitalRepository.findHeightInches();
 
         Integer heightInchesId = vital.getId();
 

@@ -221,7 +221,8 @@ public class SearchService implements ISearchService {
         }
 
         try {
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            //TODO: fix this to work as descending like the others
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitAsc(patientId);
             if (patientEncounters.size() < 1) {
                 response.addError("", "That patient does not exist.");
                 return response;

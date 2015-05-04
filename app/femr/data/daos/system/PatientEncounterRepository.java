@@ -59,6 +59,32 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
      * {@inheritDoc}
      */
     @Override
+    public List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitAsc(int patientId) {
+
+        Query<PatientEncounter> query = getPatientEncounterQuery();
+        query.where()
+                .eq("patient_id", patientId)
+                .order()
+                .asc("date_of_triage_visit");
+
+        List<? extends IPatientEncounter> patientEncounters = null;
+
+        try {
+
+            patientEncounters = super.find(query);
+        } catch (Exception ex) {
+
+            Logger.error(ex.getMessage());
+        }
+
+
+        return patientEncounters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId) {
 
         Query<PatientEncounter> query = getPatientEncounterQuery();

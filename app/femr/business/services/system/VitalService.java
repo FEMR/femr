@@ -29,6 +29,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IVitalRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.ISystemSetting;
 import femr.data.models.core.IVital;
@@ -38,7 +39,6 @@ import femr.data.models.mysql.Vital;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.calculations.dateUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,23 +46,23 @@ import java.util.Map;
 public class VitalService implements IVitalService {
 
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private final IRepository<IVital> vitalRepository;
     private final IDataModelMapper dataModelMapper;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
+    private final IVitalRepository vitalRepository;
 
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
-                        IRepository<IVital> vitalRepository,
                         IDataModelMapper dataModelMapper,
                         IRepository<ISystemSetting> settingsReposity,
-                        @Named("identified") IItemModelMapper itemModelMapper) {
+                        @Named("identified") IItemModelMapper itemModelMapper,
+                        IVitalRepository vitalRepository) {
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
-        this.vitalRepository = vitalRepository;
         this.dataModelMapper = dataModelMapper;
         this.systemSettingRepository = settingsReposity;
         this.itemModelMapper = itemModelMapper;
+        this.vitalRepository = vitalRepository;
     }
 
     /**
@@ -88,8 +88,7 @@ public class VitalService implements IVitalService {
 
         for (String key : patientEncounterVitalMap.keySet()) {
             if (patientEncounterVitalMap.get(key) != null) {
-                query = QueryProvider.getVitalQuery().where().eq("name", key);
-                vital = vitalRepository.findOne(query);
+                vital = vitalRepository.findByName(key);
                 patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
             }
         }
@@ -118,7 +117,7 @@ public class VitalService implements IVitalService {
         ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
 
         try {
-            List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
+            List<? extends IVital> vitals = vitalRepository.findAll();
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IVital v : vitals) {
                 vitalItems.add(itemModelMapper.createVitalItem(v.getName(), null));
@@ -159,8 +158,7 @@ public class VitalService implements IVitalService {
             for (String key : patientEncounterVitalMap.keySet()) {
                 if (patientEncounterVitalMap.get(key) != null) {
 
-                    query = QueryProvider.getVitalQuery().where().eq("name", key);
-                    vital = vitalRepository.findOne(query);
+                    vital = vitalRepository.findByName(key);
                     patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
                 }
             }

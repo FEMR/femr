@@ -23,9 +23,11 @@ import com.google.inject.TypeLiteral;
 import femr.data.DataModelMapper;
 import femr.data.IDataModelMapper;
 import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.IVitalRepository;
 import femr.data.daos.system.PatientRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.daos.system.PatientEncounterRepository;
+import femr.data.daos.system.VitalRepository;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -73,6 +75,7 @@ public class DataLayerModule extends AbstractModule {
         //non-generic Repository Injection
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPatientEncounterRepository.class).to(PatientEncounterRepository.class);
+        bind(IVitalRepository.class).to(VitalRepository.class);
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {

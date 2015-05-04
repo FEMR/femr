@@ -40,6 +40,14 @@ public interface IPatientEncounterRepository {
      IPatientEncounter findOneById(int encounterId);
 
      /**
+      * Gets a patient's encounters sorted by most recent last
+      *
+      * @param patientId the patient to search for
+      * @return a list of patient encounters
+      */
+     List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitAsc(int patientId);
+
+     /**
       * Gets a patient's encounters sorted by most recent first
       *
       * @param patientId the patient to search for

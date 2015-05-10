@@ -30,7 +30,7 @@ import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.daos.core.IChiefComplaintRepository;
+import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
@@ -42,31 +42,31 @@ import java.util.*;
 
 public class TabService implements ITabService {
 
-    private final IChiefComplaintRepository chiefComplaintRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITab> tabRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
+    private final IPatientEncounterRepository patientEncounterRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public TabService(IChiefComplaintRepository chiefComplaintRepository,
-                      IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
+    public TabService(IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                       IRepository<ITab> tabRepository,
                       IRepository<ITabField> tabFieldRepository,
                       IRepository<ITabFieldType> tabFieldTypeRepository,
                       IRepository<ITabFieldSize> tabFieldSizeRepository,
+                      IPatientEncounterRepository patientEncounterRepository,
                       IDataModelMapper DataModelMapper,
                       @Named("identified") IItemModelMapper itemModelMapper) {
 
-        this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.tabRepository = tabRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldTypeRepository = tabFieldTypeRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
+        this.patientEncounterRepository = patientEncounterRepository;
         this.dataModelMapper = DataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -625,7 +625,7 @@ public class TabService implements ITabService {
             List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
 
             //need all chief complaints regardless
-            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.findAllByPatientEncounterIdOrderBySortOrderAsc(encounterId);
+            List<? extends IChiefComplaint> chiefComplaints = patientEncounterRepository.findAllChiefComplaintsByPatientEncounterIdOrderBySortOrderAsc(encounterId);
 
 
             //Collections.reverse(patientEncounterTabFields);

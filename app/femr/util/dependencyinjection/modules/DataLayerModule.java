@@ -20,12 +20,8 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.DataModelMapper;
-import femr.data.IDataModelMapper;
-import femr.data.daos.core.IChiefComplaintRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IVitalRepository;
-import femr.data.daos.system.ChiefComplaintRepository;
 import femr.data.daos.system.PatientRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.daos.system.PatientEncounterRepository;
@@ -78,11 +74,9 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPatientEncounterRepository.class).to(PatientEncounterRepository.class);
         bind(IVitalRepository.class).to(VitalRepository.class);
-        bind(IChiefComplaintRepository.class).to(ChiefComplaintRepository.class);
 
         //Repository Injection
-        bind(new TypeLiteral<IRepository<IChiefComplaint>>() {
-        }).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
+
         bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
@@ -109,7 +103,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<ITabFieldType>>(){}).to(new TypeLiteral<Repository<ITabFieldType>>(){});
         bind(new TypeLiteral<IRepository<ITabFieldSize>>(){}).to(new TypeLiteral<Repository<ITabFieldSize>>(){});
         bind(new TypeLiteral<IRepository<IUser>>() {}).to(new TypeLiteral<Repository<IUser>>() {});
-        bind(new TypeLiteral<IRepository<IVital>>() {}).to(new TypeLiteral<Repository<IVital>>() {});
 
         // Research
         bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});

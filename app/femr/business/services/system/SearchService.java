@@ -21,7 +21,6 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
@@ -30,6 +29,7 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
+import femr.data.daos.core.IVitalRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.LocaleUnitConverter;
@@ -40,30 +40,29 @@ import java.util.*;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
-    private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IPatientRepository patientRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final IItemModelMapper itemModelMapper;
+    private final IVitalRepository vitalRepository;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
-                         IPatientEncounterRepository patientEncounterRepository,
-                         IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IPatientRepository patientRepository,
-                         @Named("identified") IItemModelMapper itemModelMapper) {
+                         @Named("identified") IItemModelMapper itemModelMapper,
+                         IPatientEncounterRepository patientEncounterRepository,
+                         IVitalRepository vitalRepository) {
 
         this.diagnosisRepository = diagnosisRepository;
-        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.itemModelMapper = itemModelMapper;
-
+        this.vitalRepository = vitalRepository;
     }
 
     /**
@@ -85,9 +84,27 @@ public class SearchService implements ISearchService {
 
             IPatientEncounter recentEncounter = patientEncounters.get(0);
             IPatient savedPatient = patientEncounters.get(0).getPatient();
-            Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
-            Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
+
+
+            Integer currentPatientHeightFeet = null;
+            Integer currentPatientHeightInches = null;
+            Float currentPatientWeight = null;
+
+            List<? extends IPatientEncounterVital> encounterHeightFeetValues = vitalRepository.findHeightFeetValues(recentEncounter.getId());
+            List<? extends IPatientEncounterVital> encounterHeightInchesValues = vitalRepository.findHeightInchesValues(recentEncounter.getId());
+            List<? extends IPatientEncounterVital> encounterWeightValues = vitalRepository.findWeightValues(recentEncounter.getId());
+            if (encounterHeightFeetValues.size() > 0) {
+                currentPatientHeightFeet = Math.round(encounterHeightFeetValues.get(0).getVitalValue());
+            }
+            if (encounterHeightInchesValues.size() > 0) {
+                currentPatientHeightInches = Math.round(encounterHeightInchesValues.get(0).getVitalValue());
+            }
+            if (encounterWeightValues.size() > 0) {
+                currentPatientWeight = encounterWeightValues.get(0).getVitalValue();
+            }
+
+
+
 
             String pathToPhoto = null;
             Integer photoId = null;
@@ -105,9 +122,9 @@ public class SearchService implements ISearchService {
                     savedPatient.getAge(),
                     savedPatient.getSex(),
                     recentEncounter.getWeeksPregnant(),
-                    patientHeightFeet,
-                    patientHeightInches,
-                    patientWeight,
+                    currentPatientHeightFeet,
+                    currentPatientHeightInches,
+                    currentPatientWeight,
                     pathToPhoto,
                     photoId
             );
@@ -145,9 +162,28 @@ public class SearchService implements ISearchService {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
 
             IPatient patient = patientEncounter.getPatient();
-            Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
-            Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
-            Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
+
+
+            Integer currentPatientHeightFeet = null;
+            Integer currentPatientHeightInches = null;
+            Float currentPatientWeight = null;
+            List<? extends IPatientEncounterVital> encounterHeightFeetValues = vitalRepository.findHeightFeetValues(patientEncounter.getId());
+            List<? extends IPatientEncounterVital> encounterHeightInchesValues = vitalRepository.findHeightInchesValues(patientEncounter.getId());
+            List<? extends IPatientEncounterVital> encounterWeightValues = vitalRepository.findWeightValues(patientEncounter.getId());
+            if (encounterHeightFeetValues.size() > 0) {
+                currentPatientHeightFeet = Math.round(encounterHeightFeetValues.get(0).getVitalValue());
+            }
+            if (encounterHeightInchesValues.size() > 0) {
+                currentPatientHeightInches = Math.round(encounterHeightInchesValues.get(0).getVitalValue());
+            }
+            if (encounterWeightValues.size() > 0) {
+                currentPatientWeight = encounterWeightValues.get(0).getVitalValue();
+            }
+
+
+
+
+
 
             String pathToPhoto = null;
             Integer photoId = null;
@@ -165,9 +201,9 @@ public class SearchService implements ISearchService {
                     patient.getAge(),
                     patient.getSex(),
                     patientEncounter.getWeeksPregnant(),
-                    patientHeightFeet,
-                    patientHeightInches,
-                    patientWeight,
+                    currentPatientHeightFeet,
+                    currentPatientHeightInches,
+                    currentPatientWeight,
                     pathToPhoto,
                     photoId
             );

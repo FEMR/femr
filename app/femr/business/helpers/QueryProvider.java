@@ -30,10 +30,6 @@ import femr.data.models.mysql.research.ResearchEncounterVital;
  */
 public class QueryProvider {
 
-    public static Query<ChiefComplaint> getChiefComplaintQuery() {
-        return Ebean.find(ChiefComplaint.class);
-    }
-
     public static Query<Medication> getMedicationQuery() {
         return Ebean.find(Medication.class);
     }
@@ -68,10 +64,6 @@ public class QueryProvider {
 
     public static Query<PatientEncounterTabField> getPatientEncounterTabFieldQuery() {
         return Ebean.find(PatientEncounterTabField.class);
-    }
-
-    public static Query<PatientEncounterVital> getPatientEncounterVitalQuery() {
-        return Ebean.find(PatientEncounterVital.class);
     }
 
     public static Query<PatientPrescription> getPatientPrescriptionQuery() {
@@ -114,8 +106,5 @@ public class QueryProvider {
     // Research
     public static Query<ResearchEncounter> getResearchEncounterQuery() {
         return Ebean.find(ResearchEncounter.class);
-    }
-    public static Query<ResearchEncounterVital> getResearchEncounterVitalQuery() {
-        return Ebean.find(ResearchEncounterVital.class);
     }
 }

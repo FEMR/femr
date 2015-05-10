@@ -19,7 +19,6 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -33,7 +32,6 @@ import femr.data.daos.core.IVitalRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.ISystemSetting;
 import femr.data.models.core.IVital;
-import femr.data.models.mysql.PatientEncounterVital;
 import femr.data.models.mysql.SystemSetting;
 import femr.data.models.mysql.Vital;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
@@ -45,20 +43,17 @@ import java.util.Map;
 
 public class VitalService implements IVitalService {
 
-    private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IDataModelMapper dataModelMapper;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
     private final IVitalRepository vitalRepository;
 
     @Inject
-    public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
-                        IDataModelMapper dataModelMapper,
+    public VitalService(IDataModelMapper dataModelMapper,
                         IRepository<ISystemSetting> settingsReposity,
                         @Named("identified") IItemModelMapper itemModelMapper,
                         IVitalRepository vitalRepository) {
 
-        this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.dataModelMapper = dataModelMapper;
         this.systemSettingRepository = settingsReposity;
         this.itemModelMapper = itemModelMapper;
@@ -76,10 +71,8 @@ public class VitalService implements IVitalService {
             return response;
         }
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        IPatientEncounterVital patientEncounterVital;
         IVital vital;
 
-        ExpressionList<Vital> query;
         String currentTime = dateUtils.getCurrentDateTimeString();
 
         // Convert vitals to imperial for storing in DB
@@ -95,7 +88,7 @@ public class VitalService implements IVitalService {
 
         try {
             List<VitalItem> vitalItems = new ArrayList<>();
-            List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
+            List<? extends IPatientEncounterVital> newPatientEncounterVitals = vitalRepository.createAll(patientEncounterVitals);
             for (IPatientEncounterVital pev : newPatientEncounterVitals) {
                 if (pev.getVital() != null)
                     vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
@@ -142,10 +135,8 @@ public class VitalService implements IVitalService {
         }
 
         List<IPatientEncounterVital> patientEncounterVitals = new ArrayList<>();
-        IPatientEncounterVital patientEncounterVital;
         IVital vital;
 
-        ExpressionList<Vital> query;
         String currentTime = dateUtils.getCurrentDateTimeString();
 
         // Convert vitals to imperial for storing in DB
@@ -163,7 +154,7 @@ public class VitalService implements IVitalService {
                 }
             }
 
-            List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
+            List<? extends IPatientEncounterVital> newPatientEncounterVitals = vitalRepository.createAll(patientEncounterVitals);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IPatientEncounterVital pev : patientEncounterVitals) {
                 if (pev.getVital() != null)
@@ -186,13 +177,9 @@ public class VitalService implements IVitalService {
         ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
         VitalMultiMap vitalMultiMap = new VitalMultiMap();
 
-        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
+
         try {
-            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+            List<? extends IPatientEncounterVital> patientEncounterVitals = vitalRepository.find(encounterId);
 
             if (patientEncounterVitals != null) {
                 for (IPatientEncounterVital vitalData : patientEncounterVitals) {

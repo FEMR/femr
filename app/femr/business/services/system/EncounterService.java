@@ -30,7 +30,6 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.daos.core.IChiefComplaintRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -43,19 +42,16 @@ import java.util.*;
 public  class EncounterService implements IEncounterService {
 
     private IMissionTripService missionTripService;
-    private final IChiefComplaintRepository chiefComplaintRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IUser> userRepository;
-
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public EncounterService(IMissionTripService missionTripService,
-                            IChiefComplaintRepository chiefComplaintRepository,
                             IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                             IPatientEncounterRepository patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
@@ -65,7 +61,6 @@ public  class EncounterService implements IEncounterService {
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.missionTripService = missionTripService;
-        this.chiefComplaintRepository = chiefComplaintRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
@@ -122,7 +117,7 @@ public  class EncounterService implements IEncounterService {
             }
             if (chiefComplaints.size() > 0) {
 
-                chiefComplaintRepository.createAll(chiefComplaints);
+                patientEncounterRepository.createAllChiefComplaints(chiefComplaints);
             }
 
 
@@ -276,7 +271,7 @@ public  class EncounterService implements IEncounterService {
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
             //get all chief complaints for an encounter to find reference IDs
-            List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.findAllByPatientEncounterId(encounterId);
+            List<? extends IChiefComplaint> chiefComplaints = patientEncounterRepository.findAllChiefComplaintsByPatientEncounterId(encounterId);
             //foreign key IDs for patientEncounterTabField referencing
             Integer tabFieldId = null;
             Integer chiefComplaintId = null;

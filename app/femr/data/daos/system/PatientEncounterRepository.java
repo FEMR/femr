@@ -21,17 +21,16 @@ package femr.data.daos.system;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
-import femr.data.daos.Repository;
 import femr.data.daos.core.IPatientEncounterRepository;
+import femr.data.models.core.IChiefComplaint;
 import femr.data.models.core.IPatientEncounter;
+import femr.data.models.mysql.ChiefComplaint;
 import femr.data.models.mysql.PatientEncounter;
 import play.Logger;
 
-import javax.xml.bind.ValidationException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class PatientEncounterRepository extends Repository<IPatientEncounter> implements IPatientEncounterRepository {
+public class PatientEncounterRepository implements IPatientEncounterRepository {
 
     /**
      * {@inheritDoc}
@@ -39,16 +38,14 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
     @Override
     public IPatientEncounter create(IPatientEncounter patientEncounter) {
 
-        IPatientEncounter encounter = null;
-        try{
+        try {
 
-            encounter = super.create(patientEncounter);
-        }
-        catch( Exception ex ){
+            Ebean.save(patientEncounter);
+        } catch (Exception ex) {
 
             Logger.error("PatientEncounterRepository-create", ex);
         }
-        return encounter;
+        return patientEncounter;
     }
 
     /**
@@ -63,9 +60,8 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
 
         IPatientEncounter encounter = null;
         try {
-            encounter = super.findOne(query);
-        }
-        catch( Exception ex ){
+            encounter = query.findUnique();
+        } catch (Exception ex) {
 
             Logger.error("PatientEncounterRepository-findOneById", ex);
         }
@@ -89,7 +85,7 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
 
         try {
 
-            patientEncounters = super.find(query);
+            patientEncounters = query.findList();
         } catch (Exception ex) {
 
             Logger.error(ex.getMessage());
@@ -115,7 +111,7 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
 
         try {
 
-            patientEncounters = super.find(query);
+            patientEncounters = query.findList();
         } catch (Exception ex) {
 
             Logger.error(ex.getMessage());
@@ -131,15 +127,77 @@ public class PatientEncounterRepository extends Repository<IPatientEncounter> im
     @Override
     public IPatientEncounter update(IPatientEncounter patientEncounter) {
 
-        IPatientEncounter encounter = null;
         try {
-            encounter = super.update(patientEncounter);
-        }
-        catch( Exception ex ){
+            Ebean.save(patientEncounter);
+        } catch (Exception ex) {
 
             Logger.error("PatientEncounterRepository-update", ex);
         }
-        return encounter;
+        return patientEncounter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IChiefComplaint> createAllChiefComplaints(List<? extends IChiefComplaint> chiefComplaints) {
+
+        try {
+            Ebean.save(chiefComplaints);
+        } catch (Exception ex) {
+
+            Logger.error("ChiefComplaintRepository-createAllChiefComplaints", ex);
+        }
+        return chiefComplaints;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IChiefComplaint> findAllChiefComplaintsByPatientEncounterId(int encounterId) {
+
+        ExpressionList<ChiefComplaint> chiefComplaintExpressionList = getChiefComplaintQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId);
+        List<? extends IChiefComplaint> chiefComplaints = null;
+
+        try {
+
+            chiefComplaints = chiefComplaintExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("ChiefComplaintRepository-findAllChiefComplaintsByPatientEncounterId", ex);
+        }
+        return chiefComplaints;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IChiefComplaint> findAllChiefComplaintsByPatientEncounterIdOrderBySortOrderAsc(int encounterId) {
+
+
+        Query<ChiefComplaint> chiefComplaintExpressionList = getChiefComplaintQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .asc("sortOrder");
+        List<? extends IChiefComplaint> chiefComplaints = null;
+
+        try {
+
+            chiefComplaints = chiefComplaintExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("ChiefComplaintRepository-findAllBy", ex);
+        }
+        return chiefComplaints;
+    }
+
+    private Query<ChiefComplaint> getChiefComplaintQuery() {
+        return Ebean.find(ChiefComplaint.class);
     }
 
 

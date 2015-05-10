@@ -21,6 +21,13 @@ package femr.data.daos.core;
 import femr.data.models.core.IPatient;
 import java.util.List;
 
+/**
+ * A repository to cover the following tables:
+ * <ul>
+ *     <li>patients</li>
+ *     <li>patient_age_classifications</li>
+ * </ul>
+ */
 public interface IPatientRepository {
 
      /**

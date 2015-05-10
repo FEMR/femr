@@ -18,11 +18,35 @@
 */
 package femr.data.daos.core;
 
+import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.IVital;
 
 import java.util.List;
 
+/**
+ * A repository to cover the following tables:
+ * <ul>
+ *     <li>vitals</li>
+ *     <li>patient_encounter_vitals</li>
+ * </ul>
+ */
 public interface IVitalRepository {
+
+    /**
+     * Creates patientEncounterVitals (the values)
+     *
+     * @param patientEncounterVitals a list of values to save
+     * @return the patient encounter vitals that were saved or null if none exist
+     */
+    List<? extends IPatientEncounterVital> createAll(List<? extends IPatientEncounterVital> patientEncounterVitals);
+
+    /**
+     * Find saved vitals by encounter id
+     *
+     * @param encounterId id of the encounter, not null
+     * @return a list of saved patient encounter vitals in reverse chronological order or null if none exist
+     */
+    List<? extends IPatientEncounterVital> find(int encounterId);
 
     /**
      * Finds all available vitals
@@ -38,6 +62,27 @@ public interface IVitalRepository {
      * @return returns the vital or null if none exist
      */
     IVital findByName(String name);
+
+    /**
+     * Finds height feet vitals for an encounter
+     * @param encounterId the id of the encounter, not null
+     * @return a list of height feet vitals for an encounter in reverse chronological order
+     */
+    List<? extends IPatientEncounterVital> findHeightFeetValues(int encounterId);
+
+    /**
+     * Finds height inches vitals for an encounter
+     * @param encounterId the id of the encounter, not null
+     * @return a list of height inches vitals for an encounter in reverse chronological order
+     */
+    List<? extends IPatientEncounterVital> findHeightInchesValues(int encounterId);
+
+    /**
+     * Finds weight vitals for an encounter
+     * @param encounterId the id of the encounter, not null
+     * @return a list of weight vitals for an encounter in reverse chronological order
+     */
+    List<? extends IPatientEncounterVital> findWeightValues(int encounterId);
 
     /**
      * Finds the heightFeet vital

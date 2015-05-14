@@ -82,9 +82,18 @@ hr {
     /*background-color: rgb(198, 0, 0);*/
     background-color: #ad0000;
 }
+a.fRedButton{
+    color: #000000;
+}
 .fRedButton:hover{
     background-color: rgb(250, 0, 0);
 }
+a.fRedButton:hover{
+    text-decoration: none;
+}
+
+
+
 .fLandingSearchButton{
     width: 100%;
     height: 38px;

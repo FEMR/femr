@@ -22,6 +22,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 import java.util.List;
+import java.util.Map;
 
 public interface IEncounterService {
 
@@ -64,7 +65,8 @@ public interface IEncounterService {
     ServiceResponse<UserItem> retrievePhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * Creates a list of fields.
+     * @deprecated  {Replaced by {@link #createPatientEncounterTabFields(Map, int, int)}() or {@link #createPatientEncounterTabFields(Map, int, int, String)}}
+     * Creates a list of fields.//TODO: remove this deprecated method
      *
      * @param tabFieldItems the fields, not null, required attributes:<ul><li>name</li><li>value</li></ul>
      * @param encounterId id of the current encounter, not null
@@ -72,7 +74,28 @@ public interface IEncounterService {
      * @return a service response that contains a list of TabFieldItems representing the fields that were created
      * and/or errors if they exist.
      */
-    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
+    @Deprecated ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
+
+    /**
+     * Creates a bunch of tab fields that belong to a chief complaint
+     *
+     * @param tabFieldNameValues a mapping of tab field names to their respective values, not null/empty
+     * @param encounterId the id of the encounter, not null
+     * @param userId the id of the user creating the tab fields, not null
+     * @param chiefComplaint the chief complaint name that the tab fields belong to, not null
+     * @return a list of created tabfielditems
+     */
+    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String, String> tabFieldNameValues, int encounterId, int userId, String chiefComplaint);
+
+    /**
+     * Creates a bunch of tab fields
+     *
+     * @param tabFieldNameValues a mapping of tab field names to their respective values, not null/empty
+     * @param encounterId the id of the encounter, not null
+     * @param userId the id of the user creating the tab fields, not null
+     * @return a list of created tabfielditems
+     */
+    ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String, String> tabFieldNameValues, int encounterId, int userId);
 
     /**
      * Create a list of problems.

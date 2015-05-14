@@ -252,6 +252,7 @@ public class MedicalController extends Controller {
         }
 
         if (tabFieldItems.size() > 0) {
+            //TODO: Use one of the overloaded encounter service methods
             ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
             if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {
                 throw new RuntimeException();

@@ -30,9 +30,9 @@ GET         /pharmacy                                         @femr.ui.controlle
 POST        /pharmacy                                         @femr.ui.controllers.PharmaciesController.indexPost()
 #History
 GET         /history/encounter/:id                            @femr.ui.controllers.HistoryController.indexEncounterGet(id: Integer)
-GET         /history/patient/:query                           @femr.ui.controllers.HistoryController.indexPatientGet(query: String)
-POST        /history/encounter/updateField/:id                @femr.ui.controllers.HistoryController.updateFieldPost(id: Integer)
+POST        /history/encounter/updateField/:id                @femr.ui.controllers.HistoryController.updateEncounterPost(id: Integer)
 GET         /history/encounter/listTabFieldHistory/:id        @femr.ui.controllers.HistoryController.listTabFieldHistoryGet(id: Integer)
+GET         /history/patient/:query                           @femr.ui.controllers.HistoryController.indexPatientGet(query: String)
 #Search
 GET         /search/:page                                     @femr.ui.controllers.SearchController.handleSearch(page: String)
 GET         /search/check/:query                              @femr.ui.controllers.SearchController.doesPatientExist(query: String)

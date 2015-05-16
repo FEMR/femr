@@ -65,18 +65,6 @@ public interface IEncounterService {
     ServiceResponse<UserItem> retrievePhysicianThatCheckedInPatientToMedical(int encounterId);
 
     /**
-     * @deprecated  {Replaced by {@link #createPatientEncounterTabFields(Map, int, int)}() or {@link #createPatientEncounterTabFields(Map, int, int, String)}}
-     * Creates a list of fields.//TODO: remove this deprecated method
-     *
-     * @param tabFieldItems the fields, not null, required attributes:<ul><li>name</li><li>value</li></ul>
-     * @param encounterId id of the current encounter, not null
-     * @param userId id of the user saving the fields, not null
-     * @return a service response that contains a list of TabFieldItems representing the fields that were created
-     * and/or errors if they exist.
-     */
-    @Deprecated ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(List<TabFieldItem> tabFieldItems, int encounterId, int userId);
-
-    /**
      * Creates a bunch of tab fields that belong to a chief complaint
      *
      * @param tabFieldNameValues a mapping of tab field names to their respective values, not null/empty

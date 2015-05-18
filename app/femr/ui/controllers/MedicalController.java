@@ -241,37 +241,44 @@ public class MedicalController extends Controller {
             encounterService.createProblems(problemList, patientEncounterItem.getId(), currentUserSession.getId());
         }
 
-        //get and save tab fields
-        List<TabFieldItem> tabFieldItems = new ArrayList<>();
-        //get non-custom tab fields other than problems
+        //get tab fields that do not have a related chief complaint and put them into a nice map
+        Map<String, String> tabFieldItemsWithNoRelatedChiefComplaint = new HashMap<>();
+        Map<String, Map<String, String>> tabFieldItemsWithChiefComplaint = new HashMap<>();
+        //get tab fields other than problems
         for (TabFieldItem tfi : viewModelPost.getTabFieldItems()) {
-            if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue())) {
-                tfi.setValue(tfi.getValue().trim());
-                tabFieldItems.add(tfi);
+            if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()) && StringUtils.isNullOrWhiteSpace(tfi.getChiefComplaint())) {
+
+                tabFieldItemsWithNoRelatedChiefComplaint.put(tfi.getName(), tfi.getValue());
+            }else if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()) && StringUtils.isNotNullOrWhiteSpace(tfi.getChiefComplaint())){
+
+                Map<String,String> tabFieldMap = new HashMap<>();
+                tabFieldMap.put(tfi.getName(), tfi.getValue());
+                tabFieldItemsWithChiefComplaint.put(tfi.getChiefComplaint(), tabFieldMap);
             }
         }
+        //save the tab fields that do not have a related chief complaint
+        ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse;
+        if (tabFieldItemsWithNoRelatedChiefComplaint.size() > 0) {
 
-        if (tabFieldItems.size() > 0) {
-            ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldItems, patientEncounterItem.getId(), currentUserSession.getId());
+            createPatientEncounterTabFieldsServiceResponse = encounterService.createPatientEncounterTabFields(tabFieldItemsWithNoRelatedChiefComplaint, patientEncounterItem.getId(), currentUserSession.getId());
             if (createPatientEncounterTabFieldsServiceResponse.hasErrors()) {
+
                 throw new RuntimeException();
             }
         }
+        //save the tab fields that do have related chief complaint(s)
+        ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse;
+        if (tabFieldItemsWithChiefComplaint.size() > 0){
+            //call the service once for each exisiting chief complaint
+            for (Map.Entry<String, Map<String,String>> entry : tabFieldItemsWithChiefComplaint.entrySet()){
 
+                createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse = encounterService.createPatientEncounterTabFields(entry.getValue(), patientEncounterItem.getId(), currentUserSession.getId(), entry.getKey());
+                if (createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse.hasErrors()){
 
-
-        /*
-        //get custom tab fields
-        Map<String, List<JCustomField>> customFieldInformation = new Gson().fromJson(viewModelPost.getCustomFieldJSON(), new TypeToken<Map<String, List<JCustomField>>>() {
-        }.getType());
-        for (Map.Entry<String, List<JCustomField>> entry : customFieldInformation.entrySet()) {
-            for (JCustomField jcf : entry.getValue()) {
-                if (StringUtils.isNotNullOrWhiteSpace(jcf.getValue()))
-                    tabFieldMultiMap.put(jcf.getName(), date, "", jcf.getValue());
+                    throw new RuntimeException();
+                }
             }
-        } */
-        //save dat sheeeit, mayne
-        //if (tabFieldsWithValue.size() > 0) {
+        }
 
 
         //create patient encounter photos
@@ -305,8 +312,6 @@ public class MedicalController extends Controller {
         EditViewModelGet viewModelGet = new EditViewModelGet();
         ServiceResponse<SettingItem> response = searchService.retrieveSystemSettings();
         viewModelGet.setSettings(response.getResponseObject());
-
-
 
         // Get patient Encounter
         ServiceResponse<PatientEncounterItem> currentEncounterByPatientId = searchService.retrieveRecentPatientEncounterItemByPatientId(id);

@@ -381,6 +381,17 @@ public class PDFController extends Controller {
         cellTreatment.setColspan(2);
         table.addCell(cellTreatment);
 
+        // Loop through and add any potential Custom Field Names
+        // Row 7+ , set cells to colspan of 2 so they fill the whole page
+        for (String customField : tabFieldMultiMap.getCustomFieldNameList()) {
+
+            String value = tabFieldMultiMap.getMostRecentOrEmpty(customField, null).getValue();
+            PdfPCell customCell = new PdfPCell(table.getDefaultCell());
+            customCell.setColspan(2);
+            customCell.addElement(getStyledPhrase(customField + " :", outputStringOrNA(value)));
+            table.addCell(customCell);
+        }
+
         // Get Prescriptions -- add Paragraph for each one to the cell
         Paragraph prescriptionsTitle = new Paragraph("Prescription(s):", getTitleFont());
         PdfPCell prescriptionCell = new PdfPCell(table.getDefaultCell());
@@ -482,17 +493,6 @@ public class PDFController extends Controller {
         fieldCell.setPaddingRight(5);
         fieldCell.addElement(getStyledPhrase("Radiation: ", outputStringOrNA(tabFieldMultiMap.getMostRecentOrEmpty("radiation", chiefComplaint).getValue())));
         table.addCell(fieldCell);
-
-        // Loop through and add any potential Custom Field Names
-        // set cells to colspan of 2 so they fill the whole page
-        for (String customField : tabFieldMultiMap.getCustomFieldNameList()) {
-
-            String value = tabFieldMultiMap.getMostRecentOrEmpty(customField, chiefComplaint).getValue();
-            PdfPCell customCell = new PdfPCell(table.getDefaultCell());
-            customCell.setColspan(2);
-            customCell.addElement(getStyledPhrase(customField + " :", outputStringOrNA(value)));
-            table.addCell(customCell);
-        }
 
         // Physical Examination
         PdfPCell cellPE = new PdfPCell(table.getDefaultCell());

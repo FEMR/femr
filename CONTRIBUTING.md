@@ -8,7 +8,7 @@
 1. [MySQL 5.6](http://www.mysql.com/)
 2. [Play Framework 2.3.7](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
 3. [Java JDK 1.7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
-4. [IntelliJ IDEA 14](http://www.jetbrains.com/idea/)
+4. [IntelliJ IDEA Ultimate 14](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 
 ### Configuration

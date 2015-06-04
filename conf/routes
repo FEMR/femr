@@ -60,7 +60,7 @@ GET         /research                                         @femr.ui.controlle
 POST        /research/graph                                   @femr.ui.controllers.ResearchController.getGraphPost()
 GET         /research/generateData                            @femr.ui.controllers.ResearchController.generateData()
 #Pdf
-GET         /PDF/Pid=:id/Eid=:idE                             @femr.ui.controllers.PDFConversion.index(id: Integer, idE : Integer)
+GET         /pdf/encounter/:encounterId                                 @femr.ui.controllers.PDFController.index(encounterId : Integer)
 #Sessions
 GET         /logout                                           @femr.ui.controllers.SessionsController.delete()
 POST        /login/reset                                      @femr.ui.controllers.SessionsController.editPasswordPost()

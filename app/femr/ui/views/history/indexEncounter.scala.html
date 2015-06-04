@@ -12,7 +12,7 @@
     @import femr.ui.views.html.partials.encounter.dynamicTabSpan
 
     @import collection.JavaConversions._
-    @import femr.ui.controllers.routes.PDFConversion
+    @import femr.ui.controllers.routes.PDFController
 
 
     @additionalScripts = {
@@ -36,11 +36,8 @@
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
                     (@viewModel.getPatientItem.getId)</p>
-                <div>
-                @helper.form(action = PDFConversion.index(viewModel.getPatientItem.getId, viewModel.getPatientEncounterItem.getId)) {  @* Replaced .getID with .getPatientId  *@
-                    <button type="submit" id="historyButton" class="fButton fOtherButton pull-right">Generate PDF</button>
-                }
-                </div>
+
+                <a href="@PDFController.index(viewModel.getPatientEncounterItem.getId)" target="_blank" id="historyButton" class="fButton fRedButton pull-right">Generate PDF</a>
             </div>
 
             <div class="encounterViewBodyHeader">

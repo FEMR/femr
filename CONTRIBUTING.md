@@ -1,8 +1,9 @@
 #Community
 1. [JIRA](https://teamfemr.atlassian.net)
-2. We collaborate on Slack - contact kevin.zurek@teamfemr.org for an invite!
+2. We collaborate on Slack - contact ken.dunlap@teamfemr.org for an invite!
 
-#Installation and Configuration using IntelliJ IDEA 14
+#Installation and Configuration using IntelliJ IDEA 14*
+*use development branch for most up-to-date information
 
 ### Required downloads
 1. [MySQL 5.6](http://www.mysql.com/)
@@ -33,9 +34,11 @@
 8. Ensure the Project SDK is java version 1.7, click finish
 9. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
 10. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
-11. Under Run, select Edit configurations. Create a new Play 2.0 application and add config.file // /absolute/location/to/conf/application.dev.conf to the environment variables.
+11. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables:
+     [config.file // /absolute/location/to/conf/application.dev.conf]
+     [user.dir // /absolute/location/to/femr]
 12. Run
-13. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key
+13. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
 
 
 # Git

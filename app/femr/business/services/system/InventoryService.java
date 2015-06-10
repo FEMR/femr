@@ -20,9 +20,10 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
-import femr.common.UIModelMapper;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
@@ -43,19 +44,22 @@ public class InventoryService implements IInventoryService {
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                             IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
-                            IDataModelMapper dataModelMapper) {
+                            IDataModelMapper dataModelMapper,
+                            @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
         this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -79,7 +83,7 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
         for (IMedication m : medications) {
-            medicationItems.add(UIModelMapper.createMedicationItem(m));
+            medicationItems.add(itemModelMapper.createMedicationItem(m));
         }
         response.setResponseObject(medicationItems);
 
@@ -137,7 +141,7 @@ public class InventoryService implements IInventoryService {
 
             IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = UIModelMapper.createMedicationItem(medication);
+            MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);
         } catch (Exception ex) {
             response.addError("", "error creating medication");

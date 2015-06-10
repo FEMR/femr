@@ -25,7 +25,6 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.data.models.core.IUser;
-import femr.data.daos.IRepository;
 import femr.util.encryptions.IPasswordEncryptor;
 
 //import static play.mvc.Controller.session;
@@ -35,16 +34,15 @@ public class SessionService implements ISessionService {
     private IUserService userService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
-    private IRepository<IUser> userRepository;
 
     @Inject
-    public SessionService(IUserService userService, IPasswordEncryptor passwordEncryptor,
-                          ISessionHelper sessionHelper, IRepository<IUser> userRepository) {
+    public SessionService(IUserService userService,
+                          IPasswordEncryptor passwordEncryptor,
+                          ISessionHelper sessionHelper) {
 
         this.userService = userService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
-        this.userRepository = userRepository;
     }
 
     /**

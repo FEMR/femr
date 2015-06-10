@@ -22,10 +22,11 @@ import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
-import femr.common.UIModelMapper;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
@@ -40,41 +41,29 @@ import java.util.*;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
-    private final IRepository<IMedication> medicationRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
-    private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IRepository<ITabField> tabFieldRepository;
-    private final IRepository<IVital> vitalRepository;
-    private final IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
-                         IRepository<IMedication> medicationRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
-                         IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
-                         IRepository<IVital> vitalRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         IRepository<ITabField> tabFieldRepository,
-                         IDataModelMapper dataModelMapper) {
+                         @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
-        this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
-        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
-        this.vitalRepository = vitalRepository;
         this.systemSettingRepository = systemSettingRepository;
-        this.tabFieldRepository = tabFieldRepository;
-        this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -111,7 +100,7 @@ public class SearchService implements ISearchService {
                 pathToPhoto = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
             }
-            PatientItem patientItem = UIModelMapper.createPatientItem(
+            PatientItem patientItem = itemModelMapper.createPatientItem(
                     savedPatient.getId(),
                     savedPatient.getFirstName(),
                     savedPatient.getLastName(),
@@ -173,7 +162,7 @@ public class SearchService implements ISearchService {
                 pathToPhoto = patient.getPhoto().getFilePath();
                 photoId = patient.getPhoto().getId();
             }
-            PatientItem patientItem = UIModelMapper.createPatientItem(
+            PatientItem patientItem = itemModelMapper.createPatientItem(
                     patient.getId(),
                     patient.getFirstName(),
                     patient.getLastName(),
@@ -218,7 +207,7 @@ public class SearchService implements ISearchService {
 
         try {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
-            PatientEncounterItem patientEncounterItem = UIModelMapper.createPatientEncounterItem(patientEncounter);
+            PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -248,7 +237,7 @@ public class SearchService implements ISearchService {
                 return response;
             }
             IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
-            PatientEncounterItem patientEncounterItem = UIModelMapper.createPatientEncounterItem(currentPatientEncounter);
+            PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(currentPatientEncounter);
             response.setResponseObject(patientEncounterItem);
 
         } catch (Exception ex) {
@@ -273,7 +262,7 @@ public class SearchService implements ISearchService {
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
-                patientEncounterItems.add(UIModelMapper.createPatientEncounterItem(pe));
+                patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(pe));
             }
             response.setResponseObject(patientEncounterItems);
         } catch (Exception ex) {
@@ -300,7 +289,7 @@ public class SearchService implements ISearchService {
             for (IPatientPrescription pp : patientPrescriptions) {
 
                 prescriptionItems.add(
-                        UIModelMapper.createPrescriptionItem(
+                        itemModelMapper.createPrescriptionItem(
                                 pp.getId(),
                                 pp.getMedication().getName(),
                                 pp.getReplacementId(),
@@ -337,7 +326,7 @@ public class SearchService implements ISearchService {
             for (IPatientPrescription pp : patientPrescriptions) {
 
                 prescriptionItems.add(
-                        UIModelMapper.createPrescriptionItem(
+                        itemModelMapper.createPrescriptionItem(
                                 pp.getId(),
                                 pp.getMedication().getName(),
                                 pp.getReplacementId(),
@@ -461,7 +450,7 @@ public class SearchService implements ISearchService {
                     pathToPhoto = patient.getPhoto().getFilePath();
                     photoId = patient.getPhoto().getId();
                 }
-                patientItems.add(UIModelMapper.createPatientItem(
+                patientItems.add(itemModelMapper.createPatientItem(
                         patient.getId(),
                         patient.getFirstName(),
                         patient.getLastName(),
@@ -500,7 +489,7 @@ public class SearchService implements ISearchService {
                 response.addError("", "no settings exist at this time");
             } else {
 
-                SettingItem settingItem = UIModelMapper.createSettingItem(systemSettings);
+                SettingItem settingItem = itemModelMapper.createSettingItem(systemSettings);
                 response.setResponseObject(settingItem);
 
             }
@@ -532,7 +521,7 @@ public class SearchService implements ISearchService {
                     pathToPhoto = patient.getPhoto().getFilePath();
                     photoId = patient.getPhoto().getId();
                 }
-                PatientItem currPatient = UIModelMapper.createPatientItem(
+                PatientItem currPatient = itemModelMapper.createPatientItem(
                         patient.getId(),
                         patient.getFirstName(),
                         patient.getLastName(),

@@ -21,7 +21,6 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IMedicationService;
-import femr.common.UIModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
 import femr.common.models.ResearchResultItem;
@@ -141,7 +140,7 @@ public class ResearchController extends Controller {
     public Result getGraphPost(){
 
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
-        ResearchFilterItem researchFilterItem = UIModelMapper.createResearchFilterItem(filterViewModel);
+        ResearchFilterItem researchFilterItem = createResearchFilterItem(filterViewModel);
 
         ServiceResponse<ResearchResultSetItem> response = researchService.retrieveGraphData(researchFilterItem);
         ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
@@ -167,6 +166,45 @@ public class ResearchController extends Controller {
         String jsonString = gson.toJson(medicationServiceResponse.getResponseObject());
 
         return ok(jsonString);
+    }
+
+    /**
+     * Generate and provide an instance of ResearchFilterItem.
+     * Moved from an implementation of IItemModelMapper on 6-10-2015 by Kevin
+     *
+     * @param filterViewModel a viewmodel, not null
+     * @return ResearchFilterItem or null if processing fails
+     */
+    private ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel) {
+
+        if (filterViewModel == null) {
+
+            return null;
+        }
+
+        ResearchFilterItem filterItem = new ResearchFilterItem();
+
+        filterItem.setPrimaryDataset(filterViewModel.getPrimaryDataset());
+        filterItem.setSecondaryDataset(filterViewModel.getSecondaryDataset());
+        filterItem.setGraphType(filterViewModel.getGraphType());
+        filterItem.setStartDate(filterViewModel.getStartDate());
+        filterItem.setEndDate(filterViewModel.getEndDate());
+
+        Integer groupFactor = filterViewModel.getGroupFactor();
+        filterItem.setGroupFactor(groupFactor);
+        if (groupFactor != null && groupFactor > 0) {
+
+            filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
+        } else {
+
+            filterItem.setGroupPrimary(false);
+        }
+
+        filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
+        filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
+        filterItem.setMedicationName(filterViewModel.getMedicationName());
+
+        return filterItem;
     }
 
 }

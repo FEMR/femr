@@ -21,10 +21,11 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IMissionTripService;
-import femr.common.UIModelMapper;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
@@ -47,6 +48,7 @@ public  class EncounterService implements IEncounterService {
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IUser> userRepository;
     private final IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public EncounterService(IMissionTripService missionTripService,
@@ -56,7 +58,8 @@ public  class EncounterService implements IEncounterService {
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IRepository<IUser> userRepository,
-                            IDataModelMapper dataModelMapper) {
+                            IDataModelMapper dataModelMapper,
+                            @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.missionTripService = missionTripService;
         this.chiefComplaintRepository = chiefComplaintRepository;
@@ -66,6 +69,7 @@ public  class EncounterService implements IEncounterService {
         this.tabFieldRepository = tabFieldRepository;
         this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -118,7 +122,7 @@ public  class EncounterService implements IEncounterService {
             }
 
 
-            response.setResponseObject(UIModelMapper.createPatientEncounterItem(newPatientEncounter));
+            response.setResponseObject(itemModelMapper.createPatientEncounterItem(newPatientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -153,7 +157,7 @@ public  class EncounterService implements IEncounterService {
             patientEncounter = patientEncounterRepository.update(patientEncounter);
 
 
-            response.setResponseObject(UIModelMapper.createPatientEncounterItem(patientEncounter));
+            response.setResponseObject(itemModelMapper.createPatientEncounterItem(patientEncounter));
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
@@ -208,7 +212,7 @@ public  class EncounterService implements IEncounterService {
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
-                UserItem userItem = UIModelMapper.createUserItem(patientEncounter.getDoctor());
+                UserItem userItem = itemModelMapper.createUserItem(patientEncounter.getDoctor());
                 response.setResponseObject(userItem);
             }
         } catch (Exception ex) {
@@ -447,7 +451,7 @@ public  class EncounterService implements IEncounterService {
             } else {
                 for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
                     if (petf.getTabField() != null)
-                        problemItems.add(UIModelMapper.createProblemItem(petf.getTabFieldValue()));
+                        problemItems.add(itemModelMapper.createProblemItem(petf.getTabFieldValue()));
                 }
                 response.setResponseObject(problemItems);
             }
@@ -475,7 +479,7 @@ public  class EncounterService implements IEncounterService {
             if (petf.getTabField().getTabFieldSize() != null)
                 size = petf.getTabField().getTabFieldSize().getName();
 
-            tabFieldItems.add(UIModelMapper.createTabFieldItem(
+            tabFieldItems.add(itemModelMapper.createTabFieldItem(
                             petf.getTabField().getName(),
                             petf.getTabField().getTabFieldType().getName(),
                             size,

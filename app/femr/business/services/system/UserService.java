@@ -20,9 +20,10 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUserService;
-import femr.common.UIModelMapper;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.IDataModelMapper;
@@ -44,17 +45,20 @@ public class UserService implements IUserService {
     private final IPasswordEncryptor passwordEncryptor;
     private final IRepository<IRole> roleRepository;
     private final IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public UserService(IRepository<IUser> userRepository,
                        IPasswordEncryptor passwordEncryptor,
                        IRepository<IRole> roleRepository,
-                       IDataModelMapper dataModelMapper) {
+                       IDataModelMapper dataModelMapper,
+                       @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
         this.roleRepository = roleRepository;
         this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -81,7 +85,7 @@ public class UserService implements IUserService {
             }
 
             newUser = userRepository.create(newUser);
-            response.setResponseObject(UIModelMapper.createUserItem(newUser));
+            response.setResponseObject(itemModelMapper.createUserItem(newUser));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -106,7 +110,7 @@ public class UserService implements IUserService {
         List<UserItem> userItems = new ArrayList<>();
         if (users.size() > 0) {
             for (IUser user : users) {
-                userItems.add(UIModelMapper.createUserItem(user));
+                userItems.add(itemModelMapper.createUserItem(user));
             }
             response.setResponseObject(userItems);
         } else {
@@ -126,7 +130,7 @@ public class UserService implements IUserService {
             IUser user = userRepository.findOne(query);
             user.setDeleted(!user.getDeleted());
             user = userRepository.update(user);
-            response.setResponseObject(UIModelMapper.createUserItem(user));
+            response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -145,7 +149,7 @@ public class UserService implements IUserService {
         try {
             IUser user = userRepository.findOne(query);
             UserItem userItem;
-            userItem = UIModelMapper.createUserItem(user);
+            userItem = itemModelMapper.createUserItem(user);
             response.setResponseObject(userItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -187,7 +191,7 @@ public class UserService implements IUserService {
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
             user = userRepository.update(user);
-            response.setResponseObject(UIModelMapper.createUserItem(user));
+            response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }

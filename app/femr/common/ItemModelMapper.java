@@ -32,16 +32,13 @@ import java.util.List;
  * Responsible for creating item objects (common/models)
  * Only visible to ui & service layer.
  */
-public class UIModelMapper {
+public class ItemModelMapper implements IItemModelMapper {
 
     /**
-     * Generate and provide an instance of CityItem.
-     *
-     * @param cityName    name of the city, not null
-     * @param countryName name of the country that the city is in, not null
-     * @return a new city item or null if processing fails
+     * {@inheritDoc}
      */
-    public static CityItem createCityItem(String cityName, String countryName) {
+    @Override
+    public CityItem createCityItem(String cityName, String countryName) {
 
         if (StringUtils.isNullOrWhiteSpace(cityName) || StringUtils.isNullOrWhiteSpace(countryName)) {
 
@@ -57,12 +54,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of MedicationItem.
-     *
-     * @param medication the medication data item, not null
-     * @return a new MedicationItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static MedicationItem createMedicationItem(IMedication medication) {
+    @Override
+    public MedicationItem createMedicationItem(IMedication medication) {
 
         if (medication == null) {
 
@@ -95,12 +90,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of MissionItem.
-     *
-     * @param missionTeam the mission team data item, not null
-     * @return a new MissionItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static MissionItem createMissionItem(IMissionTeam missionTeam) {
+    @Override
+    public MissionItem createMissionItem(IMissionTeam missionTeam) {
 
         if (missionTeam == null) {
 
@@ -129,25 +122,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of PatientItem. See parameter descriptions for which fields must be filled out.
-     *
-     * @param id                 id of the patient, not null
-     * @param firstName          first name of the patient, not null
-     * @param lastName           last name of the patient, not null
-     * @param city               city that the patient lives in, not null
-     * @param address            address of the patient, may be null
-     * @param userId             id of the user that checked in the patient in triage, not null
-     * @param age                age of the patient, may be null
-     * @param sex                sex of the patient, may be null
-     * @param weeksPregnant      how many weeks pregnant the patient is, may be null
-     * @param heightFeet         how tall the patient is, may be null
-     * @param heightInches       how tall the patient is, may be null
-     * @param weight             how much the patient weighs, may be null
-     * @param pathToPatientPhoto filepath to the patient photo, may be null
-     * @param photoId            id of the patients photo, may be null
-     * @return a new PatientItem or null if processing fails, may be null
+     * {@inheritDoc}
      */
-    public static PatientItem createPatientItem(int id,
+    @Override
+    public PatientItem createPatientItem(int id,
                                                 String firstName,
                                                 String lastName,
                                                 String city,
@@ -213,12 +191,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of PatientEncounterItem
-     *
-     * @param patientEncounter patient encounter info, not null
-     * @return a new PatientEncounterItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter) {
+    @Override
+    public PatientEncounterItem createPatientEncounterItem(IPatientEncounter patientEncounter) {
 
         if (patientEncounter == null || patientEncounter.getPatient() == null) {
 
@@ -250,15 +226,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of PhotoItem
-     *
-     * @param id              id of the photo, not null
-     * @param description     description of the photo, may be null
-     * @param insertTimeStamp photo timestamp, not null
-     * @param imageURL        url to the image, not null
-     * @return a new PhotoItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static PhotoItem createPhotoItem(int id, String description, Date insertTimeStamp, String imageURL) {
+    @Override
+    public PhotoItem createPhotoItem(int id, String description, Date insertTimeStamp, String imageURL) {
 
         if (StringUtils.isNullOrWhiteSpace(imageURL) || insertTimeStamp == null) {
 
@@ -276,16 +247,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of PrescriptionItem
-     *
-     * @param id            id of the prescription, not null
-     * @param name          name of the prescription, not null
-     * @param replacementId id of the prescription that replaced this prescription, may be null
-     * @param firstName     first name of the person that prescribed the medication, may be null
-     * @param lastName      last name of the person that prescribed the medication, may be null
-     * @return a new PrescriptionItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName) {
+    @Override
+    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -307,12 +272,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of ProblemItem.
-     *
-     * @param name the name of the problem, not null
-     * @return a new ProblemItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static ProblemItem createProblemItem(String name) {
+    @Override
+    public ProblemItem createProblemItem(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -327,50 +290,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of ResearchFilterItem.
-     *
-     * @param filterViewModel a viewmodel, not null
-     * @return ResearchFilterItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static ResearchFilterItem createResearchFilterItem(FilterViewModel filterViewModel) {
-
-        if (filterViewModel == null) {
-
-            return null;
-        }
-
-        ResearchFilterItem filterItem = new ResearchFilterItem();
-
-        filterItem.setPrimaryDataset(filterViewModel.getPrimaryDataset());
-        filterItem.setSecondaryDataset(filterViewModel.getSecondaryDataset());
-        filterItem.setGraphType(filterViewModel.getGraphType());
-        filterItem.setStartDate(filterViewModel.getStartDate());
-        filterItem.setEndDate(filterViewModel.getEndDate());
-
-        Integer groupFactor = filterViewModel.getGroupFactor();
-        filterItem.setGroupFactor(groupFactor);
-        if (groupFactor != null && groupFactor > 0) {
-
-            filterItem.setGroupPrimary(filterViewModel.isGroupPrimary());
-        } else {
-
-            filterItem.setGroupPrimary(false);
-        }
-
-        filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
-        filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
-        filterItem.setMedicationName(filterViewModel.getMedicationName());
-
-        return filterItem;
-    }
-
-    /**
-     * Generate and provide an instance of SettingItem.
-     *
-     * @param systemSettings a list of all system settings, not null
-     * @return a new SettingItem or null if processing fails
-     */
-    public static SettingItem createSettingItem(List<? extends ISystemSetting> systemSettings) {
+    @Override
+    public SettingItem createSettingItem(List<? extends ISystemSetting> systemSettings) {
 
         SettingItem settingItem = new SettingItem();
 
@@ -403,15 +326,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of TabItem.
-     *
-     * @param name            name of the tab, not null
-     * @param isCustom        was the tab custom made, not null
-     * @param leftColumnSize  size of the left column, not null
-     * @param rightColumnSize size of the right column, not null
-     * @return a new TabItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize) {
+    @Override
+    public TabItem createTabItem(String name, boolean isCustom, Integer leftColumnSize, Integer rightColumnSize) {
 
         if (StringUtils.isNullOrWhiteSpace(name) ||
                 leftColumnSize == null ||
@@ -431,19 +349,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of TabFieldItem.
-     *
-     * @param name           the name of the field, not null
-     * @param type           the fields type e.g. number, text, may be null
-     * @param size           the size of the field e.g. small, med, large, may be null
-     * @param order          sorting order for the field, may be null
-     * @param placeholder    placeholder text for the field, may be null
-     * @param value          current value of the field, may be null
-     * @param chiefComplaint what chief complaint the field belongs to,, may be null
-     * @param isCustom       identifies if the tabfielditem is custom made, not null
-     * @return a new TabFieldItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static TabFieldItem createTabFieldItem(String name,
+    @Override
+    public TabFieldItem createTabFieldItem(String name,
                                                   String type,
                                                   String size,
                                                   Integer order,
@@ -478,20 +387,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of TabFieldItem overloaded to include userName
-     *
-     * @param name           the name of the field, not null
-     * @param type           the fields type e.g. number, text, may be null
-     * @param size           the size of the field e.g. small, med, large, may be null
-     * @param order          sorting order for the field, may be null
-     * @param placeholder    placeholder text for the field, may be null
-     * @param value          current value of the field, may be null
-     * @param chiefComplaint what chief complaint the field belongs to,, may be null
-     * @param isCustom       identifies if the tabfielditem is custom made, not null
-     * @param userName       User Name of user who created the TabFieldItem
-     * @return a new TabFieldItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static TabFieldItem createTabFieldItem(String name,
+    @Override
+    public TabFieldItem createTabFieldItem(String name,
                                                   String type,
                                                   String size,
                                                   Integer order,
@@ -505,15 +404,12 @@ public class UIModelMapper {
             temp.setUserName(userName);
         return temp;
     }
+
     /**
-     * Generate and provide an instance of TeamItem.
-     *
-     * @param name        name of the team, not null
-     * @param location    where the team is based out of, may be null
-     * @param description a description of the team, may be null
-     * @return a new team item or null if processing fails
+     * {@inheritDoc}
      */
-    public static TeamItem createTeamItem(String name, String location, String description) {
+    @Override
+    public TeamItem createTeamItem(String name, String location, String description) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -529,18 +425,11 @@ public class UIModelMapper {
         return teamItem;
     }
 
-
     /**
-     * Generate and provide an instance of TripItem.
-     *
-     * @param teamName    name of the team, not null
-     * @param tripCity    city of the trip, not null
-     * @param tripCountry country of the trip, not null
-     * @param startDate   when the trip starts, not null
-     * @param endDate     when the trip ends, not null
-     * @return a new trip item or null if processing fails
+     * {@inheritDoc}
      */
-    public static TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
+    @Override
+    public TripItem createTripItem(String teamName, String tripCity, String tripCountry, Date startDate, Date endDate) {
 
         if (StringUtils.isNullOrWhiteSpace(teamName) ||
                 StringUtils.isNullOrWhiteSpace(tripCity) ||
@@ -563,12 +452,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of UserItem.
-     *
-     * @param user DAO user, not null
-     * @return new userItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static UserItem createUserItem(IUser user) {
+    @Override
+    public UserItem createUserItem(IUser user) {
 
         if (user == null) {
 
@@ -595,13 +482,10 @@ public class UIModelMapper {
     }
 
     /**
-     * Generate and provide an instance of VitalItem.
-     *
-     * @param name  name of the vital, not null
-     * @param value value of the vital, may be null
-     * @return a new VitalItem or null if processing fails
+     * {@inheritDoc}
      */
-    public static VitalItem createVitalItem(String name, Float value) {
+    @Override
+    public VitalItem createVitalItem(String name, Float value) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 

@@ -19,10 +19,11 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
+import com.google.inject.name.Named;
 import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPhotoService;
-import femr.common.UIModelMapper;
+import femr.common.IItemModelMapper;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
@@ -56,17 +57,20 @@ public class PhotoService implements IPhotoService {
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
     private IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
-                        IDataModelMapper dataModelMapper) {
+                        IDataModelMapper dataModelMapper,
+                        @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
         this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
 
         this.Init();
     }
@@ -281,7 +285,7 @@ public class PhotoService implements IPhotoService {
                             .eq("id", pep.getPhotoId());
                     try {
                         IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
-                        returnList.add(UIModelMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                        returnList.add(itemModelMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
                     } catch (Exception ex) {
                         response.addError("", ex.getMessage());
                         return response;

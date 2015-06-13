@@ -21,9 +21,10 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IVitalService;
-import femr.common.UIModelMapper;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
 import femr.data.IDataModelMapper;
@@ -48,17 +49,20 @@ public class VitalService implements IVitalService {
     private final IRepository<IVital> vitalRepository;
     private final IDataModelMapper dataModelMapper;
     private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                         IRepository<IVital> vitalRepository,
                         IDataModelMapper dataModelMapper,
-                        IRepository<ISystemSetting> settingsReposity) {
+                        IRepository<ISystemSetting> settingsReposity,
+                        @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
         this.dataModelMapper = dataModelMapper;
         this.systemSettingRepository = settingsReposity;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -95,7 +99,7 @@ public class VitalService implements IVitalService {
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             for (IPatientEncounterVital pev : newPatientEncounterVitals) {
                 if (pev.getVital() != null)
-                    vitalItems.add(UIModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
+                    vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
 
             response.setResponseObject(vitalItems);
@@ -117,7 +121,7 @@ public class VitalService implements IVitalService {
             List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IVital v : vitals) {
-                vitalItems.add(UIModelMapper.createVitalItem(v.getName(), null));
+                vitalItems.add(itemModelMapper.createVitalItem(v.getName(), null));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
@@ -165,7 +169,7 @@ public class VitalService implements IVitalService {
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IPatientEncounterVital pev : patientEncounterVitals) {
                 if (pev.getVital() != null)
-                    vitalItems.add(UIModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
+                    vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
 
             response.setResponseObject(vitalItems);

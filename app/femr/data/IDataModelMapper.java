@@ -34,7 +34,7 @@ public interface IDataModelMapper {
      * @param sortOrder          the order in which the chief complaint is sorted(when dealing with >1 chief complaint), may be null
      * @return an implementation of IChiefComplaint or null if processing fails
      */
-    public IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder);
+    IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder);
 
     /**
      * Generate and provide an implementation of IMedication.
@@ -42,7 +42,7 @@ public interface IDataModelMapper {
      * @param name name of the medication, not null
      * @return an implementation of IMedication or null if processing fails
      */
-    public IMedication createMedication(String name);
+    IMedication createMedication(String name);
 
     /**
      * Generate and provide an implementation of IMedication for use in adding to inventory.
@@ -54,7 +54,7 @@ public interface IDataModelMapper {
      * @param medicationForm        the medications form e.g. cream/chewable/pill, may be null
      * @return an implementation of IMedication or null if processing fails
      */
-    public IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
+    IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrug.
@@ -65,7 +65,7 @@ public interface IDataModelMapper {
      * @param medicationActiveDrugName the drug name, may be null
      * @return an implementation of IMedicationActiveDrug
      */
-    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName);
+    IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrugName.
@@ -73,7 +73,7 @@ public interface IDataModelMapper {
      * @param name name of the drug, not null
      * @return an implementation of IMedicationActiveDrugName or null if processing fails
      */
-    public IMedicationActiveDrugName createMedicationActiveDrugName(String name);
+    IMedicationActiveDrugName createMedicationActiveDrugName(String name);
 
     /**
      * Generate and provide an implementation of IMedicationForm.
@@ -81,7 +81,7 @@ public interface IDataModelMapper {
      * @param name name of the form e.g. cream/chewable/pill, not null
      * @return an implementation of IMedicationForm or null if processing fails
      */
-    public IMedicationForm createMedicationForm(String name);
+    IMedicationForm createMedicationForm(String name);
 
     /**
      * Generate and provide an implementation of IMissionCity.
@@ -90,7 +90,7 @@ public interface IDataModelMapper {
      * @param missionCountry the country model, not null
      * @return an implementation of IMissionCity or null if processing fails
      */
-    public IMissionCity createMissionCity(String name, IMissionCountry missionCountry);
+    IMissionCity createMissionCity(String name, IMissionCountry missionCountry);
 
     /**
      * Generate and provide an implementation of IMissionTeam.
@@ -100,7 +100,7 @@ public interface IDataModelMapper {
      * @param description a description of the team, may be null
      * @return an implementation of IMissionTeam or null if processing fails
      */
-    public IMissionTeam createMissionTeam(String name, String location, String description);
+    IMissionTeam createMissionTeam(String name, String location, String description);
 
     /**
      * Generate and provide an implementation of IMissionTrip.
@@ -112,7 +112,7 @@ public interface IDataModelMapper {
      * @param missionTeam the country where the trip is taking place, not null
      * @return an implementation of IMissionTrip or null if processing fails
      */
-    public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam);
+    IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam);
 
     /**
      * Generate and provide an implementation of IPatient.
@@ -127,7 +127,7 @@ public interface IDataModelMapper {
      * @param photoID   the id of a photo of the patient, may be null
      * @return an implementation of IPatient or null if processing fails
      */
-    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID);
+    IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID);
 
     /**
      * Generate and provide an implementation of IPatientEncounter.
@@ -140,7 +140,7 @@ public interface IDataModelMapper {
      * @param tripId                     id of the trip, may be null
      * @return an implementation of IPatientEncounter or null if processing fails
      */
-    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId);
+    IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId);
 
     /**
      * Generate and provide an implementation of IPatientEncounterTabField
@@ -153,7 +153,7 @@ public interface IDataModelMapper {
      * @param chiefComplaintId id of the chief complaint, may be null
      * @return an implementation of IPatientEncounterTabfield or null if processing fails
      */
-    public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId);
+    IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId);
 
     /**
      * Generate and provide an implementation of IPatientEncounterVital
@@ -165,7 +165,7 @@ public interface IDataModelMapper {
      * @param value       value of the vital, not null
      * @return an implementation of IPatientEncounterVital or null if processing fails
      */
-    public IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, int vitalID, float value);
+    IPatientEncounterVital createPatientEncounterVital(int encounterId, int userId, String time, int vitalID, float value);
 
     /**
      * Generate and provide an implementation of IPatientPrescription
@@ -178,7 +178,7 @@ public interface IDataModelMapper {
      * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
+    IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
 
     /**
      * Generate and provide an implementation of IPhoto.
@@ -187,7 +187,7 @@ public interface IDataModelMapper {
      * @param filePath    path to the file, not null
      * @return an implementation of IPhoto or null if processing fails
      */
-    public IPhoto createPhoto(String description, String filePath);
+    IPhoto createPhoto(String description, String filePath);
 
     /**
      * Generate and provide an implementation of IPhoto.
@@ -195,7 +195,7 @@ public interface IDataModelMapper {
      * @param name name of the role, may be null
      * @return an implementation of IRole
      */
-    public IRole createRole(String name);
+    IRole createRole(String name);
 
     /**
      * Generate and provide an implementation of ITab.
@@ -208,7 +208,7 @@ public interface IDataModelMapper {
      * @param userId    id of the user creating the tab, not null
      * @return an implementation of ITab or null if processing fails
      */
-    public ITab createTab(DateTime date, int leftSize, int rightSize, String name, boolean isDeleted, int userId);
+    ITab createTab(DateTime date, int leftSize, int rightSize, String name, boolean isDeleted, int userId);
 
     /**
      * Generate and provide an implementation of ITabField
@@ -222,7 +222,7 @@ public interface IDataModelMapper {
      * @param tabID          id of {@link femr.data.models.core.ITab}, not null
      * @return an implementation of ITabField or null if processing fails
      */
-    public ITabField createTabField(String name, Integer order, String placeholder, boolean isDeleted, int tabFieldSizeID, int tabFieldTypeID, int tabID);
+    ITabField createTabField(String name, Integer order, String placeholder, boolean isDeleted, int tabFieldSizeID, int tabFieldTypeID, int tabID);
 
     /**
      * Generate and provide an implementation of IUser
@@ -238,5 +238,5 @@ public interface IDataModelMapper {
      * @param roles           a list of roles, must have at least one, not null
      * @return an implementation of IUser or null if processing fails
      */
-    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
 }

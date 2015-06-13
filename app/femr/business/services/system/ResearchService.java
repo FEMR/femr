@@ -44,34 +44,16 @@ public class ResearchService implements IResearchService {
 
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
-    private final IRepository<IResearchEncounterVital> researchEncounterVitalRepository;
-    private final IRepository<IPatientEncounter> patientEncounterRepository;
-    private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private final IRepository<IPatientPrescription> prescriptionRepository;
-    private final IRepository<IMedication> medicationRepository;
-    private final IDataModelMapper dataModelMapper;
 
     /**
      * Initializes the research service and injects the dependence
      */
     @Inject
     public ResearchService(IRepository<IResearchEncounter> researchEncounterRepository,
-                           IRepository<IResearchEncounterVital> researchEncounterVitalRepository,
-                           IRepository<IPatientEncounter> patientEncounterRepository,
-                           IRepository<IPatientEncounterVital> patientEncounterVitaRepository,
-                           IRepository<IVital> vitalRepository,
-                           IRepository<IPatientPrescription> prescriptionRepository,
-                           IRepository<IMedication> medicationRepository,
-                           IDataModelMapper dataModelMapper) {
+                           IRepository<IVital> vitalRepository) {
 
         this.researchEncounterRepository = researchEncounterRepository;
-        this.researchEncounterVitalRepository = researchEncounterVitalRepository;
-        this.patientEncounterRepository = patientEncounterRepository;
-        this.patientEncounterVitalRepository = patientEncounterVitaRepository;
         this.vitalRepository = vitalRepository;
-        this.prescriptionRepository = prescriptionRepository;
-        this.medicationRepository = medicationRepository;
-        this.dataModelMapper = dataModelMapper;
     }
 
 
@@ -126,7 +108,11 @@ public class ResearchService implements IResearchService {
         return response;
     }
 
-    // take filters and make appropriate query, get list of matching patient encounters
+    /**
+     * take filters and make appropriate query, get list of matching patient encounters
+     * @param filters an object that contains all possible filters for the data
+     * @return a list of the encounters
+     */
     private List<? extends IResearchEncounter> queryPatientData(ResearchFilterItem filters){
 
         String datasetName = filters.getPrimaryDataset();

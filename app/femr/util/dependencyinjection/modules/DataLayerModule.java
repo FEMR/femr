@@ -33,10 +33,6 @@ public class DataLayerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-
-        // DataModelMapper Injection
-        bind(IDataModelMapper.class).to(DataModelMapper.class);
-
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
@@ -69,7 +65,6 @@ public class DataLayerModule extends AbstractModule {
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
-
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});

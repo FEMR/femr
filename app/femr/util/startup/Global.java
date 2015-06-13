@@ -22,6 +22,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import femr.util.dependencyinjection.modules.BusinessLayerModule;
 import femr.util.dependencyinjection.modules.DataLayerModule;
+import femr.util.dependencyinjection.modules.MapperModule;
 import femr.util.dependencyinjection.modules.UtilitiesModule;
 import play.Application;
 import play.GlobalSettings;
@@ -75,6 +76,6 @@ public class Global extends GlobalSettings {
     } */
 
     private static Injector createInjector() {
-        return Guice.createInjector(new BusinessLayerModule(), new DataLayerModule(), new UtilitiesModule());
+        return Guice.createInjector(new BusinessLayerModule(), new DataLayerModule(), new UtilitiesModule(), new MapperModule());
     }
 }

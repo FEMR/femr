@@ -184,7 +184,6 @@ public class TriageController extends Controller {
         //Alaa Serhan
         if (viewModel.getTemperature() != null) {
             Float temperature = viewModel.getTemperature();
-
             newVitals.put("temperature", temperature);
         }
 
@@ -192,19 +191,20 @@ public class TriageController extends Controller {
             newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
 
-        //Alaa Serhan
-        if (viewModel.getHeightFeet() != null && viewModel.getHeightInches() != null) {
-            Float heightFeet = viewModel.getHeightFeet().floatValue();
-            Float heightInches = viewModel.getHeightInches().floatValue();
 
+        if (viewModel.getHeightFeet() != null) {
+            Float heightFeet = viewModel.getHeightFeet().floatValue();
             newVitals.put("heightFeet", heightFeet);
+        }
+
+        if (viewModel.getHeightInches() != null) {
+           Float heightInches = viewModel.getHeightInches().floatValue();
             newVitals.put("heightInches", heightInches);
         }
 
         //Alaa Serhan
         if (viewModel.getWeight() != null) {
             Float weight = viewModel.getWeight();
-
             newVitals.put("weight", weight);
         }
 

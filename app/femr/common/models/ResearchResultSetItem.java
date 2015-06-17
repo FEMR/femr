@@ -27,7 +27,8 @@ public class ResearchResultSetItem {
     private float average;
     private float dataRangeLow;
     private float dataRangeHigh;
-    private float total;
+    private float totalPatients;
+    private float totalEncounters;
     private double standardDeviation;
 
     private String dataType;
@@ -71,12 +72,20 @@ public class ResearchResultSetItem {
         this.dataRangeHigh = dataRangeHigh;
     }
 
-    public float getTotal() {
-        return total;
+    public float getTotalPatients() {
+        return totalPatients;
     }
 
-    public void setTotal(float total) {
-        this.total = total;
+    public void setTotalPatients(float totalPatients) {
+        this.totalPatients = totalPatients;
+    }
+
+    public float getTotalEncounters() {
+        return totalEncounters;
+    }
+
+    public void setTotalEncounters(float totalEncounters) {
+        this.totalEncounters = totalEncounters;
     }
 
     public double getStandardDeviation() {

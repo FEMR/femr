@@ -133,7 +133,8 @@ var graphLoaderModule = (function(){
     var statisticsFields = {
         average: $("#average"),
         range: $("#range"),
-        total: $("#total")
+        totalPatients: $("#totalPatients"),
+        totalEncounters: $("#totalEncounters")
     };
 
     var showGraphLoadingIcon = function(){
@@ -159,10 +160,11 @@ var graphLoaderModule = (function(){
         d3.selectAll("svg > *").remove();
         $(statisticsFields.range).find(".val").text("");
         $(statisticsFields.average).find(".val").text("");
-        $(statisticsFields.total).find(".val").text("");
+        $(statisticsFields.totalPatients).find(".val").text("");
+        $(statisticsFields.totalEncounters).find(".val").text("");
 
         // post graph
-        $.post("/research/graph", postData, function (rawData) {
+        $.post("/research", postData, function (rawData) {
 
             jsonData = $.parseJSON(rawData);
 
@@ -310,13 +312,22 @@ var graphLoaderModule = (function(){
                 }
             }
 
-            if ("total" in jsonData) {
+            if ("totalPatients" in jsonData) {
 
-                var total = jsonData.total;
-                $(statisticsFields.total).find(".val").text(total + " Patients");
+                var total = jsonData.totalPatients;
+                $(statisticsFields.totalPatients).find(".val").text(total);
             }
             else {
-                $(statisticsFields.total).find(".val").text("n/a");
+                $(statisticsFields.totalPatients).find(".val").text("n/a");
+            }
+
+            if ("totalEncounters" in jsonData) {
+
+                var total = jsonData.totalEncounters;
+                $(statisticsFields.totalEncounters).find(".val").text(total);
+            }
+            else {
+                $(statisticsFields.totalEncounters).find(".val").text("n/a");
             }
 
             hideGraphLoadingIcon();

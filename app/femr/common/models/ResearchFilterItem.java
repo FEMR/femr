@@ -30,6 +30,7 @@ public class ResearchFilterItem {
     private Float filterRangeStart;
     private Float filterRangeEnd;
     private String medicationName;
+    private String orderBy;
 
     public String getPrimaryDataset() {
         return primaryDataset;
@@ -110,4 +111,12 @@ public class ResearchFilterItem {
     public String getMedicationName() { return medicationName; }
 
     public void setMedicationName(String medicationName) { this.medicationName = medicationName; }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
 }

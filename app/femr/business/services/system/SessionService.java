@@ -18,7 +18,9 @@
 */
 package femr.business.services.system;
 
+import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
+import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
@@ -27,12 +29,15 @@ import femr.business.wrappers.sessions.ISessionHelper;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.ILoginAttempt;
+import femr.data.models.core.IRole;
+import femr.data.models.core.ISystemSetting;
 import femr.data.models.core.IUser;
+import femr.data.models.mysql.Role;
+import femr.data.models.mysql.SystemSetting;
 import femr.util.encryptions.IPasswordEncryptor;
-
 import java.net.InetAddress;
-
-//import static play.mvc.Controller.session;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SessionService implements ISessionService {
 
@@ -41,19 +46,25 @@ public class SessionService implements ISessionService {
     private ISessionHelper sessionHelper;
     private final IRepository<ILoginAttempt> loginAttemptRepository;
     private final IDataModelMapper dataModelMapper;
+    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IRepository<IRole> roleRepository;
 
     @Inject
     public SessionService(IUserService userService,
                           IPasswordEncryptor passwordEncryptor,
                           ISessionHelper sessionHelper,
                           IRepository<ILoginAttempt> loginAttemptRepository,
-                          IDataModelMapper dataModelMapper) {
+                          IDataModelMapper dataModelMapper,
+                          IRepository<ISystemSetting> systemSettingRepository,
+                          IRepository<IRole> roleRepository) {
 
         this.userService = userService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
         this.loginAttemptRepository = loginAttemptRepository;
         this.dataModelMapper = dataModelMapper;
+        this.systemSettingRepository = systemSettingRepository;
+        this.roleRepository = roleRepository;
     }
 
     /**
@@ -106,6 +117,7 @@ public class SessionService implements ISessionService {
      */
     @Override
     public CurrentUser retrieveCurrentUserSession() {
+
         int currentUserId = sessionHelper.getInt("currentUser");
 
         if (currentUserId > 0) {
@@ -129,6 +141,46 @@ public class SessionService implements ISessionService {
     }
 
     private CurrentUser createCurrentUser(IUser user) {
+        user = checkResearchFeature(user);
         return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles());
+    }
+
+    /**
+     * Checks the research setting and strips the user of roles if it is turned on.
+     *
+     * @param user the user being evaluated
+     * @return the updated user
+     */
+    private IUser checkResearchFeature(IUser user) {
+
+        //get the setting to check whether or not we need to restrict everyone to the research role
+        ExpressionList<SystemSetting> settingQuery = QueryProvider.getSystemSettingQuery().where().eq("name", "Research Only");
+        ISystemSetting systemSetting = systemSettingRepository.findOne(settingQuery);
+
+        //if the research setting is active, we need to eliminiate all the roles except researcher and admin (if applicable)
+        if (systemSetting.isActive()) {
+            //Java 8 could make this way more succinct damnit
+            List<? extends IRole> currentRoles = user.getRoles();
+            //grab the researcher role
+            ExpressionList<Role> researcherRoleQuery = QueryProvider.getRoleQuery().where().eq("name", "Researcher");
+            IRole researcherRole = roleRepository.findOne(researcherRoleQuery);
+            //grab the admin role
+            ExpressionList<Role> adminRoleQuery = QueryProvider.getRoleQuery().where().eq("name", "Administrator");
+            IRole adminRole = roleRepository.findOne(adminRoleQuery);
+            //grab the superuser role
+            ExpressionList<Role> superuserRoleQuery = QueryProvider.getRoleQuery().where().eq("name", "SuperUser");
+            IRole superuserRole = roleRepository.findOne(superuserRoleQuery);
+            List<IRole> newRoles = new ArrayList<>();
+            //make the user a researcher
+            newRoles.add(researcherRole);
+            //if the user has the admin role, make them an admin as well
+            if (currentRoles.contains(adminRole))
+                newRoles.add(adminRole);
+            if (currentRoles.contains(superuserRole))
+                newRoles.add(superuserRole);
+            user.setRoles(newRoles);
+        }
+
+        return user;
     }
 }

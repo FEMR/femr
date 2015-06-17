@@ -1,8 +1,8 @@
-
-var filterMenuModule = (function(){
+var filterMenuModule = (function () {
 
     var activeSubMenu = null;
     var meds = null;
+    var form = $("#graph-options");
     var filterValues = {
 
         dataset1: null,
@@ -37,9 +37,9 @@ var filterMenuModule = (function(){
     };
 
 
-    var closeSubMenu = function(){
+    var closeSubMenu = function () {
 
-        if( activeSubMenu == null ) return;
+        if (activeSubMenu == null) return;
 
         $(activeSubMenu).removeClass("active");
         $(activeSubMenu).children("ul.submenu").hide();
@@ -47,9 +47,9 @@ var filterMenuModule = (function(){
         activeSubMenu = null;
     };
 
-    var openSubMenu = function(){
+    var openSubMenu = function () {
 
-        if( activeSubMenu == null ) return;
+        if (activeSubMenu == null) return;
 
         // reset any previously shown menu
         $(".menu-item").removeClass("active").find("ul.submenu").hide();
@@ -58,13 +58,13 @@ var filterMenuModule = (function(){
         $(activeSubMenu).children("ul.submenu").show();
     };
 
-    var clearFilterPrimary = function(){
+    var clearFilterPrimary = function () {
 
         $(filterFields.rangeStart).val("");
         $(filterFields.rangeEnd).val("");
     };
 
-    var clearGraphOptions = function(){
+    var clearGraphOptions = function () {
 
         // Clear Values
         filterValues.dataset1 = null;
@@ -89,7 +89,7 @@ var filterMenuModule = (function(){
 
         // Set Default EndDate to today
         var defaultEndDate = new Date();
-        if( Object.prototype.toString.call(defaultEndDate) === "[object Date]" && !isNaN(defaultEndDate.getTime()) ) {
+        if (Object.prototype.toString.call(defaultEndDate) === "[object Date]" && !isNaN(defaultEndDate.getTime())) {
 
             var monthNum = defaultEndDate.getUTCMonth() + 1;
             var dayNum = defaultEndDate.getUTCDate();
@@ -106,15 +106,15 @@ var filterMenuModule = (function(){
 
 
         }
-        else{
+        else {
 
             $(filterMenus.filter).find(".val").find(".date").find(".end").text("");
         }
 
         // make default startDate of 120 days ago
-        var defaultStartDate = new Date(defaultEndDate.getTime() - 120*24*60*60*1000);
+        var defaultStartDate = new Date(defaultEndDate.getTime() - 120 * 24 * 60 * 60 * 1000);
         // date field is in format yyyy-MM-dd --> view String like mm/dd/yyyy
-        if( Object.prototype.toString.call(defaultStartDate) === "[object Date]" && !isNaN(defaultStartDate.getTime()) ) {
+        if (Object.prototype.toString.call(defaultStartDate) === "[object Date]" && !isNaN(defaultStartDate.getTime())) {
 
             var monthNum = defaultStartDate.getUTCMonth() + 1;
             var dayNum = defaultStartDate.getUTCDate();
@@ -131,7 +131,7 @@ var filterMenuModule = (function(){
 
 
         }
-        else{
+        else {
 
             $(filterMenus.filter).find(".val").find(".date").find(".start").text("");
         }
@@ -144,7 +144,7 @@ var filterMenuModule = (function(){
 
     };
 
-    var saveAsImage = function(scaleFactor, imageName){
+    var saveAsImage = function (scaleFactor, imageName) {
 
         scaleFactor = typeof scaleFactor !== 'undefined' ? scaleFactor : 1;
 
@@ -154,23 +154,30 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var showImageOptions = function(){
+    var exportData = function () {
+
+        $(form).submit();
+
+        return false;
+    };
+
+    var showImageOptions = function () {
 
         $(".save-image-cont").find(".options").show();
         return false;
     };
 
-    var hideImageOptions = function(){
+    var hideImageOptions = function () {
 
         $(".save-image-cont").find(".options").hide();
         return false;
     };
 
-    var chooseImageSize = function(){
+    var chooseImageSize = function () {
 
         $(".save-image-cont").find(".options").hide();
 
-        var aspectRatio = 5/2.5;
+        var aspectRatio = 5 / 2.5;
 
         // get Image Size
         var imageSize = $(this).data("imagesize");
@@ -179,23 +186,23 @@ var filterMenuModule = (function(){
         var currWidth = $(".main").width();
 
         var graphType = graphLoaderModule.getGraphType();
-        var imageName = graphType + "-chart-"+imageSize+".png"
+        var imageName = graphType + "-chart-" + imageSize + ".png"
 
         // figure out scaleFactor
-        if( imageSize == "small" ){
+        if (imageSize == "small") {
 
             //(700x350)
             var scaleFactor = 700 / currWidth;
             saveAsImage(scaleFactor, imageName);
         }
-        else if( imageSize == "medium" ){
+        else if (imageSize == "medium") {
 
             // (1000x500)
             var scaleFactor = 1000 / currWidth;
             saveAsImage(scaleFactor, imageName);
         }
         // default to large
-        else{
+        else {
 
             // (1200x600)
             var scaleFactor = 1200 / currWidth;
@@ -208,7 +215,7 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var updateAvailableFilterChoices = function(){
+    var updateAvailableFilterChoices = function () {
 
         // run after any filter change
         // make sure what is selected is still valid
@@ -216,8 +223,7 @@ var filterMenuModule = (function(){
 
         // Check currently selected dataset2 validity
         // -- clear if not valid
-        if( filterValues.dataset2 != null &&
-            !allowedFilterValues.isSecondaryDataAllowed(filterValues.dataset1, filterValues.dataset2) ){
+        if (filterValues.dataset2 != null && !allowedFilterValues.isSecondaryDataAllowed(filterValues.dataset1, filterValues.dataset2)) {
 
             // clear Dataset2
             filterValues.dataset2 = null;
@@ -230,30 +236,28 @@ var filterMenuModule = (function(){
         // -- is set
         // -- allowed for dataset1
         // -- dataset1 and dataset2 are set and graph is for combinable
-        if( filterValues.graphType != null ){
+        if (filterValues.graphType != null) {
 
-            if( filterValues.dataset1 != null && filterValues.dataset2 != null &&
-                !allowedFilterValues.isCombinableGraph(filterValues.graphType) ){
-
-                // clear Graph Type
-                filterValues.graphType = null;
-                $(filterMenus.graphType).find(".val").text("");
-                $(filterFields.graphType).val("");
-
-            }
-            else if( filterValues.dataset2 == null &&
-                !allowedFilterValues.isGraphTypeAllowed(filterValues.dataset1, filterValues.graphType) ){
+            if (filterValues.dataset1 != null && filterValues.dataset2 != null && !allowedFilterValues.isCombinableGraph(filterValues.graphType)) {
 
                 // clear Graph Type
                 filterValues.graphType = null;
                 $(filterMenus.graphType).find(".val").text("");
                 $(filterFields.graphType).val("");
+
+            }
+            else if (filterValues.dataset2 == null && !allowedFilterValues.isGraphTypeAllowed(filterValues.dataset1, filterValues.graphType)) {
+
+                // clear Graph Type
+                filterValues.graphType = null;
+                $(filterMenus.graphType).find(".val").text("");
+                $(filterFields.graphType).val("");
             }
 
-            if( filterValues.graphType == "line" || filterValues.graphType == "scatter" ){
-                $(filterFields.groupPrimary).attr("disabled",true);
+            if (filterValues.graphType == "line" || filterValues.graphType == "scatter") {
+                $(filterFields.groupPrimary).attr("disabled", true);
             }
-            else{
+            else {
                 $(filterFields.groupPrimary).removeAttr("disabled");
             }
         }
@@ -271,7 +275,7 @@ var filterMenuModule = (function(){
 
 
         // Disable Graph Types as needed
-        if( filterValues.dataset2 == null ) {
+        if (filterValues.dataset2 == null) {
 
             $(filterMenus.graphType).find(".submenu").find("a").not(".clear").each(function () {
                 if (!allowedFilterValues.isGraphTypeAllowed(filterValues.dataset1, $(this).data("gtype"))) {
@@ -282,11 +286,11 @@ var filterMenuModule = (function(){
                 }
             });
         }
-        else{
+        else {
 
             // Disable All Types but Combined
             $(filterMenus.graphType).find(".submenu").find("a").not(".clear").each(function () {
-                if( !allowedFilterValues.isCombinableGraph($(this).data("gtype")) ){
+                if (!allowedFilterValues.isCombinableGraph($(this).data("gtype"))) {
                     $(this).addClass('disabled');
                 }
                 else {
@@ -298,9 +302,9 @@ var filterMenuModule = (function(){
 
     };
 
-    var chooseDataSet1 = function(){
+    var chooseDataSet1 = function () {
 
-        if( $(this).hasClass('clear') ){
+        if ($(this).hasClass('clear')) {
 
             // clear Dataset2
             filterValues.dataset1 = null;
@@ -319,13 +323,13 @@ var filterMenuModule = (function(){
             }
 
             // set group to true when selecting age for the first time
-            if( filterValues.dataset1 == "age" ){
+            if (filterValues.dataset1 == "age") {
 
                 filterValues.groupFactor = true;
                 //$(filterFields.groupFactor).attr("checked",true);
                 $(filterFields.groupFactor).prop('checked', true);
             }
-            else{
+            else {
 
                 filterValues.groupFactor = false;
                 //$(filterFields.groupFactor).attr("checked",false);
@@ -338,12 +342,12 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var chooseDataSet2 = function(){
+    var chooseDataSet2 = function () {
 
         // do nothing for disabled secondary types
-        if( $(this).hasClass('disabled') ) return false;
+        if ($(this).hasClass('disabled')) return false;
 
-        if( $(this).hasClass('clear') ){
+        if ($(this).hasClass('clear')) {
 
             // clear Dataset2
             filterValues.dataset2 = null;
@@ -365,12 +369,12 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var chooseStartDate = function(){
+    var chooseStartDate = function () {
 
         var dateString = $(filterFields.startDate).val();
         // date field is in format yyyy-MM-dd --> convert to Date object and build string like mm/dd/yyyy
         var startDate = new Date(dateString);
-        if( Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime()) ) {
+        if (Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime())) {
 
             var monthNum = startDate.getUTCMonth() + 1;
             var dayNum = startDate.getUTCDate();
@@ -380,19 +384,19 @@ var filterMenuModule = (function(){
             $(filterMenus.filter).find(".val").find(".date").find(".start").text(startDateString);
             filterValues.startDate = startDateString;
         }
-        else{
+        else {
 
             $(filterMenus.filter).find(".val").find(".date").find(".start").text("");
         }
 
     };
 
-    var chooseEndDate = function(){
+    var chooseEndDate = function () {
 
         var dateString = $(filterFields.endDate).val();
         // date field is in format yyyy-MM-dd --> convert to Date object and build string like mm/dd/yyyy
         var endDate = new Date(dateString);
-        if( Object.prototype.toString.call(endDate) === "[object Date]" && !isNaN(endDate.getTime()) ) {
+        if (Object.prototype.toString.call(endDate) === "[object Date]" && !isNaN(endDate.getTime())) {
 
             var monthNum = endDate.getUTCMonth() + 1;
             var dayNum = endDate.getUTCDate();
@@ -402,17 +406,17 @@ var filterMenuModule = (function(){
             $(filterMenus.filter).find(".val").find(".date").find(".end").text(endDateString);
             filterValues.endDate = endDateString;
         }
-        else{
+        else {
             $(filterMenus.filter).find(".val").find(".date").find(".end").text("");
         }
     };
 
-    var chooseGraphType = function(){
+    var chooseGraphType = function () {
 
         // do nothing for disabled secondary types
-        if( $(this).hasClass('disabled') ) return false;
+        if ($(this).hasClass('disabled')) return false;
 
-        if( $(this).hasClass('clear') ){
+        if ($(this).hasClass('clear')) {
 
             // clear Graph Type
             filterValues.graphType = null;
@@ -435,13 +439,13 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var chooseGroupPrimary = function(){
+    var chooseGroupPrimary = function () {
 
         filterValues.groupFactor = $(this).prop('checked');
         return false;
     };
 
-    var changeRangeValues = function(){
+    var changeRangeValues = function () {
 
         filterValues.rangeStart = $(filterFields.rangeStart).val();
         filterValues.rangeEnd = $(filterFields.rangeEnd).val();
@@ -451,52 +455,50 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var optionLinkClick = function(evt){
+    var optionLinkClick = function (evt) {
 
         // do nothing is tab is within submenu
-        if($(evt.target).parents('ul.submenu').length) {
+        if ($(evt.target).parents('ul.submenu').length) {
             return;
         }
 
         activeSubMenu = $(this);
-        if( $(activeSubMenu).hasClass("active") ) {
+        if ($(activeSubMenu).hasClass("active")) {
             closeSubMenu();
         }
-        else{
+        else {
             openSubMenu();
         }
         return false;
     };
 
-    var checkFilterValid = function(){
+    var checkFilterValid = function () {
 
         var errors = [];
         //var filtersAreValid = true;
 
         // Dataset 1 has valid value
-        if( !allowedFilterValues.isPrimaryDataValid(filterValues.dataset1) ){
+        if (!allowedFilterValues.isPrimaryDataValid(filterValues.dataset1)) {
 
             //filtersAreValid = false;
             errors.push("Choose valid Primary Dataset");
         }
 
         // Dataset 2 has valid value - based on dataset1
-        if( filterValues.dataset2 != null ){
-            if( !allowedFilterValues.isSecondaryDataAllowed(filterValues.dataset1, filterValues.dataset2) ) {
+        if (filterValues.dataset2 != null) {
+            if (!allowedFilterValues.isSecondaryDataAllowed(filterValues.dataset1, filterValues.dataset2)) {
                 //filtersAreValid = false;
                 errors.push("Choose valid Secondary Dataset");
             }
         }
 
         // Graph Type has valid value
-        if( filterValues.dataset2 != null &&
-            !allowedFilterValues.isCombinableGraph(filterValues.graphType) ){
+        if (filterValues.dataset2 != null && !allowedFilterValues.isCombinableGraph(filterValues.graphType)) {
 
             //filtersAreValid = false;
             errors.push("Choose valid Graph Type");
         }
-        else if(filterValues.dataset2 == null &&
-            !allowedFilterValues.isGraphTypeAllowed(filterValues.dataset1, filterValues.graphType) ){
+        else if (filterValues.dataset2 == null && !allowedFilterValues.isGraphTypeAllowed(filterValues.dataset1, filterValues.graphType)) {
 
             //filtersAreValid = false;
             errors.push("Choose valid Graph Type");
@@ -504,82 +506,87 @@ var filterMenuModule = (function(){
 
         // Start Date has value
         // Start Date is before or equal to today
-        if( filterValues.startDate != null ){
+        if (filterValues.startDate != null) {
 
             var startDate = new Date(filterValues.startDate);
-            if( Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime()) ) {
+            if (Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime())) {
 
                 var today = new Date();
-                if( startDate.getTime() > today.getTime() ){
+                if (startDate.getTime() > today.getTime()) {
 
                     errors.push("Start Date cannot be in the future")
                 }
             }
-            else{
+            else {
                 errors.push("Invalid Start Date");
             }
         }
 
         // End Date is after Start Date
         // End Date is 30 days or less from Start Date
-        if( filterValues.endDate != null ){
+        if (filterValues.endDate != null) {
 
             var endDate = new Date(filterValues.endDate);
-            if( Object.prototype.toString.call(endDate) === "[object Date]" && !isNaN(endDate.getTime()) ) {
 
+            //enforce that endDate is a Date object and Time is a number
+            if (Object.prototype.toString.call(endDate) === "[object Date]" && !isNaN(endDate.getTime())) {
+
+                //get todays date
                 var today = new Date();
+
+                //get the start date as an object, why isn't this done with end Date?
                 var startDate = new Date(filterValues.startDate);
-                if( endDate.getTime() > today.getTime() ){
+
+                //end date is in the future
+                if (endDate.getTime() > today.getTime()) {
 
                     errors.push("End Date cannot be in the future");
                 }
-                else if( Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime()) ){
 
+                //enforce that startDate is a Date object and Time is a number
+                else if (Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime())) {
 
                     // if StartDate is more than 1 year before end date
-                    var startTime = startDate.getTime() + (365 * 24 * 60 * 60 * 1000);
+                    //       var startTime = startDate.getTime() + (365 * 24 * 60 * 60 * 1000);
                     //console.log(startTime+" < "+endDate.getTime());
 
-                    if( endDate.getTime() < startDate.getTime() ){
-                        errors.push("End Date is before Start Date");
-                    }
-                    else if( startTime < endDate.getTime() ){
+                    if (endDate.getTime() < startDate.getTime()) {
 
-                        errors.push("Date Range max is 1 year");
+                        errors.push("End Date is before Start Date");
                     }
                 }
             }
-            else{
+            else {
                 errors.push("Invalid End Date");
             }
         }
 
-        if( filterValues.rangeStart != null ) {
+        if (filterValues.rangeStart != null) {
 
-            if( isNaN(+filterValues.rangeStart) || !isFinite(filterValues.rangeStart) ){
+            if (isNaN(+filterValues.rangeStart) || !isFinite(filterValues.rangeStart)) {
 
                 errors.push("Range Start is not a number");
             }
         }
 
-        if( filterValues.rangeEnd != null ) {
+        if (filterValues.rangeEnd != null) {
 
-            if( isNaN(+filterValues.rangeEnd) || !isFinite(filterValues.rangeEnd) ){
+            if (isNaN(+filterValues.rangeEnd) || !isFinite(filterValues.rangeEnd)) {
 
                 errors.push("Range End is not a number");
             }
         }
 
-        if( filterValues.rangeStart != null && filterValues.rangeStart != "" &&
-            filterValues.rangeEnd != null && filterValues.rangeEnd != "" ){
+        if (filterValues.rangeStart != null && filterValues.rangeStart != "" &&
+            filterValues.rangeEnd != null && filterValues.rangeEnd != "") {
 
-            if( parseFloat(filterValues.rangeStart) > parseFloat(filterValues.rangeEnd) ){
+            if (parseFloat(filterValues.rangeStart) > parseFloat(filterValues.rangeEnd)) {
 
                 errors.push("Range Start is larger than End");
             }
         }
 
-        if( filterFields.groupPrimary && filterFields.groupFactor < 1 ){
+        if (filterFields.groupPrimary && filterFields.groupFactor < 1) {
 
             errors.push("Group Factor is less than 1");
         }
@@ -587,7 +594,7 @@ var filterMenuModule = (function(){
         // clear errors
         $(filterMenus.errors).html("");
         // show error list on page
-        if( errors.length > 0 ){
+        if (errors.length > 0) {
 
             var errorList = "<ul>";
             for (i = 0; i < errors.length; ++i) {
@@ -598,23 +605,23 @@ var filterMenuModule = (function(){
             $(filterMenus.errors).append(errorList);
             return (false);
         }
-        else{
+        else {
 
             return (true);
         }
 
     };
 
-    var getGraph = function(){
+    var getGraph = function () {
 
         closeSubMenu();
 
         // Validate before submitting
         var filtersAreValid = checkFilterValid();
-        if( filtersAreValid ) {
+        if (filtersAreValid) {
             // Get Filter values from form hidden fields
             var graphType = $(filterValues.graphType).val();
-            var postData = $("#graph-options").serialize();
+            var postData = $(form).serialize();
             //console.log(postData);
             graphLoaderModule.loadGraph(filterValues.graphType, postData);
         }
@@ -623,23 +630,28 @@ var filterMenuModule = (function(){
         return false;
     };
 
-    var registerTypeahead = function(){
+    var registerTypeahead = function () {
 
-        //get medications
-        $.getJSON("/research/typeahead", function (data) {
-
-            meds =  data;
-            typeaheadFeature.initalizeTypeAhead(filterFields.medicationName, "medication", meds);
-        });
+        typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/medications", filterFields.medicationName, "medication", true, true);
     };
 
     var publicObject = {};
-    publicObject.getPrimaryDataset = function(){ return filterValues.dataset1; };
-    publicObject.getSecondaryDataset = function(){ return filterValues.dataset2; };
-    publicObject.isPrimaryDataGrouped = function(){ return filterValues.groupFactor; };
-    publicObject.getRangeStart = function(){ return filterValues.rangeStart; };
-    publicObject.getRangeEnd = function(){ return filterValues.rangeEnd; };
-    publicObject.init = function() {
+    publicObject.getPrimaryDataset = function () {
+        return filterValues.dataset1;
+    };
+    publicObject.getSecondaryDataset = function () {
+        return filterValues.dataset2;
+    };
+    publicObject.isPrimaryDataGrouped = function () {
+        return filterValues.groupFactor;
+    };
+    publicObject.getRangeStart = function () {
+        return filterValues.rangeStart;
+    };
+    publicObject.getRangeEnd = function () {
+        return filterValues.rangeEnd;
+    };
+    publicObject.init = function () {
 
         // Register Actions
         //$(".menu-item").find("a.opt-link").click(optionLinkClick);
@@ -661,6 +673,7 @@ var filterMenuModule = (function(){
         $("#submit-button").click(getGraph);
 
         $("#save-button").click(showImageOptions);
+        $("#export-button").click(exportData);
         $(".save-image-cont").find(".options").find(".image-size-selection").click(chooseImageSize);
         $(".save-image-cont").find(".options").find(".close").click(hideImageOptions)
 
@@ -668,7 +681,7 @@ var filterMenuModule = (function(){
         registerTypeahead();
 
         // stop form submission
-        $("#graph-options").attr("onsubmit", "return false;");
+        //$(form).attr("onsubmit", "return false;");
 
         updateAvailableFilterChoices();
     };

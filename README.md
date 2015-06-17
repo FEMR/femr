@@ -6,7 +6,7 @@ A simple and fast EMR system.
 
 ###Community
 1. [JIRA](https://teamfemr.atlassian.net)
-2. IRC - irc.freenode.net:6667 | #femr
+2. We collaborate on Slack - contact ken.dunlap@teamfemr.org for an invite!
 
 ### Description
 

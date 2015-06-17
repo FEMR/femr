@@ -83,14 +83,14 @@ public  class EncounterService implements IEncounterService {
         }
 
         try {
-            //find the nurse that checked in the patient
+            //findPatientEncounterVital the nurse that checked in the patient
             ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
                     .where()
                     .eq("email", patientEncounterItem.getNurseEmailAddress());
 
             IUser nurseUser = userRepository.findOne(nurseQuery);
 
-            //find the age classification of the patient, if it exists
+            //findPatientEncounterVital the age classification of the patient, if it exists
             ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
                     .eq("name", patientEncounterItem.getAgeClassification());
@@ -99,14 +99,14 @@ public  class EncounterService implements IEncounterService {
             if (patientAgeClassification != null)
                 patientAgeClassificationId = patientAgeClassification.getId();
 
-            //find the current trip, if one exists
+            //findPatientEncounterVital the current trip, if one exists
             IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
             Integer missionTripId = null;
             if (missionTrip != null)
                 missionTripId = missionTrip.getId();
 
             IPatientEncounter newPatientEncounter = dataModelMapper.createPatientEncounter(patientEncounterItem.getPatientId(), dateUtils.getCurrentDateTime(), patientEncounterItem.getWeeksPregnant(), nurseUser.getId(), patientAgeClassificationId, missionTripId);
-            newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
+            newPatientEncounter = patientEncounterRepository.createPatientEncounter(newPatientEncounter);
 
             List<IChiefComplaint> chiefComplaints = new ArrayList<>();
             Integer chiefComplaintSortOrder = 0;
@@ -141,7 +141,7 @@ public  class EncounterService implements IEncounterService {
         }
 
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findPatientEncounterById(encounterId);
 
 
             patientEncounter.setDateOfMedicalVisit(DateTime.now());
@@ -151,7 +151,7 @@ public  class EncounterService implements IEncounterService {
             IUser user = userRepository.findOne(getUserQuery);
             patientEncounter.setDoctor(user);
 
-            patientEncounter = patientEncounterRepository.update(patientEncounter);
+            patientEncounter = patientEncounterRepository.updatePatientEncounter(patientEncounter);
 
 
             response.setResponseObject(itemModelMapper.createPatientEncounterItem(patientEncounter));
@@ -175,14 +175,14 @@ public  class EncounterService implements IEncounterService {
 
         try {
 
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findPatientEncounterById(encounterId);
             patientEncounter.setDateOfPharmacyVisit(DateTime.now());
             ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
                     .where()
                     .eq("id", userId);
             IUser user = userRepository.findOne(getUserQuery);
             patientEncounter.setPharmacist(user);
-            patientEncounter = patientEncounterRepository.update(patientEncounter);
+            patientEncounter = patientEncounterRepository.updatePatientEncounter(patientEncounter);
             response.setResponseObject(patientEncounter);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -203,7 +203,7 @@ public  class EncounterService implements IEncounterService {
         }
         try {
 
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findPatientEncounterById(encounterId);
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
@@ -270,7 +270,7 @@ public  class EncounterService implements IEncounterService {
 
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
-            //get all chief complaints for an encounter to find reference IDs
+            //get all chief complaints for an encounter to findPatientEncounterVital reference IDs
             List<? extends IChiefComplaint> chiefComplaints = patientEncounterRepository.findAllChiefComplaintsByPatientEncounterId(encounterId);
             //foreign key IDs for patientEncounterTabField referencing
             Integer tabFieldId = null;
@@ -311,9 +311,9 @@ public  class EncounterService implements IEncounterService {
             for (Map.Entry<String, String> entry : tabFieldNameValues.entrySet()){
                 if (StringUtils.isNotNullOrWhiteSpace(entry.getKey()) || StringUtils.isNotNullOrWhiteSpace(entry.getValue())) {
 
-                    //find reference ID for tabfield
+                    //findPatientEncounterVital reference ID for tabfield
                     tabFieldId = getTabFieldIdByTabFieldName(tabFields, entry.getKey());
-                    //find reference ID for chief complaint
+                    //findPatientEncounterVital reference ID for chief complaint
                     for (IChiefComplaint cc : chiefComplaints) {
 
                         if (chiefComplaint.equals(cc.getValue())) {
@@ -397,7 +397,7 @@ public  class EncounterService implements IEncounterService {
             for (Map.Entry<String, String> entry : tabFieldNameValues.entrySet()){
                 if (StringUtils.isNotNullOrWhiteSpace(entry.getKey()) || StringUtils.isNotNullOrWhiteSpace(entry.getValue())) {
 
-                    //find reference ID for tabfield
+                    //findPatientEncounterVital reference ID for tabfield
                     tabFieldId = getTabFieldIdByTabFieldName(tabFields, entry.getKey());
 
                     if (tabFieldId != null) {

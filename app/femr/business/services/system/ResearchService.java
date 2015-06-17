@@ -455,7 +455,7 @@ public class ResearchService implements IResearchService {
 
         // Get vital obj to use vitalId in Encounter vital_value map
         String vitalName = filters.getPrimaryDataset();
-        IVital vital = vitalRepository.findByName(vitalName);
+        IVital vital = vitalRepository.findVitalByName(vitalName);
 
         if( vital == null ){
 
@@ -649,11 +649,11 @@ public class ResearchService implements IResearchService {
         // Get vital obj to use vitalId in Encounter vital_value map
         String vitalName = filters.getPrimaryDataset();
 
-        IVital vital = vitalRepository.findHeightFeet();
+        IVital vital = vitalRepository.findHeightFeetVital();
 
         Integer heightFeetId = vital.getId();
 
-        vital = vitalRepository.findHeightInches();
+        vital = vitalRepository.findHeightInchesVital();
 
         Integer heightInchesId = vital.getId();
 

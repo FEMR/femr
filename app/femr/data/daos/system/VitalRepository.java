@@ -37,14 +37,14 @@ public class VitalRepository implements IVitalRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientEncounterVital> createAll(List<? extends IPatientEncounterVital> patientEncounterVitals) {
+    public List<? extends IPatientEncounterVital> createAllPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVitals) {
 
         try {
 
             Ebean.save(patientEncounterVitals);
         } catch (Exception ex) {
 
-            Logger.error("VitalRepository-createAll", ex);
+            Logger.error("VitalRepository-createAllPatientEncounterVitals", ex);
         }
 
         return patientEncounterVitals;
@@ -53,7 +53,7 @@ public class VitalRepository implements IVitalRepository {
     /**
      * {@inheritDoc}
      */
-    public List<? extends IPatientEncounterVital> find(int encounterId) {
+    public List<? extends IPatientEncounterVital> findPatientEncounterVital(int encounterId) {
 
         Query<PatientEncounterVital> query = getPatientEncounterVitalQuery()
                 .where()
@@ -67,7 +67,7 @@ public class VitalRepository implements IVitalRepository {
             patientEncounterVitals = query.findList();
         } catch (Exception ex) {
 
-            Logger.error("VitalRepository-find", ex);
+            Logger.error("VitalRepository-findPatientEncounterVital", ex);
         }
 
         return patientEncounterVitals;
@@ -78,7 +78,7 @@ public class VitalRepository implements IVitalRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IVital> findAll() {
+    public List<? extends IVital> findAllVitals() {
 
         List<? extends IVital> vitals = null;
 
@@ -87,7 +87,7 @@ public class VitalRepository implements IVitalRepository {
             vitals = getVitalQuery().findList();
         } catch (Exception ex) {
 
-            Logger.error("VitalRepository-findAll", ex);
+            Logger.error("VitalRepository-findAllPatients", ex);
         }
 
         return vitals;
@@ -97,7 +97,7 @@ public class VitalRepository implements IVitalRepository {
      * {@inheritDoc}
      */
     @Override
-    public IVital findByName(String name) {
+    public IVital findVitalByName(String name) {
 
         ExpressionList<Vital> expressionList = getVitalQuery().where().eq("name", name);
 
@@ -108,7 +108,7 @@ public class VitalRepository implements IVitalRepository {
             vital = expressionList.findUnique();
         } catch (Exception ex) {
 
-            Logger.error("VitalRepository-findByName", ex);
+            Logger.error("VitalRepository-findVitalByName", ex);
         }
 
         return vital;
@@ -194,7 +194,7 @@ public class VitalRepository implements IVitalRepository {
      * {@inheritDoc}
      */
     @Override
-    public IVital findHeightFeet() {
+    public IVital findHeightFeetVital() {
 
         ExpressionList<Vital> expressionList = getVitalQuery().where().eq("name", "heightFeet");
 
@@ -205,7 +205,7 @@ public class VitalRepository implements IVitalRepository {
             vital = expressionList.findUnique();
         } catch (Exception ex) {
 
-            Logger.error("VitalRepository-findHeightFeet", ex);
+            Logger.error("VitalRepository-findHeightFeetVital", ex);
         }
 
         return vital;
@@ -215,7 +215,7 @@ public class VitalRepository implements IVitalRepository {
      * {@inheritDoc}
      */
     @Override
-    public IVital findHeightInches() {
+    public IVital findHeightInchesVital() {
 
         ExpressionList<Vital> expressionList = getVitalQuery().where().eq("name", "heightInches");
 
@@ -226,7 +226,7 @@ public class VitalRepository implements IVitalRepository {
             vital = expressionList.findUnique();
         } catch (Exception ex) {
 
-            Logger.error("VitalRepository-findHeightInches", ex);
+            Logger.error("VitalRepository-findHeightInchesVital", ex);
         }
 
         return vital;

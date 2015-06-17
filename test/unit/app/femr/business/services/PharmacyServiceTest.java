@@ -63,8 +63,8 @@
 //        assertThat(mockPatientPrescriptionIRepository.updateWasCalled).isTrue();
 //        assertThat(response.hasErrors()).isTrue();
 //        assertThat(response.getErrors().size()).isEqualTo(1);
-//        assertThat(response.getErrors().containsKey("update")).isTrue();
-//        assertThat(response.getErrors().containsValue("update failed")).isTrue();
+//        assertThat(response.getErrors().containsKey("updatePatientEncounter")).isTrue();
+//        assertThat(response.getErrors().containsValue("updatePatientEncounter failed")).isTrue();
 //        assertThat(response.getResponseObject()).isNull();
 //    }
 //

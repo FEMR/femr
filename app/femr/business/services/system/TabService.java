@@ -132,7 +132,7 @@ public class TabService implements ITabService {
             response.addError("exception", ex.getMessage());
         }
 
-        //create the tab
+        //createPatientEncounter the tab
         try {
             tabRepository.create(tab);
             response.setResponseObject(newTab);
@@ -309,7 +309,7 @@ public class TabService implements ITabService {
             ITabField tabField = tabFieldRepository.findOne(query);
             if (tabFieldItem.getPlaceholder() != null) tabField.setPlaceholder(tabFieldItem.getPlaceholder());
             if (tabFieldItem.getOrder() != null) tabField.setOrder(tabFieldItem.getOrder());
-            //check size update
+            //check size updatePatientEncounter
             if (StringUtils.isNotNullOrWhiteSpace(tabFieldItem.getSize())) {
                 ExpressionList<TabFieldSize> sizeQuery = QueryProvider.getTabFieldSizeQuery()
                         .where()
@@ -317,7 +317,7 @@ public class TabService implements ITabService {
                 ITabFieldSize tabFieldSize = tabFieldSizeRepository.findOne(sizeQuery);
                 tabField.setTabFieldSize(tabFieldSize);
             }
-            //check type update
+            //check type updatePatientEncounter
             if (StringUtils.isNotNullOrWhiteSpace(tabFieldItem.getType())) {
                 ExpressionList<TabFieldType> typeQuery = QueryProvider.getTabFieldTypeQuery()
                         .where()

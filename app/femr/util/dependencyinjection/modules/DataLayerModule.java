@@ -20,12 +20,8 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.daos.core.IPatientRepository;
-import femr.data.daos.core.IVitalRepository;
-import femr.data.daos.system.PatientRepository;
-import femr.data.daos.core.IPatientEncounterRepository;
-import femr.data.daos.system.PatientEncounterRepository;
-import femr.data.daos.system.VitalRepository;
+import femr.data.daos.core.*;
+import femr.data.daos.system.*;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -71,12 +67,18 @@ public class DataLayerModule extends AbstractModule {
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
 
         //non-generic Repository Injection
+        bind(IMedicationRepository.class).to(MedicationRepository.class);
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPatientEncounterRepository.class).to(PatientEncounterRepository.class);
+        bind(IPhotoRepository.class).to(PhotoRepository.class);
+        bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
+        bind(ISettingsRepository.class).to(SettingsRepository.class);
+        bind(ITabRepository.class).to(TabRepository.class);
+        bind(ITripRepository.class).to(TripRepository.class);
+        bind(IUserRepository.class).to(UserRepository.class);
         bind(IVitalRepository.class).to(VitalRepository.class);
 
         //Repository Injection
-
         bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});

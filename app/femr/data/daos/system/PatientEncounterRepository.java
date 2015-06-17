@@ -36,14 +36,14 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter create(IPatientEncounter patientEncounter) {
+    public IPatientEncounter createPatientEncounter(IPatientEncounter patientEncounter) {
 
         try {
 
             Ebean.save(patientEncounter);
         } catch (Exception ex) {
 
-            Logger.error("PatientEncounterRepository-create", ex);
+            Logger.error("PatientEncounterRepository-createPatientEncounter", ex.getMessage());
         }
         return patientEncounter;
     }
@@ -52,7 +52,7 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter findOneById(int encounterId) {
+    public IPatientEncounter findPatientEncounterById(int encounterId) {
 
         ExpressionList<PatientEncounter> query = getPatientEncounterQuery()
                 .where()
@@ -63,7 +63,7 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
             encounter = query.findUnique();
         } catch (Exception ex) {
 
-            Logger.error("PatientEncounterRepository-findOneById", ex);
+            Logger.error("PatientEncounterRepository-findPatientEncounterById", ex.getMessage());
         }
 
         return encounter;
@@ -73,7 +73,7 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitAsc(int patientId) {
+    public List<? extends IPatientEncounter> findPatientEncounterByIdOrderByDateOfTriageVisitAsc(int patientId) {
 
         Query<PatientEncounter> query = getPatientEncounterQuery();
         query.where()
@@ -88,7 +88,7 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
             patientEncounters = query.findList();
         } catch (Exception ex) {
 
-            Logger.error(ex.getMessage());
+            Logger.error("PatientEncounterRepository-findPatientEncounterByIdOrderByDateOfTriageVisitAsc", ex.getMessage());
         }
 
 
@@ -99,7 +99,7 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId) {
+    public List<? extends IPatientEncounter> findPatientEncounterByIdOrderByDateOfTriageVisitDesc(int patientId) {
 
         Query<PatientEncounter> query = getPatientEncounterQuery();
         query.where()
@@ -114,7 +114,7 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
             patientEncounters = query.findList();
         } catch (Exception ex) {
 
-            Logger.error(ex.getMessage());
+            Logger.error("PatientEncounterRepository-findPatientEncounterByIdOrderByDateOfTriageVisitDesc", ex.getMessage());
         }
 
 
@@ -125,13 +125,13 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter update(IPatientEncounter patientEncounter) {
+    public IPatientEncounter updatePatientEncounter(IPatientEncounter patientEncounter) {
 
         try {
             Ebean.save(patientEncounter);
         } catch (Exception ex) {
 
-            Logger.error("PatientEncounterRepository-update", ex);
+            Logger.error("PatientEncounterRepository-updatePatientEncounter", ex);
         }
         return patientEncounter;
     }
@@ -196,10 +196,14 @@ public class PatientEncounterRepository implements IPatientEncounterRepository {
         return chiefComplaints;
     }
 
+    /**
+     * Provides the Ebean object to start building queries
+     *
+     * @return The patient encounter EQuery object
+     */
     private Query<ChiefComplaint> getChiefComplaintQuery() {
         return Ebean.find(ChiefComplaint.class);
     }
-
 
     /**
      * Provides the Ebean object to start building queries

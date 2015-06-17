@@ -94,7 +94,7 @@ public class PatientService implements IPatientService {
 
         try {
 
-            IPatient savedPatient = patientRepository.findById(id);
+            IPatient savedPatient = patientRepository.findPatientById(id);
 
             if (savedPatient == null) {
 
@@ -105,7 +105,7 @@ public class PatientService implements IPatientService {
             // sex can be changed, but not set to null
             if (StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
-                savedPatient = patientRepository.update(savedPatient);
+                savedPatient = patientRepository.updatePatient(savedPatient);
             }
 
             String photoPath = null;
@@ -150,7 +150,7 @@ public class PatientService implements IPatientService {
 
         try {
             IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
-            newPatient = patientRepository.create(newPatient);
+            newPatient = patientRepository.createPatient(newPatient);
             String photoPath = null;
             Integer photoId = null;
             if (newPatient.getPhoto() != null) {

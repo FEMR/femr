@@ -78,7 +78,7 @@ public class SearchService implements ISearchService {
 
         try {
 
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findPatientEncounterByIdOrderByDateOfTriageVisitDesc(patientId);
 
             if (patientEncounters.size() < 1) throw new Exception();
 
@@ -159,7 +159,7 @@ public class SearchService implements ISearchService {
 
         try {
 
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findPatientEncounterById(encounterId);
 
             IPatient patient = patientEncounter.getPatient();
 
@@ -233,7 +233,7 @@ public class SearchService implements ISearchService {
 
         try {
 
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOneById(encounterId);
+            IPatientEncounter patientEncounter = patientEncounterRepository.findPatientEncounterById(encounterId);
             PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
 
             response.setResponseObject(patientEncounterItem);
@@ -258,7 +258,7 @@ public class SearchService implements ISearchService {
 
         try {
             //TODO: fix this to work as descending like the others
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitAsc(patientId);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findPatientEncounterByIdOrderByDateOfTriageVisitAsc(patientId);
             if (patientEncounters.size() < 1) {
                 response.addError("", "That patient does not exist.");
                 return response;
@@ -282,7 +282,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
 
         try {
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findByPatientIdOrderByDateOfTriageVisitDesc(patientId);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.findPatientEncounterByIdOrderByDateOfTriageVisitDesc(patientId);
 
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
@@ -431,20 +431,20 @@ public class SearchService implements ISearchService {
         if (id != null) {
             //if we have an id, that is all we need.
             //this is the most ideal scenario
-            IPatient patient = patientRepository.findById(id);
+            IPatient patient = patientRepository.findPatientById(id);
             patients.add(patient);
 
         } else if (StringUtils.isNotNullOrWhiteSpace(firstName) && StringUtils.isNotNullOrWhiteSpace(lastName)) {
             //if we have a first and last name
             //this is the second most ideal scenario
-            List<? extends IPatient> patientsResponse = patientRepository.findByFirstNameAndLastName(firstName, lastName);
+            List<? extends IPatient> patientsResponse = patientRepository.findPatientsByFirstNameAndLastName(firstName, lastName);
             for (IPatient patient : patientsResponse)
                 patients.add(patient);
 
 
         } else if (StringUtils.isNotNullOrWhiteSpace(firstOrLastName)) {
             //if we have a word that could either be a first name or a last name
-            List<? extends IPatient> patientsResponse = patientRepository.findByFirstNameOrLastName(firstOrLastName);
+            List<? extends IPatient> patientsResponse = patientRepository.findPatientsByFirstNameOrLastName(firstOrLastName);
             for (IPatient patient : patientsResponse)
                 patients.add(patient);
         } else {
@@ -524,7 +524,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
-            List<? extends IPatient> allPatients = patientRepository.findAll();
+            List<? extends IPatient> allPatients = patientRepository.findAllPatients();
             List<PatientItem> patientItems = new ArrayList<>();
 
             for (IPatient patient : allPatients) {

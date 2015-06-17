@@ -38,7 +38,7 @@ public interface IVitalRepository {
      * @param patientEncounterVitals a list of values to save
      * @return the patient encounter vitals that were saved or null if none exist
      */
-    List<? extends IPatientEncounterVital> createAll(List<? extends IPatientEncounterVital> patientEncounterVitals);
+    List<? extends IPatientEncounterVital> createAllPatientEncounterVitals(List<? extends IPatientEncounterVital> patientEncounterVitals);
 
     /**
      * Find saved vitals by encounter id
@@ -46,14 +46,14 @@ public interface IVitalRepository {
      * @param encounterId id of the encounter, not null
      * @return a list of saved patient encounter vitals in reverse chronological order or null if none exist
      */
-    List<? extends IPatientEncounterVital> find(int encounterId);
+    List<? extends IPatientEncounterVital> findPatientEncounterVital(int encounterId);
 
     /**
      * Finds all available vitals
      *
      * @return a list of available vitals
      */
-    List<? extends IVital> findAll();
+    List<? extends IVital> findAllVitals();
 
     /**
      * Finds a vital by name
@@ -61,7 +61,7 @@ public interface IVitalRepository {
      * @param name the name of the vital
      * @return returns the vital or null if none exist
      */
-    IVital findByName(String name);
+    IVital findVitalByName(String name);
 
     /**
      * Finds height feet vitals for an encounter
@@ -89,12 +89,12 @@ public interface IVitalRepository {
      *
      * @return the heightFeet vital or null if it doesn't exist
      */
-    IVital findHeightFeet();
+    IVital findHeightFeetVital();
 
     /**
      * Finds the heightInches vital
      *
      * @return the heightInches vital or null if it doesn't exist
      */
-    IVital findHeightInches();
+    IVital findHeightInchesVital();
 }

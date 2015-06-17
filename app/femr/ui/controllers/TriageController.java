@@ -88,7 +88,7 @@ public class TriageController extends Controller {
 
     /*
     Used when user has searched for an existing patient
-    and wants to create a new encounter
+    and wants to createPatientEncounter a new encounter
      */
     public Result indexPopulatedGet(int patientId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
@@ -138,7 +138,7 @@ public class TriageController extends Controller {
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        //create a new patient
+        //createPatientEncounter a new patient
         //or get current patient for new encounter
         ServiceResponse<PatientItem> patientServiceResponse;
         PatientItem patientItem;
@@ -160,7 +160,7 @@ public class TriageController extends Controller {
         //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
 
 
-        //create and save a new encounter
+        //createPatientEncounter and save a new encounter
         PatientEncounterItem patientEncounterItem =
                 populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientEncounterItem);

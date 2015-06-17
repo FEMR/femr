@@ -14,7 +14,7 @@
 @admin("SuperUser Panel", currentUser, styles = additionalStyles, scripts = additionalScripts) {
     @helper.form(action = SuperuserController.tripsPost()) {
         <p>This is where a superuser can identify the trip that is currently underway. The trip, when defined, will be linked to
-            the patient's encounter. The submit button will create a new team and/or city and/or trip depending on which required fields
+            the patient's encounter. The submit button will createPatientEncounter a new team and/or city and/or trip depending on which required fields
             are filled out.</p>
         <div id="addTeamWrap">
             <h1>Add Team:</h1>

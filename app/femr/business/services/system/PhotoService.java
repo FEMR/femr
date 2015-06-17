@@ -85,7 +85,7 @@ public class PhotoService implements IPhotoService {
         _encounterPhotoPath = LogicDoer.getMedicalPhotoPath();
 
 
-        //Ensure folder exists, if not, create it
+        //Ensure folder exists, if not, createPatientEncounter it
         f = new File(_profilePhotoPath);
         if (!f.exists())
             f.mkdirs();
@@ -103,7 +103,7 @@ public class PhotoService implements IPhotoService {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
 
         try {
-            IPatient patient = patientRepository.findById(patientId);
+            IPatient patient = patientRepository.findPatientById(patientId);
             String imageFileName = "/Patient_" + patient.getId() + ".jpg";
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
@@ -152,7 +152,7 @@ public class PhotoService implements IPhotoService {
         ServiceResponse<String> response = new ServiceResponse<>();
 
         try {
-            IPatient patient = patientRepository.findById(patientId);
+            IPatient patient = patientRepository.findPatientById(patientId);
             if (patient.getPhoto() == null) {
                 response.setResponseObject(null);
             } else {
@@ -221,7 +221,7 @@ public class PhotoService implements IPhotoService {
                         if (mod.getPhotoId().get(i) != null)
                             this.deletePhotoById(mod.getPhotoId().get(i), _encounterPhotoPath);
                     } else {
-                        //Possibly update the image
+                        //Possibly updatePatientEncounter the image
                         Boolean bisUpdate = mod.getHasUpdatedDesc().get(i);
                         if (bisUpdate != null) {
                             if (bisUpdate) {

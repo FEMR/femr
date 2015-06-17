@@ -36,7 +36,7 @@ public interface IPatientRepository {
       * @param patient the patient to be created, not null
       * @return the new patient with their ID or null if the save failed
       */
-     IPatient create(IPatient patient);
+     IPatient createPatient(IPatient patient);
 
      /**
       * Finds one patient by the patient's id.
@@ -44,14 +44,14 @@ public interface IPatientRepository {
       * @param id the id of the patient
       * @return the patient or null if none found
       */
-     IPatient findById(int id);
+     IPatient findPatientById(int id);
 
      /**
       * Find all patients in the database.
       *
       * @return a list of patients
       */
-     List<? extends IPatient> findAll();
+     List<? extends IPatient> findAllPatients();
 
      /**
       * Finds a patient by their first and last name.
@@ -60,7 +60,7 @@ public interface IPatientRepository {
       * @param lastName the last name of the patient, not null
       * @return a list of patients that match the criteria
       */
-     List<? extends IPatient> findByFirstNameAndLastName(String firstName, String lastName);
+     List<? extends IPatient> findPatientsByFirstNameAndLastName(String firstName, String lastName);
 
      /**
       * Finds a patient by their first or last name. This will search the first and last name for a matching string
@@ -68,7 +68,7 @@ public interface IPatientRepository {
       * @param firstOrLastName the first/last name of a patient, not null
       * @return a list of patients that match the criteria
       */
-     List<? extends IPatient> findByFirstNameOrLastName(String firstOrLastName);
+     List<? extends IPatient> findPatientsByFirstNameOrLastName(String firstOrLastName);
 
      /**
       * Update a patient in the database
@@ -76,5 +76,5 @@ public interface IPatientRepository {
       * @param patient the patient to be updated based on ID, not null
       * @return the updated patient or null if there was an error updating.
       */
-     IPatient update(IPatient patient);
+     IPatient updatePatient(IPatient patient);
 }

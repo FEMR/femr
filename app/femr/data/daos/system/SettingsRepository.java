@@ -16,27 +16,9 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.business.services.core;
+package femr.data.daos.system;
 
-import femr.common.dtos.ServiceResponse;
-import femr.data.models.core.ISystemSetting;
+import femr.data.daos.core.ISettingsRepository;
 
-import java.util.List;
-
-public interface IConfigureService {
-
-    /**
-     * Retrieve available settings.
-     *
-     * @return a list of current system settings.
-     */
-    ServiceResponse<List<? extends ISystemSetting>> retrieveCurrentSettings();
-
-    /**
-     * Update more than one system setting.
-     *
-     * @param systemSettings a list of active system setting names. system settings that don't exist in this list are assumed to be inactive
-     * @return a list of system settings after the updatePatientEncounter.
-     */
-    ServiceResponse<List<? extends ISystemSetting>> updateSystemSettings(List<String> systemSettings);
+public class SettingsRepository implements ISettingsRepository {
 }

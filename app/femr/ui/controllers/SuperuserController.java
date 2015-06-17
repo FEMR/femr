@@ -136,7 +136,7 @@ public class SuperuserController extends Controller {
 
         }
 
-        //create a new trip if the user has entered the information
+        //createPatientEncounter a new trip if the user has entered the information
         if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripTeamName()) &&
                 StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCountry()) &&
                 StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCity()) &&

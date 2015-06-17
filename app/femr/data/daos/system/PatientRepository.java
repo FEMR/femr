@@ -30,7 +30,7 @@ import femr.data.models.mysql.Patient;
 import play.Logger;
 import java.util.List;
 
-public class PatientRepository extends Repository<IPatient> implements IPatientRepository {
+public class PatientRepository implements IPatientRepository {
 
     @Inject
     public PatientRepository() {
@@ -38,11 +38,23 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
 
     }
 
+    @Override
+    public IPatient createPatient(IPatient patient) {
+        try {
+
+            Ebean.save(patient);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-createPatientEncounter", ex.getMessage());
+        }
+        return patient;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public IPatient findById(int id) {
+    public IPatient findPatientById(int id) {
 
         ExpressionList<Patient> query = getPatientQuery()
                 .where()
@@ -52,10 +64,10 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
 
         try {
 
-            patient = super.findOne(query);
+            patient = query.findUnique();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-findById", ex.getMessage());
+            Logger.error("PatientRepository-findPatientById", ex.getMessage());
         }
 
         return patient;
@@ -65,16 +77,16 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatient> findAll() {
+    public List<? extends IPatient> findAllPatients() {
 
         List<? extends IPatient> patients = null;
 
         try {
 
-            patients = super.findAll(Patient.class);
+            patients = Ebean.find(Patient.class).findList();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-findAll", ex.getMessage());
+            Logger.error("PatientRepository-findAllPatients", ex.getMessage());
         }
 
         return patients;
@@ -84,7 +96,7 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatient> findByFirstNameAndLastName(String firstName, String lastName) {
+    public List<? extends IPatient> findPatientsByFirstNameAndLastName(String firstName, String lastName) {
 
         Query<Patient> query = getPatientQuery()
                 .where()
@@ -97,10 +109,10 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
 
         try {
 
-            patients = super.find(query);
+            patients = query.findList();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-findByFirstNameAndLastName", ex.getMessage());
+            Logger.error("PatientRepository-findPatientsByFirstNameAndLastName", ex.getMessage());
         }
 
         return patients;
@@ -110,7 +122,7 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatient> findByFirstNameOrLastName(String firstOrLastName) {
+    public List<? extends IPatient> findPatientsByFirstNameOrLastName(String firstOrLastName) {
 
         Query<Patient> query = getPatientQuery()
                 .where()
@@ -124,10 +136,10 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
 
         try {
 
-            patients = super.find(query);
+            patients = query.findList();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-findByFirstNameOrLastName", ex.getMessage());
+            Logger.error("PatientRepository-findPatientsByFirstNameOrLastName", ex.getMessage());
         }
 
         return patients;
@@ -137,14 +149,14 @@ public class PatientRepository extends Repository<IPatient> implements IPatientR
      * {@inheritDoc}
      */
     @Override
-    public IPatient update(IPatient patient) {
+    public IPatient updatePatient(IPatient patient) {
 
         try {
 
-            patient = super.update(patient);
+            Ebean.save(patient);
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-update", ex.getMessage());
+            Logger.error("PatientRepository-updatePatientEncounter", ex.getMessage());
             patient = null;
         }
 

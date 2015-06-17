@@ -35,10 +35,10 @@ public interface IPatientEncounterRepository {
     /**
      * Create a new patient encounter
      *
-     * @param patientEncounter the encounter to create
+     * @param patientEncounter the encounter to createPatientEncounter
      * @return the newly created patient encounter or null if the save failed
      */
-    IPatientEncounter create(IPatientEncounter patientEncounter);
+    IPatientEncounter createPatientEncounter(IPatientEncounter patientEncounter);
 
     /**
      * Gets a patient encounter
@@ -46,7 +46,7 @@ public interface IPatientEncounterRepository {
      * @param encounterId the id for the encounter to retrieve
      * @return the patient encounter or null if none found
      */
-    IPatientEncounter findOneById(int encounterId);
+    IPatientEncounter findPatientEncounterById(int encounterId);
 
     /**
      * Gets a patient's encounters sorted by most recent last
@@ -54,7 +54,7 @@ public interface IPatientEncounterRepository {
      * @param patientId the patient to search for
      * @return a list of patient encounters
      */
-    List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitAsc(int patientId);
+    List<? extends IPatientEncounter> findPatientEncounterByIdOrderByDateOfTriageVisitAsc(int patientId);
 
     /**
      * Gets a patient's encounters sorted by most recent first
@@ -62,15 +62,15 @@ public interface IPatientEncounterRepository {
      * @param patientId the patient to search for
      * @return a list of patient encounters or null if there was an error
      */
-    List<? extends IPatientEncounter> findByPatientIdOrderByDateOfTriageVisitDesc(int patientId);
+    List<? extends IPatientEncounter> findPatientEncounterByIdOrderByDateOfTriageVisitDesc(int patientId);
 
     /**
      * Upates a patient encounter
      *
-     * @param patientEncounter the encounter and info to update
+     * @param patientEncounter the encounter and info to updatePatientEncounter
      * @return the updated patient encounter or null if there was an error updating
      */
-    IPatientEncounter update(IPatientEncounter patientEncounter);
+    IPatientEncounter updatePatientEncounter(IPatientEncounter patientEncounter);
 
     /**
      * Create new Chief complaints in the database

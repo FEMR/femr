@@ -33,7 +33,7 @@
 //            ExpressionList<Role> query = QueryProvider.getRoleQuery()
 //                    .where()
 //                    .in("name", user.getRoles());
-//            List<? extends IRole> roles = roleRepository.find(query);
+//            List<? extends IRole> roles = roleRepository.findPatientEncounterVital(query);
 //
 //
 //            IUser newUser = domainMapper.createUser(user, password, false, false, roles);
@@ -45,7 +45,7 @@
 //                return response;
 //            }
 //
-//            newUser = userRepository.create(newUser);
+//            newUser = userRepository.createPatientEncounter(newUser);
 //            response.setResponseObject(DomainMapper.createUserItem(newUser));
 //        } catch (Exception ex) {
 //            response.addError("", ex.getMessage());
@@ -65,7 +65,7 @@
 //    }
 //
 //    @Override
-//    public IUser findById(int id) {
+//    public IUser findPatientById(int id) {
 //        findByIdWasCalled = true;
 //        idPassedIn = id;
 //        return findByIdReturnObject;
@@ -115,7 +115,7 @@
 //                .where()
 //                .ne("name", "SuperUser");
 //
-//        List<? extends IRole> allRoles = roleRepository.find(roleQuery);
+//        List<? extends IRole> allRoles = roleRepository.findPatientEncounterVital(roleQuery);
 //
 //        try {
 //            IUser user = userRepository.findOne(query);
@@ -133,7 +133,7 @@
 //            }
 //            user.setRoles(newRoles);
 //            user.setPasswordReset(userItem.isPasswordReset());
-//            user = userRepository.update(user);
+//            user = userRepository.updatePatientEncounter(user);
 //            response.setResponseObject(DomainMapper.createUserItem(user));
 //        } catch (Exception ex) {
 //            response.addError("", ex.getMessage());
@@ -153,7 +153,7 @@
 //        try {
 //            IUser user = userRepository.findOne(query);
 //            user.setDeleted(!user.getDeleted());
-//            user = userRepository.update(user);
+//            user = userRepository.updatePatientEncounter(user);
 //            response.setResponseObject(DomainMapper.createUserItem(user));
 //        } catch (Exception ex) {
 //            response.addError("", ex.getMessage());
@@ -167,7 +167,7 @@
 //    }
 //
 //    @Override
-//    public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword) {
+//    public ServiceResponse<IUser> updatePatientEncounter(IUser currentUser, Boolean isNewPassword) {
 //        return null;
 //    }
 //

@@ -71,7 +71,7 @@ public class MedicationService implements IMedicationService {
 
             IPatientPrescription oldPatientPrescription = patientPrescriptionRepository.findOne(query);
 
-            //create new prescription
+            //createPatientEncounter new prescription
             IMedication medication = dataModelMapper.createMedication(prescriptionItem.getName());
             IPatientPrescription newPatientPrescription = dataModelMapper.createPatientPrescription(0, medication, userId, oldPatientPrescription.getPatientEncounter().getId(), null, true, isCounseled);
             newPatientPrescription = patientPrescriptionRepository.create(newPatientPrescription);
@@ -192,7 +192,7 @@ public class MedicationService implements IMedicationService {
         try {
             List<String> medicationNames = new ArrayList<>();
 
-            //List<? extends IMedication> medications = medicationRepository.findAll(Medication.class);
+            //List<? extends IMedication> medications = medicationRepository.findAllPatients(Medication.class);
 
             //use raw sql to temporarily filter out the duplicate medication names
             //after implementing the inventory tracking feature, this shouldn't be needed

@@ -16,3 +16,6 @@ These people have contributed to fEMR's design and implementation:
 * [Ken Dunlap](https://github.com/kdunlap)
 * [Arslan Gondal](https://github.com/unfixed)
 * [Khoa Le](https://github.com/khoal)
+* [Alaa Serhan] (https://github.com/aserhan)
+* [Amney Iskandar] (https://github.com/amney14)
+* [Andre Farah] (https://github.com/AndreFarah)

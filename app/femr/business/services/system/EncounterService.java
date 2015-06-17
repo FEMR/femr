@@ -272,16 +272,11 @@ public  class EncounterService implements IEncounterService {
             ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
                     .where()
                     .eq("patient_encounter_id", encounterId);
-            ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
-                    .where()
-                    .eq("patient_encounter_id", encounterId);
 
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
             //get all chief complaints for an encounter to find reference IDs
             List<? extends IChiefComplaint> chiefComplaints = chiefComplaintRepository.findAllByPatientEncounterId(encounterId);
-            //find fields that have already been saved so we don't duplicate
-            List<? extends IPatientEncounterTabField> existingtabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldExpressionList);
             //foreign key IDs for patientEncounterTabField referencing
             Integer tabFieldId = null;
             Integer chiefComplaintId = null;
@@ -317,8 +312,7 @@ public  class EncounterService implements IEncounterService {
             //the fields that we will be saving to the database after all is said and (almost) done
             List<IPatientEncounterTabField> patientEncounterTabFieldsForSaving = new ArrayList<>();
             //foreign key IDs for patientEncounterTabField referencing
-            Integer tabFieldId;
-            Integer chiefComplaintId = null;
+
             for (Map.Entry<String, String> entry : tabFieldNameValues.entrySet()){
                 if (StringUtils.isNotNullOrWhiteSpace(entry.getKey()) || StringUtils.isNotNullOrWhiteSpace(entry.getValue())) {
 

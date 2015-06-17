@@ -1,4 +1,4 @@
-@(feet: java.lang.String, inches: java.lang.String, isMetric: java.lang.Boolean = false, emptyValue: java.lang.String = "NA")
+@(feet: java.lang.String, inches: java.lang.String, isMetric: java.lang.Boolean = false, emptyValue: java.lang.String = "N/A")
 
 @if((feet == null && inches == null) || (feet.equals("0") && inches.equals("0"))){
     @emptyValue

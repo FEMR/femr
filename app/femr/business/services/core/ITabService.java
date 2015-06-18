@@ -160,7 +160,7 @@ public interface ITabService {
      * Chief complaint is null if it doesn't exist.
      *
      * @param encounterId id of the encounter
-     * @param tabFieldName Name of tab
+     * @param tabFieldName Name of tab field
      * @param chiefComplaintName Chief complaint name
      * @return a "TabFieldMultiMap" that contains tab field and values. <strong>It will also contain empty fields.</strong>
      */

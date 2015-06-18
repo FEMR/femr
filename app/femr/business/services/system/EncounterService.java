@@ -31,6 +31,7 @@ import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
+import femr.data.daos.core.ITabRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
@@ -44,8 +45,7 @@ public  class EncounterService implements IEncounterService {
     private IMissionTripService missionTripService;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
-    private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
-    private final IRepository<ITabField> tabFieldRepository;
+    private final ITabRepository tabRepository;
     private final IRepository<IUser> userRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
@@ -54,8 +54,7 @@ public  class EncounterService implements IEncounterService {
     public EncounterService(IMissionTripService missionTripService,
                             IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                             IPatientEncounterRepository patientEncounterRepository,
-                            IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
-                            IRepository<ITabField> tabFieldRepository,
+                            ITabRepository tabRepository,
                             IRepository<IUser> userRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
@@ -63,8 +62,7 @@ public  class EncounterService implements IEncounterService {
         this.missionTripService = missionTripService;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.patientEncounterRepository = patientEncounterRepository;
-        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
-        this.tabFieldRepository = tabFieldRepository;
+        this.tabRepository = tabRepository;
         this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
@@ -225,13 +223,9 @@ public  class EncounterService implements IEncounterService {
         ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();
 
         //get the current tab field item
-        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
-                .where()
-                .eq("name", "problem");
-
         try {
 
-            ITabField tabField = tabFieldRepository.findOne(query);
+            ITabField tabField = tabRepository.findTabField("problem");
             List<IPatientEncounterTabField> patientEncounterTabFields = new ArrayList<>();
             DateTime dateTaken = dateUtils.getCurrentDateTime();
             for (String problemval : problemValues) {
@@ -239,7 +233,7 @@ public  class EncounterService implements IEncounterService {
                 IPatientEncounterTabField patientEncounterTabField = dataModelMapper.createPatientEncounterTabField(tabField.getId(), userId, problemval, encounterId, dateTaken, null);
                 patientEncounterTabFields.add(patientEncounterTabField);
             }
-            patientEncounterTabFieldRepository.createAll(patientEncounterTabFields);
+            tabRepository.createPatientEncounterTabFields(patientEncounterTabFields);
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());
@@ -263,11 +257,6 @@ public  class EncounterService implements IEncounterService {
         }
 
         try {
-
-            ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .where()
-                    .eq("patient_encounter_id", encounterId);
-
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
             //get all chief complaints for an encounter to findPatientEncounterVital reference IDs
@@ -278,7 +267,7 @@ public  class EncounterService implements IEncounterService {
 
             //removes a tab field from the map to be saved if it contains the same name and value as an entry that
             //already exists in the database. This can be a problem if a user tries to change the value then change it back.
-            List<? extends IPatientEncounterTabField> existingPatientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldExpressionList);
+            List<? extends IPatientEncounterTabField> existingPatientEncounterTabFields = tabRepository.findPatientEncounterTabFieldsByEncounterId(encounterId);
             for (Iterator<Map.Entry<String, String>> it = tabFieldNameValues.entrySet().iterator(); it.hasNext(); ) {
 
                 Map.Entry<String, String> entry = it.next();
@@ -301,7 +290,7 @@ public  class EncounterService implements IEncounterService {
             }
 
             //get all tab fields to use in finding reference Ids
-            List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
+            List<? extends ITabField> tabFields = tabRepository.findAllTabFields();
             //one datetime field to put in everything
             DateTime dateTaken = dateUtils.getCurrentDateTime();
             //the fields that we will be saving to the database after all is said and (almost) done
@@ -334,7 +323,7 @@ public  class EncounterService implements IEncounterService {
             }
 
             //SAVE EM
-            List<? extends IPatientEncounterTabField> savedPatientEncounterTabFields = patientEncounterTabFieldRepository.createAll(patientEncounterTabFieldsForSaving);
+            List<? extends IPatientEncounterTabField> savedPatientEncounterTabFields = tabRepository.createPatientEncounterTabFields(patientEncounterTabFieldsForSaving);
             //RETURN EM
             tabFieldItemsForResponse = getTabFieldItemsFromPatientEncounterTabFields(savedPatientEncounterTabFields);
             response.setResponseObject(tabFieldItemsForResponse);
@@ -360,17 +349,12 @@ public  class EncounterService implements IEncounterService {
         }
 
         try {
-
-            ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .where()
-                    .eq("patient_encounter_id", encounterId);
-
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
 
             //removes a tab field from the map to be saved if it contains the same name and value as an entry that
             //already exists in the database. This can be a problem if a user tries to change the value then change it back.
-            List<? extends IPatientEncounterTabField> existingPatientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldExpressionList);
+            List<? extends IPatientEncounterTabField> existingPatientEncounterTabFields = tabRepository.findPatientEncounterTabFieldsByEncounterId(encounterId);
             for (Iterator<Map.Entry<String, String>> it = tabFieldNameValues.entrySet().iterator(); it.hasNext(); ) {
 
                 Map.Entry<String, String> entry = it.next();
@@ -387,7 +371,7 @@ public  class EncounterService implements IEncounterService {
             }
 
             //get all tab fields to use in finding reference Ids
-            List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
+            List<? extends ITabField> tabFields = tabRepository.findAllTabFields();
             //one datetime field to put in everything
             DateTime dateTaken = dateUtils.getCurrentDateTime();
             //the fields that we will be saving to the database after all is said and (almost) done
@@ -411,7 +395,7 @@ public  class EncounterService implements IEncounterService {
             }
 
             //SAVE EM
-            List<? extends IPatientEncounterTabField> savedPatientEncounterTabFields = patientEncounterTabFieldRepository.createAll(patientEncounterTabFieldsForSaving);
+            List<? extends IPatientEncounterTabField> savedPatientEncounterTabFields = tabRepository.createPatientEncounterTabFields(patientEncounterTabFieldsForSaving);
             //RETURN EM
             tabFieldItemsForResponse = getTabFieldItemsFromPatientEncounterTabFields(savedPatientEncounterTabFields);
             response.setResponseObject(tabFieldItemsForResponse);
@@ -430,16 +414,10 @@ public  class EncounterService implements IEncounterService {
     public ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId) {
         ServiceResponse<List<ProblemItem>> response = new ServiceResponse<>();
         List<ProblemItem> problemItems = new ArrayList<>();
-        Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
-                .fetch("tabField")
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .eq("tabField.name", "problem")
-                .order()
-                .asc("date_taken");
+
 
         try {
-            List<? extends IPatientEncounterTabField> patientEncounterTreatmentFields = patientEncounterTabFieldRepository.find(query);
+            List<? extends IPatientEncounterTabField> patientEncounterTreatmentFields = tabRepository.findPatientEncounterTabFieldByEncounterIdAndTabNameOrderByDateTakenAsc(encounterId, "problem");
             if (patientEncounterTreatmentFields == null) {
                 response.addError("", "bad query");
             } else {

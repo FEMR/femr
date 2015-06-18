@@ -54,7 +54,6 @@ public class PhotoService implements IPhotoService {
     private String _profilePhotoPath;
     private String _encounterPhotoPath;
     private IRepository<IPhoto> patientPhotoRepository;
-    private IRepository<IPatient> patientRepository_old;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
@@ -62,14 +61,12 @@ public class PhotoService implements IPhotoService {
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
-                        IRepository<IPatient> patientRepository_old,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
                         IDataModelMapper dataModelMapper,
                         @Named("identified") IItemModelMapper itemModelMapper,
                         IPatientRepository patientRepository) {
 
         this.patientPhotoRepository = patientPhotoRepository;
-        this.patientRepository_old = patientRepository_old;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
@@ -112,7 +109,7 @@ public class PhotoService implements IPhotoService {
                     IPhoto pPhoto = dataModelMapper.createPhoto("", imageFileName);
                     pPhoto = patientPhotoRepository.create(pPhoto);
                     patient.setPhoto(pPhoto);
-                    patientRepository_old.update(patient);
+                    patientRepository.updatePatient(patient);
                 } else {
                     //Record already exists:
                     //photoId = patient.getPhoto().getId();
@@ -131,7 +128,7 @@ public class PhotoService implements IPhotoService {
                         //First make sure the photoId is null in the patient record
                         Integer id = patient.getPhoto().getId();
                         patient.setPhoto(null);
-                        patientRepository_old.update(patient);
+                        patientRepository.updatePatient(patient);
                         //Now remove the photo record:
                         this.deletePhotoById(id, _profilePhotoPath);
                     }

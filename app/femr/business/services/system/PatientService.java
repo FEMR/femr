@@ -21,16 +21,19 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,25 +42,31 @@ public class PatientService implements IPatientService {
 
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
-    private final DomainMapper domainMapper;
+    private final IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                          DomainMapper domainMapper){
+                          IDataModelMapper dataModelMapper,
+                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<Map<String,String>> findPossibleAgeClassifications() {
-        ServiceResponse<Map<String,String>> response = new ServiceResponse<>();
-        Map<String,String> patientAgeClassificationStrings = new LinkedHashMap<>();
+    public ServiceResponse<Map<String, String>> retrieveAgeClassifications() {
+
+        ServiceResponse<Map<String, String>> response = new ServiceResponse<>();
+
+        Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
+
             Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
                     .eq("isDeleted", false)
@@ -65,10 +74,12 @@ public class PatientService implements IPatientService {
                     .asc("sortOrder");
             List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
+
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
             }
             response.setResponseObject(patientAgeClassificationStrings);
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
         return response;
@@ -78,26 +89,50 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> findPatientAndUpdateSex(int id, String sex) {
+    public ServiceResponse<PatientItem> updateSex(int id, String sex) {
+
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
-        if (id < 1) {
-            response.addError("", "patient id can not be less than 1");
-            return response;
-        }
 
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", id);
 
         try {
+
             IPatient savedPatient = patientRepository.findOne(query);
-            //if a patient doesn't have a sex and the
-            //user is trying to identify the patients sex
-            if (StringUtils.isNullOrWhiteSpace(savedPatient.getSex()) && StringUtils.isNotNullOrWhiteSpace(sex)) {
+
+            if( savedPatient == null ){
+
+                response.addError("exception", "Patient Not Found");
+                return response;
+            }
+
+            // sex can be changed, but not set to null
+            if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.update(savedPatient);
             }
-            PatientItem patientItem = DomainMapper.createPatientItem(savedPatient, null, null, null, null);
+
+            String photoPath = null;
+            Integer photoId = null;
+            if (savedPatient.getPhoto() != null) {
+                photoPath = savedPatient.getPhoto().getFilePath();
+                photoId = savedPatient.getPhoto().getId();
+            }
+            PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                    savedPatient.getFirstName(),
+                    savedPatient.getLastName(),
+                    savedPatient.getCity(),
+                    savedPatient.getAddress(),
+                    savedPatient.getUserId(),
+                    savedPatient.getAge(),
+                    savedPatient.getSex(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    photoPath,
+                    photoId);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -119,9 +154,30 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = domainMapper.createPatient(patient);
+            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
             newPatient = patientRepository.create(newPatient);
-            response.setResponseObject(DomainMapper.createPatientItem(newPatient, null, null, null, null));
+            String photoPath = null;
+            Integer photoId = null;
+            if (newPatient.getPhoto() != null) {
+                photoPath = newPatient.getPhoto().getFilePath();
+                photoId = newPatient.getPhoto().getId();
+            }
+            response.setResponseObject(
+                    itemModelMapper.createPatientItem(newPatient.getId(),
+                            newPatient.getFirstName(),
+                            newPatient.getLastName(),
+                            newPatient.getCity(),
+                            newPatient.getAddress(),
+                            newPatient.getUserId(),
+                            newPatient.getAge(),
+                            newPatient.getSex(),
+                            null,
+                            null,
+                            null,
+                            null,
+                            photoPath,
+                            photoId)
+            );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

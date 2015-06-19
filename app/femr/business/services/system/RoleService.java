@@ -39,17 +39,11 @@ public class RoleService implements IRoleService {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<? extends IRole> getAllRoles() {
-        ExpressionList<Role> query = QueryProvider.getRoleQuery()
-                .where()
-                .ne("name", "SuperUser");
-        List<? extends IRole> roles = roleRepository.find(query);
-        return roles;
-    }
-
-    @Override
-    public ServiceResponse<List<String>> getAllRolesString() {
+    public ServiceResponse<List<String>> retrieveAllRoles() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         ExpressionList<Role> query = QueryProvider.getRoleQuery()
                 .where()
@@ -67,13 +61,5 @@ public class RoleService implements IRoleService {
 
 
         return response;
-    }
-
-    @Override
-    public List<? extends IRole> getRolesFromIds(List<Integer> checkValuesAsIntegers) {
-        ExpressionList<Role> query = QueryProvider.getRoleQuery()
-                .where()
-                .in("id", checkValuesAsIntegers);
-        return roleRepository.find(query);
     }
 }

@@ -1,13 +1,17 @@
-@(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap)
+
+@(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap, viewModel: femr.ui.models.medical.EditViewModelGet)
+
+@import femr.ui.views.html.partials.helpers.outputHeightOrNA
+@import femr.ui.views.html.partials.helpers.outputWeightOrNA
+@import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
+
 
 <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
 <link rel="stylesheet" href="@routes.Assets.at("css/medical/listVitals.css")">
 
-
 <script>window.jQuery || document.write ( '<script type="text/javascript" src="   @routes.Assets.at("js/libraries/jquery-2.0.3.min.js") "><\/script>')</script>
 <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
 <script type="text/javascript" src="@routes.Assets.at("js/medical/listVitals.js")"></script>
-
 
 <table id="vitalTable" cellspacing="0">
     <thead></thead>
@@ -34,7 +38,11 @@
         <tr>
             <th>T</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1))</td>
+                <td>@outputTemperatureOrNA(
+                        vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)),
+                        viewModel.getSettings.isMetric,
+                        ""
+                )</td>
             }
         </tr>
         <tr>
@@ -57,15 +65,41 @@
         </tr>
         <tr id="height">
             <th>Ht</th>
+            <!--- Change metric output here --->
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))
-                    ' @vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))</td>
+                <td data-feet="@vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))"
+                    data-inches="@vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))">
+
+                @if(viewModel.getSettings.isMetric) {
+                    @* Output height formatted as metric (1.4m) *@
+                    @outputHeightOrNA(
+                        vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
+                        vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1)),
+                        viewModel.getSettings.isMetric,
+                        ""
+                    )
+                } else {
+                    @* Output height formatted as imperial (5' 6") *@
+                    @outputHeightOrNA(
+                        vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1)),
+                        vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1)),
+                        viewModel.getSettings.isMetric,
+                        ""
+                    )
+                }
+                </td>
             }
         </tr>
         <tr id="weight">
             <th>Wt</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))</td>
+                <td data-weight="@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))">
+                @if(viewModel.getSettings.isMetric) {
+                    @outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                } else {
+                    @outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                }
+                </td>
             }
         </tr>
     </tbody>

@@ -21,14 +21,16 @@ package femr.business.services.system;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMissionTripService;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.CityItem;
 import femr.common.models.MissionItem;
 import femr.common.models.TeamItem;
 import femr.common.models.TripItem;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IMissionCity;
 import femr.data.models.core.IMissionCountry;
@@ -49,27 +51,30 @@ public class MissionTripService implements IMissionTripService {
     private final IRepository<IMissionCountry> missionCountryRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
-    private final DomainMapper domainMapper;
+    private final IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public MissionTripService(IRepository<IMissionCity> missionCityRepository,
                               IRepository<IMissionCountry> missionCountryRepository,
                               IRepository<IMissionTeam> missionTeamRepository,
                               IRepository<IMissionTrip> missionTripRepository,
-                              DomainMapper domainMapper) {
+                              IDataModelMapper dataModelMapper,
+                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.missionCityRepository = missionCityRepository;
         this.missionCountryRepository = missionCountryRepository;
         this.missionTripRepository = missionTripRepository;
         this.missionTeamRepository = missionTeamRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IMissionTrip findCurrentMissionTrip() {
+    public IMissionTrip retrieveCurrentMissionTrip() {
 
         return getCurrentMissionTrip();
     }
@@ -78,17 +83,22 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> findAvailableTeams() {
+    public ServiceResponse<List<String>> retrieveAvailableTeams() {
 
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         List<String> teams = new ArrayList<>();
+
         Query<MissionTeam> missionTeamQuery = QueryProvider.getMissionTeamQuery()
                 .orderBy("name");
         List<? extends IMissionTeam> missionTeams = missionTeamRepository.find(missionTeamQuery);
+
         for (IMissionTeam mt : missionTeams) {
+
             teams.add(mt.getName());
         }
+
         response.setResponseObject(teams);
+
         return response;
     }
 
@@ -96,17 +106,22 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<CityItem>> findAvailableCities() {
+    public ServiceResponse<List<CityItem>> retrieveAvailableCities() {
 
         ServiceResponse<List<CityItem>> response = new ServiceResponse<>();
         List<CityItem> cities = new ArrayList<>();
+
         Query<MissionCity> missionCityQuery = QueryProvider.getMissionCityQuery()
                 .orderBy("name");
         List<? extends IMissionCity> missionCities = missionCityRepository.find(missionCityQuery);
+
         for (IMissionCity mc : missionCities) {
-            cities.add(DomainMapper.createCityItem(mc.getName(), mc.getMissionCountry().getName()));
+
+            cities.add(itemModelMapper.createCityItem(mc.getName(), mc.getMissionCountry().getName()));
         }
+
         response.setResponseObject(cities);
+
         return response;
     }
 
@@ -114,7 +129,7 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> findAvailableCountries() {
+    public ServiceResponse<List<String>> retrieveAvailableCountries() {
 
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         List<String> countries = new ArrayList<>();
@@ -132,7 +147,7 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MissionItem>> findAllTripInformation() {
+    public ServiceResponse<List<MissionItem>> retrieveAllTripInformation() {
 
         ServiceResponse<List<MissionItem>> response = new ServiceResponse<>();
         List<MissionItem> missionItems = new ArrayList<>();
@@ -142,7 +157,8 @@ public class MissionTripService implements IMissionTripService {
             //you might miss some teams that don't have a trip, yet.
             List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
             for (IMissionTeam missionTeam : missionTeams) {
-                missionItems.add(DomainMapper.createMissionItem(missionTeam));
+
+                missionItems.add(itemModelMapper.createMissionItem(missionTeam));
             }
 
             response.setResponseObject(missionItems);
@@ -167,9 +183,9 @@ public class MissionTripService implements IMissionTripService {
 
             try {
 
-                IMissionTeam missionTeam = domainMapper.createMissionTeam(teamItem.getName(), teamItem.getLocation(), teamItem.getDescription());
+                IMissionTeam missionTeam = dataModelMapper.createMissionTeam(teamItem.getName(), teamItem.getLocation(), teamItem.getDescription());
                 missionTeam = missionTeamRepository.create(missionTeam);
-                response.setResponseObject(DomainMapper.createTeamItem(missionTeam.getName(), missionTeam.getLocation(), missionTeam.getDescription()));
+                response.setResponseObject(itemModelMapper.createTeamItem(missionTeam.getName(), missionTeam.getLocation(), missionTeam.getDescription()));
             } catch (Exception ex) {
 
                 response.addError("", ex.getMessage());
@@ -221,14 +237,14 @@ public class MissionTripService implements IMissionTripService {
 
                     if (missionCity == null) {
                         //city doesn't exist
-                        missionCity = domainMapper.createMissionCity(tripItem.getTripCity(), missionCountry);
+                        missionCity = dataModelMapper.createMissionCity(tripItem.getTripCity(), missionCountry);
                         missionCity = missionCityRepository.create(missionCity);
                     }
 
 
-                    IMissionTrip missionTrip = domainMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), false, missionCity, missionTeam);
+                    IMissionTrip missionTrip = dataModelMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), false, missionCity, missionTeam);
                     missionTrip = missionTripRepository.create(missionTrip);
-                    response.setResponseObject(DomainMapper.createTripItem(missionTrip.getMissionTeam().getName(), missionTrip.getMissionCity().getName(), missionTrip.getMissionCity().getMissionCountry().getName(), missionTrip.getStartDate(), missionTrip.getEndDate()));
+                    response.setResponseObject(itemModelMapper.createTripItem(missionTrip.getMissionTeam().getName(), missionTrip.getMissionCity().getName(), missionTrip.getMissionCity().getMissionCountry().getName(), missionTrip.getStartDate(), missionTrip.getEndDate()));
 
                 }
             } catch (Exception ex) {
@@ -246,12 +262,14 @@ public class MissionTripService implements IMissionTripService {
      * @return null if none or more than one exists
      */
     private IMissionTrip getCurrentMissionTrip() {
+
         ExpressionList<MissionTrip> missionTripQuery = QueryProvider.getMissionTripQuery()
                 .where()
                 .eq("isCurrent", true);
         IMissionTrip missionTrip = null;
 
         try {
+
             missionTrip = missionTripRepository.findOne(missionTripQuery);
         } catch (Exception ex) {
 
@@ -280,16 +298,16 @@ public class MissionTripService implements IMissionTripService {
                 //check for duplicate
                 List<? extends IMissionCity> missionCities = missionCityRepository.findAll(MissionCity.class);
                 boolean isDuplicate = false;
-                for (IMissionCity mc : missionCities){
-                    if (mc.getName().toUpperCase().equals(cityName.toUpperCase())){
+                for (IMissionCity mc : missionCities) {
+                    if (mc.getName().toUpperCase().equals(cityName.toUpperCase())) {
                         isDuplicate = true;
                         response.addError("", "duplicate city");
                     }
                 }
-                if (!isDuplicate){
-                    IMissionCity missionCity = domainMapper.createMissionCity(cityName, missionCountry);
+                if (!isDuplicate) {
+                    IMissionCity missionCity = dataModelMapper.createMissionCity(cityName, missionCountry);
                     missionCity = missionCityRepository.create(missionCity);
-                    response.setResponseObject(DomainMapper.createCityItem(missionCity.getName(), missionCity.getMissionCountry().getName()));
+                    response.setResponseObject(itemModelMapper.createCityItem(missionCity.getName(), missionCity.getMissionCountry().getName()));
                 }
             }
         } catch (Exception ex) {
@@ -322,7 +340,7 @@ public class MissionTripService implements IMissionTripService {
                         mt.setCurrent(false);
                     }
                     missionTripRepository.update(mt);
-                    response.setResponseObject(DomainMapper.createTripItem(mt.getMissionTeam().getName(), mt.getMissionCity().getName(), mt.getMissionCity().getMissionCountry().getName(), mt.getStartDate(), mt.getEndDate()));
+                    response.setResponseObject(itemModelMapper.createTripItem(mt.getMissionTeam().getName(), mt.getMissionCity().getName(), mt.getMissionCity().getMissionCountry().getName(), mt.getStartDate(), mt.getEndDate()));
                 }
             }
 

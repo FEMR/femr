@@ -30,7 +30,7 @@ public class BusinessLayerModule extends AbstractModule {
     protected void configure() {
         //Business Service Injection
         bind(IConfigureService.class).to(ConfigureService.class);
-        bind(ICustomTabService.class).to(CustomTabService.class);
+        bind(ITabService.class).to(TabService.class);
         bind(IEncounterService.class).to(EncounterService.class);
         bind(IInventoryService.class).to(InventoryService.class);
         bind(IMedicationService.class).to(MedicationService.class);

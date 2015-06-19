@@ -52,11 +52,11 @@ public class ConfigureController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         IndexViewModelGet indexViewModel = new IndexViewModelGet();
 
 
-        ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.getCurrentSettings();
+        ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.retrieveCurrentSettings();
         if (systemSettingsResponse.hasErrors()) {
             throw new RuntimeException();
         }

@@ -67,6 +67,16 @@ public class dateUtils {
         return result/12;
     }
 
+    public static float getAgeAsOfDateFloat(Date born, DateTime asOfDate) {
+
+        LocalDate birthdate = new LocalDate(born);
+        LocalDate currDate = new LocalDate(asOfDate);
+        Months months = Months.monthsBetween(birthdate, currDate);
+        int monthsInt = months.getMonths();
+        float result = (float) monthsInt;
+        return result/12;
+    }
+
     public static String getFriendlyDate(DateTime dateTime){
         if (dateTime == null)
             return null;

@@ -2,6 +2,7 @@ package femr.ui.controllers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;
 import femr.business.services.core.ISessionService;
 import femr.common.dtos.ServiceResponse;
@@ -10,7 +11,6 @@ import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.search.json.PatientSearch;
-import femr.util.calculations.dateUtils;
 import org.h2.util.StringUtils;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -21,25 +21,30 @@ import java.util.List;
 
 //The purpose of this controller is to provide a universal
 //way of handling search requests - all requests will be
-//redirected to another controller
+//redirected to another controller. Also, typeahead for now
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class SearchController extends Controller {
+
     private ISessionService sessionService;
     private ISearchService searchService;
+    private IMedicationService medicationService;
 
     @Inject
     public SearchController(ISessionService sessionService,
-                            ISearchService searchService) {
+                            ISearchService searchService,
+                            IMedicationService medicationService) {
+
         this.sessionService = sessionService;
         this.searchService = searchService;
+        this.medicationService = medicationService;
     }
 
     public Result handleSearch(String page) {
 
         String patientSearchQuery = request().getQueryString("patientSearchQuery");
 
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(patientSearchQuery);
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(patientSearchQuery);
         if (patientResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -82,7 +87,8 @@ public class SearchController extends Controller {
      * @return
      */
     public Result doesPatientExist(String query){
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.getPatientsFromQueryString(query);
+
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
         if (patientResponse.hasErrors() || patientResponse.getResponseObject().size() == 0) {
             return ok("false");
         }
@@ -90,7 +96,8 @@ public class SearchController extends Controller {
     }
 
     public Result typeaheadPatientsJSONGet(){
-        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.findPatientsForSearch();
+
+        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch();
 
         if (patientItemsServiceResponse.hasErrors()){
             return ok("");
@@ -121,5 +128,21 @@ public class SearchController extends Controller {
             return ok("");
 
         return ok(new Gson().toJson(allDiagnosesServiceResponse.getResponseObject()));
+    }
+
+    /**
+     * Used for typeahead in replacement prescription boxes
+     * Called via ajax
+     *
+     * @return JSON object of medications that exist in the medications table
+     */
+    public Result typeaheadMedicationsJSONGet() {
+
+        ServiceResponse<List<String>> medicationServiceResponse = medicationService.retrieveAllMedications();
+        if (medicationServiceResponse.hasErrors()) {
+            return ok("");
+        }
+
+        return ok(new Gson().toJson(medicationServiceResponse.getResponseObject()));
     }
 }

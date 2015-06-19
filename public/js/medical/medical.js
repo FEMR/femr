@@ -1,27 +1,95 @@
-var medicalFields = {
-    prescription1: $('#prescription1'),
-    prescription2: $('#prescription2'),
-    prescription3: $('#prescription3'),
-    prescription4: $('#prescription4'),
-    prescription5: $('#prescription5')
-};
 
+var problemFeature = {
+    allProblems: $('.newProblems, .oldProblems'),
+    newProblems: $('.newProblems'),
+    refreshSelectors: function () {
+        problemFeature.allProblems = $(problemFeature.allProblems.selector);
+        problemFeature.newProblems = $(problemFeature.newProblems.selector);
+    },
+    getNumberOfNonReadonlyProblemFields: function () {
+        problemFeature.refreshSelectors();
+        return problemFeature.newProblems.length / 2;
+    },
+    addProblemField: function () {
+        var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
+        $('.problem')
+            .parent()
+            .append("<div class='problem'>" +
+                "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
+                "</div>");
+
+        var problemInputElement = $("[name='problems[" + problemIndex + "].name'");
+        typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
+        $(problemInputElement).focus();
+
+    },
+    removeProblemField: function () {
+        problemFeature.refreshSelectors();
+        var lastProblem = $(problemFeature.newProblems).last();
+        if ($(problemFeature.newProblems).size() / 2 > 1) {
+            if (!$(lastProblem).is('[readonly]')) {
+                $(lastProblem).parent().parent().remove();
+            }
+        } else {
+            if (!$(lastProblem).is('[readonly]')) {
+                $(lastProblem).val('');
+            }
+        }
+    }
+};
+var prescriptionFeature = {
+    allPrescriptions: $('.prescriptionWrap input'),
+    refreshSelectors: function () {
+        prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions.selector);
+    },
+    getNumberOfNonReadonlyPrescriptionFields: function () {
+        prescriptionFeature.refreshSelectors();
+        var number = 0;
+        $(prescriptionFeature.allPrescriptions).each(function () {
+            if (!$(this).is('[readonly]')) {
+                number++;
+            }
+        });
+        return number;
+    },
+    addPrescriptionField: function () {
+        var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
+        $(prescriptionFeature.allPrescriptions)
+            .parent()
+            .append("<input name='prescriptions[" + scriptIndex + "].name' type='text' class='form-control input-sm'/>");
+    },
+    removePrescriptionField: function () {
+        prescriptionFeature.refreshSelectors();
+        var lastPrescription = $(prescriptionFeature.allPrescriptions).last();
+        if ($(prescriptionFeature.allPrescriptions).size() > 1) {
+            if (!$(lastPrescription).is('[readonly]')) {
+                ;
+                $(lastPrescription).remove();
+            }
+        } else {
+            if (!$(lastPrescription).is('[readonly]')) {
+                $(lastPrescription).val('');
+            }
+        }
+
+    }
+};
 var multipleChiefComplaintFeature = {
     numberOfChiefComplaints: $(".chiefComplaintText").length,
-    currentChiefComplaintNumber: 1,
     getCurrentChiefComplaintObject: function () {
-        return $('#cc' + multipleChiefComplaintFeature.currentChiefComplaintNumber);
+        return $('.chiefComplaintText').not('.hidden');
     },
     getCurrentHpiObject: function () {
-        return $('#hpi' + multipleChiefComplaintFeature.currentChiefComplaintNumber);
+        return $('.hpiWraps').not('.hidden');
     },
     slideChiefComplaintRight: function () {
-        if ($('#cc' + (multipleChiefComplaintFeature.currentChiefComplaintNumber + 1)).length !== 0) {
+        var nextText = multipleChiefComplaintFeature.getCurrentChiefComplaintObject().next();
+        var nextForm = multipleChiefComplaintFeature.getCurrentHpiObject().next();
+        if ($(nextText).hasClass('chiefComplaintText') && $(nextForm).hasClass('hpiWraps')) {
             multipleChiefComplaintFeature.getCurrentChiefComplaintObject().addClass("hidden");
             multipleChiefComplaintFeature.getCurrentHpiObject().addClass("hidden");
-            multipleChiefComplaintFeature.currentChiefComplaintNumber++;
-            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().removeClass("hidden");
-            multipleChiefComplaintFeature.getCurrentHpiObject().removeClass("hidden");
+            $(nextForm).removeClass("hidden");
+            $(nextText).removeClass("hidden");
             return true;
         } else {
             return false;
@@ -29,82 +97,17 @@ var multipleChiefComplaintFeature = {
 
     },
     slideChiefComplaintLeft: function () {
-        if ($('#cc' + (multipleChiefComplaintFeature.currentChiefComplaintNumber - 1)).length !== 0) {
+        var previousText = multipleChiefComplaintFeature.getCurrentChiefComplaintObject().prev();
+        var previousForm = multipleChiefComplaintFeature.getCurrentHpiObject().prev();
+        if ($(previousText).hasClass('chiefComplaintText') && $(previousForm).hasClass('hpiWraps')) {
             multipleChiefComplaintFeature.getCurrentChiefComplaintObject().addClass("hidden");
             multipleChiefComplaintFeature.getCurrentHpiObject().addClass("hidden");
-            multipleChiefComplaintFeature.currentChiefComplaintNumber--;
-            multipleChiefComplaintFeature.getCurrentChiefComplaintObject().removeClass("hidden");
-            multipleChiefComplaintFeature.getCurrentHpiObject().removeClass("hidden");
+            $(previousText).removeClass("hidden");
+            $(previousForm).removeClass("hidden");
             return true;
         } else {
             return false;
         }
-    },
-    JSONifyHpiFields: function () {
-        var hpiStuff = {};
-
-        $(".hpiWraps").each(function (index) {
-
-            var hpiFields = [];
-            var hpiField = {};
-            hpiField["name"] = "onset";
-            hpiField["value"] = $(this).find("[name=onset]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "quality";
-            hpiField["value"] = $(this).find("[name=quality]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "radiation";
-            hpiField["value"] = $(this).find("[name=radiation]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "severity";
-            hpiField["value"] = $(this).find("[name=severity]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "provokes";
-            hpiField["value"] = $(this).find("[name=provokes]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "palliates";
-            hpiField["value"] = $(this).find("[name=palliates]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "timeOfDay";
-            hpiField["value"] = $(this).find("[name=timeOfDay]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "narrative";
-            hpiField["value"] = $(this).find("[name=narrative]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-            hpiField = {};
-            hpiField["name"] = "physicalExamination";
-            hpiField["value"] = $(this).find("[name=physicalExamination]").val();
-            if (hpiField["value"]) {
-                hpiFields.push(hpiField);
-            }
-
-            hpiStuff[$("#cc" + (index + 1) + " span").text()] = hpiFields;
-        });
-        var stringifiedHpiFields = JSON.stringify(hpiStuff);
-        $("input[name=multipleHpiJSON]").val(stringifiedHpiFields);
     }
 };
 
@@ -116,69 +119,29 @@ $(document).ready(function () {
 
     calculateBMI();
 
-    //Unhides a prescription input box everytime
-    //the + button is clicked (max of 5)
-    $('#addPrescriptionButton').click(function () {
-        var numberOfFilledPrescriptions = getNumberOfFilledScripts();
-        if (numberOfFilledPrescriptions > 0 && ($("body").data("script") < numberOfFilledPrescriptions || typeof $("body").data("script") === "undefined")) {
-            $("body").data("script", numberOfFilledPrescriptions);
-        }
+    //make the first tab active
+    $('#medicalTabs li').first().addClass('active');
+    //unhide the first HPI form
+    $('.hpiWraps').first().removeClass('hidden');
+    //unhide the first chief complaint on HPI
+    $('.chiefComplaintText').first().removeClass('hidden');
 
-        if (typeof $("body").data("script") === "undefined") {
-            $("body").data("script", 2);
-        } else if ($("body").data("script") < 5) {
-            $("body").data("script", $("body").data("script") + 1);
-        } else {
-            return;
-        }
-        $("#prescription" + $("body").data("script")).removeClass("hidden");
-        $("#prescription" + $("body").data("script")).focus();
-        return;
+    //hide/unhide prescriptions
+    $('#addPrescriptionButton').click(function () {
+        prescriptionFeature.addPrescriptionField();
     });
 
     $('#subtractPrescriptionButton').click(function () {
-        if (typeof $("body").data("script") === "undefined") {
-            return;
-        } else if ($("body").data("script") > 1) {
-            $("#prescription" + $("body").data("script")).addClass("hidden");
-            $("#prescription" + ($("body").data("script"))).val('');
-            $("#prescription" + ($("body").data("script") - 1)).focus();
-            $("body").data("script", $("body").data("script") - 1);
-        }
-        return;
+        prescriptionFeature.removePrescriptionField();
     });
 
-    //Unhides a problem input box everytime
-    //the + button is clicked (max of 5)
+    //hide/unhide problems
     $('#addProblemButton').click(function () {
-        var numberOfProblems = getNumberOfProblems();
-        if (numberOfProblems > 0 && ($("body").data("prob") < numberOfProblems || typeof $("body").data("prob") === "undefined")) {
-            $("body").data("prob", numberOfProblems);
-        }
-
-
-        if (typeof $("body").data("prob") === "undefined") {
-            $("body").data("prob", 2);
-        } else if ($("body").data("prob") < 5) {
-            $("body").data("prob", $("body").data("prob") + 1);
-        } else {
-            return;
-        }
-        $("#problem" + $("body").data("prob") + "-container").removeClass("hidden");
-        $("#problem" + $("body").data("prob")).focus();
-        return;
+        problemFeature.addProblemField();
     });
 
     $('#subtractProblemButton').click(function () {
-        if (typeof $("body").data("prob") === "undefined") {
-            return;
-        } else if ($("body").data("prob") > 1) {
-            $("#problem" + $("body").data("prob") + "-container").addClass("hidden");
-            $("#problem" + ($("body").data("prob")) + "-container").val('');
-            $("#problem" + ($("body").data("prob") - 1) + "-container").focus();
-            $("body").data("prob", $("body").data("prob") - 1);
-        }
-        return;
+        problemFeature.removeProblemField();
     });
 
     $('#medicalTabs li').click(function () {
@@ -244,44 +207,15 @@ $(document).ready(function () {
 
 
     $('#medicalSubmitBtn').click(function () {
-        JSONifyDynamicFields();
-        if (multipleChiefComplaintFeature.numberOfChiefComplaints > 1) {
-            multipleChiefComplaintFeature.JSONifyHpiFields();
-        }
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 
-    registerTypeAhead();
+    typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {
+        typeaheadFeature.initalizeTypeAhead(problemFeature.newProblems.first(), 'diagnoses', true, true);
+    });
+
 
 });
-
-function JSONifyDynamicFields() {
-    var tabs = {};
-
-    //iterate over each tab
-    $(".customTab").each(function () {
-        var tabName = $(this).attr("id");
-
-        var fieldItem = [];
-        $("#" + tabName + "DynamicTab .customField").each(function () {
-            var fieldItems = {};
-            if ($(this).val() !== "") {
-                fieldItems["name"] = $(this).attr('id');
-                fieldItems["value"] = $(this).val();
-                fieldItem.push(fieldItems);
-            }
-            tabs[tabName] = fieldItem;
-
-        });
-
-
-    });
-    var stringifiedJSON = JSON.stringify(tabs);
-    $('input[name=customFieldJSON]').val(stringifiedJSON);
-
-
-}
-
 
 /**
  * Generic tab showing function. Also takes care of identifying active tab.
@@ -304,27 +238,6 @@ function showTab(clickedTab) {
             $(this).removeClass("active");
         }
     });
-}
-
-function getNumberOfFilledScripts() {
-    var x = 0;
-    $('.prescription').each(function () {
-        if ($(this).attr("readonly")) {
-            x++;
-        }
-    });
-    return x;
-}
-
-function getNumberOfProblems() {
-    var x = 0;
-    $('.problem').each(function () {
-        //if ($(this).attr("readonly")) {
-        if (!$(this).hasClass("hidden")) {
-            x++;
-        }
-    });
-    return x;
 }
 
 
@@ -364,7 +277,10 @@ function setupModal(titleText, descText, imgSrcVal, onSave) {
     if (!window.isFileReader) {
         //add warnings for non FileReader compliant browsers
         $('#modalImg').hide();
-        $('#modalImg').parent().append("<p>Image Preview is not supported in your browser.</p>")
+        $('#modalImg').parent(
+
+
+        ).append("<p>Image Preview is not supported in your browser.</p>")
     }
     if (titleText != null) {
         $('#myModalLabel').text(titleText);
@@ -508,58 +424,6 @@ function photoNameFixup() {
     });
 
     return true;
-}
-
-
-function registerTypeAhead(obj){
-
-
-    var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-            var matches, substrRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-                if (substrRegex.test(str)) {
-                    // the typeahead jQuery plugin expects suggestions to a
-                    // JavaScript object, refer to typeahead docs for more info
-                    matches.push({ value: str });
-                }
-            });
-
-            cb(matches);
-        };
-    };
-
-    var diagnoses = [];
-
-    // get diagnoses, register typeahead on response
-    $.getJSON("/search/typeahead/diagnoses", function (data) {
-
-        diagnoses = data;
-
-        $(".problem").find('input[type="text"]').each(function(){
-
-            $(this).typeahead({
-                    hint: true,
-                    highlight: true,
-                    minLength: 1
-                },
-                {
-                    name: 'dianoses',
-                    displayKey: 'value',
-                    source: substringMatcher(diagnoses)
-                });
-        });
-
-    });
 }
 
 

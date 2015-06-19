@@ -6,30 +6,43 @@ $(document).ready(function () {
 
 
 function calculateBMI() {
-    var $weights = $('#weight td');
-    var weight_lbs = null;
-    var $heights = $('#height td');
+    var weight = null;
     var height_in = null;
     var height_ft = null;
-    $($weights.get().reverse()).each(function () {
-        if ($(this).html() !== null && $(this).html() !== '' && typeof ( $(this).html() ) !== 'undefined') {
-            weight_lbs = parseInt($(this).html());
+
+   
+    // Search vitals from most recent to least for one containing a valid weight
+    $($("#weight td").get().reverse()).each(function() {
+        var tryParse = parseFloat($(this).attr("data-weight"));
+        if (!isNaN(tryParse)) {
+            weight = tryParse;
+        }
+    });
+
+    // Search vitals from most recent to least for one containing a valid height
+    $($("#height td").get().reverse()).each(function() {
+        var tryParseFeet = parseFloat($(this).attr("data-feet"));
+        var tryParseInches = parseFloat($(this).attr("data-inches"));
+        if (!isNaN(tryParseFeet) && !isNaN(tryParseInches)) {
+            height_ft = tryParseFeet;
+            height_in = tryParseInches;
             return false;
         }
     });
-    $($heights.get().reverse()).each(function () {
-        if (height_ft === null || height_ft === '' || isNaN(height_ft)) {
-            height_ft = parseInt($(this).html().split("'")[ 0 ].trim());
-        }
-        if (height_in === null || height_in === '' || isNaN(height_in)) {
-            height_in = parseInt($(this).html().split("'")[ 1 ].trim());
-        }
-    });
 
-    var bmi = Math.round(( weight_lbs / ( ( height_ft * 12 + height_in ) * ( height_ft * 12 + height_in ) ) ) * 703);
+    // Problem finding weight and height
+    if (height_ft === null || height_in === null || weight === null) {
+        $("#bmi").text("N/A");
+        return;
+    }
 
+    // Calculate total inches by combinning feet and inches
+    var totalInches = height_in + height_ft * 12;
+
+    // BMI for Metric - Alaa Serhan
+    var bmi = Math.round((weight / (totalInches * totalInches)) * 703);
     if (!isFinite(bmi) || bmi === '' || bmi === null){
-        $('#bmi').text("N/A");
+       $('#bmi').text("N/A");
     }else{
         $('#bmi').text(bmi);
     }

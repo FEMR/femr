@@ -19,17 +19,26 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IVitalService;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatientEncounterVital;
+import femr.data.models.core.ISystemSetting;
 import femr.data.models.core.IVital;
+import femr.data.models.mysql.PatientEncounterVital;
+import femr.data.models.mysql.SystemSetting;
 import femr.data.models.mysql.Vital;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.calculations.dateUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,16 +47,22 @@ public class VitalService implements IVitalService {
 
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IVital> vitalRepository;
-    private final DomainMapper domainMapper;
+    private final IDataModelMapper dataModelMapper;
+    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public VitalService(IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                         IRepository<IVital> vitalRepository,
-                        DomainMapper domainMapper){
+                        IDataModelMapper dataModelMapper,
+                        IRepository<ISystemSetting> settingsReposity,
+                        @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.vitalRepository = vitalRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
+        this.systemSettingRepository = settingsReposity;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -67,12 +82,15 @@ public class VitalService implements IVitalService {
         ExpressionList<Vital> query;
         String currentTime = dateUtils.getCurrentDateTimeString();
 
+        // Convert vitals to imperial for storing in DB
+        if (isMetric())
+            LocaleUnitConverter.toImperial(patientEncounterVitalMap);
+
         for (String key : patientEncounterVitalMap.keySet()) {
             if (patientEncounterVitalMap.get(key) != null) {
-
                 query = QueryProvider.getVitalQuery().where().eq("name", key);
                 vital = vitalRepository.findOne(query);
-                patientEncounterVitals.add(domainMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital, patientEncounterVitalMap.get(key)));
+                patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
             }
         }
 
@@ -80,8 +98,10 @@ public class VitalService implements IVitalService {
             List<VitalItem> vitalItems = new ArrayList<>();
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             for (IPatientEncounterVital pev : newPatientEncounterVitals) {
-                vitalItems.add(DomainMapper.createVitalItem(pev));
+                if (pev.getVital() != null)
+                    vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
+
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -94,14 +114,14 @@ public class VitalService implements IVitalService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<VitalItem>> findAllVitalItems() {
+    public ServiceResponse<List<VitalItem>> retrieveAllVitalItems() {
         ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
 
         try {
             List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IVital v : vitals) {
-                vitalItems.add(DomainMapper.createVitalItem(v));
+                vitalItems.add(itemModelMapper.createVitalItem(v.getName(), null));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {
@@ -117,7 +137,7 @@ public class VitalService implements IVitalService {
     @Override
     public ServiceResponse<List<VitalItem>> createPatientEncounterVitalItems(Map<String, Float> patientEncounterVitalMap, int userId, int encounterId) {
         ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
-        if (patientEncounterVitalMap == null || userId < 1 || encounterId < 1) {
+        if (patientEncounterVitalMap == null) {
             response.addError("", "bad parameters");
             return response;
         }
@@ -129,6 +149,10 @@ public class VitalService implements IVitalService {
         ExpressionList<Vital> query;
         String currentTime = dateUtils.getCurrentDateTimeString();
 
+        // Convert vitals to imperial for storing in DB
+        if (isMetric())
+            LocaleUnitConverter.toImperial(patientEncounterVitalMap);
+
         try {
 
 
@@ -137,14 +161,15 @@ public class VitalService implements IVitalService {
 
                     query = QueryProvider.getVitalQuery().where().eq("name", key);
                     vital = vitalRepository.findOne(query);
-                    patientEncounterVitals.add(domainMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital, patientEncounterVitalMap.get(key)));
+                    patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
                 }
             }
 
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             List<VitalItem> vitalItems = new ArrayList<>();
             for (IPatientEncounterVital pev : patientEncounterVitals) {
-                vitalItems.add(DomainMapper.createVitalItem(pev));
+                if (pev.getVital() != null)
+                    vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
 
             response.setResponseObject(vitalItems);
@@ -153,5 +178,52 @@ public class VitalService implements IVitalService {
         }
 
         return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<VitalMultiMap> retrieveVitalMultiMap(int encounterId) {
+        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
+        VitalMultiMap vitalMultiMap = new VitalMultiMap();
+
+        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
+        try {
+            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
+
+            if (patientEncounterVitals != null) {
+                for (IPatientEncounterVital vitalData : patientEncounterVitals) {
+                    vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
+                }
+            }
+
+            // If metric convert the multimap to metric
+            if (isMetric()) {
+                vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
+            }
+
+        } catch (Exception ex) {
+            response.addError("", "bad query");
+        }
+
+        response.setResponseObject(vitalMultiMap);
+        return response;
+    }
+
+    /**
+     * Gets isActive of the metric setting
+     * @return
+     */
+    private boolean isMetric() {
+        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
+                .where()
+                .eq("name", "Metric System Option");
+        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        return isMetric.isActive();
     }
 }

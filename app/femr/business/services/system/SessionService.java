@@ -25,7 +25,6 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.data.models.core.IUser;
-import femr.data.daos.IRepository;
 import femr.util.encryptions.IPasswordEncryptor;
 
 //import static play.mvc.Controller.session;
@@ -35,20 +34,23 @@ public class SessionService implements ISessionService {
     private IUserService userService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
-    private IRepository<IUser> userRepository;
 
     @Inject
-    public SessionService(IUserService userService, IPasswordEncryptor passwordEncryptor,
-                          ISessionHelper sessionHelper, IRepository<IUser> userRepository) {
+    public SessionService(IUserService userService,
+                          IPasswordEncryptor passwordEncryptor,
+                          ISessionHelper sessionHelper) {
+
         this.userService = userService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
-        this.userRepository = userRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<CurrentUser> createSession(String email, String password) {
-        IUser userWithEmail = userService.findByEmail(email);
+        IUser userWithEmail = userService.retrieveByEmail(email);
         ServiceResponse<CurrentUser> response = new ServiceResponse<>();
 
         //user doesn't exist OR
@@ -65,13 +67,16 @@ public class SessionService implements ISessionService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CurrentUser getCurrentUserSession() {
+    public CurrentUser retrieveCurrentUserSession() {
         int currentUserId = sessionHelper.getInt("currentUser");
 
         if (currentUserId > 0) {
-            IUser userFoundById = userService.findById(currentUserId);
-            if (userFoundById == null){
+            IUser userFoundById = userService.retrieveById(currentUserId);
+            if (userFoundById == null) {
                 return null;
             }
 
@@ -81,6 +86,9 @@ public class SessionService implements ISessionService {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void invalidateCurrentUserSession() {
         sessionHelper.delete("currentUser");

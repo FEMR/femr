@@ -34,11 +34,13 @@ var scatterGraphModule = (function(){
         var graphHeight = containerHeight - margin.top - margin.bottom;
 
         var xScale = d3.scale.linear()
-            .domain([d3.min(graphData, function(d) { return parseInt(d.primaryName); })-1, d3.max(graphData, function(d) { return parseInt(d.primaryName); })+1])
+            .domain([d3.min(graphData, function(d) { return parseInt(d.primaryName); })-1,
+                d3.max(graphData, function(d) { return parseInt(d.primaryName); })])
             .range([0, graphWidth]);
 
         var yScale = d3.scale.linear()
-            .domain([d3.min(graphData, function(d) { return d.primaryValue; })-1, d3.max(graphData, function(d) { return d.primaryValue; })+1])
+            .domain([0,
+                d3.max(graphData, function(d) { return d.primaryValue; })])
             .range([graphHeight, 0]);
 
         var xAxis = d3.svg.axis()

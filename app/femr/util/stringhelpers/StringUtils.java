@@ -33,15 +33,16 @@ public class StringUtils {
 
     /**
      * Formats the regular date string into a more humanly readable one
-     * @param dateString the Date string in the format yyyy-MM-dd HH:mm:ss.S
+     * @param dateString the Date string in the format yyyy-MM-dd HH:mm:ss.S or yyyy-MM-ddTHH:mm:ssZ
      * @return A date String in the format MMMM dd, yyyy, h:mm:ss.s a Or the original if
      * it fails to parse it
      */
     public static String FormatDateTime(String dateString) {
         Date date = null;
         String formattedDate = dateString;
+        String pattern = (dateString.indexOf('T') == -1) ? "yyyy-MM-dd HH:mm:ss.S" : "yyyy-MM-dd'T'HH:mm:ss";
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(dateString);
+            date = new SimpleDateFormat(pattern).parse(dateString);
             formattedDate = new SimpleDateFormat("MMMM dd, yyyy, h:mm:ss a").format(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -90,6 +91,41 @@ public class StringUtils {
                 ),
                 " "
         );
+    }
+
+    public static String outputStringOrNA(String str) {
+        if (StringUtils.isNullOrWhiteSpace(str)) return "N/A";
+        else return str;
+    }
+
+    public static String outputIntOrNA(Integer value) {
+        if (value == null) return "N/A";
+        else return value.toString();
+    }
+
+    public static String outputHeightOrNA(Integer feet, Integer inches) {
+        if(feet == null && inches == null){
+            return "N/A";
+        } else {
+            String output = "";
+            if(feet != null){
+                output += feet + "'";
+            }
+            if(inches != null){
+                output += inches + "\"";
+            }
+            return output;
+        }
+    }
+
+    public static String outputFloatOrNA(Float value) {
+        if (value == null) return "N/A";
+        else return value.toString();
+    }
+
+    public static String outputBloodPressureOrNA(String systolic, String diastolic) {
+        if (systolic == null && diastolic == null) return "N/A";
+        else return systolic + " / " + diastolic;
     }
 
 }

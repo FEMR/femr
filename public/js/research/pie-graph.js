@@ -114,7 +114,10 @@ var pieGraphModule = (function(){
             .attr("transform", "translate(20,"+margin.top+")")
             .selectAll("g.item")
             .data(graphData)
-            .enter().append("g")
+            .enter()
+            .append("g")
+            // don't show 0 values in the legend
+            .filter(function(d){ return d.primaryValue > 0; })
             .attr("class", "item")
             .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })
             .on("mouseover", function(d) {

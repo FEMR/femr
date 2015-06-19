@@ -28,58 +28,71 @@ import femr.data.models.core.IMissionTrip;
 import java.util.List;
 
 public interface IMissionTripService {
-    /**
-     * Retrieve the current trip information
-     * @return the current trip or an error if one doesn't exist
-     */
-    IMissionTrip findCurrentMissionTrip();
 
     /**
-     * Retrieve a list of the teams that are already in the database
-     * @return a list of team names
-     */
-    ServiceResponse<List<String>> findAvailableTeams();
-
-    /**
-     * Retrieve a list of the cities that are already in the database
-     * @return a list of cities with respective country
-     */
-    ServiceResponse<List<CityItem>> findAvailableCities();
-
-    /**
-     * Retrieve a list of the countries that are already in the database
-     * @return a list of countries
-     */
-    ServiceResponse<List<String>> findAvailableCountries();
-
-    /**
-     * Get all available team and trip information
+     * Retrieve the current trip information.
      *
-     * @return all mission teams with their respective trips
+     * @return the current trip or null if an error occurs TODO: change to ui model/service response
      */
-    ServiceResponse<List<MissionItem>> findAllTripInformation();
+    IMissionTrip retrieveCurrentMissionTrip();
 
     /**
-     * Create a new team
+     * Retrieve a list of all team names.
      *
-     * @param teamItem the name is required
-     * @return
+     * @return a service response that contains a list of available teams as Strings
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<String>> retrieveAvailableTeams();
+
+    /**
+     * Retrieve a list of all cities.
+     *
+     * @return a service response that contains a list of available cities as CityItems
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<CityItem>> retrieveAvailableCities();
+
+    /**
+     * Retrieve a list of all countries.
+     *
+     * @return a service response that contains a list of available countries as Strings
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<String>> retrieveAvailableCountries();
+
+    /**
+     * Get a comprehensive list of trip information
+     *
+     * @return a service response that contains a list of trip information
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<MissionItem>> retrieveAllTripInformation();
+
+    /**
+     * Create a new team.
+     *
+     * @param teamItem - the name is required TODO: separate into parameters
+     * @return a service response that contains a new TeamItem that was created
+     * and/or errors if they exist.
      */
     ServiceResponse<TeamItem> createNewTeam(TeamItem teamItem);
 
     /**
      * Create a new trip
      *
-     * @param tripItem everything except end date required
-     * @return
+     * @param tripItem everything except end date required TODO: separate into parameters
+     * @return a service response that contains a new TripItem that was created
+     * and/or errors if they exist.
      */
     ServiceResponse<TripItem> createNewTrip(TripItem tripItem);
 
     /**
      * Create a new city
-     * @param cityName name of the city
-     * @param countryName name of the country
-     * @return name of the created city
+     *
+     * @param cityName name of the city, TODO: make not nullable
+     * @param countryName name of the country, TODO: make not nullable
+     * @return a service response that contains a new CityItem that was created
+     * and/or errors if they exist.
      */
     ServiceResponse<CityItem> createNewCity(String cityName, String countryName);
 
@@ -87,7 +100,8 @@ public interface IMissionTripService {
      * Mark a trip as current and all others as not current
      *
      * @param tripId the id of the trip to mark current
-     * @return the current trip
+     * @return a service response that contains a new TripItem that is now current
+     * and/or errors if they exist.
      */
     ServiceResponse<TripItem> updateCurrentTrip(int tripId);
 }

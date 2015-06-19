@@ -20,10 +20,9 @@ package femr.data.models.mysql;
 
 import femr.data.models.core.ITab;
 import org.joda.time.DateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tabs")
@@ -45,6 +44,8 @@ public class Tab implements ITab {
     private int rightColumnSize;
     @Column(name = "isCustom", nullable = false)
     private boolean isCustom;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tab")
+    private List<TabField> tabFields;
 
     @Override
     public int getId() {
@@ -124,5 +125,15 @@ public class Tab implements ITab {
     @Override
     public void setIsCustom(boolean isCustom) {
         this.isCustom = isCustom;
+    }
+
+    @Override
+    public List<TabField> getTabFields() {
+        return tabFields;
+    }
+
+    @Override
+    public void setTabFields(List<TabField> tabFields) {
+        this.tabFields = tabFields;
     }
 }

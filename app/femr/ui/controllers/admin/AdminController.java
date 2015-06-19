@@ -38,7 +38,7 @@ public class AdminController extends Controller {
     }
 
     public Result index() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUser));
     }
 }

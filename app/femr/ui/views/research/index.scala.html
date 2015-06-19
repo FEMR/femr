@@ -18,6 +18,7 @@
         <script type="text/javascript" src="@routes.Assets.at("js/research/stacked-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/research/grouped-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/research/table-chart.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/research/research.js")"></script>
     }
 
@@ -25,7 +26,6 @@
 
         <div class="row dropdown">
             <div class="col-sm-3 col-md-2 sidebar">
-
                 @helper.form(action = ResearchController.getGraphPost, 'id -> "graph-options") {
                     <div id="filter-errors">
 
@@ -108,9 +108,6 @@
                                 <li><a data-gtype="stacked-bar" href="#">Stacked Bar Graph</a></li>
                                 <li><a data-gtype="grouped-bar" href="#">Grouped Bar Graph</a></li>
                                 <li><a data-gtype="table" href="#">Table</a></li>
-                                @*
-                                <li><a class="clear" data-dname2="clear" href="#">Clear <span class="glyphicon glyphicon-remove"></span></a></li>
-                                *@
                             </ul>
                         </li>
                         <li id="gfilter-menu" class="menu-item">
@@ -126,15 +123,6 @@
                                 <li>End Date <input type="date" id="endDate" name="endDate" value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" /></li>
                             </ul>
                         </li>
-                        @*
-                        <li id="goptions-menu" class="menu-item">
-                            <a class="opt-link noval">Graph Options</a>
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                            <ul class="submenu">
-                                <li><a id="save" href="#">Save As Image</a></li>
-                            </ul>
-                        </li>
-                        *@
                         <li class="controls">
 
                             <input type="hidden" id="primaryDataset" name="primaryDataset" value="" />
@@ -143,18 +131,21 @@
 
                             <span class="filter">
                                 <label>Filter Primary Dataset</label>
-                                <input type="text" id="rangeStart" name="rangeStart" placeholder="Start" value="" /> &ndash;
-                                <input type="text" id="rangeEnd" name="rangeEnd" placeholder="End" value="" />
+                                <input type="text" id="filterRangeStart" name="filterRangeStart" placeholder="Start" value="" /> &ndash;
+                                <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
                                 <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
                             </span>
                             <span class="medication">
-                                <label>Filter Medication Name</label>
+                                <label>Filter Medication</label>
+                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name" />
+                                @*
                                 <select name="medicationId" id="medicationId">
                                     <option value="-1">Any</option>
                                     @for( (key,value) <- viewModel.getMedicationsList ){
                                         <option value="@key">@value</option>
                                     }
                                 </select>
+                                *@
                             </span>
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
@@ -189,8 +180,8 @@
                     <div class="graph-area">
                         <div class="graph-header">
                             <p id="average" class="stat"><strong>Average:</strong> <span class="val"></span></p>
-                            <p id="median" class="stat"><strong>Median:</strong> <span class="val"></span></p>
                             <p id="range" class="stat"><strong>Range:</strong> <span class="val"></span></p>
+                            <p id="total" class="stat"><strong>Total:</strong> <span class="val"></span></p>
 
                             <div class="save-image-cont">
                                 <a id="save-button" class="fButton" href="#">Save As Image</a>
@@ -210,8 +201,6 @@
                         <img class="loading" src="@routes.Assets.at("img/graph-loader.gif")" alt="loading&hellip;" />
                     </div>
                 </div>
-
-
                 <div id="table-container" class="table-responsive">
 
                 </div>

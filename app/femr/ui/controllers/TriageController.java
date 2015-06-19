@@ -18,6 +18,7 @@ import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +52,11 @@ public class TriageController extends Controller {
     }
 
     public Result indexGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -64,14 +65,14 @@ public class TriageController extends Controller {
         PatientItem patientItem = new PatientItem();
 
         //get settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.findPossibleAgeClassifications();
-        if (patientAgeClassificationsResponse.hasErrors()){
+        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
@@ -90,30 +91,32 @@ public class TriageController extends Controller {
     and wants to create a new encounter
      */
     public Result indexPopulatedGet(int patientId) {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //retrieve vitals names for dynamic html element naming
-        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.findAllVitalItems();
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         //get the patient
-        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.findPatientItemByPatientId(patientId);
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
+
+
         PatientItem patient = patientItemServiceResponse.getResponseObject();
 
         //get the settings
-        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.getSystemSettings();
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
         if (settingItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         //get age classifications
-        ServiceResponse<Map<String,String>> patientAgeClassificationsResponse = patientService.findPossibleAgeClassifications();
-        if (patientAgeClassificationsResponse.hasErrors()){
+        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
@@ -131,8 +134,9 @@ public class TriageController extends Controller {
    * if id is > 0 then it is only a new encounter
     */
     public Result indexPost(int id) {
+
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //create a new patient
         //or get current patient for new encounter
@@ -142,7 +146,7 @@ public class TriageController extends Controller {
             patientItem = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = patientService.createPatient(patientItem);
         } else {
-            patientServiceResponse = patientService.findPatientAndUpdateSex(id, viewModel.getSex());
+            patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -150,7 +154,7 @@ public class TriageController extends Controller {
         patientItem = patientServiceResponse.getResponseObject();
 
 
-        photoService.SavePatientPhotoAndUpdatePatient(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
+        photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
         //V code for saving photo without javascript
         //currently javascript is required
         //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
@@ -176,27 +180,42 @@ public class TriageController extends Controller {
         if (viewModel.getHeartRate() != null) {
             newVitals.put("heartRate", viewModel.getHeartRate().floatValue());
         }
+
+        //Alaa Serhan
         if (viewModel.getTemperature() != null) {
-            newVitals.put("temperature", viewModel.getTemperature());
+            Float temperature = viewModel.getTemperature();
+            newVitals.put("temperature", temperature);
         }
+
         if (viewModel.getOxygenSaturation() != null) {
             newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
+
+
         if (viewModel.getHeightFeet() != null) {
-            newVitals.put("heightFeet", viewModel.getHeightFeet().floatValue());
+            Float heightFeet = viewModel.getHeightFeet().floatValue();
+            newVitals.put("heightFeet", heightFeet);
         }
+
         if (viewModel.getHeightInches() != null) {
-            newVitals.put("heightInches", viewModel.getHeightInches().floatValue());
+           Float heightInches = viewModel.getHeightInches().floatValue();
+            newVitals.put("heightInches", heightInches);
         }
+
+        //Alaa Serhan
         if (viewModel.getWeight() != null) {
-            newVitals.put("weight", viewModel.getWeight());
+            Float weight = viewModel.getWeight();
+            newVitals.put("weight", weight);
         }
+
         if (viewModel.getBloodPressureSystolic() != null) {
             newVitals.put("bloodPressureSystolic", viewModel.getBloodPressureSystolic().floatValue());
         }
+
         if (viewModel.getBloodPressureDiastolic() != null) {
             newVitals.put("bloodPressureDiastolic", viewModel.getBloodPressureDiastolic().floatValue());
         }
+
         if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }

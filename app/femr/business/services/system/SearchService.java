@@ -22,17 +22,18 @@ import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
-import femr.util.DataStructure.Mapping.TabFieldMultiMap;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.*;
@@ -40,48 +41,36 @@ import java.util.*;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
-    private final IRepository<IMedication> medicationRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
-    private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IRepository<ITabField> tabFieldRepository;
-    private final IRepository<IVital> vitalRepository;
-    private final DomainMapper domainMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
-                         IRepository<IMedication> medicationRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
-                         IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
-                         IRepository<IVital> vitalRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         IRepository<ITabField> tabFieldRepository,
-                         DomainMapper domainMapper) {
+                         @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
-        this.medicationRepository = medicationRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
-        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
-        this.vitalRepository = vitalRepository;
         this.systemSettingRepository = systemSettingRepository;
-        this.tabFieldRepository = tabFieldRepository;
-        this.domainMapper = domainMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> findPatientItemByPatientId(int patientId) {
+    public ServiceResponse<PatientItem> retrievePatientItemByPatientId(int patientId) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (patientId < 0) {
             response.addError("", "id can not be null or less than 1");
@@ -105,12 +94,37 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
 
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (savedPatient.getPhoto() != null){
+                pathToPhoto = savedPatient.getPhoto().getFilePath();
+                photoId = savedPatient.getPhoto().getId();
+            }
+            PatientItem patientItem = itemModelMapper.createPatientItem(
+                    savedPatient.getId(),
+                    savedPatient.getFirstName(),
+                    savedPatient.getLastName(),
+                    savedPatient.getCity(),
+                    savedPatient.getAddress(),
+                    savedPatient.getUserId(),
+                    savedPatient.getAge(),
+                    savedPatient.getSex(),
+                    recentEncounter.getWeeksPregnant(),
+                    patientHeightFeet,
+                    patientHeightInches,
+                    patientWeight,
+                    pathToPhoto,
+                    photoId
+            );
 
-            PatientItem patientItem = DomainMapper.createPatientItem(savedPatient, recentEncounter.getWeeksPregnant(), patientHeightFeet, patientHeightInches, patientWeight);
-
+            //TODO: why is this being repeated?
             if (savedPatient.getPhoto() != null) {
                 patientItem.setPathToPhoto("/photo/patient/" + patientId + "?showDefault=false");
             }
+
+            // If metric setting enabled convert response patientItem to metric
+            if (isMetric())
+                patientItem = LocaleUnitConverter.toMetric(patientItem);
 
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
@@ -124,7 +138,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> findPatientItemByEncounterId(int encounterId) {
+    public ServiceResponse<PatientItem> retrievePatientItemByEncounterId(int encounterId) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (encounterId < 0) {
             response.addError("", "invalid id");
@@ -141,7 +155,34 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
-            PatientItem patientItem = DomainMapper.createPatientItem(patient, patientEncounter.getWeeksPregnant(), patientHeightFeet, patientHeightInches, patientWeight);
+
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (patient.getPhoto() != null){
+                pathToPhoto = patient.getPhoto().getFilePath();
+                photoId = patient.getPhoto().getId();
+            }
+            PatientItem patientItem = itemModelMapper.createPatientItem(
+                    patient.getId(),
+                    patient.getFirstName(),
+                    patient.getLastName(),
+                    patient.getCity(),
+                    patient.getAddress(),
+                    patient.getUserId(),
+                    patient.getAge(),
+                    patient.getSex(),
+                    patientEncounter.getWeeksPregnant(),
+                    patientHeightFeet,
+                    patientHeightInches,
+                    patientWeight,
+                    pathToPhoto,
+                    photoId
+            );
+
+            // If metric setting enabled convert response patientItem to metric
+            if (isMetric())
+                patientItem = LocaleUnitConverter.toMetric(patientItem);
+
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -154,7 +195,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientEncounterItem> findPatientEncounterItemByEncounterId(int encounterId) {
+    public ServiceResponse<PatientEncounterItem> retrievePatientEncounterItemByEncounterId(int encounterId) {
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
         if (encounterId < 1) {
             response.addError("", "invalid ID");
@@ -166,7 +207,7 @@ public class SearchService implements ISearchService {
 
         try {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
-            PatientEncounterItem patientEncounterItem = DomainMapper.createPatientEncounterItem(patientEncounter);
+            PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -178,7 +219,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientEncounterItem> findRecentPatientEncounterItemByPatientId(int patientId) {
+    public ServiceResponse<PatientEncounterItem> retrieveRecentPatientEncounterItemByPatientId(int patientId) {
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
         if (patientId < 1) {
             response.addError("", "Invalid patient ID.");
@@ -196,7 +237,7 @@ public class SearchService implements ISearchService {
                 return response;
             }
             IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
-            PatientEncounterItem patientEncounterItem = domainMapper.createPatientEncounterItem(currentPatientEncounter);
+            PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(currentPatientEncounter);
             response.setResponseObject(patientEncounterItem);
 
         } catch (Exception ex) {
@@ -210,7 +251,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientEncounterItem>> findPatientEncounterItemsByPatientId(int patientId) {
+    public ServiceResponse<List<PatientEncounterItem>> retrievePatientEncounterItemsByPatientId(int patientId) {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
@@ -221,7 +262,7 @@ public class SearchService implements ISearchService {
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
-                patientEncounterItems.add(DomainMapper.createPatientEncounterItem(pe));
+                patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(pe));
             }
             response.setResponseObject(patientEncounterItems);
         } catch (Exception ex) {
@@ -235,7 +276,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> findUnreplacedPrescriptionItems(int encounterId) {
+    public ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .where()
@@ -246,12 +287,16 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
-                PrescriptionItem prescriptionItem = new PrescriptionItem();
-                prescriptionItem.setName(pp.getMedication().getName());
-                prescriptionItem.setId(pp.getId());
-                prescriptionItem.setPrescriberFirstName(pp.getPhysician().getFirstName());
-                prescriptionItem.setPrescriberLastName(pp.getPhysician().getLastName());
-                prescriptionItems.add(prescriptionItem);
+
+                prescriptionItems.add(
+                        itemModelMapper.createPrescriptionItem(
+                                pp.getId(),
+                                pp.getMedication().getName(),
+                                pp.getReplacementId(),
+                                pp.getPhysician().getFirstName(),
+                                pp.getPhysician().getLastName()
+                        )
+                );
             }
 
             response.setResponseObject(prescriptionItems);
@@ -266,7 +311,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> findDispensedPrescriptionItems(int encounterId) {
+    public ServiceResponse<List<PrescriptionItem>> retrieveDispensedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .fetch("patientEncounter")
@@ -279,10 +324,16 @@ public class SearchService implements ISearchService {
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
             for (IPatientPrescription pp : patientPrescriptions) {
-                PrescriptionItem prescriptionItem = new PrescriptionItem();
-                prescriptionItem.setName(pp.getMedication().getName());
-                prescriptionItem.setId(pp.getId());
-                prescriptionItems.add(prescriptionItem);
+
+                prescriptionItems.add(
+                        itemModelMapper.createPrescriptionItem(
+                                pp.getId(),
+                                pp.getMedication().getName(),
+                                pp.getReplacementId(),
+                                pp.getPhysician().getFirstName(),
+                                pp.getPhysician().getLastName()
+                        )
+                );
             }
 
             response.setResponseObject(prescriptionItems);
@@ -318,7 +369,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> getPatientsFromQueryString(String patientSearchQuery) {
+    public ServiceResponse<List<PatientItem>> retrievePatientsFromQueryString(String patientSearchQuery) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
         if (StringUtils.isNullOrWhiteSpace(patientSearchQuery)) {
             response.addError("", "bad parameters");
@@ -391,8 +442,30 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatient> patients = patientRepository.find(query);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient p : patients) {
-                patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+            for (IPatient patient : patients) {
+                //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (patient.getPhoto() != null) {
+                    pathToPhoto = patient.getPhoto().getFilePath();
+                    photoId = patient.getPhoto().getId();
+                }
+                patientItems.add(itemModelMapper.createPatientItem(
+                        patient.getId(),
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getCity(),
+                        patient.getAddress(),
+                        patient.getUserId(),
+                        patient.getAge(),
+                        patient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId
+                ));
             }
             response.setResponseObject(patientItems);
         } catch (Exception ex) {
@@ -406,143 +479,66 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<TabFieldMultiMap> getTabFieldMultiMap(int encounterId) {
-        ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
-        TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
-        String tabFieldName;
-        String chiefComplaint;
-
-        Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
-
-        try {
-            List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
-            if (patientEncounterTabFields != null) {
-
-                for (IPatientEncounterTabField petf : patientEncounterTabFields) {
-                    tabFieldName = petf.getTabField().getName();
-                    chiefComplaint = null;
-                    if (petf.getTabField().getTab().getName().equals("HPI")) {
-                        if (petf.getChiefComplaint() != null) {
-                            chiefComplaint = petf.getChiefComplaint().getValue();
-                        }
-                    }
-
-                    tabFieldMultiMap.put(tabFieldName, petf.getDateTaken().toString().trim(), chiefComplaint, petf.getTabFieldValue());
-                }
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad querying");
-        }
-
-        response.setResponseObject(tabFieldMultiMap);
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<VitalMultiMap> getVitalMultiMap(int encounterId) {
-        ServiceResponse<VitalMultiMap> response = new ServiceResponse<>();
-        VitalMultiMap vitalMultiMap = new VitalMultiMap();
-
-        Query<PatientEncounterVital> query = QueryProvider.getPatientEncounterVitalQuery()
-                .where()
-                .eq("patient_encounter_id", encounterId)
-                .order()
-                .desc("date_taken");
-        try {
-            List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query);
-
-            if (patientEncounterVitals != null) {
-                for (IPatientEncounterVital vitalData : patientEncounterVitals) {
-                    vitalMultiMap.put(vitalData.getVital().getName(), vitalData.getDateTaken().trim(), vitalData.getVitalValue());
-                }
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad query");
-        }
-
-        response.setResponseObject(vitalMultiMap);
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<SettingItem> getSystemSettings() {
+    public ServiceResponse<SettingItem> retrieveSystemSettings() {
         ServiceResponse<SettingItem> response = new ServiceResponse<>();
         try {
             List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
-            SettingItem settingItem = new SettingItem();
+
             if (systemSettings == null || systemSettings.size() == 0) {
+
                 response.addError("", "no settings exist at this time");
             } else {
-                for (ISystemSetting ss : systemSettings) {
-                    switch (ss.getName()) {
-                        case "Multiple chief complaints":
-                            settingItem.setMultipleChiefComplaint(ss.isActive());
-                            break;
-                        case "Medical PMH Tab":
-                            settingItem.setPmhTab(ss.isActive());
-                            break;
-                        case "Medical Photo Tab":
-                            settingItem.setPhotoTab(ss.isActive());
-                            break;
-                        case "Medical HPI Consolidate":
-                            settingItem.setConsolidateHPI(ss.isActive());
-                            break;
-                    }
-                }
+
+                SettingItem settingItem = itemModelMapper.createSettingItem(systemSettings);
+                response.setResponseObject(settingItem);
+
             }
-            response.setResponseObject(settingItem);
+
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
 
         return response;
     }
 
-
-    public ServiceResponse<List<String>> getCustomFieldList() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> tabFieldNames = new ArrayList<>();
-        ExpressionList<TabField> query = QueryProvider.getTabFieldQuery()
-                .fetch("tab")
-                .where()
-                .eq("tab.isCustom", true);
-        try {
-            List<? extends ITabField> tabFields = tabFieldRepository.find(query);
-            for (ITabField tabField : tabFields) {
-                tabFieldNames.add(tabField.getName());
-            }
-        } catch (Exception ex) {
-            response.addError("", "bad query");
-        }
-        response.setResponseObject(tabFieldNames);
-        return response;
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> findPatientsForSearch() {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch() {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
             List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
             List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient allPatient : allPatients) {
 
-                PatientItem currPatient = DomainMapper.createPatientItem(allPatient, null, null, null, null);
+            for (IPatient patient : allPatients) {
 
-                if (allPatient.getPhoto() != null) {
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (patient.getPhoto() != null) {
+                    pathToPhoto = patient.getPhoto().getFilePath();
+                    photoId = patient.getPhoto().getId();
+                }
+                PatientItem currPatient = itemModelMapper.createPatientItem(
+                        patient.getId(),
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getCity(),
+                        patient.getAddress(),
+                        patient.getUserId(),
+                        patient.getAge(),
+                        patient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId
+                );
+
+                if (patient.getPhoto() != null) {
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");
                 } else {
                     // If no photo for patient, show default
@@ -588,4 +584,15 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    /**
+     * Gets isActive of the metric setting
+     * @return
+     */
+    private boolean isMetric() {
+        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
+                .where()
+                .eq("name", "Metric System Option");
+        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        return isMetric.isActive();
+    }
 }

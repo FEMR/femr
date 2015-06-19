@@ -24,9 +24,12 @@ import femr.data.models.core.IRole;
 import java.util.List;
 
 public interface IRoleService {
-    List<? extends IRole> getAllRoles();
 
-    ServiceResponse<List<String>> getAllRolesString();
-
-    List<? extends IRole> getRolesFromIds(List<Integer> checkValuesAsIntegers);
+    /**
+     * Retrive a list of all available roles.
+     *
+     * @return a service response that contains a list of roles as strings
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<String>> retrieveAllRoles();
 }

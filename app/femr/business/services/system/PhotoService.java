@@ -19,22 +19,16 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPhotoService;
+import femr.common.IItemModelMapper;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
 import femr.common.models.PhotoItem;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterPhoto;
@@ -48,25 +42,35 @@ import org.apache.commons.codec.binary.Base64;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 import javax.imageio.ImageIO;
-
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhotoService implements IPhotoService {
+
     private String _profilePhotoPath;
     private String _encounterPhotoPath;
     private IRepository<IPhoto> patientPhotoRepository;
     private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
-    private DomainMapper domainMapper;
+    private IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
                         IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
-                        DomainMapper domainMapper) {
+                        IDataModelMapper dataModelMapper,
+                        @Named("identified") IItemModelMapper itemModelMapper) {
+
         this.patientPhotoRepository = patientPhotoRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
 
         this.Init();
     }
@@ -92,7 +96,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> SavePatientPhotoAndUpdatePatient(String imageString, int patientId, Boolean deleteFlag) {
+    public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
 
 
@@ -107,7 +111,7 @@ public class PhotoService implements IPhotoService {
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
                 if (patient.getPhoto() == null) {
                     //Create new photo Id record
-                    IPhoto pPhoto = domainMapper.createPhoto("", imageFileName);
+                    IPhoto pPhoto = dataModelMapper.createPhoto("", imageFileName);
                     pPhoto = patientPhotoRepository.create(pPhoto);
                     patient.setPhoto(pPhoto);
                     patientRepository.update(patient);
@@ -146,7 +150,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getPhotoPathForPatient(int patientId) {
+    public ServiceResponse<String> retrievePatientPhotoPath(int patientId) {
         ServiceResponse<String> response = new ServiceResponse<>();
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
@@ -169,7 +173,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> getPhotoPath(int photoId) {
+    public ServiceResponse<String> retrievePhotoPath(int photoId) {
         ServiceResponse<String> response = new ServiceResponse<>();
         ExpressionList<Photo> query = QueryProvider.getPhotoQuery()
                 .where()
@@ -187,7 +191,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> HandleEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
+    public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try {
             int count = mod.getPhotoId().size();
@@ -252,7 +256,7 @@ public class PhotoService implements IPhotoService {
             sr.setResponseObject(true);
         } catch (Exception ex) {
             sr.setResponseObject(false);
-            sr.addError("HandleEncounterPhotos()", ex.getMessage());
+            sr.addError("createEncounterPhotos()", ex.getMessage());
         }
 
         return sr;
@@ -263,7 +267,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PhotoItem>> GetEncounterPhotos(int encounterId) {
+    public ServiceResponse<List<PhotoItem>> retrieveEncounterPhotos(int encounterId) {
 
         ServiceResponse<List<PhotoItem>> response = new ServiceResponse<>();
         try {
@@ -281,7 +285,7 @@ public class PhotoService implements IPhotoService {
                             .eq("id", pep.getPhotoId());
                     try {
                         IPhoto savedPhoto = patientPhotoRepository.findOne(photoQuery);
-                        returnList.add(domainMapper.createPhotoItem(savedPhoto, femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
+                        returnList.add(itemModelMapper.createPhotoItem(savedPhoto.getId(), savedPhoto.getDescription(), savedPhoto.getInsertTS(), femr.ui.controllers.routes.PhotoController.GetPhoto(savedPhoto.getId()).toString()));
                     } catch (Exception ex) {
                         response.addError("", ex.getMessage());
                         return response;

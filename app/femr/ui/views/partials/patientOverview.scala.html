@@ -1,7 +1,8 @@
-@(patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem, pageName: java.lang.String)
+@(patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem,
+        settings: femr.common.models.SettingItem, pageName: java.lang.String)
 
 @import femr.ui.views.html.partials.helpers.outputHeightOrNA
-@import femr.ui.views.html.partials.helpers.outputFloatOrNA
+@import femr.ui.views.html.partials.helpers.outputWeightOrNA
 @import femr.ui.views.html.partials.helpers.outputIntOrNA
 
 <div id="patientOverviewWrap" class="backgroundForWrap">
@@ -9,12 +10,11 @@
     <h3>Patient Overview - @pageName</h3>
 
     @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
-
         <img src="@patient.getPathToPhoto" height="90" width="90">
         <div id= "patientOverViewInfoPhoto">
-        } else {
+    } else {
         <div id= "patientOverViewInfo">
-        }
+    }
 
 
     <label>Name: </label><span>@patient.getFirstName @patient.getLastName</span>
@@ -24,8 +24,8 @@
     @if(pageName == "Medical") {
         <label for="">BMI: </label> <span id="bmi"></span>
     } else {
-        <label>Height: </label> <span>@outputHeightOrNA(patient.getHeightFeet, patient.getHeightInches)</span>
-        <label>Weight: </label> <span>@outputFloatOrNA(patient.getWeight)</span>
+        <label>Height: </label> <span>@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric)</span>
+        <label>Weight: </label> <span>@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric)</span>
     }
 
     @* Weeks Pregnant *@

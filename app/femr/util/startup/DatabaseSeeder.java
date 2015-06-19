@@ -32,7 +32,6 @@ import play.Play;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: stop assigning primary keys
 public class DatabaseSeeder {
 
     private final Repository<Diagnosis> diagnosisRepository;
@@ -728,6 +727,13 @@ public class DatabaseSeeder {
         if (systemSettings != null && !containSetting(systemSettings, "Medical HPI Consolidate")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical HPI Consolidate");
+            systemSetting.setActive(false);
+            systemSettingRepository.create(systemSetting);
+        }
+
+        if (systemSettings != null && !containSetting(systemSettings, "Metric System Option")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Metric System Option");
             systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }

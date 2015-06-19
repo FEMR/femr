@@ -5,7 +5,7 @@ import play.Play.autoImport._
 object ApplicationBuild extends Build {
 
   val appName = "fEMR"
-  val appVersion = "2.1.3.3"
+  val appVersion = "2.1.4"
   val currentScalaVersion = "2.11.2"
 
   val appDependencies = Seq(
@@ -17,7 +17,9 @@ object ApplicationBuild extends Build {
     "mysql" % "mysql-connector-java" % "5.1.34",
     "org.mindrot" % "jbcrypt" % "0.3m",
     "commons-collections" % "commons-collections" % "3.2.1",
-    "com.google.code.gson" % "gson" % "2.3.1"
+    "com.google.code.gson" % "gson" % "2.3.1",
+    "com.itextpdf" % "itextpdf" % "5.5.4",
+    "com.itextpdf.tool" % "xmlworker" % "5.4.4"
   )
 
 

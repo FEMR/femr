@@ -38,6 +38,8 @@ public class PatientItem {
     private Integer heightInches;
     private Float weight;
 
+
+
     public PatientItem(){
         //default empty values
         this.Id = 0;

@@ -1,22 +1,26 @@
-@(viewModel: femr.ui.models.medical.EditViewModelGet)
-@import femr.ui.views.html.partials.medical.problemField;
-@import femr.ui.views.html.partials.medical.prescriptionField;
-
+@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], problems: List[femr.common.models.ProblemItem])
 
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
         <label for="assessment">Assessment</label>
-        <textarea rows="3" name="assessment" class="form-control input-sm">@if(viewModel.getStaticFields.get("assessment") != null) @{viewModel.getStaticFields.get("assessment").getValue}</textarea>
-    </div>
+        @defining(treatmentTab.getTabFieldItemByName(null, "assessment")) { assessment =>
+            <input name="tabFieldItems[@assessment.getIndex].name" type="text" class="hidden" value="assessment"/>
+            <textarea rows="3" name="tabFieldItems[@assessment.getIndex].value" class="form-control input-sm">@assessment.getValue</textarea>
+        }
+        </div>
+
     <div class="form-group">
         <label for="problem">Diagnosis</label>
         <div class="row">
-            <div class="col-xs-9 col-sm-9 col-md-9">
-                @problemField(1, viewModel.getStaticFields.get("problem1"))
-                @problemField(2, viewModel.getStaticFields.get("problem2"))
-                @problemField(3, viewModel.getStaticFields.get("problem3"))
-                @problemField(4, viewModel.getStaticFields.get("problem4"))
-                @problemField(5, viewModel.getStaticFields.get("problem5"))
+            <div class="col-xs-9 col-sm-9 col-md-9 problemWrap">
+                @for(problem <- problems) {
+                    <div class="problem">
+                        <input type="text" class="form-control input-sm oldProblems" value="@problem.getName" readonly/>
+                    </div>
+                }
+                <div class="problem">
+                    <input name="problems[0].name" type="text" class="form-control input-sm newProblems"/>
+                </div>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">
@@ -31,12 +35,12 @@
     <div class="form-group">
         <label for="prescription">Prescriptions</label>
         <div class="row">
-            <div class="col-xs-9 col-sm-9 col-md-9">
-                @prescriptionField(1, viewModel.getPrescriptionItems)
-                @prescriptionField(2, viewModel.getPrescriptionItems)
-                @prescriptionField(3, viewModel.getPrescriptionItems)
-                @prescriptionField(4, viewModel.getPrescriptionItems)
-                @prescriptionField(5, viewModel.getPrescriptionItems)
+            <div class="col-xs-9 col-sm-9 col-md-9 prescriptionWrap">
+                @for(script <- prescriptions) {
+                    <input type="text" class="form-control input-sm" value="@script.getName" readonly/>
+                }
+                <input name="prescriptions[0].name" type="text" class="form-control input-sm"/>
+
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">
@@ -50,6 +54,9 @@
     </div>
     <div class="form-group">
         <label for="treatment">Treatment Given</label>
-        <textarea rows="3" name="treatment" class="form-control input-sm">@if(viewModel.getStaticFields.get("treatment") != null) @{viewModel.getStaticFields.get("treatment").getValue}</textarea>
+        @defining(treatmentTab.getTabFieldItemByName(null, "treatment")) { treatment =>
+            <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="treatment"/>
+            <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm">@treatment.getValue</textarea>
+        }
     </div>
 </div>

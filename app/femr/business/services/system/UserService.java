@@ -20,16 +20,19 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUserService;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
+import femr.data.IDataModelMapper;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import femr.data.daos.IRepository;
 import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
+import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
 
@@ -41,14 +44,21 @@ public class UserService implements IUserService {
     private final IRepository<IUser> userRepository;
     private final IPasswordEncryptor passwordEncryptor;
     private final IRepository<IRole> roleRepository;
-    private final DomainMapper domainMapper;
+    private final IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public UserService(IRepository<IUser> userRepository, IPasswordEncryptor passwordEncryptor, IRepository<IRole> roleRepository, DomainMapper domainMapper) {
+    public UserService(IRepository<IUser> userRepository,
+                       IPasswordEncryptor passwordEncryptor,
+                       IRepository<IRole> roleRepository,
+                       IDataModelMapper dataModelMapper,
+                       @Named("identified") IItemModelMapper itemModelMapper) {
+
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
         this.roleRepository = roleRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
@@ -65,7 +75,7 @@ public class UserService implements IUserService {
             List<? extends IRole> roles = roleRepository.find(query);
 
 
-            IUser newUser = domainMapper.createUser(user, password, false, false, roles);
+            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles);
             encryptAndSetUserPassword(newUser);
 
 
@@ -75,7 +85,7 @@ public class UserService implements IUserService {
             }
 
             newUser = userRepository.create(newUser);
-            response.setResponseObject(DomainMapper.createUserItem(newUser));
+            response.setResponseObject(itemModelMapper.createUserItem(newUser));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -88,7 +98,7 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<UserItem>> findAllUsers() {
+    public ServiceResponse<List<UserItem>> retrieveAllUsers() {
 
         ExpressionList<User> query = QueryProvider.getUserQuery()
                 .fetch("roles")
@@ -100,7 +110,7 @@ public class UserService implements IUserService {
         List<UserItem> userItems = new ArrayList<>();
         if (users.size() > 0) {
             for (IUser user : users) {
-                userItems.add(DomainMapper.createUserItem(user));
+                userItems.add(itemModelMapper.createUserItem(user));
             }
             response.setResponseObject(userItems);
         } else {
@@ -120,7 +130,7 @@ public class UserService implements IUserService {
             IUser user = userRepository.findOne(query);
             user.setDeleted(!user.getDeleted());
             user = userRepository.update(user);
-            response.setResponseObject(DomainMapper.createUserItem(user));
+            response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -133,13 +143,13 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<UserItem> findUser(int id) {
+    public ServiceResponse<UserItem> retrieveUser(int id) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
         try {
             IUser user = userRepository.findOne(query);
             UserItem userItem;
-            userItem = DomainMapper.createUserItem(user);
+            userItem = itemModelMapper.createUserItem(user);
             response.setResponseObject(userItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -181,34 +191,46 @@ public class UserService implements IUserService {
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
             user = userRepository.update(user);
-            response.setResponseObject(DomainMapper.createUserItem(user));
+            response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IUser findByEmail(String email) {
+    public IUser retrieveByEmail(String email) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("email", email);
 
         return userRepository.findOne(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IUser findById(int id) {
+    public IUser retrieveById(int id) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
 
         return userRepository.findOne(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<? extends IRole> findRolesForUser(int id) {
+    public List<? extends IRole> retrieveRolesForUser(int id) {
         ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
         IUser user = userRepository.findOne(query);
         return user.getRoles();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword) {
         ServiceResponse<IUser> response = new ServiceResponse<>();
@@ -232,7 +254,7 @@ public class UserService implements IUserService {
     }
 
     private boolean userExistsWithEmail(String email) {
-        IUser existingUser = findByEmail(email);
+        IUser existingUser = retrieveByEmail(email);
         return existingUser != null;
     }
 }

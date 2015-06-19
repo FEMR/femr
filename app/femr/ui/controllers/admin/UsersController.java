@@ -58,9 +58,9 @@ public class UsersController extends Controller {
 
     //Manage all users
     public Result manageGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<List<UserItem>> userServiceResponse = userService.findAllUsers();
+        ServiceResponse<List<UserItem>> userServiceResponse = userService.retrieveAllUsers();
         if (userServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -73,9 +73,9 @@ public class UsersController extends Controller {
 
     //Create a new User
     public Result createGet() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -85,9 +85,9 @@ public class UsersController extends Controller {
 
     //Create a new User
     public Result createPost() {
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         Form<CreateViewModel> form = createViewModelForm.bindFromRequest();
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -119,10 +119,10 @@ public class UsersController extends Controller {
         if (id == null){
             return internalServerError();
         }
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         EditViewModel editUserViewModel = new EditViewModel();
 
-        ServiceResponse<UserItem> userItemServiceResponse = userService.findUser(id);
+        ServiceResponse<UserItem> userItemServiceResponse = userService.retrieveUser(id);
         if (userItemServiceResponse.hasErrors()) {
             return internalServerError();
         }
@@ -137,7 +137,7 @@ public class UsersController extends Controller {
         editViewModelForm = editViewModelForm.fill(editUserViewModel);
 
 
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             return internalServerError();
         }
@@ -151,10 +151,10 @@ public class UsersController extends Controller {
         if (id == null){
             return internalServerError();
         }
-        CurrentUser currentUser = sessionService.getCurrentUserSession();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         Form<EditViewModel> form = editViewModelForm.bindFromRequest();
 
-        ServiceResponse<List<String>> roleServiceResponse = roleService.getAllRolesString();
+        ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             return internalServerError();
         }
@@ -164,7 +164,7 @@ public class UsersController extends Controller {
             return badRequest(edit.render(currentUser, form, roleServiceResponse.getResponseObject(), new ArrayList<String>()));
         }else{
             EditViewModel viewModel = form.bindFromRequest().get();
-            ServiceResponse<UserItem> userServiceResponse = userService.findUser(id);
+            ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(id);
 
             if (userServiceResponse.hasErrors()){
                 return internalServerError();
@@ -188,7 +188,7 @@ public class UsersController extends Controller {
             }
 
             if (viewModel.getRoles().size() > 0) {
-                ServiceResponse<List<String>> allRolesServiceResponse = roleService.getAllRolesString();
+                ServiceResponse<List<String>> allRolesServiceResponse = roleService.retrieveAllRoles();
                 List<String> allRoles = allRolesServiceResponse.getResponseObject();
                 List<String> userRoles = new ArrayList<>();
                 for (String role : allRoles) {

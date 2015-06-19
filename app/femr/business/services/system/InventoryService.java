@@ -20,10 +20,12 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.DomainMapper;
+import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
+import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.common.models.MedicationItem;
 import femr.data.models.core.*;
@@ -36,30 +38,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryService implements IInventoryService {
+
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private DomainMapper domainMapper;
+    private IDataModelMapper dataModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                             IRepository<IMedicationForm> medicationFormRepository,
                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
-                            DomainMapper domainMapper) {
+                            IDataModelMapper dataModelMapper,
+                            @Named("identified") IItemModelMapper itemModelMapper) {
+
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
         this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
-        this.domainMapper = domainMapper;
+        this.dataModelMapper = dataModelMapper;
+        this.itemModelMapper = itemModelMapper;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MedicationItem>> getMedicationInventory() {
+    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory() {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
@@ -76,7 +83,7 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
         for (IMedication m : medications) {
-            medicationItems.add(DomainMapper.createMedicationItem(m));
+            medicationItems.add(itemModelMapper.createMedicationItem(m));
         }
         response.setResponseObject(medicationItems);
 
@@ -110,10 +117,10 @@ public class InventoryService implements IInventoryService {
                     IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationActiveDrugName == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
-                        medicationActiveDrugName = domainMapper.createMedicationActiveDrugName(miac.getName());
+                        medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
                     }
                     if (medicationMeasurementUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = domainMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
+                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
                         medicationActiveDrugs.add(medicationActiveDrug);
                     }
 
@@ -127,14 +134,14 @@ public class InventoryService implements IInventoryService {
                     .where()
                     .eq("name", medicationItem.getForm());
             IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
-            if (medicationForm == null){
-                medicationForm = domainMapper.createMedicationForm(medicationItem.getForm());
+            if (medicationForm == null) {
+                medicationForm = dataModelMapper.createMedicationForm(medicationItem.getForm());
             }
 
 
-            IMedication medication = domainMapper.createMedication(medicationItem, medicationActiveDrugs, medicationForm);
+            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = DomainMapper.createMedicationItem(medication);
+            MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);
         } catch (Exception ex) {
             response.addError("", "error creating medication");
@@ -146,7 +153,7 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<List<String>> getAvailableUnits() {
+    public ServiceResponse<List<String>> retrieveAvailableUnits() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
             List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
@@ -164,7 +171,7 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<List<String>> getAvailableForms() {
+    public ServiceResponse<List<String>> retrieveAvailableForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
             List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);

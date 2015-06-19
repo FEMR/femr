@@ -526,7 +526,7 @@ public class TabService implements ITabService {
     public ServiceResponse<TabFieldMultiMap> retrieveTabFieldMultiMap(int encounterId) {
 
         ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
-        TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId, null);
+        TabFieldMultiMap tabFieldMultiMap = mapTabFields(encounterId);
         if (tabFieldMultiMap != null)
             response.setResponseObject(tabFieldMultiMap);
         else
@@ -534,26 +534,30 @@ public class TabService implements ITabService {
         return response;
     }
 
-    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabName, String chiefComplaintName) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<TabFieldMultiMap> findTabFieldMultiMap(int encounterId, String tabFieldName, String chiefComplaintName) {
         ServiceResponse<TabFieldMultiMap> response = new ServiceResponse<>();
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
 
         Query<PatientEncounterTabField> patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
                 .where()
-                .eq("tabField.name", tabName)
+                .eq("tabField.name", tabFieldName)
                 .eq("patient_encounter_id", encounterId)
                 .order()
                 .desc("date_taken");
 
         List<? extends IPatientEncounterTabField> patientEncounterTabFields = patientEncounterTabFieldRepository.find(patientEncounterTabFieldQuery);
 
-        for(IPatientEncounterTabField tf : patientEncounterTabFields) {
+        for (IPatientEncounterTabField tf : patientEncounterTabFields) {
             if (tf.getChiefComplaint() != null && tf.getChiefComplaint().getValue().equals(chiefComplaintName)) {
                 //Only add tabFields for the request chief complaint
-                tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, itemModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
+                tabFieldMultiMap.put(tabFieldName, tf.getDateTaken().toString().trim(), null, itemModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
             } else if (chiefComplaintName == null || chiefComplaintName.isEmpty()) {
                 //No chief complaint, so put all matching fields
-                tabFieldMultiMap.put(tabName, tf.getDateTaken().toString().trim(), null, itemModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
+                tabFieldMultiMap.put(tabFieldName, tf.getDateTaken().toString().trim(), null, itemModelMapper.createTabFieldItem(tf.getTabField().getName(), tf.getTabField().getTabFieldType().getName(), "", 0, "", tf.getTabFieldValue(), null, false, tf.getUserName()));
             }
         }
 
@@ -590,8 +594,12 @@ public class TabService implements ITabService {
         return response;
     }
 
-
-    private TabFieldMultiMap mapTabFields(int encounterId, String tabName) {
+    /**
+     * Maps all tab fields to their tab. Values and chief complaints are also recorded.
+     * @param encounterId id of the patient encounter
+     * @return {@link TabFieldMultiMap}
+     */
+    private TabFieldMultiMap mapTabFields(int encounterId) {
 
         TabFieldMultiMap tabFieldMultiMap = new TabFieldMultiMap();
         String tabFieldName;
@@ -599,36 +607,17 @@ public class TabService implements ITabService {
         ExpressionList<TabField> tabFieldQuery;
         Query<PatientEncounterTabField> patientEncounterTabFieldQuery;
 
-        if (StringUtils.isNullOrWhiteSpace(tabName)) {//do all tab fields, don't filter by tab name
+        //get all tab fields!
+        tabFieldQuery = QueryProvider.getTabFieldQuery()
+                .where()
+                .eq("isDeleted", false);
 
-            //get all tab fields!
-            tabFieldQuery = QueryProvider.getTabFieldQuery()
-                    .where()
-                    .eq("isDeleted", false);
-
-            //get all tab fields with values!
-            patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .where()
-                    .eq("patient_encounter_id", encounterId)
-                    .order()
-                    .desc("date_taken");
-        } else { //only get tab fields for a specific tab
-
-            //get all tab fields that belong to a tab
-            tabFieldQuery = QueryProvider.getTabFieldQuery()
-                    .fetch("tab")
-                    .where()
-                    .eq("isDeleted", false)
-                    .eq("tab.name", tabName);
-
-            //get all tab fields that have value which belong to a tab
-            patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
-                    .where()
-                    .eq("tabField.name", tabName)
-                    .eq("patient_encounter_id", encounterId)
-                    .order()
-                    .desc("date_taken");
-        }
+        //get all tab fields with values!
+        patientEncounterTabFieldQuery = QueryProvider.getPatientEncounterTabFieldQuery()
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .order()
+                .desc("date_taken");
 
         //need all chief complaints regardless
         chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()

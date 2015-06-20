@@ -20,8 +20,6 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.DataModelMapper;
-import femr.data.IDataModelMapper;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -36,6 +34,7 @@ public class DataLayerModule extends AbstractModule {
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
+        bind(ILoginAttempt.class).toProvider(LoginAttemptProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
         bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
@@ -69,6 +68,7 @@ public class DataLayerModule extends AbstractModule {
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
+        bind(new TypeLiteral<IRepository<ILoginAttempt>>() {}).to(new TypeLiteral<Repository<ILoginAttempt>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});

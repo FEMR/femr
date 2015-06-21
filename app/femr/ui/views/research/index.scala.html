@@ -4,22 +4,22 @@
 @import femr.ui.controllers.routes.ResearchController
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/research.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/research.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/research/d3.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/d3.tip.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/saveSvgAsPng.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/filter-menu.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/bar-graph.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/pie-graph.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/line-graph.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/scatter-plot.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/stacked-bar.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/grouped-bar.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/table-chart.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/research/research.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/d3.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/d3.tip.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/saveSvgAsPng.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/filter-menu.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/bar-graph.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/pie-graph.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/line-graph.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/scatter-plot.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/stacked-bar.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/grouped-bar.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/table-chart.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/research/research.js")"></script>
     }
 
 @main("Research", currentUser, styles = additionalStyles, scripts = additionalScripts) {
@@ -203,7 +203,7 @@
                         <svg id="graph" class="chart">
 
                         </svg>
-                        <img class="loading" src="@routes.Assets.at("img/graph-loader.gif")" alt="loading&hellip;" />
+                        <img class="loading" src="@routes.Assets.versioned("img/graph-loader.gif")" alt="loading&hellip;" />
                     </div>
                 </div>
                 <div id="table-container" class="table-responsive">

@@ -4,10 +4,10 @@
 @import femr.ui.views.html.partials.search
 @import femr.ui.controllers.routes.TriageController
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
     }
 
 @main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history")) {

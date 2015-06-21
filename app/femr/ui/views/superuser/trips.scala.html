@@ -4,11 +4,11 @@
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/superuser.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
     }
 
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/superuser/superuser.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
     }
 
 @admin("SuperUser Panel", currentUser, styles = additionalStyles, scripts = additionalScripts) {

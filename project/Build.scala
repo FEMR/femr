@@ -1,9 +1,16 @@
 import play.ebean.sbt.PlayEbean
 import play.routes.compiler.InjectedRoutesGenerator
 import play.sbt.PlayJava
+import com.typesafe.sbt.digest.Import._
+import com.typesafe.sbt.gzip.Import._
+import com.typesafe.sbt.jse.JsEngineImport.JsEngineKeys
+import com.typesafe.sbt.rjs.Import._
+import com.typesafe.sbt.uglify.Import._
+import com.typesafe.sbt.web.Import._
+import com.typesafe.sbt.web.SbtWeb
+import play.Play.autoImport._
+import sbt.Keys._
 import sbt._
-import Keys._
-import play.sbt.Play.autoImport._
 
 object ApplicationBuild extends Build {
 
@@ -33,7 +40,10 @@ object ApplicationBuild extends Build {
     scalaVersion := currentScalaVersion,
 //    routesGenerator := InjectedRoutesGenerator,
     libraryDependencies ++= appDependencies,
-    // Add your own project settings here
+    pipelineStages := Seq(rjs, uglify, digest, gzip),
+    includeFilter in uglify := GlobFilter("*.js"),
+    JsEngineKeys.engineType := JsEngineKeys.EngineType.Node,
+      // Add your own project settings here
     testOptions in Test ~= {
       args =>
         for {
@@ -45,4 +55,6 @@ object ApplicationBuild extends Build {
     sbt.Keys.fork in Test := false,
     doc in Compile <<= target.map(_ / "none")
   )
+
+
 }

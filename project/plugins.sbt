@@ -10,8 +10,6 @@ resolvers += "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.7")
 
 //minify and compression
-addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "1.0.7")
-
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "1.0.3")

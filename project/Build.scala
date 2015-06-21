@@ -3,7 +3,6 @@ import play.routes.compiler.InjectedRoutesGenerator
 import play.sbt.PlayJava
 import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.gzip.Import._
-import com.typesafe.sbt.jse.JsEngineImport.JsEngineKeys
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.web.Import._
 import com.typesafe.sbt.web.SbtWeb

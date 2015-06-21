@@ -1,7 +1,6 @@
 import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.gzip.Import._
 import com.typesafe.sbt.jse.JsEngineImport.JsEngineKeys
-import com.typesafe.sbt.rjs.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.web.Import._
 import com.typesafe.sbt.web.SbtWeb
@@ -36,9 +35,9 @@ object ApplicationBuild extends Build {
     version := appVersion,
     scalaVersion := currentScalaVersion,
     libraryDependencies ++= appDependencies,
-    pipelineStages := Seq(rjs, uglify, digest, gzip),
+    pipelineStages := Seq(uglify, digest, gzip),
     includeFilter in uglify := GlobFilter("*.js"),
-    JsEngineKeys.engineType := JsEngineKeys.EngineType.Node,
+    excludeFilter  in uglify := GlobFilter("*min.js"),
       // Add your own project settings here
     testOptions in Test ~= {
       args =>

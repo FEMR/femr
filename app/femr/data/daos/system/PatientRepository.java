@@ -23,11 +23,15 @@ import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
-import femr.data.daos.Repository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
+import femr.data.models.mysql.PatientAgeClassification;
+import femr.util.stringhelpers.StringUtils;
 import play.Logger;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientRepository implements IPatientRepository {
@@ -163,7 +167,74 @@ public class PatientRepository implements IPatientRepository {
         return patient;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPatientAgeClassification findPatientAgeClassification(String name) {
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        ExpressionList<PatientAgeClassification> expressionList = getPatientAgeClassificationQuery()
+                .where()
+                .eq("name", name);
+
+        IPatientAgeClassification patientAgeClassification = null;
+
+        try {
+
+            patientAgeClassification = expressionList.findUnique();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-findPatientAgeClassification", ex.getMessage());
+        }
+
+        return patientAgeClassification;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IPatientAgeClassification> findPatientAgeClassificationsOrderBySortOrder(boolean isDeleted) {
+
+        Query<PatientAgeClassification> query = getPatientAgeClassificationQuery()
+                .where()
+                .eq("isDeleted", isDeleted)
+                .order()
+                .asc("sortOrder");
+
+        List<? extends IPatientAgeClassification> patientAgeClassifications = new ArrayList<>();
+
+        try {
+
+            patientAgeClassifications = query.findList();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-findPatientAgeClassificationsOrderBySortOrder", ex.getMessage());
+        }
+
+        return patientAgeClassifications;
+    }
+
+    /**
+     * Provides the Ebean object to start building queries
+     *
+     * @return The patient type Query object
+     */
     private static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
+    }
+
+    /**
+     * Provides the Ebean object to start building queries
+     *
+     * @return The patient age classification type Query object
+     */
+    public static Query<PatientAgeClassification> getPatientAgeClassificationQuery() {
+        return Ebean.find(PatientAgeClassification.class);
     }
 }

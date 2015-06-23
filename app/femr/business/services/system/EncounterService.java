@@ -19,7 +19,6 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -31,6 +30,7 @@ import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.ITabRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -43,7 +43,7 @@ import java.util.*;
 public  class EncounterService implements IEncounterService {
 
     private IMissionTripService missionTripService;
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
+    private final IPatientRepository patientRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final ITabRepository tabRepository;
     private final IRepository<IUser> userRepository;
@@ -52,7 +52,7 @@ public  class EncounterService implements IEncounterService {
 
     @Inject
     public EncounterService(IMissionTripService missionTripService,
-                            IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
+                            IPatientRepository patientRepository,
                             IPatientEncounterRepository patientEncounterRepository,
                             ITabRepository tabRepository,
                             IRepository<IUser> userRepository,
@@ -60,7 +60,7 @@ public  class EncounterService implements IEncounterService {
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.missionTripService = missionTripService;
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
+        this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.tabRepository = tabRepository;
         this.userRepository = userRepository;
@@ -88,11 +88,7 @@ public  class EncounterService implements IEncounterService {
 
             IUser nurseUser = userRepository.findOne(nurseQuery);
 
-            //findPatientEncounterVital the age classification of the patient, if it exists
-            ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
-                    .where()
-                    .eq("name", patientEncounterItem.getAgeClassification());
-            IPatientAgeClassification patientAgeClassification = patientAgeClassificationRepository.findOne(patientAgeClassificationExpressionList);
+            IPatientAgeClassification patientAgeClassification = patientRepository.findPatientAgeClassification(patientEncounterItem.getAgeClassification());
             Integer patientAgeClassificationId = null;
             if (patientAgeClassification != null)
                 patientAgeClassificationId = patientAgeClassification.getId();

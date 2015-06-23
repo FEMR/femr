@@ -53,8 +53,6 @@ import static org.fest.assertions.Assertions.assertThat;
 public class PatientServiceTest extends WithApplication{
 
     private IPatientService patientService;
-    private IRepository<IPatient> mockPatientRepository;
-    private IRepository<IPatientAgeClassification> mockPatientAgeClassificationRepository;
     private IDataModelMapper mockDataModelMapper;
 
     @Override

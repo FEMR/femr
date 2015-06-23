@@ -54,16 +54,8 @@ public class QueryProvider {
 
     public static Query<MissionTeam> getMissionTeamQuery() { return Ebean.find(MissionTeam.class);}
 
-    public static Query<PatientAgeClassification> getPatientAgeClassificationQuery() {
-        return Ebean.find(PatientAgeClassification.class);
-    }
-
     public static Query<PatientEncounterPhoto> getPatientEncounterPhotoQuery() {
         return Ebean.find(PatientEncounterPhoto.class);
-    }
-
-    public static Query<PatientEncounterTabField> getPatientEncounterTabFieldQuery() {
-        return Ebean.find(PatientEncounterTabField.class);
     }
 
     public static Query<PatientPrescription> getPatientPrescriptionQuery() {
@@ -76,22 +68,6 @@ public class QueryProvider {
 
     public static Query<SystemSetting> getSystemSettingQuery() {
         return Ebean.find(SystemSetting.class);
-    }
-
-    public static Query<Tab> getTabQuery() {
-        return Ebean.find(Tab.class);
-    }
-
-    public static Query<TabField> getTabFieldQuery() {
-        return Ebean.find(TabField.class);
-    }
-
-    public static Query<TabFieldType> getTabFieldTypeQuery() {
-        return Ebean.find(TabFieldType.class);
-    }
-
-    public static Query<TabFieldSize> getTabFieldSizeQuery() {
-        return Ebean.find(TabFieldSize.class);
     }
 
     public static Query<Role> getRoleQuery() {

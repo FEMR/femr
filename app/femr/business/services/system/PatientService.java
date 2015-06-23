@@ -18,19 +18,15 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.LinkedHashMap;
@@ -39,18 +35,15 @@ import java.util.Map;
 
 public class PatientService implements IPatientService {
 
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
     private final IPatientRepository patientRepository;
 
     @Inject
     public PatientService(IPatientRepository patientRepository,
-                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
         this.patientRepository = patientRepository;
@@ -66,12 +59,7 @@ public class PatientService implements IPatientService {
         Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
 
-            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
-                    .where()
-                    .eq("isDeleted", false)
-                    .order()
-                    .asc("sortOrder");
-            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.findPatientAgeClassificationsOrderBySortOrder(false);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
 
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());

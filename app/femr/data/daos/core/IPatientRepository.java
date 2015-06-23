@@ -19,62 +19,80 @@
 package femr.data.daos.core;
 
 import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientAgeClassification;
+
 import java.util.List;
 
 /**
  * A repository to cover the following tables:
  * <ul>
- *     <li>patients</li>
- *     <li>patient_age_classifications</li>
+ * <li>patients</li>
+ * <li>patient_age_classifications</li>
  * </ul>
  */
 public interface IPatientRepository {
 
-     /**
-      * Create a new patient in the database
-      *
-      * @param patient the patient to be created, not null
-      * @return the new patient with their ID or null if the save failed
-      */
-     IPatient createPatient(IPatient patient);
+    /**
+     * Create a new patient in the database
+     *
+     * @param patient the patient to be created, not null
+     * @return the new patient with their ID or null if the save failed
+     */
+    IPatient createPatient(IPatient patient);
 
-     /**
-      * Finds one patient by the patient's id.
-      *
-      * @param id the id of the patient
-      * @return the patient or null if none found
-      */
-     IPatient findPatientById(int id);
+    /**
+     * Retrieve one patient by the patient's id.
+     *
+     * @param id the id of the patient
+     * @return the patient or null if none found
+     */
+    IPatient findPatientById(int id);
 
-     /**
-      * Find all patients in the database.
-      *
-      * @return a list of patients
-      */
-     List<? extends IPatient> findAllPatients();
+    /**
+     * Retrieve all patients in the database.
+     *
+     * @return a list of patients
+     */
+    List<? extends IPatient> findAllPatients();
 
-     /**
-      * Finds a patient by their first and last name.
-      *
-      * @param firstName the first name of the patient, not null
-      * @param lastName the last name of the patient, not null
-      * @return a list of patients that match the criteria
-      */
-     List<? extends IPatient> findPatientsByFirstNameAndLastName(String firstName, String lastName);
+    /**
+     * Retrieve a patient by their first and last name.
+     *
+     * @param firstName the first name of the patient, not null
+     * @param lastName  the last name of the patient, not null
+     * @return a list of patients that match the criteria
+     */
+    List<? extends IPatient> findPatientsByFirstNameAndLastName(String firstName, String lastName);
 
-     /**
-      * Finds a patient by their first or last name. This will search the first and last name for a matching string
-      *
-      * @param firstOrLastName the first/last name of a patient, not null
-      * @return a list of patients that match the criteria
-      */
-     List<? extends IPatient> findPatientsByFirstNameOrLastName(String firstOrLastName);
+    /**
+     * Retrieve a patient by their first or last name. This will search the first and last name for a matching string
+     *
+     * @param firstOrLastName the first/last name of a patient, not null
+     * @return a list of patients that match the criteria
+     */
+    List<? extends IPatient> findPatientsByFirstNameOrLastName(String firstOrLastName);
 
-     /**
-      * Update a patient in the database
-      *
-      * @param patient the patient to be updated based on ID, not null
-      * @return the updated patient or null if there was an error updating.
-      */
-     IPatient updatePatient(IPatient patient);
+    /**
+     * Update a patient in the database
+     *
+     * @param patient the patient to be updated based on ID, not null
+     * @return the updated patient or null if there was an error updating.
+     */
+    IPatient updatePatient(IPatient patient);
+
+    /**
+     * Retrieve a patient age classification based on its name.
+     *
+     * @param name the name of the age classification, not null
+     * @return the patient age classification, or null if name is null
+     */
+    IPatientAgeClassification findPatientAgeClassification(String name);
+
+    /**
+     * Retrieve all patient age classifications and orders them in ascending sort order.
+     *
+     * @param isDeleted the isdeleted flag
+     * @return list of all patient age classifications in ascending sort order or an empty list if none exist
+     */
+    List<? extends IPatientAgeClassification> findPatientAgeClassificationsOrderBySortOrder(boolean isDeleted);
 }

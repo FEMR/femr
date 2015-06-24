@@ -28,7 +28,6 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.util.stringhelpers.StringUtils;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

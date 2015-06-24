@@ -87,7 +87,7 @@ public class PatientRepository implements IPatientRepository {
 
         try {
 
-            patients = Ebean.find(Patient.class).findList();
+            patients = getPatientQuery().findList();
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-findAllPatients", ex.getMessage());

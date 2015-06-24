@@ -33,7 +33,7 @@ public interface IConfigureService {
     ServiceResponse<List<? extends ISystemSetting>> retrieveCurrentSettings();
 
     /**
-     * Update more than one system setting.
+     * Update more than one system setting. Anything not in the list will be marked inactive. Anything in the list will be marked active.
      *
      * @param systemSettings a list of active system setting names. system settings that don't exist in this list are assumed to be inactive
      * @return a list of system settings after the updatePatientEncounter.

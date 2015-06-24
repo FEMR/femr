@@ -40,8 +40,8 @@ public interface ITabRepository {
     /**
      * Retrieve new patient encounter tab fields
      *
-     * @param patientEncounterTabFields the patient encounter tab fields to create
-     * @return the created patient encounter tab fields or an empty list if none exist
+     * @param patientEncounterTabFields the patient encounter tab fields to create, not null
+     * @return the created patient encounter tab fields or an empty list if none exist or null if parameter is null
      */
     List<? extends IPatientEncounterTabField> createPatientEncounterTabFields(List<IPatientEncounterTabField> patientEncounterTabFields);
 

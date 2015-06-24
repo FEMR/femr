@@ -18,21 +18,18 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IVitalService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.VitalItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
+import femr.data.daos.core.ISystemSettingRepository;
 import femr.data.daos.core.IVitalRepository;
 import femr.data.models.core.IPatientEncounterVital;
 import femr.data.models.core.ISystemSetting;
 import femr.data.models.core.IVital;
-import femr.data.models.mysql.SystemSetting;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.calculations.dateUtils;
@@ -43,18 +40,18 @@ import java.util.Map;
 public class VitalService implements IVitalService {
 
     private final IDataModelMapper dataModelMapper;
-    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final ISystemSettingRepository systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
     private final IVitalRepository vitalRepository;
 
     @Inject
     public VitalService(IDataModelMapper dataModelMapper,
-                        IRepository<ISystemSetting> settingsReposity,
+                        ISystemSettingRepository systemSettingRepository,
                         @Named("identified") IItemModelMapper itemModelMapper,
                         IVitalRepository vitalRepository) {
 
         this.dataModelMapper = dataModelMapper;
-        this.systemSettingRepository = settingsReposity;
+        this.systemSettingRepository = systemSettingRepository;
         this.itemModelMapper = itemModelMapper;
         this.vitalRepository = vitalRepository;
     }
@@ -204,10 +201,7 @@ public class VitalService implements IVitalService {
      * @return
      */
     private boolean isMetric() {
-        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
-                .where()
-                .eq("name", "Metric System Option");
-        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        ISystemSetting isMetric = systemSettingRepository.findSystemSettingByName("Metric System Option");
         return isMetric.isActive();
     }
 }

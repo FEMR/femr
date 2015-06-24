@@ -38,6 +38,12 @@ public class TabRepository implements ITabRepository {
     @Override
     public List<? extends IPatientEncounterTabField> createPatientEncounterTabFields(List<IPatientEncounterTabField> patientEncounterTabFields) {
 
+        if (patientEncounterTabFields == null) {
+
+            return null;
+        }
+
+
         try {
 
             Ebean.save(patientEncounterTabFields);
@@ -262,6 +268,7 @@ public class TabRepository implements ITabRepository {
     public ITabField findTabField(String fieldName) {
 
         if (StringUtils.isNullOrWhiteSpace(fieldName)) {
+
             return null;
         }
 
@@ -355,6 +362,7 @@ public class TabRepository implements ITabRepository {
      */
     @Override
     public List<? extends ITabField> findTabFieldsByTabNameOrderBySortOrderAsc(String tabName, boolean isDeleted) {
+
         if (StringUtils.isNullOrWhiteSpace(tabName)) {
 
             return null;

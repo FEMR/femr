@@ -29,6 +29,7 @@ import femr.common.models.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
+import femr.data.daos.core.ISystemSettingRepository;
 import femr.data.daos.core.IVitalRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -41,7 +42,7 @@ public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final ISystemSettingRepository systemSettingRepository;
     private final IPatientRepository patientRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final IItemModelMapper itemModelMapper;
@@ -50,7 +51,7 @@ public class SearchService implements ISearchService {
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
-                         IRepository<ISystemSetting> systemSettingRepository,
+                         ISystemSettingRepository systemSettingRepository,
                          IPatientRepository patientRepository,
                          @Named("identified") IItemModelMapper itemModelMapper,
                          IPatientEncounterRepository patientEncounterRepository,
@@ -496,7 +497,7 @@ public class SearchService implements ISearchService {
     public ServiceResponse<SettingItem> retrieveSystemSettings() {
         ServiceResponse<SettingItem> response = new ServiceResponse<>();
         try {
-            List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
+            List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAllSystemSettings();
 
             if (systemSettings == null || systemSettings.size() == 0) {
 
@@ -605,10 +606,7 @@ public class SearchService implements ISearchService {
      */
 
     private boolean isMetric() {
-        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
-                .where()
-                .eq("name", "Metric System Option");
-        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        ISystemSetting isMetric = systemSettingRepository.findSystemSettingByName("Metric System Option");
         return isMetric.isActive();
     }
 }

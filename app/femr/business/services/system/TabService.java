@@ -26,7 +26,6 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.daos.core.ITabRepository;
 import femr.data.models.core.*;

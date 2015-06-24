@@ -66,9 +66,6 @@ public class QueryProvider {
         return Ebean.find(Photo.class);
     }
 
-    public static Query<SystemSetting> getSystemSettingQuery() {
-        return Ebean.find(SystemSetting.class);
-    }
 
     public static Query<Role> getRoleQuery() {
         return Ebean.find(Role.class);

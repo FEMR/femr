@@ -18,17 +18,22 @@
 */
 package femr.data.daos.core;
 
+import femr.data.models.core.IMissionTrip;
+
 /**
  * A repository to cover the following tables:
  * <ul>
- *     <li>medication_active_drug_names</li>
- *     <li>medication_active_drugs</li>
- *     <li>medication_administrations</li>
- *     <li>medication_forms</li>
- *     <li>medication_measurement_units</li>
- *     <li>medication_medication_active_drugs</li>
- *     <li>medications</li>
+ * <li>medication_active_drug_names</li>
+ * <li>medication_active_drugs</li>
+ * <li>medication_administrations</li>
+ * <li>medication_forms</li>
+ * <li>medication_measurement_units</li>
+ * <li>medication_medication_active_drugs</li>
+ * <li>medications</li>
  * </ul>
  */
 public interface IMedicationRepository {
+
+
+
 }

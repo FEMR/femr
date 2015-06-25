@@ -32,6 +32,7 @@ import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientEncounterRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.ITabRepository;
+import femr.data.daos.core.ITripRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
@@ -42,7 +43,7 @@ import java.util.*;
 
 public  class EncounterService implements IEncounterService {
 
-    private IMissionTripService missionTripService;
+    private final ITripRepository tripRepository;
     private final IPatientRepository patientRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final ITabRepository tabRepository;
@@ -51,7 +52,7 @@ public  class EncounterService implements IEncounterService {
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public EncounterService(IMissionTripService missionTripService,
+    public EncounterService(ITripRepository tripRepository,
                             IPatientRepository patientRepository,
                             IPatientEncounterRepository patientEncounterRepository,
                             ITabRepository tabRepository,
@@ -59,7 +60,7 @@ public  class EncounterService implements IEncounterService {
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
-        this.missionTripService = missionTripService;
+        this.tripRepository = tripRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.tabRepository = tabRepository;
@@ -94,7 +95,7 @@ public  class EncounterService implements IEncounterService {
                 patientAgeClassificationId = patientAgeClassification.getId();
 
             //findPatientEncounterVital the current trip, if one exists
-            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
+            IMissionTrip missionTrip = tripRepository.retrieveCurrentMissionTrip();
             Integer missionTripId = null;
             if (missionTrip != null)
                 missionTripId = missionTrip.getId();

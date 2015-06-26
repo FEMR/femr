@@ -18,23 +18,15 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
-import femr.business.services.core.IMissionTripService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
-import femr.data.daos.core.IPatientEncounterRepository;
-import femr.data.daos.core.IPatientRepository;
-import femr.data.daos.core.ITabRepository;
-import femr.data.daos.core.ITripRepository;
+import femr.data.daos.core.*;
 import femr.data.models.core.*;
-import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -47,7 +39,7 @@ public  class EncounterService implements IEncounterService {
     private final IPatientRepository patientRepository;
     private final IPatientEncounterRepository patientEncounterRepository;
     private final ITabRepository tabRepository;
-    private final IRepository<IUser> userRepository;
+    private final IUserRepository userRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -56,7 +48,7 @@ public  class EncounterService implements IEncounterService {
                             IPatientRepository patientRepository,
                             IPatientEncounterRepository patientEncounterRepository,
                             ITabRepository tabRepository,
-                            IRepository<IUser> userRepository,
+                            IUserRepository userRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -82,12 +74,8 @@ public  class EncounterService implements IEncounterService {
         }
 
         try {
-            //findPatientEncounterVital the nurse that checked in the patient
-            ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("email", patientEncounterItem.getNurseEmailAddress());
-
-            IUser nurseUser = userRepository.findOne(nurseQuery);
+            //get the nurse that checked in the patient
+            IUser nurseUser = userRepository.retrieveUserByEmail(patientEncounterItem.getNurseEmailAddress());
 
             IPatientAgeClassification patientAgeClassification = patientRepository.findPatientAgeClassification(patientEncounterItem.getAgeClassification());
             Integer patientAgeClassificationId = null;
@@ -140,10 +128,7 @@ public  class EncounterService implements IEncounterService {
 
 
             patientEncounter.setDateOfMedicalVisit(DateTime.now());
-            ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("id", userId);
-            IUser user = userRepository.findOne(getUserQuery);
+            IUser user = userRepository.retrieveUserById(userId);
             patientEncounter.setDoctor(user);
 
             patientEncounter = patientEncounterRepository.updatePatientEncounter(patientEncounter);
@@ -172,14 +157,12 @@ public  class EncounterService implements IEncounterService {
 
             IPatientEncounter patientEncounter = patientEncounterRepository.findPatientEncounterById(encounterId);
             patientEncounter.setDateOfPharmacyVisit(DateTime.now());
-            ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("id", userId);
-            IUser user = userRepository.findOne(getUserQuery);
+            IUser user = userRepository.retrieveUserById(userId);
             patientEncounter.setPharmacist(user);
             patientEncounter = patientEncounterRepository.updatePatientEncounter(patientEncounter);
             response.setResponseObject(patientEncounter);
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
 

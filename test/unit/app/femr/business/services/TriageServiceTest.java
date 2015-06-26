@@ -36,13 +36,13 @@
 //        triageService = new TriageService(mockPatientIRepository, mockPatientEncounterIRepository, mockPatientEncounterVitalIRepository);
 //    }
 //
-//    //region **createPatient**
+//    //region **createPatientEncounter**
 //    @Test
 //    public void CreatePatient_CreateWithCorrectParams_Accepted() {
 //        MockPatient expectedPatient = new MockPatient();
 //        expectedPatient.setId(56);
 //        assertThat(mockPatientIRepository.createWasCalled).isFalse();
-//        triageService.createPatient(expectedPatient);
+//        triageService.createPatientEncounter(expectedPatient);
 //        assertThat(mockPatientIRepository.createWasCalled).isTrue();
 //        assertThat(mockPatientIRepository.entityPassedIn).isEqualTo(expectedPatient);
 //    }
@@ -50,7 +50,7 @@
 //    @Test
 //    public void CreatePatient_FailedSave_ServiceResponseContainsError() {
 //        MockPatient badPatient = null;
-//        ServiceResponse<IPatient> response = triageService.createPatient(badPatient);
+//        ServiceResponse<IPatient> response = triageService.createPatientEncounter(badPatient);
 //        assertThat(response.hasErrors()).isTrue();
 //        assertThat(response.getErrors().size()).isEqualTo(1);
 //        assertThat(response.getErrors().containsKey("patient")).isTrue();
@@ -62,7 +62,7 @@
 //    public void CreatePatient_SuccessfulSave_ServiceResponseContainsPatient() {
 //        MockPatient goodPatient = new MockPatient();
 //        goodPatient.setId(51);
-//        ServiceResponse<IPatient> response = triageService.createPatient(goodPatient);
+//        ServiceResponse<IPatient> response = triageService.createPatientEncounter(goodPatient);
 //        assertThat(response.hasErrors()).isFalse();
 //        assertThat(response.getErrors().size()).isEqualTo(0);
 //        assertThat(response.getResponseObject()).isEqualTo(goodPatient);

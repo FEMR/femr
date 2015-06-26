@@ -1178,7 +1178,7 @@ public class DatabaseSeeder {
             String defaultAdminPassword = Play.application().configuration().getString("default.admin.password");
             IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
 
-            //create the Admin user
+            //createPatientEncounter the Admin user
             //Admin is used for managing users, creating users, managing inventory, etc
             //Admin information is given to the manager/group leader/whoever is in charge
             User adminUser = new User();

@@ -84,7 +84,6 @@ public class TestDataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<MockRepository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<MockRepository<IMissionTeam>>() {});
         bind(new TypeLiteral<IRepository<IMissionTrip>>() {}).to(new TypeLiteral<MockRepository<IMissionTrip>>() {});
-        bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<MockRepository<IPatient>>() {});
         bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<MockRepository<IPatientAgeClassification>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<MockRepository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<MockRepository<IPatientEncounterPhoto>>() {});

@@ -30,10 +30,10 @@ import com.google.inject.Inject;
 import femr.common.models.PhotoItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterPhoto;
 import femr.data.models.core.IPhoto;
-import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientEncounterPhoto;
 import femr.data.models.mysql.Photo;
 import femr.ui.models.medical.EditViewModelPost;
@@ -54,23 +54,23 @@ public class PhotoService implements IPhotoService {
     private String _profilePhotoPath;
     private String _encounterPhotoPath;
     private IRepository<IPhoto> patientPhotoRepository;
-    private IRepository<IPatient> patientRepository;
     private IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
+    private IPatientRepository patientRepository;
 
     @Inject
     public PhotoService(IRepository<IPhoto> patientPhotoRepository,
-                        IRepository<IPatient> patientRepository,
                         IRepository<IPatientEncounterPhoto> patientEncounterPhotoRepository,
                         IDataModelMapper dataModelMapper,
-                        @Named("identified") IItemModelMapper itemModelMapper) {
+                        @Named("identified") IItemModelMapper itemModelMapper,
+                        IPatientRepository patientRepository) {
 
         this.patientPhotoRepository = patientPhotoRepository;
-        this.patientRepository = patientRepository;
         this.patientEncounterPhotoRepository = patientEncounterPhotoRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
+        this.patientRepository = patientRepository;
 
         this.Init();
     }
@@ -82,7 +82,7 @@ public class PhotoService implements IPhotoService {
         _encounterPhotoPath = LogicDoer.getMedicalPhotoPath();
 
 
-        //Ensure folder exists, if not, create it
+        //Ensure folder exists, if not, createPatientEncounter it
         f = new File(_profilePhotoPath);
         if (!f.exists())
             f.mkdirs();
@@ -99,13 +99,8 @@ public class PhotoService implements IPhotoService {
     public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
 
-
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", patientId);
-
         try {
-            IPatient patient = patientRepository.findOne(query);
+            IPatient patient = patientRepository.findPatientById(patientId);
             String imageFileName = "/Patient_" + patient.getId() + ".jpg";
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
@@ -114,7 +109,7 @@ public class PhotoService implements IPhotoService {
                     IPhoto pPhoto = dataModelMapper.createPhoto("", imageFileName);
                     pPhoto = patientPhotoRepository.create(pPhoto);
                     patient.setPhoto(pPhoto);
-                    patientRepository.update(patient);
+                    patientRepository.updatePatient(patient);
                 } else {
                     //Record already exists:
                     //photoId = patient.getPhoto().getId();
@@ -133,7 +128,7 @@ public class PhotoService implements IPhotoService {
                         //First make sure the photoId is null in the patient record
                         Integer id = patient.getPhoto().getId();
                         patient.setPhoto(null);
-                        patientRepository.update(patient);
+                        patientRepository.updatePatient(patient);
                         //Now remove the photo record:
                         this.deletePhotoById(id, _profilePhotoPath);
                     }
@@ -152,11 +147,9 @@ public class PhotoService implements IPhotoService {
     @Override
     public ServiceResponse<String> retrievePatientPhotoPath(int patientId) {
         ServiceResponse<String> response = new ServiceResponse<>();
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", patientId);
+
         try {
-            IPatient patient = patientRepository.findOne(query);
+            IPatient patient = patientRepository.findPatientById(patientId);
             if (patient.getPhoto() == null) {
                 response.setResponseObject(null);
             } else {
@@ -225,7 +218,7 @@ public class PhotoService implements IPhotoService {
                         if (mod.getPhotoId().get(i) != null)
                             this.deletePhotoById(mod.getPhotoId().get(i), _encounterPhotoPath);
                     } else {
-                        //Possibly update the image
+                        //Possibly updatePatientEncounter the image
                         Boolean bisUpdate = mod.getHasUpdatedDesc().get(i);
                         if (bisUpdate != null) {
                             if (bisUpdate) {

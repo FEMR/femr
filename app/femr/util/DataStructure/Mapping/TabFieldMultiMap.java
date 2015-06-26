@@ -141,7 +141,7 @@ public class TabFieldMultiMap extends AbstractMultiMap {
                     break;
                 }
             }
-            //no field exists with a date, find the blank field
+            //no field exists with a date, findPatientEncounterVital the blank field
             if (tabFieldItem == null) {
 
                 tabFieldItem = (TabFieldItem) map.get(fieldName, null, chiefComplaint);

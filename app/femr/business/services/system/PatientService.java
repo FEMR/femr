@@ -18,43 +18,34 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.Patient;
-import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PatientService implements IPatientService {
 
-    private final IRepository<IPatient> patientRepository;
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
+    private final IPatientRepository patientRepository;
 
     @Inject
-    public PatientService(IRepository<IPatient> patientRepository,
-                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
+    public PatientService(IPatientRepository patientRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
-        this.patientRepository = patientRepository;
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
+        this.patientRepository = patientRepository;
     }
 
     /**
@@ -67,12 +58,7 @@ public class PatientService implements IPatientService {
         Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
 
-            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
-                    .where()
-                    .eq("isDeleted", false)
-                    .order()
-                    .asc("sortOrder");
-            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.findPatientAgeClassificationsOrderBySortOrder(false);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
 
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
@@ -93,24 +79,20 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", id);
-
         try {
 
-            IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.findPatientById(id);
 
-            if( savedPatient == null ){
+            if (savedPatient == null) {
 
                 response.addError("exception", "Patient Not Found");
                 return response;
             }
 
             // sex can be changed, but not set to null
-            if(StringUtils.isNotNullOrWhiteSpace(sex)) {
+            if (StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
-                savedPatient = patientRepository.update(savedPatient);
+                savedPatient = patientRepository.updatePatient(savedPatient);
             }
 
             String photoPath = null;
@@ -155,7 +137,7 @@ public class PatientService implements IPatientService {
 
         try {
             IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
-            newPatient = patientRepository.create(newPatient);
+            newPatient = patientRepository.createPatient(newPatient);
             String photoPath = null;
             Integer photoId = null;
             if (newPatient.getPhoto() != null) {

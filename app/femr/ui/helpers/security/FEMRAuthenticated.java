@@ -30,7 +30,7 @@ public class FEMRAuthenticated extends Security.Authenticator {
             }
         }
 
-        // update time in session
+        // updatePatientEncounter time in session
         String tickString = Long.toString(new Date().getTime());
         session("userTime", tickString);
 

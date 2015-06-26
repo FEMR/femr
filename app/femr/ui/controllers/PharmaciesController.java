@@ -124,7 +124,7 @@ public class PharmaciesController extends Controller {
         viewModelGet.setPatientEncounterItem(patientEncounterItem);
 
 
-        //find patient prescriptions, they do have to exist
+        //findPatientEncounterVital patient prescriptions, they do have to exist
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -133,7 +133,7 @@ public class PharmaciesController extends Controller {
         }
         viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
-        //find patient problems, they do not have to exist.
+        //findPatientEncounterVital patient problems, they do not have to exist.
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounterItem.getId());
         if (problemItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -246,12 +246,12 @@ public class PharmaciesController extends Controller {
             prescriptionToMarkAsDispensedOrCounseled.add(createViewModelPost.getId_prescription5());
         }
 
-        //update non-replaced prescriptions to dispensed
+        //updatePatientEncounter non-replaced prescriptions to dispensed
         ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.flagPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
         if (prescriptionDispensedResponse.hasErrors()) {
             throw new RuntimeException();
         }
-        //update non-replaced prescriptions that the patient was counseled on
+        //updatePatientEncounter non-replaced prescriptions that the patient was counseled on
         if (isCounseled){
             ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.flagPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
             if (prescriptionCounseledResponse.hasErrors()){

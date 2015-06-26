@@ -242,7 +242,7 @@ public class UserService implements IUserService {
         if (currentUser != null) {
             response.setResponseObject(currentUser);
         } else {
-            response.addError("", "Could not update user");
+            response.addError("", "Could not updatePatientEncounter user");
         }
         return response;
     }

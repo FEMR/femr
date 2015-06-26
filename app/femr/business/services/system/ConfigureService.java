@@ -21,18 +21,17 @@ package femr.business.services.system;
 import com.google.inject.Inject;
 import femr.business.services.core.IConfigureService;
 import femr.common.dtos.ServiceResponse;
-import femr.data.daos.IRepository;
+import femr.data.daos.core.ISystemSettingRepository;
 import femr.data.models.core.ISystemSetting;
-import femr.data.models.mysql.SystemSetting;
 
 import java.util.List;
 
 public class ConfigureService implements IConfigureService {
 
-    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final ISystemSettingRepository systemSettingRepository;
 
     @Inject
-    public ConfigureService(IRepository<ISystemSetting> systemSettingRepository) {
+    public ConfigureService(ISystemSettingRepository systemSettingRepository) {
         this.systemSettingRepository = systemSettingRepository;
     }
 
@@ -43,7 +42,7 @@ public class ConfigureService implements IConfigureService {
     public ServiceResponse<List<? extends ISystemSetting>> retrieveCurrentSettings() {
         ServiceResponse<List<? extends ISystemSetting>> response = new ServiceResponse<>();
         try {
-            List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
+            List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAllSystemSettings();
             response.setResponseObject(systemSettings);
 
         } catch (Exception ex) {
@@ -57,25 +56,32 @@ public class ConfigureService implements IConfigureService {
      */
     @Override
     public ServiceResponse<List<? extends ISystemSetting>> updateSystemSettings(List<String> systemSettings) {
+
         ServiceResponse<List<? extends ISystemSetting>> response = new ServiceResponse<>();
-        List<? extends ISystemSetting> allSystemSettings = systemSettingRepository.findAll(SystemSetting.class);
+
+        List<? extends ISystemSetting> allSystemSettings = systemSettingRepository.findAllSystemSettings();
 
         try {
+
             for (ISystemSetting ss : allSystemSettings) {
+
                 if (systemSettings.contains(ss.getName())) {
+
                     ss.setActive(true);
-                    systemSettingRepository.update(ss);
+                    systemSettingRepository.saveSystemSetting(ss);
                 } else {
+
                     ss.setActive(false);
-                    systemSettingRepository.update(ss);
+                    systemSettingRepository.saveSystemSetting(ss);
                 }
             }
 
-
             response.setResponseObject(allSystemSettings);
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
+
         return response;
     }
 }

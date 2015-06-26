@@ -30,13 +30,6 @@ import java.util.List;
 public interface IMissionTripService {
 
     /**
-     * Retrieve the current trip information.
-     *
-     * @return the current trip or null if an error occurs TODO: change to ui model/service response
-     */
-    IMissionTrip retrieveCurrentMissionTrip();
-
-    /**
      * Retrieve a list of all team names.
      *
      * @return a service response that contains a list of available teams as Strings

@@ -281,10 +281,10 @@ public class MedicalController extends Controller {
         }
 
 
-        //create patient encounter photos
+        //createPatientEncounter patient encounter photos
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
-        //create prescriptions
+        //createPatientEncounter prescriptions
         List<String> prescriptions = new ArrayList<>();
         for (PrescriptionItem pi : viewModelPost.getPrescriptions()) {
             if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
@@ -321,7 +321,7 @@ public class MedicalController extends Controller {
         }
         PatientEncounterItem patientEncounter = currentEncounterByPatientId.getResponseObject();
 
-        //update date_of_medical_visit when a vital is updated
+        //updatePatientEncounter date_of_medical_visit when a vital is updated
         encounterService.checkPatientInToMedical(currentEncounterByPatientId.getResponseObject().getId(), currentUser.getId());
 
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();

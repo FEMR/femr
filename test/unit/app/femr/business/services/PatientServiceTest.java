@@ -53,8 +53,6 @@ import static org.fest.assertions.Assertions.assertThat;
 public class PatientServiceTest extends WithApplication{
 
     private IPatientService patientService;
-    private IRepository<IPatient> mockPatientRepository;
-    private IRepository<IPatientAgeClassification> mockPatientAgeClassificationRepository;
     private IDataModelMapper mockDataModelMapper;
 
     @Override
@@ -132,7 +130,7 @@ public class PatientServiceTest extends WithApplication{
 
         //assert
 
-        // Make sure create was called in the repository
+        // Make sure createPatientEncounter was called in the repository
         //assertThat(mockPatientRepository.createWasCalled);
 
         // Should be no errors returned
@@ -193,8 +191,8 @@ public class PatientServiceTest extends WithApplication{
         newPatient.setUserId(userID);
         newPatient.setSex(sex);
 
-        // put patient in mock repository, update sex with service
-        //newPatient = mockPatientRepository.create(newPatient);
+        // put patient in mock repository, updatePatientEncounter sex with service
+        //newPatient = mockPatientRepository.createPatientEncounter(newPatient);
         //response = patientService.updateSex(newPatient.getId(), "Male");
 
         //assert

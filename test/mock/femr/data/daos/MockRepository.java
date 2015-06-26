@@ -38,7 +38,7 @@ public class MockRepository<T> implements IRepository<T> {
 
     @Override
     public List<? extends T> findAll(Class<? extends T> clazz) {
-//        return Ebean.find(clazz).findList();
+//        return Ebean.findPatientEncounterVital(clazz).findList();
         return null;
     }
 

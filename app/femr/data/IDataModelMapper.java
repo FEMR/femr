@@ -37,6 +37,17 @@ public interface IDataModelMapper {
     IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder);
 
     /**
+     * Creates a login attempt
+     *
+     * @param usernameValue the value that the device/person submitted to the server as a username, not null
+     * @param isSuccessful whether or not the login attempt was successful, not null
+     * @param ipAddress the ip address of the device trying to log in - in binary form, not null
+     * @param userId id of the user account that is trying to be logged into, may be null
+     * @return a new login attempt
+     */
+    ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId);
+
+    /**
      * Generate and provide an implementation of IMedication.
      *
      * @param name name of the medication, not null

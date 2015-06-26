@@ -24,6 +24,7 @@ import femr.business.services.core.IEncounterService;
 import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
+import femr.util.dependencyinjection.providers.UserProvider;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -38,6 +39,7 @@ import java.util.List;
 public class DataModelMapper implements IDataModelMapper{
 
     private final Provider<IChiefComplaint> chiefComplaintProvider;
+    private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IMedication> medicationProvider;
     private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
@@ -66,6 +68,7 @@ public class DataModelMapper implements IDataModelMapper{
 
     @Inject
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
+                           Provider<ILoginAttempt> loginAttemptProvider,
                            Provider<IMedication> medicationProvider,
                            Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
                            Provider<IMedicationForm> medicationFormProvider,
@@ -93,6 +96,7 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IVital> vitalProvider) {
 
         this.chiefComplaintProvider = chiefComplaintProvider;
+        this.loginAttemptProvider = loginAttemptProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
         this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
@@ -137,6 +141,29 @@ public class DataModelMapper implements IDataModelMapper{
         chiefComplaint.setSortOrder(sortOrder);
 
         return chiefComplaint;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId){
+
+        if (StringUtils.isNullOrWhiteSpace(usernameValue) || ipAddress == null) {
+
+            return null;
+        }
+        ILoginAttempt loginAttempt = loginAttemptProvider.get();
+        loginAttempt.setDate(dateUtils.getCurrentDateTime());
+        loginAttempt.setIsSuccessful(isSuccessful);
+        loginAttempt.setUsernameAttempt(usernameValue);
+        loginAttempt.setIp_address(ipAddress);
+        if (userId == null)
+            loginAttempt.setUser(null);
+        else
+            loginAttempt.setUser(Ebean.getReference(userProvider.get().getClass(), userId));
+
+        return loginAttempt;
     }
 
     /**

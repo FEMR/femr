@@ -24,8 +24,13 @@ import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
+import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
+import femr.data.models.core.ILoginAttempt;
 import femr.data.models.core.IUser;
 import femr.util.encryptions.IPasswordEncryptor;
+
+import java.net.InetAddress;
 
 //import static play.mvc.Controller.session;
 
@@ -34,35 +39,64 @@ public class SessionService implements ISessionService {
     private IUserService userService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
+    private final IRepository<ILoginAttempt> loginAttemptRepository;
+    private final IDataModelMapper dataModelMapper;
 
     @Inject
     public SessionService(IUserService userService,
                           IPasswordEncryptor passwordEncryptor,
-                          ISessionHelper sessionHelper) {
+                          ISessionHelper sessionHelper,
+                          IRepository<ILoginAttempt> loginAttemptRepository,
+                          IDataModelMapper dataModelMapper) {
 
         this.userService = userService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
+        this.loginAttemptRepository = loginAttemptRepository;
+        this.dataModelMapper = dataModelMapper;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<CurrentUser> createSession(String email, String password) {
+    public ServiceResponse<CurrentUser> createSession(String email, String password, String ipAddress) {
         IUser userWithEmail = userService.retrieveByEmail(email);
-        ServiceResponse<CurrentUser> response = new ServiceResponse<>();
+        boolean isSuccessful = false;
+        Integer userId = null;
+        byte[] ipAddressBinary;
+        try {
 
-        //user doesn't exist OR
-        //password is invalid OR
-        //user has been deleted - the if statement responsible for validating the user logging in!!
-        if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword()) || userWithEmail.getDeleted() == true) {
-            response.addError("", "Invalid email or password.");
-            return response;
+            ipAddressBinary = InetAddress.getByName(ipAddress).getAddress();
+        } catch (Exception ex) {
+            //if shit hits the fan, use an empty ip address
+            ipAddressBinary = new byte[]{0, 0, 0, 0};
         }
 
-        sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));
-        response.setResponseObject(createCurrentUser(userWithEmail));
+
+        ServiceResponse<CurrentUser> response = new ServiceResponse<>();
+
+        if (userWithEmail == null) {
+            //user doesn't exist
+            response.addError("", "Invalid email or password.");
+        } else if (userWithEmail.getDeleted()) {
+            //user has been deleted
+            userId = userWithEmail.getId();//set the ID of the deleted user for the log
+            response.addError("", "Invalid email or password.");
+        } else if (!passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
+            //wrong password
+            userId = userWithEmail.getId();//set the ID of the deleted user for the log
+            response.addError("", "Invalid email or password.");
+        } else {
+            //success!
+            isSuccessful = true;
+            userId = userWithEmail.getId();//set the ID of the deleted user for the log
+            sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));//initiate the session
+            response.setResponseObject(createCurrentUser(userWithEmail));//send the user back in the response object
+        }
+
+        ILoginAttempt loginAttempt = dataModelMapper.createLoginAttempt(email, isSuccessful, ipAddressBinary, userId);
+        loginAttemptRepository.create(loginAttempt);
 
         return response;
     }

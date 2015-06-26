@@ -131,6 +131,11 @@ public class MockDataModelMapper implements IDataModelMapper{
         return chiefComplaint;
     }
 
+    @Override
+    public ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId) {
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */

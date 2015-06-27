@@ -106,7 +106,7 @@ var patientPhotoFeature = {
                 var reader = new FileReader();
 
                 // Closure to capture the file information.
-                reader.onload = (function (theFile) {
+                reader.onload = (function () {
                     return function (e) {
                         $('#patientPhoto').attr('src', e.target.result);
                     };
@@ -465,7 +465,7 @@ $(document).ready(function () {
             var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
-            if (nan == false) {
+            if (nan === false) {
                 $('#age').val(birthString);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
@@ -478,7 +478,7 @@ $(document).ready(function () {
             var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
             var nan = randomString(birthDate);
-            if (nan == false) {
+            if (nan === false) {
                 $('#age').val(birthString);
                 $('#years').css('border', '');
                 $('#months').css('border', '');
@@ -498,7 +498,7 @@ $(document).ready(function () {
     });
     $('#btnDeletePhoto').click(function () {
         var b = confirm("Are you sure you would like to delete this photo?");
-        if (b == true)
+        if (b === true)
             patientPhotoFeature.flagForDeletion();
     });
 
@@ -506,7 +506,7 @@ $(document).ready(function () {
         //get the base64 URI string from the canvas
         patientPhotoFeature.prepareForPOST();
         //make sure the feature is turned on before JSONifying
-        if (multipleChiefComplaintFeature.isActive == true) {
+        if (multipleChiefComplaintFeature.isActive === true) {
             multipleChiefComplaintFeature.JSONifyChiefComplaints();
         }
         return validate(); //located in triageClientValidation.js

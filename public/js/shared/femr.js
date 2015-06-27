@@ -68,7 +68,7 @@ $(document).ready(function () {
                         $('#nameOrIdSearchForm').attr("placeholder", "Invalid Patient");
                     }
                 },
-                error: function (response) {
+                error: function () {
                     isValid = false;
                 }
             });

@@ -38,7 +38,7 @@ object ApplicationBuild extends Build {
     scalaVersion := currentScalaVersion,
 //    routesGenerator := InjectedRoutesGenerator,
     libraryDependencies ++= appDependencies,
-    pipelineStages := Seq(uglify, digest, gzip),
+    pipelineStages := Seq(rjs, uglify, digest, gzip),
     includeFilter in uglify := GlobFilter("*.js"),
     excludeFilter  in uglify := GlobFilter("*min.js"),
       // Add your own project settings here

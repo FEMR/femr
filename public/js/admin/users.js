@@ -45,7 +45,7 @@ var manageUsers = {
                     $(btn).addClass("btn-success");
                 }
             },
-            error: function (response) {
+            error: function () {
                 //don't change button - implies an error
             }
         });

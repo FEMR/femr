@@ -149,12 +149,12 @@ $(document).ready(function () {
     });
 
     //Shown event for Modal form
-    $('#modalNewImage').on('shown.bs.modal', function (e) {
+    $('#modalNewImage').on('shown.bs.modal', function () {
         $('#modalTextEntry').focus();
     });
 
     //Hide event for Modal form
-    $('#modalNewImage').on('hide.bs.modal', function (e) {
+    $('#modalNewImage').on('hide.bs.modal', function () {
         //Clear the img src
         $('#modalImg').attr('src', '');
         //Clear the textbox
@@ -176,7 +176,6 @@ $(document).ready(function () {
     });
 
     $('#newVitalsBtn').click(function () {
-        var id = $(this).attr('data-user_id');
         $.ajax({
             url: '/medical/newVitals',
             type: 'GET',
@@ -184,7 +183,7 @@ $(document).ready(function () {
                 $('#newVitalsPartial').html(partialView);
                 $('#newVitalsDialog').dialog("open");
             },
-            error: function (response) {
+            error: function () {
                 alert("Error. Please make sure you are connected to fEMR.");
             }
         })
@@ -254,7 +253,7 @@ function setDynamicImage(fileChngEvt, imgOutId) {
             var reader = new FileReader();
 
             // Closure to capture the file information.
-            reader.onload = (function (theFile) {
+            reader.onload = (function () {
                 return function (e) {
                     $(imgOutId).attr('src', e.target.result);
                 };
@@ -372,13 +371,12 @@ function portraitEdit(e) {
 
 function portraitDelete(e) {
     var b = confirm("Are you sure you would like to delete this photo?");
-    if (b == true) {
+    if (b === true) {
         //get a reference to the root div element (move up five places in this case)
         var rootDiv = $(e).parent().parent().parent().parent().parent().first();
         //get a reference to the data list
         var dataDiv = rootDiv.find("> div[name=dataList]").first();
         var photoIdInput = dataDiv.children("input[name=photoId]").first();
-        var temptest = photoIdInput.val();
         if (photoIdInput.val() == "") {
             //A photo Id does not exist, therefore, this is a NEW photo (ie, not saved server-side)
             //  Thus we can simply delete this element from the DOM
@@ -408,7 +406,7 @@ function photoNameFixup() {
     photoList.each(function (i) {
         var dataList = $(this).find('> div[name=dataList]').first();
         //Now loop through all of the data elements
-        dataList.children().each(function (y) {
+        dataList.children().each(function () {
             var oldName = $(this).attr('name');
             var name = new String(oldName);
             if (name.indexOf('[') >= 0)

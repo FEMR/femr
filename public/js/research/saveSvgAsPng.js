@@ -35,7 +35,7 @@
         }
     }
 
-    function styles(dom) {
+    function styles() {
         var css = "";
         var sheets = document.styleSheets;
         for (var i = 0; i < sheets.length; i++) {

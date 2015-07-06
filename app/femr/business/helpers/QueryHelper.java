@@ -18,9 +18,12 @@
 */
 package femr.business.helpers;
 
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import femr.data.daos.IRepository;
+import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterVital;
+import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientEncounterVital;
 
 import java.util.List;
@@ -70,5 +73,30 @@ public class QueryHelper {
             heightInches = Math.round(patientEncounterVitals.get(0).getVitalValue());
         }
         return heightInches;
+    }
+
+    /**
+     * finds all patients with a country filter
+     */
+    public static List<? extends IPatient> findPatients(IRepository<IPatient> patientRepository, String country){
+
+        ExpressionList<Patient> patientExpressionList = QueryProvider.getPatientQuery()
+                .select("*")
+                .fetch("patientEncounters")
+                .fetch("patientEncounters.missionTrip")
+                .fetch("patientEncounters.missionTrip.missionCity")
+                .fetch("patientEncounters.missionTrip.missionCity.missionCountry")
+                .where()
+                .eq("patientEncounters.missionTrip.missionCity.missionCountry.name", country);
+
+        return patientExpressionList.findList();
+    }
+
+    /**
+     * finds all patients without a country filter
+     */
+    public static List<? extends IPatient> findPatients(IRepository<IPatient> patientRepository){
+
+        return patientRepository.findAll(Patient.class);
     }
 }

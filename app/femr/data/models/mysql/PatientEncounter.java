@@ -56,7 +56,7 @@ public class PatientEncounter implements IPatientEncounter {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_age_classification_id")
     private PatientAgeClassification patientAgeClassification;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mission_trip_id")
     private MissionTrip missionTrip;
 

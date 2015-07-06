@@ -18,7 +18,9 @@
 */
 package femr.data.models.core;
 
+import femr.data.models.mysql.PatientEncounter;
 import java.util.Date;
+import java.util.List;
 
 public interface IPatient {
 
@@ -57,4 +59,8 @@ public interface IPatient {
     IPhoto getPhoto();
 
     void setPhoto(IPhoto photo);
+
+    List<PatientEncounter> getPatientEncounters();
+
+    void setPatientEncounters(List<PatientEncounter> patientEncounters);
 }

@@ -29,13 +29,11 @@ import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
-
 import java.util.*;
 
 public class SearchService implements ISearchService {
@@ -96,7 +94,7 @@ public class SearchService implements ISearchService {
 
             String pathToPhoto = null;
             Integer photoId = null;
-            if (savedPatient.getPhoto() != null){
+            if (savedPatient.getPhoto() != null) {
                 pathToPhoto = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
             }
@@ -158,7 +156,7 @@ public class SearchService implements ISearchService {
 
             String pathToPhoto = null;
             Integer photoId = null;
-            if (patient.getPhoto() != null){
+            if (patient.getPhoto() != null) {
                 pathToPhoto = patient.getPhoto().getFilePath();
                 photoId = patient.getPhoto().getId();
             }
@@ -404,6 +402,7 @@ public class SearchService implements ISearchService {
 
 
         //Build the Query
+        //TODO: filter these by the current country of the team
         Query<Patient> query = null;
         if (id != null) {
             //if we have an id, that is all we need.
@@ -510,7 +509,33 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
-            List<? extends IPatient> allPatients = patientRepository.findAll(Patient.class);
+            ExpressionList<SystemSetting> expressionList = QueryProvider.getSystemSettingQuery()
+                    .where()
+                    .eq("name", "Country Filter");
+            ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
+
+            ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
+                    .where()
+                    .eq("isCurrent", true);
+            IMissionTrip missionTrip = missionTripExpressionList.findUnique();
+
+            List<? extends IPatient> allPatients;
+
+            //Make sure that none of the values we will be checking are null.
+            //If they are, just get all of the possible patients.
+            if (systemSetting != null &&
+                    systemSetting.isActive() &&
+                    missionTrip != null &&
+                    missionTrip.getMissionCity() != null &&
+                    missionTrip.getMissionCity().getMissionCountry() != null &&
+                    StringUtils.isNotNullOrWhiteSpace(missionTrip.getMissionCity().getMissionCountry().getName())){
+
+                allPatients = QueryHelper.findPatients(patientRepository, missionTrip.getMissionCity().getMissionCountry().getName());
+            }else{
+
+                allPatients = QueryHelper.findPatients(patientRepository);
+            }
+
             List<PatientItem> patientItems = new ArrayList<>();
 
             for (IPatient patient : allPatients) {
@@ -570,7 +595,7 @@ public class SearchService implements ISearchService {
             List<? extends IDiagnosis> allDiagnoses = diagnosisRepository.findAll(Diagnosis.class);
             List<String> diagnoses = new ArrayList<>();
 
-            for (IDiagnosis d : allDiagnoses){
+            for (IDiagnosis d : allDiagnoses) {
                 if (StringUtils.isNotNullOrWhiteSpace(d.getName()))
                     diagnoses.add(d.getName());
             }
@@ -586,6 +611,7 @@ public class SearchService implements ISearchService {
 
     /**
      * Gets isActive of the metric setting
+     *
      * @return
      */
     private boolean isMetric() {

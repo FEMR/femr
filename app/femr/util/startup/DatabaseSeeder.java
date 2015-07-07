@@ -26,9 +26,7 @@ import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
-import org.h2.expression.ExpressionList;
 import play.Play;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -735,9 +733,18 @@ public class DatabaseSeeder {
         if (systemSettings != null && !containSetting(systemSettings, "Metric System Option")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Metric System Option");
+            systemSetting.setActive(true);
+            systemSettingRepository.create(systemSetting);
+        }
+
+        //Filters the patient search based on which country the team is currently in
+        if (systemSettings != null && !containSetting(systemSettings, "Country Filter")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Country Filter");
             systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }
+
     }
 
     /**

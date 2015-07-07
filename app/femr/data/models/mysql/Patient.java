@@ -23,6 +23,7 @@ import femr.data.models.core.IPhoto;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "patients")
@@ -47,6 +48,8 @@ public class Patient implements IPatient {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "photo_id", nullable = true)
     private Photo photo;
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    private List<PatientEncounter> patientEncounters;
 
     @Override
     public int getId() {
@@ -136,5 +139,15 @@ public class Patient implements IPatient {
     @Override
     public void setPhoto(IPhoto photo) {
         this.photo = (Photo) photo;
+    }
+
+    @Override
+    public List<PatientEncounter> getPatientEncounters() {
+        return patientEncounters;
+    }
+
+    @Override
+    public void setPatientEncounters(List<PatientEncounter> patientEncounters) {
+        this.patientEncounters = patientEncounters;
     }
 }

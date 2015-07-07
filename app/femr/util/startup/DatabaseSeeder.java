@@ -1183,17 +1183,20 @@ public class DatabaseSeeder {
         if (userCount == 0) {
             String defaultAdminUsername = Play.application().configuration().getString("default.admin.username");
             String defaultAdminPassword = Play.application().configuration().getString("default.admin.password");
+            String defaultSuperuserUsername = Play.application().configuration().getString("default.superuser.username");
+            String defaultSuperuserPassword = Play.application().configuration().getString("default.superuser.password");
+
             IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
 
             //create the Admin user
             //Admin is used for managing users, creating users, managing inventory, etc
             //Admin information is given to the manager/group leader/whoever is in charge
             User adminUser = new User();
-            String encryptedPassword = encryptor.encryptPassword(defaultAdminPassword);
+            String encryptedAdminPassword = encryptor.encryptPassword(defaultAdminPassword);
             adminUser.setFirstName("Administrator");
             adminUser.setLastName("");
             adminUser.setEmail(defaultAdminUsername);
-            adminUser.setPassword(encryptedPassword);
+            adminUser.setPassword(encryptedAdminPassword);
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
             adminUser.setDeleted(false);
             Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
@@ -1205,11 +1208,11 @@ public class DatabaseSeeder {
             //SuperUser is an account that gives access to important configuration
             //settings
             User superUser = new User();
-            String encryptedSuperUserPassword = encryptor.encryptPassword("wsu1f8e6m8r");
+            String encryptedSuperuserPassword = encryptor.encryptPassword(defaultSuperuserPassword);
             superUser.setFirstName("SuperUser");
             superUser.setLastName("");
-            superUser.setEmail("superuser");
-            superUser.setPassword(encryptedSuperUserPassword);
+            superUser.setEmail(defaultSuperuserUsername);
+            superUser.setPassword(encryptedSuperuserPassword);
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
             superUser.setDeleted(false);
             Role role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));

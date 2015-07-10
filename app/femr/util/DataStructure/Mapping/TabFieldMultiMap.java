@@ -20,8 +20,8 @@ package femr.util.DataStructure.Mapping;
 
 import femr.common.models.TabFieldItem;
 import femr.util.stringhelpers.StringUtils;
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.keyvalue.MultiKey;
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.keyvalue.MultiKey;
 
 import java.util.*;
 
@@ -56,6 +56,9 @@ public class TabFieldMultiMap extends AbstractMultiMap {
      * @param value          The value of the tab field
      * @param chiefComplaint chiefcomplaint that it belongs to (can be null)
      */
+    //Suppress the warnings that were introduced after the move from Apache Collections to Apache Collections4.
+    //TabFieldMultiMap and VitalMultiMap both use AbstractMultiMap's generic MultiKeyMap with different types.
+    @SuppressWarnings("unchecked")
     public void put(String fieldName, String date, String chiefComplaint, Object value) {
 
         if (!(value instanceof TabFieldItem) || StringUtils.isNullOrWhiteSpace(fieldName)) {

@@ -13,13 +13,13 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaEbean,
-    "com.google.inject" % "guice" % "3.0",
-    "mysql" % "mysql-connector-java" % "5.1.34",
+    "com.google.inject" % "guice" % "4.0",
+    "mysql" % "mysql-connector-java" % "5.1.36",
     "org.mindrot" % "jbcrypt" % "0.3m",
-    "commons-collections" % "commons-collections" % "3.2.1",
+    "org.apache.commons" % "commons-collections4" % "4.0",
     "com.google.code.gson" % "gson" % "2.3.1",
-    "com.itextpdf" % "itextpdf" % "5.5.4",
-    "com.itextpdf.tool" % "xmlworker" % "5.4.4"
+    "com.itextpdf" % "itextpdf" % "5.5.6",
+    "com.itextpdf.tool" % "xmlworker" % "5.5.6"
   )
 
 

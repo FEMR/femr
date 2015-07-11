@@ -8,14 +8,14 @@
 ### Required downloads
 1. [MySQL 5.6](http://www.mysql.com/)
 2. [Play Framework 2.3.7](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
-3. [Java JDK 1.7](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
+3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 4. [IntelliJ IDEA Ultimate 14](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 
 ### Configuration
-####1. make sure java and play enviroment variables are set
+####1. make sure java and play environment variables are set
 
-####2. fork the repository to your github account
+####2. fork the repository to your GitHub account
 
 ####3. clone the repository
     git clone https://github.com/yourusername/femr.git

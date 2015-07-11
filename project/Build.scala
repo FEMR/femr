@@ -1,18 +1,21 @@
+import play.ebean.sbt.PlayEbean
+import play.routes.compiler.InjectedRoutesGenerator
+import play.sbt.PlayJava
 import sbt._
 import Keys._
-import play.Play.autoImport._
+import play.sbt.Play.autoImport._
 
 object ApplicationBuild extends Build {
 
   val appName = "fEMR"
   val appVersion = "2.1.4"
-  val currentScalaVersion = "2.11.2"
+  val currentScalaVersion = "2.11.7"
 
   val appDependencies = Seq(
     // Add your project dependencies here,
     javaCore,
     javaJdbc,
-    javaEbean,
+    evolutions,
     "com.google.inject" % "guice" % "4.0",
     "mysql" % "mysql-connector-java" % "5.1.36",
     "org.mindrot" % "jbcrypt" % "0.3m",
@@ -23,11 +26,12 @@ object ApplicationBuild extends Build {
   )
 
 
-  val main = Project(appName, file(".")).enablePlugins(play.PlayJava).settings(
+  val main = Project(appName, file(".")).enablePlugins(PlayJava, PlayEbean).settings(
     javacOptions += "-Xlint:deprecation", //*/   //use when searching for deprecated API usage
     javacOptions += "-Xlint:unchecked", //*/     //use when you want to display java warnings
     version := appVersion,
     scalaVersion := currentScalaVersion,
+//    routesGenerator := InjectedRoutesGenerator,
     libraryDependencies ++= appDependencies,
     // Add your own project settings here
     testOptions in Test ~= {

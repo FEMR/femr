@@ -35,8 +35,8 @@ public class LoginAttempt implements ILoginAttempt {
     private User user;
     @Column(name = "ip_address", unique = false, nullable = false)
     private byte[] ip_address;
-    @Column(name = "date", unique = false, nullable = true)
-    private DateTime date;
+    @Column(name = "date_of_attempt", unique = false, nullable = true)
+    private DateTime loginDate;
     @Column(name = "isSuccessful", nullable = false)
     private Boolean isSuccessful;
     @Column(name = "username_attempt", nullable = false)
@@ -58,13 +58,13 @@ public class LoginAttempt implements ILoginAttempt {
     }
 
     @Override
-    public DateTime getDate() {
-        return date;
+    public DateTime getLoginDate() {
+        return loginDate;
     }
 
     @Override
-    public void setDate(DateTime date) {
-        this.date = date;
+    public void setLoginDate(DateTime loginDate) {
+        this.loginDate = loginDate;
     }
 
     @Override

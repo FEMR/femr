@@ -1,11 +1,16 @@
 import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.gzip.Import._
+import com.typesafe.sbt.jse.JsTaskImport.JsTaskKeys
 import com.typesafe.sbt.uglify.Import._
+import com.typesafe.sbt.rjs.Import._
 import com.typesafe.sbt.web.Import._
 import com.typesafe.sbt.web.SbtWeb
 import play.Play.autoImport._
 import sbt.Keys._
 import sbt._
+import scala.concurrent.duration._
+import JsTaskKeys._
+
 
 object ApplicationBuild extends Build {
 
@@ -34,6 +39,7 @@ object ApplicationBuild extends Build {
     version := appVersion,
     scalaVersion := currentScalaVersion,
     libraryDependencies ++= appDependencies,
+    timeoutPerSource := 10.minutes,
     pipelineStages := Seq(rjs, uglify, digest, gzip),
     includeFilter in uglify := GlobFilter("*.js"),
     excludeFilter  in uglify := GlobFilter("*min.js"),

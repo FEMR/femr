@@ -745,6 +745,13 @@ public class DatabaseSeeder {
             systemSettingRepository.create(systemSetting);
         }
 
+        if (systemSettings != null && !containSetting(systemSettings, "Research Only")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Research Only");
+            systemSetting.setActive(false);
+            systemSettingRepository.create(systemSetting);
+        }
+
     }
 
     /**

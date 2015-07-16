@@ -68,6 +68,28 @@ public class LogicDoer {
     }
 
     /**
+     * Attempts to retrieve the user specified photo path.
+     * If nothing is found, defaults to ../Upload/Csv
+     *
+     * @return path to the photo
+     */
+    public static String getCsvFilePath() {
+        String path;
+        try {
+            path = ConfigFactory.load().getString("csv.path");
+            if (!path.endsWith(File.separator))
+                path += File.separator;
+            return path;
+        } catch (Exception ex) {
+            //If config doesn't exist, default to "photos"
+            path = "../Upload/Csv";
+            return path;
+        }
+
+    }
+
+
+    /**
      * I wonder what this method does
      *
      * @param patientEncounter patient encounter

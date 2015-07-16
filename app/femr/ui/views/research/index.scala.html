@@ -18,7 +18,7 @@
         <script type="text/javascript" src="@routes.Assets.at("js/research/stacked-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/research/grouped-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/research/table-chart.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("js/research/research.js")"></script>
     }
 
@@ -26,7 +26,7 @@
 
         <div class="row dropdown">
             <div class="col-sm-3 col-md-2 sidebar">
-                @helper.form(action = ResearchController.getGraphPost, 'id -> "graph-options") {
+                @helper.form(action = ResearchController.exportPost, 'id -> "graph-options") {
                     <div id="filter-errors">
 
                     </div>
@@ -181,9 +181,11 @@
                         <div class="graph-header">
                             <p id="average" class="stat"><strong>Average:</strong> <span class="val"></span></p>
                             <p id="range" class="stat"><strong>Range:</strong> <span class="val"></span></p>
-                            <p id="total" class="stat"><strong>Total:</strong> <span class="val"></span></p>
+                            <p id="totalPatients" class="stat"><strong>Total Patients:</strong> <span class="val"></span></p>
+                            <p id="totalEncounters" class="stat"><strong>Total Encounters:</strong> <span class="val"></span></p>
 
                             <div class="save-image-cont">
+                                <a id="export-button" class="fButton" href="#">Export All Encounters (.csv)</a>
                                 <a id="save-button" class="fButton" href="#">Save As Image</a>
                                 <div class="options">
                                     <div class="close"><span class="glyphicon glyphicon-remove"></span></div>

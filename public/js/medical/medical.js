@@ -1,4 +1,3 @@
-
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
     newProblems: $('.newProblems'),
@@ -15,13 +14,13 @@ var problemFeature = {
         $('.problem')
             .parent()
             .append("<div class='problem'>" +
-                "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
-                "</div>");
+            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
+            "</div>");
 
         var problemInputElement = $("[name='problems[" + problemIndex + "].name'");
+        //data for typeahead already exists on the page from loading the diagnoses input box
         typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
         $(problemInputElement).focus();
-
     },
     removeProblemField: function () {
         problemFeature.refreshSelectors();
@@ -210,11 +209,7 @@ $(document).ready(function () {
         return photoNameFixup() && validate(); //validate from medicalClientValidation.js
     });
 
-    typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {
-        typeaheadFeature.initalizeTypeAhead(problemFeature.newProblems.first(), 'diagnoses', true, true);
-    });
-
-
+    typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
 });
 
 /**

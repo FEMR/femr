@@ -55,10 +55,9 @@ POST        /medical/edit/:id                                 @femr.ui.controlle
 GET         /medical                                          @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                                          @femr.ui.controllers.MedicalController.indexPost()
 #Research
-GET         /research/typeahead                               @femr.ui.controllers.ResearchController.typeaheadJSONGet()
 GET         /research                                         @femr.ui.controllers.ResearchController.indexGet()
-POST        /research/graph                                   @femr.ui.controllers.ResearchController.getGraphPost()
-GET         /research/generateData                            @femr.ui.controllers.ResearchController.generateData()
+POST        /research                                         @femr.ui.controllers.ResearchController.indexPost()
+POST        /research/exportData                              @femr.ui.controllers.ResearchController.exportPost()
 #Pdf
 GET         /pdf/encounter/:encounterId                                 @femr.ui.controllers.PDFController.index(encounterId : Integer)
 #Sessions

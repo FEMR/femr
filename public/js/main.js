@@ -1,2 +1,0 @@
-/*
-Required for building with RequireJS*/

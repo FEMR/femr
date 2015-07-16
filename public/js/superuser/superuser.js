@@ -11,7 +11,7 @@ $(document).ready(function(){
         $.ajax({
             type: "POST",
             url: "/superuser/trips/" + $(this).parent().find('input').val(),
-            success: function(data){
+            success: function(){
                 window.location.href = 'trips'
             }
         });

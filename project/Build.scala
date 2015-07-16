@@ -1,6 +1,12 @@
-import sbt._
-import Keys._
+import com.typesafe.sbt.digest.Import._
+import com.typesafe.sbt.gzip.Import._
+import com.typesafe.sbt.uglify.Import._
+import com.typesafe.sbt.web.Import._
+import com.typesafe.sbt.web.SbtWeb
 import play.Play.autoImport._
+import sbt.Keys._
+import sbt._
+
 
 object ApplicationBuild extends Build {
 
@@ -23,13 +29,15 @@ object ApplicationBuild extends Build {
   )
 
 
-  val main = Project(appName, file(".")).enablePlugins(play.PlayJava).settings(
+  val main = Project(appName, file(".")).enablePlugins(play.PlayJava, SbtWeb).settings(
     javacOptions += "-Xlint:deprecation", //*/   //use when searching for deprecated API usage
     javacOptions += "-Xlint:unchecked", //*/     //use when you want to display java warnings
     version := appVersion,
     scalaVersion := currentScalaVersion,
     libraryDependencies ++= appDependencies,
-    // Add your own project settings here
+    pipelineStages := Seq(uglify, digest, gzip),
+    excludeFilter  in uglify := GlobFilter("*min.js"),
+      // Add your own project settings here
     testOptions in Test ~= {
       args =>
         for {
@@ -41,4 +49,6 @@ object ApplicationBuild extends Build {
     sbt.Keys.fork in Test := false,
     doc in Compile <<= target.map(_ / "none")
   )
+
+
 }

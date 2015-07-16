@@ -11,17 +11,17 @@
 @import femr.ui.views.html.medical.listVitals
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/medical/medical.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/medical/medical.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/handlebars.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/medical/medical.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/medical/medicalClientValidation.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-ui.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/medical/medical.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/medical/medicalClientValidation.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-ui.min.js")"></script>
     }
 
 @main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical")) {

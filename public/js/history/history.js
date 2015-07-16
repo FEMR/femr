@@ -14,7 +14,7 @@ var editEncounterFeature = {
             type: "POST",
             url: '/history/encounter/updateField/' + $('#patientEncounterId').val(),
             data: {FieldValue: fieldValue, FieldName: fieldName, ChiefComplaintName: complaint}
-        }).done(function (data) {
+        }).done(function () {
             if (complaint == null) // No chief complaint. Easy to update fields value
                 $("span[data-id='" + fieldName + "']").text(fieldValue);
             else //Chief complaint so we need to update value of specific complaint's field

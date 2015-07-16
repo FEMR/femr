@@ -4,7 +4,7 @@
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/admin/configure.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/configure.css")">
     }
 
 @admin("Configure", currentUser, styles = additionalStyles) {

@@ -177,8 +177,6 @@ var filterMenuModule = (function () {
 
         $(".save-image-cont").find(".options").hide();
 
-        var aspectRatio = 5 / 2.5;
-
         // get Image Size
         var imageSize = $(this).data("imagesize");
         //console.log(imageSize);
@@ -620,8 +618,8 @@ var filterMenuModule = (function () {
         var filtersAreValid = checkFilterValid();
         if (filtersAreValid) {
             // Get Filter values from form hidden fields
-            var graphType = $(filterValues.graphType).val();
-            var postData = $(form).serialize();
+            //var graphType = $(filterValues.graphType).val();
+            var postData = $("#graph-options").serialize();
             //console.log(postData);
             graphLoaderModule.loadGraph(filterValues.graphType, postData);
         }

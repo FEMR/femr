@@ -154,7 +154,7 @@ public class DataModelMapper implements IDataModelMapper{
             return null;
         }
         ILoginAttempt loginAttempt = loginAttemptProvider.get();
-        loginAttempt.setDate(dateUtils.getCurrentDateTime());
+        loginAttempt.setLoginDate(dateUtils.getCurrentDateTime());
         loginAttempt.setIsSuccessful(isSuccessful);
         loginAttempt.setUsernameAttempt(usernameValue);
         loginAttempt.setIp_address(ipAddress);

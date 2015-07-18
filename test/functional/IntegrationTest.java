@@ -3,8 +3,6 @@ package functional;
 import org.junit.Test;
 import play.libs.F.Callback;
 import play.test.TestBrowser;
-
-import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
 public class IntegrationTest {

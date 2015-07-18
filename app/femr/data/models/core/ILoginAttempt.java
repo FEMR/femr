@@ -28,9 +28,9 @@ public interface ILoginAttempt {
 
     void setUser(IUser user);
 
-    DateTime getDate();
+    DateTime getLoginDate();
 
-    void setDate(DateTime date);
+    void setLoginDate(DateTime date);
 
     Boolean getIsSuccessful();
 

@@ -141,46 +141,7 @@ public class SessionService implements ISessionService {
     }
 
     private CurrentUser createCurrentUser(IUser user) {
-        user = checkResearchFeature(user);
+
         return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles());
-    }
-
-    /**
-     * Checks the research setting and strips the user of roles if it is turned on.
-     *
-     * @param user the user being evaluated
-     * @return the updated user
-     */
-    private IUser checkResearchFeature(IUser user) {
-
-        //get the setting to check whether or not we need to restrict everyone to the research role
-        ExpressionList<SystemSetting> settingQuery = QueryProvider.getSystemSettingQuery().where().eq("name", "Research Only");
-        ISystemSetting systemSetting = systemSettingRepository.findOne(settingQuery);
-
-        //if the research setting is active, we need to eliminiate all the roles except researcher and admin (if applicable)
-        if (systemSetting.isActive()) {
-            //Java 8 could make this way more succinct damnit
-            List<? extends IRole> currentRoles = user.getRoles();
-            //grab the researcher role
-            ExpressionList<Role> researcherRoleQuery = QueryProvider.getRoleQuery().where().eq("name", "Researcher");
-            IRole researcherRole = roleRepository.findOne(researcherRoleQuery);
-            //grab the admin role
-            ExpressionList<Role> adminRoleQuery = QueryProvider.getRoleQuery().where().eq("name", "Administrator");
-            IRole adminRole = roleRepository.findOne(adminRoleQuery);
-            //grab the superuser role
-            ExpressionList<Role> superuserRoleQuery = QueryProvider.getRoleQuery().where().eq("name", "SuperUser");
-            IRole superuserRole = roleRepository.findOne(superuserRoleQuery);
-            List<IRole> newRoles = new ArrayList<>();
-            //make the user a researcher
-            newRoles.add(researcherRole);
-            //if the user has the admin role, make them an admin as well
-            if (currentRoles.contains(adminRole))
-                newRoles.add(adminRole);
-            if (currentRoles.contains(superuserRole))
-                newRoles.add(superuserRole);
-            user.setRoles(newRoles);
-        }
-
-        return user;
     }
 }

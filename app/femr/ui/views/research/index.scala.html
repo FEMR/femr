@@ -155,7 +155,9 @@
                         <li class="submit">
                             <input id="clear-button" class="clear fButton pull-left" type="button" value="Clear" />
                             <input id="submit-button" class="submit fButton pull-right" type="submit" value="Apply" />
-
+                        </li>
+                        <li class="export">
+                            <input id="export-button" class="export fButton" type="button" value="Export Data"/>
                         </li>
                     </ul>
                 }
@@ -176,6 +178,8 @@
                             <li>Choose Filters</li>
                             <li>Click Apply</li>
                         </ol>
+
+                        <p>To export data, click the "Export Data" button. The exported data will be de-identified and it will have all selected Datasets and Filters applied to it.</p>
                     </div>
                     <div class="graph-area">
                         <div class="graph-header">
@@ -185,7 +189,6 @@
                             <p id="totalEncounters" class="stat"><strong>Total Encounters:</strong> <span class="val"></span></p>
 
                             <div class="save-image-cont">
-                                <a id="export-button" class="fButton" href="#">Export All Encounters (.csv)</a>
                                 <a id="save-button" class="fButton" href="#">Save As Image</a>
                                 <div class="options">
                                     <div class="close"><span class="glyphicon glyphicon-remove"></span></div>

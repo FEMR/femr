@@ -70,10 +70,10 @@ public class CSVWriterGson {
 
         String headerStr[] = new String[headers.size()];
         headerStr = headers.toArray(headerStr);
-        for( int i = 0; i < headerStr.length; i++ ){
+        for (int i = 0; i < headerStr.length; i++) {
 
             output += headerStr[i];
-            if( i < headerStr.length - 1 ) output += ',';
+            if (i < headerStr.length - 1) output += ',';
         }
         output += "\n";
 
@@ -115,23 +115,25 @@ public class CSVWriterGson {
         String output = "";
         String itemStr[] = new String[items.size()];
         itemStr = items.toArray(itemStr);
-        for( int i = 0; i < itemStr.length; i++ ){
+        for (int i = 0; i < itemStr.length; i++) {
 
             String current = itemStr[i];
 
             // escape double quotes with double quotes
-            if( current.contains("\"") ){
+            if (current.contains("\"")) {
 
                 current = current.replaceAll("\"", "\"\"");
             }
 
             // If string contains newline or comma add surrounding quotes
-            if( current.contains("\r\n") || current.contains("\n") || current.contains(",") ) {
-                current = '"'+current+'"';
+            if (current.contains("\r\n") || current.contains("\n") || current.contains(",") || current.contains(";")) {
+                current = '"' + current + '"';
             }
 
+
+
             output += current;
-            if( i < itemStr.length - 1 ) output += ',';
+            if (i < itemStr.length - 1) output += ',';
         }
         output += "\n";
 

@@ -22,63 +22,93 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * This class contains utilities for manipulating strings. If you add something here, please clearly document the
+ * format of both the input and output.
+ */
 public class StringUtils {
+
+    /**
+     * Checks if a String is null or doesn't have any characters.
+     *
+     * @param stringToCheck the string you need to check, may be null.
+     * @return true if the string is null or doesn't have any characters, false otherwise
+     */
     public static boolean isNullOrWhiteSpace(String stringToCheck) {
         return stringToCheck == null || stringToCheck.trim().isEmpty();
     }
 
+    /**
+     * Checks if a String is null or doesn't have any characters.
+     *
+     * @param stringToCheck the string you need to check, may be null.
+     * @return false if the string is null or doesn't have any characters, true otherwise
+     */
     public static boolean isNotNullOrWhiteSpace(String stringToCheck) {
         return !isNullOrWhiteSpace(stringToCheck);
     }
 
     /**
      * Formats the regular date string into a more humanly readable one
+     *
      * @param dateString the Date string in the format yyyy-MM-dd HH:mm:ss.S or yyyy-MM-ddTHH:mm:ssZ
-     * @return A date String in the format MMMM dd, yyyy, h:mm:ss.s a Or the original if
-     * it fails to parse it
+     * @return A date String in the format MMMM dd, yyyy, h:mm:ss.s a Or the original if it fails to parse it
      */
     public static String FormatDateTime(String dateString) {
-        Date date = null;
+
+        Date date;
         String formattedDate = dateString;
         String pattern = (dateString.indexOf('T') == -1) ? "yyyy-MM-dd HH:mm:ss.S" : "yyyy-MM-dd'T'HH:mm:ss";
         try {
+
             date = new SimpleDateFormat(pattern).parse(dateString);
             formattedDate = new SimpleDateFormat("MMMM dd, yyyy, h:mm:ss a").format(date);
         } catch (ParseException e) {
+
             e.printStackTrace();
         }
+
         return formattedDate;
     }
-
 
     /**
      * Formats the regular date string into a more humanly readable one
+     *
      * @param dateString the Date string in the format yyyy-MM-dd HH:mm:ss.S
-     * @return A date String in the format MMMM dd, yyyy, h:mm:ss.s a Or the original if
-     * it fails to parse it
+     * @return A date String in the format MMMM dd, yyyy, h:mm:ss.s a Or the original if it fails to parse it
      */
-    public static String FormatTime(String dateString){
-        Date date = null;
+    public static String FormatTime(String dateString) {
+
+        Date date;
         String formattedDate = dateString;
         try {
+
             date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(dateString);
             formattedDate = new SimpleDateFormat("h:mm a").format(date);
         } catch (ParseException e) {
+
             e.printStackTrace();
         }
+
         return formattedDate;
     }
 
-    public static String ToSimpleDate(Date dt)
-    {
-        try
-        {
-            if(dt != null)
+    /**
+     * Convert a Date object to a SimpleDate object
+     *
+     * @param dt the date
+     * @return A SimpleDate in the format yyyy-MM-dd or an empty string if it fails to convert
+     */
+    public static String ToSimpleDate(Date dt) {
+        try {
+
+            if (dt != null)
                 return new SimpleDateFormat("yyyy-MM-dd").format(dt);
-        } catch(Exception e)
-        {
+        } catch (Exception e) {
+
             e.printStackTrace();
         }
+
         return "";
     }
 
@@ -93,36 +123,69 @@ public class StringUtils {
         );
     }
 
+    /**
+     * Checks if a String is empty
+     *
+     * @param str string to check
+     * @return returns the String "N/A" if str is null or empty.
+     */
     public static String outputStringOrNA(String str) {
         if (StringUtils.isNullOrWhiteSpace(str)) return "N/A";
         else return str;
     }
 
+    /**
+     * Checks if a Integer is null
+     *
+     * @param value Integer to check
+     * @return returns the String "N/A" if value is null or the Integer as a string
+     */
     public static String outputIntOrNA(Integer value) {
+
         if (value == null) return "N/A";
         else return value.toString();
     }
 
+    /**
+     * Checks if a valid Height exists
+     *
+     * @param feet feet in the height
+     * @param inches inches in the height
+     * @return returns "N/A" if feet and inches are null or a blank string for either if they are null
+     */
     public static String outputHeightOrNA(Integer feet, Integer inches) {
-        if(feet == null && inches == null){
+        if (feet == null && inches == null) {
             return "N/A";
         } else {
             String output = "";
-            if(feet != null){
+            if (feet != null) {
                 output += feet + "'";
             }
-            if(inches != null){
+            if (inches != null) {
                 output += inches + "\"";
             }
             return output;
         }
     }
 
+    /**
+     * Checks if a Float is null
+     *
+     * @param value Float to check
+     * @return returns the String "N/A" if value is null or the Float as a string
+     */
     public static String outputFloatOrNA(Float value) {
         if (value == null) return "N/A";
         else return value.toString();
     }
 
+    /**
+     * Checks if a valid Blood Pressure exists
+     *
+     * @param systolic the systolic blood pressure
+     * @param diastolic the diastolic blood pressure
+     * @return returns "N/A" if systolic and diastolic are null or a blank string for either if they are null
+     */
     public static String outputBloodPressureOrNA(String systolic, String diastolic) {
         if (systolic == null && diastolic == null) return "N/A";
         else return systolic + " / " + diastolic;

@@ -22,18 +22,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+//One ResearchExportItem per line in the research CSV export
 public class ResearchExportItem {
 
-     private UUID patientId;
-     private String gender;
-     private Integer age;
-     private Boolean isPregnant;
-     private Integer weeksPregnant;
-     private List<String> chiefComplaints;
-     private List<String> prescribedMedications;
-     private List<String> dispensedMedications;
-     private Map<String, Float> vitalMap;
-     private Map<String, String> tabFieldMap;
+    private UUID patientId;
+    private String gender;
+    private Integer age;
+    private Boolean isPregnant;
+    private Integer weeksPregnant;
+    private String dayOfVisit;
+    private List<String> chiefComplaints;
+    private List<String> prescribedMedications;
+    private List<String> dispensedMedications;
+    private Map<String, Float> vitalMap;
+    private Map<String, String> tabFieldMap;
 
     public UUID getPatientId() {
         return patientId;
@@ -44,28 +46,28 @@ public class ResearchExportItem {
     }
 
     public String getGender() {
-          return gender;
-     }
+        return gender;
+    }
 
-     public void setGender(String gender) {
-          this.gender = gender;
-     }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
-     public Integer getAge() {
-          return age;
-     }
+    public Integer getAge() {
+        return age;
+    }
 
-     public void setAge(Integer age) {
-          this.age = age;
-     }
+    public void setAge(Integer age) {
+        this.age = age;
+    }
 
-     public Boolean getIsPregnant() {
-          return isPregnant;
-     }
+    public Boolean getIsPregnant() {
+        return isPregnant;
+    }
 
-     public void setIsPregnant(Boolean isPregnant) {
-          this.isPregnant = isPregnant;
-     }
+    public void setIsPregnant(Boolean isPregnant) {
+        this.isPregnant = isPregnant;
+    }
 
     public Integer getWeeksPregnant() {
         return weeksPregnant;
@@ -76,36 +78,36 @@ public class ResearchExportItem {
     }
 
     public List<String> getChiefComplaints() {
-          return chiefComplaints;
-     }
+        return chiefComplaints;
+    }
 
-     public void setChiefComplaints(List<String> chiefComplaints) {
-          this.chiefComplaints = chiefComplaints;
-     }
+    public void setChiefComplaints(List<String> chiefComplaints) {
+        this.chiefComplaints = chiefComplaints;
+    }
 
-     public List<String> getPrescribedMedications() {
-          return prescribedMedications;
-     }
+    public List<String> getPrescribedMedications() {
+        return prescribedMedications;
+    }
 
-     public void setPrescribedMedications(List<String> prescribedMedications) {
-          this.prescribedMedications = prescribedMedications;
-     }
+    public void setPrescribedMedications(List<String> prescribedMedications) {
+        this.prescribedMedications = prescribedMedications;
+    }
 
-     public List<String> getDispensedMedications() {
-          return dispensedMedications;
-     }
+    public List<String> getDispensedMedications() {
+        return dispensedMedications;
+    }
 
-     public void setDispensedMedications(List<String> dispensedMedications) {
-          this.dispensedMedications = dispensedMedications;
-     }
+    public void setDispensedMedications(List<String> dispensedMedications) {
+        this.dispensedMedications = dispensedMedications;
+    }
 
-     public Map<String, Float> getVitalMap() {
-          return vitalMap;
-     }
+    public Map<String, Float> getVitalMap() {
+        return vitalMap;
+    }
 
-     public void setVitalMap(Map<String, Float> vitalMap) {
-          this.vitalMap = vitalMap;
-     }
+    public void setVitalMap(Map<String, Float> vitalMap) {
+        this.vitalMap = vitalMap;
+    }
 
     public Map<String, String> getTabFieldMap() {
         return tabFieldMap;
@@ -113,5 +115,13 @@ public class ResearchExportItem {
 
     public void setTabFieldMap(Map<String, String> tabFieldMap) {
         this.tabFieldMap = tabFieldMap;
+    }
+
+    public String getDayOfVisit() {
+        return dayOfVisit;
+    }
+
+    public void setDayOfVisit(String day) {
+        this.dayOfVisit = day;
     }
 }

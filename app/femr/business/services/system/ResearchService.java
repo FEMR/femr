@@ -106,16 +106,16 @@ public class ResearchService implements IResearchService {
         filters.setOrderBy("patientId");
         List<? extends IResearchEncounter> patientEncounters = queryPatientData(filters);
 
-        List<ResearchExportItem> exportItems = new ArrayList<>();
+        List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
         //this for loop makes sure that the primary dataset is properly filtered when the user enters
         //a start and end number under "Filter Primary Dataset".
         //what about weight filters?
-        for(IResearchEncounter researchEncounter : patientEncounters ){
+        for(IResearchEncounter patientEncounter : patientEncounters ){
 
             // only filtering age, height, and vitals
             if( filters.getPrimaryDataset().equals("age") ) {
 
-                Float age = (float) Math.floor(dateUtils.getAgeAsOfDateFloat(researchEncounter.getPatient().getAge(), researchEncounter.getDateOfTriageVisit()));
+                Float age = (float) Math.floor(dateUtils.getAgeAsOfDateFloat(patientEncounter.getPatient().getAge(), patientEncounter.getDateOfTriageVisit()));
                 // skip encounter if age is out of range
                 if (age < filters.getFilterRangeStart() || age > filters.getFilterRangeEnd()) continue;
             }
@@ -130,8 +130,8 @@ public class ResearchService implements IResearchService {
 //            }
             else if( filters.getPrimaryDataset().equals("height") ){
 
-                ResearchEncounterVital vitalFeet = researchEncounter.getEncounterVitals().get(heightFeetId);
-                ResearchEncounterVital vitalInches = researchEncounter.getEncounterVitals().get(heightInchesId);
+                ResearchEncounterVital vitalFeet = patientEncounter.getEncounterVitals().get(heightFeetId);
+                ResearchEncounterVital vitalInches = patientEncounter.getEncounterVitals().get(heightInchesId);
 
                 // height values may not exist
                 Float vitalValue = 0.0f;
@@ -155,7 +155,7 @@ public class ResearchService implements IResearchService {
 //            }
             else if (vital != null){
 
-                ResearchEncounterVital vitals = researchEncounter.getEncounterVitals().get(vital.getId());
+                ResearchEncounterVital vitals = patientEncounter.getEncounterVitals().get(vital.getId());
                 if( vitals == null ) continue;
 
                 Float vitalValue = vitals.getVitalValue();
@@ -166,18 +166,18 @@ public class ResearchService implements IResearchService {
 
             UUID muddledPatientId;
             // If UUID already generated for patient, use that
-            if( patientIdMap.containsKey(researchEncounter.getPatient().getId()) ){
+            if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
 
-                muddledPatientId = patientIdMap.get(researchEncounter.getPatient().getId());
+                muddledPatientId = patientIdMap.get(patientEncounter.getPatient().getId());
             }
             // otherwise generate and store for potential additional patient encounters
             else{
 
                 muddledPatientId = UUID.randomUUID();
-                patientIdMap.put(researchEncounter.getPatient().getId(), muddledPatientId);
+                patientIdMap.put(patientEncounter.getPatient().getId(), muddledPatientId);
             }
-            ResearchExportItem item = createResearchExportItem(researchEncounter, muddledPatientId);
-            exportItems.add(item);
+            ResearchExportItem item = createResearchExportItem(patientEncounter, muddledPatientId);
+            researchExportItemsForCSVExport.add(item);
 
         }
 
@@ -209,7 +209,7 @@ public class ResearchService implements IResearchService {
 
             Gson gson = new Gson();
             JsonParser gsonParser = new JsonParser();
-            String jsonString = gson.toJson(exportItems);
+            String jsonString = gson.toJson(researchExportItemsForCSVExport);
 
             GsonFlattener parser = new GsonFlattener();
             CSVWriterGson writer = new CSVWriterGson();
@@ -231,6 +231,7 @@ public class ResearchService implements IResearchService {
 
     private ResearchExportItem createResearchExportItem(IResearchEncounter encounter, UUID patientId){
 
+        //this item is used to populate one line in the CSV file.
         ResearchExportItem exportitem = new ResearchExportItem();
 
         IPatient patient = encounter.getPatient();
@@ -251,7 +252,7 @@ public class ResearchService implements IResearchService {
         exportitem.setWeeksPregnant(wksPregnant);
 
         // Week Pregnant
-        if( wksPregnant == null || wksPregnant > 0 ){
+        if( wksPregnant != null && wksPregnant > 0 ){
             exportitem.setIsPregnant(true);
         }
         else{
@@ -307,6 +308,9 @@ public class ResearchService implements IResearchService {
         }
         exportitem.setVitalMap(vitals);
 
+        //month and year of the encounter
+        exportitem.setDayOfVisit(dateUtils.getFriendlyDateMonthYear(encounter.getDateOfTriageVisit()));
+
         return exportitem;
 
     }
@@ -320,7 +324,7 @@ public class ResearchService implements IResearchService {
 
             List<? extends IResearchEncounter> patientEncounters = queryPatientData(filters);
 
-            ResearchResultSetItem results; // = new ResearchResultSetItem();
+            ResearchResultSetItem results;
             if( filters.getPrimaryDataset().equals("age") ) {
 
                 results = buildAgeResultSet(patientEncounters, filters);
@@ -744,7 +748,6 @@ public class ResearchService implements IResearchService {
 
         return resultSet;
     }
-
 
     // do stuff specific to vitals request
     private ResearchResultSetItem buildVitalResultSet(List<? extends IResearchEncounter> encounters, ResearchFilterItem filters) {

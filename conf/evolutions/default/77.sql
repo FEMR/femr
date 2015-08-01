@@ -10,16 +10,3 @@ ADD CONSTRAINT `login_attempts_user_id_users_id`
   REFERENCES `users` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
-
-# --- !Downs
-
-ALTER TABLE `login_attempts`
-DROP FOREIGN KEY `login_attempts_user_id_users_id`;
-ALTER TABLE `login_attempts`
-DROP INDEX `login_attempts_user_id_users_id_idx` ;
-ALTER TABLE `login_attempts`
-ADD CONSTRAINT `login_attempts_user_id_users_id`
-FOREIGN KEY (`id`)
-REFERENCES `users` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;

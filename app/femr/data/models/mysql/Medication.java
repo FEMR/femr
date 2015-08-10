@@ -31,7 +31,7 @@ public class Medication implements IMedication {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "name", unique = true, nullable = true)
+    @Column(name = "name", unique = false, nullable = true)
     private String name;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;

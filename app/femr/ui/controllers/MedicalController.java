@@ -23,6 +23,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -147,7 +148,7 @@ public class MedicalController extends Controller {
 
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
-                inventoryService.retrieveAvailableAdministrations();
+                medicationService.retrieveAvailableMedicationAdministrations();
         if (medicationAdministrationItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -222,6 +223,7 @@ public class MedicalController extends Controller {
     }
 
     public Result editPost(int patientId) {
+
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
@@ -286,7 +288,7 @@ public class MedicalController extends Controller {
         //save the tab fields that do have related chief complaint(s)
         ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse;
         if (tabFieldItemsWithChiefComplaint.size() > 0){
-            //call the service once for each exisiting chief complaint
+            //call the service once for each existing chief complaint
             for (Map.Entry<String, Map<String,String>> entry : tabFieldItemsWithChiefComplaint.entrySet()){
 
                 createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse = encounterService.createPatientEncounterTabFields(entry.getValue(), patientEncounterItem.getId(), currentUserSession.getId(), entry.getKey());
@@ -297,24 +299,32 @@ public class MedicalController extends Controller {
             }
         }
 
-
         //create patient encounter photos
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
-        //create prescriptions
-        /*
-        List<String> prescriptions = new ArrayList<>();
-        for (PrescriptionItem pi : viewModelPost.getPrescriptions()) {
-            if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
-                prescriptions.add(pi.getName());
-        }*/
-        if (viewModelPost.getPrescriptions().size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicationService.createPatientPrescriptions(viewModelPost.getPrescriptions(), currentUserSession.getId(), patientEncounterItem.getId(), false, false);
-            if (prescriptionResponse.hasErrors()) {
+        //for now, only ingest the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
+        List<PrescriptionItem> prescriptionItems = viewModelPost.getPrescriptions()
+                .stream()
+                .filter(prescription -> prescription.getMedicationID() != null)
+                .collect(Collectors.toList());
+
+        //create the prescriptions
+        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
+        for (PrescriptionItem prescriptionItem : prescriptionItems){
+
+            createPrescriptionServiceResponse = medicationService.createPrescription(
+                    prescriptionItem.getMedicationID(),
+                    prescriptionItem.getAdministrationId(),
+                    patientEncounterItem.getId(),
+                    currentUserSession.getId(),
+                    prescriptionItem.getAmount(),
+                    null);
+
+            if (createPrescriptionServiceResponse.hasErrors()){
+
                 throw new RuntimeException();
             }
         }
-
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 

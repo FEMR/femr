@@ -119,14 +119,17 @@ var prescriptionFeature = {
                 //    suggestion: Handlebars.compile("<div>{{value}} {{#each ingredients}}<div class='medication_ingredient'>{{name}} {{value}}{{unit}}</div>{{/each}}</div>")
                 }
             }).on('typeahead:selected', function(event, item) {
+                // triggered when an item is selected from the dropdown list in autocompleted
                 var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
                 $medicationID.val(item.id);
             }).on('typeahead:autocompleted', function(event, item, data) {
-                    $(this).trigger("typeahead:selected", item);
+                // triggered when an item is tabbed to completion
+                $(this).trigger("typeahead:selected", item);
             }
-        ).on("change", function() {
+        ).on("change", function(event) {
+                // triggered when text is entered that is not part of the autocomplete
                 var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
-                $medicationID.val("");  //Remove value if it is not one from typeahead
+                $medicationID.val("");
         });
     },
     setupNewPrescriptionRow: function(skipTypeahead) {
@@ -179,7 +182,7 @@ var prescriptionFeature = {
         $prescriptionRow.append(
           $("<span class='prescriptionAdministrationName'></span>").append($administrationTypeAhead)
         );
-        $prescriptionRow.append(" <input class='administrationID' name='prescriptions[" + scriptIndex + "].administrationId' type='hidden' />");
+        $prescriptionRow.append(" <input class='administrationID' name='prescriptions[" + scriptIndex + "].administrationID' type='hidden' />");
 
 
         var $daysInput = $("<input type='number' placeholder='X'  class='form-control input-sm' />");

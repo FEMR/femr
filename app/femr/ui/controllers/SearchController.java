@@ -169,7 +169,7 @@ public class SearchController extends Controller {
      *
      */
     public Result typeaheadMedicationAdministrationsJSONGet() {
-        ServiceResponse<List<MedicationAdministrationItem>> administrationsServiceResponse = inventoryService.retrieveAvailableAdministrations();
+        ServiceResponse<List<MedicationAdministrationItem>> administrationsServiceResponse = medicationService.retrieveAvailableMedicationAdministrations();
         if (administrationsServiceResponse.hasErrors()) {
             return ok("");
         }

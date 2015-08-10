@@ -55,7 +55,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MedicationItem createMedicationItem(IMedication medication) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal) {
 
         if (medication == null) {
 
@@ -66,9 +66,8 @@ public class ItemModelMapper implements IItemModelMapper {
 
         medicationItem.setId(medication.getId());
         medicationItem.setName(medication.getName());
-        //to be used in medication tracking, not right now
-        //medicationItem.setQuantity_current(medication.getQuantity_current());
-        //medicationItem.setQuantity_total(medication.getQuantity_total());
+        medicationItem.setQuantity_current(quantityCurrent);
+        medicationItem.setQuantity_total(quantityTotal);
         if (medication.getMedicationForm() != null) {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }
@@ -277,7 +276,7 @@ public class ItemModelMapper implements IItemModelMapper {
             prescriptionItem.setAmount(amount);
 
         if (medication != null) {
-            MedicationItem medicationItem = createMedicationItem(medication);
+            MedicationItem medicationItem = createMedicationItem(medication, null, null);
             prescriptionItem.setMedicationID(medicationItem.getId());
 
             if (medicationItem.getForm() != null)

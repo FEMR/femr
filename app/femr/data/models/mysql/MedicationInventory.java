@@ -1,6 +1,9 @@
 package femr.data.models.mysql;
 
 import femr.data.models.core.IMedicationInventory;
+import femr.data.models.core.IMedication;
+import femr.data.models.core.IMedicationInventory;
+import femr.data.models.core.IMissionTrip;
 
 import javax.persistence.*;
 
@@ -48,22 +51,25 @@ public class MedicationInventory implements IMedicationInventory{
     }
 
     @Override
-    public Medication getMedication() {
+    public IMedication getMedication() {
+
         return medication;
     }
 
     @Override
-    public void setMedication(Medication medication) {
-        this.medication = medication;
+    public void setMedication(IMedication medication) {
+        this.medication = (Medication) medication;
     }
 
     @Override
-    public MissionTrip getMissionTrip() {
+    public IMissionTrip getMissionTrip() {
+
         return missionTrip;
     }
 
     @Override
-    public void setMissionTrip(MissionTrip missionTrip) {
-        this.missionTrip = missionTrip;
+    public void setMissionTrip(IMissionTrip missionTrip) {
+
+        this.missionTrip = (MissionTrip) missionTrip;
     }
 }

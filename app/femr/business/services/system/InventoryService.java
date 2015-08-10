@@ -21,7 +21,6 @@ package femr.business.services.system;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Junction;
-import com.avaje.ebean.Query;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
@@ -31,82 +30,41 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.MedicationAdministrationItem;
+import femr.common.models.MedicationItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.common.models.MedicationItem;
 import femr.data.models.core.*;
-import femr.data.models.mysql.*;
+import femr.data.models.mysql.MedicationInventory;
 import femr.ui.models.admin.inventory.DataGridFilter;
 import femr.ui.models.admin.inventory.DataGridSorting;
 import org.apache.commons.lang3.StringUtils;
 import play.libs.Json;
+import femr.data.models.mysql.Medication;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
-    private final IRepository<IMedicationForm> medicationFormRepository;
-    private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
-    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
-                            IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
-                            IRepository<IMedicationAdministration> medicationAdministrationRepository,
-                            IRepository<IMedicationForm> medicationFormRepository,
-                            IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
-                            IRepository<IPatientPrescription> patientPrescriptionRepository,
+                            IRepository<IMedicationInventory> medicationInventoryRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
-        this.medicationFormRepository = medicationFormRepository;
-        this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
-        this.medicationAdministrationRepository = medicationAdministrationRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
+        this.medicationInventoryRepository = medicationInventoryRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
 
     /**
      * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory() {
-        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
-
-        ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("isDeleted", false);
-
-        List<? extends IMedication> medications;
-        try {
-            medications = medicationRepository.find(query);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-            return response;
-        }
-
-        List<MedicationItem> medicationItems = new ArrayList<>();
-        for (IMedication m : medications) {
-            medicationItems.add(itemModelMapper.createMedicationItem(m));
-        }
-        response.setResponseObject(medicationItems);
-
-        return response;
-    }
-
-    /**
-     *
-     *  {@inheritDoc}
-     *
      */
     //Andre Farah - Start Code
     public ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters) {
@@ -205,12 +163,6 @@ public class InventoryService implements IInventoryService {
 
         medications = medications.subList(fromIndex, toIndex);
 
-
-
-
-
-        /* create array to hold the medication */
-
         for (IMedication m : medications) {
             /* Create node to customize return values */
             ObjectNode js = page_data.addObject();
@@ -219,7 +171,7 @@ public class InventoryService implements IInventoryService {
             String medicationDisplayName = m.getName();
             //Create list of drug name/unit/values to append to the medication name
             List<String> formattedDrugNames = new ArrayList<String>();
-            for(IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+            for (IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
                 formattedDrugNames.add(String.format("%s%s %s",
                                 drug.getValue(),
                                 drug.getMedicationMeasurementUnit().getName(),
@@ -230,8 +182,10 @@ public class InventoryService implements IInventoryService {
                 medicationDisplayName += " " + Joiner.on("/").join(formattedDrugNames);
             js.put("name", medicationDisplayName);
 
-            js.put("quantity_current", m.getQuantity_current());
-            js.put("quantity_initial", m.getQuantity_total());
+            //js.put("quantity_current", m.getQuantity_current());
+            //js.put("quantity_initial", m.getQuantity_total());
+            js.put("quantity_current", 0);
+            js.put("quantity_initial", 0);
 
             if (m.getMedicationForm() != null) {
                 js.put("form", m.getMedicationForm().getName());
@@ -257,225 +211,64 @@ public class InventoryService implements IInventoryService {
 
         return response;
     }
-    //Andre Farah End Code
 
     /**
      * {@inheritDoc}
      */
-    //Creates the Medication
-    public ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem) {
+    @Override
+    public ServiceResponse<MedicationItem> setQuantityTotal(int medicationId, int tripId, int quantityTotal) {
+
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
+        //does this work without fetching? it should.
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("medication.id", medicationId)
+                .eq("missionTrip.id", tripId);
+
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
         try {
 
-            //set each active drug
-            List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
-            ExpressionList<MedicationMeasurementUnit> medicationMeasurementUnitExpressionList;
-            ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
-            if (medicationItem.getActiveIngredients() != null) {
-
-                for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()) {
-                    medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
-                            .where()
-                            .eq("name", miac.getUnit());
-                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationActiveDrugNameQuery()
-                            .where()
-                            .eq("name", miac.getName());
-
-                    //get the measurement unit ID (they are pre recorded)
-                    IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
-                    IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
-                    if (medicationActiveDrugName == null) {
-                        //it's a new active drug name, were going to cascade(save) the bean
-                        medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
-                    }
-                    if (medicationMeasurementUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
-                        medicationActiveDrugs.add(medicationActiveDrug);
-                    }
-
-                }
-            }
-
-            //set the form
-            ExpressionList<MedicationForm> medicationFormExpressionList;
-
-            medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
-                    .where()
-                    .eq("name", medicationItem.getForm());
-            IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
-            if (medicationForm == null) {
-                medicationForm = dataModelMapper.createMedicationForm(medicationItem.getForm());
-            }
-
-            // Retrieve all medication with the same name
-            Query<Medication> query = QueryProvider.getMedicationQuery()
-                    .where()
-                    .eq("name", medicationItem.getName())
-                    .orderBy("isDeleted asc");
-
-            IMedication matchingMedication = null;
-            List<? extends IMedication> medications;
-            medications = medicationRepository.find(query);
-
-            // Attempt to find a matching medication
-            for(IMedication medication : medications) {
-                // Check if the medications name match
-                if (!medication.getName().equalsIgnoreCase(medicationItem.getName())) continue;
-
-                // Check if the medications form match
-                if (medication.getMedicationForm().getId() != medicationForm.getId()) continue;
-
-                // Check if the medication ingredients match
-                boolean allDrugsMatch = true;
-                for(IMedicationActiveDrug newMedicationDrug : medicationActiveDrugs) {
-                    boolean drugMatch = false;
-                    for(IMedicationActiveDrug drug : medication.getMedicationActiveDrugs()) {
-                        if (newMedicationDrug.getMedicationActiveDrugName().getId() == drug.getMedicationActiveDrugName().getId()
-                                && newMedicationDrug.getMedicationMeasurementUnit().getId() == drug.getMedicationMeasurementUnit().getId()) {
-                            drugMatch = true;
-                        }
-                        if (!drugMatch) allDrugsMatch = false;
-                    }
-
-                    // No match so break early.
-                    if (!allDrugsMatch) break;
-                }
-                if (!allDrugsMatch) continue;
-
-                // Everything matches so set matchingMedication and break out of loop
-                matchingMedication = medication;
-                break;
-            }
-
-            // There exist a matching medication in the database, so update that one rather then create new one
-            if (matchingMedication != null) {
-                // Update the quantity
-                int quantity = (matchingMedication.getQuantity_current() != null) ? matchingMedication.getQuantity_current() : 0;
-                matchingMedication.setQuantity_current(quantity + medicationItem.getQuantity_current());
-
-                // Update isDeleted to false
-                matchingMedication.setIsDeleted(false);
-
-                medicationRepository.update(matchingMedication);
-                response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication));
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+            if (medicationInventory == null) {
+                //it doesn't yet exist, create a new one
+                medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
+                medicationInventory = medicationInventoryRepository.create(medicationInventory);
             } else {
-                // Create a new medication in the DB
-                IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
-                medication = medicationRepository.create(medication);
-                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
-                response.setResponseObject(newMedicationItem);
+
+
+                medicationInventory.setQuantity_total(quantityTotal);
+                medicationInventory = medicationInventoryRepository.update(medicationInventory);
             }
-
-            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationActiveDrugs, medicationForm);
-            medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
-            response.setResponseObject(newMedicationItem);
-
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantity_total(), medicationInventory.getQuantity_current());
+            response.setResponseObject(medicationItem);
         } catch (Exception ex) {
-            response.addError("", "error creating medication");
-        }
 
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ServiceResponse<List<String>> retrieveAvailableUnits() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        try {
-            List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
-            List<String> availableUnits = new ArrayList<>();
-            for (IMedicationMeasurementUnit mmu : medicationMeasurementUnits) {
-                availableUnits.add(mmu.getName());
-            }
-            response.setResponseObject(availableUnits);
-        } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
+
         return response;
     }
 
+    /*
     /**
      * {@inheritDoc}
-     */
-    public ServiceResponse<List<String>> retrieveAvailableForms() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        try {
-            List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);
-            List<String> availableForms = new ArrayList<>();
-            for (IMedicationForm mf : medicationForms) {
-                availableForms.add(mf.getName());
-            }
-            response.setResponseObject(availableForms);
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
-        return response;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ServiceResponse<List<MedicationAdministrationItem>> retrieveAvailableAdministrations() {
-        ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
-        try {
-            // Retrieve a list of all medicationAdministrations from the database
-            List<? extends IMedicationAdministration> medicationAdministrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
+    @Override
+    public ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent) {
 
-            // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
-            List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
-            for (IMedicationAdministration ma : medicationAdministrations) {
-                availableAdministrations.add(itemModelMapper.createMedicationAdministrationItem(ma));
-            }
-
-            // Set the response object to the list of MedicationAdministrationItem's. The Response is what is sent back to the controller
-            response.setResponseObject(availableAdministrations);
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
-        return response;
-    }
-
-    public ServiceResponse<MedicationItem> deleteMedication(int medicationID) {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-
-        // Get the medication Item by it's ID
-        IMedication medication;
-        ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("id", medicationID);
-
-        try {
-            // Find one medication (should only be 1 with the ID) from the database
-            medication = medicationRepository.findOne(medicationQuery);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-            return response;
-        }
-
-        // Get patient prescriptions that use this medication
-        /*
-        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
-                .where()
-                .eq("medication_id", medicationID);
-        List<? extends IPatientPrescription> prescriptions = patientPrescriptionRepository.find(query);
-
-        if (prescriptions.size() == 0) {
-            //Can delete medication from table since no prescriptions rely on it
-            medicationRepository.delete(medication);
-        } else {
-        */
-
-
-        // Set the isDeleted column of the medication to true
-        medication.setIsDeleted(true);
-
-        // Update the medication item in the database
-        medicationRepository.update(medication);
-
-
         return response;
     }
+
+    /**
+     * {@inheritDoc}
+
+    @Override
+    public ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract) {
+
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+        return response;
+    }  */
 }

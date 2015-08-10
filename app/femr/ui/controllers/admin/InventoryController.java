@@ -20,10 +20,14 @@ package femr.ui.controllers.admin;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import femr.business.services.core.IMedicationService;
+import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IInventoryService;
 import femr.business.services.core.ISessionService;
+import femr.data.models.core.IMissionTrip;
+import femr.data.models.mysql.MissionTrip;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -34,7 +38,10 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Right now, the inventory feature supports the adding of medications, but
@@ -44,37 +51,45 @@ import java.util.List;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
+
     private final Form<InventoryViewModelPost> inventoryViewModelPostForm = Form.form(InventoryViewModelPost.class);
     private final Form<InventoryViewModelDataQuery> inventoryViewModelDataQueryForm = Form.form(InventoryViewModelDataQuery.class);
-    private final ISessionService sessionService;
     private final IInventoryService inventoryService;
+    private final IMedicationService medicationService;
+    private final IMissionTripService missionTripService;
+    private final ISessionService sessionService;
 
     @Inject
-    public InventoryController(ISessionService sessionService,
-                               IInventoryService inventoryService) {
-        this.sessionService = sessionService;
+    public InventoryController(IInventoryService inventoryService,
+                               IMedicationService medicationService,
+                               IMissionTripService missionTripService,
+                               ISessionService sessionService) {
+
         this.inventoryService = inventoryService;
+        this.medicationService = medicationService;
+        this.missionTripService = missionTripService;
+        this.sessionService = sessionService;
     }
 
     public Result indexGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         InventoryViewModelGet viewModel = new InventoryViewModelGet();
-        ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventory();
+        ServiceResponse<List<MedicationItem>> medicationServiceResponse = medicationService.retrieveMedicationInventory();
         if (medicationServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
             viewModel.setMedications(medicationServiceResponse.getResponseObject());
         }
 
-        ServiceResponse<List<String>> availableMedicationUnitsResponse = inventoryService.retrieveAvailableUnits();
+        ServiceResponse<List<String>> availableMedicationUnitsResponse = medicationService.retrieveAvailableMedicationUnits();
         if (availableMedicationUnitsResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
             viewModel.setAvailableUnits(availableMedicationUnitsResponse.getResponseObject());
         }
 
-        ServiceResponse<List<String>> availableMedicationFormsResponse = inventoryService.retrieveAvailableForms();
+        ServiceResponse<List<String>> availableMedicationFormsResponse = medicationService.retrieveAvailableMedicationForms();
         if (availableMedicationFormsResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
@@ -84,7 +99,13 @@ public class InventoryController extends Controller {
         return ok(index.render(currentUser, viewModel));
     }
 
+    /**
+     * Handles the submission of a new medication from the Admin Inventory Tracking screen.
+     */
     public Result indexPost() {
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
         Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
         if (form.hasErrors()) {
             System.out.println(form.errors().toString());
@@ -98,17 +119,21 @@ public class InventoryController extends Controller {
 
         InventoryViewModelPost inventoryViewModelPost = form.bindFromRequest().get();
 
+        // create a new medicationItem for managing the compilation of active ingredients
+        // (this could potentially be moved into the service layer)
         MedicationItem medicationItem = new MedicationItem();
-        medicationItem.setName(inventoryViewModelPost.getMedicationName());
-        //This will need to be separated into another service call for inventory related business, not combined with medications.
-        //medicationItem.setQuantity_total(inventoryViewModelPost.getMedicationQuantity());
-        //medicationItem.setQuantity_current(inventoryViewModelPost.getMedicationQuantity());
-        medicationItem.setForm(inventoryViewModelPost.getMedicationForm());
 
-        for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++) {
+        // assumes medication strength is a good indicator of how many
+        // strength/unit/ingredients (active ingredietns) are involved
+        // *denominator field not taken into consideration - always false
+        for (int activeIngredientIndex = 0;
+             activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size();
+             activeIngredientIndex++) {
+
             if (inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex) != null &&
                     inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex) != null &&
                     inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex) != null) {
+
                 medicationItem.addActiveIngredient(
                         inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
                         inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
@@ -118,21 +143,38 @@ public class InventoryController extends Controller {
             }
         }
 
-        ServiceResponse<MedicationItem> medicationItemServiceResponse = inventoryService.createMedication(medicationItem);
-        if (medicationItemServiceResponse.hasErrors()) {
+        ServiceResponse<MedicationItem> createMedicationServiceResponse = medicationService.createMedication(
+                inventoryViewModelPost.getMedicationName(),
+                inventoryViewModelPost.getMedicationForm(),
+                medicationItem.getActiveIngredients());
+
+        // check for errors before updating the quantity to ensure a medication ID has been returned in the response
+        // object.
+        if (createMedicationServiceResponse.hasErrors()) {
+
+            return internalServerError();
+        }
+
+        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(
+                createMedicationServiceResponse.getResponseObject().getId(),
+                currentUser.getTripId(),
+                inventoryViewModelPost.getMedicationQuantity());
+
+        if (setQuantityServiceResponse.hasErrors()){
+
             return internalServerError();
         }
 
         return redirect("/admin/inventory");
     }
 
-      /* Andre Farah - Updated  */
+    /* Andre Farah - Updated  */
     public Result ajaxGet() {
 
         //Andre Farah - Changed from bindFromRequest() to bind(reqqest().body().asJson()) to properly bind
         //              the json objects passed from bs_grid
         Form<InventoryViewModelDataQuery> form = inventoryViewModelDataQueryForm.bind(request().body().asJson());
-        if (form.hasErrors()){
+        if (form.hasErrors()) {
             throw new RuntimeException();
         }
         InventoryViewModelDataQuery dataQuery = form.get();
@@ -155,7 +197,7 @@ public class InventoryController extends Controller {
     }
 
     public Result ajaxDelete(int medicationID) {
-        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteMedication(medicationID);
+        ServiceResponse<MedicationItem> inventoryServiceResponse = medicationService.deleteMedication(medicationID);
         if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

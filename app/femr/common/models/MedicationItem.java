@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationItem {
+
     private int id;
     private Integer quantity_current;
     private Integer quantity_total;
@@ -37,7 +38,7 @@ public class MedicationItem {
     private List<ActiveIngredient> activeIngredients;
 
 
-    public MedicationItem(){
+    public MedicationItem() {
         this.activeIngredients = new ArrayList<>();
     }
 
@@ -45,12 +46,13 @@ public class MedicationItem {
      * Add an active ingredient to the medication item. ActiveIngredient is an
      * inner class of MedicationItem
      *
-     * @param name name of the active ingredient
-     * @param unit unit of measurement for the active ingredient
-     * @param value strength of the active ingredient
+     * @param name          name of the active ingredient
+     * @param unit          unit of measurement for the active ingredient
+     * @param value         strength of the active ingredient
      * @param isDenominator is the active ingredient a denominator when displayed to the user?
      */
     public void addActiveIngredient(String name, String unit, int value, boolean isDenominator) {
+
         ActiveIngredient activeIngredient = new ActiveIngredient();
         activeIngredient.setDenominator(isDenominator);
         activeIngredient.setName(name);
@@ -112,7 +114,7 @@ public class MedicationItem {
         this.fullName = fullName;
     }
 
-    public class ActiveIngredient{
+    public class ActiveIngredient {
         private String name;
         private String unit;
         private int value;

@@ -33,6 +33,7 @@ public class PrescriptionItem {
     private Integer amount;
     private Integer medicationID;
     private String medicationForm;
+    //of the particular medication, how much remains in the inventory?
     private Integer medicationRemaining;
     private List<MedicationItem.ActiveIngredient> medicationActiveDrugs;
 

@@ -18,7 +18,9 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -135,7 +137,7 @@ public class PharmaciesController extends Controller {
 
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
-                inventoryService.retrieveAvailableAdministrations();
+                medicationService.retrieveAvailableMedicationAdministrations();
         if (medicationAdministrationItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
@@ -174,41 +176,50 @@ public class PharmaciesController extends Controller {
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
         boolean isCounseled = StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getDisclaimer());
-        //after replacing the prescriptions, this list will contain the non-replaced prescriptions that need
-        //to be identified as dispensed.
-        List<Integer> prescriptionToMarkAsDispensedOrCounseled = new ArrayList<>();
+
+
+        // Map<newId, oldId>
+        Map<Integer, Integer> prescriptionsToReplace = new HashMap<>();
+        // Map<id, isCounseled>
+        Map<Integer, Boolean> prescriptionsToDispense = new HashMap<>();
 
         for(PrescriptionItem script : createViewModelPost.getPrescriptions()) {
             //If getMedicationID is not null then a replacement is being done
             if (script.getMedicationID() != null) {
-                // Create the replacement prescription
-                ServiceResponse<PrescriptionItem> response = medicationService.createAndReplacePrescription(
-                        script,
-                        script.getId(),
+                //create the prescription
+                ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
+                        script.getAdministrationId(),
+                        patientEncounterItem.getId(),
                         currentUserSession.getId(),
-                        isCounseled
-                );
-                if (response.hasErrors()) {
-                    throw new RuntimeException();
-                }
+                        script.getAmount(),
+                        null);
+                PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
+
+                //replace the prescription
+                prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());
+
             } else {
-                // No replacement to be done. Add to list of prescriptions to mark
-                // as dispensed
-                prescriptionToMarkAsDispensedOrCounseled.add(script.getId());
+
+                prescriptionsToDispense.put(script.getId(), isCounseled);
             }
         }
 
 
-        //update non-replaced prescriptions to dispensed
-        ServiceResponse<List<PrescriptionItem>> prescriptionDispensedResponse = medicationService.flagPrescriptionsAsFilled(prescriptionToMarkAsDispensedOrCounseled);
-        if (prescriptionDispensedResponse.hasErrors()) {
-            throw new RuntimeException();
+        // dispense the prescriptions!
+        if (prescriptionsToDispense.size() > 0) {
+            ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense);
+            if (dispensePrescriptionsServiceResponse.hasErrors()){
+
+                return internalServerError();
+            }
         }
-        //update non-replaced prescriptions that the patient was counseled on
-        if (isCounseled){
-            ServiceResponse<List<PrescriptionItem>> prescriptionCounseledResponse = medicationService.flagPrescriptionsAsCounseled(prescriptionToMarkAsDispensedOrCounseled);
-            if (prescriptionCounseledResponse.hasErrors()){
-                throw new RuntimeException();
+
+        // replace the prescriptions!
+        if (prescriptionsToReplace.size() > 0){
+            ServiceResponse<List<PrescriptionItem>> replacePrescriptionsServiceResponse = medicationService.replacePrescriptions(prescriptionsToReplace);
+            if (replacePrescriptionsServiceResponse.hasErrors()){
+
+                return internalServerError();
             }
         }
 

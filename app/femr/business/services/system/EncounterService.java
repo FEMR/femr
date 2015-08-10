@@ -38,7 +38,7 @@ import org.joda.time.DateTime;
 
 import java.util.*;
 
-public  class EncounterService implements IEncounterService {
+public class EncounterService implements IEncounterService {
 
     private IMissionTripService missionTripService;
     private final IRepository<IChiefComplaint> chiefComplaintRepository;

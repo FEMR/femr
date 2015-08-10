@@ -20,6 +20,7 @@ package femr.common;
 
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.MedicationInventory;
 
 import java.util.Date;
 import java.util.List;
@@ -44,12 +45,14 @@ public interface IItemModelMapper {
     MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration);
 
     /**
-     * Generate and provide an instance of MedicationItem.
+     * Generate and provide an instance of MedicationItem, including the quantity available
      *
-     * @param medication the medication administration data bean, not null
+     * @param medication the medication data bean, not null
+     * @param quantityCurrent the quantity of the medication available, nullable if non existant
+     * @param quantityTotal the total quantity of a medication, nullable if non existant
      * @return a new MedicationItem or null if processing fails
      */
-    MedicationItem createMedicationItem(IMedication medication);
+    MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal);
 
     /**
      * Generate and provide an instance of MissionItem.
@@ -115,11 +118,11 @@ public interface IItemModelMapper {
     /**
      * Generate and provide an instance of PrescriptionItem
      *
-     * @param id                       id of the prescription, not null
-     * @param name                     name of the prescription, not null
-     * @param replacementId            id of the prescription that replaced this prescription, may be null
-     * @param firstName                first name of the person that prescribed the medication, may be null
-     * @param lastName                 last name of the person that prescribed the medication, may be null
+     * @param id            id of the prescription, not null
+     * @param name          name of the prescription, not null
+     * @param replacementId id of the prescription that replaced this prescription, may be null
+     * @param firstName     first name of the person that prescribed the medication, may be null
+     * @param lastName      last name of the person that prescribed the medication, may be null
      * @param medicationAdministration
      * @param amount
      * @param medication

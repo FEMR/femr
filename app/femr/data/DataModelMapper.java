@@ -44,6 +44,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
     private final Provider<IMedicationAdministration> medicationAdministrationProvider;
     private final Provider<IMedicationForm> medicationFormProvider;
+    private final Provider<IMedicationInventory> medicationInventoryProvider;
     private final Provider<IMissionCity> missionCityProvider;
     private final Provider<IMissionCountry> missionCountryProvider;
     private final Provider<IMissionTeam> missionTeamProvider;
@@ -74,6 +75,7 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                            Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
                            Provider<IMedicationAdministration> medicationAdministrationProvider,
+                           Provider<IMedicationInventory> medicationInventoryProvider,
                            Provider<IMissionCity> missionCityProvider,
                            Provider<IMissionCountry> missionCountryProvider,
                            Provider<IMissionTeam> missionTeamProvider,
@@ -104,6 +106,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.medicationFormProvider = medicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
         this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
+        this.medicationInventoryProvider = medicationInventoryProvider;
         this.missionCityProvider = missionCityProvider;
         this.missionCountryProvider = missionCountryProvider;
         this.missionTeamProvider = missionTeamProvider;
@@ -260,6 +263,28 @@ public class DataModelMapper implements IDataModelMapper{
         return medicationForm;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId) {
+
+        IMedicationInventory medicationInventory;
+
+        try{
+
+            medicationInventory = medicationInventoryProvider.get();
+            medicationInventory.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
+            medicationInventory.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), missionTripId));
+            medicationInventory.setQuantity_current(quantityCurrent);
+            medicationInventory.setQuantity_total(quantityTotal);
+        }catch(Exception ex){
+
+            medicationInventory = null;
+        }
+
+        return medicationInventory;
+    }
 
     /**
      * {@inheritDoc}
@@ -425,19 +450,14 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
-
-        if (medication == null || userId < 1 || encounterId < 1) {
-
-            return null;
-        }
+    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
 
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
 
         patientPrescription.setAmount(amount);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        patientPrescription.setMedication(medication);
+        patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
         if (medicationAdministrationId != null)
             patientPrescription.setMedicationAdministration(Ebean.getReference(medicationAdministrationProvider.get().getClass(), medicationAdministrationId));
         patientPrescription.setReplacementId(replacementId);
@@ -446,11 +466,6 @@ public class DataModelMapper implements IDataModelMapper{
         patientPrescription.setCounseled(isCounseled);
 
         return patientPrescription;
-    }
-
-    @Override
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
-        return null;
     }
 
     /**

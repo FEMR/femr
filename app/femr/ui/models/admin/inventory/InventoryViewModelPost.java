@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryViewModelPost {
+
     private Integer medicationQuantity;
     private String medicationForm;
     private String medicationName;
@@ -33,8 +34,11 @@ public class InventoryViewModelPost {
     private List<String> medicationIngredient;
 
     public List<ValidationError> validate(){
+
         List<ValidationError> errors = new ArrayList<>();
+
         if (medicationQuantity == null) {
+
             medicationQuantity = 0;
             //errors.add(new ValidationError("medicationQuantity", "quantity is a required field"));
         }

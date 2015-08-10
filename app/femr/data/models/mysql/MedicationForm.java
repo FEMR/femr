@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+//example of medication form: name: caps, description: capsules (predefined in the table)
 @Entity
 @Table(name = "medication_forms")
 public class MedicationForm implements IMedicationForm {

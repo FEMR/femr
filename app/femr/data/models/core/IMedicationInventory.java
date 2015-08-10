@@ -24,4 +24,12 @@ public interface IMedicationInventory {
     MissionTrip getMissionTrip();
 
     void setMissionTrip(MissionTrip missionTrip);
+
+    IMedication getMedication();
+
+    void setMedication(IMedication medication);
+
+    IMissionTrip getMissionTrip();
+
+    void setMissionTrip(IMissionTrip missionTrip);
 }

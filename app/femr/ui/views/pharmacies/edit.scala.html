@@ -55,7 +55,7 @@
                 <ol id="medicationList">
                 @for(x <- 1 to viewModel.getMedications.size) {
                     @defining(viewModel.getMedications.get(x - 1)) { medication =>
-                        <li class="medication" id="med@x" data-medID="@medication.getMedicationID">
+                        <li class="medication" id="med@(x-1)" data-medID="@medication.getMedicationID">
                             <button type="button" class="fButton fOtherButton replaceBtn">R</button>
                             <div>
                                 <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim()) - @medication.getAdministrationName </span>
@@ -69,16 +69,16 @@
                                 <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
                             }
                             <div class="replacement hidden">
-                                <input type="hidden" name="prescriptions[@x].id" value="@medication.getId" />
+                                <input type="hidden" name="prescriptions[@(x-1)].id" value="@medication.getId" />
                                 <div class="prescriptionRow prescriptionInput">
-                                    <input type="hidden" class="medicationID" name="prescriptions[@x].medicationID" value="" />
-                                    <input type="hidden" class="administrationID" name="prescriptions[@x].administrationId" value="" />
+                                    <input type="hidden" class="medicationID" name="prescriptions[@(x-1)].medicationID" value="" />
+                                    <input type="hidden" class="administrationID" name="prescriptions[@(x-1)].administrationID" value="" />
                                     <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
                                     ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
                                 ><span class="prescriptionAdministrationDays">
                                     <input type="number" placeholder="X"  class="form-control input-sm" />
                                 </span
-                                ><span class="prescriptionAmount"><input name="prescriptions[@x].amount" type="number" placeholder="Amount" value="0" class="form-control input-sm"/></span>
+                                ><span class="prescriptionAmount"><input name="prescriptions[@(x-1)].amount" type="number" placeholder="Amount" value="0" class="form-control input-sm"/></span>
                                 </div>
                             </div>
                         </li>

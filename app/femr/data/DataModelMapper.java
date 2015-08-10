@@ -448,6 +448,11 @@ public class DataModelMapper implements IDataModelMapper{
         return patientPrescription;
     }
 
+    @Override
+    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -364,12 +364,12 @@ public class InventoryService implements IInventoryService {
                 matchingMedication.setIsDeleted(false);
 
                 medicationRepository.update(matchingMedication);
-                response.setResponseObject(UIModelMapper.createMedicationItem(matchingMedication));
+                response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication));
             } else {
                 // Create a new medication in the DB
                 IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
                 medication = medicationRepository.create(medication);
-                MedicationItem newMedicationItem = UIModelMapper.createMedicationItem(medication);
+                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
                 response.setResponseObject(newMedicationItem);
             }
 
@@ -433,7 +433,7 @@ public class InventoryService implements IInventoryService {
             // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
             for (IMedicationAdministration ma : medicationAdministrations) {
-                availableAdministrations.add(UIModelMapper.createMedicationAdministrationItem(ma));
+                availableAdministrations.add(itemModelMapper.createMedicationAdministrationItem(ma));
             }
 
             // Set the response object to the list of MedicationAdministrationItem's. The Response is what is sent back to the controller

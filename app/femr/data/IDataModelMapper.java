@@ -190,6 +190,8 @@ public interface IDataModelMapper {
      */
     IPatientPrescription createPatientPrescription(int amount, IMedication medication, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
 
+    IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
+
     /**
      * Generate and provide an implementation of IPhoto.
      *

@@ -36,9 +36,17 @@ public interface IItemModelMapper {
     CityItem createCityItem(String cityName, String countryName);
 
     /**
+     * Generate and provide an instance of MedicationAdministrationItem
+     *
+     * @param medicationAdministration
+     * @return
+     */
+    MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration);
+
+    /**
      * Generate and provide an instance of MedicationItem.
      *
-     * @param medication the medication data item, not null
+     * @param medication the medication administration data bean, not null
      * @return a new MedicationItem or null if processing fails
      */
     MedicationItem createMedicationItem(IMedication medication);
@@ -46,7 +54,7 @@ public interface IItemModelMapper {
     /**
      * Generate and provide an instance of MissionItem.
      *
-     * @param missionTeam the mission team data item, not null
+     * @param missionTeam the mission team data bean, not null
      * @return a new MissionItem or null if processing fails
      */
     MissionItem createMissionItem(IMissionTeam missionTeam);
@@ -112,9 +120,13 @@ public interface IItemModelMapper {
      * @param replacementId id of the prescription that replaced this prescription, may be null
      * @param firstName     first name of the person that prescribed the medication, may be null
      * @param lastName      last name of the person that prescribed the medication, may be null
+     * @param medicationAdministration
+     * @param amount
+     * @param medication
      * @return a new PrescriptionItem or null if processing fails
      */
-    PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName);
+    PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+                                            IMedicationAdministration medicationAdministration, Integer amount, IMedication medication);
 
     /**
      * Generate and provide an instance of ProblemItem.

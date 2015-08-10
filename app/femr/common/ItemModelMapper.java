@@ -277,7 +277,7 @@ public class ItemModelMapper implements IItemModelMapper {
             prescriptionItem.setAmount(amount);
 
         if (medication != null) {
-            MedicationItem medicationItem = UIModelMapper.createMedicationItem(medication);
+            MedicationItem medicationItem = createMedicationItem(medication);
             prescriptionItem.setMedicationID(medicationItem.getId());
 
             if (medicationItem.getForm() != null)
@@ -523,7 +523,11 @@ public class ItemModelMapper implements IItemModelMapper {
         return vitalItem;
     }
 
-    public static MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+    /**
+     * {@inheritDoc}
+     */
+    public MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+
         if (medicationAdministration == null)
             return null;
 

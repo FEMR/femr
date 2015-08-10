@@ -47,7 +47,7 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IMedication> medicationRepository;
     private final IDataModelMapper dataModelMapper;
-    private final IItemModelMapper uiModelMapper;
+    private final IItemModelMapper itemModelMapper;
 
     @Inject
     public MedicationService(IRepository<IPatientPrescription> patientPrescriptionRepository,
@@ -57,7 +57,7 @@ public class MedicationService implements IMedicationService {
 
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.dataModelMapper = dataModelMapper;
-        this.uiModelMapper = itemModelMapper;
+        this.itemModelMapper = itemModelMapper;
         this.medicationRepository = medicationRepository;
     }
 
@@ -105,7 +105,7 @@ public class MedicationService implements IMedicationService {
             medicationRepository.update(medication);
 
             // Map new prescription item to be returned to UI View
-            PrescriptionItem newPrescriptionItem = UIModelMapper.createPrescriptionItem(
+            PrescriptionItem newPrescriptionItem = itemModelMapper.createPrescriptionItem(
                     newPatientPrescription.getId(),
                     newPatientPrescription.getMedication().getName(),
                     newPatientPrescription.getReplacementId(),
@@ -162,7 +162,7 @@ public class MedicationService implements IMedicationService {
             List<PrescriptionItem> newPrescriptionItems = new ArrayList<>();
             for (IPatientPrescription pp : newPatientPrescriptions) {
                 if (pp.getMedication() != null) {
-                    newPrescriptionItems.add(UIModelMapper.createPrescriptionItem(
+                    newPrescriptionItems.add(itemModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),
                             pp.getReplacementId(),
@@ -202,7 +202,7 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.setDispensed(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
 
-                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(
+                    updatedPrescriptions.add(itemModelMapper.createPrescriptionItem(
                             patientPrescription.getId(),
                             patientPrescription.getMedication().getName(),
                             patientPrescription.getReplacementId(),
@@ -252,7 +252,7 @@ public class MedicationService implements IMedicationService {
                     IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
                     patientPrescription.setCounseled(true);
                     patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(UIModelMapper.createPrescriptionItem(
+                    updatedPrescriptions.add(itemModelMapper.createPrescriptionItem(
                             patientPrescription.getId(),
                             patientPrescription.getMedication().getName(),
                             patientPrescription.getReplacementId(),

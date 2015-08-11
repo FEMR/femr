@@ -21,7 +21,6 @@ package femr.business.services.core;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PrescriptionItem;
-
 import java.util.List;
 
 public interface IMedicationService {

@@ -1,6 +1,5 @@
 package femr.ui.controllers;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -10,9 +9,6 @@ import femr.data.models.mysql.Roles;
 import femr.ui.controllers.helpers.FieldHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.inventory.DataGridFilter;
-import femr.ui.models.admin.inventory.DataGridFilterCondition;
-import femr.ui.models.admin.inventory.DataGridSorting;
 import femr.ui.models.medical.*;
 import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;

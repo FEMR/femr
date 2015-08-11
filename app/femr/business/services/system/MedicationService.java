@@ -36,9 +36,7 @@ import femr.data.models.core.IMedicationActiveDrug;
 import femr.data.models.core.IPatientPrescription;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.PatientPrescription;
-import femr.util.stringhelpers.StringUtils;
 import play.libs.Json;
-
 import java.util.ArrayList;
 import java.util.List;
 

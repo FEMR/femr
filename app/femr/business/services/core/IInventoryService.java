@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.MedicationItem;
-import femr.data.models.mysql.MedicationAdministration;
 import femr.ui.models.admin.inventory.DataGridFilter;
 import femr.ui.models.admin.inventory.DataGridSorting;
 

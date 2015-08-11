@@ -1,10 +1,5 @@
 package femr.common.models;
 
-import femr.data.models.mysql.MedicationAdministration;
-
-/**
- * Created by owner1 on 4/8/2015.
- */
 public class MedicationAdministrationItem {
     private int Id;
     private String name;

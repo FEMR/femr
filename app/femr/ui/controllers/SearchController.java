@@ -10,7 +10,6 @@ import femr.business.services.core.ISessionService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.PatientItem;
-import femr.data.models.core.IMedicationAdministration;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;

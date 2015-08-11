@@ -20,7 +20,7 @@ package femr.common;
 
 import femr.common.models.*;
 import femr.data.models.core.*;
-import femr.ui.models.research.FilterViewModel;
+
 import java.util.Date;
 import java.util.List;
 
@@ -79,19 +79,19 @@ public interface IItemModelMapper {
      * @return a new PatientItem or null if processing fails, may be null
      */
     PatientItem createPatientItem(int id,
-                                                String firstName,
-                                                String lastName,
-                                                String city,
-                                                String address,
-                                                int userId,
-                                                Date age,
-                                                String sex,
-                                                Integer weeksPregnant,
-                                                Integer heightFeet,
-                                                Integer heightInches,
-                                                Float weight,
-                                                String pathToPatientPhoto,
-                                                Integer photoId);
+                                  String firstName,
+                                  String lastName,
+                                  String city,
+                                  String address,
+                                  int userId,
+                                  Date age,
+                                  String sex,
+                                  Integer weeksPregnant,
+                                  Integer heightFeet,
+                                  Integer heightInches,
+                                  Float weight,
+                                  String pathToPatientPhoto,
+                                  Integer photoId);
 
     /**
      * Generate and provide an instance of PatientEncounterItem
@@ -115,11 +115,11 @@ public interface IItemModelMapper {
     /**
      * Generate and provide an instance of PrescriptionItem
      *
-     * @param id            id of the prescription, not null
-     * @param name          name of the prescription, not null
-     * @param replacementId id of the prescription that replaced this prescription, may be null
-     * @param firstName     first name of the person that prescribed the medication, may be null
-     * @param lastName      last name of the person that prescribed the medication, may be null
+     * @param id                       id of the prescription, not null
+     * @param name                     name of the prescription, not null
+     * @param replacementId            id of the prescription that replaced this prescription, may be null
+     * @param firstName                first name of the person that prescribed the medication, may be null
+     * @param lastName                 last name of the person that prescribed the medication, may be null
      * @param medicationAdministration
      * @param amount
      * @param medication
@@ -169,13 +169,13 @@ public interface IItemModelMapper {
      * @return a new TabFieldItem or null if processing fails
      */
     TabFieldItem createTabFieldItem(String name,
-                                                  String type,
-                                                  String size,
-                                                  Integer order,
-                                                  String placeholder,
-                                                  String value,
-                                                  String chiefComplaint,
-                                                  boolean isCustom);
+                                    String type,
+                                    String size,
+                                    Integer order,
+                                    String placeholder,
+                                    String value,
+                                    String chiefComplaint,
+                                    boolean isCustom);
 
     /**
      * Generate and provide an instance of TabFieldItem overloaded to include userName
@@ -192,14 +192,14 @@ public interface IItemModelMapper {
      * @return a new TabFieldItem or null if processing fails
      */
     TabFieldItem createTabFieldItem(String name,
-                                                  String type,
-                                                  String size,
-                                                  Integer order,
-                                                  String placeholder,
-                                                  String value,
-                                                  String chiefComplaint,
-                                                  boolean isCustom,
-                                                  String userName);
+                                    String type,
+                                    String size,
+                                    Integer order,
+                                    String placeholder,
+                                    String value,
+                                    String chiefComplaint,
+                                    boolean isCustom,
+                                    String userName);
 
     /**
      * Generate and provide an instance of TeamItem.

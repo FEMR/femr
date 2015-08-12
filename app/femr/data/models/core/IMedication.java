@@ -22,8 +22,6 @@ import java.util.List;
 
 /**
  * Represents a medication by name (not active/inactive ingrediant).
- * Also keeps track of inventory - current quantity should be altered
- * when creating a prescription.
  */
 public interface IMedication {
     int getId();
@@ -31,14 +29,6 @@ public interface IMedication {
     String getName();
 
     void setName(String name);
-
-    Integer getQuantity_current();
-
-    void setQuantity_current(Integer quantity_current);
-
-    Integer getQuantity_total();
-
-    void setQuantity_total(Integer quantity_initial);
 
     Boolean getIsDeleted();
 

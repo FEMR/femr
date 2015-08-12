@@ -33,7 +33,6 @@ import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.MedicationActiveDrugName;
 import femr.data.models.mysql.MedicationForm;
 import femr.data.models.mysql.MedicationMeasurementUnit;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +138,7 @@ public class InventoryService implements IInventoryService {
             }
 
 
-            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
+            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationActiveDrugs, medicationForm);
             medication = medicationRepository.create(medication);
             MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
             response.setResponseObject(newMedicationItem);

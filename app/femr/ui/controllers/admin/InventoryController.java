@@ -96,8 +96,9 @@ public class InventoryController extends Controller {
 
         MedicationItem medicationItem = new MedicationItem();
         medicationItem.setName(inventoryViewModelPost.getMedicationName());
-        medicationItem.setQuantity_total(inventoryViewModelPost.getMedicationQuantity());
-        medicationItem.setQuantity_current(inventoryViewModelPost.getMedicationQuantity());
+        //This will need to be separated into another service call for inventory related business, not combined with medications.
+        //medicationItem.setQuantity_total(inventoryViewModelPost.getMedicationQuantity());
+        //medicationItem.setQuantity_current(inventoryViewModelPost.getMedicationQuantity());
         medicationItem.setForm(inventoryViewModelPost.getMedicationForm());
 
         for (int activeIngredientIndex = 0; activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size(); activeIngredientIndex++) {

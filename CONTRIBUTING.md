@@ -49,11 +49,11 @@
 
 #####1. features:
     git checkout development
-    git checkout -b feature-issue#-featureName
+    git checkout -b feature-[JIRA_Name]-Description
 
 #####2. bugs:
     git checkout development
-    git checkout -b bug-issue#-bugName
+    git checkout -b bug-[JIRA_Name]-Description
 
 
 #### Sync development branch (fork) with development branch (main repository):

@@ -249,9 +249,15 @@ public class MedicalController extends Controller {
             if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()) && StringUtils.isNullOrWhiteSpace(tfi.getChiefComplaint())) {
 
                 tabFieldItemsWithNoRelatedChiefComplaint.put(tfi.getName(), tfi.getValue());
-            }else if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()) && StringUtils.isNotNullOrWhiteSpace(tfi.getChiefComplaint())){
+            }else if (StringUtils.isNotNullOrWhiteSpace(tfi.getValue()) && StringUtils.isNotNullOrWhiteSpace(tfi.getChiefComplaint())) {
 
-                Map<String,String> tabFieldMap = new HashMap<>();
+                // Get the tabField Map for chief complaint
+                Map<String, String> tabFieldMap = tabFieldItemsWithChiefComplaint.get(tfi.getChiefComplaint());
+                if (tabFieldMap == null){
+                    // if it does not exist, create it
+                    tabFieldMap = new HashMap<>();
+                }
+                // create and add a tabFieldMap to the Map of Maps for the chief complaint, ummm  yea...
                 tabFieldMap.put(tfi.getName(), tfi.getValue());
                 tabFieldItemsWithChiefComplaint.put(tfi.getChiefComplaint(), tabFieldMap);
             }

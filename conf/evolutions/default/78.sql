@@ -27,7 +27,7 @@ CREATE TABLE `medication_inventories` (
 ALTER TABLE `medication_inventories`
 DROP FOREIGN KEY `fk_medication_inventory_mission_trips_id`,
 DROP FOREIGN KEY `fk_medication_inventory_medications_id`;
-ALTER TABLE `femr_combined_deidentify`.`medication_inventories`
+ALTER TABLE `medication_inventories`
 ADD CONSTRAINT `fk_medication_inventory_mission_trips_id`
 FOREIGN KEY (`mission_trip_id`)
 REFERENCES `mission_trips` (`id`)

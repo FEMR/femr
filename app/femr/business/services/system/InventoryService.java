@@ -163,7 +163,9 @@ public class InventoryService implements IInventoryService {
 
         medications = medications.subList(fromIndex, toIndex);
 
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList;
         for (IMedication m : medications) {
+
             /* Create node to customize return values */
             ObjectNode js = page_data.addObject();
             js.put("id", m.getId());
@@ -184,8 +186,20 @@ public class InventoryService implements IInventoryService {
 
             //js.put("quantity_current", m.getQuantity_current());
             //js.put("quantity_initial", m.getQuantity_total());
-            js.put("quantity_current", 0);
-            js.put("quantity_initial", 0);
+            //
+
+            medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                    .where()
+                    .eq("medication.id", m.getId())
+                    .eq("missionTrip.id", 1);
+            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+
+            if (medicationInventory != null) {
+                js.put("quantity_current", medicationInventory.getQuantity_current());
+                js.put("quantity_initial", medicationInventory.getQuantity_total());
+            }
+
+
 
             if (m.getMedicationForm() != null) {
                 js.put("form", m.getMedicationForm().getName());

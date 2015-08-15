@@ -17,14 +17,6 @@ public interface IMedicationInventory {
 
     void setQuantity_total(Integer quantity_initial);
 
-    Medication getMedication();
-
-    void setMedication(Medication medication);
-
-    MissionTrip getMissionTrip();
-
-    void setMissionTrip(MissionTrip missionTrip);
-
     IMedication getMedication();
 
     void setMedication(IMedication medication);
@@ -32,4 +24,5 @@ public interface IMedicationInventory {
     IMissionTrip getMissionTrip();
 
     void setMissionTrip(IMissionTrip missionTrip);
+
 }

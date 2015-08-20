@@ -21,10 +21,8 @@ package femr.data;
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
-import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
-import femr.util.dependencyinjection.providers.UserProvider;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -189,9 +187,9 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
+    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
 
-        if (StringUtils.isNullOrWhiteSpace(name) || total == null || current == null) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
@@ -199,8 +197,6 @@ public class DataModelMapper implements IDataModelMapper{
         IMedication medication = medicationProvider.get();
 
         medication.setName(name);
-        medication.setQuantity_total(total);
-        medication.setQuantity_current(current);
         medication.setIsDeleted(false);
         medication.setMedicationActiveDrugs(medicationActiveDrugs);
         medication.setMedicationForm(medicationForm);

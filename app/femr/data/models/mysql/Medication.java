@@ -33,10 +33,6 @@ public class Medication implements IMedication {
     private int id;
     @Column(name = "name", unique = true, nullable = true)
     private String name;
-    @Column(name = "quantity_current", unique = false, nullable = true)
-    private Integer quantity_current;
-    @Column(name = "quantity_initial", unique = false, nullable = true)
-    private Integer quantity_initial;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -68,26 +64,6 @@ public class Medication implements IMedication {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public Integer getQuantity_current() {
-        return quantity_current;
-    }
-
-    @Override
-    public void setQuantity_current(Integer quantity_current) {
-        this.quantity_current = quantity_current;
-    }
-
-    @Override
-    public Integer getQuantity_total() {
-        return quantity_initial;
-    }
-
-    @Override
-    public void setQuantity_total(Integer quantity_initial) {
-        this.quantity_initial = quantity_initial;
     }
 
     @Override

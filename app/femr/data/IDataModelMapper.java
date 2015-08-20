@@ -20,7 +20,6 @@ package femr.data;
 
 import femr.data.models.core.*;
 import org.joda.time.DateTime;
-
 import java.util.Date;
 import java.util.List;
 
@@ -59,13 +58,11 @@ public interface IDataModelMapper {
      * Generate and provide an implementation of IMedication for use in adding to inventory.
      *
      * @param name                  name of the medication, not null
-     * @param total                 the total quantity of the medication, not null
-     * @param current               the current quantity of the medication, not null
      * @param medicationActiveDrugs active drugs in the medication, may be null
      * @param medicationForm        the medications form e.g. cream/chewable/pill, may be null
      * @return an implementation of IMedication or null if processing fails
      */
-    IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
+    IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrug.

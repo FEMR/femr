@@ -21,10 +21,8 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
-import femr.ui.models.research.FilterViewModel;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-
 import java.util.Date;
 import java.util.List;
 
@@ -68,8 +66,9 @@ public class ItemModelMapper implements IItemModelMapper {
 
         medicationItem.setId(medication.getId());
         medicationItem.setName(medication.getName());
-        medicationItem.setQuantity_current(medication.getQuantity_current());
-        medicationItem.setQuantity_total(medication.getQuantity_total());
+        //to be used in medication tracking, not right now
+        //medicationItem.setQuantity_current(medication.getQuantity_current());
+        //medicationItem.setQuantity_total(medication.getQuantity_total());
         if (medication.getMedicationForm() != null) {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }

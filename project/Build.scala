@@ -1,12 +1,9 @@
 import play.ebean.sbt.PlayEbean
-import play.routes.compiler.InjectedRoutesGenerator
 import play.sbt.PlayJava
 import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.gzip.Import._
-import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.web.Import._
-import com.typesafe.sbt.web.SbtWeb
-import play.Play.autoImport._
+import play.sbt.Play.autoImport._
 import sbt.Keys._
 import sbt._
 
@@ -33,15 +30,13 @@ object ApplicationBuild extends Build {
 
 
   val main = Project(appName, file(".")).enablePlugins(PlayJava, PlayEbean).settings(
+
     javacOptions += "-Xlint:deprecation", //*/   //use when searching for deprecated API usage
     javacOptions += "-Xlint:unchecked", //*/     //use when you want to display java warnings
     version := appVersion,
     scalaVersion := currentScalaVersion,
-//    routesGenerator := InjectedRoutesGenerator,
     libraryDependencies ++= appDependencies,
-    pipelineStages := Seq(uglify, digest, gzip),
-    excludeFilter  in uglify := GlobFilter("*min.js"),
-      // Add your own project settings here
+    pipelineStages := Seq(digest, gzip),
     testOptions in Test ~= {
       args =>
         for {
@@ -53,6 +48,4 @@ object ApplicationBuild extends Build {
     sbt.Keys.fork in Test := false,
     doc in Compile <<= target.map(_ / "none")
   )
-
-
 }

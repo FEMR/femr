@@ -155,13 +155,9 @@ public class MockDataModelMapper implements IDataModelMapper{
         return medication;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
-
-        if (StringUtils.isNullOrWhiteSpace(name) || total == null || current == null) {
+    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
@@ -169,8 +165,8 @@ public class MockDataModelMapper implements IDataModelMapper{
         IMedication medication = medicationProvider.get();
 
         medication.setName(name);
-        medication.setQuantity_total(total);
-        medication.setQuantity_current(current);
+        //medication.setQuantity_total(total);
+        //medication.setQuantity_current(current);
         medication.setIsDeleted(false);
         medication.setMedicationActiveDrugs(medicationActiveDrugs);
         medication.setMedicationForm(medicationForm);

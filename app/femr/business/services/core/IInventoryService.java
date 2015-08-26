@@ -18,43 +18,62 @@
 */
 package femr.business.services.core;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
+import femr.ui.models.admin.inventory.DataGridFilter;
+import femr.ui.models.admin.inventory.DataGridSorting;
 
 import java.util.List;
 
+/**
+ * Inventory service is responsible for maintaining and tracking the medication inventory for a team.
+ */
 public interface IInventoryService {
 
     /**
-     * Retrieves a list of all medications in the system, including duplicates.
-     *
-     * @return a service response that contains a list of MedicationItems
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory();
-
-    /**
      * Creates a new medication in the inventory.
+     * Gets medicine that is currently not deleted, but paginated.
      *
-     * @param medicationItem the medication TODO: separate this into parameters
-     * @return a service response that contains a MedicationItem representing the medication that was just created
-     * and/or errors if they exist.
+     * @param pageNum     Page number to retrieve
+     * @param rowsPerPage Rows per page
+     * @param sorting     List of sorts to apply to query
+     * @param filters     List of filters to apply to query
+     * @return list of MedicationItems for use by controller
      */
-    ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem);
+    ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters);
 
     /**
-     * Retrieve a list of all available units for measuring.
+     * Sets the total number of a medication in the inventory. If the total number has not yet been set, then it will
+     * also set the current quantity to the total quantity (assumes this is a new entry and all the medications are
+     * available).
      *
-     * @return a service response that contains a list of strings that are the available units
-     * and/or errors if they exist.
+     * @param medicationId id of the medication.
+     * @param tripId id of the trip that is bringing the medication.
+     * @param quantityTotal amount of the medication being brought.
+     * @return a medication item that contains quantity information.
      */
-    ServiceResponse<List<String>> retrieveAvailableUnits();
+    ServiceResponse<MedicationItem> setQuantityTotal(int medicationId, int tripId, int quantityTotal);
 
     /**
-     * Retrieve a list of all available forms of medication
+     * Sets the current number of medications existing in an inventory. This can be used by someone to correct a
+     * displayed amount that is off.
      *
-     * @return a service response that contains a list of strings that are the available forms
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<String>> retrieveAvailableForms();
+     * @param medicationId id of the medication.
+     * @param tripId id of the trip that has the medication.
+     * @param quantityCurrent amount of the medication currently in the inventory.
+     * @return a medication item that contains quantity information.
+
+    ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
+
+    /**
+     * Subtracts quantity from the current quantity when someone dispenses medication.
+     *
+     * @param medicationId id of the medication.
+     * @param tripId id of the trip that is bringing the medication.
+     * @param quantity amount of medication to subtract from the current amount available.
+     * @return a medication item that contains quantity information.
+
+    ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract);
+    */
 }

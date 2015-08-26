@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
     }
     @additionalScripts = {
+
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/medical/medical.js")"></script>
@@ -79,7 +80,7 @@
                     <div id="tabContentWrap">
                         @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI, viewModel.getChiefComplaints)
 
-                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getProblemItems)
+                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getMedicationAdministrationItems, viewModel.getProblemItems)
 
                         @if(viewModel.getSettings.isPmhTab) {
                             @pmhTab(viewModel.getTabItemByName("pmh"))

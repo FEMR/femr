@@ -260,7 +260,6 @@
     font-weight: bold;
 }
 
-
 #edit-form{
 
     display: none;
@@ -292,11 +291,19 @@
 .form-history table{
     width: 100%;
 }
-#edit-form input[type="text"]{
+#edit-form input[type="text"] {
 
     margin-bottom: 10px;
     display: inline-block;
     whitespace: nowrap;
+
+}
+.activeDrug {
+    display: list-item;
+    list-style-type: square;
+    margin-left: 175px;
+    font-size: 10px;
+    font-style: italic;
 
 }
 

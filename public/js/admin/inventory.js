@@ -1,4 +1,89 @@
 $(document).ready(function () {
+    /* Alaa Serhan */
+    $("#currentMedicationsGrid").bs_grid({
+        ajaxFetchDataURL: "/admin/inventory/get",
+        row_primary_key: "id",
+        rowSelectionMode: false,
+        columns: [
+            { field: "id", header: "ID" },
+            { field: "name", header: "Medication" },
+            { field: "quantity_current", header: "Current Quantity" },
+            { field: "quantity_initial", header: "Total Quantity" },
+            { field: "medicationForm.name", header: "Form" },
+        ],
+        sorting: [
+            { sortingName: "Medication", field: "name", order: "Ascending" }
+        ],
+        filterOptions: {
+            filters: [
+                {
+                    filterName: "Medication",
+                    filterType: "text",
+                    field: "name",
+                    filterLabel: "Medication",
+                    filter_interface: [
+                        {
+                            filter_element: "input",
+                            filter_element_attributes: {"type": "text"}
+                        }
+                    ]
+                },
+                {
+                    filterName: "Quantity",
+                    filterType: "number",
+                    numberType: "integer",
+                    field: "quantity_current",
+                    filterLabel: "Current Quantity"
+                }
+
+            ]
+        },
+        onDatagridError: function(e) {
+        },
+        onDisplay: function(event, data) {
+            var table_id_prefix = $("#currentMedicationsGrid").bs_grid("getOption", "table_id_prefix");
+            var table_id = table_id_prefix + "currentMedicationsGrid";
+
+            // Add an empty cell to tables thead
+            //$("#" + table_id + " thead tr").append("<th>Ingredients</th>");
+            $("#" + table_id + " thead tr").append("<th></th>");
+
+            // Add ingredients and a delete button to each row
+            $("#" + table_id + " tbody tr").each(function(i) {
+                // Add Ingredients
+                /*var $ingredientsTD = $("<td></td>");
+                if (data.page_data && data.page_data[i] && data.page_data[i].ingredients) {
+                    $.each(data.page_data[i].ingredients, function(i, ingredient) {
+                        $ingredientsTD.append("<div class='medication_ingredient'>" + ingredient.name + " " + ingredient.value + ingredient.unit + "</div>");
+                    });
+                }
+
+                $(this).append($ingredientsTD);*/
+
+                // Add delete button
+                var $delete = $("<a>Remove</a>").click(function() {
+                    if (!confirm("Are you sure you would like to remove this medication?")) return;
+                    var $tr = $(this).closest("tr");
+
+                    // get medication from tr's ID
+                    var match = /(\d+)$/.exec($tr.attr("id"));
+                    if (match && match.length > 0) {
+                        var medicationId = match[1];
+                        $.ajax({
+                            url: '/admin/inventory/delete/' + medicationId,
+                            type: 'POST',
+                            dataType: 'json'
+                        }).done(function (data) {
+                            $("#currentMedicationsGrid").bs_grid('displayGrid', true);
+                        });
+                    }
+                });
+
+                $(this).append($("<td></td>").append($delete));
+            });
+        }
+    });
+
     medicationInventoryFeature.bindAddNewIngredientButton();
     medicationInventoryFeature.bindSubmitMedicationButton();
 });
@@ -41,15 +126,15 @@ var medicationInventoryFeature = {
     },
     validateMedication: function () {
         var pass = true;
-        if ($.trim(inventoryFields.newMedication.quantity.val()) === "")
-            pass = false;
-        if ($.trim(inventoryFields.newMedication.form.val()) === null)
+        /*if ($.trim(inventoryFields.newMedication.quantity.val()) === "")
+            pass = false;*/
+        if ($.trim(inventoryFields.newMedication.form.val()) === "")
             pass = false;
         if ($.trim(inventoryFields.newMedication.name.val()) === "")
             pass = false;
 
         inventoryFields.newMedication.refreshFields();
-
+        /*
         $(inventoryFields.newMedication.strength).each(function () {
             if ($.trim($(this).val()) === "")
                 pass = false;
@@ -62,12 +147,17 @@ var medicationInventoryFeature = {
             if ($.trim($(this).val()) === "")
                 pass = false;
         });
-
-        return true;
+        */
+        return pass;
     },
     bindSubmitMedicationButton: function () {
-        $('#submitMedicationButton').click(function () {
-            return medicationInventoryFeature.validateMedication();
+        $("form").submit(function(event) {
+            if (!medicationInventoryFeature.validateMedication()) {
+                alert("Must provide at least a form and medication name");
+                event.preventDefault();
+                return false;
+            }
+            return true;
         });
     },
     bindAddNewIngredientButton: function () {

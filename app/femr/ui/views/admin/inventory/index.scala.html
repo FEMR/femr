@@ -5,12 +5,23 @@
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
+
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/inventory.css")">
+        <link rel="sylesheet" href="@routes.Assets.versioned("css/libraries/jquery.jui_filter_rules.min.css")">
+        <link rel="sylesheet" href="@routes.Assets.versioned("css/libraries/jquery.bs_pagination.min.css")">
+        <link rel="sylesheet" href="@routes.Assets.versioned("css/libraries/jquery.bs_grid.min.css")">
     }
     @additionalScripts = {
+
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.jui_filter_rules.min.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.jui_filter_rules.localization.en.min.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.bs_pagination.min.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.bs_pagination.localization.en.min.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.bs_grid.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.bs_grid.localization.en.min.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
     }
-
 
 @admin("Inventory Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
     @helper.form(action = InventoryController.indexPost()) {
@@ -37,7 +48,7 @@
 
                     <div class="fieldMedication" id="nameFieldMedication">
                         <label for="nameInput">Name</label>
-                        <input type="text" name="medicationId" class="fInput" placeholder="name"/>
+                        <input type="text" name="medicationName" class="fInput" placeholder="name"/>
                     </div>
                 </div>
                 <div id="strengthUnitIngredient_Wrap">
@@ -114,7 +125,17 @@
         </div>
     }
 
-    <div id="currentMedication">
+    <br><body>
+        <br> <h3 style="text-align:center"> <b> Current Medications </b> </h3>
+    </body>
+
+
+    @* Alaa Serhan *@
+    <div style="margin: 30px 0;">
+        <div id="currentMedicationsGrid"></div>
+    </div>
+
+ @*   <div id="currentMedication">
         <h3>Current Medications:</h3>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable">
@@ -140,6 +161,6 @@
 
         </div>
 
-    </div>
+    </div> *@
 
 }

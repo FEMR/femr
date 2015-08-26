@@ -17,11 +17,12 @@ public interface IMedicationInventory {
 
     void setQuantity_total(Integer quantity_initial);
 
-    Medication getMedication();
+    IMedication getMedication();
 
-    void setMedication(Medication medication);
+    void setMedication(IMedication medication);
 
-    MissionTrip getMissionTrip();
+    IMissionTrip getMissionTrip();
 
-    void setMissionTrip(MissionTrip missionTrip);
+    void setMissionTrip(IMissionTrip missionTrip);
+
 }

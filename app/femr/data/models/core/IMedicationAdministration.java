@@ -28,4 +28,8 @@ public interface IMedicationAdministration {
     String getName();
 
     void setName(String name);
+
+    float getDailyModifier();
+
+    void setDailyModifier(float modifier);
 }

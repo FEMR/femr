@@ -28,13 +28,16 @@ public class CurrentUser {
     private String lastName;
     private String email;
     private List<IRole> roles;
+    //may run into issues with this on new installations if a trip is never assigned
+    private Integer tripId;
 
-    public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles) {
+    public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles, Integer tripId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.roles = roles;
+        this.tripId = tripId;
     }
 
     public int getId() {
@@ -59,5 +62,9 @@ public class CurrentUser {
 
     public List<IRole> getRoles() {
         return roles;
+    }
+
+    public Integer getTripId() {
+        return tripId;
     }
 }

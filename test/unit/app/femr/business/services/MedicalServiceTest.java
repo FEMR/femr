@@ -134,13 +134,13 @@
 //    }
 //    //endregion
 //
-//    //region **createPatientPrescription**
+//    //region **createPrescription**
 //    @Test
 //    public void CreatePatientPrescription_CreateWithCorrectParameters_Accepted() {
 //        MockPatientPrescription expectedPatientPrescription = new MockPatientPrescription();
 //        expectedPatientPrescription.setId(42);
 //        assertThat(mockPatientPrescriptionRepository.createWasCalled).isFalse();
-//        medicalService.createPatientPrescription(expectedPatientPrescription);
+//        medicalService.createPrescription(expectedPatientPrescription);
 //        assertThat(mockPatientPrescriptionRepository.createWasCalled).isTrue();
 //        assertThat(mockPatientPrescriptionRepository.entityPassedIn).isEqualTo(expectedPatientPrescription);
 //    }
@@ -149,7 +149,7 @@
 //    public void CreatePatientPrescription_FailedSave_ServiceResponseContainsError() {
 //        MockPatientPrescription badPatientPrescription = null;
 //        assertThat(mockPatientPrescriptionRepository.createWasCalled).isFalse();
-//        ServiceResponse<IPatientPrescription> response = medicalService.createPatientPrescription(badPatientPrescription);
+//        ServiceResponse<IPatientPrescription> response = medicalService.createPrescription(badPatientPrescription);
 //        assertThat(mockPatientPrescriptionRepository.createWasCalled).isTrue();
 //        assertThat(response.hasErrors()).isTrue();
 //        assertThat(response.getErrors().size()).isEqualTo(1);
@@ -163,7 +163,7 @@
 //        MockPatientPrescription goodPatientPrescription = new MockPatientPrescription();
 //        goodPatientPrescription.setId(42);
 //        assertThat(mockPatientPrescriptionRepository.createWasCalled).isFalse();
-//        ServiceResponse<IPatientPrescription> response = medicalService.createPatientPrescription(goodPatientPrescription);
+//        ServiceResponse<IPatientPrescription> response = medicalService.createPrescription(goodPatientPrescription);
 //        assertThat(mockPatientPrescriptionRepository.createWasCalled).isTrue();
 //        assertThat(response.hasErrors()).isFalse();
 //        assertThat(response.getErrors().size()).isEqualTo(0);

@@ -55,7 +55,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MedicationItem createMedicationItem(IMedication medication) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal) {
 
         if (medication == null) {
 
@@ -66,9 +66,8 @@ public class ItemModelMapper implements IItemModelMapper {
 
         medicationItem.setId(medication.getId());
         medicationItem.setName(medication.getName());
-        //to be used in medication tracking, not right now
-        //medicationItem.setQuantity_current(medication.getQuantity_current());
-        //medicationItem.setQuantity_total(medication.getQuantity_total());
+        medicationItem.setQuantity_current(quantityCurrent);
+        medicationItem.setQuantity_total(quantityTotal);
         if (medication.getMedicationForm() != null) {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }
@@ -249,7 +248,8 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName) {
+    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -267,6 +267,28 @@ public class ItemModelMapper implements IItemModelMapper {
         if (StringUtils.isNotNullOrWhiteSpace(lastName))
             prescriptionItem.setPrescriberLastName(lastName);
 
+        if (medicationAdministration != null) {
+            prescriptionItem.setAdministrationId(medicationAdministration.getId());
+            prescriptionItem.setAdministrationName(medicationAdministration.getName());
+            prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
+        }
+        if (amount != null)
+            prescriptionItem.setAmount(amount);
+
+        if (medication != null) {
+            MedicationItem medicationItem = createMedicationItem(medication, null, null);
+            prescriptionItem.setMedicationID(medicationItem.getId());
+
+            if (medicationItem.getForm() != null)
+                prescriptionItem.setMedicationForm(medicationItem.getForm());
+
+            prescriptionItem.setMedicationRemaining(medicationItem.getQuantity_current());
+
+
+
+            if (medicationItem.getActiveIngredients() != null)
+                prescriptionItem.setMedicationActiveDrugs(medicationItem.getActiveIngredients());
+        }
         return prescriptionItem;
     }
 
@@ -498,5 +520,22 @@ public class ItemModelMapper implements IItemModelMapper {
             vitalItem.setValue(value);
 
         return vitalItem;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+
+        if (medicationAdministration == null)
+            return null;
+
+        MedicationAdministrationItem medicationAdministrationItem = new MedicationAdministrationItem(
+                medicationAdministration.getId(),
+                medicationAdministration.getName(),
+                medicationAdministration.getDailyModifier()
+        );
+
+        return medicationAdministrationItem;
     }
 }

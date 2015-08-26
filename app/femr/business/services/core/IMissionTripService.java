@@ -32,7 +32,7 @@ public interface IMissionTripService {
     /**
      * Retrieve the current trip information.
      *
-     * @return the current trip or null if an error occurs TODO: change to ui model/service response
+     * @return the current trip or null if an error occurs
      */
     IMissionTrip retrieveCurrentMissionTrip();
 

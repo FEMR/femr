@@ -1,4 +1,6 @@
-@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], problems: List[femr.common.models.ProblemItem])
+@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem], problems: List[femr.common.models.ProblemItem])
+
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
 
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
@@ -33,14 +35,39 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="prescription">Prescriptions</label>
+        <div>
+            <div class="prescriptionHeader">
+                <label class="prescriptionName" for="prescription">Prescriptions</label>
+                <label class="prescriptionAdministrationName">Administration</label>
+                <label class="prescriptionAmount">Amount</label>
+            </div>
+        </div>
         <div class="row">
             <div class="col-xs-9 col-sm-9 col-md-9 prescriptionWrap">
                 @for(script <- prescriptions) {
-                    <input type="text" class="form-control input-sm" value="@script.getName" readonly/>
+                    <div class="prescriptionRow">
+                        <input class='medicationID' value='@script.getMedicationID' type='hidden' />
+                        <input class='administrationID' value='@script.getAdministrationId' type='hidden' />
+                        <span class="prescriptionName">
+                            <input type="text" class="medicationName form-control input-sm" value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly/>
+                        </span
+                        ><span class="prescriptionAdministrationName">
+                            <input type="text" class="form-control input-sm" value="@script.getAdministrationName" readonly/>
+                        </span
+                        ><span class="prescriptionAmount">
+                            <input type="text" class="form-control input-sm" value="@script.getAmount" readonly />
+                        </span>
+                    </div>
                 }
-                <input name="prescriptions[0].name" type="text" class="form-control input-sm"/>
-
+                <div class="prescriptionRow prescriptionInput">
+                    <input class='medicationID' name='prescriptions[0].medicationID' type='hidden' />
+                    <input class='administrationID' name="prescriptions[0].administrationID" type='hidden' />
+                    <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
+                    ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
+                    ><span class="prescriptionAdministrationDays"><input type="number" placeholder="X"  class="form-control input-sm" />
+                    </span
+                    ><span class="prescriptionAmount"><input name="prescriptions[0].amount" type="number" class="form-control input-sm"/></span>
+                </div>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3">
                 <div class="row">

@@ -227,6 +227,11 @@ public class MockDataModelMapper implements IDataModelMapper{
         return medicationForm;
     }
 
+    @Override
+    public IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId) {
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -387,23 +392,15 @@ public class MockDataModelMapper implements IDataModelMapper{
         return patientEncounterVital;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
-
-        if (medication == null || userId < 1 || encounterId < 1) {
-
-            return null;
-        }
+    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
 
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
 
         patientPrescription.setAmount(amount);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         //patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        patientPrescription.setMedication(medication);
+        //patientPrescription.setMedication(medication);
         patientPrescription.setReplacementId(replacementId);
         //patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         patientPrescription.setDispensed(isDispensed);

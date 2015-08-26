@@ -18,9 +18,8 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
@@ -28,20 +27,15 @@ import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.models.core.ILoginAttempt;
-import femr.data.models.core.IRole;
-import femr.data.models.core.ISystemSetting;
-import femr.data.models.core.IUser;
-import femr.data.models.mysql.Role;
-import femr.data.models.mysql.SystemSetting;
+import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;
+
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SessionService implements ISessionService {
 
     private IUserService userService;
+    private IMissionTripService missionTripService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
     private final IRepository<ILoginAttempt> loginAttemptRepository;
@@ -51,6 +45,7 @@ public class SessionService implements ISessionService {
 
     @Inject
     public SessionService(IUserService userService,
+                          IMissionTripService missionTripService,
                           IPasswordEncryptor passwordEncryptor,
                           ISessionHelper sessionHelper,
                           IRepository<ILoginAttempt> loginAttemptRepository,
@@ -59,6 +54,7 @@ public class SessionService implements ISessionService {
                           IRepository<IRole> roleRepository) {
 
         this.userService = userService;
+        this.missionTripService = missionTripService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
         this.loginAttemptRepository = loginAttemptRepository;
@@ -73,6 +69,8 @@ public class SessionService implements ISessionService {
     @Override
     public ServiceResponse<CurrentUser> createSession(String email, String password, String ipAddress) {
         IUser userWithEmail = userService.retrieveByEmail(email);
+        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip();
+        Integer tripId = currentTrip == null ? null : currentTrip.getId();
         boolean isSuccessful = false;
         Integer userId = null;
         byte[] ipAddressBinary;
@@ -103,7 +101,7 @@ public class SessionService implements ISessionService {
             isSuccessful = true;
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
             sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));//initiate the session
-            response.setResponseObject(createCurrentUser(userWithEmail));//send the user back in the response object
+            response.setResponseObject(createCurrentUser(userWithEmail, tripId));//send the user back in the response object
         }
 
         ILoginAttempt loginAttempt = dataModelMapper.createLoginAttempt(email, isSuccessful, ipAddressBinary, userId);
@@ -120,13 +118,16 @@ public class SessionService implements ISessionService {
 
         int currentUserId = sessionHelper.getInt("currentUser");
 
+        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip();
+        Integer tripId = currentTrip == null ? null : currentTrip.getId();
+
         if (currentUserId > 0) {
             IUser userFoundById = userService.retrieveById(currentUserId);
             if (userFoundById == null) {
                 return null;
             }
 
-            return createCurrentUser(userFoundById);
+            return createCurrentUser(userFoundById, tripId);
         }
 
         return null;
@@ -140,8 +141,8 @@ public class SessionService implements ISessionService {
         sessionHelper.delete("currentUser");
     }
 
-    private CurrentUser createCurrentUser(IUser user) {
+    private CurrentUser createCurrentUser(IUser user, Integer tripId) {
 
-        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles());
+        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId);
     }
 }

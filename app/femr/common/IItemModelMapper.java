@@ -20,7 +20,8 @@ package femr.common;
 
 import femr.common.models.*;
 import femr.data.models.core.*;
-import femr.ui.models.research.FilterViewModel;
+import femr.data.models.mysql.MedicationInventory;
+
 import java.util.Date;
 import java.util.List;
 
@@ -36,17 +37,27 @@ public interface IItemModelMapper {
     CityItem createCityItem(String cityName, String countryName);
 
     /**
-     * Generate and provide an instance of MedicationItem.
+     * Generate and provide an instance of MedicationAdministrationItem
      *
-     * @param medication the medication data item, not null
+     * @param medicationAdministration
+     * @return
+     */
+    MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration);
+
+    /**
+     * Generate and provide an instance of MedicationItem, including the quantity available
+     *
+     * @param medication the medication data bean, not null
+     * @param quantityCurrent the quantity of the medication available, nullable if non existant
+     * @param quantityTotal the total quantity of a medication, nullable if non existant
      * @return a new MedicationItem or null if processing fails
      */
-    MedicationItem createMedicationItem(IMedication medication);
+    MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal);
 
     /**
      * Generate and provide an instance of MissionItem.
      *
-     * @param missionTeam the mission team data item, not null
+     * @param missionTeam the mission team data bean, not null
      * @return a new MissionItem or null if processing fails
      */
     MissionItem createMissionItem(IMissionTeam missionTeam);
@@ -71,19 +82,19 @@ public interface IItemModelMapper {
      * @return a new PatientItem or null if processing fails, may be null
      */
     PatientItem createPatientItem(int id,
-                                                String firstName,
-                                                String lastName,
-                                                String city,
-                                                String address,
-                                                int userId,
-                                                Date age,
-                                                String sex,
-                                                Integer weeksPregnant,
-                                                Integer heightFeet,
-                                                Integer heightInches,
-                                                Float weight,
-                                                String pathToPatientPhoto,
-                                                Integer photoId);
+                                  String firstName,
+                                  String lastName,
+                                  String city,
+                                  String address,
+                                  int userId,
+                                  Date age,
+                                  String sex,
+                                  Integer weeksPregnant,
+                                  Integer heightFeet,
+                                  Integer heightInches,
+                                  Float weight,
+                                  String pathToPatientPhoto,
+                                  Integer photoId);
 
     /**
      * Generate and provide an instance of PatientEncounterItem
@@ -112,9 +123,13 @@ public interface IItemModelMapper {
      * @param replacementId id of the prescription that replaced this prescription, may be null
      * @param firstName     first name of the person that prescribed the medication, may be null
      * @param lastName      last name of the person that prescribed the medication, may be null
+     * @param medicationAdministration
+     * @param amount
+     * @param medication
      * @return a new PrescriptionItem or null if processing fails
      */
-    PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName);
+    PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+                                            IMedicationAdministration medicationAdministration, Integer amount, IMedication medication);
 
     /**
      * Generate and provide an instance of ProblemItem.
@@ -157,13 +172,13 @@ public interface IItemModelMapper {
      * @return a new TabFieldItem or null if processing fails
      */
     TabFieldItem createTabFieldItem(String name,
-                                                  String type,
-                                                  String size,
-                                                  Integer order,
-                                                  String placeholder,
-                                                  String value,
-                                                  String chiefComplaint,
-                                                  boolean isCustom);
+                                    String type,
+                                    String size,
+                                    Integer order,
+                                    String placeholder,
+                                    String value,
+                                    String chiefComplaint,
+                                    boolean isCustom);
 
     /**
      * Generate and provide an instance of TabFieldItem overloaded to include userName
@@ -180,14 +195,14 @@ public interface IItemModelMapper {
      * @return a new TabFieldItem or null if processing fails
      */
     TabFieldItem createTabFieldItem(String name,
-                                                  String type,
-                                                  String size,
-                                                  Integer order,
-                                                  String placeholder,
-                                                  String value,
-                                                  String chiefComplaint,
-                                                  boolean isCustom,
-                                                  String userName);
+                                    String type,
+                                    String size,
+                                    Integer order,
+                                    String placeholder,
+                                    String value,
+                                    String chiefComplaint,
+                                    boolean isCustom,
+                                    String userName);
 
     /**
      * Generate and provide an instance of TeamItem.

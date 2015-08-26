@@ -1,11 +1,14 @@
 package femr.ui.controllers;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import femr.business.services.core.IInventoryService;
 import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;
 import femr.business.services.core.ISessionService;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.PatientItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
@@ -29,15 +32,18 @@ public class SearchController extends Controller {
     private ISessionService sessionService;
     private ISearchService searchService;
     private IMedicationService medicationService;
+    private IInventoryService inventoryService;
 
     @Inject
     public SearchController(ISessionService sessionService,
                             ISearchService searchService,
-                            IMedicationService medicationService) {
+                            IMedicationService medicationService,
+                            IInventoryService inventoryService) {
 
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.medicationService = medicationService;
+        this.inventoryService = inventoryService;
     }
 
     public Result handleSearch(String page) {
@@ -144,5 +150,30 @@ public class SearchController extends Controller {
         }
 
         return ok(new Gson().toJson(medicationServiceResponse.getResponseObject()));
+    }
+
+    /**
+     * Used for typeahead where more data is needed other than just the name
+     * Call via ajax
+     * @return JSON object of medications that exist int he medcations table
+     */
+    public Result typeaheadMedicationsWithIDJSONGet() {
+        ServiceResponse<ObjectNode> medicationServiceResponse = medicationService.retrieveAllMedicationsWithID();
+        if (medicationServiceResponse.hasErrors()) {
+            return ok("");
+        }
+        return ok(medicationServiceResponse.getResponseObject());
+    }
+
+    /**
+     *
+     */
+    public Result typeaheadMedicationAdministrationsJSONGet() {
+        ServiceResponse<List<MedicationAdministrationItem>> administrationsServiceResponse = medicationService.retrieveAvailableMedicationAdministrations();
+        if (administrationsServiceResponse.hasErrors()) {
+            return ok("");
+        }
+
+        return ok(new Gson().toJson(administrationsServiceResponse.getResponseObject()));
     }
 }

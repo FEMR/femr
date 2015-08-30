@@ -11,7 +11,6 @@ CREATE TABLE `patient_prescription_replacements` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `patient_prescription_id_original` INT(11) NOT NULL,
   `patient_prescription_id_replacement` INT(11) NOT NULL,
-  `date_replaced` DATETIME NOT NULL,
   `patient_prescription_replacement_reason_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),

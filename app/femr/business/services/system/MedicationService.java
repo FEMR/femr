@@ -304,10 +304,12 @@ public class MedicationService implements IMedicationService {
 
             patientPrescription = patientPrescriptionRepository.create(patientPrescription);
 
+
+
             PrescriptionItem prescriptionItem = itemModelMapper.createPrescriptionItem(
                     patientPrescription.getId(),
                     patientPrescription.getMedication().getName(),
-                    patientPrescription.getReplacementId(),
+                    null,
                     patientPrescription.getPhysician().getFirstName(),
                     patientPrescription.getPhysician().getLastName(),
                     patientPrescription.getMedicationAdministration(),
@@ -346,85 +348,6 @@ public class MedicationService implements IMedicationService {
         // Update the medication item in the database
         medicationRepository.update(medication);
 
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsFilled(List<Integer> prescriptionIds) {
-        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-
-        List<PrescriptionItem> updatedPrescriptions = new ArrayList<>();
-        try {
-
-            for (Integer i : prescriptionIds) {
-                if (i != null && i > 0) {
-                    ExpressionList<PatientPrescription> patientPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                            .where()
-                            .eq("id", i);
-                    IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
-                    patientPrescription.setDispensed(true);
-                    patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-
-                    updatedPrescriptions.add(itemModelMapper.createPrescriptionItem(
-                            patientPrescription.getId(),
-                            patientPrescription.getMedication().getName(),
-                            patientPrescription.getReplacementId(),
-                            patientPrescription.getPhysician().getFirstName(),
-                            patientPrescription.getPhysician().getLastName(),
-                            patientPrescription.getMedicationAdministration(),
-                            patientPrescription.getAmount(),
-                            patientPrescription.getMedication()
-                    ));
-                }
-            }
-            response.setResponseObject(updatedPrescriptions);
-        } catch (Exception ex) {
-
-            response.addError("", "prescriptions were not updated");
-        }
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsCounseled(List<Integer> prescriptionIds) {
-        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-
-        List<PrescriptionItem> updatedPrescriptions = new ArrayList<>();
-        try {
-
-            for (Integer i : prescriptionIds) {
-                if (i != null && i > 0) {
-                    ExpressionList<PatientPrescription> patientPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                            .where()
-                            .eq("id", i);
-                    IPatientPrescription patientPrescription = patientPrescriptionRepository.findOne(patientPrescriptionExpressionList);
-                    patientPrescription.setCounseled(true);
-                    patientPrescription = patientPrescriptionRepository.update(patientPrescription);
-                    updatedPrescriptions.add(itemModelMapper.createPrescriptionItem(
-                            patientPrescription.getId(),
-                            patientPrescription.getMedication().getName(),
-                            patientPrescription.getReplacementId(),
-                            patientPrescription.getPhysician().getFirstName(),
-                            patientPrescription.getPhysician().getLastName(),
-                            patientPrescription.getMedicationAdministration(),
-                            patientPrescription.getAmount(),
-                            patientPrescription.getMedication()
-                    ));
-                }
-            }
-            response.setResponseObject(updatedPrescriptions);
-        } catch (Exception ex) {
-
-            response.addError("", "prescriptions were not updated");
-        }
 
         return response;
     }

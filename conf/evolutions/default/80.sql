@@ -1,11 +1,22 @@
 # --- !Ups
 
-INSERT INTO `patient_prescription_replacement_reasons` (`name`, `description`) VALUES ('physician edit', 'the editing of a prescription as it\'s being prescribed by a physician');
-INSERT INTO `patient_prescription_replacement_reasons` (`name`, `description`) VALUES ('pharmacist replacement', 'the replacement of a prescription by a pharmacist');
-INSERT INTO `patient_prescription_replacement_reasons` (`name`, `description`) VALUES ('encounter edit', 'the editing of a prescription after the encounter has been closed');
+INSERT INTO `patient_prescription_replacements`
+(
+  `patient_prescription_id_original`,
+  `patient_prescription_id_replacement`,
+  `patient_prescription_replacement_reason_id`
+)
+  SELECT
+    `pp`.`id`,
+    `pp`.`replacement_id`,
+    `pprr`.`id`
+  FROM `patient_prescriptions` pp, `patient_prescription_replacement_reasons` pprr
+  WHERE `replacement_id` IS NOT NULL
+        AND `pprr`.`name` = 'pharmacist replacement';
 
 # --- !Downs
 
-DELETE FROM `patient_prescription_replacement_reasons` WHERE `description`="the editing of a prescription as it's being prescribed by a physician";
-DELETE FROM `patient_prescription_replacement_reasons` WHERE `description`="the replacement of a prescription by a pharmacist";
-DELETE FROM `patient_prescription_replacement_reasons` WHERE `description`="the editing of a prescription after the encounter has been closed";
+UPDATE `patient_prescriptions` pp
+  INNER JOIN `patient_prescription_replacements` ppr
+    ON pp.`id` = ppr.`patient_prescription_id_original`
+SET pp.`replacement_id` = ppr.`patient_prescription_id_replacement`;

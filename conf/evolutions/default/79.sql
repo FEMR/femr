@@ -33,6 +33,10 @@ CREATE TABLE `patient_prescription_replacements` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
+INSERT INTO `patient_prescription_replacement_reasons` (`name`, `description`) VALUES ('physician edit', 'the editing of a prescription as it\'s being prescribed by a physician');
+INSERT INTO `patient_prescription_replacement_reasons` (`name`, `description`) VALUES ('pharmacist replacement', 'the replacement of a prescription by a pharmacist');
+INSERT INTO `patient_prescription_replacement_reasons` (`name`, `description`) VALUES ('encounter edit', 'the editing of a prescription after the encounter has been closed');
+
 # --- !Downs
 
 DROP TABLE `patient_prescription_replacements`;

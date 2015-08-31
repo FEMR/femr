@@ -57,6 +57,8 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
+    private final Provider<IPatientPrescriptionReplacement> patientPrescriptionReplacementProvider;
+    private final Provider<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonProvider;
     private final Provider<IPhoto> photoProvider;
     private final Provider<IRole> roleProvider;
     private final Provider<ITabField> tabFieldProvider;
@@ -88,6 +90,8 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                            Provider<IPatientPrescription> patientPrescriptionProvider,
+                           Provider<IPatientPrescriptionReplacement> patientPrescriptionReplacementProvider,
+                           Provider<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonProvider,
                            Provider<IPhoto> photoProvider,
                            Provider<IRole> roleProvider,
                            Provider<ITabField> tabFieldProvider,
@@ -118,6 +122,8 @@ public class DataModelMapper implements IDataModelMapper{
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
+        this.patientPrescriptionReplacementProvider = patientPrescriptionReplacementProvider;
+        this.patientPrescriptionReplacementReasonProvider = patientPrescriptionReplacementReasonProvider;
         this.photoProvider = photoProvider;
         this.roleProvider = roleProvider;
         this.tabFieldProvider = tabFieldProvider;
@@ -450,7 +456,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
+    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
 
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
 
@@ -460,12 +466,25 @@ public class DataModelMapper implements IDataModelMapper{
         patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
         if (medicationAdministrationId != null)
             patientPrescription.setMedicationAdministration(Ebean.getReference(medicationAdministrationProvider.get().getClass(), medicationAdministrationId));
-        patientPrescription.setReplacementId(replacementId);
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         patientPrescription.setDispensed(isDispensed);
         patientPrescription.setCounseled(isCounseled);
 
         return patientPrescription;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPatientPrescriptionReplacement createPatientPrescriptionReplacement(int originalId, int replacementId, int reasonId){
+
+        IPatientPrescriptionReplacement patientPrescriptionReplacement = patientPrescriptionReplacementProvider.get();
+        patientPrescriptionReplacement.setOriginalPrescription(Ebean.getReference(patientPrescriptionProvider.get().getClass(), originalId));
+        patientPrescriptionReplacement.setReplacementPrescription(Ebean.getReference(patientPrescriptionProvider.get().getClass(), replacementId));
+        patientPrescriptionReplacement.setPatientPrescriptionReplacementReason(Ebean.getReference(patientPrescriptionReplacementReasonProvider.get().getClass(), reasonId));
+
+        return patientPrescriptionReplacement;
     }
 
     /**

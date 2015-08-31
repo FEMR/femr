@@ -50,6 +50,8 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
+    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
+    private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -60,6 +62,8 @@ public class MedicationService implements IMedicationService {
                              IRepository<IMedicationForm> medicationFormRepository,
                              IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
+                             IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
+                             IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
                              IDataModelMapper dataModelMapper,
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -69,6 +73,8 @@ public class MedicationService implements IMedicationService {
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.medicationAdministrationRepository = medicationAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
+        this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
+        this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -199,6 +205,13 @@ public class MedicationService implements IMedicationService {
 
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+        List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
+
+        ExpressionList<PatientPrescriptionReplacementReason> replacementReasonExpressionList = QueryProvider.getPatientPrescriptionReasonQuery()
+                .where()
+                .eq("name", "pharmacist replacement");
+
+        IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = patientPrescriptionReplacementReasonRepository.findOne(replacementReasonExpressionList);
 
         prescriptionPairs.forEach((newId, oldId) -> {
 
@@ -214,21 +227,22 @@ public class MedicationService implements IMedicationService {
                 IPatientPrescription newPrescription = patientPrescriptionRepository.findOne(newPrescriptionExpressionList);
                 IPatientPrescription replacedPrescription = patientPrescriptionRepository.findOne(replacedPrescriptionExpressionList);
 
-                if (newPrescription == null || replacedPrescription == null) {
+                if (newPrescription == null) {
 
-                    response.addError("id", "did not find the prescription");
+                    response.addError("not found", "new prescription with id: " + newId + " not found.");
+                } else if (replacedPrescription == null) {
+
+                    response.addError("not found", "old prescription with id: " + oldId + " not found.");
                 } else {
+                    patientPrescriptionReplacements.add(
+                            dataModelMapper.createPatientPrescriptionReplacement(
+                                    replacedPrescription.getId(),
+                                    newPrescription.getId(),
+                                    patientPrescriptionReplacementReason.getId()
+                            )
+                    );
 
-                    replacedPrescription.setReplacementId(newPrescription.getId());
-                    patientPrescriptionRepository.update(replacedPrescription);
-                    prescriptionItems.add(itemModelMapper.createPrescriptionItem(newPrescription.getId(),
-                            newPrescription.getMedication().getName(),
-                            null,
-                            newPrescription.getPhysician().getFirstName(),
-                            newPrescription.getPhysician().getLastName(),
-                            newPrescription.getMedicationAdministration(),
-                            newPrescription.getAmount(),
-                            newPrescription.getMedication()));
+
                 }
 
             } catch (Exception ex) {
@@ -236,6 +250,27 @@ public class MedicationService implements IMedicationService {
                 response.addError("", ex.getMessage());
             }
         });
+
+        try {
+
+            List<? extends IPatientPrescriptionReplacement> replacements = patientPrescriptionReplacementRepository.createAll(patientPrescriptionReplacements);
+            for (IPatientPrescriptionReplacement prescriptionReplacement : replacements) {
+
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescriptionReplacement.getId(),
+                        prescriptionReplacement.getReplacementPrescription().getMedication().getName(),
+                        null,
+                        prescriptionReplacement.getReplacementPrescription().getPhysician().getFirstName(),
+                        prescriptionReplacement.getReplacementPrescription().getPhysician().getLastName(),
+                        prescriptionReplacement.getReplacementPrescription().getMedicationAdministration(),
+                        prescriptionReplacement.getReplacementPrescription().getAmount(),
+                        prescriptionReplacement.getReplacementPrescription().getMedication()));
+            }
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+
         response.setResponseObject(prescriptionItems);
 
         return response;
@@ -298,12 +333,10 @@ public class MedicationService implements IMedicationService {
                     administrationId,
                     userId,
                     encounterId,
-                    null,
                     false,
                     false);
 
             patientPrescription = patientPrescriptionRepository.create(patientPrescription);
-
 
 
             PrescriptionItem prescriptionItem = itemModelMapper.createPrescriptionItem(

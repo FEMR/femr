@@ -673,7 +673,7 @@ public class ResearchService implements IResearchService {
                 for( PatientPrescription script : prescriptions ) {
 
                     // skip items with replacement Id
-                    if( script.getReplacementId() != null ) continue;
+                    if( script.getPatientPrescriptionReplacements() != null && script.getPatientPrescriptionReplacements().size() > 0 ) continue;
 
                     medicationId =  (float)script.getId();
                     // total patients for each value in map

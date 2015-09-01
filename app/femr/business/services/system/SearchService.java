@@ -35,6 +35,7 @@ import femr.data.models.mysql.*;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchService implements ISearchService {
 
@@ -278,27 +279,24 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .where()
-                .eq("encounter_id", encounterId)
-                .eq("replacement_id", null);
+                .eq("encounter_id", encounterId);
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-            List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+            List<PrescriptionItem> prescriptionItems = patientPrescriptions
+                    .stream()
+                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                        pp.getId(),
+                        pp.getMedication().getName(),
+                        null,
+                        pp.getPhysician().getFirstName(),
+                        pp.getPhysician().getLastName(),
+                        pp.getMedicationAdministration(),
+                        pp.getAmount(),
+                        pp.getMedication()
 
-            for (IPatientPrescription pp : patientPrescriptions) {
-                prescriptionItems.add(
-                        itemModelMapper.createPrescriptionItem(
-                                pp.getId(),
-                                pp.getMedication().getName(),
-                                pp.getReplacementId(),
-                                pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName(),
-                                pp.getMedicationAdministration(),
-                                pp.getAmount(),
-                                pp.getMedication()
-
-                        )
-                );
-            }
+                    ))
+                    .collect(Collectors.toList());
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
@@ -318,27 +316,22 @@ public class SearchService implements ISearchService {
                 .fetch("patientEncounter")
                 .where()
                 .eq("encounter_id", encounterId)
-                .ne("user_id_pharmacy", null)
-                .eq("replacement_id", null);
+                .ne("user_id_pharmacy", null);
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-            List<PrescriptionItem> prescriptionItems = new ArrayList<>();
-
-            for (IPatientPrescription pp : patientPrescriptions) {
-
-                prescriptionItems.add(
-                        itemModelMapper.createPrescriptionItem(
-                                pp.getId(),
-                                pp.getMedication().getName(),
-                                pp.getReplacementId(),
-                                pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName(),
-                                pp.getMedicationAdministration(),
-                                pp.getAmount(),
-                                pp.getMedication()
-                        )
-                );
-            }
+            List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
+                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getMedication().getName(),
+                            null,
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication()
+                    ))
+                    .collect(Collectors.toList());
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {

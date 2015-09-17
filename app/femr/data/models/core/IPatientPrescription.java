@@ -66,4 +66,8 @@ public interface IPatientPrescription {
     List<PatientPrescriptionReplacement> getPatientPrescriptionReplacements();
 
     void setPatientPrescriptionReplacements(List<PatientPrescriptionReplacement> patientPrescriptionReplacements);
+
+    DateTime getDateDispensed();
+
+    void setDateDispensed(DateTime dateDispensed);
 }

@@ -35,7 +35,9 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.libs.Json;
 
 import java.util.ArrayList;
@@ -286,6 +288,8 @@ public class MedicationService implements IMedicationService {
 
         List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
+        DateTime dateTime = dateUtils.getCurrentDateTime();
+
         prescriptionsToDispense.forEach((prescriptionId, isCounseled) -> {
 
             ExpressionList<PatientPrescription> prescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
@@ -296,6 +300,7 @@ public class MedicationService implements IMedicationService {
 
                 IPatientPrescription prescription = patientPrescriptionRepository.findOne(prescriptionExpressionList);
                 prescription.setDispensed(true);
+                prescription.setDateDispensed(dateTime);
                 prescription.setCounseled(isCounseled);
                 prescription = patientPrescriptionRepository.update(prescription);
 

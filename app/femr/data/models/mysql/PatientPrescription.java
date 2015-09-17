@@ -51,6 +51,8 @@ public class PatientPrescription implements IPatientPrescription {
     private boolean isCounseled;
     @Column(name = "isDispensed", nullable = false)
     private boolean isDispensed;
+    @Column(name = "dateDispensed")
+    private DateTime dateDispensed;
     @OneToMany(mappedBy = "originalPrescription", fetch = FetchType.LAZY)
     private List<PatientPrescriptionReplacement> patientPrescriptionReplacements;
 
@@ -157,5 +159,15 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setPatientPrescriptionReplacements(List<PatientPrescriptionReplacement> patientPrescriptionReplacements) {
         this.patientPrescriptionReplacements = patientPrescriptionReplacements;
+    }
+
+    @Override
+    public DateTime getDateDispensed() {
+        return dateDispensed;
+    }
+
+    @Override
+    public void setDateDispensed(DateTime dateDispensed) {
+        this.dateDispensed = dateDispensed;
     }
 }

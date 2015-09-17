@@ -18,7 +18,10 @@
 */
 package femr.data.models.core;
 
+import femr.data.models.mysql.PatientPrescriptionReplacement;
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 public interface IPatientPrescription {
 
@@ -40,10 +43,6 @@ public interface IPatientPrescription {
 
     void setAmount(int amount);
 
-    Integer getReplacementId();
-
-    void setReplacementId(Integer replacementId);
-
     DateTime getDateTaken();
 
     void setDateTaken(DateTime dateTaken);
@@ -63,4 +62,8 @@ public interface IPatientPrescription {
     boolean isDispensed();
 
     void setDispensed(boolean isDispensed);
+
+    List<PatientPrescriptionReplacement> getPatientPrescriptionReplacements();
+
+    void setPatientPrescriptionReplacements(List<PatientPrescriptionReplacement> patientPrescriptionReplacements);
 }

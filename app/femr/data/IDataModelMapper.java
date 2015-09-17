@@ -198,7 +198,17 @@ public interface IDataModelMapper {
      * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
+    IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
+
+    /**
+     * Creates a patient prescription replacement based on the ID of the prescriptions.
+     *
+     * @param originalId id of the original prescription, not null
+     * @param replacementId id of the prescription that is replacing the original prescription, not null
+     * @param reasonId id of the reason for replacement, not null
+     * @return a new patient prescription replacement item.
+     */
+    IPatientPrescriptionReplacement createPatientPrescriptionReplacement(int originalId, int replacementId, int reasonId);
 
     /**
      * Generate and provide an implementation of IPhoto.

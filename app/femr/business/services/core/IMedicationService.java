@@ -102,24 +102,6 @@ public interface IMedicationService {
     ServiceResponse<MedicationItem> deleteMedication(int medicationID);
 
     /**
-     * Flags a prescription to say that it was filled.
-     *
-     * @param prescriptionIds a list of prescription ids to identify as filled
-     * @return a service response that contains a list of updated PrescriptionItems that were filled
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsFilled(List<Integer> prescriptionIds);
-
-    /**
-     * Flags prescription(s) to say that the patient was counseled before dispensing it.
-     *
-     * @param prescriptionIds a list of prescription ids to identify as counseled
-     * @return a service response that contains a list of updated PrescriptionItems that were flagged
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsCounseled(List<Integer> prescriptionIds);
-
-    /**
      * Retrieves a list of all medications in the system, excluding duplicates.
      *
      * @return a service response that contains a list of Strings

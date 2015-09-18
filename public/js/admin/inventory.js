@@ -8,12 +8,31 @@ $(document).ready(function () {
         $(newRow).find('select').val("%");
         $(newRow).find('label').remove();
 
-
         $(this).before(newRow);
+        bindRemoveAction($(newRow).find(".removeIngredient"));
+    });
 
+    $(".removeIngredient").each(function(idx, elem){
+
+        bindRemoveAction(elem);
     });
 
 
-    $('#inventoryTablegit ').DataTable();
+    $('#inventoryTable').DataTable({
+        columnDefs: [ { orderable: false, targets: [3] }]
+    });
 
 });
+
+function bindRemoveAction(element){
+
+    $(element).click(function(){
+
+        console.log( $(this).parents(".ingredientFields").index() );
+
+        // don't let the first row get removed
+        if( $(this).parents(".ingredientFields").index() > 0 ) {
+            $(this).parents(".ingredientFields").remove();
+        }
+    });
+}

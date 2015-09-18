@@ -5,12 +5,13 @@
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/dataTables.jqueryui.min.css")">
+
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/inventory.css")">
     }
     @additionalScripts = {
 
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/dataTables.jqueryui.min.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
     }
 
@@ -70,14 +71,14 @@
                             </select>
                         </div>
 
+                        <a class="fButton removeIngredient">
+                            <span>-</span>
+                        </a>
+
                     </div>
 
                     <a class="fButton" id="addNewIngredient">
                         <span>+</span>
-                    </a>
-
-                    <a class="fButton" id="removeIngredient">
-                        <span>-</span>
                     </a>
                 </div>
             </div>

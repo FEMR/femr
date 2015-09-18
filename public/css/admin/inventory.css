@@ -54,7 +54,7 @@
 .newMedicationWrap .ingredientWrap{
 
     padding-left: 70px;
-    padding-right: 90px;
+    padding-right: 50px;
     clear: both;
     position: relative;
     display: inline-block;
@@ -67,6 +67,12 @@
     margin-bottom: 10px;
 }
 
+.newMedicationWrap .ingredientWrap .ingredientFields:first-child .removeIngredient{
+
+    border-color: #cccccc;
+    color: #cccccc;
+}
+
 .newMedicationWrap #addNewIngredient{
 
     display: block;
@@ -74,11 +80,25 @@
     cursor: pointer;
     color: #333333;
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 11px;
+    right: 5px;
 }
 
 .newMedicationWrap #addNewIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap .removeIngredient{
+
+    display: inline-block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: relative;
+}
+
+.newMedicationWrap .removeIngredient:hover{
 
     text-decoration: none;
 }
@@ -90,12 +110,11 @@
 
 #inventoryTable{
 
-    margin: 0 5px;
 }
 
 #inventoryTable th{
 
-    background-color: #6f6f6f;
+    background-color: #2f2f2f;
     color: #ffffff;
     padding: 5px;
     text-align: center;

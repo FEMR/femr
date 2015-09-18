@@ -273,7 +273,7 @@ public class ResearchService implements IResearchService {
         if( encounter.getPatientPrescriptions() != null ) {
             for (IPatientPrescription p : encounter.getPatientPrescriptions()) {
 
-                if( p.isDispensed() ){
+                if( p.getDateDispensed() != null ){
 
                     dispensed.add(p.getMedication().getName());
                 }
@@ -711,7 +711,7 @@ public class ResearchService implements IResearchService {
                 for( PatientPrescription script : prescriptions ) {
 
                     // only count medications actually dispensed
-                    if( !script.isDispensed() ) continue;
+                    if( script.getDateDispensed() == null ) continue;
 
                     medicationId =  (float)script.getId();
                     // total patients for each value in map

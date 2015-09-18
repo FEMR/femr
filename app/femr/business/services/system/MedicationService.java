@@ -299,7 +299,6 @@ public class MedicationService implements IMedicationService {
             try {
 
                 IPatientPrescription prescription = patientPrescriptionRepository.findOne(prescriptionExpressionList);
-                prescription.setDispensed(true);
                 prescription.setDateDispensed(dateTime);
                 prescription.setCounseled(isCounseled);
                 prescription = patientPrescriptionRepository.update(prescription);
@@ -338,7 +337,7 @@ public class MedicationService implements IMedicationService {
                     administrationId,
                     userId,
                     encounterId,
-                    false,
+                    null,
                     false);
 
             patientPrescription = patientPrescriptionRepository.create(patientPrescription);

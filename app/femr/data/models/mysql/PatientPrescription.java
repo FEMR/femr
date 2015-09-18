@@ -49,8 +49,6 @@ public class PatientPrescription implements IPatientPrescription {
     private String specialInstructions;
     @Column(name = "isCounseled", nullable = false)
     private boolean isCounseled;
-    @Column(name = "isDispensed", nullable = false)
-    private boolean isDispensed;
     @Column(name = "dateDispensed")
     private DateTime dateDispensed;
     @OneToMany(mappedBy = "originalPrescription", fetch = FetchType.LAZY)
@@ -139,16 +137,6 @@ public class PatientPrescription implements IPatientPrescription {
     @Override
     public void setCounseled(boolean isCounseled) {
         this.isCounseled = isCounseled;
-    }
-
-    @Override
-    public boolean isDispensed() {
-        return isDispensed;
-    }
-
-    @Override
-    public void setDispensed(boolean isDispensed) {
-        this.isDispensed = isDispensed;
     }
 
     @Override

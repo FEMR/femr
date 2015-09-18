@@ -456,7 +456,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
+    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, DateTime dateDispensed, boolean isCounseled) {
 
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
 
@@ -467,7 +467,7 @@ public class DataModelMapper implements IDataModelMapper{
         if (medicationAdministrationId != null)
             patientPrescription.setMedicationAdministration(Ebean.getReference(medicationAdministrationProvider.get().getClass(), medicationAdministrationId));
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
-        patientPrescription.setDispensed(isDispensed);
+        patientPrescription.setDateDispensed(dateDispensed);
         patientPrescription.setCounseled(isCounseled);
 
         return patientPrescription;

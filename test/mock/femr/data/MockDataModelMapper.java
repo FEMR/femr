@@ -393,7 +393,7 @@ public class MockDataModelMapper implements IDataModelMapper{
     }
 
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, boolean isDispensed, boolean isCounseled) {
+    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, DateTime dateTime, boolean isCounseled) {
 
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
 
@@ -402,7 +402,7 @@ public class MockDataModelMapper implements IDataModelMapper{
         //patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
         //patientPrescription.setMedication(medication);
         //patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
-        patientPrescription.setDispensed(isDispensed);
+        patientPrescription.setDateDispensed(dateTime);
         patientPrescription.setCounseled(isCounseled);
 
         return patientPrescription;

@@ -49,7 +49,7 @@ public class PatientPrescription implements IPatientPrescription {
     private String specialInstructions;
     @Column(name = "isCounseled", nullable = false)
     private boolean isCounseled;
-    @Column(name = "dateDispensed")
+    @Column(name = "date_dispensed")
     private DateTime dateDispensed;
     @OneToMany(mappedBy = "originalPrescription", fetch = FetchType.LAZY)
     private List<PatientPrescriptionReplacement> patientPrescriptionReplacements;

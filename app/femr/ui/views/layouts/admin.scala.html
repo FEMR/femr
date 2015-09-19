@@ -14,14 +14,14 @@
 
         @* Add scripts to script variable, how? *@
     @adminScripts = {
-        @scripts
         <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/admin.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-ui.min.js")"></script>
+        @scripts
     }
     @adminStyles = {
-        @styles
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/admin.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/admin.css")">
+        @styles
     }
 
 @main(title, currentUser, adminStyles, adminScripts) {

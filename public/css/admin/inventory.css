@@ -1,3 +1,139 @@
+
+.newMedicationWrap{
+
+    overflow: hidden;
+    padding: 10px;
+    background-color: #fafafa;
+    border: 1px solid #cfcfcf;
+}
+
+.newMedicationWrap .row{
+
+    margin: 0 0 15px;
+}
+
+.newMedicationWrap .fieldMedication{
+
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.newMedicationWrap .fieldMedication #medicationName{
+
+    width: 370px;
+}
+
+.newMedicationWrap .fieldMedication .medicationIngredient{
+
+    width: 300px;
+}
+
+.newMedicationWrap .fieldMedication:last-child{
+
+    margin-right: 0;
+}
+
+.newMedicationWrap .fieldMedication .fInput,
+.newMedicationWrap .fieldMedication .fOption{
+
+    clear: both;
+    display: block;
+}
+
+.newMedicationWrap .fieldMedication .fOption{
+
+    width: auto;
+}
+
+.newMedicationWrap .ingredients{
+
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cfcfcf;
+}
+
+.newMedicationWrap .ingredientWrap{
+
+    padding-left: 70px;
+    padding-right: 50px;
+    clear: both;
+    position: relative;
+    display: inline-block;
+}
+
+.newMedicationWrap .ingredientWrap .ingredientFields{
+
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.newMedicationWrap .ingredientWrap .ingredientFields:first-child .removeIngredient{
+
+    border-color: #cccccc;
+    color: #cccccc;
+}
+
+.newMedicationWrap #addNewIngredient{
+
+    display: block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: absolute;
+    bottom: 11px;
+    right: 5px;
+}
+
+.newMedicationWrap #addNewIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap .removeIngredient{
+
+    display: inline-block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: relative;
+}
+
+.newMedicationWrap .removeIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap #submitMedicationButton{
+
+    float: right;
+}
+
+#inventoryTable{
+
+}
+
+#inventoryTable th{
+
+    background-color: #2f2f2f;
+    color: #ffffff;
+    padding: 5px;
+    text-align: center;
+}
+
+#inventoryTable td{
+
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    padding: 5px 10px;
+}
+
+#inventoryTable td.name{
+
+    width: 50%;
+}
+
+
+/*
 #addMed {
     margin-bottom: 20px;
 }
@@ -128,4 +264,4 @@
 
 .medication_ingredient {
     font-size: 9px;
-}
+}*/

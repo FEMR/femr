@@ -113,7 +113,6 @@
                     <th>City</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>isCurrent</th>
                 </tr>
             </thead>
             <tbody>
@@ -127,14 +126,6 @@
                                 <td>@missionTrip.getTripCity</td>
                                 <td>@missionTrip.getFriendlyTripStartDate</td>
                                 <td>@missionTrip.getFriendlyTripEndDate</td>
-                                <td>
-                                @if(missionTrip.isCurrent) {
-                                    <span>Yes</span>
-                                } else {
-                                    <input type="number" class="hidden" value="@missionTrip.getId" name="currentTripIdToggle"/>
-                                    <button class="fButton currentButton" type="button">Make Current</button>
-                                }
-                                </td>
                             </tr>
                         }
                     }

@@ -126,12 +126,11 @@ public interface IDataModelMapper {
      *
      * @param startDate   start date of the trip, not null
      * @param endDate     end date of the trip, not null
-     * @param isCurrent   is this the current trip?, not null
      * @param missionCity the city where the trip is taking place, not null
      * @param missionTeam the country where the trip is taking place, not null
      * @return an implementation of IMissionTrip or null if processing fails
      */
-    IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam);
+    IMissionTrip createMissionTrip(Date startDate, Date endDate, IMissionCity missionCity, IMissionTeam missionTeam);
 
     /**
      * Generate and provide an implementation of IPatient.

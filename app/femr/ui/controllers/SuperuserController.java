@@ -95,18 +95,6 @@ public class SuperuserController extends Controller {
         return ok(trips.render(currentUser, tripViewModel));
     }
 
-    public Result toggleCurrentTripPost(int tripId) {
-
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        ServiceResponse<TripItem> tripItemUpdateServiceResponse = missionTripService.updateCurrentTrip(tripId);
-        if (tripItemUpdateServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-
-        return ok(index.render(currentUser));
-    }
-
     public Result tripsPost() {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();

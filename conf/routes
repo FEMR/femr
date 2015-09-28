@@ -8,7 +8,6 @@ GET         /superuser/tabs                                    @femr.ui.controll
 POST        /superuser/tabs                                    @femr.ui.controllers.SuperuserController.tabsPost()
 GET         /superuser/trips                                   @femr.ui.controllers.SuperuserController.tripsGet()
 POST        /superuser/trips                                   @femr.ui.controllers.SuperuserController.tripsPost()
-POST        /superuser/trips/:id                               @femr.ui.controllers.SuperuserController.toggleCurrentTripPost(id: Integer)
 GET         /superuser                                         @femr.ui.controllers.SuperuserController.indexGet()
 #Admin
 POST        /admin/users/create                                @femr.ui.controllers.admin.UsersController.createPost()

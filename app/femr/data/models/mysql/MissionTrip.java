@@ -37,8 +37,6 @@ public class MissionTrip implements IMissionTrip {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mission_city_id")
     private MissionCity missionCity;
-    @Column(name = "isCurrent", nullable = false)
-    private boolean isCurrent;
     @Column(name = "start_date")
     private Date startDate;
     @Column(name = "end_date")
@@ -67,16 +65,6 @@ public class MissionTrip implements IMissionTrip {
     @Override
     public void setMissionCity(IMissionCity missionCity) {
         this.missionCity = (MissionCity) missionCity;
-    }
-
-    @Override
-    public boolean isCurrent() {
-        return isCurrent;
-    }
-
-    @Override
-    public void setCurrent(boolean isCurrent) {
-        this.isCurrent = isCurrent;
     }
 
     @Override

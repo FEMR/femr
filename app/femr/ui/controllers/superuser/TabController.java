@@ -1,151 +1,48 @@
-/*
-     fEMR - fast Electronic Medical Records
-     Copyright (C) 2014  Team fEMR
+package femr.ui.controllers.superuser;
 
-     fEMR is free software: you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation, either version 3 of the License, or
-     (at your option) any later version.
-
-     fEMR is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
-     you have any questions, contact <info@teamfemr.org>.
-*/
-package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.business.services.core.IMissionTripService;
+import femr.business.services.core.ISessionService;
 import femr.business.services.core.ITabService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.*;
-import femr.business.services.core.ISessionService;
+import femr.common.models.TabFieldItem;
+import femr.common.models.TabItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.superuser.*;
+import femr.ui.models.superuser.ContentViewModelGet;
+import femr.ui.models.superuser.ContentViewModelPost;
+import femr.ui.models.superuser.TabsViewModelGet;
+import femr.ui.models.superuser.TabsViewModelPost;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import femr.ui.views.html.superuser.index;
-import femr.ui.views.html.superuser.tabs;
-import femr.ui.views.html.superuser.fields;
-import femr.ui.views.html.superuser.trips;
+import femr.ui.views.html.superuser.tabs.manage;
+import femr.ui.views.html.superuser.tabs.fields;
 
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.SUPERUSER})
-public class SuperuserController extends Controller {
+public class TabController extends Controller {
+
     private final Form<TabsViewModelPost> TabsViewModelForm = Form.form(TabsViewModelPost.class);
     private final Form<ContentViewModelPost> ContentViewModelForm = Form.form(ContentViewModelPost.class);
-    private Form<TripViewModelPost> tripViewModelPostForm = Form.form(TripViewModelPost.class);
     private final ITabService tabService;
-    private final IMissionTripService missionTripService;
     private final ISessionService sessionService;
 
     @Inject
-    public SuperuserController(ITabService tabService,
-                               IMissionTripService missionTripService,
+    public TabController(ITabService tabService,
                                ISessionService sessionService) {
 
         this.tabService = tabService;
-        this.missionTripService = missionTripService;
         this.sessionService = sessionService;
     }
 
-    public Result indexGet() {
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        return ok(index.render(currentUser));
-    }
-
-    public Result tripsGet() {
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
-        if (missionItemServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.retrieveAvailableTeams();
-        if (availableTeamsServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
-        if (availableCitiesServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.retrieveAvailableCountries();
-        if (availableCountriesServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        TripViewModelGet tripViewModel = new TripViewModelGet();
-        tripViewModel.setMissionItems(missionItemServiceResponse.getResponseObject());
-        tripViewModel.setAvailableTeams(availableTeamsServiceResponse.getResponseObject());
-        tripViewModel.setAvailableCities(availableCitiesServiceResponse.getResponseObject());
-        tripViewModel.setAvailableCountries(availableCountriesServiceResponse.getResponseObject());
-
-
-        return ok(trips.render(currentUser, tripViewModel));
-    }
-
-    public Result tripsPost() {
-
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
-
-        //creating a new team or trip or city-
-
-        //Create a new city if the user has entered the city and country
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCity()) &&
-                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCityCountry())) {
-
-            ServiceResponse<CityItem> newCityServiceResponse = missionTripService.createNewCity(tripViewModelPost.getNewCity(), tripViewModelPost.getNewCityCountry());
-            if (newCityServiceResponse.hasErrors())
-                throw new RuntimeException();
-        }
-
-        //Create a new team if the user has entered a team name
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTeamName())) {
-
-            TeamItem teamItem = new TeamItem();
-            teamItem.setName(tripViewModelPost.getNewTeamName());
-            teamItem.setLocation(tripViewModelPost.getNewTeamLocation());
-            teamItem.setDescription(tripViewModelPost.getNewTeamDescription());
-            ServiceResponse<TeamItem> newTeamItemServiceResponse = missionTripService.createNewTeam(teamItem);
-            if (newTeamItemServiceResponse.hasErrors())
-                throw new RuntimeException();
-
-        }
-
-        //create a new trip if the user has entered the information
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripTeamName()) &&
-                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCountry()) &&
-                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCity()) &&
-                tripViewModelPost.getNewTripStartDate() != null &&
-                tripViewModelPost.getNewTripEndDate() != null) {
-
-            TripItem tripItem = new TripItem();
-            tripItem.setTeamName(tripViewModelPost.getNewTripTeamName());
-            tripItem.setTripCity(tripViewModelPost.getNewTripCity());
-            tripItem.setTripCountry(tripViewModelPost.getNewTripCountry());
-            tripItem.setTripStartDate(tripViewModelPost.getNewTripStartDate());
-            tripItem.setTripEndDate(tripViewModelPost.getNewTripEndDate());
-            ServiceResponse<TripItem> newTripItemServiceResponse = missionTripService.createNewTrip(tripItem);
-            if (newTripItemServiceResponse.hasErrors())
-                throw new RuntimeException();
-        }
-
-        return ok(index.render(currentUser));
-    }
-
-    public Result tabsGet() {
+    public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ServiceResponse<List<TabItem>> response;
 
@@ -164,10 +61,10 @@ public class SuperuserController extends Controller {
         }
         viewModelGet.setDeletedTabs(response.getResponseObject());
 
-        return ok(tabs.render(currentUser, viewModelGet));
+        return ok(manage.render(currentUser, viewModelGet));
     }
 
-    public Result tabsPost() {
+    public Result managePost() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TabsViewModelPost viewModelPost = TabsViewModelForm.bindFromRequest().get();
 
@@ -209,7 +106,7 @@ public class SuperuserController extends Controller {
     }
 
     //name = tab name
-    public Result contentGet(String name) {
+    public Result fieldsGet(String name) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ContentViewModelGet viewModelGet = new ContentViewModelGet();
 
@@ -247,7 +144,7 @@ public class SuperuserController extends Controller {
     }
 
     //name = tab name
-    public Result contentPost(String name) {
+    public Result fieldsPost(String name) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ContentViewModelPost viewModelPost = ContentViewModelForm.bindFromRequest().get();
 
@@ -280,5 +177,4 @@ public class SuperuserController extends Controller {
 
         return redirect("/superuser/tabs/" + name);
     }
-
 }

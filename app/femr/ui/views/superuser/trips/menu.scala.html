@@ -1,7 +1,8 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TripViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.trips.TripViewModelGet)
 
-@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.TripController
 @import femr.ui.views.html.layouts.admin
+@import femr.ui.models.superuser.trips.TripViewModelGet
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
@@ -12,8 +13,8 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
     }
 
-@admin("SuperUser Panel", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-    @helper.form(action = SuperuserController.tripsPost()) {
+@admin("Trip Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+    @helper.form(action = TripController.menuPost()) {
         <p>This is where a superuser can identify the trip that is currently underway. The trip, when defined, will be linked to
             the patient's encounter. The submit button will create a new team and/or city and/or trip depending on which required fields
             are filled out.</p>

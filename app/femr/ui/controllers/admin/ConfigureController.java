@@ -33,7 +33,7 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import femr.ui.views.html.admin.configure.index;
+import femr.ui.views.html.admin.configure.manage;
 import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -51,7 +51,7 @@ public class ConfigureController extends Controller {
         this.configureService = configureService;
     }
 
-    public Result indexGet() {
+    public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         IndexViewModelGet indexViewModel = new IndexViewModelGet();
 
@@ -65,10 +65,10 @@ public class ConfigureController extends Controller {
         }
 
 
-        return ok(index.render(currentUser, indexViewModel));
+        return ok(manage.render(currentUser, indexViewModel));
     }
 
-    public Result indexPost() {
+    public Result managePost() {
         IndexViewModelPost viewModel = indexViewModelForm.bindFromRequest().get();
 
         ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.updateSystemSettings(viewModel.getSettings());

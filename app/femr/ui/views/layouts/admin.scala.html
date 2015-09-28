@@ -10,7 +10,9 @@
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.controllers.admin.routes.ConfigureController
 @import femr.ui.controllers.admin.routes.InventoryController
-@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.TabController
+@import femr.ui.controllers.superuser.routes.TripController
 
         @* Add scripts to script variable, how? *@
     @adminScripts = {
@@ -27,20 +29,18 @@
 @main(title, currentUser, adminStyles, adminScripts) {
     <div id="admin-panels">
         <div id="admin-left-panel">
-            <a href="@InventoryController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
-                Inventory Tracking</a>
-            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
-                Manage Users</a>
-            <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
-                Add User</a>
-            <a href="@ConfigureController.indexGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
+            <a href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
+            <a href="@InventoryController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
+                Inventory</a>
             @if(currentUser.getEmail == "superuser"){
-                <a href="@SuperuserController.tripsGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-globe"></span>
-                    Trip Tracking</a>
-                <a href="@SuperuserController.tabsGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-wrench"></span>
-                    Manage Tabs</a>
+                <a href="@TabController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-wrench"></span>
+                    Tabs</a>
+                <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-globe"></span>
+                    Trips</a>
             }
+            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
+                Users</a>
         </div>
         <div id="admin-right-panel">
             <div id="title">

@@ -33,7 +33,7 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.*;
 import femr.common.models.MedicationItem;
-import femr.ui.views.html.admin.inventory.index;
+import femr.ui.views.html.admin.inventory.manage;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -71,7 +71,7 @@ public class InventoryController extends Controller {
         this.sessionService = sessionService;
     }
 
-    public Result indexGet() {
+    public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         InventoryViewModelGet viewModel = new InventoryViewModelGet();
@@ -96,13 +96,13 @@ public class InventoryController extends Controller {
             viewModel.setAvailableForms(availableMedicationFormsResponse.getResponseObject());
         }
 
-        return ok(index.render(currentUser, viewModel));
+        return ok(manage.render(currentUser, viewModel));
     }
 
     /**
      * Handles the submission of a new medication from the Admin Inventory Tracking screen.
      */
-    public Result indexPost() {
+    public Result managePost() {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 

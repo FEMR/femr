@@ -1,0 +1,9 @@
+@(currentUser: femr.common.dtos.CurrentUser)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.superuser.routes.TripController
+
+@admin("Trips", currentUser) {
+    <a href="@TripController.menuGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+        Add Trip</a>
+}

@@ -16,7 +16,7 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.superuser;
+package femr.ui.models.superuser.trips;
 
 import femr.common.models.CityItem;
 import femr.common.models.MissionItem;

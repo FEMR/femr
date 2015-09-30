@@ -59,11 +59,11 @@ public interface IPatientPrescription {
 
     void setCounseled(boolean isCounseled);
 
-    boolean isDispensed();
-
-    void setDispensed(boolean isDispensed);
-
     List<PatientPrescriptionReplacement> getPatientPrescriptionReplacements();
 
     void setPatientPrescriptionReplacements(List<PatientPrescriptionReplacement> patientPrescriptionReplacements);
+
+    DateTime getDateDispensed();
+
+    void setDateDispensed(DateTime dateDispensed);
 }

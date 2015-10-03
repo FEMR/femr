@@ -3,7 +3,18 @@
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.superuser.routes.TripController
 
-@admin("Trips", currentUser) {
-    <a href="@TripController.menuGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
-        Add Trip</a>
+@additionalStyles = {
+
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
+}
+
+@admin("Trips", currentUser, styles = additionalStyles) {
+    <div class="tripOptionsWrap">
+        <a href="@TripController.tripsGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+            Manage Trips</a>
+        <a href="@TripController.teamsGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+            Manage Teams</a>
+        <a href="@TripController.citiesGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+            Manage Cities</a>
+    </div>
 }

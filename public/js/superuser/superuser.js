@@ -6,8 +6,5 @@ $(document).ready(function(){
         $("[name='newTripCountry']").val($(this).find(':selected').attr('country-name'));
     });
 
-
-    //$('#tripTable').DataTable({
-    //    columnDefs: [ { orderable: false, targets: [3] }]
-    //});
+    $('#tripTable').DataTable();
 });

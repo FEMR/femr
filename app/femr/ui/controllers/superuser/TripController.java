@@ -46,36 +46,47 @@ public class TripController extends Controller {
 
     }
 
-    public Result menuGet() {
+    public Result tripsGet(){
+
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
-        if (missionItemServiceResponse.hasErrors())
-            throw new RuntimeException();
+        TripViewModelGet tripViewModel = createViewModel();
 
-        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.retrieveAvailableTeams();
-        if (availableTeamsServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
-        if (availableCitiesServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.retrieveAvailableCountries();
-        if (availableCountriesServiceResponse.hasErrors())
-            throw new RuntimeException();
-
-        TripViewModelGet tripViewModel = new TripViewModelGet();
-        tripViewModel.setMissionItems(missionItemServiceResponse.getResponseObject());
-        tripViewModel.setAvailableTeams(availableTeamsServiceResponse.getResponseObject());
-        tripViewModel.setAvailableCities(availableCitiesServiceResponse.getResponseObject());
-        tripViewModel.setAvailableCountries(availableCountriesServiceResponse.getResponseObject());
-
-
-        return ok(menu.render(currentUser, tripViewModel));
+        return ok(trips.render(currentUser, tripViewModel));
     }
 
-    public Result menuPost() {
+    public Result tripsPost(){
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        return ok(femr.ui.views.html.superuser.index.render(currentUser));
+    }
+
+    public Result citiesGet(){
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(cities.render(currentUser, tripViewModel));
+    }
+
+    public Result citiesPost(){
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        return ok(femr.ui.views.html.superuser.index.render(currentUser));
+    }
+
+    public Result teamsGet() {
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(teams.render(currentUser, tripViewModel));
+    }
+
+    public Result teamsPost() {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
@@ -124,4 +135,32 @@ public class TripController extends Controller {
 
         return ok(femr.ui.views.html.superuser.index.render(currentUser));
     }
+
+    private TripViewModelGet createViewModel(){
+
+        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.retrieveAvailableTeams();
+        if (availableTeamsServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
+        if (availableCitiesServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        ServiceResponse<List<String>> availableCountriesServiceResponse = missionTripService.retrieveAvailableCountries();
+        if (availableCountriesServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
+        if (missionItemServiceResponse.hasErrors())
+            throw new RuntimeException();
+
+        TripViewModelGet tripViewModel = new TripViewModelGet();
+        tripViewModel.setMissionItems(missionItemServiceResponse.getResponseObject());
+        tripViewModel.setAvailableTeams(availableTeamsServiceResponse.getResponseObject());
+        tripViewModel.setAvailableCities(availableCitiesServiceResponse.getResponseObject());
+        tripViewModel.setAvailableCountries(availableCountriesServiceResponse.getResponseObject());
+
+        return tripViewModel;
+    }
+
 }

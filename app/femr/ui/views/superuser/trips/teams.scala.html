@@ -1,0 +1,51 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.trips.TripViewModelGet)
+
+@import femr.ui.controllers.superuser.routes.TripController
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
+    }
+
+    @additionalScripts = {
+
+        <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
+    }
+
+@admin("Trip Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+    @helper.form(action = TripController.teamsPost()) {
+        <p>This is where a superuser can identify the trip that is currently underway. The trip, when defined, will be linked to
+            the patient's encounter. The submit button will create a new team and/or city and/or trip depending on which required fields
+            are filled out.</p>
+        <div id="addTeamWrap">
+            <h1>Add Team:</h1>
+            <div>
+                <label>Team Name<span class="red bold">*</span>:
+                    <input class="fInput" type="text" name="newTeamName"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Team Location:
+                    <input class="fInput" type="text" name="newTeamLocation"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Team Description:
+                    <input class="fInput" type="text" name="newTeamDescription"/>
+                </label>
+            </div>
+
+
+
+        </div>
+
+
+        <div id="submitWrap">
+            <button type="submit" class="fButton">Submit</button>
+        </div>
+    }
+
+}

@@ -3,15 +3,15 @@
 @import femr.ui.controllers.superuser.routes.TripController
 @import femr.ui.views.html.layouts.admin
 
-    @additionalStyles = {
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser/superuser.css")">
+}
 
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
-    }
-
-    @additionalScripts = {
-
-        <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
-    }
+@additionalScripts = {
+    <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
+}
 
 @admin("Trip Tracking", currentUser, styles = additionalStyles, scripts = additionalScripts) {
     @helper.form(action = TripController.teamsPost()) {
@@ -39,7 +39,6 @@
             </div>
 
 
-
         </div>
 
 
@@ -47,5 +46,28 @@
             <button type="submit" class="fButton">Submit</button>
         </div>
     }
+
+    <div id="tableWrap">
+
+        <table id="teamTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(i <- 1 to viewModel.getAvailableTeams.size) {
+                @defining(viewModel.getAvailableTeams.get(i - 1)) { team =>
+
+                    <tr>
+                        <td>@team</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+
+
+    </div>
 
 }

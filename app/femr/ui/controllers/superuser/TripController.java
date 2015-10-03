@@ -58,62 +58,7 @@ public class TripController extends Controller {
     public Result tripsPost(){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        return ok(femr.ui.views.html.superuser.index.render(currentUser));
-    }
-
-    public Result citiesGet(){
-
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        TripViewModelGet tripViewModel = createViewModel();
-
-        return ok(cities.render(currentUser, tripViewModel));
-    }
-
-    public Result citiesPost(){
-
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        return ok(femr.ui.views.html.superuser.index.render(currentUser));
-    }
-
-    public Result teamsGet() {
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        TripViewModelGet tripViewModel = createViewModel();
-
-        return ok(teams.render(currentUser, tripViewModel));
-    }
-
-    public Result teamsPost() {
-
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
-
-        //creating a new team or trip or city-
-
-        //Create a new city if the user has entered the city and country
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCity()) &&
-                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCityCountry())) {
-
-            ServiceResponse<CityItem> newCityServiceResponse = missionTripService.createNewCity(tripViewModelPost.getNewCity(), tripViewModelPost.getNewCityCountry());
-            if (newCityServiceResponse.hasErrors())
-                throw new RuntimeException();
-        }
-
-        //Create a new team if the user has entered a team name
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTeamName())) {
-
-            TeamItem teamItem = new TeamItem();
-            teamItem.setName(tripViewModelPost.getNewTeamName());
-            teamItem.setLocation(tripViewModelPost.getNewTeamLocation());
-            teamItem.setDescription(tripViewModelPost.getNewTeamDescription());
-            ServiceResponse<TeamItem> newTeamItemServiceResponse = missionTripService.createNewTeam(teamItem);
-            if (newTeamItemServiceResponse.hasErrors())
-                throw new RuntimeException();
-
-        }
 
         //create a new trip if the user has entered the information
         if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripTeamName()) &&
@@ -133,7 +78,71 @@ public class TripController extends Controller {
                 throw new RuntimeException();
         }
 
-        return ok(femr.ui.views.html.superuser.index.render(currentUser));
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(trips.render(currentUser, tripViewModel));
+    }
+
+    public Result citiesGet(){
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(cities.render(currentUser, tripViewModel));
+    }
+
+    public Result citiesPost(){
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
+
+        //Create a new city if the user has entered the city and country
+        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCity()) &&
+                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCityCountry())) {
+
+            ServiceResponse<CityItem> newCityServiceResponse = missionTripService.createNewCity(tripViewModelPost.getNewCity(), tripViewModelPost.getNewCityCountry());
+            if (newCityServiceResponse.hasErrors())
+                throw new RuntimeException();
+        }
+
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(cities.render(currentUser, tripViewModel));
+    }
+
+    public Result teamsGet() {
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(teams.render(currentUser, tripViewModel));
+    }
+
+    public Result teamsPost() {
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
+
+
+        //Create a new team if the user has entered a team name
+        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTeamName())) {
+
+            TeamItem teamItem = new TeamItem();
+            teamItem.setName(tripViewModelPost.getNewTeamName());
+            teamItem.setLocation(tripViewModelPost.getNewTeamLocation());
+            teamItem.setDescription(tripViewModelPost.getNewTeamDescription());
+            ServiceResponse<TeamItem> newTeamItemServiceResponse = missionTripService.createNewTeam(teamItem);
+            if (newTeamItemServiceResponse.hasErrors())
+                throw new RuntimeException();
+
+        }
+
+
+
+        TripViewModelGet tripViewModel = createViewModel();
+
+        return ok(teams.render(currentUser, tripViewModel));
     }
 
     private TripViewModelGet createViewModel(){

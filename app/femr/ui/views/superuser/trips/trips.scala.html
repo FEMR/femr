@@ -5,7 +5,7 @@
 
 @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser/superuser.css")">
 }
 
 @additionalScripts = {
@@ -14,7 +14,7 @@
 }
 
 @admin("Manage Trips", currentUser, styles = additionalStyles, scripts = additionalScripts) {
-    @helper.form(action = TripController.teamsPost()) {
+    @helper.form(action = TripController.tripsPost()) {
         <div id="addTripWrap">
             <h1>Add Trip:</h1>
             <div>
@@ -62,7 +62,7 @@
         </div>
     }
 
-    <div id="currentWrap">
+    <div id="tableWrap">
 
         <table id="tripTable">
             <thead>

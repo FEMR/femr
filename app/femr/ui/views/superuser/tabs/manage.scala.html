@@ -3,9 +3,9 @@
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.superuser.routes.TabController
 
-    @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
-    }
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser/superuser.css")">
+}
 
 @admin("Tabs", currentUser, styles = additionalStyles) {
     <h1>Tabs</h1>

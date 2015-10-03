@@ -7,4 +7,6 @@ $(document).ready(function(){
     });
 
     $('#tripTable').DataTable();
+    $('#cityTable').DataTable();
+    $('#teamTable').DataTable();
 });

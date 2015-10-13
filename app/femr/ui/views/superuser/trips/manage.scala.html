@@ -18,6 +18,10 @@
 
     @tripsMenu()
 
+    @for(messageIndex <- 1 to viewModel.getMessages.size){
+        <p>@viewModel.getMessages.get(messageIndex - 1)</p>
+    }
+
     @helper.form(action = TripController.managePost()) {
         <div id="addTripWrap">
             <h1>Add Trip:</h1>

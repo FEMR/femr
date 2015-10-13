@@ -18,6 +18,10 @@
 
     @tripsMenu()
 
+    @for(messageIndex <- 1 to viewModel.getMessages.size){
+        <p>@viewModel.getMessages.get(messageIndex - 1)</p>
+    }
+
     @helper.form(action = TripController.citiesPost()) {
         <div id="addCityWrap">
             <h1>Add City:</h1>

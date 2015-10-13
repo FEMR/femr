@@ -182,7 +182,8 @@ public class MissionTripService implements IMissionTripService {
                 StringUtils.isNullOrWhiteSpace(tripItem.getTeamName()) ||
                 StringUtils.isNullOrWhiteSpace(tripItem.getTripCity()) ||
                 StringUtils.isNullOrWhiteSpace(tripItem.getTripCountry()) ||
-                tripItem.getTripStartDate() == null) {
+                tripItem.getTripStartDate() == null ||
+                tripItem.getTripEndDate() == null) {
             response.addError("", "you're missing required fields, try again");
         } else {
             try {
@@ -200,10 +201,10 @@ public class MissionTripService implements IMissionTripService {
 
                 if (missionCountry == null) {
                     //make sure we have a country to work with
-                    response.addError("", "someone sent a bad country in the request");
+                    response.addError("", "country does not exist");
                 } else if (missionTeam == null) {
                     //make sure we have a team to work with
-                    response.addError("", "someone sent a bad team name in the request");
+                    response.addError("", "team does not exist");
                 } else {
 
                     ExpressionList<MissionCity> missionCityExpressionList = QueryProvider.getMissionCityQuery()

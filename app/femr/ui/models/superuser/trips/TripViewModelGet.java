@@ -28,6 +28,7 @@ public class TripViewModelGet {
     private List<MissionItem> missionItems;
     private List<CityItem> availableCities;
     private List<String> availableCountries;
+    private List<String> messages;//contains information about whatever action was performed (success, failure, etc)
 
     public List<MissionItem> getMissionItems() {
         return missionItems;
@@ -51,5 +52,13 @@ public class TripViewModelGet {
 
     public void setAvailableCountries(List<String> availableCountries) {
         this.availableCountries = availableCountries;
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
     }
 }

@@ -19,24 +19,25 @@
     @tripsMenu()
 
     @helper.form(action = TripController.citiesPost()) {
-        <h1>Add City:</h1>
-        <div>
-            <label>City:<span class="red bold">*</span>
-                <input class="fInput" type="text" name="newCity"/>
-            </label>
-        </div>
+        <div id="addCityWrap">
+            <h1>Add City:</h1>
+            <div>
+                <label>City:<span class="red bold">*</span>
+                    <input class="fInput" type="text" name="newCity"/>
+                </label>
+            </div>
 
-        <div>
-            <label>Country:<span class="red bold">*</span>
-                <select class="fSelect" name="newCityCountry">
-                    <option selected disabled value=""></option>
-                    @for(countryIndex <- 1 to viewModel.getAvailableCountries.size) {
-                        <option>@viewModel.getAvailableCountries.get(countryIndex - 1)</option>
-                    }
-                </select>
-            </label>
+            <div>
+                <label>Country:<span class="red bold">*</span>
+                    <select class="fSelect" name="newCityCountry">
+                        <option selected disabled value=""></option>
+                        @for(countryIndex <- 1 to viewModel.getAvailableCountries.size) {
+                            <option>@viewModel.getAvailableCountries.get(countryIndex - 1)</option>
+                        }
+                    </select>
+                </label>
+            </div>
         </div>
-
         <div id="submitWrap">
             <button type="submit" class="fButton">Submit</button>
         </div>

@@ -37,16 +37,12 @@ table th,td{
 
 
 /*trip tracking*/
-#addTeamWrap{
+#addTeamWrap, #addTripWrap, #addCityWrap{
     width: 50%;
     float: left;
 }
 #addTeamWrap div{
     width: 100%;
-    float: left;
-}
-#addTripWrap{
-    width: 50%;
     float: left;
 }
 #tableWrap{

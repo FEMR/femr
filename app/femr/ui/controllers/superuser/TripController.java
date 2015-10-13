@@ -140,10 +140,6 @@ public class TripController extends Controller {
 
     private TripViewModelGet createViewModel(){
 
-        ServiceResponse<List<String>> availableTeamsServiceResponse = missionTripService.retrieveAvailableTeams();
-        if (availableTeamsServiceResponse.hasErrors())
-            throw new RuntimeException();
-
         ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
         if (availableCitiesServiceResponse.hasErrors())
             throw new RuntimeException();
@@ -158,7 +154,6 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = new TripViewModelGet();
         tripViewModel.setMissionItems(missionItemServiceResponse.getResponseObject());
-        tripViewModel.setAvailableTeams(availableTeamsServiceResponse.getResponseObject());
         tripViewModel.setAvailableCities(availableCitiesServiceResponse.getResponseObject());
         tripViewModel.setAvailableCountries(availableCountriesServiceResponse.getResponseObject());
 

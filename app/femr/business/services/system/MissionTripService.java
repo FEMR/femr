@@ -83,29 +83,6 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> retrieveAvailableTeams() {
-
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> teams = new ArrayList<>();
-
-        Query<MissionTeam> missionTeamQuery = QueryProvider.getMissionTeamQuery()
-                .orderBy("name");
-        List<? extends IMissionTeam> missionTeams = missionTeamRepository.find(missionTeamQuery);
-
-        for (IMissionTeam mt : missionTeams) {
-
-            teams.add(mt.getName());
-        }
-
-        response.setResponseObject(teams);
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ServiceResponse<List<CityItem>> retrieveAvailableCities() {
 
         ServiceResponse<List<CityItem>> response = new ServiceResponse<>();

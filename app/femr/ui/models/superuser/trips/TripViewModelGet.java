@@ -26,7 +26,6 @@ import java.util.List;
 public class TripViewModelGet {
 
     private List<MissionItem> missionItems;
-    private List<String> availableTeams;
     private List<CityItem> availableCities;
     private List<String> availableCountries;
 
@@ -36,14 +35,6 @@ public class TripViewModelGet {
 
     public void setMissionItems(List<MissionItem> missionItems) {
         this.missionItems = missionItems;
-    }
-
-    public List<String> getAvailableTeams() {
-        return availableTeams;
-    }
-
-    public void setAvailableTeams(List<String> availableTeams) {
-        this.availableTeams = availableTeams;
     }
 
     public List<CityItem> getAvailableCities() {

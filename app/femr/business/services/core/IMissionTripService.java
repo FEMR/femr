@@ -37,14 +37,6 @@ public interface IMissionTripService {
     IMissionTrip retrieveCurrentMissionTrip();
 
     /**
-     * Retrieve a list of all team names.
-     *
-     * @return a service response that contains a list of available teams as Strings
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<String>> retrieveAvailableTeams();
-
-    /**
      * Retrieve a list of all cities.
      *
      * @return a service response that contains a list of available cities as CityItems

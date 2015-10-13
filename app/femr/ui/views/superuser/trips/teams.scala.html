@@ -55,14 +55,18 @@
             <thead>
                 <tr>
                     <th>Team Name</th>
+                    <th>Description</th>
+                    <th>Origin</th>
                 </tr>
             </thead>
             <tbody>
-            @for(i <- 1 to viewModel.getAvailableTeams.size) {
-                @defining(viewModel.getAvailableTeams.get(i - 1)) { team =>
+            @for(teamIndex <- 1 to viewModel.getMissionItems.size()) {
+                @defining(viewModel.getMissionItems.get(teamIndex - 1)) { item =>
 
                     <tr>
-                        <td>@team</td>
+                        <td>@item.getTeamName</td>
+                        <td>@item.getTeamDescription</td>
+                        <td>@item.getTeamLocation</td>
                     </tr>
                 }
             }

@@ -1,6 +1,7 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.trips.TripViewModelGet)
 
 @import femr.ui.views.html.layouts.admin
+@import femr.ui.views.html.partials.superuser.trips.tripsMenu
 @import femr.ui.controllers.superuser.routes.TripController
 
 @additionalStyles = {
@@ -13,7 +14,10 @@
     <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
 }
 
-@admin("Manage Cities", currentUser, scripts = additionalScripts, styles = additionalStyles) {
+@admin("Trips - Manage Cities", currentUser, scripts = additionalScripts, styles = additionalStyles) {
+
+    @tripsMenu()
+
     @helper.form(action = TripController.citiesPost()) {
         <h1>Add City:</h1>
         <div>

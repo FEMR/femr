@@ -40,22 +40,15 @@ public class TripController extends Controller {
     }
 
     public Result manageGet(){
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        return ok(manage.render(currentUser));
-
-    }
-
-    public Result tripsGet(){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         TripViewModelGet tripViewModel = createViewModel();
 
-        return ok(trips.render(currentUser, tripViewModel));
+        return ok(manage.render(currentUser, tripViewModel));
     }
 
-    public Result tripsPost(){
+    public Result managePost(){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
@@ -80,7 +73,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createViewModel();
 
-        return ok(trips.render(currentUser, tripViewModel));
+        return ok(manage.render(currentUser, tripViewModel));
     }
 
     public Result citiesGet(){

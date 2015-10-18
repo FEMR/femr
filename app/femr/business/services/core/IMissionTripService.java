@@ -81,8 +81,8 @@ public interface IMissionTripService {
     /**
      * Create a new city
      *
-     * @param cityName name of the city, TODO: make not nullable
-     * @param countryName name of the country, TODO: make not nullable
+     * @param cityName name of the city, not null
+     * @param countryName name of the country, not null
      * @return a service response that contains a new CityItem that was created
      * and/or errors if they exist.
      */

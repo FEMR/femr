@@ -263,6 +263,18 @@ public class MissionTripService implements IMissionTripService {
 
         ServiceResponse<CityItem> response = new ServiceResponse<>();
 
+        if (cityName == null || StringUtils.isNullOrWhiteSpace(cityName)){
+
+            response.addError("", "city must have a name");
+            return response;
+        }
+
+        if (countryName == null || StringUtils.isNullOrWhiteSpace(countryName)){
+
+            response.addError("", "country must have a name");
+            return response;
+        }
+
         ExpressionList<MissionCountry> missionCountryExpressionList = QueryProvider.getMissionCountryQuery()
                 .where()
                 .eq("name", countryName);

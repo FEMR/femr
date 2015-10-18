@@ -15,7 +15,6 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.superuser.trips.TripViewModelGet;
 import femr.ui.models.superuser.trips.TripViewModelPost;
 import femr.ui.views.html.superuser.trips.*;
-import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -56,32 +55,26 @@ public class TripController extends Controller {
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
         List<String> messages = new ArrayList<>();
 
-        //create a new trip if the user has entered the information
-//        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripTeamName()) &&
-//                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCountry()) &&
-//                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTripCity()) &&
-//                tripViewModelPost.getNewTripStartDate() != null &&
-//                tripViewModelPost.getNewTripEndDate() != null) {
+        //create the trip item from the viewmodel
+        TripItem tripItem = new TripItem();
+        tripItem.setTeamName(tripViewModelPost.getNewTripTeamName());
+        tripItem.setTripCity(tripViewModelPost.getNewTripCity());
+        tripItem.setTripCountry(tripViewModelPost.getNewTripCountry());
+        tripItem.setTripStartDate(tripViewModelPost.getNewTripStartDate());
+        tripItem.setTripEndDate(tripViewModelPost.getNewTripEndDate());
 
-            TripItem tripItem = new TripItem();
-            tripItem.setTeamName(tripViewModelPost.getNewTripTeamName());
-            tripItem.setTripCity(tripViewModelPost.getNewTripCity());
-            tripItem.setTripCountry(tripViewModelPost.getNewTripCountry());
-            tripItem.setTripStartDate(tripViewModelPost.getNewTripStartDate());
-            tripItem.setTripEndDate(tripViewModelPost.getNewTripEndDate());
-            ServiceResponse<TripItem> newTripItemServiceResponse = missionTripService.createNewTrip(tripItem);
-            if (newTripItemServiceResponse.hasErrors()){
-                messages.addAll(
-                        newTripItemServiceResponse.getErrors()
-                                .keySet()
-                                .stream()
-                                .map(key -> newTripItemServiceResponse.getErrors().get(key))
-                                .collect(Collectors.toList()
-                                )
-                );
-            }
-
-       // }
+        //send trip item to service layer to create trip
+        ServiceResponse<TripItem> newTripItemServiceResponse = missionTripService.createNewTrip(tripItem);
+        if (newTripItemServiceResponse.hasErrors()) {
+            messages.addAll(
+                    newTripItemServiceResponse.getErrors()
+                            .keySet()
+                            .stream()
+                            .map(key -> newTripItemServiceResponse.getErrors().get(key))
+                            .collect(Collectors.toList()
+                            )
+            );
+        }
 
         TripViewModelGet tripViewModel = createViewModel(messages);
 
@@ -103,23 +96,17 @@ public class TripController extends Controller {
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
         List<String> messages = new ArrayList<>();
 
-        //Create a new city if the user has entered the city and country
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCity()) &&
-                StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewCityCountry())) {
+        ServiceResponse<CityItem> newCityServiceResponse = missionTripService.createNewCity(tripViewModelPost.getNewCity(), tripViewModelPost.getNewCityCountry());
+        if (newCityServiceResponse.hasErrors()) {
 
-            ServiceResponse<CityItem> newCityServiceResponse = missionTripService.createNewCity(tripViewModelPost.getNewCity(), tripViewModelPost.getNewCityCountry());
-            if (newCityServiceResponse.hasErrors()) {
-
-                messages.addAll(
-                        newCityServiceResponse.getErrors()
-                                .keySet()
-                                .stream()
-                                .map(key -> newCityServiceResponse.getErrors().get(key))
-                                .collect(Collectors.toList()
-                                )
-                );
-            }
-
+            messages.addAll(
+                    newCityServiceResponse.getErrors()
+                            .keySet()
+                            .stream()
+                            .map(key -> newCityServiceResponse.getErrors().get(key))
+                            .collect(Collectors.toList()
+                            )
+            );
         }
 
         TripViewModelGet tripViewModel = createViewModel(messages);
@@ -141,26 +128,20 @@ public class TripController extends Controller {
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
         List<String> messages = new ArrayList<>();
 
-
-        //Create a new team if the user has entered a team name
-        if (StringUtils.isNotNullOrWhiteSpace(tripViewModelPost.getNewTeamName())) {
-
-            TeamItem teamItem = new TeamItem();
-            teamItem.setName(tripViewModelPost.getNewTeamName());
-            teamItem.setLocation(tripViewModelPost.getNewTeamLocation());
-            teamItem.setDescription(tripViewModelPost.getNewTeamDescription());
-            ServiceResponse<TeamItem> newTeamItemServiceResponse = missionTripService.createNewTeam(teamItem);
-            if (newTeamItemServiceResponse.hasErrors()){
-                messages.addAll(
-                        newTeamItemServiceResponse.getErrors()
-                                .keySet()
-                                .stream()
-                                .map(key -> newTeamItemServiceResponse.getErrors().get(key))
-                                .collect(Collectors.toList()
-                                )
-                );
-            }
-
+        TeamItem teamItem = new TeamItem();
+        teamItem.setName(tripViewModelPost.getNewTeamName());
+        teamItem.setLocation(tripViewModelPost.getNewTeamLocation());
+        teamItem.setDescription(tripViewModelPost.getNewTeamDescription());
+        ServiceResponse<TeamItem> newTeamItemServiceResponse = missionTripService.createNewTeam(teamItem);
+        if (newTeamItemServiceResponse.hasErrors()) {
+            messages.addAll(
+                    newTeamItemServiceResponse.getErrors()
+                            .keySet()
+                            .stream()
+                            .map(key -> newTeamItemServiceResponse.getErrors().get(key))
+                            .collect(Collectors.toList()
+                            )
+            );
         }
 
 

@@ -19,10 +19,7 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.CityItem;
-import femr.common.models.MissionItem;
-import femr.common.models.TeamItem;
-import femr.common.models.TripItem;
+import femr.common.models.*;
 import femr.data.models.core.IMissionTrip;
 
 import java.util.List;
@@ -59,6 +56,15 @@ public interface IMissionTripService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<MissionItem>> retrieveAllTripInformation();
+
+    /**
+     * Get a comprehensive list of trip information for a specific user
+     *
+     * @param userId id of the user, not null
+     * @return a service responset hat contains a list of trip information for
+     * the user and/or errors if they exist.
+     */
+    ServiceResponse<List<MissionTripItem>> retrieveAllTripInformationByUserId(int userId);
 
     /**
      * Create a new team.

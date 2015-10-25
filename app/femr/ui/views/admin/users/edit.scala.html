@@ -1,5 +1,8 @@
 @(currentUser: femr.common.dtos.CurrentUser, form: play.data.Form[femr.ui.models.admin.users.EditViewModel], availableRoles: java.util.List[_ <: java.lang.String], messages: java.util.List[_ <: java.lang.String])
 
+@import femr.common.models.MissionTripItem
+@import views.html.helper.options
+@import views.html.helper.select
 @import views.html.helper.FieldConstructor
 @import femr.ui.views.html.partials.admin.inputFieldConstructor
 @import femr.ui.views.html.layouts.admin
@@ -9,9 +12,11 @@
         FieldConstructor(inputFieldConstructor.f)
     }
     @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/users.css")">
     }
     @additionalScripts = {
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/admin/users.js")"></script>
     }
     @additionalMessages = {
@@ -71,9 +76,27 @@
                 'type -> "password",
                 '_label -> null
             )
-
             <label>Trips</label>
             <p>Trips that this user has attended. Allows the user to view inventory related to that trip.</p>
+            <table id="userTripTable">
+                <thead>
+                    <tr>
+                        <th>Organization</th>
+                        <th>Country</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @helper.repeat(form("missionTripItems"), min = 0) { trip =>
+                        <tr>
+                            <td>@form(trip.name.toString + ".teamName").value</td>
+                            <td>@form(trip.name.toString + ".tripCountry").value</td>
+                            <td>@form(trip.name.toString + ".friendlyTripStartDate").value</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
 
         </div>
 

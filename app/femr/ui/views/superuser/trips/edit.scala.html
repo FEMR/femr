@@ -1,0 +1,35 @@
+@(currentUser: femr.common.dtos.CurrentUser, trip: femr.common.models.MissionTripItem, users: List[femr.common.models.UserItem])
+
+@import femr.ui.views.html.layouts.admin
+
+@admin("Trips - Manage Trips - Edit Trip", currentUser) {
+
+    <p>Id: @trip.getId</p>
+    <p>Team name: @trip.getTeamName</p>
+    <p>City: @trip.getTripCity</p>
+    <p>Country: @trip.getTripCountry</p>
+    <p>Start Date: @trip.getFriendlyTripStartDate</p>
+    <p>End Date: @trip.getFriendlyTripEndDate</p>
+
+    <table id="usersTripTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>About</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(i <- 1 to users.size()) {
+            <tr>
+                <td>@users.get(i - 1).getFirstName + @users.get(i - 1).getLastName</td>
+                <td>@users.get(i - 1).getEmail</td>
+                <td>@users.get(i - 1).getNotes</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+}
+

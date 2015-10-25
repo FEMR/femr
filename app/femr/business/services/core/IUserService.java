@@ -64,6 +64,15 @@ public interface IUserService {
     ServiceResponse<UserItem> retrieveUser(int id);
 
     /**
+     * Retrieve a list of users that attended a specific mission trip.
+     *
+     * @param tripId id of the mission trip
+     * @return ServiceResponse that contains a list of UserItems
+     * and/or errors if they exist
+     */
+    ServiceResponse<List<UserItem>> retrieveUsersByTripId(int tripId);
+
+    /**
      * Updates a user based on ID. Email can be changed.
      *
      * @param userItem user item where id is the identifier, TODO: change to parameters

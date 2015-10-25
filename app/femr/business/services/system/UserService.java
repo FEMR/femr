@@ -38,6 +38,7 @@ import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserService implements IUserService {
 
@@ -116,6 +117,38 @@ public class UserService implements IUserService {
         } else {
             response.addError("users", "could not find any users");
         }
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<UserItem>> retrieveUsersByTripId(int tripId) {
+
+        ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
+        List<UserItem> userItems = new ArrayList<>();
+
+        ExpressionList<User> query = QueryProvider.getUserQuery()
+                .fetch("missionTrips")
+                .where()
+                .ne("missionTrips.id", tripId);
+
+        try {
+
+            List<? extends IUser> users = userRepository.find(query);
+
+            userItems.addAll(users.stream()
+                            .map(itemModelMapper::createUserItem)
+                            .collect(Collectors.toList())
+            );
+
+            response.setResponseObject(userItems);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
         return response;
     }
 

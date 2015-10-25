@@ -157,6 +157,33 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
+    public ServiceResponse<MissionTripItem> retrieveAllTripInformationByTripId(int tripId) {
+
+        ServiceResponse<MissionTripItem> response = new ServiceResponse<>();
+        MissionTripItem missionTripItem;
+
+        try {
+
+            ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
+                    .where()
+                    .eq("id", tripId);
+
+            IMissionTrip missionTrip = missionTripRepository.findOne(missionTripExpressionList);
+            missionTripItem = itemModelMapper.createMissionTripItem(missionTrip);
+
+            response.setResponseObject(missionTripItem);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ServiceResponse<List<MissionTripItem>> retrieveAllTripInformationByUserId(int userId) {
 
         ServiceResponse<List<MissionTripItem>> response = new ServiceResponse<>();

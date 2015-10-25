@@ -58,7 +58,17 @@ public interface IMissionTripService {
     ServiceResponse<List<MissionItem>> retrieveAllTripInformation();
 
     /**
-     * Get a comprehensive list of trip information for a specific user
+     * Get a comprehensive list of trip information for a specific trip
+     *
+     * @param tripId id of the trip, not null
+     * @return a service responset hat contains a list of trip information
+     * and/or errors if they exist.
+     */
+    ServiceResponse<MissionTripItem> retrieveAllTripInformationByTripId(int tripId);
+
+    /**
+     * Get a comprehensive list of trip information for a specific user.(all trips that
+     * the user has attended).
      *
      * @param userId id of the user, not null
      * @return a service responset hat contains a list of trip information for

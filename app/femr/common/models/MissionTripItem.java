@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by kevin on 10/18/15.
  */
 public class MissionTripItem {
+
     private int id;
     private String tripCity;
     private String tripCountry;
@@ -13,7 +14,7 @@ public class MissionTripItem {
     private String friendlyTripStartDate;
     private Date tripEndDate;
     private String friendlyTripEndDate;
-    private boolean isCurrent;
+    private String teamName; //name of the team running the trip (duplicated in MissionItem)
 
     public int getId() {
         return id;
@@ -69,5 +70,13 @@ public class MissionTripItem {
 
     public void setFriendlyTripEndDate(String friendlyTripEndDate) {
         this.friendlyTripEndDate = friendlyTripEndDate;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 }

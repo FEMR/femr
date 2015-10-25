@@ -126,6 +126,7 @@ public class ItemModelMapper implements IItemModelMapper {
         missionTripItem.setFriendlyTripStartDate(dateUtils.getFriendlyDate(missionTrip.getStartDate()));
         missionTripItem.setTripEndDate(missionTrip.getEndDate());
         missionTripItem.setFriendlyTripEndDate(dateUtils.getFriendlyDate(missionTrip.getEndDate()));
+        missionTripItem.setTeamName(missionTrip.getMissionTeam().getName());
 
         return missionTripItem;
     }

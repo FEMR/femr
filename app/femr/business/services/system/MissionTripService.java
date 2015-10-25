@@ -171,8 +171,6 @@ public class MissionTripService implements IMissionTripService {
 
             //start by getting all available mission teams. If you start by getting all the trips then
             //you might miss some teams that don't have a trip, yet.
-
-
             missionTripItems.addAll(user.getMissionTrips()
                     .stream()
                     .map(itemModelMapper::createMissionTripItem)

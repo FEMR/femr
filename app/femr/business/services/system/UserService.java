@@ -132,7 +132,7 @@ public class UserService implements IUserService {
         ExpressionList<User> query = QueryProvider.getUserQuery()
                 .fetch("missionTrips")
                 .where()
-                .ne("missionTrips.id", tripId);
+                .eq("missionTrips.id", tripId);
 
         try {
 

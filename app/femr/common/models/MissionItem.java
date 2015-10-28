@@ -24,8 +24,8 @@ public class MissionItem {
                                Date tripStartDate,
                                String friendlyTripStartDate,
                                Date tripEndDate,
-                               String friendlyTripEndDate,
-                               boolean isCurrent) {
+                               String friendlyTripEndDate
+    ) {
 
         MissionTripItem missionTripItem = new MissionTripItem();
         missionTripItem.setId(id);
@@ -35,7 +35,6 @@ public class MissionItem {
         missionTripItem.setFriendlyTripStartDate(friendlyTripStartDate);
         missionTripItem.setTripEndDate(tripEndDate);
         missionTripItem.setFriendlyTripEndDate(friendlyTripEndDate);
-        missionTripItem.setCurrent(isCurrent);
         this.missionTrips.add(missionTripItem);
     }
 
@@ -132,14 +131,6 @@ public class MissionItem {
 
         public void setFriendlyTripEndDate(String friendlyTripEndDate) {
             this.friendlyTripEndDate = friendlyTripEndDate;
-        }
-
-        public boolean isCurrent() {
-            return isCurrent;
-        }
-
-        public void setCurrent(boolean isCurrent) {
-            this.isCurrent = isCurrent;
         }
     }
 

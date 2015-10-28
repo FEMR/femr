@@ -31,10 +31,6 @@ public interface IMissionTrip {
 
     void setMissionCity(IMissionCity missionCity);
 
-    boolean isCurrent();
-
-    void setCurrent(boolean isCurrent);
-
     Date getStartDate();
 
     void setStartDate(Date startDate);

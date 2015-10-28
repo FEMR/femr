@@ -242,7 +242,7 @@ public class MissionTripService implements IMissionTripService {
                     }
 
 
-                    IMissionTrip missionTrip = dataModelMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), false, missionCity, missionTeam);
+                    IMissionTrip missionTrip = dataModelMapper.createMissionTrip(tripItem.getTripStartDate(), tripItem.getTripEndDate(), missionCity, missionTeam);
                     missionTrip = missionTripRepository.create(missionTrip);
                     response.setResponseObject(itemModelMapper.createTripItem(missionTrip.getMissionTeam().getName(), missionTrip.getMissionCity().getName(), missionTrip.getMissionCity().getMissionCountry().getName(), missionTrip.getStartDate(), missionTrip.getEndDate()));
 
@@ -313,40 +313,6 @@ public class MissionTripService implements IMissionTripService {
         } catch (Exception ex) {
 
             response.addError("", "there was an issue saving the city");
-        }
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ServiceResponse<TripItem> updateCurrentTrip(int tripId) {
-
-        ServiceResponse<TripItem> response = new ServiceResponse<>();
-        ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
-                .where()
-                .eq("id", tripId);
-        try {
-            IMissionTrip missionTrip = missionTripRepository.findOne(missionTripExpressionList);
-            if (missionTrip == null) {
-                response.addError("", "could not find a trip with that id");
-            } else {
-                List<? extends IMissionTrip> allTrips = missionTripRepository.findAll(MissionTrip.class);
-                for (IMissionTrip mt : allTrips) {
-                    if (mt.getId() == missionTrip.getId()) {
-                        mt.setCurrent(true);
-                    } else {
-                        mt.setCurrent(false);
-                    }
-                    missionTripRepository.update(mt);
-                    response.setResponseObject(itemModelMapper.createTripItem(mt.getMissionTeam().getName(), mt.getMissionCity().getName(), mt.getMissionCity().getMissionCountry().getName(), mt.getStartDate(), mt.getEndDate()));
-                }
-            }
-
-        } catch (Exception ex) {
-
-            response.addError("", ex.getMessage());
         }
 
         return response;

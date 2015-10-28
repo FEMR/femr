@@ -112,8 +112,8 @@ public class ItemModelMapper implements IItemModelMapper {
                     mt.getStartDate(),
                     dateUtils.getFriendlyDate(mt.getStartDate()),
                     mt.getEndDate(),
-                    dateUtils.getFriendlyDate(mt.getEndDate()),
-                    mt.isCurrent());
+                    dateUtils.getFriendlyDate(mt.getEndDate())
+            );
         }
 
         return missionItem;

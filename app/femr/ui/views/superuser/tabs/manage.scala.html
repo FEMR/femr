@@ -1,13 +1,13 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TabsViewModelGet)
 
 @import femr.ui.views.html.layouts.admin
-@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.TabController
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
     }
 
-@admin("SuperUser Panel", currentUser, styles = additionalStyles) {
+@admin("Tabs", currentUser, styles = additionalStyles) {
     <h1>Tabs</h1>
     <p>Do not put spaces in Tab Names.</p>
     <div id="superUserWrap">
@@ -69,7 +69,7 @@
     </div>
 
     <div id="bottomFields">
-    @helper.form(action = SuperuserController.tabsPost()) {
+    @helper.form(action = TabController.managePost()) {
         <div class="halfPageForms">
             <h4>Add Tab:</h4>
             <label for="addTabName">Name</label>

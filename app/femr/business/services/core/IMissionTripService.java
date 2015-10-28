@@ -95,13 +95,4 @@ public interface IMissionTripService {
      * and/or errors if they exist.
      */
     ServiceResponse<CityItem> createNewCity(String cityName, String countryName);
-
-    /**
-     * Mark a trip as current and all others as not current
-     *
-     * @param tripId the id of the trip to mark current
-     * @return a service response that contains a new TripItem that is now current
-     * and/or errors if they exist.
-     */
-    ServiceResponse<TripItem> updateCurrentTrip(int tripId);
 }

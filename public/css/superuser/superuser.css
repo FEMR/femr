@@ -55,3 +55,10 @@ table th,td{
     float: left;
     width: 100%;
 }
+#addUsersSelect2{
+    width: 100%;
+}
+
+#usersTripTable{
+    margin-top: 50px;
+}

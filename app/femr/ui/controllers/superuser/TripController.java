@@ -98,13 +98,21 @@ public class TripController extends Controller {
             throw new RuntimeException();
         }
 
+        //retrieve all users for the trip
         ServiceResponse<List<UserItem>> userItemServiceResponse = userService.retrieveUsersByTripId(id);
         if (userItemServiceResponse.hasErrors()){
 
             throw new RuntimeException();
         }
 
-        return ok(edit.render(currentUser, missionTripItemServiceResponse.getResponseObject(), userItemServiceResponse.getResponseObject()));
+        //retrieve all users in the system
+        ServiceResponse<List<UserItem>> allUserItemServiceResponse = userService.retrieveAllUsers();
+        if (allUserItemServiceResponse.hasErrors()){
+
+            throw new RuntimeException();
+        }
+
+        return ok(edit.render(currentUser, missionTripItemServiceResponse.getResponseObject(), userItemServiceResponse.getResponseObject(), allUserItemServiceResponse.getResponseObject()));
     }
 
     public Result editPost(){

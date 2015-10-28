@@ -19,6 +19,7 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -101,10 +102,11 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<List<UserItem>> retrieveAllUsers() {
 
-        ExpressionList<User> query = QueryProvider.getUserQuery()
+        Query<User> query = QueryProvider.getUserQuery()
                 .fetch("roles")
                 .where()
-                .ne("roles.name", "SuperUser");
+                .ne("roles.name", "SuperUser")
+                .orderBy("lastName");
         List<? extends IUser> users = userRepository.find(query);
 
         ServiceResponse<List<UserItem>> response = new ServiceResponse<>();

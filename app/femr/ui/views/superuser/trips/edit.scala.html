@@ -1,8 +1,20 @@
-@(currentUser: femr.common.dtos.CurrentUser, trip: femr.common.models.MissionTripItem, users: List[femr.common.models.UserItem])
+@(currentUser: femr.common.dtos.CurrentUser, trip: femr.common.models.MissionTripItem, users: List[femr.common.models.UserItem], allUsers: List[femr.common.models.UserItem])
 
 @import femr.ui.views.html.layouts.admin
 
-@admin("Trips - Manage Trips - Edit Trip", currentUser) {
+@additionalStyles = {
+
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/select2.min.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser/superuser.css")">
+}
+
+@additionalScripts = {
+
+    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/select2.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/superuser/superuser.js")"></script>
+}
+
+@admin("Trips - Manage Trips - Edit Trip", currentUser, styles = additionalStyles, scripts = additionalScripts) {
 
     <p>Id: @trip.getId</p>
     <p>Team name: @trip.getTeamName</p>
@@ -10,6 +22,18 @@
     <p>Country: @trip.getTripCountry</p>
     <p>Start Date: @trip.getFriendlyTripStartDate</p>
     <p>End Date: @trip.getFriendlyTripEndDate</p>
+
+
+    <p>Add Users to this trip: </p>
+    <select id="addUsersSelect2" multiple="multiple">
+        @for(i <- 1 to allUsers.size){
+            <option value="@allUsers.get(i - 1).getId">@allUsers.get(i - 1).getFirstName @allUsers.get(i - 1).getLastName</option>
+        }
+
+        <option value="test2">Test2</option>
+        <option value="test3">Test3</option>
+    </select>
+
 
     <table id="usersTripTable">
         <thead>

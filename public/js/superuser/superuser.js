@@ -6,7 +6,17 @@ $(document).ready(function(){
         $("[name='newTripCountry']").val($(this).find(':selected').attr('country-name'));
     });
 
-    $('#tripTable').DataTable();
-    $('#cityTable').DataTable();
-    $('#teamTable').DataTable();
+    if ($('#tripTable').length > 0)
+        $('#tripTable').DataTable();
+    if ($('#cityTable').length > 0)
+        $('#cityTable').DataTable();
+    if ($('#teamTable').length > 0)
+        $('#teamTable').DataTable();
+    if ($('#addUsersSelect2').length > 0){
+
+        $('#addUsersSelect2').select2({
+            placeholder: "Add users here"
+        });
+    }
+
 });

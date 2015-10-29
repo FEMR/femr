@@ -9,7 +9,7 @@ POST        /superuser/tabs                                    @femr.ui.controll
 GET         /superuser/trips                                   @femr.ui.controllers.superuser.TripController.manageGet()
 POST        /superuser/trips                                   @femr.ui.controllers.superuser.TripController.managePost()
 GET         /superuser/trips/edit/:id                          @femr.ui.controllers.superuser.TripController.editGet(id: Integer)
-POST        /superuser/trips/edit                              @femr.ui.controllers.superuser.TripController.editPost()
+POST        /superuser/trips/edit/:id                          @femr.ui.controllers.superuser.TripController.editPost(id: Integer)
 GET         /superuser/trips/teams                             @femr.ui.controllers.superuser.TripController.teamsGet()
 POST        /superuser/trips/teams                             @femr.ui.controllers.superuser.TripController.teamsPost()
 GET         /superuser/trips/cities                            @femr.ui.controllers.superuser.TripController.citiesGet()

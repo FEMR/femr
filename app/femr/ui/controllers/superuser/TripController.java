@@ -10,6 +10,8 @@ import femr.common.models.*;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.superuser.trips.EditViewModelGet;
+import femr.ui.models.superuser.trips.EditViewModelPost;
 import femr.ui.models.superuser.trips.TripViewModelGet;
 import femr.ui.models.superuser.trips.TripViewModelPost;
 import femr.ui.views.html.superuser.trips.*;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class TripController extends Controller {
 
     private Form<TripViewModelPost> tripViewModelPostForm = Form.form(TripViewModelPost.class);
+    private Form<EditViewModelPost> editViewModelPostForm = Form.form(EditViewModelPost.class);
     private final IMissionTripService missionTripService;
     private final ISessionService sessionService;
     private final IUserService userService;
@@ -45,7 +48,7 @@ public class TripController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        TripViewModelGet tripViewModel = createViewModel(null);
+        TripViewModelGet tripViewModel = createTripViewModelGet(null);
 
         return ok(manage.render(currentUser, tripViewModel));
     }
@@ -77,7 +80,7 @@ public class TripController extends Controller {
             );
         }
 
-        TripViewModelGet tripViewModel = createViewModel(messages);
+        TripViewModelGet tripViewModel = createTripViewModelGet(messages);
 
         return ok(manage.render(currentUser, tripViewModel));
     }
@@ -91,12 +94,16 @@ public class TripController extends Controller {
         }
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        EditViewModelGet editViewModelGet = new EditViewModelGet();
+
+        editViewModelGet.setTripId(id);
 
         ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.retrieveAllTripInformationByTripId(id);
         if (missionTripItemServiceResponse.hasErrors()){
 
             throw new RuntimeException();
         }
+        editViewModelGet.setTrip(missionTripItemServiceResponse.getResponseObject());
 
         //retrieve all users for the trip
         ServiceResponse<List<UserItem>> userItemServiceResponse = userService.retrieveUsersByTripId(id);
@@ -104,6 +111,7 @@ public class TripController extends Controller {
 
             throw new RuntimeException();
         }
+        editViewModelGet.setUsers(userItemServiceResponse.getResponseObject());
 
         //retrieve all users in the system
         ServiceResponse<List<UserItem>> allUserItemServiceResponse = userService.retrieveAllUsers();
@@ -111,24 +119,27 @@ public class TripController extends Controller {
 
             throw new RuntimeException();
         }
+        editViewModelGet.setAllUsers(allUserItemServiceResponse.getResponseObject());
 
-        return ok(edit.render(currentUser, missionTripItemServiceResponse.getResponseObject(), userItemServiceResponse.getResponseObject(), allUserItemServiceResponse.getResponseObject()));
+        return ok(edit.render(currentUser, editViewModelGet));
     }
 
-    public Result editPost(){
+    public Result editPost(Integer id){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        TripViewModelGet tripViewModel = createViewModel(null);
+        EditViewModelPost editViewModelPost = editViewModelPostForm.bindFromRequest().get();
 
-        return ok(manage.render(currentUser, tripViewModel));
+        TripViewModelGet tripViewModel = createTripViewModelGet(null);
+
+        return redirect(routes.TripController.editGet(id));
     }
 
     public Result citiesGet(){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        TripViewModelGet tripViewModel = createViewModel(null);
+        TripViewModelGet tripViewModel = createTripViewModelGet(null);
 
         return ok(cities.render(currentUser, tripViewModel));
     }
@@ -152,7 +163,7 @@ public class TripController extends Controller {
             );
         }
 
-        TripViewModelGet tripViewModel = createViewModel(messages);
+        TripViewModelGet tripViewModel = createTripViewModelGet(messages);
 
         return ok(cities.render(currentUser, tripViewModel));
     }
@@ -160,7 +171,7 @@ public class TripController extends Controller {
     public Result teamsGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        TripViewModelGet tripViewModel = createViewModel(null);
+        TripViewModelGet tripViewModel = createTripViewModelGet(null);
 
         return ok(teams.render(currentUser, tripViewModel));
     }
@@ -189,7 +200,7 @@ public class TripController extends Controller {
 
 
 
-        TripViewModelGet tripViewModel = createViewModel(messages);
+        TripViewModelGet tripViewModel = createTripViewModelGet(messages);
 
         return ok(teams.render(currentUser, tripViewModel));
     }
@@ -200,7 +211,7 @@ public class TripController extends Controller {
      * @param messages messages to present the user. Tells them if their actions failed, succeded, blew up the server, etc, may be null
      * @return a populated viewmodel
      */
-    private TripViewModelGet createViewModel(List<String> messages){
+    private TripViewModelGet createTripViewModelGet(List<String> messages){
 
         ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
         if (availableCitiesServiceResponse.hasErrors())
@@ -225,5 +236,4 @@ public class TripController extends Controller {
 
         return tripViewModel;
     }
-
 }

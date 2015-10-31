@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,7 +126,7 @@ public class UserItem {
 
         UserItem otherUserItem = (UserItem) obj;
 
-        if (otherUserItem.getEmail() != this.getEmail()) return false;
+        if (!otherUserItem.getEmail().equals(this.getEmail())) return false;
         if (otherUserItem.getId() != this.getId()) return false;
 
         return true;

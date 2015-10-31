@@ -120,13 +120,8 @@ public class TripController extends Controller {
             throw new RuntimeException();
         }
         List<UserItem> allUsers = allUserItemServiceResponse.getResponseObject();
-//        allUsers.removeAll(editViewModelGet.getUsers());
-        for (int i = 0; i < allUsers.size(); i++){
-            if (editViewModelGet.getUsers().contains(allUsers.get(i))){
 
-                allUsers.remove(i);
-            }
-        }
+        allUsers.removeAll(editViewModelGet.getUsers());
         editViewModelGet.setAllUsers(allUsers);
 
         return ok(edit.render(currentUser, editViewModelGet));

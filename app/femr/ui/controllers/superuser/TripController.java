@@ -120,7 +120,8 @@ public class TripController extends Controller {
             throw new RuntimeException();
         }
         List<UserItem> allUsers = allUserItemServiceResponse.getResponseObject();
-
+        //allUsers contains the users that will be searchable for adding to a trip.
+        //So, remove the ones that already exist in the trip.
         allUsers.removeAll(editViewModelGet.getUsers());
         editViewModelGet.setAllUsers(allUsers);
 
@@ -135,6 +136,14 @@ public class TripController extends Controller {
 
         if (id != null && editViewModelPost.getNewUsersForTrip() != null){
             ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.addUsersToTrip(id, editViewModelPost.getNewUsersForTrip());
+            if (missionTripItemServiceResponse.hasErrors()){
+
+                throw new RuntimeException();
+            }
+        }
+
+        if (id != null && editViewModelPost.getRemoveUsersForTrip() != null){
+            ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.removeUsersFromTrip(id, editViewModelPost.getRemoveUsersForTrip());
             if (missionTripItemServiceResponse.hasErrors()){
 
                 throw new RuntimeException();

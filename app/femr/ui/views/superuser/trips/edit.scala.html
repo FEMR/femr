@@ -27,9 +27,8 @@
     }
 
 
-    <h4>Add Users to this trip: </h4>
     @helper.form(action = TripController.editPost(viewModel.getTripId)) {
-
+        <h4>Add users to this trip: </h4>
         <select id="addUsersSelect2" multiple="multiple" name="newUsersForTrip[]">
         @defining(viewModel.getAllUsers) { allUsers =>
             @for(i <- 1 to allUsers.size) {
@@ -39,6 +38,17 @@
         </select>
 
         <button type="submit">Add</button>
+
+        <h4>Remove users from this trip:</h4>
+
+        <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
+            @defining(viewModel.getUsers) { users =>
+                @for(i <- 1 to users.size) {
+                    <option value="@users.get(i - 1).getId">@users.get(i - 1).getFirstName @users.get(i - 1).getLastName</option>
+                }
+            }
+        </select>
+        <button type="submit">Remove</button>
     }
 
 

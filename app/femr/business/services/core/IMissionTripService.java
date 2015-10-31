@@ -36,6 +36,15 @@ public interface IMissionTripService {
     ServiceResponse<MissionTripItem> addUsersToTrip(int tripId, List<Integer> userIds);
 
     /**
+     * Removes a list of users from a trip.
+     *
+     * @param tripId id of the trip to remove users from, not null
+     * @param userIds list of user ids being removed from the trip, not null
+     * @return the current trip or null if an error occurs
+     */
+    ServiceResponse<MissionTripItem> removeUsersFromTrip(int tripId, List<Integer> userIds);
+
+    /**
      * Retrieve the current trip information.
      *
      * @return the current trip or null if an error occurs

@@ -25,6 +25,7 @@ import femr.data.models.core.IUser;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Entity
@@ -109,5 +110,18 @@ public class MissionTrip implements IMissionTrip {
     public void addUser(IUser user){
 
         this.users.add(user);
+    }
+
+    @Override
+    public void removeUser(int userId){
+
+        Iterator<IUser> iterator = this.users.iterator();
+        while(iterator.hasNext()){
+            IUser user = iterator.next();
+
+            if (user.getId() == userId)
+                iterator.remove();
+        }
+
     }
 }

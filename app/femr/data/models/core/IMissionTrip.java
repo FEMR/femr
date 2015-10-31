@@ -45,4 +45,6 @@ public interface IMissionTrip {
     void setUsers(List<IUser> users);
 
     void addUser(IUser user);
+
+    void removeUser(int userId);
 }

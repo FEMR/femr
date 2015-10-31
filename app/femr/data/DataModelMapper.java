@@ -593,4 +593,13 @@ public class DataModelMapper implements IDataModelMapper{
 
         return user;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IUser createUser(int userId){
+
+        return Ebean.getReference(userProvider.get().getClass(), userId);
+    }
 }

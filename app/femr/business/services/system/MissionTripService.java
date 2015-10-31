@@ -68,6 +68,52 @@ public class MissionTripService implements IMissionTripService {
     /**
      * {@inheritDoc}
      */
+    public ServiceResponse<MissionTripItem> addUsersToTrip(int tripId, List<Integer> userIds){
+
+        ServiceResponse<MissionTripItem> response = new ServiceResponse<>();
+        if (userIds == null || userIds.size() == 0){
+
+            response.addError("", "no user ids were received");
+            return response;
+        }
+
+        ExpressionList<MissionTrip> expressionList = QueryProvider.getMissionTripQuery()
+                .where()
+                .eq("id", tripId);
+
+        try{
+
+            IMissionTrip missionTrip = missionTripRepository.findOne(expressionList);
+
+            //identify duplicates
+            List<Integer> duplicates = new ArrayList<>();
+            missionTrip.getUsers()
+                    .stream()
+                    .filter(user -> userIds.contains(user.getId()))
+                    .forEach(user -> {
+                        duplicates.add(user.getId());
+            });
+
+            //add non duplicates to the team (users that don't already exist on the team)
+            userIds
+                    .stream()
+                    .filter(id -> !duplicates.contains(id))
+                    .forEach(id -> missionTrip.addUser(dataModelMapper.createUser(id)));
+
+            missionTripRepository.update(missionTrip);
+            response.setResponseObject(itemModelMapper.createMissionTripItem(missionTrip));
+        }catch(Exception ex){
+
+            response.addError("", ex.getMessage());
+            return response;
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IMissionTrip retrieveCurrentMissionTrip() {
 

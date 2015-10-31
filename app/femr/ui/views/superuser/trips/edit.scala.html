@@ -45,7 +45,8 @@
     <table id="usersTripTable">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Email</th>
                 <th>About</th>
             </tr>
@@ -54,7 +55,8 @@
         @defining(viewModel.getUsers) { users =>
             @for(i <- 1 to users.size()) {
                 <tr>
-                    <td>@users.get(i - 1).getFirstName @users.get(i - 1).getLastName</td>
+                    <td>@users.get(i - 1).getFirstName</td>
+                    <td>@users.get(i - 1).getLastName</td>
                     <td>@users.get(i - 1).getEmail</td>
                     <td>@users.get(i - 1).getNotes</td>
                 </tr>

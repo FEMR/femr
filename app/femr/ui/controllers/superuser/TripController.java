@@ -119,7 +119,15 @@ public class TripController extends Controller {
 
             throw new RuntimeException();
         }
-        editViewModelGet.setAllUsers(allUserItemServiceResponse.getResponseObject());
+        List<UserItem> allUsers = allUserItemServiceResponse.getResponseObject();
+//        allUsers.removeAll(editViewModelGet.getUsers());
+        for (int i = 0; i < allUsers.size(); i++){
+            if (editViewModelGet.getUsers().contains(allUsers.get(i))){
+
+                allUsers.remove(i);
+            }
+        }
+        editViewModelGet.setAllUsers(allUsers);
 
         return ok(edit.render(currentUser, editViewModelGet));
     }
@@ -129,6 +137,14 @@ public class TripController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         EditViewModelPost editViewModelPost = editViewModelPostForm.bindFromRequest().get();
+
+        if (id != null && editViewModelPost.getNewUsersForTrip() != null){
+            ServiceResponse<MissionTripItem> missionTripItemServiceResponse = missionTripService.addUsersToTrip(id, editViewModelPost.getNewUsersForTrip());
+            if (missionTripItemServiceResponse.hasErrors()){
+
+                throw new RuntimeException();
+            }
+        }
 
         TripViewModelGet tripViewModel = createTripViewModelGet(null);
 

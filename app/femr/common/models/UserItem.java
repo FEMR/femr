@@ -114,4 +114,19 @@ public class UserItem {
     public void setPasswordReset(boolean isPasswordReset) {
         this.isPasswordReset = isPasswordReset;
     }
+
+    @Override
+    public boolean equals(final Object obj){
+
+        if (obj == null || obj == this || !(obj instanceof UserItem)){
+            return false;
+        }
+
+        UserItem otherUserItem = (UserItem) obj;
+
+        if (otherUserItem.getEmail() != this.getEmail()) return false;
+        if (otherUserItem.getId() != this.getId()) return false;
+
+        return true;
+    }
 }

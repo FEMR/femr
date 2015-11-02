@@ -86,22 +86,44 @@ var createUsers = {
     },
     validateRolesAndPassword: function () {
         var pass = true;
-        //validate password
-        if ($.trim(document.forms["createForm"]["password"].value) === "") {
-            createUsers.elements.password.next(".errors").text("please assign this user a password");
+        // Adding password constraint!
+        var passwordErrors = "";
+        var password = $.trim(document.forms["createForm"]["password"].value);
+        if(password.length < 6){
+            passwordErrors += "password is less than 6 characters ";
+            //createUsers.elements.password.next(".errors").text("password is less than 6 characters\n");
             pass = false;
-        } else {
+        }
+        var re = /[A-Z]/;
+        if(!re.test(password)){
+            passwordErrors += "password must have at least one upper case ";
+            //createUsers.elements.password.next(".errors").text("password must have at least one upper case\n");
+            pass = false;
+        }
+        re = /[0-9]/;
+        if ($.trim(document.forms["createForm"]["password"].value) === "") {
+            passwordErrors = "please assign this user a password";
+            pass = false;
+        }
+        else if(!re.test(password)) {
+            passwordErrors +=  "password does not have a number ";
+            // createUsers.elements.password.next(".errors").text("password does not have a number\n");
+            pass = false;
+        }
+
+        if(pass == false)
+        {
+                createUsers.elements.password.next (".errors").text(passwordErrors);
+        }
+        else{
             createUsers.elements.password.next(".errors").text("");
         }
+
         //validate roles
-        var isARoleChecked = false;
-        $.each(document.forms["createForm"].elements["roles[]"], function () {
-            if ($(this).is(':checked')) {
-                isARoleChecked = true;
-            }
-        });
-        if (isARoleChecked === false) {
+        if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
             pass = false;
+        }
+        if (pass === false) {
             createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");

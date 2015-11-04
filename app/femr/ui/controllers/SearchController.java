@@ -127,6 +127,33 @@ public class SearchController extends Controller {
         return ok(new Gson().toJson(patientSearches));
     }
 
+    public Result typeaheadCitiesJSONGet(){
+
+        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch();
+
+        if (patientItemsServiceResponse.hasErrors()){
+            return ok("");
+        }
+        List<PatientItem> patientItems = patientItemsServiceResponse.getResponseObject();
+        List<PatientSearch> patientSearches = new ArrayList<>();
+        PatientSearch patientSearch;
+
+        for (PatientItem patientItem : patientItems) {
+            patientSearch = new PatientSearch();
+            patientSearch.setId(Integer.toString(patientItem.getId()));
+            patientSearch.setFirstName(patientItem.getFirstName());
+            patientSearch.setLastName(patientItem.getLastName());
+            if (patientItem.getAge() != null)
+                patientSearch.setAge(patientItem.getAge());
+            if (patientItem.getPathToPhoto() != null)
+                patientSearch.setPhoto(patientItem.getPathToPhoto());
+            patientSearches.add(patientSearch);
+        }
+
+        return ok(new Gson().toJson(patientSearches));
+    }
+
+
     public Result typeaheadDiagnosisJSONGet(){
 
         ServiceResponse<List<String>> allDiagnosesServiceResponse = searchService.findDiagnosisForSearch();

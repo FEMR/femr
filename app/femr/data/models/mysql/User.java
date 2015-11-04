@@ -54,6 +54,9 @@ public class User implements IUser {
     private Boolean passwordReset;
     @Column(name ="notes")
     private String notes;
+    //AJ Saclayan Password Constraints
+    @Column(name = "PasswordDaysOld", nullable = false)
+    private DateTime PasswordDaysOld;
 
     @Override
     public int getId() {
@@ -159,5 +162,16 @@ public class User implements IUser {
     @Override
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    //AJ Saclayan Password Constraints
+    @Override
+    public DateTime getPasswordDaysOld() {
+        return PasswordDaysOld;
+    }
+
+    @Override
+    public void setPasswordDaysOld(DateTime date) {
+        this.PasswordDaysOld = date;
     }
 }

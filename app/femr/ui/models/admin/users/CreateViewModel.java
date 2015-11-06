@@ -22,6 +22,7 @@ import femr.util.stringhelpers.StringUtils;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class CreateViewModel {
     private Integer userId;
@@ -37,6 +38,8 @@ public class CreateViewModel {
     private String notes;
 
     public List<ValidationError> validate(){
+        Pattern hasUppercase = Pattern.compile("[A-Z]");
+        Pattern hasNumber = Pattern.compile("\\d");
         List<ValidationError> errors = new ArrayList<>();
         if (StringUtils.isNullOrWhiteSpace(firstName))
             errors.add(new ValidationError("firstName", "first name is a required field"));
@@ -44,9 +47,16 @@ public class CreateViewModel {
             errors.add(new ValidationError("email", "email is a required field"));
         if (StringUtils.isNullOrWhiteSpace(password))
             errors.add(new ValidationError("password", "password is a required field"));
+        else if(password.length() < 6)         //AJ Saclayan Password Constraints
+            errors.add(new ValidationError("password", "password is less than 6 characters"));
+        else {
+            if (!hasUppercase.matcher(password).find())
+                errors.add(new ValidationError("password", "password must have an uppercase"));
+            if (!hasNumber.matcher(password).find())
+                errors.add(new ValidationError("password", "password must have a number"));
+        }
         if (roles == null || roles.size() < 1)
             errors.add(new ValidationError("roles", "a user needs at least one role"));
-
         return errors.isEmpty() ? null : errors;
     }
 

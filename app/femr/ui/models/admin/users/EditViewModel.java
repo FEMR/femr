@@ -22,6 +22,7 @@ import femr.util.stringhelpers.StringUtils;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class EditViewModel {
     private Integer userId;
@@ -35,13 +36,28 @@ public class EditViewModel {
     private List<String> roles;
 
     public List<ValidationError> validate(){
+        Pattern hasUppercase = Pattern.compile("[A-Z]");
+        Pattern hasNumber = Pattern.compile("\\d");
         List<ValidationError> errors = new ArrayList<>();
         if (StringUtils.isNullOrWhiteSpace(firstName))
             errors.add(new ValidationError("firstName", "first name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(email))
             errors.add(new ValidationError("email", "email is a required field"));
-        if (!newPassword.equals(newPasswordVerify))
+        //AJ Saclayan Password Constraints
+        if (StringUtils.isNullOrWhiteSpace(newPassword) || (StringUtils.isNullOrWhiteSpace(newPasswordVerify)))
+            errors.add(new ValidationError("password", "password field is empty"));
+            //AJ Saclayan Password Constraints
+        else if(!newPassword.equals(newPasswordVerify))
             errors.add(new ValidationError("newPassword", "passwords do not match"));
+        else
+        {
+            if(newPassword.length() < 6)
+                errors.add(new ValidationError("password", "password is less than 6 characters"));
+            if(!hasUppercase.matcher(newPassword).find())
+                errors.add(new ValidationError("password", "password must have an uppercase"));
+            if(!hasNumber.matcher(newPassword).find())
+                errors.add(new ValidationError("password", "password must have a number"));
+        }
         if (roles == null || roles.size() < 1)
             errors.add(new ValidationError("roles", "a user needs at least one role"));
 

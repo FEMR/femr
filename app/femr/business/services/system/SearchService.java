@@ -620,4 +620,39 @@ public class SearchService implements ISearchService {
         ISystemSetting isMetric = systemSettingRepository.findOne(query);
         return isMetric.isActive();
     }
+
+//    //AJ Saclayan Dispensed Medication
+//    public ServiceResponse<List<IPatientPrescriptionReplacement>> retrieveOldMeds(int encounterId) {
+//        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+//        List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
+//        ExpressionList<PatientPrescription> replacedPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
+//                .where()
+//                .eq("id",
+//        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
+//                .fetch("patientEncounter")
+//                .where()
+//                .eq("encounter_id", encounterId)
+//                .ne("user_id_pharmacy", null);
+//        try {
+//            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+//            List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
+//                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+//                    .map(pp -> itemModelMapper.createPrescriptionItem(
+//                            pp.getId(),
+//                            pp.getMedication().getName(),
+//                            null,
+//                            pp.getPhysician().getFirstName(),
+//                            pp.getPhysician().getLastName(),
+//                            pp.getMedicationAdministration(),
+//                            pp.getAmount(),
+//                            pp.getMedication()
+//                    ))
+//                    .collect(Collectors.toList());
+//
+//            response.setResponseObject(prescriptionItems);
+//        } catch (Exception ex) {
+//            response.addError("exception", ex.getMessage());
+//        }
+//        return response;
+//    }
 }

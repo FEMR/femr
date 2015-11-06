@@ -219,8 +219,16 @@ public class ItemModelMapper implements IItemModelMapper {
             patientEncounterItem.setPhysicianEmailAddress(patientEncounter.getDoctor().getEmail());
         if (patientEncounter.getPharmacist() != null)
             patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
+        patientEncounterItem.setNurseFullName(patientEncounter.getNurse().getFirstName() + " " + patientEncounter.getNurse().getLastName()); // Andrew Change
 
+        if (patientEncounter.getDoctor() != null) {
+            patientEncounterItem.setPhysicianFullName(patientEncounter.getDoctor().getFirstName() + " " + patientEncounter.getDoctor().getLastName()); // Andrew Change
+        }
+        if (patientEncounter.getPharmacist() != null) {
+            patientEncounterItem.setPharmacistFullName(patientEncounter.getPharmacist().getFirstName() + " " + patientEncounter.getPharmacist().getLastName()); // Andrew Change
+        }
         return patientEncounterItem;
+
     }
 
     /**

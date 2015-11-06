@@ -37,9 +37,14 @@ public class PatientEncounterItem {
 
     private String medicalDateOfVisit;
     private String physicianEmailAddress;
+    private String physicianFullName; //Andrew Change
 
     private String pharmacyDateOfVisit;
     private String pharmacistEmailAddress;
+    private String pharmacistFullName; //Andrew Change
+
+    private String nurseFullName; //Andrew Change
+
 
     public PatientEncounterItem(){
         this.chiefComplaints = new ArrayList<>();
@@ -121,6 +126,29 @@ public class PatientEncounterItem {
     public void setPharmacistEmailAddress(String pharmacistEmailAddress) {
         this.pharmacistEmailAddress = pharmacistEmailAddress;
     }
+
+    public String getNurseFullName() { //Andrew Change
+        return nurseFullName;
+    }
+
+    public void setNurseFullName(String nurseFullName) { //Andrew Change
+        this.nurseFullName = nurseFullName;
+    }
+
+    public String getPhysicianFullName() { //Andrew Change
+        return physicianFullName;
+    }
+
+    public void setPhysicianFullName(String physicianFullName) {this.physicianFullName = physicianFullName;} //Andrew Change
+
+    public String getPharmacistFullName() { //Andrew Change
+        return pharmacistFullName;
+    }
+
+    public void setPharmacistFullName(String pharmacistFullName) { //Andrew Change
+        this.pharmacistFullName = pharmacistFullName;
+    }
+
 
     public String getMedicalDateOfVisit() {
         return medicalDateOfVisit;

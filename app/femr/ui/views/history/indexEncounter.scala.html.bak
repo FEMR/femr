@@ -56,18 +56,7 @@
                         <p><span class="infoLabel">Gender:</span> @outputStringOrNA(patient.getSex)</p>
                     </div>
                     <div class="encounterViewBodyLeftHalf">
-                        <!-- @*Sam Zanni*@ -->
-                        @*<p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>*@
-                        @defining(viewModelMedical.getVitalList) { vitalMap =>
-                            <p>
-                                <span class="infoLabel">Weeks Pregnant:</span>
-                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                                    <span>
-                                    @outputStringOrNA(vitalMap.get("weeksPregnant", vitalMap.getDate(dateIndex - 1)))
-                                    </span>
-                                }
-                            </p>
-                        }
+                        <p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>
 
                         <p><span class="infoLabel">Height:</span> @outputHeightOrNA(
                             String.valueOf(patient.getHeightFeet),

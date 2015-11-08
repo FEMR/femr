@@ -55,11 +55,6 @@
         } else {
             <input type="number" class="fInput" id="newWeight" placeholder="lbs"/>
         }
-		  <br/>
-        <label>WP</label> <!--- Sam Zanni -->
-        <br/>
-        <input type="number" class="fInput" id="weeksPreg" placeholder="weeks"/>
-        <br/>
     </div>
     <div id="theButtons">
         <button type="button" id="saveVitalsBtn" class="fButton">Save</button>

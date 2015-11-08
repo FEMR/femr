@@ -61,12 +61,6 @@
             <th>SpO2</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@vitalMap.get("oxygenSaturation", vitalMap.getDate(dateIndex - 1))</td>
-			}
-        </tr>
-        <tr>
-            <th>WP</th> <!-- Sam Zanni -->
-            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@vitalMap.get("weeksPregnant", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
         <tr id="height">

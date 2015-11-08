@@ -69,14 +69,24 @@
                 </div>
                 <div class="encounterViewBodyMiddle">
                 @defining(viewModel.getPatientEncounterItem) { encounter =>
+                    @*<p><span class="infoLabel">Triage Visit:</span> @encounter.getTriageDateOfVisit</p>*@
+                    @*<p><span class="infoLabel">Nurse:</span> @encounter.getNurseEmailAddress</p>*@
+                    @*<br>*@
+                    @*<p><span class="infoLabel">Medical Visit:</span> @encounter.getMedicalDateOfVisit</p>*@
+                    @*<p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>*@
+                    @*<br>*@
+                    @*<p><span class="infoLabel">Pharmacy Visit:</span> @encounter.getPharmacyDateOfVisit</p>*@
+                    @*<p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistEmailAddress</p>*@
+
                     <p><span class="infoLabel">Triage Visit:</span> @encounter.getTriageDateOfVisit</p>
-                    <p><span class="infoLabel">Nurse:</span> @encounter.getNurseEmailAddress</p>
+                    <p><span class="infoLabel">Nurse:</span> @encounter.getNurseFullName</p> @*Andrew Change*@
                     <br>
                     <p><span class="infoLabel">Medical Visit:</span> @encounter.getMedicalDateOfVisit</p>
-                    <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianEmailAddress</p>
+                    <p><span class="infoLabel">Physician:</span> @encounter.getPhysicianFullName</p> @*Andrew Change*@
                     <br>
                     <p><span class="infoLabel">Pharmacy Visit:</span> @encounter.getPharmacyDateOfVisit</p>
-                    <p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistEmailAddress</p>
+                    <p><span class="infoLabel">Pharmacist:</span> @encounter.getPharmacistFullName</p> @*Andrew Change*@
+
 
                 }
                 </div>

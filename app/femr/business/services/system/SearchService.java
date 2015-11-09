@@ -621,38 +621,52 @@ public class SearchService implements ISearchService {
         return isMetric.isActive();
     }
 
-//    //AJ Saclayan Dispensed Medication
-//    public ServiceResponse<List<IPatientPrescriptionReplacement>> retrieveOldMeds(int encounterId) {
-//        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-//        List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
+    //AJ Saclayan Dispensed Medication
+//public ServiceResponse<List<IPatientPrescriptionReplacement>> retrieveOldMeds(int encounterId) {
+//    ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+//    List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+//    List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
+//    ExpressionList<PatientPrescriptionReplacementReason> replacementReasonExpressionList = QueryProvider.getPatientPrescriptionReasonQuery()
+//            .where()
+//            .eq("name", "pharmacist replacement");
+//
+//    IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = patientPrescriptionReplacementReasonRepository.findOne(replacementReasonExpressionList);
+//
+//    prescriptionPairs.forEach((newId, oldId) -> {
+//
+//        ExpressionList<PatientPrescription> newPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
+//                .where()
+//                .eq("id", newId);
+//
 //        ExpressionList<PatientPrescription> replacedPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
 //                .where()
-//                .eq("id",
-//        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
-//                .fetch("patientEncounter")
-//                .where()
-//                .eq("encounter_id", encounterId)
-//                .ne("user_id_pharmacy", null);
-//        try {
-//            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-//            List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
-//                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
-//                    .map(pp -> itemModelMapper.createPrescriptionItem(
-//                            pp.getId(),
-//                            pp.getMedication().getName(),
-//                            null,
-//                            pp.getPhysician().getFirstName(),
-//                            pp.getPhysician().getLastName(),
-//                            pp.getMedicationAdministration(),
-//                            pp.getAmount(),
-//                            pp.getMedication()
-//                    ))
-//                    .collect(Collectors.toList());
+//                .eq("id", oldId);
 //
-//            response.setResponseObject(prescriptionItems);
+//        try {
+//            IPatientPrescription newPrescription = patientPrescriptionRepository.findOne(newPrescriptionExpressionList);
+//            IPatientPrescription replacedPrescription = patientPrescriptionRepository.findOne(replacedPrescriptionExpressionList);
+//
+//            if (newPrescription == null) {
+//
+//                response.addError("not found", "new prescription with id: " + newId + " not found.");
+//            } else if (replacedPrescription == null) {
+//
+//                response.addError("not found", "old prescription with id: " + oldId + " not found.");
+//            } else {
+//                patientPrescriptionReplacements.add(
+//                        dataModelMapper.createPatientPrescriptionReplacement(
+//                                replacedPrescription.getId(),
+//                                newPrescription.getId(),
+//                                patientPrescriptionReplacementReason.getId()
+//                        )
+//                );
+//
+//
+//            }
+//
 //        } catch (Exception ex) {
-//            response.addError("exception", ex.getMessage());
+//
+//            response.addError("", ex.getMessage());
 //        }
-//        return response;
 //    }
 }

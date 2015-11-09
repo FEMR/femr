@@ -18,13 +18,7 @@
 */
 package femr.ui.models.research;
 
-
 import femr.common.models.MissionItem;
-import femr.data.models.mysql.MissionCity;
-import femr.data.models.mysql.MissionTrip;
-import femr.data.models.mysql.User;
-import play.data.Form;
-
 import java.util.List;
 
 public class FilterViewModel {
@@ -41,7 +35,7 @@ public class FilterViewModel {
     private String medicationName;
     private List<MissionItem> MissionTrips; //Andrew Trip Filter
     private Integer MissionTripId; //Andrew Trip Filter
-
+    private List<MissionItem> missionItems;
     /*
     public List<ValidationError> validate() {
 

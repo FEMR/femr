@@ -75,13 +75,11 @@ public class ResearchController extends Controller {
 
         FilterViewModel filterViewModel = new FilterViewModel();
 
-
         //Grabbing mission city ID's Andrew Trip Filter
         ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
         if (missionItemServiceResponse.hasErrors())
             throw new RuntimeException();
         filterViewModel.setMissionTrips(missionItemServiceResponse.getResponseObject());
-
 
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
@@ -89,6 +87,7 @@ public class ResearchController extends Controller {
         filterViewModel.setEndDate(dateFormat.format(today.getTime()));
         today.add(Calendar.DAY_OF_MONTH, -120);
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
+
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 

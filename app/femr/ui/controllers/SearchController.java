@@ -8,11 +8,13 @@ import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;
 import femr.business.services.core.ISessionService;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.CityItem;
 import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.PatientItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.search.json.CitySearch;
 import femr.ui.models.search.json.PatientSearch;
 import org.h2.util.StringUtils;
 import play.mvc.Controller;
@@ -125,6 +127,26 @@ public class SearchController extends Controller {
         }
 
         return ok(new Gson().toJson(patientSearches));
+    }
+
+    public Result typeaheadCitiesJSONGet(){
+
+        ServiceResponse<List<CityItem>> cityItemsServiceResponse = searchService.retrieveCitiesForSearch();
+
+        if (cityItemsServiceResponse.hasErrors()){
+            return ok("");
+        }
+        List<CityItem> cityItems = cityItemsServiceResponse.getResponseObject();
+        List<CitySearch> citySearches = new ArrayList<>();
+        CitySearch citySearch;
+
+        for (CityItem cityItem : cityItems) {
+            citySearch = new CitySearch();
+            citySearch.setName(cityItem.getCityName());
+            citySearches.add(citySearch);
+        }
+
+        return ok(new Gson().toJson(citySearches));
     }
 
     public Result typeaheadDiagnosisJSONGet(){

@@ -1,25 +1,30 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)
 
+@import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.views.html.partials.triage._
 @import femr.ui.controllers.routes.SearchController
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
 
-    @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/triage.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/datepicker.css")">
-    }
+
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/touchit-1.0.0.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triage.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/shared/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/exif.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/megapix-image.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triageClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/shared/vitalClientValidation.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
     }
-
+    @additionalStyles = {
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/triage.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/datepicker.css")">
+    }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
     <div id="triageContentWrap">
@@ -40,7 +45,11 @@
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
-                @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
+                <div class="generalInfoInput" id="citySearchContainer">
+                    <label for="city">City<span class="red bold">*</span></label>
+                    <input type = "text" class="citySearch fInput"  name="city" id="city" required>
+                </div>
+
 
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>

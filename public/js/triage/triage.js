@@ -406,7 +406,6 @@ var birthdayAgeAutoCalculateFeature = {
 
 
 $(document).ready(function () {
-
     $('.newPatientBtn').click(function () {
         if (confirm("Are you sure you want to reset the fields?")) {
             window.location = "/triage";
@@ -521,7 +520,95 @@ $(document).ready(function () {
     $('#addChiefComplaint').click(function () {
         multipleChiefComplaintFeature.addChiefComplaintInput();
     });
+    //AJ Saclayan City Typeahead
+    /* Search typeahead */
+    if ($("#citySearchContainer").length > 0) {
 
+        var city_data = [];
+
+        // Get Patients from server
+        $.getJSON("/search/typeahead/cities", function (data) {
+
+            city_data = data;
+
+            var mission_cities = new Bloodhound({
+
+                datumTokenizer: function (d) {
+
+                    // break apart first/last name into separate words
+                    var words = Bloodhound.tokenizers.whitespace(d.name); //(d.id + " " + d.firstName + " " + d.lastName)
+
+                    // make all possible substring words
+                    // Original Word: Name
+                    // Add  ame, me, e to the list also
+                    $.each(words, function (k, v) {
+                        var i = 0;
+                        while ((i + 1) < v.length) {
+                            words.push(v.substr(i, v.length));
+                            i++;
+                        }
+                    });
+
+                    return words;
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: city_data, //patient_data
+                limit: 30
+            });
+            mission_cities.initialize(); //patients.initialize
+
+            var typeahead_options = {
+
+                highlight: true
+            };
+
+            //initalize typeahead
+            $("#citySearchContainer").find(".citySearch").typeahead(typeahead_options, {
+                name: 'mission_cities',
+                displayKey: 'name',
+                source: mission_cities.ttAdapter(),
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                templates: {
+                    empty: [
+                        '<div class="emptyMessage">No matching cities found</div>'
+                    ]
+                }
+            }).on('typeahead:selected', function(event, item) {
+                // triggered when an item is selected from the dropdown list in autocompleted
+                var $cityName = $(this).closest(".cityRow").find(".cityName");
+                $cityName.val(item.id);
+            }).on('typeahead:autocompleted', function(event, item, data) {
+                    // triggered when an item is tabbed to completion
+                    $(this).trigger("typeahead:selected", item);
+                }
+            ).on("change", function(event) {
+                    // triggered when text is entered that is not part of the autocomplete
+                    var $cityName = $(this).closest(".cityRow").find(".cityID");
+                    $cityName.val("");
+            });
+
+            // Reenable search input field
+            $("input.citySearch").removeClass("loading")
+                .removeAttr("disabled")
+                .attr("placeholder", "City Name");
+
+            //$("input.citySearch").removeClass("loading")
+            //    .removeAttr("disabled")
+            //    .attr("placeholder", "Patient ID or Name");
+
+        });
+    }
+   //citiesFeature.initializeCitiesTypeahead().then(function() {
+   //     citiesFeature.addCitiesTypeahead();
+   // });
+   //
+   // ///AJ Saclayan Cities Suggestion
+   // typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/cities", cityFeature.newProblems.first(),'name',true,true);
+   // //typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
 
 });
 
@@ -581,3 +668,4 @@ window.setInterval(function () {
     }
 
 }, 500);
+

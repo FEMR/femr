@@ -80,7 +80,6 @@ public class UserService implements IUserService {
 
             // AJ Saclayan - Password Constraints
             IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, userId);
-
             encryptAndSetUserPassword(newUser);
 
 

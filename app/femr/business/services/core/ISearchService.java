@@ -121,7 +121,7 @@ public interface ISearchService {
      * @return a service response that contains a list of PatientItems
      * and/or errors if they exist.
      */
-    ServiceResponse<List<PatientItem>> retrievePatientsForSearch();
+    ServiceResponse<List<CityItem>> retrievePatientsForSearch();
 
     /**
      * Get all diagnosis for help on problem input fields in medical
@@ -130,4 +130,22 @@ public interface ISearchService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> findDiagnosisForSearch();
+
+    /**
+     * AJ Saclayan Cities
+     * Get string typed by user
+     *
+     * @return
+     */
+    ServiceResponse<List<CityItem>> retrieveCitiesFromQueryString(String citySearchQuery);
+
+    /**
+     * Get all patient information for searching users.
+     *
+     * @return a service response that contains a list of PatientItems
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<CityItem>> retrieveCitiesForSearch();
+
+
 }

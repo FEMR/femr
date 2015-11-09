@@ -48,7 +48,7 @@ public class SearchService implements ISearchService {
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
-
+    private final IRepository<IMissionCity> cityRepository;
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
                          IRepository<IPatient> patientRepository,
@@ -57,6 +57,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IMissionTripService missionTripService,
+                         IRepository<IMissionCity> cityRepository,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
@@ -67,6 +68,7 @@ public class SearchService implements ISearchService {
         this.systemSettingRepository = systemSettingRepository;
         this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
+        this.cityRepository = cityRepository;
     }
 
     /**
@@ -515,7 +517,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch() {
+    public ServiceResponse<List<CityItem>> retrievePatientsForSearch() {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
@@ -628,4 +630,59 @@ public class SearchService implements ISearchService {
         ISystemSetting isMetric = systemSettingRepository.findOne(query);
         return isMetric.isActive();
     }
+
+    /** AJ Saclayan
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<CityItem>> retrieveCitiesFromQueryString(String citySearchQuery){
+        ServiceResponse<List<CityItem>> response = new ServiceResponse<>();
+        if (StringUtils.isNullOrWhiteSpace(citySearchQuery)) {
+            response.addError("", "bad parameters");
+            return response;
+        }
+
+//        String[] words = citySearchQuery.trim().split(" ");
+//        String city = citySearchQuery
+//        if (words.length == 0) {
+//            //nothing was in the query
+//            response.addError("", "query string empty");
+//            return response;
+//        } else if (words.length == 2) {
+//            city = words[0];
+//        } else {
+//            response.addError("", "too many words in query string");
+//            return response;
+//        }
+
+
+        //Build the Query
+        //TODO: filter these by the current country of the team
+        Query<MissionCity> query = null;
+
+            query = QueryProvider.getMissionCityQuery()
+                    .where()
+                    .eq("name", citySearchQuery)
+                    .order()
+                    .desc("id");
+
+        //Execute the query
+        try {
+            List<? extends IMissionCity> cities = cityRepository.find(query);
+            List<CityItem> cityItems = new ArrayList<>();
+            for (IMissionCity city : cities) {
+                //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
+                cityItems.add(itemModelMapper.createCityItem(
+                        city.getName(),
+                        city.getMissionCountry().getName()
+                ));
+            }
+            response.setResponseObject(cityItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
 }

@@ -18,6 +18,8 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/megapix-image.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triageClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/shared/vitalClientValidation.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
+            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
     }
 
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
@@ -41,7 +43,9 @@
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
-
+                <div id="citySearchContainer">
+                    <input type = "text" class="patientSearch fInput typeahead loading" id="citySearch" name="citySearch" placeholder="Loading&hellip;" disabled="disabled"/>
+                </div>
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)

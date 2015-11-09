@@ -8,6 +8,7 @@ import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;
 import femr.business.services.core.ISessionService;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.CityItem;
 import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.PatientItem;
 import femr.data.models.mysql.Roles;
@@ -113,6 +114,32 @@ public class SearchController extends Controller {
         PatientSearch patientSearch;
 
         for (PatientItem patientItem : patientItems) {
+            patientSearch = new PatientSearch();
+            patientSearch.setId(Integer.toString(patientItem.getId()));
+            patientSearch.setFirstName(patientItem.getFirstName());
+            patientSearch.setLastName(patientItem.getLastName());
+            if (patientItem.getAge() != null)
+                patientSearch.setAge(patientItem.getAge());
+            if (patientItem.getPathToPhoto() != null)
+                patientSearch.setPhoto(patientItem.getPathToPhoto());
+            patientSearches.add(patientSearch);
+        }
+
+        return ok(new Gson().toJson(patientSearches));
+    }
+
+    public Result typeaheadCitiesJSONGet(){
+
+        ServiceResponse<List<CityItem>> cityItemsServiceResponse = searchService.retrieveCitiesForSearch();
+
+        if (cityItemsServiceResponse.hasErrors()){
+            return ok("");
+        }
+        List<CityItem> cityItems = cityItemsServiceResponse.getResponseObject();
+        List<PatientSearch> patientSearches = new ArrayList<>();
+        PatientSearch patientSearch;
+
+        for (CityItem cityItem : cityItems) {
             patientSearch = new PatientSearch();
             patientSearch.setId(Integer.toString(patientItem.getId()));
             patientSearch.setFirstName(patientItem.getFirstName());

@@ -14,6 +14,7 @@ import femr.common.models.PatientItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.search.json.CitySearch;
 import femr.ui.models.search.json.PatientSearch;
 import org.h2.util.StringUtils;
 import play.mvc.Controller;
@@ -136,22 +137,16 @@ public class SearchController extends Controller {
             return ok("");
         }
         List<CityItem> cityItems = cityItemsServiceResponse.getResponseObject();
-        List<PatientSearch> patientSearches = new ArrayList<>();
-        PatientSearch patientSearch;
+        List<CitySearch> citySearches = new ArrayList<>();
+        CitySearch citySearch;
 
         for (CityItem cityItem : cityItems) {
-            patientSearch = new PatientSearch();
-            patientSearch.setId(Integer.toString(patientItem.getId()));
-            patientSearch.setFirstName(patientItem.getFirstName());
-            patientSearch.setLastName(patientItem.getLastName());
-            if (patientItem.getAge() != null)
-                patientSearch.setAge(patientItem.getAge());
-            if (patientItem.getPathToPhoto() != null)
-                patientSearch.setPhoto(patientItem.getPathToPhoto());
-            patientSearches.add(patientSearch);
+            citySearch = new CitySearch();
+            citySearch.setName(cityItem.getCityName());
+            citySearches.add(citySearch);
         }
 
-        return ok(new Gson().toJson(patientSearches));
+        return ok(new Gson().toJson(citySearches));
     }
 
     public Result typeaheadDiagnosisJSONGet(){

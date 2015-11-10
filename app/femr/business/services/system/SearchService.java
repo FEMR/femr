@@ -517,7 +517,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<CityItem>> retrievePatientsForSearch() {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch() {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
@@ -685,4 +685,47 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+    /**
+     * AJ Saclayan
+     * @return
+     */
+    @Override
+    public ServiceResponse<List<CityItem>> retrieveCitiesForSearch(){
+        ServiceResponse<List<CityItem>> response = new ServiceResponse<>();
+
+        try {
+
+            List<? extends IMissionCity> allCities;
+
+            //Make sure that none of the values we will be checking are null.
+            //If they are, just get all of the possible patients.
+
+//                allPatients = QueryHelper.findPatients(patientRepository, missionTrip.getMissionCity().getMissionCountry().getName());
+//            }else{
+
+                allCities = QueryHelper.findCities(cityRepository);
+//            }
+
+            List<CityItem> cityItems = new ArrayList<>();
+
+            for (IMissionCity city : allCities) {
+
+                CityItem currCity = itemModelMapper.createCityItem(
+                        city.getName(),
+                        city.getMissionCountry().getName()
+                );
+
+
+                cityItems.add(currCity);
+
+            }
+
+
+            response.setResponseObject(cityItems);
+
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+        return response;
+    }
 }

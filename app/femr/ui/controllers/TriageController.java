@@ -298,16 +298,16 @@ public class TriageController extends Controller {
         return patientEncounterItem;
     }
 
-    //AJ Saclayan Cities
-    public void editPost()
-    {
-        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-
-        EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
-
-        List<CityItem> cityItems = viewModelPost.getCities()
-                .stream()
-                .filter(cityItem -> cityItem.getCityName() != null)
-                .collect(Collectors.toList());
-    }
+//    //AJ Saclayan Cities
+//    public void editPost()
+//    {
+//        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+//
+//        EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
+//
+//        List<CityItem> cityItems = viewModelPost.getCities()
+//                .stream()
+//                .filter(cityItem -> cityItem.getCityName() != null)
+//                .collect(Collectors.toList());
+//    }
 }

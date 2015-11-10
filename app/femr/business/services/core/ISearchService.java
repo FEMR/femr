@@ -121,7 +121,7 @@ public interface ISearchService {
      * @return a service response that contains a list of PatientItems
      * and/or errors if they exist.
      */
-    ServiceResponse<List<CityItem>> retrievePatientsForSearch();
+    ServiceResponse<List<PatientItem>> retrievePatientsForSearch();
 
     /**
      * Get all diagnosis for help on problem input fields in medical

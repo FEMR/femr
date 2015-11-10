@@ -59,7 +59,7 @@ public class User implements IUser {
     @JoinTable(
             name = "mission_trip_users",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "trip_id", referencedColumnName = "id")})
+            inverseJoinColumns = {@JoinColumn(name = "mission_trip_id", referencedColumnName = "id")})
     private List<IMissionTrip> missionTrips;
 
     @Override
@@ -171,5 +171,10 @@ public class User implements IUser {
     @Override
     public List<IMissionTrip> getMissionTrips() {
         return missionTrips;
+    }
+
+    @Override
+    public void setMissionTrips(List<IMissionTrip> missionTrips) {
+        this.missionTrips = missionTrips;
     }
 }

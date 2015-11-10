@@ -26,24 +26,16 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMissionTripService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.CityItem;
-import femr.common.models.MissionItem;
-import femr.common.models.TeamItem;
-import femr.common.models.TripItem;
+import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.models.core.IMissionCity;
-import femr.data.models.core.IMissionCountry;
-import femr.data.models.core.IMissionTeam;
-import femr.data.models.core.IMissionTrip;
-import femr.data.models.mysql.MissionCity;
-import femr.data.models.mysql.MissionCountry;
-import femr.data.models.mysql.MissionTeam;
-import femr.data.models.mysql.MissionTrip;
+import femr.data.models.core.*;
+import femr.data.models.mysql.*;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MissionTripService implements IMissionTripService {
 
@@ -51,6 +43,7 @@ public class MissionTripService implements IMissionTripService {
     private final IRepository<IMissionCountry> missionCountryRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
+    private final IRepository<IUser> userRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -59,6 +52,7 @@ public class MissionTripService implements IMissionTripService {
                               IRepository<IMissionCountry> missionCountryRepository,
                               IRepository<IMissionTeam> missionTeamRepository,
                               IRepository<IMissionTrip> missionTripRepository,
+                              IRepository<IUser> userRepository,
                               IDataModelMapper dataModelMapper,
                               @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -66,6 +60,7 @@ public class MissionTripService implements IMissionTripService {
         this.missionCountryRepository = missionCountryRepository;
         this.missionTripRepository = missionTripRepository;
         this.missionTeamRepository = missionTeamRepository;
+        this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -77,29 +72,6 @@ public class MissionTripService implements IMissionTripService {
     public IMissionTrip retrieveCurrentMissionTrip() {
 
         return getCurrentMissionTrip();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<List<String>> retrieveAvailableTeams() {
-
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        List<String> teams = new ArrayList<>();
-
-        Query<MissionTeam> missionTeamQuery = QueryProvider.getMissionTeamQuery()
-                .orderBy("name");
-        List<? extends IMissionTeam> missionTeams = missionTeamRepository.find(missionTeamQuery);
-
-        for (IMissionTeam mt : missionTeams) {
-
-            teams.add(mt.getName());
-        }
-
-        response.setResponseObject(teams);
-
-        return response;
     }
 
     /**
@@ -156,12 +128,82 @@ public class MissionTripService implements IMissionTripService {
             //start by getting all available mission teams. If you start by getting all the trips then
             //you might miss some teams that don't have a trip, yet.
             List<? extends IMissionTeam> missionTeams = missionTeamRepository.findAll(MissionTeam.class);
+
+            List<MissionTripItem> missionTripItems;
+
+
             for (IMissionTeam missionTeam : missionTeams) {
 
-                missionItems.add(itemModelMapper.createMissionItem(missionTeam));
+                missionTripItems = new ArrayList<>();
+
+                missionTripItems.addAll(missionTeam.getMissionTrips()
+                        .stream()
+                        .map(itemModelMapper::createMissionTripItem)
+                        .collect(Collectors.toList()));
+
+                missionItems.add(itemModelMapper.createMissionItem(missionTeam, missionTripItems));
             }
 
             response.setResponseObject(missionItems);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<MissionTripItem> retrieveAllTripInformationByTripId(int tripId) {
+
+        ServiceResponse<MissionTripItem> response = new ServiceResponse<>();
+        MissionTripItem missionTripItem;
+
+        try {
+
+            ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
+                    .where()
+                    .eq("id", tripId);
+
+            IMissionTrip missionTrip = missionTripRepository.findOne(missionTripExpressionList);
+            missionTripItem = itemModelMapper.createMissionTripItem(missionTrip);
+
+            response.setResponseObject(missionTripItem);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<MissionTripItem>> retrieveAllTripInformationByUserId(int userId) {
+
+        ServiceResponse<List<MissionTripItem>> response = new ServiceResponse<>();
+        List<MissionTripItem> missionTripItems = new ArrayList<>();
+
+        try {
+
+            ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", userId);
+
+            IUser user = userRepository.findOne(query);
+
+
+            //start by getting all available mission teams. If you start by getting all the trips then
+            //you might miss some teams that don't have a trip, yet.
+            missionTripItems.addAll(user.getMissionTrips()
+                    .stream()
+                    .map(itemModelMapper::createMissionTripItem)
+                    .collect(Collectors.toList()));
+
+            response.setResponseObject(missionTripItems);
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());
@@ -205,7 +247,8 @@ public class MissionTripService implements IMissionTripService {
                 StringUtils.isNullOrWhiteSpace(tripItem.getTeamName()) ||
                 StringUtils.isNullOrWhiteSpace(tripItem.getTripCity()) ||
                 StringUtils.isNullOrWhiteSpace(tripItem.getTripCountry()) ||
-                tripItem.getTripStartDate() == null) {
+                tripItem.getTripStartDate() == null ||
+                tripItem.getTripEndDate() == null) {
             response.addError("", "you're missing required fields, try again");
         } else {
             try {
@@ -223,10 +266,10 @@ public class MissionTripService implements IMissionTripService {
 
                 if (missionCountry == null) {
                     //make sure we have a country to work with
-                    response.addError("", "someone sent a bad country in the request");
+                    response.addError("", "country does not exist");
                 } else if (missionTeam == null) {
                     //make sure we have a team to work with
-                    response.addError("", "someone sent a bad team name in the request");
+                    response.addError("", "team does not exist");
                 } else {
 
                     ExpressionList<MissionCity> missionCityExpressionList = QueryProvider.getMissionCityQuery()
@@ -284,6 +327,18 @@ public class MissionTripService implements IMissionTripService {
     public ServiceResponse<CityItem> createNewCity(String cityName, String countryName) {
 
         ServiceResponse<CityItem> response = new ServiceResponse<>();
+
+        if (cityName == null || StringUtils.isNullOrWhiteSpace(cityName)){
+
+            response.addError("", "city must have a name");
+            return response;
+        }
+
+        if (countryName == null || StringUtils.isNullOrWhiteSpace(countryName)){
+
+            response.addError("", "country must have a name");
+            return response;
+        }
 
         ExpressionList<MissionCountry> missionCountryExpressionList = QueryProvider.getMissionCountryQuery()
                 .where()

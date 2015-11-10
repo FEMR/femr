@@ -69,4 +69,6 @@ public interface IUser {
     void setNotes(String notes);
 
     List<IMissionTrip> getMissionTrips();
+
+    void setMissionTrips(List<IMissionTrip> missionTrips);
 }

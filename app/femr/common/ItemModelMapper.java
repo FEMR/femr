@@ -91,7 +91,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MissionItem createMissionItem(IMissionTeam missionTeam) {
+    public MissionItem createMissionItem(IMissionTeam missionTeam, List<MissionTripItem> missionTripItems) {
 
         if (missionTeam == null) {
 
@@ -103,20 +103,32 @@ public class ItemModelMapper implements IItemModelMapper {
         missionItem.setTeamName(missionTeam.getName());
         missionItem.setTeamLocation(missionTeam.getLocation());
         missionItem.setTeamDescription(missionTeam.getDescription());
-
-        for (IMissionTrip mt : missionTeam.getMissionTrips()) {
-
-            missionItem.addMissionTrip(mt.getId(),
-                    mt.getMissionCity().getName(),
-                    mt.getMissionCity().getMissionCountry().getName(),
-                    mt.getStartDate(),
-                    dateUtils.getFriendlyDate(mt.getStartDate()),
-                    mt.getEndDate(),
-                    dateUtils.getFriendlyDate(mt.getEndDate())
-            );
-        }
+        missionItem.setMissionTrips(missionTripItems);
 
         return missionItem;
+    }
+
+    @Override
+    public MissionTripItem createMissionTripItem(IMissionTrip missionTrip){
+
+        if (missionTrip == null){
+
+            return null;
+        }
+
+        MissionTripItem missionTripItem = new MissionTripItem();
+        missionTripItem.setId(missionTrip.getId());
+        if (missionTrip.getMissionCity() != null)
+            missionTripItem.setTripCity(missionTrip.getMissionCity().getName());
+        if (missionTrip.getMissionCity() != null)
+            missionTripItem.setTripCountry(missionTrip.getMissionCity().getMissionCountry().getName());
+        missionTripItem.setTripStartDate(missionTrip.getStartDate());
+        missionTripItem.setFriendlyTripStartDate(dateUtils.getFriendlyDate(missionTrip.getStartDate()));
+        missionTripItem.setTripEndDate(missionTrip.getEndDate());
+        missionTripItem.setFriendlyTripEndDate(dateUtils.getFriendlyDate(missionTrip.getEndDate()));
+        missionTripItem.setTeamName(missionTrip.getMissionTeam().getName());
+
+        return missionTripItem;
     }
 
     /**

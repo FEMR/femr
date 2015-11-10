@@ -19,10 +19,7 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.CityItem;
-import femr.common.models.MissionItem;
-import femr.common.models.TeamItem;
-import femr.common.models.TripItem;
+import femr.common.models.*;
 import femr.data.models.core.IMissionTrip;
 
 import java.util.List;
@@ -35,14 +32,6 @@ public interface IMissionTripService {
      * @return the current trip or null if an error occurs
      */
     IMissionTrip retrieveCurrentMissionTrip();
-
-    /**
-     * Retrieve a list of all team names.
-     *
-     * @return a service response that contains a list of available teams as Strings
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<String>> retrieveAvailableTeams();
 
     /**
      * Retrieve a list of all cities.
@@ -69,6 +58,25 @@ public interface IMissionTripService {
     ServiceResponse<List<MissionItem>> retrieveAllTripInformation();
 
     /**
+     * Get a comprehensive list of trip information for a specific trip
+     *
+     * @param tripId id of the trip, not null
+     * @return a service responset hat contains a list of trip information
+     * and/or errors if they exist.
+     */
+    ServiceResponse<MissionTripItem> retrieveAllTripInformationByTripId(int tripId);
+
+    /**
+     * Get a comprehensive list of trip information for a specific user.(all trips that
+     * the user has attended).
+     *
+     * @param userId id of the user, not null
+     * @return a service responset hat contains a list of trip information for
+     * the user and/or errors if they exist.
+     */
+    ServiceResponse<List<MissionTripItem>> retrieveAllTripInformationByUserId(int userId);
+
+    /**
      * Create a new team.
      *
      * @param teamItem - the name is required TODO: separate into parameters
@@ -89,8 +97,8 @@ public interface IMissionTripService {
     /**
      * Create a new city
      *
-     * @param cityName name of the city, TODO: make not nullable
-     * @param countryName name of the country, TODO: make not nullable
+     * @param cityName name of the city, not null
+     * @param countryName name of the country, not null
      * @return a service response that contains a new CityItem that was created
      * and/or errors if they exist.
      */

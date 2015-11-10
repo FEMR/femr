@@ -18,30 +18,6 @@ public class MissionItem {
         this.missionTrips = new ArrayList<>();
     }
 
-    public void addMissionTrip(int id,
-                               String tripCity,
-                               String tripCountry,
-                               Date tripStartDate,
-                               String friendlyTripStartDate,
-                               Date tripEndDate,
-                               String friendlyTripEndDate
-    ) {
-
-        MissionTripItem missionTripItem = new MissionTripItem();
-        missionTripItem.setId(id);
-        missionTripItem.setTripCity(tripCity);
-        missionTripItem.setTripCountry(tripCountry);
-        missionTripItem.setTripStartDate(tripStartDate);
-        missionTripItem.setFriendlyTripStartDate(friendlyTripStartDate);
-        missionTripItem.setTripEndDate(tripEndDate);
-        missionTripItem.setFriendlyTripEndDate(friendlyTripEndDate);
-        this.missionTrips.add(missionTripItem);
-    }
-
-    public List<MissionTripItem> getMissionTrips() {
-        return missionTrips;
-    }
-
     public String getTeamName() {
         return teamName;
     }
@@ -66,72 +42,16 @@ public class MissionItem {
         this.teamDescription = teamDescription;
     }
 
-
-    public class MissionTripItem {
-        private int id;
-        private String tripCity;
-        private String tripCountry;
-        private Date tripStartDate;
-        private String friendlyTripStartDate;
-        private Date tripEndDate;
-        private String friendlyTripEndDate;
-        private boolean isCurrent;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getTripCity() {
-            return tripCity;
-        }
-
-        public void setTripCity(String tripCity) {
-            this.tripCity = tripCity;
-        }
-
-        public String getTripCountry() {
-            return tripCountry;
-        }
-
-        public void setTripCountry(String tripCountry) {
-            this.tripCountry = tripCountry;
-        }
-
-        public Date getTripStartDate() {
-            return tripStartDate;
-        }
-
-        public void setTripStartDate(Date tripStartDate) {
-            this.tripStartDate = tripStartDate;
-        }
-
-        public String getFriendlyTripStartDate() {
-            return friendlyTripStartDate;
-        }
-
-        public void setFriendlyTripStartDate(String friendlyTripStartDate) {
-            this.friendlyTripStartDate = friendlyTripStartDate;
-        }
-
-        public Date getTripEndDate() {
-            return tripEndDate;
-        }
-
-        public void setTripEndDate(Date tripEndDate) {
-            this.tripEndDate = tripEndDate;
-        }
-
-        public String getFriendlyTripEndDate() {
-            return friendlyTripEndDate;
-        }
-
-        public void setFriendlyTripEndDate(String friendlyTripEndDate) {
-            this.friendlyTripEndDate = friendlyTripEndDate;
-        }
+    public List<MissionTripItem> getMissionTrips() {
+        return missionTrips;
     }
 
+    public void setMissionTrips(List<MissionTripItem> missionTrips) {
+        this.missionTrips = missionTrips;
+    }
+
+    public void addMissionTrip(MissionTripItem missionTripItem) {
+
+        this.missionTrips.add(missionTripItem);
+    }
 }

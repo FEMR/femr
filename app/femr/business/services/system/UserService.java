@@ -37,6 +37,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+import femr.common.dtos.CurrentUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<UserItem> createUser(UserItem user, String password) {
+    public ServiceResponse<UserItem> createUser(UserItem user, String password, CurrentUser currentUser) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         try {
 
@@ -78,7 +79,8 @@ public class UserService implements IUserService {
             List<? extends IRole> roles = roleRepository.find(query);
 
             // AJ Saclayan - Password Constraints
-            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles);
+            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, currentUser);
+
             encryptAndSetUserPassword(newUser);
 
 

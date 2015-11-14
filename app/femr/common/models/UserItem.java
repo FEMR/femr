@@ -34,6 +34,8 @@ public class UserItem {
     private boolean isDeleted;
     private boolean isPasswordReset;
     private String PasswordCreatedDate;
+    private String UserCreated; //Sam Zanni
+    private String DateCreated; //Sam Zanni
 
     public UserItem(){
         this.roles = new ArrayList<>();
@@ -141,3 +143,12 @@ public class UserItem {
         return true;
     }
 }
+    public String getDateCreated() {return DateCreated; } //Sam Zanni
+
+    public void setDateCreated (String DateCreated) { this.DateCreated = DateCreated; } //Sam Zanni
+
+    public String getUserCreated() {return UserCreated; } //Sam Zanni
+
+    public void setUserCreated (String UserCreated) {this.UserCreated = UserCreated; } //Sam Zanni
+
+ }

@@ -71,4 +71,12 @@ public interface IUser {
     List<IMissionTrip> getMissionTrips();
 
     void setMissionTrips(List<IMissionTrip> missionTrips);
+
+    DateTime getDateCreated(); //Sam Zanni
+
+    void setDateCreated(DateTime DateCreated); //Sam Zanni
+
+    String getUserCreated(); //Sam Zanni
+
+    void setUserCreated(String UserCreated); //Sam Zanni
 }

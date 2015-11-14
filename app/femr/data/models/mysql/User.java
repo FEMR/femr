@@ -55,6 +55,10 @@ public class User implements IUser {
     private Boolean passwordReset;
     @Column(name = "notes")
     private String notes;
+    @Column (name = "creation_date", nullable = false) //Sam Zanni
+    private DateTime DateCreated; //Sam Zanni
+    @Column (name = "user_created", nullable = false) //Sam Zanni
+    private String UserCreated; //Sam Zanni
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)
     @JoinTable(
             name = "mission_trip_users",
@@ -167,6 +171,18 @@ public class User implements IUser {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    @Override
+    public DateTime getDateCreated() { return DateCreated; }
+
+    @Override
+    public void setDateCreated(DateTime DateCreated) { this.DateCreated = DateCreated; }
+
+    @Override
+    public String getUserCreated() { return UserCreated; }
+
+    @Override
+    public void setUserCreated(String UserCreated) { this.UserCreated = UserCreated; }
 
     @Override
     public List<IMissionTrip> getMissionTrips() {

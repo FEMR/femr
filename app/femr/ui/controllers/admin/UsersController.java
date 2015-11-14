@@ -110,7 +110,7 @@ public class UsersController extends Controller {
             CreateViewModel viewModel = form.bindFromRequest().get();
             UserItem user = createUserItem(viewModel);
 
-            ServiceResponse<UserItem> response = userService.createUser(user, viewModel.getPassword());
+            ServiceResponse<UserItem> response = userService.createUser(user, viewModel.getPassword(), currentUser); //Sam zanni
             if (response.hasErrors()) {
                 messages.add(response.getErrors().get(""));
                 return ok(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject()));
@@ -248,6 +248,8 @@ public class UsersController extends Controller {
         user.setPasswordReset(false);
         user.setNotes(viewModel.getNotes());
         user.setRoles(viewModel.getRoles());
+        user.setDateCreated(viewModel.getDateCreated());
+        user.setUserCreated(viewModel.getUserCreated());
         return user;
     }
 

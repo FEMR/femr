@@ -14,6 +14,8 @@ object ApplicationBuild extends Build {
   val appVersion = "2.1.4"
   val currentScalaVersion = "2.11.7"
 
+
+
   val appDependencies = Seq(
     // Add your project dependencies here,
     javaCore,

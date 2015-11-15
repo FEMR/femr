@@ -18,6 +18,7 @@
 */
 package femr.data;
 
+import femr.common.dtos.CurrentUser;
 import femr.data.models.core.*;
 import org.joda.time.DateTime;
 import java.util.Date;
@@ -266,5 +267,6 @@ public interface IDataModelMapper {
      * @param roles           a list of roles, must have at least one, not null
      * @return an implementation of IUser or null if processing fails
      */
-    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, CurrentUser currentUser);
+    //Sam Zann;
 }

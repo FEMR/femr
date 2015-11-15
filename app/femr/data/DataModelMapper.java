@@ -592,10 +592,7 @@ public class DataModelMapper implements IDataModelMapper{
         user.setRoles(roles);
         user.setPasswordCreatedDate(date);
         user.setDateCreated(date); //Sam Zanni
-        if (currentUser.getLastName().isEmpty())
-            user.setUserCreated(currentUser.getFirstName()); //Sam Zanni
-        else
-            user.setUserCreated(currentUser.getFirstName() + " " +  currentUser.getLastName()); //Sam Zanni
+        user.setCreatedBy(currentUser.getId()); //Sam Zanni
         return user;
     }
 

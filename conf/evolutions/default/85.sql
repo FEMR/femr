@@ -1,11 +1,11 @@
 # --- !Ups
 ALTER TABLE `users`
 ADD COLUMN `passwordCreatedDate` DATETIME NOT NULL AFTER `password`,
-ADD COLUMN `creation_date` DATETIME NOT NULL AFTER `last_login`,
-ADD COLUMN `user_created` DATETIME NOT NULL AFTER `creation_date`;
+ADD COLUMN `date_created` DATETIME NOT NULL AFTER `last_login`,
+ADD COLUMN `created_by` DATETIME NOT NULL AFTER `creation_date`;
 
 UPDATE `users`
-SET creation_date = '9999-01-01'
+SET date_created = '9999-01-01'
 
 UPDATE `users`
 SET passwordCreatedDate = '0000-01-01';
@@ -27,8 +27,8 @@ ALTER TABLE patient_encounters DROP COLUMN weeks_pregnant;
 # --- !Downs
 ALTER TABLE `users`
 DROP COLUMN `passwordCreatedDate`,
-DROP COLUMN `creation_date`,
-DROP COLUMN `user_created`;
+DROP COLUMN `date_created`,
+DROP COLUMN `created_by`;
 
 ALTER TABLE `patient_encounters`
 ADD COLUMN `weeks_pregnant` INT(255) NULL DEFAULT NULL  AFTER `date_of_triage_visit`;

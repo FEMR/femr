@@ -519,10 +519,10 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setNotes(user.getNotes());
         userItem.setDeleted(user.getDeleted());
         userItem.setPasswordReset(user.getPasswordReset());
-        userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
-        userItem.setUserCreated(user.getUserCreated()); //Sam Zanni
-        userItem.setDateCreated(dateUtils.getFriendlyDate(user.getDateCreated())); //Sam Zanni
 
+        userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
+        userItem.setCreatedBy(user.getCreatedBy()); //Sam Zanni
+        userItem.setDateCreated(dateUtils.getFriendlyDate(user.getDateCreated())); //Sam Zanni
 
         return userItem;
     }

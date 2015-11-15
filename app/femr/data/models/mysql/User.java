@@ -58,10 +58,10 @@ public class User implements IUser {
     //AJ Saclayan Password Constraints
     @Column(name = "passwordCreatedDate", nullable = false)
     private DateTime PasswordCreatedDate;
-    @Column (name = "creation_date", nullable = false) //Sam Zanni
+    @Column (name = "date_created", nullable = false) //Sam Zanni
     private DateTime DateCreated; //Sam Zanni
-    @Column (name = "user_created", nullable = false) //Sam Zanni
-    private String UserCreated; //Sam Zanni
+    @Column (name = "created_by", unique = true, nullable = false) //Sam Zanni
+    private Integer CreatedBy; //Sam Zanni
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)
     @JoinTable(
             name = "mission_trip_users",
@@ -182,10 +182,10 @@ public class User implements IUser {
     public void setDateCreated(DateTime DateCreated) { this.DateCreated = DateCreated; }
 
     @Override
-    public String getUserCreated() { return UserCreated; }
+    public Integer getCreatedBy() { return CreatedBy; }
 
     @Override
-    public void setUserCreated(String UserCreated) { this.UserCreated = UserCreated; }
+    public void setCreatedBy(Integer CreatedBy) { this.CreatedBy = CreatedBy; }
 
     @Override
     public List<IMissionTrip> getMissionTrips() {

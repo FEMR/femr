@@ -249,7 +249,6 @@ public class UsersController extends Controller {
         user.setNotes(viewModel.getNotes());
         user.setRoles(viewModel.getRoles());
         user.setDateCreated(viewModel.getDateCreated());
-        user.setUserCreated(viewModel.getUserCreated());
         return user;
     }
 

@@ -1,14 +1,14 @@
 # --- !Ups
 
 ALTER TABLE `users`
-ADD COLUMN `creation_date` DATETIME NOT NULL AFTER `last_login`;
-ADD COLUMN `user_created` DATETIME NOT NULL AFTER `creation_date`;
+ADD COLUMN `date_created` DATETIME NOT NULL AFTER `last_login`;
+ADD COLUMN `created_by` DATETIME NOT NULL AFTER `date_created`;
 
 UPDATE `users`
-SET creation_date = '9999-01-01'
+SET date_created = '9999-01-01'
 
 # --- !Downs
 
 ALTER TABLE `users`
-DROP COLUMN `creation_date`;
-DROP COLUMN `user_created`;
+DROP COLUMN `date_created`;
+DROP COLUMN `created_by`;

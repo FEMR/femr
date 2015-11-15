@@ -76,7 +76,7 @@ public interface IUser {
 
     void setDateCreated(DateTime DateCreated); //Sam Zanni
 
-    String getUserCreated(); //Sam Zanni
+    Integer getCreatedBy(); //Sam Zanni
 
-    void setUserCreated(String UserCreated); //Sam Zanni
+    void setCreatedBy(Integer CreatedBy); //Sam Zanni
 }

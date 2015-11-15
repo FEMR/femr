@@ -318,11 +318,6 @@ public class PDFController extends Controller {
         PdfPCell cell = new PdfPCell(table.getDefaultCell());
         cell.setPaddingTop(2);
 		table.addCell(getVitalMapCell("Weeks Pregnant:", "weeksPregnant", vitalMap));
-        //Paragraph pregnancyTitle = new Paragraph("Pregnancy Status:", getTitleFont());
-        //cell.addElement(pregnancyTitle);
-        //Paragraph pregnancy = new Paragraph(outputIntOrNA(encounter.getWeeksPregnant()), getValueFont());
-        //cell.addElement(pregnancy);
-        //table.addCell(cell);
         table.completeRow();
 
         return table;

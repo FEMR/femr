@@ -161,9 +161,6 @@ public class TriageController extends Controller {
 
 
         //create and save a new encounter
-        // PatientEncounterItem patientEncounterItem =
-                // populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
-        // ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientEncounterItem);
 		       PatientEncounterItem patientEncounterItem =
                 populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientEncounterItem);

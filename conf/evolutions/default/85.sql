@@ -1,5 +1,6 @@
 # --- !Ups
 ALTER TABLE `users`
+
 ADD COLUMN `passwordCreatedDate` DATETIME NOT NULL AFTER `password`,
 ADD COLUMN `date_created` DATETIME NOT NULL AFTER `last_login`,
 ADD COLUMN `created_by` DATETIME NOT NULL AFTER `creation_date`;

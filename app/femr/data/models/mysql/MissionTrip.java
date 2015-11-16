@@ -21,9 +21,12 @@ package femr.data.models.mysql;
 import femr.data.models.core.IMissionCity;
 import femr.data.models.core.IMissionTeam;
 import femr.data.models.core.IMissionTrip;
+import femr.data.models.core.IUser;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Entity
 @Table(name = "mission_trips")
@@ -41,6 +44,12 @@ public class MissionTrip implements IMissionTrip {
     private Date startDate;
     @Column(name = "end_date")
     private Date endDate;
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = User.class)
+    @JoinTable(
+            name = "mission_trip_users",
+            joinColumns = {@JoinColumn(name = "mission_trip_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private List<IUser> users;
 
     @Override
     public int getId() {
@@ -85,5 +94,34 @@ public class MissionTrip implements IMissionTrip {
     @Override
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    public List<IUser> getUsers() {
+        return users;
+    }
+
+    @Override
+    public void setUsers(List<IUser> users) {
+        this.users = users;
+    }
+
+    @Override
+    public void addUser(IUser user){
+
+        this.users.add(user);
+    }
+
+    @Override
+    public void removeUser(int userId){
+
+        Iterator<IUser> iterator = this.users.iterator();
+        while(iterator.hasNext()){
+            IUser user = iterator.next();
+
+            if (user.getId() == userId)
+                iterator.remove();
+        }
+
     }
 }

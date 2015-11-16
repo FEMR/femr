@@ -55,7 +55,7 @@ table th,td{
     float: left;
     width: 100%;
 }
-#addUsersSelect2{
+#addUsersSelect2, #removeUsersSelect2{
     width: 100%;
 }
 

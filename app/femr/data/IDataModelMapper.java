@@ -267,4 +267,12 @@ public interface IDataModelMapper {
      * @return an implementation of IUser or null if processing fails
      */
     IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+
+    /**
+     * Provider a reference object for a user
+     *
+     * @param userId id of the user, not null
+     * @return a User reference object
+     */
+    IUser createUser(int userId);
 }

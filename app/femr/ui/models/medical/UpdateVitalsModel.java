@@ -29,6 +29,7 @@ public class UpdateVitalsModel {
     private Float heightInches;
     private Float weight;
     private Float glucose;
+    private Float weeksPregnant;
 
     public Float getBloodPressureSystolic() {
         return bloodPressureSystolic;
@@ -108,5 +109,13 @@ public class UpdateVitalsModel {
 
     public void setGlucose(Float glucose) {
         this.glucose = glucose;
+    }
+
+    public Float getWeeksPregnant() { /*Sam Zanni*/
+        return weeksPregnant;
+    }
+
+    public void setWeeksPregnant(Float weeksPregnant) { /*Sam Zanni*/
+        this.weeksPregnant = weeksPregnant;
     }
 }

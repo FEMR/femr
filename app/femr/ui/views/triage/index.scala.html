@@ -16,6 +16,7 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/touchit-1.0.0.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triage.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/shared/femr.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/exif.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/megapix-image.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triageClientValidation.js")"></script>
@@ -46,13 +47,9 @@
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 @inputText("City", "city", true, if(viewModel != null) viewModel.getPatient.getCity else null, "text")
                 <div id="citySearchContainer">
-                    <input type = "text" class="citySearch fInput typeahead loading" id="citySearch" name="citySearch"/>
+                    <input type = "text" class="citySearch fInput typeahead loading" id="citySearch"/>
                 </div>
-                @for(script <- cities){
-                <span class="prescriptionName">
-                    <input type="text" class="medicationName form-control input-sm" value="@script.getCityName() (@outputStringOrNA(script.getCityName().trim())" readonly/>
-                </span>
-                }
+
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)

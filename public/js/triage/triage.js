@@ -406,6 +406,8 @@ var birthdayAgeAutoCalculateFeature = {
 
 
 $(document).ready(function () {
+    //AJ Saclayan Cities Suggestion
+    typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/cities",$('#citySearchContainer'),'cities',true,true);
 
     $('.newPatientBtn').click(function () {
         if (confirm("Are you sure you want to reset the fields?")) {
@@ -603,5 +605,6 @@ window.setInterval(function () {
 //    }
 //
 //}, 500);
+
 
 

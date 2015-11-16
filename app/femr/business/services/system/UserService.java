@@ -76,7 +76,6 @@ public class UserService implements IUserService {
                     .in("name", user.getRoles());
             List<? extends IRole> roles = roleRepository.find(query);
 
-
             IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles);
             encryptAndSetUserPassword(newUser);
 

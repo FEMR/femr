@@ -58,7 +58,6 @@ public class SessionsController extends Controller {
     }
 
     public Result editPasswordGet(IUser user){
-
         return ok(editPassword.render(user.getFirstName(), user.getLastName()));
     }
 

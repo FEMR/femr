@@ -1,7 +1,7 @@
 # --- !Ups
 
 ALTER TABLE `users`
-ADD COLUMN `date_created` DATETIME NOT NULL AFTER `last_login`;
+ADD COLUMN `date_created` DATETIME NULL AFTER `last_login`;
 ADD COLUMN `created_by` DATETIME NOT NULL AFTER `date_created`;
 
 UPDATE `users`

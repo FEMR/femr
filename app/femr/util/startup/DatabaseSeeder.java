@@ -30,7 +30,6 @@ import play.Play;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: stop assigning primary keys
 public class DatabaseSeeder {
 
     private final Repository<Diagnosis> diagnosisRepository;
@@ -747,6 +746,7 @@ public class DatabaseSeeder {
             systemSetting.setActive(false);
             systemSettingRepository.create(systemSetting);
         }
+
 
         if (systemSettings != null && !containSetting(systemSettings, "Research Only")) {
             systemSetting = new SystemSetting();

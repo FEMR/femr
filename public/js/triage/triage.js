@@ -230,7 +230,6 @@ var patientPhotoFeature = {
             $('#photoInput').remove();//remove file upload from DOM so it's not submitted in POST
         }
     }
-
 };
 
 var multipleChiefComplaintFeature = {

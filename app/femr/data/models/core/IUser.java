@@ -69,7 +69,7 @@ public interface IUser {
     void setNotes(String notes);
 
     //AJ Saclayan Password Constraints
-    DateTime getPasswordDaysOld();
+    DateTime getPasswordCreatedDate();
 
-    void setPasswordDaysOld(DateTime dateTime);
+    void setPasswordCreatedDate(DateTime dateTime);
 }

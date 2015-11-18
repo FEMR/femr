@@ -42,6 +42,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -235,7 +236,7 @@ public class HistoryController extends Controller {
 
         //AJ Saclayan Get Prescribed Medications
         //find patient prescriptions, they do have to exist
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(encounterId);
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
@@ -243,6 +244,20 @@ public class HistoryController extends Controller {
         }
         indexEncounterPharmacyViewModel.setMedications(prescriptionItemServiceResponse.getResponseObject());
 
+        //TESTING STUFF
+
+        //create the prescriptions
+        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
+        for (PrescriptionItem prescriptionItem : prescriptionItemServiceResponse.getResponseObject()){
+            //Get medication ID for patient for replacement ID.
+            ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(prescriptionItem.getId());
+            if (prescriptionItemServiceResponses.hasErrors()){
+                throw new RuntimeException();
+            }
+            indexEncounterPharmacyViewModel.setMedications(prescriptionItemServiceResponses.getResponseObject());
+        }
+
+//END TEST
 
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =

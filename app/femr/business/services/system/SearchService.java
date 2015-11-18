@@ -46,6 +46,9 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
+    //AJ Saclayan Replacement Meds
+    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
+    private final IRepository<IMedication> medicationRepository;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
@@ -54,7 +57,9 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         @Named("identified") IItemModelMapper itemModelMapper) {
+                         @Named("identified") IItemModelMapper itemModelMapper,
+                         IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
+                         IRepository<IMedication> medicationRepository){
 
         this.diagnosisRepository = diagnosisRepository;
         this.patientRepository = patientRepository;
@@ -63,6 +68,8 @@ public class SearchService implements ISearchService {
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.itemModelMapper = itemModelMapper;
+        this.patientPrescriptionReplacementRepository =  patientPrescriptionReplacementRepository;
+        this.medicationRepository = medicationRepository;
     }
 
     /**
@@ -620,4 +627,68 @@ public class SearchService implements ISearchService {
         ISystemSetting isMetric = systemSettingRepository.findOne(query);
         return isMetric.isActive();
     }
+
+    //AJ Saclayan Replaced Medications
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PrescriptionItem>> retrieveReplacedPrescriptionItems(int encounterID) {
+        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+        // Get Medication ID where originalPrescriptionID = medicationID
+        ExpressionList<PatientPrescriptionReplacement> query = QueryProvider.getPatientPrescriptionReplacementQuery()
+                .where()
+                .eq("patient_prescription_id_replacement", encounterID);
+        /*
+         @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @ManyToOne
+    @JoinColumn(name = "patient_prescription_id_original", nullable = false)
+    private PatientPrescription originalPrescription;
+    @ManyToOne
+    @JoinColumn(name = "patient_prescription_id_replacement", nullable = false)
+    private PatientPrescription replacementPrescription;
+    @ManyToOne
+    @JoinColumn(name = "patient_prescription_replacement_reason_id")
+    private PatientPrescriptionReplacementReason patientPrescriptionReplacementReason;
+
+
+        */
+        try {
+
+            List<? extends IPatientPrescriptionReplacement> patientPrescriptions = patientPrescriptionReplacementRepository.find(query);
+            //Once I have the original replacement, check if it's null.  If not, loop through list to get the medication name.
+            if(!patientPrescriptions.isEmpty()){
+                for (IPatientPrescriptionReplacement prescriptionItem : patientPrescriptions){
+                    //Find Medication name by medication ID
+                    ExpressionList<PatientPrescription> query2 = QueryProvider.getPatientPrescriptionQuery()
+                            .where()
+                            .eq("id", prescriptionItem.getOriginalPrescription().getId());
+
+                        List<? extends IPatientPrescription> patientPrescriptions2 = patientPrescriptionRepository.find(query2);
+
+                    List<PrescriptionItem> prescriptionItems = patientPrescriptions2.stream()
+                            .map(pp -> itemModelMapper.createPrescriptionItem(
+                                    prescriptionItem.getOriginalPrescription().getId(),
+                                    prescriptionItem.getOriginalPrescription().getMedication().getName(),
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                            ))
+                            .collect(Collectors.toList());
+
+                    response.setResponseObject(prescriptionItems);
+                }
+
+            }
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+        return response;
+    }
+
 }

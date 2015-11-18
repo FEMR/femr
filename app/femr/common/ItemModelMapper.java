@@ -499,7 +499,7 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setDeleted(user.getDeleted());
         userItem.setPasswordReset(user.getPasswordReset());
         //AJ Saclayan Password Constraints
-        userItem.setPasswordDaysOld(dateUtils.getFriendlyDate(user.getPasswordDaysOld()));
+        userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
 
         return userItem;
     }

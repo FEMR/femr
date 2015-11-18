@@ -32,7 +32,7 @@ public class UserItem {
     private boolean isDeleted;
     private boolean isPasswordReset;
     //AJ Saclayan Password Constraints
-    private String PasswordDaysOld;
+    private String PasswordCreatedDate;
 
     public UserItem(){
         this.roles = new ArrayList<>();
@@ -118,11 +118,11 @@ public class UserItem {
     }
 
     //AJSaclayan Password Constraints
-    public String getPasswordDaysOld(){
-        return PasswordDaysOld;
+    public String getPasswordCreatedDate(){
+        return PasswordCreatedDate;
     }
 
-    public void setPasswordDaysOld(String PasswordDaysOld){
-        this.PasswordDaysOld = PasswordDaysOld;
+    public void setPasswordCreatedDate(String PasswordCreatedDate){
+        this.PasswordCreatedDate = PasswordCreatedDate;
     }
 }

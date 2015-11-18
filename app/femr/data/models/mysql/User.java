@@ -55,8 +55,8 @@ public class User implements IUser {
     @Column(name ="notes")
     private String notes;
     //AJ Saclayan Password Constraints
-    @Column(name = "PasswordDaysOld", nullable = false)
-    private DateTime PasswordDaysOld;
+    @Column(name = "PasswordCreatedDate", nullable = false)
+    private DateTime PasswordCreatedDate;
 
     @Override
     public int getId() {
@@ -166,12 +166,12 @@ public class User implements IUser {
 
     //AJ Saclayan Password Constraints
     @Override
-    public DateTime getPasswordDaysOld() {
-        return PasswordDaysOld;
+    public DateTime getPasswordCreatedDate() {
+        return PasswordCreatedDate;
     }
 
     @Override
-    public void setPasswordDaysOld(DateTime date) {
-        this.PasswordDaysOld = date;
+    public void setPasswordCreatedDate(DateTime date) {
+        this.PasswordCreatedDate = date;
     }
 }

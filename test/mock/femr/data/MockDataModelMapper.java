@@ -518,7 +518,7 @@ public class MockDataModelMapper implements IDataModelMapper{
         user.setNotes(notes);
         user.setRoles(roles);
         //AJ Saclayan Password Constraints
-        user.setPasswordDaysOld(date);
+        user.setPasswordCreatedDate(date);
         return user;
     }
 

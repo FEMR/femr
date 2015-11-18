@@ -57,7 +57,7 @@ public class SessionsController extends Controller {
                 throw new RuntimeException();
             }
             //AJ Saclayan Password Constraints
-            DateTime start = new DateTime(user.getPasswordDaysOld());
+            DateTime start = new DateTime(user.getPasswordCreatedDate());
             DateTime stop = new DateTime( DateTime.now());
 
             int daysBetween = Days.daysBetween(start, stop).getDays();
@@ -113,7 +113,7 @@ public class SessionsController extends Controller {
             else
             {
                 user.setPassword(viewModel.getNewPassword());
-                user.setPasswordDaysOld(DateTime.now());
+                user.setPasswordCreatedDate(DateTime.now());
                 user.setPasswordReset(false);
                 isNewPassword = true;
             }

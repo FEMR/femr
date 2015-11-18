@@ -30,6 +30,7 @@ public class FilterViewModel {
     private Float filterRangeStart;
     private Float filterRangeEnd;
     private String medicationName;
+    private String cityName; //Andrew Fix
 
     /*
     public List<ValidationError> validate() {
@@ -137,5 +138,9 @@ public class FilterViewModel {
     public String getMedicationName() { return medicationName; }
 
     public void setMedicationName(String medicationId) { this.medicationName = medicationId; }
+
+    public String getCityName() { return cityName; } //Andrew Fix
+
+    public void setCityName(String cityName) { this.cityName = cityName; } //Andrew Fix
 
 }

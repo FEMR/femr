@@ -26,17 +26,17 @@ import com.google.inject.Inject;
 import femr.business.helpers.LogicDoer;
 import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.core.research.IResearchEncounter;
-import femr.data.models.mysql.PatientEncounterTabField;
-import femr.data.models.mysql.PatientPrescription;
-import femr.data.models.mysql.Vital;
+import femr.data.models.mysql.*;
 import femr.data.models.mysql.research.ResearchEncounter;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.research.ResearchEncounterVital;
 import femr.util.calculations.dateUtils;
+import femr.util.dependencyinjection.providers.MissionCityProvider;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import femr.util.stringhelpers.StringUtils;
@@ -53,6 +53,9 @@ public class ResearchService implements IResearchService {
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
+
+
+;
 
     /**
      * Initializes the research service and injects the dependence
@@ -427,7 +430,11 @@ public class ResearchService implements IResearchService {
 
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
         }
+        if ( filters.getCityName() != null && filters.getCityName().length() > 0 ) {
 
+            researchEncounterExpressionList.like("mission_cities_name", "%" + filters.getCityName() + "%"); // Andrew Fix
+
+        }
         // if the filters exist - use them in the query
 //        if( filters.getFilterRangeStart() > -1 * Float.MAX_VALUE ){
 //
@@ -470,6 +477,7 @@ public class ResearchService implements IResearchService {
         else {
             researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
         }
+
 
         researchEncounterExpressionList.findList();
         return researchEncounterRepository.find(researchEncounterExpressionList);

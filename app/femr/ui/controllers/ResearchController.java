@@ -159,6 +159,8 @@ public class ResearchController extends Controller {
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
         filterItem.setMedicationName(filterViewModel.getMedicationName());
+        filterItem.setCityName(filterViewModel.getCityName()); //Andrew Fix
+
 
         return filterItem;
     }

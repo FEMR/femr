@@ -34,18 +34,17 @@ public class PatientEncounterItem {
 
     private String triageDateOfVisit;
     private String nurseEmailAddress;
+    private String nurseFullName; //Andrew Display Username instead of Email Address Fix
 
     private String medicalDateOfVisit;
     private String physicianEmailAddress;
-    private String physicianFullName; //Andrew Change
+    private String physicianFullName; //Andrew Display Username instead of Email Address Fix
 
     private String pharmacyDateOfVisit;
     private String pharmacistEmailAddress;
-    private String pharmacistFullName; //Andrew Change
+    private String pharmacistFullName; //Andrew Display Username instead of Email Address Fix
 
-    private String nurseFullName; //Andrew Change
-
-
+    
     public PatientEncounterItem(){
         this.chiefComplaints = new ArrayList<>();
     }
@@ -131,24 +130,19 @@ public class PatientEncounterItem {
         return nurseFullName;
     }
 
-    public void setNurseFullName(String nurseFullName) { //Andrew Change
-        this.nurseFullName = nurseFullName;
-    }
+    public void setNurseFullName(String nurseFullName) {this.nurseFullName = nurseFullName;}       //Andrew Display Username instead of Email Address Fix
 
     public String getPhysicianFullName() { //Andrew Change
         return physicianFullName;
     }
 
-    public void setPhysicianFullName(String physicianFullName) {this.physicianFullName = physicianFullName;} //Andrew Change
+    public void setPhysicianFullName(String physicianFullName) {this.physicianFullName = physicianFullName;} //Andrew Display Username instead of Email Address Fix
 
     public String getPharmacistFullName() { //Andrew Change
         return pharmacistFullName;
     }
 
-    public void setPharmacistFullName(String pharmacistFullName) { //Andrew Change
-        this.pharmacistFullName = pharmacistFullName;
-    }
-
+    public void setPharmacistFullName(String pharmacistFullName) { this.pharmacistFullName = pharmacistFullName;} //Andrew Display Username instead of Email Address Fix
 
     public String getMedicalDateOfVisit() {
         return medicalDateOfVisit;

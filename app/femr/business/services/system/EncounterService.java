@@ -87,12 +87,9 @@ public class EncounterService implements IEncounterService {
             //find the nurse that checked in the patient
             ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
                     .where()
-                    .eq("email", patientEncounterItem.getNurseEmailAddress());
+                    .eq("email", patientEncounterItem.getNurseFullName()); //Andrew Display Username instead of Email Address Fix
 
-            ExpressionList<User> nurseQuery1 = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("email", patientEncounterItem.getNurseFullName()); //Andrew Change
-            IUser nurseUser = userRepository.findOne(nurseQuery1);
+            IUser nurseUser = userRepository.findOne(nurseQuery);
 
             //find the age classification of the patient, if it exists
             ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()

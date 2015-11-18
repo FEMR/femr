@@ -24,22 +24,25 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import femr.business.helpers.LogicDoer;
+import femr.business.services.core.IEncounterService;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
+import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.core.research.IResearchEncounter;
-import femr.data.models.mysql.PatientEncounterTabField;
-import femr.data.models.mysql.PatientPrescription;
-import femr.data.models.mysql.Vital;
+import femr.data.models.mysql.*;
 import femr.data.models.mysql.research.ResearchEncounter;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.research.ResearchEncounterVital;
 import femr.util.calculations.dateUtils;
+import femr.util.dependencyinjection.providers.MissionCityProvider;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import femr.util.stringhelpers.StringUtils;
+import femr.business.services.system.MissionTripService.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,6 +56,7 @@ public class ResearchService implements IResearchService {
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
+
 
     /**
      * Initializes the research service and injects the dependence
@@ -320,34 +324,32 @@ public class ResearchService implements IResearchService {
 
         ServiceResponse<ResearchResultSetItem> response = new ServiceResponse<>();
 
-        try{
+        try {
 
             List<? extends IResearchEncounter> patientEncounters = queryPatientData(filters);
 
             ResearchResultSetItem results;
-            if( filters.getPrimaryDataset().equals("age") ) {
+            if (filters.getPrimaryDataset().equals("age")) {
 
                 results = buildAgeResultSet(patientEncounters, filters);
-            }
-            else if( filters.getPrimaryDataset().equals("pregnancyStatus") ||
-                     filters.getPrimaryDataset().equals("pregnancyTime") ){
+            } else if (filters.getPrimaryDataset().equals("pregnancyStatus") ||
+                    filters.getPrimaryDataset().equals("pregnancyTime")) {
 
                 results = buildPregnancyResultSet(patientEncounters, filters);
-            }
-            else if( filters.getPrimaryDataset().equals("gender") ){
+            } else if (filters.getPrimaryDataset().equals("gender")) {
 
                 results = buildGenderResultSet(patientEncounters, filters);
-            }
-            else if( filters.getPrimaryDataset().equals("height") ){
+            } else if (filters.getPrimaryDataset().equals("height")) {
 
                 results = buildHeightResultSet(patientEncounters, filters);
             }
             // Check for medication filters
-            else if( filters.getPrimaryDataset().equals("prescribedMeds") ||
-                    filters.getPrimaryDataset().equals("dispensedMeds") ){
+            else if (filters.getPrimaryDataset().equals("prescribedMeds") ||
+                    filters.getPrimaryDataset().equals("dispensedMeds")) {
 
                 results = buildMedicationResultSet(patientEncounters, filters);
             }
+
             // non-special situations are all considered vitals
             else{
 
@@ -429,6 +431,11 @@ public class ResearchService implements IResearchService {
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
         }
 
+        if ( filters.getMissionTripId() != null) {
+
+            researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId()); //Andrew Trip Filter
+        }
+
         // if the filters exist - use them in the query
 //        if( filters.getFilterRangeStart() > -1 * Float.MAX_VALUE ){
 //
@@ -471,6 +478,7 @@ public class ResearchService implements IResearchService {
         else {
             researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
         }
+
 
         researchEncounterExpressionList.findList();
         return researchEncounterRepository.find(researchEncounterExpressionList);
@@ -626,6 +634,7 @@ public class ResearchService implements IResearchService {
     }
 
 
+
     // do stuff specific to vitals request
     private ResearchResultSetItem buildMedicationResultSet(List<? extends IResearchEncounter> encounters, ResearchFilterItem filters) {
 
@@ -700,7 +709,9 @@ public class ResearchService implements IResearchService {
                 }
                 resultSet.setPrimaryValueMap(primaryValuemap);
 
-            }else if( filters.getPrimaryDataset().equals("dispensedMeds") ){
+            }
+
+            else if( filters.getPrimaryDataset().equals("dispensedMeds") ){
 
                 List<PatientPrescription> prescriptions = encounter.getPatientPrescriptions();
                 Map<Float, String> primaryValuemap = resultSet.getPrimaryValueMap();

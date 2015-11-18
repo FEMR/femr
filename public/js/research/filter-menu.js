@@ -25,7 +25,8 @@ var filterMenuModule = (function () {
         groupFactor: $("#groupPrimaryData"),
         rangeStart: $("#filterRangeStart"),
         rangeEnd: $("#filterRangeEnd"),
-        medicationName: $("#medicationName")
+        medicationName: $("#medicationName"),
+        MissionTripId: $("#MissionTripId")
     };
 
     var filterMenus = {
@@ -86,6 +87,7 @@ var filterMenuModule = (function () {
         $(filterMenus.dataset1).find(".val").text("");
         $(filterMenus.dataset2).find(".val").text("");
         $(filterMenus.graphType).find(".val").text("");
+        $(filterMenus.MissionTripId).find(".val").text("");
 
         // Set Default EndDate to today
         var defaultEndDate = new Date();
@@ -141,6 +143,7 @@ var filterMenuModule = (function () {
         $(filterFields.medicationName).val("");
         $(filterFields.groupPrimary).prop('checked', false);
         $(filterFields.groupFactor).val("10");
+        $(filterFields.MissionTripId).val("");
 
     };
 

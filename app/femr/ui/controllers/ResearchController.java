@@ -21,15 +21,14 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IMedicationService;
+import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.ResearchFilterItem;
-import femr.common.models.ResearchResultItem;
-import femr.common.models.ResearchResultSetItem;
+import femr.common.models.*;
+import femr.data.models.mysql.*;
 import femr.ui.models.research.json.ResearchGraphDataModel;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
 import femr.business.services.core.ISessionService;
-import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.json.ResearchItemModel;
@@ -55,6 +54,7 @@ public class ResearchController extends Controller {
     private IResearchService researchService;
     private IMedicationService medicationService;
     private ISessionService sessionService;
+    private IMissionTripService missionTripService; //Andrew Trip Filter
 
     /**
      * Research Controller constructor that Injects the services indicated by the parameters
@@ -64,15 +64,24 @@ public class ResearchController extends Controller {
      * @param medicationService {@link IMedicationService}
      */
     @Inject
-    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService) {
+    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService, IMissionTripService missionTripService) {
         this.researchService = researchService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
+        this.missionTripService = missionTripService; //Andrew Trip Filter
     }
 
     public Result indexGet() {
 
         FilterViewModel filterViewModel = new FilterViewModel();
+
+
+        //Grabbing mission city ID's Andrew Trip Filter
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
+        if (missionItemServiceResponse.hasErrors())
+            throw new RuntimeException();
+        filterViewModel.setMissionTrips(missionItemServiceResponse.getResponseObject());
+
 
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
@@ -82,6 +91,7 @@ public class ResearchController extends Controller {
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+
         return ok(index.render(currentUserSession, filterViewModel));
     }
 
@@ -159,6 +169,10 @@ public class ResearchController extends Controller {
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
         filterItem.setMedicationName(filterViewModel.getMedicationName());
+        filterItem.setMissionTripId(filterViewModel.getMissionTripId()); //Andrew Trip Filter
+
+
+
 
         return filterItem;
     }

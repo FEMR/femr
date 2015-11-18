@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import java.util.List;
+
 public class ResearchFilterItem {
 
     private String primaryDataset;
@@ -31,6 +33,7 @@ public class ResearchFilterItem {
     private Float filterRangeEnd;
     private String medicationName;
     private String orderBy;
+    private Integer MissionTripId; // Andrew Trip Filter
 
     public String getPrimaryDataset() {
         return primaryDataset;
@@ -111,6 +114,10 @@ public class ResearchFilterItem {
     public String getMedicationName() { return medicationName; }
 
     public void setMedicationName(String medicationName) { this.medicationName = medicationName; }
+
+    public Integer getMissionTripId() { return MissionTripId; } //Andrew Trip Filter
+
+    public void setMissionTripId(Integer MissionTripId) { this.MissionTripId = MissionTripId; } //Andrew Trip Filter
 
     public String getOrderBy() {
         return orderBy;

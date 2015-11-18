@@ -87,7 +87,7 @@ public class EncounterService implements IEncounterService {
             //find the nurse that checked in the patient
             ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
                     .where()
-                    .eq("email", patientEncounterItem.getNurseFullName()); //Andrew Display Username instead of Email Address Fix
+                    .eq("email", patientEncounterItem.getNurseEmailAddress());
 
             IUser nurseUser = userRepository.findOne(nurseQuery);
 

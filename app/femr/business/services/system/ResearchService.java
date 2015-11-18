@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import femr.business.helpers.LogicDoer;
+import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
 import femr.common.IItemModelMapper;
@@ -323,34 +324,32 @@ public class ResearchService implements IResearchService {
 
         ServiceResponse<ResearchResultSetItem> response = new ServiceResponse<>();
 
-        try{
+        try {
 
             List<? extends IResearchEncounter> patientEncounters = queryPatientData(filters);
 
             ResearchResultSetItem results;
-            if( filters.getPrimaryDataset().equals("age") ) {
+            if (filters.getPrimaryDataset().equals("age")) {
 
                 results = buildAgeResultSet(patientEncounters, filters);
-            }
-            else if( filters.getPrimaryDataset().equals("pregnancyStatus") ||
-                     filters.getPrimaryDataset().equals("pregnancyTime") ){
+            } else if (filters.getPrimaryDataset().equals("pregnancyStatus") ||
+                    filters.getPrimaryDataset().equals("pregnancyTime")) {
 
                 results = buildPregnancyResultSet(patientEncounters, filters);
-            }
-            else if( filters.getPrimaryDataset().equals("gender") ){
+            } else if (filters.getPrimaryDataset().equals("gender")) {
 
                 results = buildGenderResultSet(patientEncounters, filters);
-            }
-            else if( filters.getPrimaryDataset().equals("height") ){
+            } else if (filters.getPrimaryDataset().equals("height")) {
 
                 results = buildHeightResultSet(patientEncounters, filters);
             }
             // Check for medication filters
-            else if( filters.getPrimaryDataset().equals("prescribedMeds") ||
-                    filters.getPrimaryDataset().equals("dispensedMeds") ){
+            else if (filters.getPrimaryDataset().equals("prescribedMeds") ||
+                    filters.getPrimaryDataset().equals("dispensedMeds")) {
 
                 results = buildMedicationResultSet(patientEncounters, filters);
             }
+
             // non-special situations are all considered vitals
             else{
 
@@ -413,6 +412,11 @@ public class ResearchService implements IResearchService {
         if( filters.getMedicationName() != null && filters.getMedicationName().length() > 0 ){
 
             researchEncounterQuery.fetch("patientPrescriptions.medication");
+        }
+
+        if (filters.getCityName() != null && filters.getCityName().length() > 0 ) {
+
+            researchEncounterQuery.fetch("mission_city_id"); // Andrew New Fix (mission_trip_id)
         }
 
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();

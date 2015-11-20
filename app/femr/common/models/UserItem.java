@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,5 +115,20 @@ public class UserItem {
 
     public void setPasswordReset(boolean isPasswordReset) {
         this.isPasswordReset = isPasswordReset;
+    }
+
+    @Override
+    public boolean equals(final Object obj){
+
+        if (obj == null || obj == this || !(obj instanceof UserItem)){
+            return false;
+        }
+
+        UserItem otherUserItem = (UserItem) obj;
+
+        if (!otherUserItem.getEmail().equals(this.getEmail())) return false;
+        if (otherUserItem.getId() != this.getId()) return false;
+
+        return true;
     }
 }

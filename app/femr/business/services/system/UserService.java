@@ -103,10 +103,12 @@ public class UserService implements IUserService {
     public ServiceResponse<List<UserItem>> retrieveAllUsers() {
 
         Query<User> query = QueryProvider.getUserQuery()
-                .fetch("roles")
                 .where()
-                .ne("roles.name", "SuperUser")
+                .ne("email", "superuser")
+                .ne("email", "admin")
                 .orderBy("lastName");
+
+
         List<? extends IUser> users = userRepository.find(query);
 
         ServiceResponse<List<UserItem>> response = new ServiceResponse<>();

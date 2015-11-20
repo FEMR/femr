@@ -27,6 +27,24 @@ import java.util.List;
 public interface IMissionTripService {
 
     /**
+     * Adds a list of users to a trip.
+     *
+     * @param tripId id of the trip to add users to, not null
+     * @param userIds list of user ids being added to the trip, not null
+     * @return the current trip or null if an error occurs
+     */
+    ServiceResponse<MissionTripItem> addUsersToTrip(int tripId, List<Integer> userIds);
+
+    /**
+     * Removes a list of users from a trip.
+     *
+     * @param tripId id of the trip to remove users from, not null
+     * @param userIds list of user ids being removed from the trip, not null
+     * @return the current trip or null if an error occurs
+     */
+    ServiceResponse<MissionTripItem> removeUsersFromTrip(int tripId, List<Integer> userIds);
+
+    /**
      * Retrieve the current trip information.
      *
      * @return the current trip or null if an error occurs

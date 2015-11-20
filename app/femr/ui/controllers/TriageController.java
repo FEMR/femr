@@ -161,8 +161,8 @@ public class TriageController extends Controller {
 
 
         //create and save a new encounter
-        PatientEncounterItem patientEncounterItem =
-                populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), viewModel.getWeeksPregnant(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
+		       PatientEncounterItem patientEncounterItem =
+                populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
         ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientEncounterItem);
         if (patientEncounterServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -220,6 +220,10 @@ public class TriageController extends Controller {
             newVitals.put("glucose", viewModel.getGlucose().floatValue());
         }
 
+		 if (viewModel.getWeeksPregnant() != null) { /*Sam Zanni*/
+            newVitals.put("weeksPregnant", viewModel.getWeeksPregnant().floatValue());
+        }
+		
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
@@ -244,7 +248,7 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, Integer weeksPregnant, CurrentUser currentUser, int patientId, String ageClassification) {
+    private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, CurrentUser currentUser, int patientId, String ageClassification) {
         PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
         patientEncounterItem.setPatientId(patientId);
         patientEncounterItem.setNurseEmailAddress(currentUser.getEmail());
@@ -265,7 +269,7 @@ public class TriageController extends Controller {
             }
         }
 
-        patientEncounterItem.setWeeksPregnant(weeksPregnant);
+        //patientEncounterItem.setWeeksPregnant(weeksPregnant);
         return patientEncounterItem;
     }
 }

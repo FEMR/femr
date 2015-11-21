@@ -18,15 +18,17 @@
 */
 package femr.ui.models.history;
 
+import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.PrescriptionItem;
 
 import java.util.List;
 
 public class IndexEncounterPharmacyViewModel {
-
     private List<String> problems;
-
     private List<PrescriptionItem> prescriptions;
+    //AJ Saclayan Display Prescribed Medications
+    private List<MedicationAdministrationItem> medicationAdministrationItems;
+    private List<PrescriptionItem> medications;
 
     public List<String> getProblems() {
         return problems;
@@ -43,4 +45,22 @@ public class IndexEncounterPharmacyViewModel {
     public void setPrescriptions(List<PrescriptionItem> prescriptions) {
         this.prescriptions = prescriptions;
     }
+
+    //AJ Saclayan Display Prescribed Medications
+    public List<MedicationAdministrationItem> getMedicationAdministrationItems(){
+        return medicationAdministrationItems;
+    }
+
+    public void setMedicationAdministrationItems(List<MedicationAdministrationItem> medicationAdministrationItems) {
+        this.medicationAdministrationItems = medicationAdministrationItems;
+    }
+
+    public List<PrescriptionItem> getMedications() {
+        return medications;
+    }
+    public void setMedications(List<PrescriptionItem> medications) {
+        this.medications = medications;
+    }
+
+
 }

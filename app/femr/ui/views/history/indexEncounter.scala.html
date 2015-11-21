@@ -176,6 +176,25 @@
                         <p><a class="infoLabel nonEditable">Diagnosis:</a>
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
                     }
+                    @* AJ Saclayan Prescribed Medications *@
+
+                    @for(x <- 1 to viewModelPharmacy.getMedications.size) {
+                        @defining(viewModelPharmacy.getMedications.get(x - 1)) { medication =>
+                            <p>
+                                <span class="infoLabel">Prescribed Medication:</span>
+                            <li class="medication" id="med@(x-1)" data-medID="@medication.getMedicationID">
+
+                                <div>
+                                    <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim()) - @medication.getAdministrationName </span>
+                                </div>
+
+
+
+                            </li>
+                        </p>
+                        }
+
+                    }
 
                     @for(prescription <- viewModelPharmacy.getPrescriptions){
                         <p>

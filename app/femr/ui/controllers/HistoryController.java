@@ -30,6 +30,7 @@ import femr.ui.models.history.*;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.ui.views.html.partials.history.listTabFieldHistory;
+import femr.ui.views.html.pharmacies.index;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
@@ -53,6 +54,7 @@ public class HistoryController extends Controller {
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
+    private final IMedicationService medicationService;
 
     @Inject
     public HistoryController(IEncounterService encounterService,
@@ -60,7 +62,8 @@ public class HistoryController extends Controller {
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IMedicationService medicationService) {
 
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -68,6 +71,8 @@ public class HistoryController extends Controller {
         this.tabService = tabService;
         this.photoService = photoService;
         this.vitalService = vitalService;
+        //AJ Saclayan Get Prescribed Medications
+        this.medicationService = medicationService;
     }
 
     /**
@@ -228,9 +233,29 @@ public class HistoryController extends Controller {
         }
         indexEncounterPharmacyViewModel.setProblems(problems);
 
+        //AJ Saclayan Get Prescribed Medications
+        //find patient prescriptions, they do have to exist
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(encounterId);
+        if (prescriptionItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
+           // return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
+        }
+        indexEncounterPharmacyViewModel.setMedications(prescriptionItemServiceResponse.getResponseObject());
+
+
+        //get MedicationAdministrationItems
+        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
+                medicationService.retrieveAvailableMedicationAdministrations();
+        if (medicationAdministrationItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        indexEncounterPharmacyViewModel.setMedicationAdministrationItems(medicationAdministrationItemServiceResponse.getResponseObject());
+
+
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+        prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

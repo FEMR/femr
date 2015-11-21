@@ -132,15 +132,11 @@ public class PatientEncounterItem {
 
     public void setNurseFullName(String nurseFullName) {this.nurseFullName = nurseFullName;}       //Andrew Display Username instead of Email Address Fix
 
-    public String getPhysicianFullName() { //Andrew Change
-        return physicianFullName;
-    }
+    public String getPhysicianFullName() { return physicianFullName; }
 
     public void setPhysicianFullName(String physicianFullName) {this.physicianFullName = physicianFullName;} //Andrew Display Username instead of Email Address Fix
 
-    public String getPharmacistFullName() { //Andrew Change
-        return pharmacistFullName;
-    }
+    public String getPharmacistFullName() { return pharmacistFullName; }
 
     public void setPharmacistFullName(String pharmacistFullName) { this.pharmacistFullName = pharmacistFullName;} //Andrew Display Username instead of Email Address Fix
 

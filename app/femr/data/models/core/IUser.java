@@ -68,7 +68,13 @@ public interface IUser {
 
     void setNotes(String notes);
 
+    //AJ Saclayan Password Constraints
+    DateTime getPasswordCreatedDate();
+
+    void setPasswordCreatedDate(DateTime dateTime);
+
     List<IMissionTrip> getMissionTrips();
 
     void setMissionTrips(List<IMissionTrip> missionTrips);
+
 }

@@ -12,7 +12,11 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/admin/users.js")"></script>
     }
 
-@admin("Manage Users", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+@admin("Users", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+
+    <a href="@UsersController.createGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-plus-sign"></span>
+        Add User</a>
+
     <table id="userTable">
         <thead>
             <tr>

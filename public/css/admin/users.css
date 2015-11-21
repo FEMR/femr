@@ -43,6 +43,13 @@
 
 
 /*Edit user*/
+
+#userTripTable th,td{
+    padding: 10px;
+}
+#userTripTable thead, tbody{
+    border-bottom: 1px solid black;
+}
 #editWrapLeft{
     width: 65%;
     float: left;

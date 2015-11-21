@@ -16,7 +16,7 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.superuser;
+package femr.ui.models.superuser.trips;
 
 import femr.common.models.CityItem;
 import femr.common.models.MissionItem;
@@ -26,9 +26,9 @@ import java.util.List;
 public class TripViewModelGet {
 
     private List<MissionItem> missionItems;
-    private List<String> availableTeams;
     private List<CityItem> availableCities;
     private List<String> availableCountries;
+    private List<String> messages;//contains information about whatever action was performed (success, failure, etc)
 
     public List<MissionItem> getMissionItems() {
         return missionItems;
@@ -36,14 +36,6 @@ public class TripViewModelGet {
 
     public void setMissionItems(List<MissionItem> missionItems) {
         this.missionItems = missionItems;
-    }
-
-    public List<String> getAvailableTeams() {
-        return availableTeams;
-    }
-
-    public void setAvailableTeams(List<String> availableTeams) {
-        this.availableTeams = availableTeams;
     }
 
     public List<CityItem> getAvailableCities() {
@@ -60,5 +52,13 @@ public class TripViewModelGet {
 
     public void setAvailableCountries(List<String> availableCountries) {
         this.availableCountries = availableCountries;
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
     }
 }

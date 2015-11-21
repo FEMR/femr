@@ -58,9 +58,18 @@ public interface IItemModelMapper {
      * Generate and provide an instance of MissionItem.
      *
      * @param missionTeam the mission team data bean, not null
+     * @param missionTripItems the mission trips for a team
      * @return a new MissionItem or null if processing fails
      */
-    MissionItem createMissionItem(IMissionTeam missionTeam);
+    MissionItem createMissionItem(IMissionTeam missionTeam, List<MissionTripItem> missionTripItems);
+
+    /**
+     * Generate and provide an instance of MissionTripItem
+     *
+     * @param missionTrip the mission trip data bean, not null
+     * @return a new MissionTripItem or null if processing fails
+     */
+    MissionTripItem createMissionTripItem(IMissionTrip missionTrip);
 
     /**
      * Generate and provide an instance of PatientItem. See parameter descriptions for which fields must be filled out.

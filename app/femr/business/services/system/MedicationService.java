@@ -481,6 +481,8 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory() {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
+        // only show medications with an inventory entry
+
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
                 .where()
                 .eq("isDeleted", false);

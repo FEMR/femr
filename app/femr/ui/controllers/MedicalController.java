@@ -453,7 +453,12 @@ public class MedicalController extends Controller {
 
         if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose());
+		}
+
+        if (viewModel.getWeeksPregnant() != null) {
+            newVitals.put("weeksPregnant", viewModel.getWeeksPregnant());
         }
+        
 
         return newVitals;
     }

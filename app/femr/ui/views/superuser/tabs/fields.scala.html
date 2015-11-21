@@ -1,13 +1,13 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.ContentViewModelGet)
 
 @import femr.ui.views.html.layouts.admin
-@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.TabController
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser/superuser.css")">
     }
 
-@admin("SuperUser Panel", currentUser, styles = additionalStyles) {
+@admin("Add Fields", currentUser, styles = additionalStyles) {
     <h1>Adding content to @viewModel.getName</h1>
     <div id="superUserWrap">
         <div class="halfPageTables">
@@ -71,7 +71,7 @@
     </div>
 
     <div id="bottomFields">
-    @helper.form(action = SuperuserController.contentPost(viewModel.getName)) {
+    @helper.form(action = TabController.fieldsPost(viewModel.getName)) {
         <div class="halfPageForms">
             <h4>Add/Edit Field</h4>
             <label for="addName">Name:</label>

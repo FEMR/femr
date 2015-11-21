@@ -18,6 +18,7 @@
 */
 package femr.data.models.mysql;
 
+import femr.data.models.core.IMissionTrip;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import org.joda.time.DateTime;
@@ -52,11 +53,17 @@ public class User implements IUser {
     private Boolean deleted;
     @Column(name = "isPasswordReset", nullable = false)
     private Boolean passwordReset;
-    @Column(name ="notes")
+    @Column(name = "notes")
     private String notes;
     //AJ Saclayan Password Constraints
     @Column(name = "PasswordCreatedDate", nullable = false)
     private DateTime PasswordCreatedDate;
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)
+    @JoinTable(
+            name = "mission_trip_users",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "mission_trip_id", referencedColumnName = "id")})
+    private List<IMissionTrip> missionTrips;
 
     @Override
     public int getId() {
@@ -111,7 +118,7 @@ public class User implements IUser {
     @Override
     public void setRoles(List<? extends IRole> roles) {
         this.roles = new ArrayList<>();
-        for (IRole role : roles){
+        for (IRole role : roles) {
             this.roles.add(role);
         }
     }
@@ -173,5 +180,15 @@ public class User implements IUser {
     @Override
     public void setPasswordCreatedDate(DateTime date) {
         this.PasswordCreatedDate = date;
+    }
+
+    @Override
+    public List<IMissionTrip> getMissionTrips() {
+        return missionTrips;
+    }
+
+    @Override
+    public void setMissionTrips(List<IMissionTrip> missionTrips) {
+        this.missionTrips = missionTrips;
     }
 }

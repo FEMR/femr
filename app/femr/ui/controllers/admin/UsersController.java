@@ -19,11 +19,14 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
+import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IRoleService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
+import femr.common.models.MissionItem;
+import femr.common.models.MissionTripItem;
 import femr.common.models.UserItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
@@ -45,12 +48,18 @@ import java.util.List;
 public class UsersController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
     private Form<EditViewModel> editViewModelForm = Form.form(EditViewModel.class);
+    private IMissionTripService missionTripService;
     private ISessionService sessionService;
     private IUserService userService;
     private IRoleService roleService;
 
     @Inject
-    public UsersController(ISessionService sessionService, IUserService userService, IRoleService roleService) {
+    public UsersController(IMissionTripService missionTripService,
+                           ISessionService sessionService,
+                           IUserService userService,
+                           IRoleService roleService) {
+
+        this.missionTripService = missionTripService;
         this.sessionService = sessionService;
         this.userService = userService;
         this.roleService = roleService;
@@ -126,6 +135,13 @@ public class UsersController extends Controller {
         if (userItemServiceResponse.hasErrors()) {
             return internalServerError();
         }
+
+        ServiceResponse<List<MissionTripItem>> missionTripItemServiceResponse = missionTripService.retrieveAllTripInformationByUserId(id);
+        if (missionTripItemServiceResponse.hasErrors()){
+            return internalServerError();
+        }
+
+
         UserItem userItem = userItemServiceResponse.getResponseObject();
         editUserViewModel.setUserId(userItem.getId());
         editUserViewModel.setFirstName(userItem.getFirstName());
@@ -134,6 +150,7 @@ public class UsersController extends Controller {
         editUserViewModel.setPasswordReset(Boolean.toString(userItem.isPasswordReset()));
         editUserViewModel.setRoles(userItem.getRoles());
         editUserViewModel.setNotes(userItem.getNotes());
+        editUserViewModel.setMissionTripItems(missionTripItemServiceResponse.getResponseObject());
         editViewModelForm = editViewModelForm.fill(editUserViewModel);
 
 

@@ -72,4 +72,9 @@ public interface IUser {
     DateTime getPasswordCreatedDate();
 
     void setPasswordCreatedDate(DateTime dateTime);
+
+    List<IMissionTrip> getMissionTrips();
+
+    void setMissionTrips(List<IMissionTrip> missionTrips);
+
 }

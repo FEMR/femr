@@ -18,6 +18,8 @@
 */
 package femr.ui.models.admin.users;
 
+import femr.common.models.MissionItem;
+import femr.common.models.MissionTripItem;
 import femr.util.stringhelpers.StringUtils;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class EditViewModel {
     private String newPasswordVerify;
     private String notes;
     private List<String> roles;
+    private List<MissionTripItem> missionTripItems;
 
     public List<ValidationError> validate(){
         Pattern hasUppercase = Pattern.compile("[A-Z]");
@@ -134,5 +137,13 @@ public class EditViewModel {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public List<MissionTripItem> getMissionTripItems() {
+        return missionTripItems;
+    }
+
+    public void setMissionTripItems(List<MissionTripItem> missionTripItems) {
+        this.missionTripItems = missionTripItems;
     }
 }

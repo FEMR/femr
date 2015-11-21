@@ -37,7 +37,7 @@ table th,td{
 
 
 /*trip tracking*/
-#addTeamWrap{
+#addTeamWrap, #addTripWrap, #addCityWrap{
     width: 50%;
     float: left;
 }
@@ -45,11 +45,7 @@ table th,td{
     width: 100%;
     float: left;
 }
-#addTripWrap{
-    width: 50%;
-    float: left;
-}
-#currentWrap{
+#tableWrap{
     width: 100%;
     float: left;
     margin-top: 40px;
@@ -58,4 +54,11 @@ table th,td{
     margin-top: 40px;
     float: left;
     width: 100%;
+}
+#addUsersSelect2, #removeUsersSelect2{
+    width: 100%;
+}
+
+#usersTripTable{
+    margin-top: 50px;
 }

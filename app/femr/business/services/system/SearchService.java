@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -45,6 +46,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
@@ -54,6 +56,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
+                         IMissionTripService missionTripService,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
@@ -62,6 +65,7 @@ public class SearchService implements ISearchService {
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
+        this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
     }
 
@@ -513,10 +517,7 @@ public class SearchService implements ISearchService {
                     .eq("name", "Country Filter");
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
-            ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
-                    .where()
-                    .eq("isCurrent", true);
-            IMissionTrip missionTrip = missionTripExpressionList.findUnique();
+            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
 
             List<? extends IPatient> allPatients;
 

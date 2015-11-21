@@ -126,12 +126,11 @@ public interface IDataModelMapper {
      *
      * @param startDate   start date of the trip, not null
      * @param endDate     end date of the trip, not null
-     * @param isCurrent   is this the current trip?, not null
      * @param missionCity the city where the trip is taking place, not null
      * @param missionTeam the country where the trip is taking place, not null
      * @return an implementation of IMissionTrip or null if processing fails
      */
-    IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam);
+    IMissionTrip createMissionTrip(Date startDate, Date endDate, IMissionCity missionCity, IMissionTeam missionTeam);
 
     /**
      * Generate and provide an implementation of IPatient.
@@ -268,4 +267,12 @@ public interface IDataModelMapper {
      * @return an implementation of IUser or null if processing fails
      */
     IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+
+    /**
+     * Provider a reference object for a user
+     *
+     * @param userId id of the user, not null
+     * @return a User reference object
+     */
+    IUser createUser(int userId);
 }

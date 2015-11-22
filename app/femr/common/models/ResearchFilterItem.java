@@ -31,7 +31,7 @@ public class ResearchFilterItem {
     private Float filterRangeEnd;
     private String medicationName;
     private String orderBy;
-    private String cityName; // Andrew Fix
+    private String MissionTripName; // Andrew Fix
 
     public String getPrimaryDataset() {
         return primaryDataset;
@@ -113,9 +113,9 @@ public class ResearchFilterItem {
 
     public void setMedicationName(String medicationName) { this.medicationName = medicationName; }
 
-    public String getCityName() { return cityName; } //Andrew Fix
+    public String getMissionTripName() { return MissionTripName; } //Andrew Fix
 
-    public void setCityName(String cityName) { this.cityName = cityName; } //Andrew Fix
+    public void setMissionTripName(String MissionTripName) { this.MissionTripName = MissionTripName; } //Andrew Fix
 
     public String getOrderBy() {
         return orderBy;

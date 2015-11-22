@@ -21,6 +21,7 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IMedicationService;
+import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchFilterItem;
 import femr.common.models.ResearchResultItem;
@@ -55,6 +56,7 @@ public class ResearchController extends Controller {
     private IResearchService researchService;
     private IMedicationService medicationService;
     private ISessionService sessionService;
+    private IMissionTripService missionTripService; //Andrew New Fix
 
     /**
      * Research Controller constructor that Injects the services indicated by the parameters
@@ -64,10 +66,11 @@ public class ResearchController extends Controller {
      * @param medicationService {@link IMedicationService}
      */
     @Inject
-    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService) {
+    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService, IMissionTripService missionTripService) {
         this.researchService = researchService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
+        this.missionTripService = missionTripService; //Andrew New Fix
     }
 
     public Result indexGet() {
@@ -159,7 +162,8 @@ public class ResearchController extends Controller {
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
         filterItem.setMedicationName(filterViewModel.getMedicationName());
-        filterItem.setCityName(filterViewModel.getCityName()); //Andrew Fix
+        filterItem.setMissionTripName(filterViewModel.getMissionTripName()); //Andrew Fix
+
 
 
         return filterItem;

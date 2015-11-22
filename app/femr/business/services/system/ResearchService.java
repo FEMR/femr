@@ -25,6 +25,7 @@ import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import femr.business.helpers.LogicDoer;
 import femr.business.services.core.IEncounterService;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
 import femr.common.IItemModelMapper;
@@ -54,7 +55,7 @@ public class ResearchService implements IResearchService {
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
-
+    private final IRepository<IMissionTrip> missionTripIRepository; //Andrew New Fix
 
 ;
 
@@ -64,11 +65,13 @@ public class ResearchService implements IResearchService {
     @Inject
     public ResearchService(IRepository<IResearchEncounter> researchEncounterRepository,
                            IRepository<IVital> vitalRepository,
-                           IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository) {
+                           IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
+                           IRepository<IMissionTrip> missionTripIRepository) {
 
         this.researchEncounterRepository = researchEncounterRepository;
         this.vitalRepository = vitalRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
+        this.missionTripIRepository = missionTripIRepository; //Andrew New Fix
     }
 
 
@@ -414,9 +417,9 @@ public class ResearchService implements IResearchService {
             researchEncounterQuery.fetch("patientPrescriptions.medication");
         }
 
-        if (filters.getCityName() != null && filters.getCityName().length() > 0 ) {
+        if( filters.getMissionTripName() != null && filters.getMissionTripName().length() > 0 ){
 
-            researchEncounterQuery.fetch("mission_city_id"); // Andrew New Fix (mission_trip_id)
+            researchEncounterQuery.fetch("missionTrips.MissionCityID"); //Andrew Fix
         }
 
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
@@ -434,11 +437,11 @@ public class ResearchService implements IResearchService {
 
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
         }
-        if ( filters.getCityName() != null && filters.getCityName().length() > 0 ) {
+        if ( filters.getMissionTripName() != null && filters.getMissionTripName().length() > 0 ){
 
-            researchEncounterExpressionList.like("mission_cities_name", "%" + filters.getCityName() + "%"); // Andrew Fix
-
+            researchEncounterExpressionList.like("missionTrips.MissionCityID.name", "%" + filters.getMissionTripName() + "%"); //Andrew Fix
         }
+
         // if the filters exist - use them in the query
 //        if( filters.getFilterRangeStart() > -1 * Float.MAX_VALUE ){
 //
@@ -637,6 +640,7 @@ public class ResearchService implements IResearchService {
     }
 
 
+
     // do stuff specific to vitals request
     private ResearchResultSetItem buildMedicationResultSet(List<? extends IResearchEncounter> encounters, ResearchFilterItem filters) {
 
@@ -711,7 +715,9 @@ public class ResearchService implements IResearchService {
                 }
                 resultSet.setPrimaryValueMap(primaryValuemap);
 
-            }else if( filters.getPrimaryDataset().equals("dispensedMeds") ){
+            }
+
+            else if( filters.getPrimaryDataset().equals("dispensedMeds") ){
 
                 List<PatientPrescription> prescriptions = encounter.getPatientPrescriptions();
                 Map<Float, String> primaryValuemap = resultSet.getPrimaryValueMap();

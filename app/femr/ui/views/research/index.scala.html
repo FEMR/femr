@@ -138,20 +138,18 @@
                             <span class="medication">
                                 <label>Filter Medication</label>
                                 <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name" />
-                                @*
-                                <select name="medicationId" id="medicationId">
-                                    <option value="-1">Any</option>
-                                    @for( (key,value) <- viewModel.getMedicationsList ){
-                                        <option value="@key">@value</option>
-                                    }
-                                </select>
-                                *@
-                            </span>
 
-                            <span class="medication">
-                                <label>Filter City</label>
-                                <input type="text" name="cityName" id="cityName" placeholder="City Name" />
-                            </span> @* Andrew Fix *@
+                            </span>
+                            <form>
+                                <span class="medication">
+                                <label>Filter Mission Trip City</label>
+                                    <select name="medicationId" id="medicationId">
+                                      @*ANDREW IMPLEMENT GRABBING DATA*@
+
+                                    </select>
+                                </span>
+                            </form>
+
 
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>

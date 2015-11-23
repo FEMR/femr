@@ -233,7 +233,7 @@ public class HistoryController extends Controller {
 
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+        ServiceResponse<List<PrescriptionItem>>  prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

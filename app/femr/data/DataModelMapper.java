@@ -591,8 +591,6 @@ public class DataModelMapper implements IDataModelMapper{
         user.setPasswordReset(isPasswordReset);
         user.setNotes(notes);
         user.setRoles(roles);
-        //AJ Saclayan Password Constraints
-        user.setPasswordCreatedDate(date);
 
         return user;
     }

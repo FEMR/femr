@@ -50,14 +50,7 @@ public class SessionsController extends Controller {
             if (userResponse.hasErrors()){
                 throw new RuntimeException();
             }
-            //AJ Saclayan Password Constraints
-            DateTime start = new DateTime(user.getPasswordCreatedDate());
-            DateTime stop = new DateTime( DateTime.now());
 
-            int daysBetween = Days.daysBetween(start, stop).getDays();
-            if(daysBetween > 60) {
-                user.setPasswordReset(true);
-            }
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }

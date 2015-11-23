@@ -633,62 +633,75 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> retrieveReplacedPrescriptionItems(int encounterID) {
+    public ServiceResponse<List<PrescriptionItem>> retrieveReplacedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        // Get Medication ID where originalPrescriptionID = medicationID
-        ExpressionList<PatientPrescriptionReplacement> query = QueryProvider.getPatientPrescriptionReplacementQuery()
+        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .where()
-                .eq("patient_prescription_id_replacement", encounterID);
-        /*
-         @Id
-    @Column(name = "id", unique = true, nullable = false)
-    private int id;
-    @ManyToOne
-    @JoinColumn(name = "patient_prescription_id_original", nullable = false)
-    private PatientPrescription originalPrescription;
-    @ManyToOne
-    @JoinColumn(name = "patient_prescription_id_replacement", nullable = false)
-    private PatientPrescription replacementPrescription;
-    @ManyToOne
-    @JoinColumn(name = "patient_prescription_replacement_reason_id")
-    private PatientPrescriptionReplacementReason patientPrescriptionReplacementReason;
-
-
-        */
+                .eq("encounter_id", encounterId);
         try {
+            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+            List<PrescriptionItem> prescriptionItems = patientPrescriptions
+                    .stream()
+                    .filter(pp -> !pp.getPatientPrescriptionReplacements().isEmpty())
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getMedication().getName(),
+                            null,
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication()
 
-            List<? extends IPatientPrescriptionReplacement> patientPrescriptions = patientPrescriptionReplacementRepository.find(query);
-            //Once I have the original replacement, check if it's null.  If not, loop through list to get the medication name.
-            if(!patientPrescriptions.isEmpty()){
-                for (IPatientPrescriptionReplacement prescriptionItem : patientPrescriptions){
-                    //Find Medication name by medication ID
-                    ExpressionList<PatientPrescription> query2 = QueryProvider.getPatientPrescriptionQuery()
-                            .where()
-                            .eq("id", prescriptionItem.getOriginalPrescription().getId());
+                    ))
+                    .collect(Collectors.toList());
 
-                        List<? extends IPatientPrescription> patientPrescriptions2 = patientPrescriptionRepository.find(query2);
-
-                    List<PrescriptionItem> prescriptionItems = patientPrescriptions2.stream()
-                            .map(pp -> itemModelMapper.createPrescriptionItem(
-                                    prescriptionItem.getOriginalPrescription().getId(),
-                                    prescriptionItem.getOriginalPrescription().getMedication().getName(),
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                            ))
-                            .collect(Collectors.toList());
-
-                    response.setResponseObject(prescriptionItems);
-                }
-
-            }
+            response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }
+
         return response;
+//        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+//        // Get Medication ID where originalPrescriptionID = medicationID
+//        ExpressionList<PatientPrescriptionReplacement> query = QueryProvider.getPatientPrescriptionReplacementQuery()
+//                .where()
+//                .eq("patient_prescription_id_replacement", encounterID);
+//
+//        try {
+//
+//            List<? extends IPatientPrescriptionReplacement> patientPrescriptions = patientPrescriptionReplacementRepository.find(query);
+//            //Once I have the original replacement, check if it's null.  If not, loop through list to get the medication name.
+//            if(!patientPrescriptions.isEmpty()){
+//                for (IPatientPrescriptionReplacement prescriptionItem : patientPrescriptions){
+//                    //Find Medication name by medication ID
+//                    ExpressionList<PatientPrescription> query2 = QueryProvider.getPatientPrescriptionQuery()
+//                            .where()
+//                            .eq("id", prescriptionItem.getOriginalPrescription().getId());
+//
+//                        List<? extends IPatientPrescription> patientPrescriptions2 = patientPrescriptionRepository.find(query2);
+//
+//                    List<PrescriptionItem> prescriptionItems = patientPrescriptions2.stream()
+//                            .map(pp -> itemModelMapper.createPrescriptionItem(
+//                                    prescriptionItem.getOriginalPrescription().getId(),
+//                                    prescriptionItem.getOriginalPrescription().getMedication().getName(),
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null
+//                            ))
+//                            .collect(Collectors.toList());
+//
+//                    response.setResponseObject(prescriptionItems);
+//                }
+//
+//            }
+//        } catch (Exception ex) {
+//            response.addError("exception", ex.getMessage());
+//        }
+//        return response;
     }
 
 }

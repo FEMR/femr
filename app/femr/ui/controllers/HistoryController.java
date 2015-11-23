@@ -30,7 +30,6 @@ import femr.ui.models.history.*;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.ui.views.html.partials.history.listTabFieldHistory;
-import femr.ui.views.html.pharmacies.index;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
@@ -42,7 +41,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -234,43 +232,21 @@ public class HistoryController extends Controller {
         }
         indexEncounterPharmacyViewModel.setProblems(problems);
 
-        //AJ Saclayan Get Prescribed Medications
-        //find patient prescriptions, they do have to exist
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
-        if (prescriptionItemServiceResponse.hasErrors()) {
+        //AJ Saclayan Get Originally Prescribed
+
+
+        //Get medication ID for patient for replacement ID.
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(encounterId);
+        if (prescriptionItemServiceResponses.hasErrors()){
             throw new RuntimeException();
-        } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
-           // return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
         }
-        indexEncounterPharmacyViewModel.setMedications(prescriptionItemServiceResponse.getResponseObject());
+        indexEncounterPharmacyViewModel.setOriginalMedications(prescriptionItemServiceResponses.getResponseObject());
 
-        //TESTING STUFF
-
-        //create the prescriptions
-        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
-        for (PrescriptionItem prescriptionItem : prescriptionItemServiceResponse.getResponseObject()){
-            //Get medication ID for patient for replacement ID.
-            ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(prescriptionItem.getId());
-            if (prescriptionItemServiceResponses.hasErrors()){
-                throw new RuntimeException();
-            }
-            indexEncounterPharmacyViewModel.setMedications(prescriptionItemServiceResponses.getResponseObject());
-        }
 
 //END TEST
-
-        //get MedicationAdministrationItems
-        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
-                medicationService.retrieveAvailableMedicationAdministrations();
-        if (medicationAdministrationItemServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
-        indexEncounterPharmacyViewModel.setMedicationAdministrationItems(medicationAdministrationItemServiceResponse.getResponseObject());
-
-
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();
-        prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+        ServiceResponse<List<PrescriptionItem>>  prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

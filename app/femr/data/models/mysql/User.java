@@ -54,9 +54,6 @@ public class User implements IUser {
     private Boolean passwordReset;
     @Column(name ="notes")
     private String notes;
-    //AJ Saclayan Password Constraints
-    @Column(name = "passwordCreatedDate", nullable = false)
-    private DateTime passwordCreatedDate;
 
     @Override
     public int getId() {
@@ -164,14 +161,4 @@ public class User implements IUser {
         this.notes = notes;
     }
 
-    //AJ Saclayan Password Constraints
-    @Override
-    public DateTime getPasswordCreatedDate() {
-        return passwordCreatedDate;
-    }
-
-    @Override
-    public void setPasswordCreatedDate(DateTime date) {
-        this.passwordCreatedDate = date;
-    }
 }

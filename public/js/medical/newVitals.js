@@ -18,7 +18,8 @@ $(document).ready(function () {
             weight: $('#newWeight'),
             heightFeet: $('#heightFt'),
             heightInches: $('#heightIn'),
-            glucose: $('#newGlucose')
+            glucose: $('#newGlucose'),
+			weeksPregnant: $('#weeksPreg')
         };
 
         var isValid = vitalClientValidator(patientVitals);
@@ -62,6 +63,10 @@ $(document).ready(function () {
 
             if (patientVitals.glucose.val() !== '') {
                 newVitals.glucose = patientVitals.glucose.val();
+			}
+
+            if (patientVitals.weeksPregnant.val() !== '') { /*Sam Zanni*/
+                newVitals.weeksPregnant = patientVitals.weeksPregnant.val();
             }
 
             $.ajax({

@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -45,10 +46,8 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
-    //AJ Saclayan Replacement Meds
-    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
-    private final IRepository<IMedication> medicationRepository;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
@@ -57,9 +56,8 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         @Named("identified") IItemModelMapper itemModelMapper,
-                         IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
-                         IRepository<IMedication> medicationRepository){
+                         IMissionTripService missionTripService,
+                         @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
         this.patientRepository = patientRepository;
@@ -67,9 +65,8 @@ public class SearchService implements ISearchService {
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
+        this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
-        this.patientPrescriptionReplacementRepository =  patientPrescriptionReplacementRepository;
-        this.medicationRepository = medicationRepository;
     }
 
     /**
@@ -520,10 +517,7 @@ public class SearchService implements ISearchService {
                     .eq("name", "Country Filter");
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
-            ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
-                    .where()
-                    .eq("isCurrent", true);
-            IMissionTrip missionTrip = missionTripExpressionList.findUnique();
+            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
 
             List<? extends IPatient> allPatients;
 
@@ -662,46 +656,6 @@ public class SearchService implements ISearchService {
         }
 
         return response;
-//        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-//        // Get Medication ID where originalPrescriptionID = medicationID
-//        ExpressionList<PatientPrescriptionReplacement> query = QueryProvider.getPatientPrescriptionReplacementQuery()
-//                .where()
-//                .eq("patient_prescription_id_replacement", encounterID);
-//
-//        try {
-//
-//            List<? extends IPatientPrescriptionReplacement> patientPrescriptions = patientPrescriptionReplacementRepository.find(query);
-//            //Once I have the original replacement, check if it's null.  If not, loop through list to get the medication name.
-//            if(!patientPrescriptions.isEmpty()){
-//                for (IPatientPrescriptionReplacement prescriptionItem : patientPrescriptions){
-//                    //Find Medication name by medication ID
-//                    ExpressionList<PatientPrescription> query2 = QueryProvider.getPatientPrescriptionQuery()
-//                            .where()
-//                            .eq("id", prescriptionItem.getOriginalPrescription().getId());
-//
-//                        List<? extends IPatientPrescription> patientPrescriptions2 = patientPrescriptionRepository.find(query2);
-//
-//                    List<PrescriptionItem> prescriptionItems = patientPrescriptions2.stream()
-//                            .map(pp -> itemModelMapper.createPrescriptionItem(
-//                                    prescriptionItem.getOriginalPrescription().getId(),
-//                                    prescriptionItem.getOriginalPrescription().getMedication().getName(),
-//                                    null,
-//                                    null,
-//                                    null,
-//                                    null,
-//                                    null,
-//                                    null
-//                            ))
-//                            .collect(Collectors.toList());
-//
-//                    response.setResponseObject(prescriptionItems);
-//                }
-//
-//            }
-//        } catch (Exception ex) {
-//            response.addError("exception", ex.getMessage());
-//        }
-//        return response;
     }
 
 }

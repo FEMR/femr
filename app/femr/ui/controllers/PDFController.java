@@ -321,13 +321,10 @@ public class PDFController extends Controller {
         table.addCell(getVitalMapCell("Respiration Rate:", "respiratoryRate", vitalMap));
         table.addCell(getVitalMapCell("Oxygen Saturation:", "oxygenSaturation", vitalMap));
 
+		//Sam Zanni
         PdfPCell cell = new PdfPCell(table.getDefaultCell());
         cell.setPaddingTop(2);
-        Paragraph pregnancyTitle = new Paragraph("Pregnancy Status:", getTitleFont());
-        cell.addElement(pregnancyTitle);
-        Paragraph pregnancy = new Paragraph(outputIntOrNA(encounter.getWeeksPregnant()), getValueFont());
-        cell.addElement(pregnancy);
-        table.addCell(cell);
+		table.addCell(getVitalMapCell("Weeks Pregnant:", "weeksPregnant", vitalMap));
         table.completeRow();
 
         return table;

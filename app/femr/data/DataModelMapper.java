@@ -335,7 +335,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam) {
+    public IMissionTrip createMissionTrip(Date startDate, Date endDate, IMissionCity missionCity, IMissionTeam missionTeam) {
 
         if (startDate == null || endDate == null || missionCity == null || missionTeam == null) {
 
@@ -344,7 +344,6 @@ public class DataModelMapper implements IDataModelMapper{
 
         IMissionTrip missionTrip = missionTripProvider.get();
 
-        missionTrip.setCurrent(isCurrent);
         missionTrip.setStartDate(startDate);
         missionTrip.setEndDate(endDate);
         missionTrip.setMissionCity(missionCity);
@@ -593,5 +592,14 @@ public class DataModelMapper implements IDataModelMapper{
         user.setRoles(roles);
 
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IUser createUser(int userId){
+
+        return Ebean.getReference(userProvider.get().getClass(), userId);
     }
 }

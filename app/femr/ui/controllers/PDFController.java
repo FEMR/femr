@@ -104,8 +104,15 @@ public class PDFController extends Controller {
         }
         TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
 
+        //AJ Saclayan Get Original Prescriptions
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveReplacedPrescriptionItems(encounterId);
+        if (prescriptionItemServiceResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+        List<PrescriptionItem> originalPrescriptions = prescriptionItemServiceResponse.getResponseObject();
+
         // Get Prescriptions
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+        prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()){
             throw new RuntimeException();
         }
@@ -146,7 +153,7 @@ public class PDFController extends Controller {
             document.add(createVitalsTable(patientEncounter, patientVitals));
 
             // Add Assessments Table
-            document.add(getAssessments(tabFieldMultiMap, prescriptions, problems));
+            document.add(getAssessments(tabFieldMultiMap, originalPrescriptions, prescriptions, problems));
 
             // Add Chief Complaints Table
             document.add(getChiefComplaintsTable(tabFieldMultiMap));
@@ -331,7 +338,7 @@ public class PDFController extends Controller {
      * @param problemItems a list of the encounter's problems
      * @return PdfPTable the itext table to add to the document
      */
-    private PdfPTable getAssessments(TabFieldMultiMap tabFieldMultiMap,  List<PrescriptionItem> prescriptionItems , List<ProblemItem> problemItems) {
+    private PdfPTable getAssessments(TabFieldMultiMap tabFieldMultiMap,  List<PrescriptionItem> originalPrescriptionItems, List<PrescriptionItem> prescriptionItems , List<ProblemItem> problemItems) {
 
         PdfPTable table = getDefaultTable(2);
         table.addCell(getDefaultHeaderCell("Assessments", 2));
@@ -389,8 +396,21 @@ public class PDFController extends Controller {
             table.addCell(customCell);
         }
 
+        // AJ Saclayan
+        // Get Original Prescriptions -- add Paragraph for each one to the cell
+        Paragraph originalPrescriptionsTitle = new Paragraph("Original Prescription(s):", getTitleFont());
+        PdfPCell originalPrescriptionCell = new PdfPCell(table.getDefaultCell());
+        originalPrescriptionCell.setPaddingRight(10);
+        originalPrescriptionCell.addElement(originalPrescriptionsTitle);
+        for (PrescriptionItem prescription : originalPrescriptionItems) {
+            Paragraph script = new Paragraph(" - "+prescription.getName(), getValueFont());
+            originalPrescriptionCell.addElement(script);
+        }
+        table.addCell(originalPrescriptionCell);
+
+
         // Get Prescriptions -- add Paragraph for each one to the cell
-        Paragraph prescriptionsTitle = new Paragraph("Prescription(s):", getTitleFont());
+        Paragraph prescriptionsTitle = new Paragraph("Dispensed Prescription(s):", getTitleFont());
         PdfPCell prescriptionCell = new PdfPCell(table.getDefaultCell());
         prescriptionCell.setPaddingRight(10);
         prescriptionCell.addElement(prescriptionsTitle);
@@ -410,6 +430,7 @@ public class PDFController extends Controller {
         }
         table.addCell(problemsCell);
 
+        table.completeRow();
         return table;
     }
 

@@ -27,6 +27,8 @@ public class IndexEncounterPharmacyViewModel {
     private List<String> problems;
 
     private List<PrescriptionItem> prescriptions;
+    //AJ Saclayan Display Original Medications
+    private List<PrescriptionItem> originalMedications;
 
     public List<String> getProblems() {
         return problems;
@@ -43,4 +45,12 @@ public class IndexEncounterPharmacyViewModel {
     public void setPrescriptions(List<PrescriptionItem> prescriptions) {
         this.prescriptions = prescriptions;
     }
+
+    public List<PrescriptionItem> getOriginalMedications() {
+        return originalMedications;
+    }
+    public void setOriginalMedications(List<PrescriptionItem> medications) {
+        this.originalMedications = medications;
+    }
+
 }

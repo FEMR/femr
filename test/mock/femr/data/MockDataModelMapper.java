@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 ///*
 //     fEMR - fast Electronic Medical Records
 //     Copyright (C) 2014  Team fEMR

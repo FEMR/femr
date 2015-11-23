@@ -48,6 +48,7 @@ public class SessionsController extends Controller {
             if (userResponse.hasErrors()){
                 throw new RuntimeException();
             }
+
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }

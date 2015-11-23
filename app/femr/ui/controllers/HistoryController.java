@@ -228,9 +228,21 @@ public class HistoryController extends Controller {
         }
         indexEncounterPharmacyViewModel.setProblems(problems);
 
+        //AJ Saclayan Get Originally Prescribed
+
+
+        //Get medication ID for patient for replacement ID.
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(encounterId);
+        if (prescriptionItemServiceResponses.hasErrors()){
+            throw new RuntimeException();
+        }
+        indexEncounterPharmacyViewModel.setOriginalMedications(prescriptionItemServiceResponses.getResponseObject());
+
+
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+        ServiceResponse<List<PrescriptionItem>>  prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

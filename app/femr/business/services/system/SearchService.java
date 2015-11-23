@@ -623,4 +623,41 @@ public class SearchService implements ISearchService {
         ISystemSetting isMetric = systemSettingRepository.findOne(query);
         return isMetric.isActive();
     }
+
+    //AJ Saclayan Replaced Medications
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<PrescriptionItem>> retrieveReplacedPrescriptionItems(int encounterId) {
+        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
+                .where()
+                .eq("encounter_id", encounterId);
+        try {
+            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+            List<PrescriptionItem> prescriptionItems = patientPrescriptions
+                    .stream()
+                    .filter(pp -> !pp.getPatientPrescriptionReplacements().isEmpty())
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getMedication().getName(),
+                            null,
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication()
+
+                    ))
+                    .collect(Collectors.toList());
+
+            response.setResponseObject(prescriptionItems);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
 }

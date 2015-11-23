@@ -152,13 +152,12 @@ public interface IDataModelMapper {
      *
      * @param patientID                  id of the patient, not null
      * @param date                       date of checking for triage, not null
-     * @param weeksPregnant              weeks pregnant of the patient, may be null
      * @param userId                     id of the user creating the encounter, not null
      * @param patientAgeClassificationId id of the age classification, may be null
      * @param tripId                     id of the trip, may be null
      * @return an implementation of IPatientEncounter or null if processing fails
      */
-    IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId);
+    IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId);
 
     /**
      * Generate and provide an implementation of IPatientEncounterTabField

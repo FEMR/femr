@@ -383,7 +383,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId) {
+    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId) {
 
         if (patientID < 1 || userId < 1 || date == null) {
 
@@ -396,7 +396,6 @@ public class DataModelMapper implements IDataModelMapper{
         //provide a proxy patient for the encounter
         patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientID));
         patientEncounter.setNurse(Ebean.getReference(userProvider.get().getClass(), userId));
-        patientEncounter.setWeeksPregnant(weeksPregnant);
         if (patientAgeClassificationId != null)
             patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
         if (tripId != null)

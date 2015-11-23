@@ -44,10 +44,6 @@ public interface IResearchEncounter {
     public List<PatientPrescription> getPatientPrescriptions();
     public void setPatientPrescriptions(List<PatientPrescription> patientPrescriptions);
 
-    Integer getWeeksPregnant();
-
-    void setWeeksPregnant(Integer weeksPregnant);
-
     DateTime getDateOfTriageVisit();
 
     void setDateOfTriageVisit(DateTime dateOfVisit);

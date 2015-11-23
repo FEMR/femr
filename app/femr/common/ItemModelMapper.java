@@ -219,7 +219,6 @@ public class ItemModelMapper implements IItemModelMapper {
         }
         patientEncounterItem.setId(patientEncounter.getId());
         patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
-        patientEncounterItem.setWeeksPregnant(patientEncounter.getWeeksPregnant());
         patientEncounterItem.setTriageDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfTriageVisit()));
         if (patientEncounter.getDateOfMedicalVisit() != null)
             patientEncounterItem.setMedicalDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfMedicalVisit()));

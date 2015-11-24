@@ -249,14 +249,135 @@ var multipleChiefComplaintFeature = {
         }
     }
 };
+var diabeticScreeningFeature = {
+    shouldPatientBeScreened: function(){
+        //check to make sure the patient hasn't already been screened for diabetes
+        //during this encounter
+        if ($('[name=isDiabetesScreenPerformed]').val() === "false"){
+            //get these values for checking BMI later
+            var heightTotalInches = recentVitals.getCurrentHeightInches() + recentVitals.getCurrentHeightFeet() * 12;
+            var weightPounds = recentVitals.getCurrentWeight();
+            var bmiScore = calculateBMIScore("standard", weightPounds, heightTotalInches);
+            //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
+            //surpass the threshold required for the diabetes prompt
+            if (
+                (recentVitals.getCurrentSystolic() !== null && parseInt(recentVitals.getCurrentSystolic()) >= 140) || (recentVitals.getCurrentDiastolic() !== null && parseInt(recentVitals.getCurrentDiastolic()) >= 90)
+            ) {
+                //checks if the patient is 18 or older
+                if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {
+                    if ($('input[name=isDiabetesScreenPerformed]').val() === "false") {
+                        return true;
+                    }
+                }
+            }
+            //checks to see if a BMI score is available then checks to see if it
+            //surpasses the threshold required for the diabetes prompt
+            if (isFinite(bmiScore) && bmiScore !== null && bmiScore >= 25){
+                //checks if the patient is 25 or older
+                if (typeof $('#isOverTwentyfour').val() != 'undefined' && $('#isOverTwentyfour').val() === 'true'){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+//every function in here gets the most recent value of
+//a vital from the "record new vitals menu"
+//Add new fields as you need them #lazy
+var recentVitals ={
+    /**
+     * Uses the listVitals table to retrieve
+     * the most recent systolic blood pressure value
+     * @returns *the most recent systolic blood pressure value or null
+     */
+    getCurrentSystolic: function(){
 
+        var systolic = null;
+        $('.systolic').each(function(){
+            if ($.trim($(this).text()) !== ''){
+                systolic = $(this).text();
+            }
+        });
+
+        return systolic;
+    },
+    /**
+     * Uses the listVitals table to retrieve
+     * the most recent diastolic blood pressure value
+     * @returns *the most recent diastolic blood pressure value or null
+     */
+    getCurrentDiastolic: function(){
+
+        var diastolic = null;
+        $('.diastolic').each(function(){
+            if ($.trim($(this).text()) !== ''){
+                diastolic = $(this).text();
+            }
+        });
+
+        return diastolic;
+    },
+    /**
+     * Uses the listVitals table to retrieve
+     * the most recent weight value
+     * @returns *the most recent weight (lbs) value or null
+     */
+    getCurrentWeight: function(){
+
+        var weight = null;
+        // Search vitals from most recent to least for one containing a valid weight
+        $($("#weight td").get()).each(function() {
+            var tryParse = parseFloat($(this).attr("data-weight"));
+            if (!isNaN(tryParse)) {
+                weight = tryParse;
+            }
+        });
+
+        return weight;
+    },
+    /**
+     * Uses the listVitals table to retrieve
+     * the most recent height (feet) value
+     * @returns *the most recent height (feet) value or null
+     */
+    getCurrentHeightFeet: function(){
+
+        var heightFeet = null;
+        // Search vitals from most recent to least for one containing a valid height
+        $($("#height td").get()).each(function() {
+            var tryParseFeet = parseFloat($(this).attr("data-feet"));
+            if (!isNaN(tryParseFeet)) {
+                heightFeet = tryParseFeet;
+            }
+        });
+
+        return heightFeet;
+    },
+    /**
+     * Uses the listVitals table to retrieve
+     * the most recent height (inches) value
+     * @returns *the most recent height (inches) value or null
+     */
+    getCurrentHeightInches: function(){
+
+        var heightInches = null;
+        $($("#height td").get()).each(function() {
+            var tryParseInches = parseFloat($(this).attr("data-inches"));
+            if (!isNaN(tryParseInches)) {
+                heightInches = tryParseInches;
+                return false;
+            }
+        });
+
+        return heightInches;
+    }
+};
 
 $(document).ready(function () {
 
     //set a global variable to track browser compatibility with image previews
     window.isFileReader = typeof FileReader !== 'undefined';
-
-    calculateBMI();
 
     //make the first tab active
     $('#medicalTabs li').first().addClass('active');
@@ -345,14 +466,22 @@ $(document).ready(function () {
         multipleChiefComplaintFeature.slideChiefComplaintLeft();
     });
 
-/*
-    $('#medicalSubmitBtn').click(function () {
-        return photoNameFixup() && validate(); //validate from medicalClientValidation.js
+
+    $('#yesDiabetesScreen').click(function(){
+        $('input[name=isDiabetesScreenPerformed]').val("true");
     });
-*/
+
     $("form").submit(function(event) {
+        var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+        if (isDiabeticScreeningPromptNecessary){
+            var diabetesDialog = $('.historySubmitWrap.hidden');
+            var submitMenu = $('.historySubmitWrap').not('.hidden');
+            $(submitMenu).addClass('hidden');
+            $(diabetesDialog).removeClass('hidden');
+        }
+
         //validate from medicalClientValidation.js
-        if (!photoNameFixup() || !validate()) {
+        if (!photoNameFixup() || !validate() || isDiabeticScreeningPromptNecessary) {
             event.preventDefault();
             return false;
         }

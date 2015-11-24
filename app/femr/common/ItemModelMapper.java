@@ -151,7 +151,8 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Integer heightInches,
                                                 Float weight,
                                                 String pathToPatientPhoto,
-                                                Integer photoId){
+                                                Integer photoId,
+                                                String ageClassification) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -168,6 +169,8 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setLastName(lastName);
         patientItem.setCity(city);
         patientItem.setUserId(userId);
+        patientItem.setIsOverSeventeen(false);//assume false until proven true below
+        patientItem.setIsOverTwentyFour(false);
         //optional fields
         if (StringUtils.isNotNullOrWhiteSpace(address))
             patientItem.setAddress(address);
@@ -178,6 +181,20 @@ public class ItemModelMapper implements IItemModelMapper {
             patientItem.setAge(dateUtils.getAge(age));//age (int)
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
+            if (dateUtils.calculateYears(age) > 17) {
+
+                patientItem.setIsOverSeventeen(true);
+                if (dateUtils.calculateYears(age) > 24) {
+
+                    patientItem.setIsOverTwentyFour(true);
+                }
+            }
+
+        } else if (StringUtils.isNotNullOrWhiteSpace(ageClassification)){
+            if (ageClassification.equals("adult") || ageClassification.equals("elder")) {
+                patientItem.setIsOverSeventeen(true);
+                patientItem.setIsOverTwentyFour(true);
+            }
         }
         if (StringUtils.isNotNullOrWhiteSpace(pathToPatientPhoto) && photoId != null) {
 
@@ -234,6 +251,11 @@ public class ItemModelMapper implements IItemModelMapper {
         if (patientEncounter.getPharmacist() != null)
             patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
         patientEncounterItem.setNurseFullName(patientEncounter.getNurse().getFirstName() + " " + patientEncounter.getNurse().getLastName()); // Andrew Change
+        //checks if the patient has been screened for diabetes during this encounter
+        if (patientEncounter.getDateOfDiabeteseScreen() != null)
+            patientEncounterItem.setScreenedForDiabetes(true);
+        else
+            patientEncounterItem.setScreenedForDiabetes(false);
 
         if (patientEncounter.getDoctor() != null) {
             patientEncounterItem.setPhysicianFullName(patientEncounter.getDoctor().getFirstName() + " " + patientEncounter.getDoctor().getLastName()); // Andrew Change

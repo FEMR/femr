@@ -27,6 +27,8 @@
 
 @main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical")) {
     <input type="hidden" value="@viewModel.getPatientItem.getId" id="patientId"/>
+    <input type="hidden" value="@viewModel.getPatientItem.getIsOverSeventeen" id="isOverSeventeen"/>
+    <input type="hidden" value="@viewModel.getPatientItem.getIsOverTwentyFour" id="isOverTwentyfour"/>
 
     <div id="medicalContentWrap">
 
@@ -104,11 +106,20 @@
                                 Submit Patient</button>
                             }
 
-                @helper.form(action = SearchController.handleSearch("history")) {
-                    <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatientItem.getId"/>
-                    <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
-                }
-            </div>
+                            @helper.form(action = SearchController.handleSearch("history")) {
+                                <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatientItem.getId"/>
+                                <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
+                            }
+                        </div>
+                        <div class="historySubmitWrap hidden">
+                            <h3>Did you screen this patient for Diabetes?</h3>
+                            <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">
+                                No</button>
+                            <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
+                                Yes</button>
+                                <!-- Data elements for server-side logic, Diabetes Screen -->
+                            <input type="hidden" name="isDiabetesScreenPerformed" value="@if(viewModel.getPatientEncounterItem.getScreenedForDiabetes){true}else{false}" />
+                        </div>
             </div>
 
             </div>
@@ -138,7 +149,7 @@
                 </div>
             </div>
         </div>
-            <!-- Data elements for server-side logic -->
+            <!-- Data elements for server-side logic, Photo -->
         <div name="dataList" hidden="true">
                 <!-- Signals that user has requested to delete this photo from the database / server -->
             <input hidden="true" type="checkbox" name="deleteRequested" checked="false" value="false" />

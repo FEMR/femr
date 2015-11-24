@@ -57,7 +57,7 @@ public class ResearchService implements IResearchService {
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<IMissionTrip> missionTripIRepository; //Andrew New Fix
 
-;
+
 
     /**
      * Initializes the research service and injects the dependence

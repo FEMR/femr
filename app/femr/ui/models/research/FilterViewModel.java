@@ -18,6 +18,7 @@
 */
 package femr.ui.models.research;
 
+
 public class FilterViewModel {
 
     private String primaryDataset;
@@ -31,6 +32,8 @@ public class FilterViewModel {
     private Float filterRangeEnd;
     private String medicationName;
     private String MissionTripName; //Andrew Fix
+
+
 
 
     /*
@@ -142,6 +145,7 @@ public class FilterViewModel {
 
     public String getMissionTripName() { return MissionTripName; } //Andrew Fix
 
-    public void setMissionTripName(String cityName) { this.MissionTripName = MissionTripName; } //Andrew Fix
+    public void setMissionTripName(String cityName) { this.MissionTripName = cityName; } //Andrew Fix
 
 }
+

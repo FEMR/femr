@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel, availableCitiesServiceResponse:femr.common.models.MissionTripItem)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.ResearchController
@@ -144,7 +144,7 @@
                                 <span class="medication">
                                 <label>Filter Mission Trip City</label>
                                     <select name="medicationId" id="medicationId">
-                                      @*ANDREW IMPLEMENT GRABBING DATA*@
+                                      <option> @availableCitiesServiceResponse.getTripCity </option>
 
                                     </select>
                                 </span>

@@ -22,10 +22,11 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IMedicationService;
 import femr.business.services.core.IMissionTripService;
+import femr.business.services.system.MissionTripService;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.ResearchFilterItem;
-import femr.common.models.ResearchResultItem;
-import femr.common.models.ResearchResultSetItem;
+import femr.common.models.*;
+import femr.data.models.mysql.MissionCity;
+import femr.data.models.mysql.MissionTrip;
 import femr.ui.models.research.json.ResearchGraphDataModel;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
@@ -77,6 +78,7 @@ public class ResearchController extends Controller {
 
         FilterViewModel filterViewModel = new FilterViewModel();
 
+
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -85,7 +87,8 @@ public class ResearchController extends Controller {
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-        return ok(index.render(currentUserSession, filterViewModel));
+        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
+        return ok(index.render(currentUserSession, filterViewModel, availableCitiesServiceResponse)); //Andrew Implement here
     }
 
     /**

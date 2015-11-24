@@ -526,4 +526,15 @@ public class DataModelMapper implements IDataModelMapper{
 
         return user;
     }
+
+    @Override
+    public IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId){
+
+        if (patientEncounter == null){
+            return null;
+        }
+        patientEncounter.setDateOfDiabeteseScreen(dateUtils.getCurrentDateTime());
+        patientEncounter.setDiabetesScreener(Ebean.getReference(userProvider.get().getClass(), diabetesScreenerId));
+        return patientEncounter;
+    }
 }

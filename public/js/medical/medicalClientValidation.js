@@ -3,6 +3,7 @@ var medicalFieldValidator = {
     isValid : true,
     validatePrescriptions : function(){
         var prescriptions = [];
+        prescriptionFeature.refreshSelectors();
         $(prescriptionFeature.allPrescriptions).each(function(){
             prescriptions.push($(this).val());
         });
@@ -25,7 +26,5 @@ function validate(){
         medicalFieldValidator.isValid = true;
         return false;
     }
-
-
-
+    return true;
 }

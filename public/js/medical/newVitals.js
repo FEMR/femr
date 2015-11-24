@@ -8,16 +8,16 @@ $(document).ready(function () {
 
         var patientVitals = {
             //this object is sent to the vital validator which uses
-            //the names of these fields
-            respiratoryRate: $('#respRate'),
-            bloodPressureSystolic: $('#bpSystolic'),
-            bloodPressureDiastolic: $('#bpDiastolic'),
-            heartRate: $('#heartRate'),
-            oxygenSaturation: $('#oxygen'),
-            temperature: $('#temperature'),
+            //the names of these fields (these fields are from the newVitals prompt)
+            respiratoryRate: $('#newRespiratoryRate'),
+            bloodPressureSystolic: $('#newSystolic'),
+            bloodPressureDiastolic: $('#newDiastolic'),
+            heartRate: $('#newHeartRate'),
+            oxygenSaturation: $('#newOxygen'),
+            temperature: $('#newTemperature'),
             weight: $('#newWeight'),
-            heightFeet: $('#heightFt'),
-            heightInches: $('#heightIn'),
+            heightFeet: $('#newHeightFeet'),
+            heightInches: $('#newHeightInches'),
             glucose: $('#newGlucose')
         };
 

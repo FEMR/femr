@@ -230,6 +230,13 @@ public class MedicalController extends Controller {
         PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
 
+        if (viewModelPost.getIsDiabetesScreenPerformed().equals("true") && !patientEncounterItem.getScreenedForDiabetes()){
+            ServiceResponse<PatientEncounterItem> diabetesScreenServiceResponse = encounterService.screenPatientForDiabetes(patientEncounterItem.getId(), currentUserSession.getId());
+            if (diabetesScreenServiceResponse.hasErrors()){
+                throw new RuntimeException();
+            }
+        }
+
         //get and save problems
         List<String> problemList = new ArrayList<>();
         for (ProblemItem pi : viewModelPost.getProblems()) {

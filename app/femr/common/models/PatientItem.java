@@ -37,8 +37,9 @@ public class PatientItem {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
-
-
+    //can be determined from age classification and/or age itself
+    private Boolean isOverSeventeen;
+    private Boolean isOverTwentyFour;
 
     public PatientItem(){
         //default empty values
@@ -172,5 +173,30 @@ public class PatientItem {
 
     public void setFriendlyDateOfBirth(String friendlyDateOfBirth) {
         this.friendlyDateOfBirth = friendlyDateOfBirth;
+    }
+
+    /**
+     * returning null does not imply anything other than laziness.
+     * >=18 is true
+     * < 18 is false
+     */
+    public Boolean getIsOverSeventeen() {
+        return isOverSeventeen;
+    }
+
+    public void setIsOverSeventeen(Boolean isOverSeventeen) {
+        this.isOverSeventeen = isOverSeventeen;
+    }
+
+    /**
+     * >=25 is true
+     * < 25 is false
+     */
+    public Boolean getIsOverTwentyFour() {
+        return isOverTwentyFour;
+    }
+
+    public void setIsOverTwentyFour(Boolean overTwentyFour) {
+        isOverTwentyFour = overTwentyFour;
     }
 }

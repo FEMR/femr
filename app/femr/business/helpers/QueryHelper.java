@@ -51,7 +51,7 @@ public class QueryHelper {
                 .fetch("vital")
                 .where()
                 .eq("patient_encounter_id", encounterId)
-                .eq("vital.name", "weeks_pregnant")
+                .eq("vital.name", "weeksPregnant")
                 .order().desc("date_taken");
         List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query2);
         if (patientEncounterVitals.size() > 0) {

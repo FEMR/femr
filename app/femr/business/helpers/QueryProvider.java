@@ -147,4 +147,9 @@ public class QueryProvider {
     public static Query<ResearchEncounterVital> getResearchEncounterVitalQuery() {
         return Ebean.find(ResearchEncounterVital.class);
     }
+
+    public static Query<PatientPrescriptionReplacement> getPatientPrescriptionReplacementQuery(){
+        return Ebean.find(PatientPrescriptionReplacement.class);
+    }
+
 }

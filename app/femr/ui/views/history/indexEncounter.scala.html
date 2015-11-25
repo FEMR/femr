@@ -176,16 +176,37 @@
                         <p><a class="infoLabel nonEditable">Diagnosis:</a>
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
                     }
+                    @* AJ Saclayan Prescribed Medications *@
+                    @if(viewModelPharmacy.getOriginalMedications.size != null){
+                        @for(x <- 1 to viewModelPharmacy.getOriginalMedications.size) {
+                            @defining(viewModelPharmacy.getOriginalMedications.get(x - 1)) { medication =>
 
-                    @for(prescription <- viewModelPharmacy.getPrescriptions){
-                        <p>
-                            <span class="infoLabel">Dispensed Medication:</span>
-                            @prescription.getAmount @outputStringOrNA(prescription.getName) (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
-                            @for(activeDrug <- prescription.getMedicationActiveDrugs) {
-                                <span class='activeDrug'> @activeDrug.getName @activeDrug.getValue@activeDrug.getUnit </span>
+                                <p>
+                                    <span class="infoLabel">Originally Prescribed Medication:</span>
+
+                                    <div>
+                                        <span> @medication.getName  </span>
+                                    @*(@outputStringOrNA(medication.getMedicationForm).toString().trim())*@
+                                    </div>
+                                </p>
                             }
 
-                        </p>
+                        }
+                    }
+
+
+                    @for(x <- 1 to viewModelPharmacy.getPrescriptions.size) {
+                        @defining(viewModelPharmacy.getPrescriptions.get(x - 1)) { prescription =>
+                            <p>
+                                <span class="infoLabel">Dispensed Medication:</span>
+                                @prescription.getAmount @outputStringOrNA(prescription.getName)
+                                    (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
+                                @for(activeDrug <- prescription.getMedicationActiveDrugs) {
+                                    <span class='activeDrug'> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </span>
+                                }
+
+                            </p>
+                        }
                     }
 
                 </div>

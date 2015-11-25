@@ -33,6 +33,7 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
+import femr.data.models.core.IPatientPrescriptionReplacement;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,17 +45,19 @@ public class PatientService implements IPatientService {
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
-
+    //AJ Saclayan Replaced Prescriptions
+    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
-                          @Named("identified") IItemModelMapper itemModelMapper) {
+                          @Named("identified") IItemModelMapper itemModelMapper, IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
+        this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
     }
 
     /**

@@ -53,6 +53,7 @@ public class HistoryController extends Controller {
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
+    private final IMedicationService medicationService;
 
     @Inject
     public HistoryController(IEncounterService encounterService,
@@ -60,7 +61,8 @@ public class HistoryController extends Controller {
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IMedicationService medicationService) {
 
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -68,6 +70,8 @@ public class HistoryController extends Controller {
         this.tabService = tabService;
         this.photoService = photoService;
         this.vitalService = vitalService;
+        //AJ Saclayan Get Prescribed Medications
+        this.medicationService = medicationService;
     }
 
     /**
@@ -228,9 +232,21 @@ public class HistoryController extends Controller {
         }
         indexEncounterPharmacyViewModel.setProblems(problems);
 
+        //AJ Saclayan Get Originally Prescribed
+
+
+        //Get medication ID for patient for replacement ID.
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(encounterId);
+        if (prescriptionItemServiceResponses.hasErrors()){
+            throw new RuntimeException();
+        }
+        indexEncounterPharmacyViewModel.setOriginalMedications(prescriptionItemServiceResponses.getResponseObject());
+
+
+//END TEST
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
+        ServiceResponse<List<PrescriptionItem>>  prescriptionItemServiceResponse = searchService.retrieveDispensedPrescriptionItems(encounterId);
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

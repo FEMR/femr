@@ -10,6 +10,8 @@ import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
 import femr.util.calculations.dateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -48,9 +50,11 @@ public class SessionsController extends Controller {
             if (userResponse.hasErrors()){
                 throw new RuntimeException();
             }
+
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }
+
         }
 
         return redirect(routes.HomeController.index());
@@ -58,8 +62,8 @@ public class SessionsController extends Controller {
     }
 
     public Result editPasswordGet(IUser user){
-
-        return ok(editPassword.render(user.getFirstName(), user.getLastName()));
+//AJ Saclayan Password Constraints
+        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm));
     }
 
     public Result editPasswordPost(){

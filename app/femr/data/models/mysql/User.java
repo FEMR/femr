@@ -175,6 +175,6 @@ public class User implements IUser {
 
     @Override
     public void setMissionTrips(List<IMissionTrip> missionTrips) {
-        this.missionTrips = missionTrips;
+            this.missionTrips = missionTrips;
     }
 }

@@ -1,4 +1,3 @@
-
 ///*
 //     fEMR - fast Electronic Medical Records
 //     Copyright (C) 2014  Team fEMR
@@ -523,3 +522,4 @@
 //    }
 //
 //}
+>>>>>>> a4cb4bea545bec807e6c17cd85bc8f8491db2eaf

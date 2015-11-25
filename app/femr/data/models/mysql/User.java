@@ -56,7 +56,7 @@ public class User implements IUser {
     @Column(name = "notes")
     private String notes;
     //AJ Saclayan Password Constraints
-    @Column(name = "PasswordCreatedDate", nullable = false)
+    @Column(name = "passwordCreatedDate", nullable = false)
     private DateTime PasswordCreatedDate;
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)
     @JoinTable(

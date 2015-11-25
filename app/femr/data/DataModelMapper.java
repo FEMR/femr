@@ -21,7 +21,6 @@ package femr.data;
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
-import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -38,11 +37,14 @@ import java.util.List;
 public class DataModelMapper implements IDataModelMapper{
 
     private final Provider<IChiefComplaint> chiefComplaintProvider;
+    private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IMedication> medicationProvider;
     private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
     private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
+    private final Provider<IMedicationAdministration> medicationAdministrationProvider;
     private final Provider<IMedicationForm> medicationFormProvider;
+    private final Provider<IMedicationInventory> medicationInventoryProvider;
     private final Provider<IMissionCity> missionCityProvider;
     private final Provider<IMissionCountry> missionCountryProvider;
     private final Provider<IMissionTeam> missionTeamProvider;
@@ -55,6 +57,8 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
+    private final Provider<IPatientPrescriptionReplacement> patientPrescriptionReplacementProvider;
+    private final Provider<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonProvider;
     private final Provider<IPhoto> photoProvider;
     private final Provider<IRole> roleProvider;
     private final Provider<ITabField> tabFieldProvider;
@@ -66,11 +70,14 @@ public class DataModelMapper implements IDataModelMapper{
 
     @Inject
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
+                           Provider<ILoginAttempt> loginAttemptProvider,
                            Provider<IMedication> medicationProvider,
                            Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
                            Provider<IMedicationForm> medicationFormProvider,
                            Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                            Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
+                           Provider<IMedicationAdministration> medicationAdministrationProvider,
+                           Provider<IMedicationInventory> medicationInventoryProvider,
                            Provider<IMissionCity> missionCityProvider,
                            Provider<IMissionCountry> missionCountryProvider,
                            Provider<IMissionTeam> missionTeamProvider,
@@ -83,6 +90,8 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                            Provider<IPatientPrescription> patientPrescriptionProvider,
+                           Provider<IPatientPrescriptionReplacement> patientPrescriptionReplacementProvider,
+                           Provider<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonProvider,
                            Provider<IPhoto> photoProvider,
                            Provider<IRole> roleProvider,
                            Provider<ITabField> tabFieldProvider,
@@ -93,12 +102,15 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IVital> vitalProvider) {
 
         this.chiefComplaintProvider = chiefComplaintProvider;
+        this.loginAttemptProvider = loginAttemptProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
         this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
+        this.medicationAdministrationProvider = medicationAdministrationProvider;
         this.medicationFormProvider = medicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
         this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
+        this.medicationInventoryProvider = medicationInventoryProvider;
         this.missionCityProvider = missionCityProvider;
         this.missionCountryProvider = missionCountryProvider;
         this.missionTeamProvider = missionTeamProvider;
@@ -110,6 +122,8 @@ public class DataModelMapper implements IDataModelMapper{
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
+        this.patientPrescriptionReplacementProvider = patientPrescriptionReplacementProvider;
+        this.patientPrescriptionReplacementReasonProvider = patientPrescriptionReplacementReasonProvider;
         this.photoProvider = photoProvider;
         this.roleProvider = roleProvider;
         this.tabFieldProvider = tabFieldProvider;
@@ -143,6 +157,29 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
+    public ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId){
+
+        if (StringUtils.isNullOrWhiteSpace(usernameValue) || ipAddress == null) {
+
+            return null;
+        }
+        ILoginAttempt loginAttempt = loginAttemptProvider.get();
+        loginAttempt.setLoginDate(dateUtils.getCurrentDateTime());
+        loginAttempt.setIsSuccessful(isSuccessful);
+        loginAttempt.setUsernameAttempt(usernameValue);
+        loginAttempt.setIp_address(ipAddress);
+        if (userId == null)
+            loginAttempt.setUser(null);
+        else
+            loginAttempt.setUser(Ebean.getReference(userProvider.get().getClass(), userId));
+
+        return loginAttempt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IMedication createMedication(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -162,9 +199,9 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
+    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
 
-        if (StringUtils.isNullOrWhiteSpace(name) || total == null || current == null) {
+        if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
@@ -172,8 +209,6 @@ public class DataModelMapper implements IDataModelMapper{
         IMedication medication = medicationProvider.get();
 
         medication.setName(name);
-        medication.setQuantity_total(total);
-        medication.setQuantity_current(current);
         medication.setIsDeleted(false);
         medication.setMedicationActiveDrugs(medicationActiveDrugs);
         medication.setMedicationForm(medicationForm);
@@ -238,6 +273,29 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
+    public IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId) {
+
+        IMedicationInventory medicationInventory;
+
+        try{
+
+            medicationInventory = medicationInventoryProvider.get();
+            medicationInventory.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
+            medicationInventory.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), missionTripId));
+            medicationInventory.setQuantity_current(quantityCurrent);
+            medicationInventory.setQuantity_total(quantityTotal);
+        }catch(Exception ex){
+
+            medicationInventory = null;
+        }
+
+        return medicationInventory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IMissionCity createMissionCity(String name, IMissionCountry missionCountry) {
 
         if (StringUtils.isNullOrWhiteSpace(name) || missionCountry == null) {
@@ -277,7 +335,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam) {
+    public IMissionTrip createMissionTrip(Date startDate, Date endDate, IMissionCity missionCity, IMissionTeam missionTeam) {
 
         if (startDate == null || endDate == null || missionCity == null || missionTeam == null) {
 
@@ -286,7 +344,6 @@ public class DataModelMapper implements IDataModelMapper{
 
         IMissionTrip missionTrip = missionTripProvider.get();
 
-        missionTrip.setCurrent(isCurrent);
         missionTrip.setStartDate(startDate);
         missionTrip.setEndDate(endDate);
         missionTrip.setMissionCity(missionCity);
@@ -326,7 +383,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId) {
+    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId) {
 
         if (patientID < 1 || userId < 1 || date == null) {
 
@@ -339,7 +396,6 @@ public class DataModelMapper implements IDataModelMapper{
         //provide a proxy patient for the encounter
         patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientID));
         patientEncounter.setNurse(Ebean.getReference(userProvider.get().getClass(), userId));
-        patientEncounter.setWeeksPregnant(weeksPregnant);
         if (patientAgeClassificationId != null)
             patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
         if (tripId != null)
@@ -398,25 +454,35 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled) {
-
-        if (medication == null || userId < 1 || encounterId < 1) {
-
-            return null;
-        }
+    public IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, DateTime dateDispensed, boolean isCounseled) {
 
         IPatientPrescription patientPrescription = patientPrescriptionProvider.get();
 
         patientPrescription.setAmount(amount);
         patientPrescription.setDateTaken(dateUtils.getCurrentDateTime());
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
-        patientPrescription.setMedication(medication);
-        patientPrescription.setReplacementId(replacementId);
+        patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
+        if (medicationAdministrationId != null)
+            patientPrescription.setMedicationAdministration(Ebean.getReference(medicationAdministrationProvider.get().getClass(), medicationAdministrationId));
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
-        patientPrescription.setDispensed(isDispensed);
+        patientPrescription.setDateDispensed(dateDispensed);
         patientPrescription.setCounseled(isCounseled);
 
         return patientPrescription;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPatientPrescriptionReplacement createPatientPrescriptionReplacement(int originalId, int replacementId, int reasonId){
+
+        IPatientPrescriptionReplacement patientPrescriptionReplacement = patientPrescriptionReplacementProvider.get();
+        patientPrescriptionReplacement.setOriginalPrescription(Ebean.getReference(patientPrescriptionProvider.get().getClass(), originalId));
+        patientPrescriptionReplacement.setReplacementPrescription(Ebean.getReference(patientPrescriptionProvider.get().getClass(), replacementId));
+        patientPrescriptionReplacement.setPatientPrescriptionReplacementReason(Ebean.getReference(patientPrescriptionReplacementReasonProvider.get().getClass(), reasonId));
+
+        return patientPrescriptionReplacement;
     }
 
     /**
@@ -525,5 +591,14 @@ public class DataModelMapper implements IDataModelMapper{
         user.setRoles(roles);
 
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IUser createUser(int userId){
+
+        return Ebean.getReference(userProvider.get().getClass(), userId);
     }
 }

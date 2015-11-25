@@ -35,6 +35,7 @@ public class DatabaseSeeder {
     private final Repository<Diagnosis> diagnosisRepository;
     private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final Repository<MedicationForm> medicationFormRepository;
+    private final Repository<MedicationAdministration> medicationAdministrationRepository;
     private final IRepository<MissionCountry> missionCountryRepository;
     private final IRepository<MissionCity> missionCityRepository;
     private final IRepository<MissionTeam> missionTeamRepository;
@@ -51,6 +52,7 @@ public class DatabaseSeeder {
         diagnosisRepository = new Repository<>();
         medicationMeasurementUnitRepository = new Repository<>();
         medicationFormRepository = new Repository<>();
+        medicationAdministrationRepository = new Repository<>();
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
         systemSettingRepository = new Repository<>();
@@ -77,6 +79,7 @@ public class DatabaseSeeder {
         seedMedicationForms();
         seedPatientAgeClassification();
         seedDiagnosis();
+        seedMedicationAdministrations();
     }
 
     private void seedDiagnosis() {
@@ -744,6 +747,13 @@ public class DatabaseSeeder {
             systemSettingRepository.create(systemSetting);
         }
 
+        if (systemSettings != null && !containSetting(systemSettings, "Research Only")) {
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Research Only");
+            systemSetting.setActive(false);
+            systemSettingRepository.create(systemSetting);
+        }
+
     }
 
     /**
@@ -1055,6 +1065,149 @@ public class DatabaseSeeder {
         tabFieldSizeRepository.createAll(tabFieldSizesToAdd);
     }
 
+    private void seedMedicationAdministrations() {
+        List<? extends IMedicationAdministration> administrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
+        List<MedicationAdministration> medicationAdministrationsToAdd = new ArrayList<>();
+
+        if (administrations != null) {
+            MedicationAdministration medicationAdministration;
+
+            /* Daily modifier is used as helper in the calculation when prescribing a medication.
+             * It is how many times per day it should be taken. This modifier is then multiplied by
+             * the amount of days the prescriber sets. The total can be adjusted */
+
+            if (!containMedicationAdministration(administrations, "alt")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("alt");
+                medicationAdministration.setDailyModifier(0.5f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "BID")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("BID");
+                medicationAdministration.setDailyModifier(2f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "BIW")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("BIW");
+                medicationAdministration.setDailyModifier(0.2857f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "CID")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("CID");
+                medicationAdministration.setDailyModifier(5f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "HS")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("HS");
+                medicationAdministration.setDailyModifier(1f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q12h")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q12h");
+                medicationAdministration.setDailyModifier(2f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q24h")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q24h");
+                medicationAdministration.setDailyModifier(1f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q4-6h")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q4-6h");
+                medicationAdministration.setDailyModifier(5f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q4h")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q4h");
+                medicationAdministration.setDailyModifier(6f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q6h")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q6h");
+                medicationAdministration.setDailyModifier(4f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q8h")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q8h");
+                medicationAdministration.setDailyModifier(3f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "qAM")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("qAM");
+                medicationAdministration.setDailyModifier(1f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "qd")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("qd");
+                medicationAdministration.setDailyModifier(1f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "qHS")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("qHS");
+                medicationAdministration.setDailyModifier(1f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "QID")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("QID");
+                medicationAdministration.setDailyModifier(4f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q5min")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q5min");
+                medicationAdministration.setDailyModifier(288f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "qOd")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("qOd");
+                medicationAdministration.setDailyModifier(0.5f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "qPM")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("qPM");
+                medicationAdministration.setDailyModifier(1f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "q week")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("q week");
+                medicationAdministration.setDailyModifier(0.142857f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "TID")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("TID");
+                medicationAdministration.setDailyModifier(3f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+            if (!containMedicationAdministration(administrations, "TIW")) {
+                medicationAdministration = new MedicationAdministration();
+                medicationAdministration.setName("TIW");
+                medicationAdministration.setDailyModifier(0.42857f);
+                medicationAdministrationsToAdd.add(medicationAdministration);
+            }
+
+
+            medicationAdministrationRepository.createAll(medicationAdministrationsToAdd);
+        }
+    }
+
     private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries, String countryName) {
         for (IMissionCountry mc : missionCountries) {
             if (mc.getName().toLowerCase().equals(countryName.toLowerCase())) {
@@ -1172,6 +1325,14 @@ public class DatabaseSeeder {
         return false;
     }
 
+    private static boolean containMedicationAdministration(List<? extends IMedicationAdministration> administrations, String administration) {
+        for(IMedicationAdministration a : administrations) {
+            if (a.getName().equals(administration)) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Seed the admin user from the configuration file
      * and the super user information.

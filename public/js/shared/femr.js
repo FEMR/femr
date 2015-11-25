@@ -68,7 +68,7 @@ $(document).ready(function () {
                         $('#nameOrIdSearchForm').attr("placeholder", "Invalid Patient");
                     }
                 },
-                error: function (response) {
+                error: function () {
                     isValid = false;
                 }
             });
@@ -144,8 +144,8 @@ $(document).ready(function () {
 
             // Reenable search input field
             $("input.patientSearch").removeClass("loading")
-                                    .removeAttr("disabled")
-                                    .attr("placeholder", "Patient ID or Name");
+                .removeAttr("disabled")
+                .attr("placeholder", "Patient ID or Name");
 
         });
     }
@@ -200,7 +200,7 @@ var typeaheadFeature = {
                 if (substrRegex.test(str)) {
                     // the typeahead jQuery plugin expects suggestions to a
                     // JavaScript object, refer to typeahead docs for more info
-                    matches.push({ value: str });
+                    matches.push({value: str});
                 }
             });
 
@@ -208,17 +208,39 @@ var typeaheadFeature = {
         };
     },
     /**
-     * Sets a global variable for the typeahead data
+     * Sets a global variable for the typeahead data. Allows for later initalization via intializeTypeAhead() below.
+     * This is useful when you don't need to initalize an input box with typeahead until the user performs an action.
+     * This may cause problems in the future if data sets become too large for loading and intializeTypeAhead() is called
+     * before they load.
      *
      * @param post_URL url to retrieve the data from the server via json
      */
     setGlobalVariable: function (post_URL) {
 
-        return $.getJSON(post_URL, function (data) {
+        $.getJSON(post_URL, function (data) {
+
             typeaheadData = data
         });
     },
-    initalizeTypeAhead: function (element, name, hint, highlight) {
+    /**
+     * This combines setGlobalVariable and initalizeTypeAhead.
+     */
+    setGlobalVariableAndInitalize: function (post_URL, element, name, hint, highlight){
+        $.getJSON(post_URL, function (data) {
+
+            typeaheadData = data
+        }).done(function () {
+
+            typeaheadFeature.initalizeTypeAhead(element, name, hint, highlight);
+        });
+    },
+    /**
+     * Uses the global data object to create typeahead functionality on an element
+     */
+    initalizeTypeAhead: function (element, name, hint, highlight, customMatcher, customSelect) {
+        var matcher = customMatcher || typeaheadFeature.substringMatcher;
+        var select = customSelect || function() {};
+
         //the error happens in here when initating typeahead VVVVV
         //need to restructure the medicine JSON from the server to match
         //the json from diagnoses
@@ -228,8 +250,8 @@ var typeaheadFeature = {
             },
             {
                 name: name,
-                source: typeaheadFeature.substringMatcher(typeaheadData)
-            });
+                source: matcher(typeaheadData)
+            }).on('typeahead:selected', select);
 
     },
     destroyTypeAhead: function (elementSelector) {

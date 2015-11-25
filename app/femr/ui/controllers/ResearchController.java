@@ -34,7 +34,6 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.json.ResearchItemModel;
 import femr.ui.views.html.research.index;
-import femr.ui.views.html.research.generatedata;
 import femr.ui.models.research.FilterViewModel;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -43,13 +42,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * This is the controller for the research page, it is currently not supported.
- * Research was designed before combining of some tables in the database
- */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.RESEARCHER})
 public class ResearchController extends Controller {
@@ -63,8 +59,8 @@ public class ResearchController extends Controller {
     /**
      * Research Controller constructor that Injects the services indicated by the parameters
      *
-     * @param sessionService  {@link ISessionService}
-     * @param researchService {@link IResearchService}
+     * @param sessionService    {@link ISessionService}
+     * @param researchService   {@link IResearchService}
      * @param medicationService {@link IMedicationService}
      */
     @Inject
@@ -72,48 +68,6 @@ public class ResearchController extends Controller {
         this.researchService = researchService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
-    }
-
-
-    private ResearchGraphDataModel buildGraphModel(ResearchResultSetItem results){
-
-        ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
-
-        graphModel.setAverage(results.getAverage());
-        if( results.getDataRangeLow() > -1 * Float.MAX_VALUE ) {
-            graphModel.setRangeLow(results.getDataRangeLow());
-        }
-        else{
-            graphModel.setRangeLow(0.0f);
-        }
-        if(results.getDataRangeHigh() < Float.MAX_VALUE ){
-            graphModel.setRangeHigh(results.getDataRangeHigh());
-        }
-        else{
-            graphModel.setRangeHigh(0.0f);
-        }
-        graphModel.setTotal(results.getTotal());
-
-        graphModel.setUnitOfMeasurement(results.getUnitOfMeasurement());
-        graphModel.setxAxisTitle(WordUtils.capitalize(StringUtils.splitCamelCase(results.getDataType())));
-        graphModel.setyAxisTitle("Number of Patients");
-
-        graphModel.setPrimaryValuemap(results.getPrimaryValueMap());
-        graphModel.setSecondaryValuemap(results.getSecondaryValueMap());
-
-        // @TODO - This go in item mapper?
-        List<ResearchItemModel> graphData = new ArrayList<>();
-        for(ResearchResultItem item : results.getDataset() ) {
-
-            ResearchItemModel resultItem = new ResearchItemModel();
-            resultItem.setPrimaryName(item.getPrimaryName());
-            resultItem.setPrimaryValue(item.getPrimaryValue());
-            resultItem.setSecondaryData(item.getSecondaryData());
-            graphData.add(resultItem);
-        }
-        graphModel.setGraphData(graphData);
-
-        return graphModel;
     }
 
     public Result indexGet() {
@@ -131,20 +85,17 @@ public class ResearchController extends Controller {
         return ok(index.render(currentUserSession, filterViewModel));
     }
 
-    public Result generateData() {
-        FilterViewModel viewModel = FilterViewModelForm.bindFromRequest().get();
-        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-        return ok(generatedata.render(currentUserSession, viewModel));
-    }
-
-    public Result getGraphPost(){
+    /**
+     * Called when user clicks apply on the selected filters.
+     */
+    public Result indexPost() {
 
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
         ResearchFilterItem researchFilterItem = createResearchFilterItem(filterViewModel);
 
         ServiceResponse<ResearchResultSetItem> response = researchService.retrieveGraphData(researchFilterItem);
         ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
-        if( !response.hasErrors() ) {
+        if (!response.hasErrors()) {
 
             ResearchResultSetItem results = response.getResponseObject();
             graphModel = buildGraphModel(results);
@@ -155,17 +106,22 @@ public class ResearchController extends Controller {
         return ok(jsonString);
     }
 
-    public Result typeaheadJSONGet(){
+    /**
+     * Called when a user wants to export the data to a CSV file.
+     */
+    public Result exportPost() {
 
-        ServiceResponse<List<String>> medicationServiceResponse = medicationService.retrieveAllMedications();
-        if (medicationServiceResponse.hasErrors()) {
-            return ok("");
-        }
+        FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
 
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(medicationServiceResponse.getResponseObject());
+        ResearchFilterItem filterItem = createResearchFilterItem(filterViewModel);
 
-        return ok(jsonString);
+        ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
+        File csvFile = exportServiceResponse.getResponseObject();
+
+        response().setContentType("application/x-download");
+        response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
+
+        return ok(csvFile);
     }
 
     /**
@@ -207,4 +163,43 @@ public class ResearchController extends Controller {
         return filterItem;
     }
 
+    private ResearchGraphDataModel buildGraphModel(ResearchResultSetItem results) {
+
+        ResearchGraphDataModel graphModel = new ResearchGraphDataModel();
+
+        graphModel.setAverage(results.getAverage());
+        if (results.getDataRangeLow() > -1 * Float.MAX_VALUE) {
+            graphModel.setRangeLow(results.getDataRangeLow());
+        } else {
+            graphModel.setRangeLow(0.0f);
+        }
+        if (results.getDataRangeHigh() < Float.MAX_VALUE) {
+            graphModel.setRangeHigh(results.getDataRangeHigh());
+        } else {
+            graphModel.setRangeHigh(0.0f);
+        }
+        graphModel.setTotalPatients(results.getTotalPatients());
+        graphModel.setTotalEncounters(results.getTotalEncounters());
+
+        graphModel.setUnitOfMeasurement(results.getUnitOfMeasurement());
+        graphModel.setxAxisTitle(WordUtils.capitalize(StringUtils.splitCamelCase(results.getDataType())));
+        graphModel.setyAxisTitle("Number of Patients");
+
+        graphModel.setPrimaryValuemap(results.getPrimaryValueMap());
+        graphModel.setSecondaryValuemap(results.getSecondaryValueMap());
+
+        // @TODO - This go in item mapper?
+        List<ResearchItemModel> graphData = new ArrayList<>();
+        for (ResearchResultItem item : results.getDataset()) {
+
+            ResearchItemModel resultItem = new ResearchItemModel();
+            resultItem.setPrimaryName(item.getPrimaryName());
+            resultItem.setPrimaryValue(item.getPrimaryValue());
+            resultItem.setSecondaryData(item.getSecondaryData());
+            graphData.add(resultItem);
+        }
+        graphModel.setGraphData(graphData);
+
+        return graphModel;
+    }
 }

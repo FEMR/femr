@@ -1,0 +1,118 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.InventoryViewModelGet)
+
+@import femr.ui.controllers.admin.routes.InventoryController
+
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/inventory.css")">
+    }
+    @additionalScripts = {
+
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
+    }
+
+@admin("Inventory", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+    @helper.form(action = InventoryController.managePost()) {
+
+        <div class="newMedicationWrap">
+
+            <div class="row">
+                <div class="fieldMedication" >
+                    <label for="medicationName">Name</label>
+                    <input type="text" class="fInput" id="medicationName" name="medicationName"  placeholder="" />
+                </div>
+
+                <div class="fieldMedication">
+                    <label for="medicationForm">Form</label>
+                    <select name="medicationForm" class="fOption">
+                        @*<option value="" disabled selected>Form</option>*@
+                        @for(formIndex <- 1 to viewModel.getAvailableForms.size) {
+                            @defining(viewModel.getAvailableForms.get(formIndex - 1)) { form =>
+                                <option value="@form">@form</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="fieldMedication">
+                    <label for="medicationQuantity">Quantity</label>
+                    <input type="number" class="fInput text" name="medicationQuantity" placeholder="" />
+                </div>
+
+            </div>
+            <div class="row ingredients">
+                <div class="ingredientWrap">
+
+                    <div class="ingredientFields first">
+
+                        <div class="fieldMedication">
+                            <label for="medicationIngredient">Ingredient</label>
+                            <input type="text" name="medicationIngredient[]" class="fInput medicationIngredient" placeholder="" />
+                        </div>
+
+                        <div class="fieldMedication">
+                            <label for="medicationStrength">Strength</label>
+                            <input type="number" name="medicationStrength[]" class="fInput medicationsStrength" placeholder="" />
+                        </div>
+
+                        <div class="fieldMedication">
+                            <label for="medicationUnit">Unit</label>
+                            <select name="medicationUnit[]" class="fOption">
+                                @*<option value="" selected>Unit</option>*@
+                                @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
+                                    @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
+                                        <option value="@unit">@unit</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <a class="fButton removeIngredient">
+                            <span>-</span>
+                        </a>
+
+                    </div>
+
+                    <a class="fButton" id="addNewIngredient">
+                        <span>+</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <button class="fButton" id="submitMedicationButton">Submit</button>
+            </div>
+
+        </div>
+
+    }
+
+
+   <div id="currentMedication">
+        <h3>Current Medications:</h3>
+        <div id="currentMedicationsWrap">
+            <table id="inventoryTable">
+                <thead>
+                    <th>Medication</th>
+                    <th>Total Quantity</th>
+                    <th>Current Quantity</th>
+                    <th>Remove</th>
+                </thead>
+                <tbody>
+                @for(m <- 1 to viewModel.getMedications.size) {
+                    <tr>
+                        <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
+                        <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
+                        <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
+                        <td class="remove"></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+}

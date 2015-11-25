@@ -19,6 +19,7 @@
 package femr.data.models.core;
 
 import java.util.Date;
+import java.util.List;
 
 public interface IMissionTrip {
     int getId();
@@ -31,10 +32,6 @@ public interface IMissionTrip {
 
     void setMissionCity(IMissionCity missionCity);
 
-    boolean isCurrent();
-
-    void setCurrent(boolean isCurrent);
-
     Date getStartDate();
 
     void setStartDate(Date startDate);
@@ -42,4 +39,12 @@ public interface IMissionTrip {
     Date getEndDate();
 
     void setEndDate(Date endDate);
+
+    List<IUser> getUsers();
+
+    void setUsers(List<IUser> users);
+
+    void addUser(IUser user);
+
+    void removeUser(int userId);
 }

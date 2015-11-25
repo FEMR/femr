@@ -37,7 +37,7 @@ public class SessionsController extends Controller {
 
     public Result createPost() {
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
-        ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword());
+        ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
         if (response.hasErrors()) {
             return ok(create.render(createViewModelForm));

@@ -6,12 +6,12 @@
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.PharmaciesController
-@import femr.ui.controllers.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.SuperuserController
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
 <div class="navigationLogo">
     <a href="@HomeController.index()">
-        <img src="@routes.Assets.at("img/logo_color_wordless_sm.png")" />
+        <img src="@routes.Assets.versioned("img/logo_color_wordless_sm.png")" />
     </a>
 </div>
 

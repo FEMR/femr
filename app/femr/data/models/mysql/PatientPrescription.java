@@ -21,6 +21,7 @@ package femr.data.models.mysql;
 import femr.data.models.core.*;
 import org.joda.time.DateTime;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "patient_prescriptions")
@@ -44,15 +45,14 @@ public class PatientPrescription implements IPatientPrescription {
     private  int amount;
     @Column(name = "date_taken", nullable = false)
     private DateTime dateTaken;
-    //not sure if eBean can handle self referencing fields (some ORMs freak out with infinite loops)
-    @Column(name = "replacement_id", nullable = true)
-    private Integer replacementId;
     @Column(name = "special_instructions", nullable = true)
     private String specialInstructions;
     @Column(name = "isCounseled", nullable = false)
     private boolean isCounseled;
-    @Column(name = "isDispensed", nullable = false)
-    private boolean isDispensed;
+    @Column(name = "date_dispensed")
+    private DateTime dateDispensed;
+    @OneToMany(mappedBy = "originalPrescription", fetch = FetchType.LAZY)
+    private List<PatientPrescriptionReplacement> patientPrescriptionReplacements;
 
     @Override
     public int getId() {
@@ -110,16 +110,6 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public Integer getReplacementId() {
-        return replacementId;
-    }
-
-    @Override
-    public void setReplacementId(Integer replacementId) {
-        this.replacementId = replacementId;
-    }
-
-    @Override
     public DateTime getDateTaken() {
         return dateTaken;
     }
@@ -150,12 +140,22 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public boolean isDispensed() {
-        return isDispensed;
+    public List<PatientPrescriptionReplacement> getPatientPrescriptionReplacements() {
+        return patientPrescriptionReplacements;
     }
 
     @Override
-    public void setDispensed(boolean isDispensed) {
-        this.isDispensed = isDispensed;
+    public void setPatientPrescriptionReplacements(List<PatientPrescriptionReplacement> patientPrescriptionReplacements) {
+        this.patientPrescriptionReplacements = patientPrescriptionReplacements;
+    }
+
+    @Override
+    public DateTime getDateDispensed() {
+        return dateDispensed;
+    }
+
+    @Override
+    public void setDateDispensed(DateTime dateDispensed) {
+        this.dateDispensed = dateDispensed;
     }
 }

@@ -28,10 +28,11 @@ public interface ISessionService {
      *
      * @param email    the username of the user (doesn't necessarily have to be email), not null
      * @param password a valid password for the user, not null
+     * @param ipAddress IP address of the device attempting to login
      * @return a service response that contains a CurrentUser representing the sessions's current user
      * and/or errors if they exist.
      */
-    ServiceResponse<CurrentUser> createSession(String email, String password);
+    ServiceResponse<CurrentUser> createSession(String email, String password, String ipAddress);
 
     /**
      * Gets the user that is currently logged in.

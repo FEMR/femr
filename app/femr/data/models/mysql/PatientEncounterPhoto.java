@@ -28,7 +28,7 @@ public class PatientEncounterPhoto implements IPatientEncounterPhoto {
     @Id
     @Column(name = "photo_id", nullable = false)
     private int _photoId;
-    @Id
+
     @Column(name = "patient_encounter_id", nullable = false)
     private int _patientEncounterId;
 

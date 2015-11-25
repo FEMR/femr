@@ -21,10 +21,8 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
-import femr.ui.models.research.FilterViewModel;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +55,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MedicationItem createMedicationItem(IMedication medication) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal) {
 
         if (medication == null) {
 
@@ -68,8 +66,8 @@ public class ItemModelMapper implements IItemModelMapper {
 
         medicationItem.setId(medication.getId());
         medicationItem.setName(medication.getName());
-        medicationItem.setQuantity_current(medication.getQuantity_current());
-        medicationItem.setQuantity_total(medication.getQuantity_total());
+        medicationItem.setQuantity_current(quantityCurrent);
+        medicationItem.setQuantity_total(quantityTotal);
         if (medication.getMedicationForm() != null) {
             medicationItem.setForm(medication.getMedicationForm().getName());
         }
@@ -93,7 +91,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MissionItem createMissionItem(IMissionTeam missionTeam) {
+    public MissionItem createMissionItem(IMissionTeam missionTeam, List<MissionTripItem> missionTripItems) {
 
         if (missionTeam == null) {
 
@@ -105,20 +103,32 @@ public class ItemModelMapper implements IItemModelMapper {
         missionItem.setTeamName(missionTeam.getName());
         missionItem.setTeamLocation(missionTeam.getLocation());
         missionItem.setTeamDescription(missionTeam.getDescription());
-
-        for (IMissionTrip mt : missionTeam.getMissionTrips()) {
-
-            missionItem.addMissionTrip(mt.getId(),
-                    mt.getMissionCity().getName(),
-                    mt.getMissionCity().getMissionCountry().getName(),
-                    mt.getStartDate(),
-                    dateUtils.getFriendlyDate(mt.getStartDate()),
-                    mt.getEndDate(),
-                    dateUtils.getFriendlyDate(mt.getEndDate()),
-                    mt.isCurrent());
-        }
+        missionItem.setMissionTrips(missionTripItems);
 
         return missionItem;
+    }
+
+    @Override
+    public MissionTripItem createMissionTripItem(IMissionTrip missionTrip){
+
+        if (missionTrip == null){
+
+            return null;
+        }
+
+        MissionTripItem missionTripItem = new MissionTripItem();
+        missionTripItem.setId(missionTrip.getId());
+        if (missionTrip.getMissionCity() != null)
+            missionTripItem.setTripCity(missionTrip.getMissionCity().getName());
+        if (missionTrip.getMissionCity() != null)
+            missionTripItem.setTripCountry(missionTrip.getMissionCity().getMissionCountry().getName());
+        missionTripItem.setTripStartDate(missionTrip.getStartDate());
+        missionTripItem.setFriendlyTripStartDate(dateUtils.getFriendlyDate(missionTrip.getStartDate()));
+        missionTripItem.setTripEndDate(missionTrip.getEndDate());
+        missionTripItem.setFriendlyTripEndDate(dateUtils.getFriendlyDate(missionTrip.getEndDate()));
+        missionTripItem.setTeamName(missionTrip.getMissionTeam().getName());
+
+        return missionTripItem;
     }
 
     /**
@@ -209,7 +219,6 @@ public class ItemModelMapper implements IItemModelMapper {
         }
         patientEncounterItem.setId(patientEncounter.getId());
         patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
-        patientEncounterItem.setWeeksPregnant(patientEncounter.getWeeksPregnant());
         patientEncounterItem.setTriageDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfTriageVisit()));
         if (patientEncounter.getDateOfMedicalVisit() != null)
             patientEncounterItem.setMedicalDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfMedicalVisit()));
@@ -250,7 +259,8 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName) {
+    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -268,6 +278,28 @@ public class ItemModelMapper implements IItemModelMapper {
         if (StringUtils.isNotNullOrWhiteSpace(lastName))
             prescriptionItem.setPrescriberLastName(lastName);
 
+        if (medicationAdministration != null) {
+            prescriptionItem.setAdministrationId(medicationAdministration.getId());
+            prescriptionItem.setAdministrationName(medicationAdministration.getName());
+            prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
+        }
+        if (amount != null)
+            prescriptionItem.setAmount(amount);
+
+        if (medication != null) {
+            MedicationItem medicationItem = createMedicationItem(medication, null, null);
+            prescriptionItem.setMedicationID(medicationItem.getId());
+
+            if (medicationItem.getForm() != null)
+                prescriptionItem.setMedicationForm(medicationItem.getForm());
+
+            prescriptionItem.setMedicationRemaining(medicationItem.getQuantity_current());
+
+
+
+            if (medicationItem.getActiveIngredients() != null)
+                prescriptionItem.setMedicationActiveDrugs(medicationItem.getActiveIngredients());
+        }
         return prescriptionItem;
     }
 
@@ -499,5 +531,22 @@ public class ItemModelMapper implements IItemModelMapper {
             vitalItem.setValue(value);
 
         return vitalItem;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+
+        if (medicationAdministration == null)
+            return null;
+
+        MedicationAdministrationItem medicationAdministrationItem = new MedicationAdministrationItem(
+                medicationAdministration.getId(),
+                medicationAdministration.getName(),
+                medicationAdministration.getDailyModifier()
+        );
+
+        return medicationAdministrationItem;
     }
 }

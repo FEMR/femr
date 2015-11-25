@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -35,6 +36,7 @@ import femr.data.models.mysql.*;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchService implements ISearchService {
 
@@ -44,6 +46,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
@@ -53,6 +56,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
+                         IMissionTripService missionTripService,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
@@ -61,6 +65,7 @@ public class SearchService implements ISearchService {
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
+        this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
     }
 
@@ -91,6 +96,7 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, recentEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, recentEncounter.getId());
 
             String pathToPhoto = null;
             Integer photoId = null;
@@ -107,7 +113,7 @@ public class SearchService implements ISearchService {
                     savedPatient.getUserId(),
                     savedPatient.getAge(),
                     savedPatient.getSex(),
-                    recentEncounter.getWeeksPregnant(),
+                    weeksPregnant,
                     patientHeightFeet,
                     patientHeightInches,
                     patientWeight,
@@ -153,6 +159,7 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, patientEncounter.getId());
 
             String pathToPhoto = null;
             Integer photoId = null;
@@ -169,7 +176,7 @@ public class SearchService implements ISearchService {
                     patient.getUserId(),
                     patient.getAge(),
                     patient.getSex(),
-                    patientEncounter.getWeeksPregnant(),
+                    weeksPregnant,
                     patientHeightFeet,
                     patientHeightInches,
                     patientWeight,
@@ -278,24 +285,24 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .where()
-                .eq("encounter_id", encounterId)
-                .eq("replacement_id", null);
+                .eq("encounter_id", encounterId);
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-            List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+            List<PrescriptionItem> prescriptionItems = patientPrescriptions
+                    .stream()
+                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                        pp.getId(),
+                        pp.getMedication().getName(),
+                        null,
+                        pp.getPhysician().getFirstName(),
+                        pp.getPhysician().getLastName(),
+                        pp.getMedicationAdministration(),
+                        pp.getAmount(),
+                        pp.getMedication()
 
-            for (IPatientPrescription pp : patientPrescriptions) {
-
-                prescriptionItems.add(
-                        itemModelMapper.createPrescriptionItem(
-                                pp.getId(),
-                                pp.getMedication().getName(),
-                                pp.getReplacementId(),
-                                pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName()
-                        )
-                );
-            }
+                    ))
+                    .collect(Collectors.toList());
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
@@ -315,24 +322,22 @@ public class SearchService implements ISearchService {
                 .fetch("patientEncounter")
                 .where()
                 .eq("encounter_id", encounterId)
-                .ne("user_id_pharmacy", null)
-                .eq("replacement_id", null);
+                .ne("user_id_pharmacy", null);
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-            List<PrescriptionItem> prescriptionItems = new ArrayList<>();
-
-            for (IPatientPrescription pp : patientPrescriptions) {
-
-                prescriptionItems.add(
-                        itemModelMapper.createPrescriptionItem(
-                                pp.getId(),
-                                pp.getMedication().getName(),
-                                pp.getReplacementId(),
-                                pp.getPhysician().getFirstName(),
-                                pp.getPhysician().getLastName()
-                        )
-                );
-            }
+            List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
+                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getMedication().getName(),
+                            null,
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication()
+                    ))
+                    .collect(Collectors.toList());
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
@@ -514,10 +519,7 @@ public class SearchService implements ISearchService {
                     .eq("name", "Country Filter");
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
-            ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
-                    .where()
-                    .eq("isCurrent", true);
-            IMissionTrip missionTrip = missionTripExpressionList.findUnique();
+            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
 
             List<? extends IPatient> allPatients;
 

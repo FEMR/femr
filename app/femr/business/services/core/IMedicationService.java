@@ -18,53 +18,88 @@
 */
 package femr.business.services.core;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MedicationAdministrationItem;
+import femr.common.models.MedicationItem;
 import femr.common.models.PrescriptionItem;
 
 import java.util.List;
+import java.util.Map;
 
+/**
+ * Medication service is responsible for anything related to both medications and prescriptions.
+ * It is not responsible for anything to do with the quantities being stored or dispensed (this is the role
+ * of the Inventory service).
+ */
 public interface IMedicationService {
 
     /**
-     * Create a new prescription that replaces an old one.
+     * Creates a new prescription. It is assumed the prescription is not yet dispensed.
      *
-     * @param prescriptionItem new prescription to replace the old one, not null TODO: separate into parameters
-     * @param oldScriptId      id of the old prescription that is being replaced
-     * @return a service response that contains a PrescriptionItem that was created
-     * and/or errors if they exist.
+     * @param medicationId id of the medication. If the medication is not in the concept dictionary, then it should be added prior to calling this. not null.
+     * @param administrationId how the medication is administered (BID, etc), may be null.
+     * @param encounterId id of the patient encounter, not null.
+     * @param userId id of the user dispensing the medication, not null.
+     * @param amount how much of the medication is dispensed, not null.
+     * @param specialInstructions any special instructions for the prescription, may be null.
+     * @return a PrescriptionItem representing the prescription that was just created and/or errors if they exist.
      */
-    ServiceResponse<PrescriptionItem> createAndReplacePrescription(PrescriptionItem prescriptionItem, int oldScriptId, int userId, boolean isCounseled);
+    ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
 
     /**
-     * Creates multiple new prescriptions.
+     * Replace an existing prescription with an existing prescription.
      *
-     * @param prescriptionNames names of the prescriptions, not null, greater than 0
-     * @param userId            id of the user creating the prescriptions, not null
-     * @param encounterId       id of the encounter, not null
-     * @param isDispensed       true if the prescription was dispensed, not null
-     * @param isCounseled       true if the patient was counseled about the prescription, not null
-     * @return a service response that contains a list of updated PrescriptionItems that were created
-     * and/or errors if they exist.
+     * @param prescriptionPairs A mapping of prescriptions to replace in the form <newPrescription, oldPrescription> neither of which are null.
+     * @return a PrescriptionItem representing the new prescription and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> createPatientPrescriptions(List<String> prescriptionNames, int userId, int encounterId, boolean isDispensed, boolean isCounseled);
+    ServiceResponse<List<PrescriptionItem>> replacePrescriptions(Map<Integer, Integer> prescriptionPairs);
 
     /**
-     * Flags a prescription to say that it was filled.
+     * Dispense an existing prescription. This will not update the inventory.
      *
-     * @param prescriptionIds a list of prescription ids to identify as filled
-     * @return a service response that contains a list of updated PrescriptionItems that were filled
-     * and/or errors if they exist.
+     * @param prescriptionsToDispense A mapping of prescriptions to dispense in the form <prescriptionId, isCounseled> neither of which are null.
+     * @return a PrescriptionItem representing the dispensed prescription and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsFilled(List<Integer> prescriptionIds);
+    ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
-     * Flags a prescription to say that the patient was counseled before dispensing it.
+     * Adds a new medication to the system. Does NOT update inventory quantities.
      *
-     * @param prescriptionIds a list of prescription ids to identify as counseled
-     * @return a service response that contains a list of updated PrescriptionItems that were flagged
+     * @param name name of the medication, not null
+     * @param form form of the medication (e.g. caps/capsules), may be null
+     * @param activeIngredients active ingredients in the medication, may be null
+     * @return a service response that contains a MedicationItem representing the medication that was just created
      * and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> flagPrescriptionsAsCounseled(List<Integer> prescriptionIds);
+    ServiceResponse<MedicationItem> createMedication(String name, String form, List<MedicationItem.ActiveIngredient> activeIngredients);
+
+    /**
+     * Deletes/marks deleted a medication by it's ID
+     *
+     * @param medicationID The ID of the medication
+     * @return
+     */
+    ServiceResponse<MedicationItem> deleteMedication(int medicationID);
 
     /**
      * Retrieves a list of all medications in the system, excluding duplicates.
@@ -73,4 +108,44 @@ public interface IMedicationService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> retrieveAllMedications();
+
+    /**
+     * Retrieve a list of all available Administrations for medication
+     *
+     * @return a service response that contains a list of available Administrations that are available
+     * and/or errors if they exist
+     */
+    ServiceResponse<List<MedicationAdministrationItem>> retrieveAvailableMedicationAdministrations();
+
+    /**
+     * Retrieve a list of all available forms of medication
+     *
+     * @return a service response that contains a list of strings that are the available forms
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<String>> retrieveAvailableMedicationForms();
+
+    /**
+     * Retrieve a list of all available units for measuring.
+     *
+     * @return a service response that contains a list of strings that are the available units
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<String>> retrieveAvailableMedicationUnits();
+
+    /**
+     * Retrieves a list of all medications in the system, including duplicates.
+     *
+     * @return a service response that contains a list of MedicationItems
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory();
+
+    /**
+     * Retrieves a ObjectNode of all medications in the system
+     *
+     * @return a service response that contains a list of ObjectNode's
+     * and/or errors if they exist
+     */
+    ServiceResponse<ObjectNode> retrieveAllMedicationsWithID();
 }

@@ -50,13 +50,25 @@ public class QueryProvider {
         return Ebean.find(MedicationForm.class);
     }
 
-    public static Query<MissionTrip> getMissionTripQuery() { return Ebean.find(MissionTrip.class);}
+    public static Query<MedicationInventory> getMedicationInventoryQuery() {
+        return Ebean.find(MedicationInventory.class);
+    }
 
-    public static Query<MissionCity> getMissionCityQuery() { return Ebean.find(MissionCity.class);}
+    public static Query<MissionTrip> getMissionTripQuery() {
+        return Ebean.find(MissionTrip.class);
+    }
 
-    public static Query<MissionCountry> getMissionCountryQuery() { return Ebean.find(MissionCountry.class);}
+    public static Query<MissionCity> getMissionCityQuery() {
+        return Ebean.find(MissionCity.class);
+    }
 
-    public static Query<MissionTeam> getMissionTeamQuery() { return Ebean.find(MissionTeam.class);}
+    public static Query<MissionCountry> getMissionCountryQuery() {
+        return Ebean.find(MissionCountry.class);
+    }
+
+    public static Query<MissionTeam> getMissionTeamQuery() {
+        return Ebean.find(MissionTeam.class);
+    }
 
     public static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
@@ -84,6 +96,10 @@ public class QueryProvider {
 
     public static Query<PatientPrescription> getPatientPrescriptionQuery() {
         return Ebean.find(PatientPrescription.class);
+    }
+
+    public static Query<PatientPrescriptionReplacementReason> getPatientPrescriptionReasonQuery(){
+        return Ebean.find(PatientPrescriptionReplacementReason.class);
     }
 
     public static Query<Photo> getPhotoQuery() {
@@ -127,6 +143,7 @@ public class QueryProvider {
     public static Query<ResearchEncounter> getResearchEncounterQuery() {
         return Ebean.find(ResearchEncounter.class);
     }
+
     public static Query<ResearchEncounterVital> getResearchEncounterVitalQuery() {
         return Ebean.find(ResearchEncounterVital.class);
     }

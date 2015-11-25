@@ -20,7 +20,6 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-
 import java.util.List;
 
 public interface ISearchService {

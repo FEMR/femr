@@ -20,8 +20,6 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.DataModelMapper;
-import femr.data.IDataModelMapper;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -36,11 +34,13 @@ public class DataLayerModule extends AbstractModule {
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
         bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
+        bind(ILoginAttempt.class).toProvider(LoginAttemptProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
         bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
         bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
         bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
+        bind(IMedicationInventory.class).toProvider(MedicationInventoryProvider.class);
         bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
         bind(IMissionCity.class).toProvider(MissionCityProvider.class);
         bind(IMissionCountry.class).toProvider(MissionCountryProvider.class);
@@ -53,6 +53,8 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientEncounterTabField.class).toProvider(PatientEncounterTabFieldProvider.class);
         bind(IPatientEncounterVital.class).toProvider(PatientEncounterVitalProvider.class);
         bind(IPatientPrescription.class).toProvider(PatientPrescriptionProvider.class);
+        bind(IPatientPrescriptionReplacement.class).toProvider(PatientPrescriptionReplacementProvider.class);
+        bind(IPatientPrescriptionReplacementReason.class).toProvider(PatientPrescriptionReplacementReasonProvider.class);
         bind(IPhoto.class).toProvider(PhotoProvider.class);
         bind(IRole.class).toProvider(RoleProvider.class);
         bind(ISystemSetting.class).toProvider(SystemSettingProvider.class);
@@ -69,11 +71,13 @@ public class DataLayerModule extends AbstractModule {
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
+        bind(new TypeLiteral<IRepository<ILoginAttempt>>() {}).to(new TypeLiteral<Repository<ILoginAttempt>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});
         bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<Repository<IMedicationAdministration>>() {});
         bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationInventory>>() {}).to(new TypeLiteral<Repository<IMedicationInventory>>() {});
         bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<Repository<IMedicationMeasurementUnit>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
@@ -86,6 +90,8 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});
         bind(new TypeLiteral<IRepository<IPatientEncounterVital>>() {}).to(new TypeLiteral<Repository<IPatientEncounterVital>>() {});
         bind(new TypeLiteral<IRepository<IPatientPrescription>>() {}).to(new TypeLiteral<Repository<IPatientPrescription>>() {});
+        bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacement>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacement>>() {});
+        bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacementReason>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacementReason>>() {});
         bind(new TypeLiteral<IRepository<IPhoto>>() {}).to(new TypeLiteral<Repository<IPhoto>>() {});
         bind(new TypeLiteral<IRepository<IRole>>() {}).to(new TypeLiteral<Repository<IRole>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});

@@ -9,10 +9,10 @@
     }
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/admin/users.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/users.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/admin/users.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/admin/users.js")"></script>
     }
     @additionalMessages = {
     @for(message <- messages) {

@@ -3,7 +3,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SessionsController
     @styles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/login.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")">
     }
 @main("Login", styles = styles) {
 
@@ -13,7 +13,7 @@
             <input type="text" name="email" placeholder="Email" />
             <input type="password" name="password" placeholder="Password" />
             <input type="submit" value="Log in" />
-            <img src="@routes.Assets.at("img/logo_color_sm.png")" />
+            <img src="@routes.Assets.versioned("img/logo_color_sm.png")" />
         </div>
     }
 }

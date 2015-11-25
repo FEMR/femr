@@ -28,7 +28,8 @@ public class ResearchGraphDataModel {
     private float median;
     private float rangeLow;
     private float rangeHigh;
-    private float total;
+    private float totalPatients;
+    private float totalEncounters;
     private List<ResearchItemModel> graphData;
     private String xAxisTitle;
     private String yAxisTitle;
@@ -68,12 +69,20 @@ public class ResearchGraphDataModel {
         this.rangeHigh = rangeHigh;
     }
 
-    public float getTotal() {
-        return total;
+    public float getTotalEncounters() {
+        return totalEncounters;
     }
 
-    public void setTotal(float total) {
-        this.total = total;
+    public void setTotalEncounters(float totalEncounters) {
+        this.totalEncounters = totalEncounters;
+    }
+
+    public float getTotalPatients() {
+        return totalPatients;
+    }
+
+    public void setTotalPatients(float total) {
+        this.totalPatients = total;
     }
 
     public String getxAxisTitle() {

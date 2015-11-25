@@ -1,123 +1,169 @@
-#addMed {
-    margin-bottom: 20px;
+
+.newMedicationWrap{
+
+    overflow: hidden;
+    padding: 10px;
+    background-color: #fafafa;
+    border: 1px solid #cfcfcf;
+}
+
+.newMedicationWrap .row{
+
+    margin: 0 0 15px;
+}
+
+.newMedicationWrap .fieldMedication{
+
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.newMedicationWrap .fieldMedication #medicationName{
+
+    width: 370px;
+}
+
+.newMedicationWrap .fieldMedication .medicationIngredient{
+
+    width: 300px;
+}
+
+.newMedicationWrap .fieldMedication:last-child{
+
+    margin-right: 0;
+}
+
+.newMedicationWrap .fieldMedication .fInput,
+.newMedicationWrap .fieldMedication .fOption{
+
+    clear: both;
+    display: block;
+}
+
+.newMedicationWrap .fieldMedication .fOption{
+
+    width: auto;
+}
+
+.newMedicationWrap .ingredients{
+
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cfcfcf;
+}
+
+.newMedicationWrap .ingredientWrap{
+
+    padding-left: 70px;
+    padding-right: 50px;
+    clear: both;
+    position: relative;
+    display: inline-block;
+}
+
+.newMedicationWrap .ingredientWrap .ingredientFields{
+
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.newMedicationWrap .ingredientWrap .ingredientFields:first-child .removeIngredient{
+
+    border-color: #cccccc;
+    color: #cccccc;
+}
+
+.newMedicationWrap #addNewIngredient{
+
+    display: block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: absolute;
+    bottom: 11px;
+    right: 5px;
+}
+
+.newMedicationWrap #addNewIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap .removeIngredient{
+
+    display: inline-block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: relative;
+}
+
+.newMedicationWrap .removeIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap #submitMedicationButton{
+
+    float: right;
 }
 
 #inventoryTable{
-    width: 100%;
-    border: 1px solid black;
-    table-layout: auto;
+
 }
-#inventoryTable th,td{
+
+#inventoryTable th{
+
+    background-color: #2f2f2f;
+    color: #ffffff;
+    padding: 5px;
     text-align: center;
 }
 
+#inventoryTable td{
 
-#submitMedicationButton{
-    width: 20%;
-    float: right;
-    margin-top: 10px;
-}
-
-#newMedicationWrap{
-    padding: 12px 12px 2px 12px;
-    overflow: hidden;
-    margin: 0 auto;
-    width: 100%;
-}
-#primaryMedicationRow{
-    overflow: hidden;
-}
-#quantityFormName_Wrap, #strengthUnitIngredient_Wrap{
-    width: 46%;
-    overflow: hidden;
-    float: left;
-}
-#addIngredientPlusSignWrap{
-    float: left;
-    width: 8%;
-    margin-top: 16px;
-}
-.newIngredientRow{
-
-    width: 100%;
-    overflow: hidden;
-}
-.newIngredientRow div{
-    float: right !important;
-}
-.newIngredientWrap{
-    width: 46%;
-}
-.newIngredientWrap select{
-    margin-top: 0 !important;
-}
-.newInvisiblePlusSignWrap{
-    width: 8%;
-    float: right;
-    overflow: hidden;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    padding: 5px 10px;
 }
 
+#inventoryTable td.name{
 
-.fieldMedication{
-    padding: 2px;
-
-}
-.fieldMedication input{
-    width: 100% !important;
-}
-
-
-
-#quantityFieldMedication{
-    width: 25%;
-    float: left;
-}
-#formFieldMedication{
-    width: 25%;
-    float: left;
-}
-#formFieldMedication select, .unitFieldMedication select{
-    width: 100%;
-    margin-top: 5px;
-}
-#nameFieldMedication{
     width: 50%;
-    float: left;
 }
 
-.strengthFieldMedication{
-    width: 27%;
-    float: left;
-}
-.unitFieldMedication{
-    width: 23%;
-    float: left;
-}
-.ingredientFieldMedication{
-    width: 50%;
-    float: left;
-}
+@media only screen  and (max-width : 1200px) {
 
-#invisibleShit{
-    width: 4%;
-    float: right;
-    overflow: hidden;
+    .newMedicationWrap .ingredientWrap {
+
+        padding-left: 40px;
+    }
+
+    .newMedicationWrap .fieldMedication .medicationIngredient {
+
+        width: 240px;
+    }
 
 }
-#addIngredientPlusSignWrap span{
-    padding: 0 10px 0 10px;
-    font-size: 36px;
-    margin: 0 auto;
-}
-#addIngredientPlusSignWrap span:hover{
-    cursor: default;
-}
 
+@media only screen  and (max-width : 740px) {
 
-#formFieldMedication{
-    float: left;
-}
+    .newMedicationWrap .fieldMedication #medicationName {
 
-.remove span:hover{
-    cursor: pointer;
+        width: 260px;
+    }
+
+    .newMedicationWrap .ingredientWrap {
+        padding-left: 10px;
+    }
+
+    .fInput{
+
+        width: 130px;
+    }
+
+    .newMedicationWrap .ingredientWrap {
+
+        min-width: 590px;
+    }
 }

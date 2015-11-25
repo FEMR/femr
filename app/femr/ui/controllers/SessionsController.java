@@ -88,16 +88,17 @@ public class SessionsController extends Controller {
         ArrayList<String> messages = new ArrayList<>();
         if (StringUtils.isNullOrWhiteSpace(viewModel.getNewPassword()))
             messages.add("password is a required field");
-        else if(viewModel.getNewPassword().length() < 6)         //AJ Saclayan Password Constraints
-            messages.add("password is less than 6 characters");
-        else {
+        else
+        {
+            if(viewModel.getNewPassword().length() < 6)        //AJ Saclayan Password Constraints
+                messages.add("password is less than 6 characters");
             if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
-                messages.add("password must have an uppercase");
+                    messages.add("password must have an uppercase");
             if (!hasNumber.matcher(viewModel.getNewPassword()).find())
-                messages.add("password must have a number");
+                    messages.add("password must have a number");
+            if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
+                messages.add("passwords do not match");
         }
-        if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
-            messages.add("passwords do not match");
 
         if(!messages.isEmpty())
             return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages));

@@ -71,4 +71,5 @@ public interface IUser {
     List<IMissionTrip> getMissionTrips();
 
     void setMissionTrips(List<IMissionTrip> missionTrips);
+
 }

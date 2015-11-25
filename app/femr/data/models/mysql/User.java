@@ -55,6 +55,9 @@ public class User implements IUser {
     private Boolean passwordReset;
     @Column(name = "notes")
     private String notes;
+    //AJ Saclayan Password Constraints
+    @Column(name = "PasswordCreatedDate", nullable = false)
+    private DateTime PasswordCreatedDate;
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)
     @JoinTable(
             name = "mission_trip_users",
@@ -176,5 +179,15 @@ public class User implements IUser {
     @Override
     public void setMissionTrips(List<IMissionTrip> missionTrips) {
         this.missionTrips = missionTrips;
+    }
+
+    @Override
+    public DateTime getPasswordCreatedDate(){
+        return PasswordCreatedDate;
+    }
+
+    @Override
+    public void setPasswordCreatedDate(DateTime date){
+        this.PasswordCreatedDate = date;
     }
 }

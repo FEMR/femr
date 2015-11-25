@@ -32,10 +32,6 @@ public interface IPatientEncounter {
 
     void setChiefComplaints(List<IChiefComplaint> chiefComplaints);
 
-    Integer getWeeksPregnant();
-
-    void setWeeksPregnant(Integer weeksPregnant);
-
     DateTime getDateOfTriageVisit();
 
     void setDateOfTriageVisit(DateTime dateOfVisit);

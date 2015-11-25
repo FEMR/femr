@@ -248,11 +248,11 @@ public class ResearchService implements IResearchService {
         exportitem.setGender(gender);
 
         // Pregnancy Status
-        Integer wksPregnant = encounter.getWeeksPregnant();
+        Integer wksPregnant = getWeeksPregnant(encounter);
         exportitem.setWeeksPregnant(wksPregnant);
 
         // Week Pregnant
-        if( wksPregnant != null && wksPregnant > 0 ){
+        if( wksPregnant > 0 ){
             exportitem.setIsPregnant(true);
         }
         else{
@@ -893,11 +893,9 @@ public class ResearchService implements IResearchService {
                         resultSet.setSecondaryValueMap(secondaryResultMap);
                     }
 
-                    Integer wksPregnant = encounter.getWeeksPregnant();
-                    if (wksPregnant == null) wksPregnant = 0;
-
+                    Integer weeksPregnant = getWeeksPregnant( encounter );
                     String pregnancyStatus = "0.0";
-                    if (wksPregnant > 0) {
+                    if( weeksPregnant >  0 ){
                         pregnancyStatus = "1.0";
                     }
 
@@ -915,7 +913,8 @@ public class ResearchService implements IResearchService {
                     // Add patient to secondary running total
                     // key will exist after initialization above
                     Float secTotal = secondaryData.get(pregnancyStatus);
-                    secondaryData.put(pregnancyStatus, secTotal + 1.0f);
+
+                    secondaryData.put( pregnancyStatus, secTotal + 1.0f);
 
                     resultItem.setSecondaryData(secondaryData);
                 }
@@ -1099,8 +1098,7 @@ public class ResearchService implements IResearchService {
                         resultSet.setSecondaryValueMap(secondaryResultMap);
                     }
 
-                    Integer wksPregnant = encounter.getWeeksPregnant();
-                    if (wksPregnant == null) wksPregnant = 0;
+                    Integer wksPregnant = getWeeksPregnant( encounter );
 
                     String pregnancyStatus = "0.0";
                     if (wksPregnant > 0) {
@@ -1271,8 +1269,7 @@ public class ResearchService implements IResearchService {
                         resultSet.setSecondaryValueMap(secondaryResultMap);
                     }
 
-                    Integer wksPregnant = encounter.getWeeksPregnant();
-                    if (wksPregnant == null) wksPregnant = 0;
+                    Integer wksPregnant = getWeeksPregnant( encounter );
 
                     String pregnancyStatus = "0.0";
                     if (wksPregnant > 0) {
@@ -1361,8 +1358,7 @@ public class ResearchService implements IResearchService {
                 resultMap.put(1.0f, "Yes");
                 resultSet.setPrimaryValueMap(resultMap);
 
-                Integer wksPregnant = encounter.getWeeksPregnant();
-                if (wksPregnant == null) wksPregnant = 0;
+                Integer wksPregnant = getWeeksPregnant( encounter );
                 float pregnancyStatus = 0.0f;
                 if (wksPregnant > 0.0f) {
                     pregnancyStatus = 1.0f;
@@ -1388,10 +1384,10 @@ public class ResearchService implements IResearchService {
             }
             else if( filters.getPrimaryDataset().equals("pregnancyTime")){
 
-                Integer wksPregnant = encounter.getWeeksPregnant();
+                Integer wksPregnant = getWeeksPregnant( encounter );
 
                 // only count patients who are actually pregnant
-                if (wksPregnant == null || wksPregnant == 0 ) continue;
+                if( wksPregnant == 0 ) continue;
 
                 //if( wksPregnant < filters.getFilterRangeStart() || wksPregnant > filters.getFilterRangeEnd() ) continue;
 
@@ -1522,4 +1518,19 @@ public class ResearchService implements IResearchService {
 
     }
 
+
+    private Integer getWeeksPregnant( IResearchEncounter encounter ){
+
+        ExpressionList<Vital> wkPregnantQuery = QueryProvider.getVitalQuery().where().eq("name", "weeksPregnant");
+        IVital vital = vitalRepository.findOne(wkPregnantQuery);
+
+        ResearchEncounterVital wksPregnantVital = encounter.getEncounterVitals().get(vital.getId());
+
+        if ( wksPregnantVital != null && wksPregnantVital.getVitalValue() > 0) {
+            return Math.round(wksPregnantVital.getVitalValue() );
+        }
+        else{
+            return 0;
+        }
+    }
 }

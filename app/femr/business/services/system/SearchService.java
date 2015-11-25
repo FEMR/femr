@@ -96,6 +96,7 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, recentEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, recentEncounter.getId());
 
             String pathToPhoto = null;
             Integer photoId = null;
@@ -112,7 +113,7 @@ public class SearchService implements ISearchService {
                     savedPatient.getUserId(),
                     savedPatient.getAge(),
                     savedPatient.getSex(),
-                    recentEncounter.getWeeksPregnant(),
+                    weeksPregnant,
                     patientHeightFeet,
                     patientHeightInches,
                     patientWeight,
@@ -158,6 +159,7 @@ public class SearchService implements ISearchService {
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, patientEncounter.getId());
 
             String pathToPhoto = null;
             Integer photoId = null;
@@ -174,7 +176,7 @@ public class SearchService implements ISearchService {
                     patient.getUserId(),
                     patient.getAge(),
                     patient.getSex(),
-                    patientEncounter.getWeeksPregnant(),
+                    weeksPregnant,
                     patientHeightFeet,
                     patientHeightInches,
                     patientWeight,

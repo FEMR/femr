@@ -45,6 +45,21 @@ public class QueryHelper {
         return weight;
     }
 
+    public static Integer findWeeksPregnant(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
+        Integer weeks_pregnant = null;
+        Query<PatientEncounterVital> query2 = QueryProvider.getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", "weeksPregnant")
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query2);
+        if (patientEncounterVitals.size() > 0) {
+            weeks_pregnant = Math.round(patientEncounterVitals.get(0).getVitalValue());
+        }
+        return weeks_pregnant;
+    }
+
     public static Integer findPatientHeightFeet(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
         Integer heightFeet = null;
         Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()

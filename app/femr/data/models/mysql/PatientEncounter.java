@@ -41,8 +41,7 @@ public class PatientEncounter implements IPatientEncounter {
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "patientEncounter")
     private List<ChiefComplaint> chiefComplaints;
-    @Column(name = "weeks_pregnant", nullable = true)
-    private Integer weeksPregnant;
+
     @Column(name = "date_of_medical_visit", nullable = true)
     private DateTime dateOfMedicalVisit;
     @Column(name = "date_of_pharmacy_visit", nullable = true)
@@ -89,16 +88,6 @@ public class PatientEncounter implements IPatientEncounter {
         for (IChiefComplaint cc : chiefComplaints) {
             this.chiefComplaints.add((ChiefComplaint) cc);
         }
-    }
-
-    @Override
-    public Integer getWeeksPregnant() {
-        return weeksPregnant;
-    }
-
-    @Override
-    public void setWeeksPregnant(Integer weeksPregnant) {
-        this.weeksPregnant = weeksPregnant;
     }
 
     @Override

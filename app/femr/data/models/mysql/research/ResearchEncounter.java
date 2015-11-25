@@ -69,8 +69,6 @@ public class ResearchEncounter implements IResearchEncounter {
             mappedBy = "patientEncounter")
     private List<PatientPrescription> patientPrescriptions;
 
-    @Column(name = "weeks_pregnant", nullable = true)
-    private Integer weeksPregnant;
     @Column(name = "date_of_medical_visit", nullable = true)
     private DateTime dateOfMedicalVisit;
     @Column(name = "date_of_pharmacy_visit", nullable = true)
@@ -138,16 +136,6 @@ public class ResearchEncounter implements IResearchEncounter {
     @Override
     public void setPatientPrescriptions(List<PatientPrescription> patientPrescriptions) {
         this.patientPrescriptions = patientPrescriptions;
-    }
-
-    @Override
-    public Integer getWeeksPregnant() {
-        return weeksPregnant;
-    }
-
-    @Override
-    public void setWeeksPregnant(Integer weeksPregnant) {
-        this.weeksPregnant = weeksPregnant;
     }
 
     @Override

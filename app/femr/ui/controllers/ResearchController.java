@@ -25,13 +25,12 @@ import femr.business.services.core.IMissionTripService;
 import femr.business.services.system.MissionTripService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
-import femr.data.models.mysql.MissionCity;
-import femr.data.models.mysql.MissionTrip;
+import femr.data.models.mysql.*;
+import femr.common.models.CityItem;
 import femr.ui.models.research.json.ResearchGraphDataModel;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
 import femr.business.services.core.ISessionService;
-import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.research.json.ResearchItemModel;
@@ -76,8 +75,16 @@ public class ResearchController extends Controller {
 
     public Result indexGet() {
 
+        Form<MissionCity> userForm = Form.form(MissionCity.class);
         FilterViewModel filterViewModel = new FilterViewModel();
+        Map<String,String> anyData = new HashMap();
+        ArrayList<String> list = new ArrayList<>();
+        anyData.put("name", "test");
+        anyData.put("name", "secret");
 
+        //User user = userForm.bind(anyData).get(); //Andrew Change
+        MissionCity missionCity = userForm.bind(anyData).get();
+        filterViewModel.setUser(userForm);
 
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
@@ -87,8 +94,8 @@ public class ResearchController extends Controller {
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-        ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities();
-        return ok(index.render(currentUserSession, filterViewModel, availableCitiesServiceResponse)); //Andrew Implement here
+     //   ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities(); //Andrew Change
+        return ok(index.render(currentUserSession, filterViewModel)); //Andrew Implement here
     }
 
     /**

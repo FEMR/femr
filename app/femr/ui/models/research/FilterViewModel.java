@@ -19,6 +19,14 @@
 package femr.ui.models.research;
 
 
+import femr.data.models.mysql.MissionCity;
+import femr.data.models.mysql.User;
+import play.data.Form;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class FilterViewModel {
 
     private String primaryDataset;
@@ -32,8 +40,19 @@ public class FilterViewModel {
     private Float filterRangeEnd;
     private String medicationName;
     private String MissionTripName; //Andrew Fix
+    private ArrayList<String> list;
+    Form<MissionCity> userForm = Form.form(MissionCity.class);
+    Form test;
 
 
+//        Form<User> userForm = Form.form(User.class);
+//
+//        Map<String,String> anyData = new HashMap();
+//        ArrayList<String> list = new ArrayList<>();
+//        anyData.put("email", "bob@gmail.com");
+//        anyData.put("password", "secret");
+//
+//        User user = userForm.bind(anyData).get(); //Andrew Change
 
 
     /*
@@ -146,6 +165,23 @@ public class FilterViewModel {
     public String getMissionTripName() { return MissionTripName; } //Andrew Fix
 
     public void setMissionTripName(String cityName) { this.MissionTripName = cityName; } //Andrew Fix
+
+    public ArrayList<String> getList(){
+        return list;
+    }
+
+    public void setList(ArrayList<String> list){
+        this.list = list;
+    }
+
+    public Form<MissionCity> getUser(){
+        return userForm;
+    }
+
+    public void setUser(Form<MissionCity> user){
+        this.userForm = user;
+    }
+
 
 }
 

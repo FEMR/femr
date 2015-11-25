@@ -18,16 +18,18 @@
 */
 package femr.common.dtos;
 
+import femr.common.models.MissionTripItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceResponse<T> {
+public class ServiceResponse<T> extends MissionTripItem {
     private T responseObject;
     private Map<String, String> errors;
 
     public ServiceResponse() {
         this.responseObject = null;
-        this.errors = new HashMap<>();
+        this.errors = new HashMap<>(); //Andrew Fix
 
     }
 

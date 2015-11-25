@@ -68,10 +68,8 @@ public interface IUser {
 
     void setNotes(String notes);
 
-<<<<<<< HEAD
     List<IMissionTrip> getMissionTrips();
 
     void setMissionTrips(List<IMissionTrip> missionTrips);
-=======
->>>>>>> 668946c... Added OriginalMedications to PDF Controller - AJ
+
 }

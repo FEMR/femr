@@ -30,7 +30,6 @@ import play.Play;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: stop assigning primary keys
 public class DatabaseSeeder {
 
     private final Repository<Diagnosis> diagnosisRepository;

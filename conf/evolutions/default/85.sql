@@ -1,4 +1,9 @@
 # --- !Ups
+ALTER TABLE `users`
+ADD COLUMN `passwordCreatedDate` DATETIME NOT NULL AFTER `password`;
+
+UPDATE `users`
+SET passwordCreatedDate = '9999-01-01';
 
 INSERT INTO vitals (name, data_type, unit_of_measurement)
   VALUES ('weeksPregnant', 'integer', 'weeks');
@@ -15,6 +20,8 @@ INSERT INTO patient_encounter_vitals (user_id, patient_encounter_id, vital_id, v
 ALTER TABLE patient_encounters DROP COLUMN weeks_pregnant;
 
 # --- !Downs
+ALTER TABLE `users`
+DROP COLUMN `passwordCreatedDate`;
 
 ALTER TABLE `patient_encounters`
 ADD COLUMN `weeks_pregnant` INT(255) NULL DEFAULT NULL  AFTER `date_of_triage_visit`;

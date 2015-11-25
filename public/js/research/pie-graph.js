@@ -38,10 +38,10 @@ var pieGraphModule = (function(){
         var graphHeight = containerHeight - margin.top - margin.bottom;
 
         var pieWidth = graphHeight-20;
-        var pieHeight = graphHeight-20;
+        //var pieHeight = graphHeight-20;
         var outerRadius = pieWidth / 2;
         var innerRadius = 0;
-        var textOffset = 14;
+        //var textOffset = 14;
 
 
         var arc = d3.svg.arc()
@@ -102,7 +102,7 @@ var pieGraphModule = (function(){
 
         arcs.append("path")
             .attr("fill", function(d, i) { return color(i); })
-            .attr("data-legend", function(d, i){ return mapGraphData(d.data.primaryName, valueMap); })
+            .attr("data-legend", function(d){ return mapGraphData(d.data.primaryName, valueMap); })
             .attr("d", arc);
 
 
@@ -179,7 +179,7 @@ var pieGraphModule = (function(){
             y: 0,
             r: 2,
             fill: "#333",
-            transform: function (d, i) {
+            transform: function (d) {
                 centroid = arc.centroid(d);
                 return "translate(" + arc.centroid(d) + ")";
             },
@@ -192,60 +192,60 @@ var pieGraphModule = (function(){
             labelRadius: graphWidth/4
         };
 
-        var textLines = labelGroups.append("line").attr({
-            x1: function (d, i) {
-                return arc.centroid(d)[0];
-            },
-            y1: function (d, i) {
-                return arc.centroid(d)[1];
-            },
-            x2: function (d, i) {
-                centroid = arc.centroid(d);
-                midAngle = Math.atan2(centroid[1], centroid[0]);
-                x = Math.cos(midAngle) * cDim.labelRadius;
-                return x;
-            },
-            y2: function (d, i) {
-                centroid = arc.centroid(d);
-                midAngle = Math.atan2(centroid[1], centroid[0]);
-                y = Math.sin(midAngle) * cDim.labelRadius;
-                return y;
-            },
-            'class': "label-line"
-        });
+        //var textLines = labelGroups.append("line").attr({
+        //    x1: function (d, i) {
+        //        return arc.centroid(d)[0];
+        //    },
+        //    y1: function (d, i) {
+        //        return arc.centroid(d)[1];
+        //    },
+        //    x2: function (d, i) {
+        //        centroid = arc.centroid(d);
+        //        midAngle = Math.atan2(centroid[1], centroid[0]);
+        //        x = Math.cos(midAngle) * cDim.labelRadius;
+        //        return x;
+        //    },
+        //    y2: function (d, i) {
+        //        centroid = arc.centroid(d);
+        //        midAngle = Math.atan2(centroid[1], centroid[0]);
+        //        y = Math.sin(midAngle) * cDim.labelRadius;
+        //        return y;
+        //    },
+        //    'class': "label-line"
+        //});
 
-        var textLabels = labelGroups.append("text").attr({
-            x: function (d, i) {
-                centroid = arc.centroid(d);
-                midAngle = Math.atan2(centroid[1], centroid[0]);
-                x = Math.cos(midAngle) * cDim.labelRadius;
-                sign = (x > 0) ? 1 : -1;
-                labelX = x + (5 * sign);
-                return labelX;
-            },
-            y: function (d, i) {
-                centroid = arc.centroid(d);
-                midAngle = Math.atan2(centroid[1], centroid[0]);
-                y = Math.sin(midAngle) * cDim.labelRadius;
-                return y;
-            },
-            'data-labelbg': "true",
-            'text-anchor': function (d, i) {
-                centroid = arc.centroid(d);
-                midAngle = Math.atan2(centroid[1], centroid[0]);
-                x = Math.cos(midAngle) * cDim.labelRadius;
-                return (x > 0) ? "start" : "end";
-            },
-            'class': 'label-text',
-            'with-space-preserve': true,
-            'xml:space': 'preserve',
-            "dominant-baseline": "central"
-        })
-        .text(function (d) {
-
-            var label = "  "+mapGraphData(d.data.primaryName, valueMap)+" "+measurementUnits+": "+d.data.primaryValue+" patients  ";
-            return label;
-        });
+        //var textLabels = labelGroups.append("text").attr({
+        //    x: function (d, i) {
+        //        centroid = arc.centroid(d);
+        //        midAngle = Math.atan2(centroid[1], centroid[0]);
+        //        x = Math.cos(midAngle) * cDim.labelRadius;
+        //        sign = (x > 0) ? 1 : -1;
+        //        labelX = x + (5 * sign);
+        //        return labelX;
+        //    },
+        //    y: function (d, i) {
+        //        centroid = arc.centroid(d);
+        //        midAngle = Math.atan2(centroid[1], centroid[0]);
+        //        y = Math.sin(midAngle) * cDim.labelRadius;
+        //        return y;
+        //    },
+        //    'data-labelbg': "true",
+        //    'text-anchor': function (d, i) {
+        //        centroid = arc.centroid(d);
+        //        midAngle = Math.atan2(centroid[1], centroid[0]);
+        //        x = Math.cos(midAngle) * cDim.labelRadius;
+        //        return (x > 0) ? "start" : "end";
+        //    },
+        //    'class': 'label-text',
+        //    'with-space-preserve': true,
+        //    'xml:space': 'preserve',
+        //    "dominant-baseline": "central"
+        //})
+        //.text(function (d) {
+        //
+        //    var label = "  "+mapGraphData(d.data.primaryName, valueMap)+" "+measurementUnits+": "+d.data.primaryValue+" patients  ";
+        //    return label;
+        //});
         //.setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
 
 

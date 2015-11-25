@@ -1,8 +1,3 @@
-package femr.ui.models.research.json;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /*
      fEMR - fast Electronic Medical Records
      Copyright (C) 2014  Team fEMR
@@ -21,6 +16,11 @@ import java.util.Map;
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
+package femr.ui.models.research.json;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ResearchItemModel {
 
 

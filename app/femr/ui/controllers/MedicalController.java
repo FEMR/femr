@@ -23,6 +23,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -38,6 +39,7 @@ public class MedicalController extends Controller {
     private final ISearchService searchService;
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
+    private final IInventoryService inventoryService;
 
     @Inject
     public MedicalController(ITabService tabService,
@@ -46,7 +48,8 @@ public class MedicalController extends Controller {
                              IPhotoService photoService,
                              ISessionService sessionService,
                              ISearchService searchService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IInventoryService inventoryService) {
         this.tabService = tabService;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -55,6 +58,7 @@ public class MedicalController extends Controller {
         this.photoService = photoService;
         this.vitalService = vitalService;
         this.fieldHelper = new FieldHelper();
+        this.inventoryService = inventoryService;
     }
 
     public Result indexGet() {
@@ -142,6 +146,14 @@ public class MedicalController extends Controller {
         }
         viewModelGet.setPrescriptionItems(prescriptionItemServiceResponse.getResponseObject());
 
+        //get MedicationAdministrationItems
+        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
+                medicationService.retrieveAvailableMedicationAdministrations();
+        if (medicationAdministrationItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        viewModelGet.setMedicationAdministrationItems(medicationAdministrationItemServiceResponse.getResponseObject());
+
         //get problems
         ServiceResponse<List<ProblemItem>> problemItemServiceResponse = encounterService.retrieveProblemItems(patientEncounter.getId());
         if (problemItemServiceResponse.hasErrors()) {
@@ -211,6 +223,7 @@ public class MedicalController extends Controller {
     }
 
     public Result editPost(int patientId) {
+
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
@@ -275,7 +288,7 @@ public class MedicalController extends Controller {
         //save the tab fields that do have related chief complaint(s)
         ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse;
         if (tabFieldItemsWithChiefComplaint.size() > 0){
-            //call the service once for each exisiting chief complaint
+            //call the service once for each existing chief complaint
             for (Map.Entry<String, Map<String,String>> entry : tabFieldItemsWithChiefComplaint.entrySet()){
 
                 createPatientEncounterTabFieldsWithChiefComplaintsServiceResponse = encounterService.createPatientEncounterTabFields(entry.getValue(), patientEncounterItem.getId(), currentUserSession.getId(), entry.getKey());
@@ -286,23 +299,32 @@ public class MedicalController extends Controller {
             }
         }
 
-
         //create patient encounter photos
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
-        //create prescriptions
-        List<String> prescriptions = new ArrayList<>();
-        for (PrescriptionItem pi : viewModelPost.getPrescriptions()) {
-            if (StringUtils.isNotNullOrWhiteSpace(pi.getName()))
-                prescriptions.add(pi.getName());
-        }
-        if (prescriptions.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> prescriptionResponse = medicationService.createPatientPrescriptions(prescriptions, currentUserSession.getId(), patientEncounterItem.getId(), false, false);
-            if (prescriptionResponse.hasErrors()) {
+        //for now, only ingest the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
+        List<PrescriptionItem> prescriptionItems = viewModelPost.getPrescriptions()
+                .stream()
+                .filter(prescription -> prescription.getMedicationID() != null)
+                .collect(Collectors.toList());
+
+        //create the prescriptions
+        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
+        for (PrescriptionItem prescriptionItem : prescriptionItems){
+
+            createPrescriptionServiceResponse = medicationService.createPrescription(
+                    prescriptionItem.getMedicationID(),
+                    prescriptionItem.getAdministrationId(),
+                    patientEncounterItem.getId(),
+                    currentUserSession.getId(),
+                    prescriptionItem.getAmount(),
+                    null);
+
+            if (createPrescriptionServiceResponse.hasErrors()){
+
                 throw new RuntimeException();
             }
         }
-
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 
@@ -431,7 +453,12 @@ public class MedicalController extends Controller {
 
         if (viewModel.getGlucose() != null) {
             newVitals.put("glucose", viewModel.getGlucose());
+		}
+
+        if (viewModel.getWeeksPregnant() != null) {
+            newVitals.put("weeksPregnant", viewModel.getWeeksPregnant());
         }
+        
 
         return newVitals;
     }

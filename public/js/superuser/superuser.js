@@ -6,15 +6,23 @@ $(document).ready(function(){
         $("[name='newTripCountry']").val($(this).find(':selected').attr('country-name'));
     });
 
-    $('.currentButton').click(function(){
+    if ($('#tripTable').length > 0)
+        $('#tripTable').DataTable();
+    if ($('#cityTable').length > 0)
+        $('#cityTable').DataTable();
+    if ($('#teamTable').length > 0)
+        $('#teamTable').DataTable();
+    if ($('#addUsersSelect2').length > 0){
 
-        $.ajax({
-            type: "POST",
-            url: "/superuser/trips/" + $(this).parent().find('input').val(),
-            success: function(data){
-                window.location.href = 'trips'
-            }
+        $('#addUsersSelect2').select2({
+            placeholder: "Add users here"
         });
+    }
+    if ($('#removeUsersSelect2').length > 0){
 
-    });
+        $('#removeUsersSelect2').select2({
+            placeholder: "Remove users here"
+        });
+    }
+
 });

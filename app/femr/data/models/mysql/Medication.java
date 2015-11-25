@@ -31,12 +31,8 @@ public class Medication implements IMedication {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "name", unique = true, nullable = true)
+    @Column(name = "name", unique = false, nullable = true)
     private String name;
-    @Column(name = "quantity_current", unique = false, nullable = true)
-    private Integer quantity_current;
-    @Column(name = "quantity_initial", unique = false, nullable = true)
-    private Integer quantity_initial;
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -49,11 +45,6 @@ public class Medication implements IMedication {
             joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
     private List<IMedicationActiveDrug> medicationActiveDrugs;
-
-    /*@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "patient_encounters")
-    private PatientEncounter patientEncounter;
-*/
 
     @Override
     public int getId() {
@@ -68,26 +59,6 @@ public class Medication implements IMedication {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public Integer getQuantity_current() {
-        return quantity_current;
-    }
-
-    @Override
-    public void setQuantity_current(Integer quantity_current) {
-        this.quantity_current = quantity_current;
-    }
-
-    @Override
-    public Integer getQuantity_total() {
-        return quantity_initial;
-    }
-
-    @Override
-    public void setQuantity_total(Integer quantity_initial) {
-        this.quantity_initial = quantity_initial;
     }
 
     @Override

@@ -19,50 +19,93 @@
 package femr.business.services.system;
 
 import com.google.inject.Inject;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
-import femr.data.models.core.IUser;
+import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
+import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;
 
-//import static play.mvc.Controller.session;
+import java.net.InetAddress;
 
 public class SessionService implements ISessionService {
 
     private IUserService userService;
+    private IMissionTripService missionTripService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
+    private final IRepository<ILoginAttempt> loginAttemptRepository;
+    private final IDataModelMapper dataModelMapper;
+    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IRepository<IRole> roleRepository;
 
     @Inject
     public SessionService(IUserService userService,
+                          IMissionTripService missionTripService,
                           IPasswordEncryptor passwordEncryptor,
-                          ISessionHelper sessionHelper) {
+                          ISessionHelper sessionHelper,
+                          IRepository<ILoginAttempt> loginAttemptRepository,
+                          IDataModelMapper dataModelMapper,
+                          IRepository<ISystemSetting> systemSettingRepository,
+                          IRepository<IRole> roleRepository) {
 
         this.userService = userService;
+        this.missionTripService = missionTripService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
+        this.loginAttemptRepository = loginAttemptRepository;
+        this.dataModelMapper = dataModelMapper;
+        this.systemSettingRepository = systemSettingRepository;
+        this.roleRepository = roleRepository;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<CurrentUser> createSession(String email, String password) {
+    public ServiceResponse<CurrentUser> createSession(String email, String password, String ipAddress) {
         IUser userWithEmail = userService.retrieveByEmail(email);
-        ServiceResponse<CurrentUser> response = new ServiceResponse<>();
+        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip();
+        Integer tripId = currentTrip == null ? null : currentTrip.getId();
+        boolean isSuccessful = false;
+        Integer userId = null;
+        byte[] ipAddressBinary;
+        try {
 
-        //user doesn't exist OR
-        //password is invalid OR
-        //user has been deleted - the if statement responsible for validating the user logging in!!
-        if (userWithEmail == null || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword()) || userWithEmail.getDeleted() == true) {
-            response.addError("", "Invalid email or password.");
-            return response;
+            ipAddressBinary = InetAddress.getByName(ipAddress).getAddress();
+        } catch (Exception ex) {
+            //if shit hits the fan, use an empty ip address
+            ipAddressBinary = new byte[]{0, 0, 0, 0};
         }
 
-        sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));
-        response.setResponseObject(createCurrentUser(userWithEmail));
+
+        ServiceResponse<CurrentUser> response = new ServiceResponse<>();
+
+        if (userWithEmail == null) {
+            //user doesn't exist
+            response.addError("", "Invalid email or password.");
+        } else if (userWithEmail.getDeleted()) {
+            //user has been deleted
+            userId = userWithEmail.getId();//set the ID of the deleted user for the log
+            response.addError("", "Invalid email or password.");
+        } else if (!passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
+            //wrong password
+            userId = userWithEmail.getId();//set the ID of the deleted user for the log
+            response.addError("", "Invalid email or password.");
+        } else {
+            //success!
+            isSuccessful = true;
+            userId = userWithEmail.getId();//set the ID of the deleted user for the log
+            sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));//initiate the session
+            response.setResponseObject(createCurrentUser(userWithEmail, tripId));//send the user back in the response object
+        }
+
+        ILoginAttempt loginAttempt = dataModelMapper.createLoginAttempt(email, isSuccessful, ipAddressBinary, userId);
+        loginAttemptRepository.create(loginAttempt);
 
         return response;
     }
@@ -72,7 +115,11 @@ public class SessionService implements ISessionService {
      */
     @Override
     public CurrentUser retrieveCurrentUserSession() {
+
         int currentUserId = sessionHelper.getInt("currentUser");
+
+        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip();
+        Integer tripId = currentTrip == null ? null : currentTrip.getId();
 
         if (currentUserId > 0) {
             IUser userFoundById = userService.retrieveById(currentUserId);
@@ -80,7 +127,7 @@ public class SessionService implements ISessionService {
                 return null;
             }
 
-            return createCurrentUser(userFoundById);
+            return createCurrentUser(userFoundById, tripId);
         }
 
         return null;
@@ -94,7 +141,8 @@ public class SessionService implements ISessionService {
         sessionHelper.delete("currentUser");
     }
 
-    private CurrentUser createCurrentUser(IUser user) {
-        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles());
+    private CurrentUser createCurrentUser(IUser user, Integer tripId) {
+
+        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId);
     }
 }

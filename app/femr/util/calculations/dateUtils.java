@@ -26,13 +26,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * This class contains utilities for manipulating dates. If you add something here, please clearly document the
+ * format of both the input and output.
+ */
 public class dateUtils {
-//    public static int calculateYears(Date age) {
-//        DateMidnight birthdate = new DateMidnight(age);
-//        DateTime now = new DateTime();
-//        Years years = Years.yearsBetween(birthdate, now);
-//        return years.getYears();
-//    }
 
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
@@ -75,6 +73,23 @@ public class dateUtils {
         int monthsInt = months.getMonths();
         float result = (float) monthsInt;
         return result/12;
+    }
+
+    /**
+     * Converts a DateTime object to a string
+     *
+     * @param dateTime the DateTime object to convert, not null
+     * @return A string in the format "mm yyyy" or null if dateTime is null
+     */
+    public static String getFriendlyDateMonthYear(DateTime dateTime){
+
+        if (dateTime == null)
+            return null;
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/yyyy");
+        String dateString = dateTime.toString(formatter);
+
+        return dateString;
     }
 
     public static String getFriendlyDate(DateTime dateTime){

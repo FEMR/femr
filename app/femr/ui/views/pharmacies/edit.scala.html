@@ -4,14 +4,20 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.views.html.partials.patientOverview
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
 
     @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacy.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.at("js/pharmacy/pharmacyClientValidation.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.at("js/libraries/typeahead.bundle.min.js")"></script>
+
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/pharmacy/pharmacyClientValidation.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type = "text/javascript"   src="@routes.Assets.versioned("js/libraries/handlebars.js")"></script>
+        <script type = "text/javascript"   src="@routes.Assets.versioned("js/libraries/jquery-ui.min.js")"></script>
     }
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/pharmacy.css")">
+
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/pharmacy.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
     }
 
 @main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
@@ -44,22 +50,37 @@
 
 
 
-            <div id="medicationWrap">
+            <div id="medicationWrap" class="form-group">
                 <h4>List of Medications</h4>
                 <ol id="medicationList">
                 @for(x <- 1 to viewModel.getMedications.size) {
                     @defining(viewModel.getMedications.get(x - 1)) { medication =>
-                        <li class="medication" id="med@x">
+                        <li class="medication" id="med@(x-1)" data-medID="@medication.getMedicationID">
                             <button type="button" class="fButton fOtherButton replaceBtn">R</button>
                             <div>
-                                <span>@medication.getName</span>
+                                <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim()) - @medication.getAdministrationName </span>
                             </div>
                             <div>
                                 <span id="prescriber">
                                     Prescriber: @medication.getPrescriberLastName, @medication.getPrescriberFirstName</span>
                             </div>
-                            <input type="text" class="hidden replacementMeds fInput" id="replacementMedication@x" name="replacementMedication@x" placeholder="Replacement"/>
-                            <input type="text" class="hidden" name="id_prescription@x" value="@medication.getId"/>
+                            @if(medication.getAmount > medication.getMedicationRemaining) {
+                                <div class="medicationRemaining">Current Quantity: @medication.getMedicationRemaining</div>
+                                <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
+                            }
+                            <div class="replacement hidden">
+                                <input type="hidden" name="prescriptions[@(x-1)].id" value="@medication.getId" />
+                                <div class="prescriptionRow prescriptionInput">
+                                    <input type="hidden" class="medicationID" name="prescriptions[@(x-1)].medicationID" value="" />
+                                    <input type="hidden" class="administrationID" name="prescriptions[@(x-1)].administrationID" value="" />
+                                    <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
+                                    ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
+                                ><span class="prescriptionAdministrationDays">
+                                    <input type="number" placeholder="X"  class="form-control input-sm" />
+                                </span
+                                ><span class="prescriptionAmount"><input name="prescriptions[@(x-1)].amount" type="number" placeholder="Amount" value="0" class="form-control input-sm"/></span>
+                                </div>
+                            </div>
                         </li>
                     }
 

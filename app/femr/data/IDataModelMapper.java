@@ -20,7 +20,6 @@ package femr.data;
 
 import femr.data.models.core.*;
 import org.joda.time.DateTime;
-
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +36,17 @@ public interface IDataModelMapper {
     IChiefComplaint createChiefComplaint(String value, int patientEncounterId, Integer sortOrder);
 
     /**
+     * Creates a login attempt
+     *
+     * @param usernameValue the value that the device/person submitted to the server as a username, not null
+     * @param isSuccessful whether or not the login attempt was successful, not null
+     * @param ipAddress the ip address of the device trying to log in - in binary form, not null
+     * @param userId id of the user account that is trying to be logged into, may be null
+     * @return a new login attempt
+     */
+    ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId);
+
+    /**
      * Generate and provide an implementation of IMedication.
      *
      * @param name name of the medication, not null
@@ -48,13 +58,11 @@ public interface IDataModelMapper {
      * Generate and provide an implementation of IMedication for use in adding to inventory.
      *
      * @param name                  name of the medication, not null
-     * @param total                 the total quantity of the medication, not null
-     * @param current               the current quantity of the medication, not null
      * @param medicationActiveDrugs active drugs in the medication, may be null
      * @param medicationForm        the medications form e.g. cream/chewable/pill, may be null
      * @return an implementation of IMedication or null if processing fails
      */
-    IMedication createMedication(String name, Integer total, Integer current, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
+    IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrug.
@@ -84,6 +92,17 @@ public interface IDataModelMapper {
     IMedicationForm createMedicationForm(String name);
 
     /**
+     * Generate and provide an implementation of IMedicationInventory.
+     *
+     * @param quantityCurrent current available amount of medication, not null
+     * @param quantityTotal amount of medication initially in the inventory, not null
+     * @param medicationId id of the medication, not null
+     * @param missionTripId id of the mission trip, not null
+     * @return an implementation of IMedicationInventory or null if processing fails
+     */
+    IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId);
+
+    /**
      * Generate and provide an implementation of IMissionCity.
      *
      * @param name           name of the city, not null
@@ -107,12 +126,11 @@ public interface IDataModelMapper {
      *
      * @param startDate   start date of the trip, not null
      * @param endDate     end date of the trip, not null
-     * @param isCurrent   is this the current trip?, not null
      * @param missionCity the city where the trip is taking place, not null
      * @param missionTeam the country where the trip is taking place, not null
      * @return an implementation of IMissionTrip or null if processing fails
      */
-    IMissionTrip createMissionTrip(Date startDate, Date endDate, boolean isCurrent, IMissionCity missionCity, IMissionTeam missionTeam);
+    IMissionTrip createMissionTrip(Date startDate, Date endDate, IMissionCity missionCity, IMissionTeam missionTeam);
 
     /**
      * Generate and provide an implementation of IPatient.
@@ -134,13 +152,12 @@ public interface IDataModelMapper {
      *
      * @param patientID                  id of the patient, not null
      * @param date                       date of checking for triage, not null
-     * @param weeksPregnant              weeks pregnant of the patient, may be null
      * @param userId                     id of the user creating the encounter, not null
      * @param patientAgeClassificationId id of the age classification, may be null
      * @param tripId                     id of the trip, may be null
      * @return an implementation of IPatientEncounter or null if processing fails
      */
-    IPatientEncounter createPatientEncounter(int patientID, DateTime date, Integer weeksPregnant, int userId, Integer patientAgeClassificationId, Integer tripId);
+    IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId);
 
     /**
      * Generate and provide an implementation of IPatientEncounterTabField
@@ -171,14 +188,24 @@ public interface IDataModelMapper {
      * Generate and provide an implementation of IPatientPrescription
      *
      * @param amount        amount of medication dispensed, not null
-     * @param medication    the medication, not null
+     * @param medicationId    the id of the dispensed medication, not null
+     * @param medicationAdministrationId  ID of Administration type of the prescription
      * @param userId        id of the user creating the prescription, not null
      * @param encounterId   encounter id of the prescription, not null
-     * @param replacementId id of the prescription being replaced, may be null
-     * @param isDispensed   is the patient prescription dispensed to the patient yet, not null
+     * @param dateDispensed   date and time the patient prescription dispensed to the patient, can be null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    IPatientPrescription createPatientPrescription(int amount, IMedication medication, int userId, int encounterId, Integer replacementId, boolean isDispensed, boolean isCounseled);
+    IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, DateTime dateDispensed, boolean isCounseled);
+
+    /**
+     * Creates a patient prescription replacement based on the ID of the prescriptions.
+     *
+     * @param originalId id of the original prescription, not null
+     * @param replacementId id of the prescription that is replacing the original prescription, not null
+     * @param reasonId id of the reason for replacement, not null
+     * @return a new patient prescription replacement item.
+     */
+    IPatientPrescriptionReplacement createPatientPrescriptionReplacement(int originalId, int replacementId, int reasonId);
 
     /**
      * Generate and provide an implementation of IPhoto.
@@ -239,4 +266,12 @@ public interface IDataModelMapper {
      * @return an implementation of IUser or null if processing fails
      */
     IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+
+    /**
+     * Provider a reference object for a user
+     *
+     * @param userId id of the user, not null
+     * @return a User reference object
+     */
+    IUser createUser(int userId);
 }

@@ -27,7 +27,6 @@ import femr.data.models.core.*;
 import femr.data.models.core.research.IResearchEncounter;
 import femr.data.models.core.research.IResearchEncounterVital;
 import femr.util.dependencyinjection.providers.*;
-import mock.femr.data.MockDataModelMapper;
 
 public class TestDataLayerModule extends AbstractModule {
 
@@ -35,7 +34,7 @@ public class TestDataLayerModule extends AbstractModule {
     protected void configure() {
 
         // DataModelMapper Injection
-        bind(IDataModelMapper.class).to(MockDataModelMapper.class);
+        //bind(IDataModelMapper.class).to(MockDataModelMapper.class);
 
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);

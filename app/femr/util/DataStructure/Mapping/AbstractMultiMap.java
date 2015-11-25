@@ -19,8 +19,8 @@
 package femr.util.DataStructure.Mapping;
 
 import femr.util.stringhelpers.StringUtils;
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.map.MultiKeyMap;
 
 import java.util.Collections;
 import java.util.LinkedList;

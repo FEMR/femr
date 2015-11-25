@@ -24,13 +24,17 @@ package femr.util.DataStructure.Mapping;
 public class VitalMultiMap extends AbstractMultiMap {
 
     /**
-     * Puts a value into the map and associatres the name and date as the two keys to the value
+     * Puts a value into the map and associates the name and date as the two keys to the value
      *
      * @param vitalName The name of the vital
      * @param date      The date the vital was taken
      * @param value     The value of the vital
      */
+    //Suppress the warnings that were introduced after the move from Apache Collections to Apache Collections4.
+    //TabFieldMultiMap and VitalMultiMap both use AbstractMultiMap's generic MultiKeyMap with different types.
+    @SuppressWarnings("unchecked")
     public void put(String vitalName, String date, Object value) {
+
         map.put(vitalName, date, value);
         // check if the dated is already in the dateList if so don't add it
         if (!dateList.contains(date)) {

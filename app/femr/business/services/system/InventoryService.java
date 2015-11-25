@@ -18,21 +18,28 @@
 */
 package femr.business.services.system;
 
+import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Junction;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MedicationItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.common.models.MedicationItem;
 import femr.data.models.core.*;
+import femr.data.models.mysql.MedicationInventory;
+import femr.ui.models.admin.inventory.DataGridFilter;
+import femr.ui.models.admin.inventory.DataGridSorting;
+import org.apache.commons.lang3.StringUtils;
+import play.libs.Json;
 import femr.data.models.mysql.Medication;
-import femr.data.models.mysql.MedicationActiveDrugName;
-import femr.data.models.mysql.MedicationForm;
-import femr.data.models.mysql.MedicationMeasurementUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,24 +47,18 @@ import java.util.List;
 public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
-    private final IRepository<IMedicationForm> medicationFormRepository;
-    private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
+    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
-                            IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
-                            IRepository<IMedicationForm> medicationFormRepository,
-                            IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
+                            IRepository<IMedicationInventory> medicationInventoryRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
-        this.medicationFormRepository = medicationFormRepository;
-        this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
+        this.medicationInventoryRepository = medicationInventoryRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -65,86 +66,161 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory() {
-        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
+    //Andre Farah - Start Code
+    public ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters) {
+        ServiceResponse<ObjectNode> response = new ServiceResponse<>();
+        /* Create a data object to store all the information */
+        ObjectNode data = Json.newObject();
+        ArrayNode page_data = data.putArray("page_data");
+        response.setResponseObject(data);
+
+        /* Create ordering string for query based on sorting */
+        String orderBy = StringUtils.join(sorting, ", ").trim();
 
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("isDeleted", false);
+                .fetch("medicationForm").where();
+        query.where().eq("isDeleted", false);
+        if (orderBy != "")
+            query.orderBy(orderBy);
+
+        if (filters != null && filters.size() > 0) {
+            Junction<Medication> subJunction;
+            String filterOp = filters.get(0).getLogical_operator();
+
+            // Create a junction AND/OR based on the filter operator
+            if (filterOp.equals("AND")) {
+                subJunction = query.where().conjunction();
+            } else {
+                subJunction = query.where().disjunction();
+            }
+
+            // Iterate through all filters and add them to the sub junction
+            for (DataGridFilter f : filters) {
+                if (f.getCondition() == null) continue;
+                String operator = f.getCondition().getOperator();
+                String field = f.getCondition().getField();
+                List<String> values = f.getCondition().getFilterValue();
+                String value = (values == null || values.size() == 0) ? "" : values.get(0);
+
+                /* Individual filter types. Definitly need refactoring */
+                if (operator.equalsIgnoreCase("equal"))
+                    subJunction.add(Expr.eq(field, value));
+                else if (operator.equalsIgnoreCase("not_equal"))
+                    subJunction.add(Expr.ne(field, value));
+                /*else if (f.getCondition().getOperator().equalsIgnoreCase("in"))
+                    subJunction.add();
+                else if (f.getCondition().getOperator().equalsIgnoreCase("not_in"))
+                    subJunction.add();*/
+                else if (operator.equalsIgnoreCase("begins_with"))
+                    subJunction.add(Expr.startsWith(field, value));
+                else if (operator.equalsIgnoreCase("not_begins_with"))
+                    subJunction.add(Expr.not(Expr.istartsWith(field, value)));
+                else if (operator.equalsIgnoreCase("contains"))
+                    subJunction.add(Expr.icontains(field, value));
+                else if (operator.equalsIgnoreCase("not_contains"))
+                    subJunction.add(Expr.not(Expr.icontains(field, value)));
+                else if (operator.equalsIgnoreCase("ends_with"))
+                    subJunction.add(Expr.iendsWith(field, value));
+                else if (operator.equalsIgnoreCase("not_ends_with"))
+                    subJunction.add(Expr.not(Expr.iendsWith(field, value)));
+                else if (operator.equalsIgnoreCase("is_empty"))
+                    subJunction.add(Expr.eq(field, ""));
+                else if (operator.equalsIgnoreCase("is_not_empty"))
+                    subJunction.add(Expr.ne(field, ""));
+                else if (operator.equalsIgnoreCase("is_null"))
+                    subJunction.add(Expr.isNull(field));
+                else if (operator.equalsIgnoreCase("is_not_null"))
+                    subJunction.add(Expr.isNotNull(field));
+                else if (operator.equalsIgnoreCase("greater_than"))
+                    subJunction.add(Expr.gt(field, value));
+                else if (operator.equalsIgnoreCase("less_than"))
+                    subJunction.add(Expr.lt(field, value));
+
+
+            }
+        }
 
         List<? extends IMedication> medications;
         try {
             medications = medicationRepository.find(query);
         } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
+            //response.addError("exception", ex.getMessage());
+            data.put("total_rows", 0);
             return response;
         }
 
-        List<MedicationItem> medicationItems = new ArrayList<>();
+        int totalMedication = medications.size();
+
+        /* Store TOTAL number of medications in object */
+        data.put("total_rows", totalMedication);
+
+        /* Get start and to index of records we want */
+        int fromIndex = (pageNum - 1) * rowsPerPage;
+        int toIndex = fromIndex + rowsPerPage;
+
+        /* If toIndex is greater than totalMedication then reduce to last index in result */
+        if (toIndex > totalMedication) toIndex = fromIndex + (totalMedication % rowsPerPage);
+
+        medications = medications.subList(fromIndex, toIndex);
+
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList;
         for (IMedication m : medications) {
-            medicationItems.add(itemModelMapper.createMedicationItem(m));
-        }
-        response.setResponseObject(medicationItems);
 
-        return response;
-    }
+            /* Create node to customize return values */
+            ObjectNode js = page_data.addObject();
+            js.put("id", m.getId());
+            //js.put("name", m.getName());
+            String medicationDisplayName = m.getName();
+            //Create list of drug name/unit/values to append to the medication name
+            List<String> formattedDrugNames = new ArrayList<String>();
+            for (IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+                formattedDrugNames.add(String.format("%s%s %s",
+                                drug.getValue(),
+                                drug.getMedicationMeasurementUnit().getName(),
+                                drug.getMedicationActiveDrugName().getName())
+                );
+            }
+            if (formattedDrugNames.size() > 0)
+                medicationDisplayName += " " + Joiner.on("/").join(formattedDrugNames);
+            js.put("name", medicationDisplayName);
 
-    /**
-     * {@inheritDoc}
-     */
-    public ServiceResponse<MedicationItem> createMedication(MedicationItem medicationItem) {
-        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+            //js.put("quantity_current", m.getQuantity_current());
+            //js.put("quantity_initial", m.getQuantity_total());
+            //
 
-        try {
+            medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                    .where()
+                    .eq("medication.id", m.getId())
+                    .eq("missionTrip.id", 1);
+            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
 
-            //set each active drug
-            List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
-            ExpressionList<MedicationMeasurementUnit> medicationMeasurementUnitExpressionList;
-            ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
-            if (medicationItem.getActiveIngredients() != null) {
+            if (medicationInventory != null) {
+                js.put("quantity_current", medicationInventory.getQuantity_current());
+                js.put("quantity_initial", medicationInventory.getQuantity_total());
+            }
 
-                for (MedicationItem.ActiveIngredient miac : medicationItem.getActiveIngredients()) {
-                    medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
-                            .where()
-                            .eq("name", miac.getUnit());
-                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationActiveDrugNameQuery()
-                            .where()
-                            .eq("name", miac.getName());
 
-                    //get the measurement unit ID (they are pre recorded)
-                    IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
-                    IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
-                    if (medicationActiveDrugName == null) {
-                        //it's a new active drug name, were going to cascade(save) the bean
-                        medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
-                    }
-                    if (medicationMeasurementUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
-                        medicationActiveDrugs.add(medicationActiveDrug);
-                    }
 
+            if (m.getMedicationForm() != null) {
+                js.put("form", m.getMedicationForm().getName());
+                //Redundant form name... hack for bs_grid to work without changing it's code further
+                js.put("medicationForm.name", m.getMedicationForm().getName());
+            }
+
+            ArrayNode ingredientsArray = js.putArray("ingredients");
+            // Add all the important information about ingredients to the medications object node
+            if (m.getMedicationActiveDrugs() != null) {
+                List<IMedicationActiveDrug> ingredients = m.getMedicationActiveDrugs();
+                for (IMedicationActiveDrug i : ingredients) {
+                    ObjectNode ingredientNode = ingredientsArray.addObject();
+
+                    if (i.getMedicationActiveDrugName() != null)
+                        ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
+                    if (i.getMedicationMeasurementUnit() != null)
+                        ingredientNode.put("unit", i.getMedicationMeasurementUnit().getName());
+                    ingredientNode.put("value", i.getValue());
                 }
             }
-
-            //set the form
-            ExpressionList<MedicationForm> medicationFormExpressionList;
-
-            medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
-                    .where()
-                    .eq("name", medicationItem.getForm());
-            IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
-            if (medicationForm == null) {
-                medicationForm = dataModelMapper.createMedicationForm(medicationItem.getForm());
-            }
-
-
-            IMedication medication = dataModelMapper.createMedication(medicationItem.getName(), medicationItem.getQuantity_total(), medicationItem.getQuantity_current(), medicationActiveDrugs, medicationForm);
-            medication = medicationRepository.create(medication);
-            MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication);
-            response.setResponseObject(newMedicationItem);
-        } catch (Exception ex) {
-            response.addError("", "error creating medication");
         }
 
         return response;
@@ -153,37 +229,60 @@ public class InventoryService implements IInventoryService {
     /**
      * {@inheritDoc}
      */
-    public ServiceResponse<List<String>> retrieveAvailableUnits() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
+    @Override
+    public ServiceResponse<MedicationItem> setQuantityTotal(int medicationId, int tripId, int quantityTotal) {
+
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        //does this work without fetching? it should.
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("medication.id", medicationId)
+                .eq("missionTrip.id", tripId);
+
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
         try {
-            List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
-            List<String> availableUnits = new ArrayList<>();
-            for (IMedicationMeasurementUnit mmu : medicationMeasurementUnits) {
-                availableUnits.add(mmu.getName());
+
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+            if (medicationInventory == null) {
+                //it doesn't yet exist, create a new one
+                medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
+                medicationInventory = medicationInventoryRepository.create(medicationInventory);
+            } else {
+
+
+                medicationInventory.setQuantity_total(quantityTotal);
+                medicationInventory = medicationInventoryRepository.update(medicationInventory);
             }
-            response.setResponseObject(availableUnits);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantity_total(), medicationInventory.getQuantity_current());
+            response.setResponseObject(medicationItem);
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
+
+        return response;
+    }
+
+    /*
+    /**
+     * {@inheritDoc}
+
+    @Override
+    public ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent) {
+
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
         return response;
     }
 
     /**
      * {@inheritDoc}
-     */
-    public ServiceResponse<List<String>> retrieveAvailableForms() {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-        try {
-            List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);
-            List<String> availableForms = new ArrayList<>();
-            for (IMedicationForm mf : medicationForms) {
-                availableForms.add(mf.getName());
-            }
-            response.setResponseObject(availableForms);
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
-        return response;
-    }
 
+    @Override
+    public ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract) {
+
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+        return response;
+    }  */
 }

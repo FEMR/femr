@@ -7,17 +7,17 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/femr.css")"/>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("img/favicon.png")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/femr.css")"/>
         @styles
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/modernizr-2.6.2.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/modernizr-2.6.2.min.js")"></script>
     </head>
     <body>
 
         @errorContent
 
 
-    <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-2.0.3.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
         @scripts
     </body>
 </html>

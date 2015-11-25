@@ -29,7 +29,6 @@ public class PatientEncounterItem {
     //it is part of a patient
     private String ageClassification;//infant, teen, etc
     private List<String> chiefComplaints;
-    private Integer weeksPregnant;
     private Boolean isClosed;
 
     private String triageDateOfVisit;
@@ -72,14 +71,6 @@ public class PatientEncounterItem {
 
     public void addChiefComplaint(String chiefComplaint){
         chiefComplaints.add(chiefComplaint);
-    }
-
-    public Integer getWeeksPregnant() {
-        return weeksPregnant;
-    }
-
-    public void setWeeksPregnant(Integer weeksPregnant) {
-        this.weeksPregnant = weeksPregnant;
     }
 
     public Boolean getIsClosed() {

@@ -124,7 +124,13 @@
 
 .nav-sidebar li.submit{
 
-    padding: 20px 10px
+    padding: 20px 10px;
+    overflow: auto;
+}
+
+.nav-sidebar li.export{
+
+    padding: 10px 10px 0px 10px;
 }
 
 .nav-sidebar li.submit input.clear{
@@ -150,6 +156,16 @@
 
     background-color: rgb(17, 106, 181);
 }
+
+.nav-sidebar li.export input.export{
+
+    width: 100%;
+    background-color: #ccc;
+    color: #333;
+    padding: 3px 8px;
+    font-size: 1.1em;
+}
+
 .nav-sidebar li.menu-item .val{
 
     position: absolute;
@@ -471,7 +487,12 @@
     display: none;
 }
 
-.graph-header #total{
+.graph-header #totalPatients{
+
+     display: block;
+}
+
+.graph-header #totalEncounters{
 
     display: block;
 }

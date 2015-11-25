@@ -16,13 +16,13 @@
 
 
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery-2.0.3.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/libraries/jquery.tablescroll.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.at("js/history/history.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
     }
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("css/history.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
     }
 
     @* editClass is nonEditable or editable depending on whether encounter is closed.  *@
@@ -56,7 +56,17 @@
                         <p><span class="infoLabel">Gender:</span> @outputStringOrNA(patient.getSex)</p>
                     </div>
                     <div class="encounterViewBodyLeftHalf">
-                        <p><span class="infoLabel">Pregnancy Status:</span> @outputIntOrNA(patient.getWeeksPregnant)</p>
+                        <!-- @*Sam Zanni*@ -->
+                        @defining(viewModelMedical.getVitalList) { vitalMap =>
+                            <p>
+                                <span class="infoLabel">Weeks Pregnant:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputStringOrNA(vitalMap.get("weeksPregnant", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                                }
+                            </p>
+                        }
 
                         <p><span class="infoLabel">Height:</span> @outputHeightOrNA(
                             String.valueOf(patient.getHeightFeet),
@@ -166,9 +176,16 @@
                         <p><a class="infoLabel nonEditable">Diagnosis:</a>
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
                     }
-                    @for(prescriptionIterator <- 1 to viewModelPharmacy.getPrescriptions.size){
-                        <p><a class = "infoLabel nonEditable">Dispensed Medication:</a>
-                            <span class="value"> @outputStringOrNA(viewModelPharmacy.getPrescriptions.get(prescriptionIterator - 1))</span></p>
+
+                    @for(prescription <- viewModelPharmacy.getPrescriptions){
+                        <p>
+                            <span class="infoLabel">Dispensed Medication:</span>
+                            @prescription.getAmount @outputStringOrNA(prescription.getName) (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
+                            @for(activeDrug <- prescription.getMedicationActiveDrugs) {
+                                <span class='activeDrug'> @activeDrug.getName @activeDrug.getValue@activeDrug.getUnit </span>
+                            }
+
+                        </p>
                     }
 
                 </div>

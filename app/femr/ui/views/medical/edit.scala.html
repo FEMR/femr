@@ -118,6 +118,7 @@
                             <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
                                 Yes</button>
                                 <!-- Data elements for server-side logic, Diabetes Screen -->
+                            <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
                             <input type="hidden" name="isDiabetesScreenPerformed" value="@if(viewModel.getPatientEncounterItem.getScreenedForDiabetes){true}else{false}" />
                         </div>
             </div>

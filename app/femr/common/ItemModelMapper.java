@@ -383,6 +383,9 @@ public class ItemModelMapper implements IItemModelMapper {
                     case "Metric System Option": //Alaa Serhan - set the metric system option
                         settingItem.setMetric(ss.isActive());
                         break;
+                    case "Diabetes Prompt":
+                        settingItem.setIsDiabetesPrompt(ss.isActive());
+                        break;
                 }
             }
         }

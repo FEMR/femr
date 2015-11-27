@@ -250,7 +250,6 @@ var multipleChiefComplaintFeature = {
     }
 };
 var diabeticScreeningFeature = {
-
     shouldPatientBeScreened: function () {
         if ($('#isDiabetesScreenSettingEnabled').val() === "true") {
             //check to make sure the patient hasn't already been screened for diabetes
@@ -278,13 +277,15 @@ var diabeticScreeningFeature = {
                     //checks if the patient is 25 or older
                     if (typeof $('#isOverTwentyfour').val() != 'undefined' && $('#isOverTwentyfour').val() === 'true') {
 
+                        return true;
                     }
-                    return true;
                 }
             }
         }
+
         return false;
     }
+
 };
 //every function in here gets the most recent value of
 //a vital from the "record new vitals menu"

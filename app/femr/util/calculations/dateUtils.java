@@ -21,12 +21,11 @@ package femr.util.calculations;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
-import java.util.logging.SimpleFormatter;
 
 /**
  * This class contains utilities for manipulating dates. If you add something here, please clearly document the
@@ -34,58 +33,17 @@ import java.util.logging.SimpleFormatter;
  */
 public class dateUtils {
 
-    public static String getCurrentDateTimeString() {
-        DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
-        TimeZone.setDefault(TimeZone.getDefault());
-
-        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
-        SimpleDateFormat simpleTimeFormatter = new SimpleDateFormat("hh:mm:ss a");
-
-        Date today = new Date();
-//        String localeFormattedInTime = dateFormatter.format(today);
-
-        simpleDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        simpleTimeFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        String utcDate = simpleDateFormatter.format(today);
-        String utcTime = simpleTimeFormatter.format(today);
-        return utcDate + ' ' + utcTime;
-
-//        System.out.println(utcDate);
-//        System.out.println(utcTime);
-
-//        String dateFormateInUtc = "";
-//        Date localDate = null;
-//        String localTimeZone = "";
-//        SimpleDateFormat formatter;
-//        SimpleDateFormat parser;
-//        localTimeZone = saleTimeZone;
-//
-//        parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//        parser.setTimeZone(TimeZone.getTimeZone(localTimeZone));
-//        localDate = parser.parse(p_localDateTime);
-//        formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss z'('Z')'");
-//        formatter.setTimeZone(TimeZone.getTimeZone(localTimeZone));
-//
-//        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-//        dateFormateInUtc = formatter.format(localDate);
-//        return dateFormateInUtc;
-
-
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("dd/MM/yyyy");
-//        DateTime dateTime = DateTime.parse(dateStr, dateTimeFormatter).toDateTime(DateTimeZone.UTC);
-//        System.out.println(dateTime.getZone());
-//        return dateTime.getMillis()/1000;
-
-
-//        LocalDateTime localDateTime = new LocalDateTime();
-//        dateFormat.print(localDateTime);
-//        String dt = localDateTime.toString();
-//        return dt;
+    public static String getCurrentDateTimeString(){
+        DateTimeFormatter dateFormat = DateTimeFormat
+                .forPattern("yyyy/mm/dd HH:mm:ss");
+        LocalDateTime localDateTime = new LocalDateTime();
+        dateFormat.print(localDateTime);
+        String dt = localDateTime.toString();
+        return dt;
     }
 
-    public static DateTime getCurrentDateTime() {
-        return new DateTime();
+    public static DateTime getCurrentDateTime(){
+        return new DateTime(DateTimeZone.UTC);
     }
 
     public static String getAge(Date born) {
@@ -96,7 +54,7 @@ public class dateUtils {
         if (monthsInt < 24)
             return Integer.toString(monthsInt) + " MO";
         else
-            return Integer.toString(monthsInt / 12) + " YO";
+            return Integer.toString(monthsInt/12) + " YO";
     }
 
     public static float getAgeFloat(Date born) {
@@ -105,7 +63,7 @@ public class dateUtils {
         Months months = Months.monthsBetween(birthdate, now);
         int monthsInt = months.getMonths();
         float result = (float) monthsInt;
-        return result / 12;
+        return result/12;
     }
 
     public static float getAgeAsOfDateFloat(Date born, DateTime asOfDate) {
@@ -115,7 +73,7 @@ public class dateUtils {
         Months months = Months.monthsBetween(birthdate, currDate);
         int monthsInt = months.getMonths();
         float result = (float) monthsInt;
-        return result / 12;
+        return result/12;
     }
 
     /**
@@ -124,59 +82,32 @@ public class dateUtils {
      * @param dateTime the DateTime object to convert, not null
      * @return A string in the format "mm yyyy" or null if dateTime is null
      */
-    public static String getFriendlyDateMonthYear(DateTime dateTime) {
+    public static String getFriendlyDateMonthYear(DateTime dateTime){
+
         if (dateTime == null)
             return null;
-//
-//        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/yyyy");
-//        String dateString = dateTime.toString(formatter);
-//
-//        return dateString;
-        DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
-        TimeZone.setDefault(TimeZone.getDefault());
 
-        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
-        SimpleDateFormat simpleTimeFormatter = new SimpleDateFormat("hh:mm:ss a");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/yyyy");
+        String dateString = dateTime.toString(formatter);
 
-        Date today = new Date();
-//        String localeFormattedInTime = dateFormatter.format(today);
-
-        simpleDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        simpleTimeFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        String utcDate = simpleDateFormatter.format(today);
-        String utcTime = simpleTimeFormatter.format(today);
-        return utcDate + ' ' + utcTime;
+        return dateString;
     }
 
     public static String getFriendlyDate(DateTime dateTime){
         if (dateTime == null)
             return null;
-//        DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - HH:mm:ss");
-//        String dtStr = dateTime.toString(fmt);
-//        return dtStr;
-        DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
-        TimeZone.setDefault(TimeZone.getDefault());
 
-        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
-        SimpleDateFormat simpleTimeFormatter = new SimpleDateFormat("hh:mm:ss a");
+        dateTime.toDateTime(DateTimeZone.UTC);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - hh:mm:ss a");
 
-        Date today = new Date();
-//        String localeFormattedInTime = dateFormatter.format(today);
-
-        simpleDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        simpleTimeFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        String utcDate = simpleDateFormatter.format(today);
-        String utcTime = simpleTimeFormatter.format(today);
-        return utcDate + " - "  + utcTime;
-
+        String dtStr = dateTime.toString(fmt);
+        return dtStr;
     }
 
-    public static String getFriendlyDate(Date date) {
+    public static String getFriendlyDate(Date date){
         if (date == null)
             return null;
-        DateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         String dStr = df.format(date);
         return dStr;
     }

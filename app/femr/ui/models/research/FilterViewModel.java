@@ -19,13 +19,10 @@
 package femr.ui.models.research;
 
 
-import femr.data.models.mysql.MissionCity;
-import femr.data.models.mysql.User;
-import play.data.Form;
+import femr.common.models.MissionItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class FilterViewModel {
 
@@ -39,20 +36,18 @@ public class FilterViewModel {
     private Float filterRangeStart;
     private Float filterRangeEnd;
     private String medicationName;
-    private String MissionTripName; //Andrew Fix
-    private ArrayList<String> list;
-    Form<MissionCity> userForm = Form.form(MissionCity.class);
-    Form test;
+    private List<MissionItem> MissionTrips; //Andrew
 
 
-//        Form<User> userForm = Form.form(User.class);
-//
-//        Map<String,String> anyData = new HashMap();
-//        ArrayList<String> list = new ArrayList<>();
-//        anyData.put("email", "bob@gmail.com");
-//        anyData.put("password", "secret");
-//
-//        User user = userForm.bind(anyData).get(); //Andrew Change
+    //private List<String> list;
+    //Form<MissionCity> userForm = Form.form(MissionCity.class);
+    //Form test;
+
+
+      //  myList.add("test");
+
+
+      //  User user = userForm.bind(anyData).get(); //Andrew Change
 
 
     /*
@@ -162,26 +157,9 @@ public class FilterViewModel {
 
     public void setMedicationName(String medicationId) { this.medicationName = medicationId; }
 
-    public String getMissionTripName() { return MissionTripName; } //Andrew Fix
+    public List<MissionItem> getMissionTrips() { return MissionTrips; } //Andrew Fix
 
-    public void setMissionTripName(String cityName) { this.MissionTripName = cityName; } //Andrew Fix
-
-    public ArrayList<String> getList(){
-        return list;
-    }
-
-    public void setList(ArrayList<String> list){
-        this.list = list;
-    }
-
-    public Form<MissionCity> getUser(){
-        return userForm;
-    }
-
-    public void setUser(Form<MissionCity> user){
-        this.userForm = user;
-    }
-
+    public void setMissionTrips(List<MissionItem> MissionTrips) { this.MissionTrips = MissionTrips; } //Andrew Fix
 
 }
 

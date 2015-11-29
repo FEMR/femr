@@ -1,8 +1,11 @@
+@import java.util
 @(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.ResearchController
+@import scala.collection.JavaConversions._
 @import helper._
+
 
 
     @additionalStyles = {
@@ -145,14 +148,18 @@
                             <form>
                                 <span class="medication">
                                 <label>Filter Mission Trip City</label>
-                                    <select name="medicationId" id="medicationId"> @*Andrew Change*@
-                                      <option>
-                                          @select
-                                          (@viewModel.getUser()("game_duration"),
-                                              options(List("01 hour","02 hour","03 hour","Never end")),
-                                              '_label -> "Game duration", '_default -> "-- Select duration --")
+                                    <select name="Test" class="fOption">
+                                        <option selected value=""></option> @*Andrew Change*@
+                                        @for(i <- 1 to viewModel.getMissionTrips.size) {
+                                            @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
+                                                @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                                                    @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
 
-                                      </option>
+                                                        <option>ID: @missionTrip.getId() Team: @missionItem.getTeamName Country: @missionTrip.getTripCountry City: @missionTrip.getTripCity </option>
+                                                    }
+                                                }
+                                            }
+                                        }
 
                                     </select>
                                 </span>

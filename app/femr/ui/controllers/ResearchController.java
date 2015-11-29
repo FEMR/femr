@@ -22,11 +22,9 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IMedicationService;
 import femr.business.services.core.IMissionTripService;
-import femr.business.services.system.MissionTripService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.mysql.*;
-import femr.common.models.CityItem;
 import femr.ui.models.research.json.ResearchGraphDataModel;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
@@ -75,16 +73,15 @@ public class ResearchController extends Controller {
 
     public Result indexGet() {
 
-        Form<MissionCity> userForm = Form.form(MissionCity.class);
         FilterViewModel filterViewModel = new FilterViewModel();
-        Map<String,String> anyData = new HashMap();
-        ArrayList<String> list = new ArrayList<>();
-        anyData.put("name", "test");
-        anyData.put("name", "secret");
 
-        //User user = userForm.bind(anyData).get(); //Andrew Change
-        MissionCity missionCity = userForm.bind(anyData).get();
-        filterViewModel.setUser(userForm);
+
+        //Grabbing mission city ID's Andrew
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
+        if (missionItemServiceResponse.hasErrors())
+            throw new RuntimeException();
+        filterViewModel.setMissionTrips(missionItemServiceResponse.getResponseObject());
+
 
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
@@ -94,8 +91,8 @@ public class ResearchController extends Controller {
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-     //   ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities(); //Andrew Change
-        return ok(index.render(currentUserSession, filterViewModel)); //Andrew Implement here
+     //   ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities(); //Andrew
+        return ok(index.render(currentUserSession, filterViewModel)); //Andrew
     }
 
     /**
@@ -172,7 +169,7 @@ public class ResearchController extends Controller {
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
         filterItem.setMedicationName(filterViewModel.getMedicationName());
-        filterItem.setMissionTripName(filterViewModel.getMissionTripName()); //Andrew Fix
+
 
 
 

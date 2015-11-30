@@ -634,10 +634,11 @@ public class SearchService implements ISearchService {
                 .where()
                 .eq("encounter_id", encounterId);
         try {
+            //pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
             List<PrescriptionItem> prescriptionItems = patientPrescriptions
                     .stream()
-                    .filter(pp -> !pp.getPatientPrescriptionReplacements().isEmpty())
+                    .filter(pp -> !pp.getPatientPrescriptionReplacements().isEmpty() || pp.getPatientPrescriptionReplacements().size() == 0)
                     .map(pp -> itemModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),

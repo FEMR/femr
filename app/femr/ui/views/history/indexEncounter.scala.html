@@ -179,26 +179,22 @@
 
                     @* AJ Saclayan Prescribed Medications *@
                     @if(viewModelPharmacy.getOriginalMedications.size != null){
-                        @for(x <- 1 to viewModelPharmacy.getOriginalMedications.size) {
-                            @defining(viewModelPharmacy.getOriginalMedications.get(x - 1)) { medication =>
+                       <p> <span class="infoLabel">Originally Prescribed Medication:</span></p>
+                        @for(x <- 1 to viewModelPharmacy.getOriginalMedications.size -1) {
+@*//                           defining(viewModelPharmacy.getOriginalMedications.get(x - 1)) { medication =>*@
 
-                                <p>
-                                    <span class="infoLabel">Originally Prescribed Medication:</span>
+                            <p> <i>@viewModelPharmacy.getOriginalMedications.get(x-1).getName</i></p>
 
-                                    <div>
-                                        <span> @medication.getName  </span>
-                                    @*(@outputStringOrNA(medication.getMedicationForm).toString().trim())*@
-                                    </div>
-                                </p>
-                            }
-
+                            <p> Replaced with: </p>
+                            <p>@viewModelPharmacy.getOriginalMedications.get(x-1 +1).getName</p>
                         }
                     }
 
                     @for(x <- 1 to viewModelPharmacy.getPrescriptions.size) {
+                       <p> <span class="infoLabel">Dispensed Medication:</span> </p>
                         @defining(viewModelPharmacy.getPrescriptions.get(x - 1)) { prescription =>
                             <p>
-                                <span class="infoLabel">Dispensed Medication:</span>
+
                                 @prescription.getAmount @outputStringOrNA(prescription.getName)
                                     (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
                                 @for(activeDrug <- prescription.getMedicationActiveDrugs) {

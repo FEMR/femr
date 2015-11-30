@@ -402,9 +402,12 @@ public class PDFController extends Controller {
         PdfPCell originalPrescriptionCell = new PdfPCell(table.getDefaultCell());
         originalPrescriptionCell.setPaddingRight(10);
         originalPrescriptionCell.addElement(originalPrescriptionsTitle);
-        for (PrescriptionItem prescription : originalPrescriptionItems) {
-            Paragraph script = new Paragraph(" - "+prescription.getName(), getValueFont());
+        for (int i = 0; i < originalPrescriptionItems.size() - 1; i++) {
+            Paragraph script = new Paragraph(" - " + originalPrescriptionItems.get(i).getName(), getValueFont());
             originalPrescriptionCell.addElement(script);
+            i++;
+            Paragraph script2 = new Paragraph("- Replaced with " + originalPrescriptionItems.get(i).getName(), getValueFont());
+            originalPrescriptionCell.addElement(script2);
         }
         table.addCell(originalPrescriptionCell);
 

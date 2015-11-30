@@ -147,6 +147,20 @@
                                 </select>
                                 *@
                             </span>
+                            <select name="Test" class="fOption">
+                                <option selected value=""></option>
+                                @for(i <- 1 to viewModel.getMissionItems.size) {
+                                    @defining(viewModel.getMissionItems.get(i - 1)) { missionItem =>
+                                        @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                                            @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+
+                                                <option>@missionItem.getTeamName @missionTrip.getTripCountry @missionTrip.getTripCity @missionTrip.getId()</option>
+                                            }
+                                        }
+                                    }
+                                }
+
+                            </select>
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
                                 <input type="text" name="groupFactor" id="groupFactor" value="10" />

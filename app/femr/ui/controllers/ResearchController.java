@@ -21,10 +21,9 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import femr.business.services.core.IMedicationService;
+import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.ResearchFilterItem;
-import femr.common.models.ResearchResultItem;
-import femr.common.models.ResearchResultSetItem;
+import femr.common.models.*;
 import femr.ui.models.research.json.ResearchGraphDataModel;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.IResearchService;
@@ -55,7 +54,7 @@ public class ResearchController extends Controller {
     private IResearchService researchService;
     private IMedicationService medicationService;
     private ISessionService sessionService;
-
+    private IMissionTripService missionTripService;
     /**
      * Research Controller constructor that Injects the services indicated by the parameters
      *
@@ -64,15 +63,23 @@ public class ResearchController extends Controller {
      * @param medicationService {@link IMedicationService}
      */
     @Inject
-    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService) {
+    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService, IMissionTripService missionTripService) {
         this.researchService = researchService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
+        this.missionTripService = missionTripService;
     }
 
     public Result indexGet() {
 
         FilterViewModel filterViewModel = new FilterViewModel();
+
+        //Grabbing mission city ID's
+        ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
+        if (missionItemServiceResponse.hasErrors())
+            throw new RuntimeException();
+       filterViewModel.setMissionItems(missionItemServiceResponse.getResponseObject());
+
 
         // Set Default Start (30 Days Ago) and End Date (Today)
         Calendar today = Calendar.getInstance();
@@ -80,6 +87,7 @@ public class ResearchController extends Controller {
         filterViewModel.setEndDate(dateFormat.format(today.getTime()));
         today.add(Calendar.DAY_OF_MONTH, -120);
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
+
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
         return ok(index.render(currentUserSession, filterViewModel));

@@ -90,15 +90,11 @@ var createUsers = {
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
         if(password.length < 6){
-            passwordErrors += "password is less than 6 characters ";
-            //createUsers.elements.password.next(".errors").text("password is less than 6 characters\n");
-            pass = false;
+           pass = false;
         }
         var re = /[A-Z]/;
         if(!re.test(password)){
-            passwordErrors += "password must have at least one upper case ";
-            //createUsers.elements.password.next(".errors").text("password must have at least one upper case\n");
-            pass = false;
+           pass = false;
         }
         re = /[0-9]/;
         if ($.trim(document.forms["createForm"]["password"].value) === "") {
@@ -106,24 +102,32 @@ var createUsers = {
             pass = false;
         }
         else if(!re.test(password)) {
-            passwordErrors +=  "password does not have a number ";
-            // createUsers.elements.password.next(".errors").text("password does not have a number\n");
             pass = false;
         }
 
-        if(pass == false)
+        if(pass === false)
         {
+            if (passwordErrors != "")
                 createUsers.elements.password.next (".errors").text(passwordErrors);
+            else
+                createUsers.elements.password.next(".errors").text("password must have at least 6 characters with at least one upper case letter and number");
         }
         else{
             createUsers.elements.password.next(".errors").text("");
         }
 
         //validate roles
+        var isARoleChecked = false;
+        $.each(document.forms["createForm"].elements["roles[]"], function () {
+            if ($(this).is(':checked')) {
+                isARoleChecked = true;
+            }
+        });
         if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
             pass = false;
         }
-        if (pass === false) {
+        if (isARoleChecked === false) {
+            pass = false;
             createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");

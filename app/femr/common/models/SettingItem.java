@@ -25,6 +25,7 @@ public class SettingItem {
     private boolean isConsolidateHPI;
     // Alaa Serhan  - adding setting for isMetric
     private boolean isMetric;
+    private boolean isDiabetesPrompt;
 
 
     public boolean isMultipleChiefComplaint() {
@@ -63,4 +64,11 @@ public class SettingItem {
 
     public void setMetric(boolean isMetric) { this.isMetric = isMetric; }
 
+    public boolean isDiabetesPrompt() {
+        return isDiabetesPrompt;
+    }
+
+    public void setIsDiabetesPrompt(boolean isDiabetesPrompt) {
+        this.isDiabetesPrompt = isDiabetesPrompt;
+    }
 }

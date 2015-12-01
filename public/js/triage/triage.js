@@ -651,19 +651,17 @@ window.setInterval(function () {
             height_in = 0;
         }
 
-        /* Alaa Serhan */
         if (vitalsUnits == "metric") {
             // Get total height in meters from seperate meters, centimeters
-            var total_height = (height_ft * 100 + height_in) / 100;
-
+            var heightMeters = (height_ft * 100 + height_in) / 100;
+            var weightKilograms = weight_lbs;//seems weird
             // Calculate BMI (Metric)
-            $('#bmi').val(Math.round((weight_lbs / (total_height * total_height))));
+            $('#bmi').val(calculateBMIScore("metric", weightKilograms, heightMeters));
         } else {
             // Get total height in inches
-            height_in = height_in + height_ft * 12;
-
+            var totalInches = height_in + height_ft * 12;
             // Calculate BMI (Imperial)
-            $('#bmi').val(Math.round((weight_lbs / (height_in * height_in)) * 703));
+            $('#bmi').val(calculateBMIScore("standard", weight_lbs, totalInches));
         }
     }
 

@@ -58,6 +58,11 @@ public class PatientEncounter implements IPatientEncounter {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mission_trip_id")
     private MissionTrip missionTrip;
+    @Column(name = "date_of_diabetes_screen", nullable = true)
+    private DateTime dateOfDiabeteseScreen;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id_diabetes_screen", nullable = true)
+    private User diabetesScreener;
 
     @Override
     public int getId() {
@@ -168,5 +173,25 @@ public class PatientEncounter implements IPatientEncounter {
     @Override
     public void setMissionTrip(IMissionTrip missionTrip) {
         this.missionTrip = (MissionTrip) missionTrip;
+    }
+
+    @Override
+    public DateTime getDateOfDiabeteseScreen() {
+        return dateOfDiabeteseScreen;
+    }
+
+    @Override
+    public void setDateOfDiabeteseScreen(DateTime dateOfDiabeteseScreen) {
+        this.dateOfDiabeteseScreen = dateOfDiabeteseScreen;
+    }
+
+    @Override
+    public IUser getDiabetesScreener() {
+        return diabetesScreener;
+    }
+
+    @Override
+    public void setDiabetesScreener(IUser diabetesScreener) {
+        this.diabetesScreener = (User) diabetesScreener;
     }
 }

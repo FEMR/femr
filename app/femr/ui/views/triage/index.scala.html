@@ -26,6 +26,10 @@
         @if(viewModel.isSearchError) {
             <p>That patient could not be found.</p>
         }
+        @if(viewModel.isLinkToMedical()){
+
+           <p> <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()">Patient has an open encounter!</a></p>
+        }
         <h2 class="text-center">Check In - Triage</h2>
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {

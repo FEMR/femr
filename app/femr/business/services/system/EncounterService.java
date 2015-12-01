@@ -462,6 +462,35 @@ public class EncounterService implements IEncounterService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId) {
+
+        ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
+
+        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("id", encounterId);
+        try {
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+            dataModelMapper.updatePatientEncounterWithDiabetesScreening(patientEncounter, userId);
+
+            patientEncounter = patientEncounterRepository.update(patientEncounter);
+
+            PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
+            response.setResponseObject(patientEncounterItem);
+
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
 
     /**
      * Translates a list of PatientEncounterTabFields into a list of TabFieldItems

@@ -259,3 +259,29 @@ var typeaheadFeature = {
     }
 };
 
+/**
+ * Calculates a user's BMI score.
+ *
+ * @param system either "metric" or "standard".
+ * @param weight the weight of the patient in kg or lbs
+ * @param height the height of the patient in m or inches (note: NOT cm)
+ * @returns *the BMI score of the patient or null if you did something wrong.
+ */
+function calculateBMIScore(system, weight, height) {
+
+    if (!system || !weight || !height){
+        return null;
+    }
+
+    var bmi = null;
+
+    if (system === "metric") {
+
+        bmi = Math.round((weight / (height * height)))
+    } else if (system === "standard") {
+
+        bmi = Math.round((weight / (height * height)) * 703);
+    }
+
+    return bmi;
+}

@@ -34,10 +34,6 @@ var allowedFilterValues = (function(){
             graphTypes: ['bar','pie','table'],
             secondaryData: []
         },
-        missionCities: {
-            graphTypes: ['bar','pie','table'],
-            secondaryData: []
-        },
         bloodPressureSystolic: {
             graphTypes: ['line','scatter','table'],
             secondaryData: []

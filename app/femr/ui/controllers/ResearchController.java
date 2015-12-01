@@ -91,8 +91,8 @@ public class ResearchController extends Controller {
         filterViewModel.setStartDate(dateFormat.format(today.getTime()));
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-     //   ServiceResponse<List<CityItem>> availableCitiesServiceResponse = missionTripService.retrieveAvailableCities(); //Andrew
-        return ok(index.render(currentUserSession, filterViewModel)); //Andrew
+
+        return ok(index.render(currentUserSession, filterViewModel));
     }
 
     /**
@@ -169,7 +169,7 @@ public class ResearchController extends Controller {
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
         filterItem.setMedicationName(filterViewModel.getMedicationName());
-
+        filterItem.setMissionTripInfo(filterViewModel.getMissionTrips()); //Andrew
 
 
 

@@ -42,6 +42,7 @@ import femr.util.dependencyinjection.providers.MissionCityProvider;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import femr.util.stringhelpers.StringUtils;
+import femr.business.services.system.MissionTripService.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -417,11 +418,6 @@ public class ResearchService implements IResearchService {
             researchEncounterQuery.fetch("patientPrescriptions.medication");
         }
 
-        if( filters.getMissionTripName() != null && filters.getMissionTripName().length() > 0 ){
-
-            researchEncounterQuery.fetch("missionTrips.MissionCityID"); //Andrew Fix
-        }
-
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
 
         // filter by date - can have only start, or only end date
@@ -437,10 +433,8 @@ public class ResearchService implements IResearchService {
 
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
         }
-        if ( filters.getMissionTripName() != null && filters.getMissionTripName().length() > 0 ){
+        
 
-            researchEncounterExpressionList.like("missionTrips.MissionCityID.name", "%" + filters.getMissionTripName() + "%"); //Andrew Fix
-        }
 
         // if the filters exist - use them in the query
 //        if( filters.getFilterRangeStart() > -1 * Float.MAX_VALUE ){

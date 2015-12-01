@@ -20,8 +20,11 @@ package femr.ui.models.research;
 
 
 import femr.common.models.MissionItem;
+import femr.data.models.mysql.MissionCity;
+import femr.data.models.mysql.MissionTrip;
+import femr.data.models.mysql.User;
+import play.data.Form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FilterViewModel {
@@ -37,18 +40,6 @@ public class FilterViewModel {
     private Float filterRangeEnd;
     private String medicationName;
     private List<MissionItem> MissionTrips; //Andrew
-
-
-    //private List<String> list;
-    //Form<MissionCity> userForm = Form.form(MissionCity.class);
-    //Form test;
-
-
-      //  myList.add("test");
-
-
-      //  User user = userForm.bind(anyData).get(); //Andrew Change
-
 
     /*
     public List<ValidationError> validate() {

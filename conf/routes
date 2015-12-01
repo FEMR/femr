@@ -66,9 +66,10 @@ GET         /logout                                           @femr.ui.controlle
 POST        /login/reset                                      @femr.ui.controllers.SessionsController.editPasswordPost()
 POST        /login                                            @femr.ui.controllers.SessionsController.createPost()
 GET         /login                                            @femr.ui.controllers.SessionsController.createGet()
-
+#Reference
+GET         /reference                                         @femr.ui.controllers.ReferenceController.indexGet()
 #Home
-GET         /                                                 @femr.ui.controllers.HomeController.index()
+GET         /                                                  @femr.ui.controllers.HomeController.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                     controllers.Assets.at(path="/public", file)

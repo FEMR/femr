@@ -84,6 +84,7 @@ hr {
 }
 a.fRedButton{
     color: #000000;
+    color: #000000;
 }
 .fRedButton:hover{
     background-color: rgb(250, 0, 0);
@@ -356,12 +357,20 @@ float: right;
     }
 }
 
+@media (max-width: 991px) {
+
+    .navigationItems a {
+        padding-right: 12px !important;
+        padding-left: 12px !important;;
+    }
+}
+
+
 @media (max-width: 850px) {
     .navigationItems a {
         padding-left: 10px !important;
         padding-right: 10px !important;
     }
-
 }
 
 @media (min-width: 768px){
@@ -441,6 +450,28 @@ float: right;
     margin: 14px 0 14px 0;
     width: 25%;
     text-align: right;
+}
+
+.reference{
+
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 12px;
+}
+
+.reference span{
+
+    font-size: 14px;
+    display: none;
+    margin-left: 10px;
+}
+
+@media ( max-width: 767px ){
+
+    .reference span{
+
+        display: inline;
+    }
 }
 
 .glyphicon-log-out {

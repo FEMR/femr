@@ -29,7 +29,7 @@ public class ServiceResponse<T> extends MissionTripItem {
 
     public ServiceResponse() {
         this.responseObject = null;
-        this.errors = new HashMap<>(); //Andrew Fix
+        this.errors = new HashMap<>();
 
     }
 

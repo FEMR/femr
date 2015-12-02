@@ -56,7 +56,7 @@ public class ResearchService implements IResearchService {
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
-    private final IRepository<IMissionTrip> missionTripIRepository; //Andrew New Fix
+    private final IRepository<IMissionTrip> missionTripIRepository; //Andrew Trip Filter
 
 
 
@@ -72,7 +72,7 @@ public class ResearchService implements IResearchService {
         this.researchEncounterRepository = researchEncounterRepository;
         this.vitalRepository = vitalRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
-        this.missionTripIRepository = missionTripIRepository; //Andrew New Fix
+        this.missionTripIRepository = missionTripIRepository; //Andrew Trip Filter
     }
 
 
@@ -433,8 +433,11 @@ public class ResearchService implements IResearchService {
 
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
         }
-        
 
+        if ( filters.getMissionTripId() != null) {
+
+            researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId());
+        }
 
         // if the filters exist - use them in the query
 //        if( filters.getFilterRangeStart() > -1 * Float.MAX_VALUE ){

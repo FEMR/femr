@@ -145,27 +145,24 @@
                                 <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name" />
 
                             </span>
-                            <form>
+                            
                                 <span class="medication">
                                 <label>Filter Mission Trip City</label>
-                                    <select name="Test" class="fOption">
-                                        <option selected value=""></option> @*Andrew Change*@
+                                    <select name="MissionTripId" class="medication">
+                                        <option selected value="">-- Select Trip --</option> @*Andrew Change*@
                                         @for(i <- 1 to viewModel.getMissionTrips.size) {
                                             @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
                                                 @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
                                                     @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
 
-                                                        <option>ID: @missionTrip.getId() Team: @missionItem.getTeamName Country: @missionTrip.getTripCountry City: @missionTrip.getTripCity </option>
+                                                        <option value = "@missionTrip.getId()"> @missionItem.getTeamName - @missionTrip.getTripCountry - @missionTrip.getTripCity </option>
                                                     }
                                                 }
                                             }
                                         }
-
                                     </select>
                                 </span>
-                            </form>
-
-
+                            
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
                                 <input type="text" name="groupFactor" id="groupFactor" value="10" />

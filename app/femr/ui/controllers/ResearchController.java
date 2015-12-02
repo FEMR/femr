@@ -54,7 +54,7 @@ public class ResearchController extends Controller {
     private IResearchService researchService;
     private IMedicationService medicationService;
     private ISessionService sessionService;
-    private IMissionTripService missionTripService; //Andrew New Fix
+    private IMissionTripService missionTripService; //Andrew Trip Filter
 
     /**
      * Research Controller constructor that Injects the services indicated by the parameters
@@ -68,7 +68,7 @@ public class ResearchController extends Controller {
         this.researchService = researchService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
-        this.missionTripService = missionTripService; //Andrew New Fix
+        this.missionTripService = missionTripService; //Andrew Trip Filter
     }
 
     public Result indexGet() {
@@ -76,7 +76,7 @@ public class ResearchController extends Controller {
         FilterViewModel filterViewModel = new FilterViewModel();
 
 
-        //Grabbing mission city ID's Andrew
+        //Grabbing mission city ID's Andrew Trip Filter
         ServiceResponse<List<MissionItem>> missionItemServiceResponse = missionTripService.retrieveAllTripInformation();
         if (missionItemServiceResponse.hasErrors())
             throw new RuntimeException();
@@ -169,7 +169,8 @@ public class ResearchController extends Controller {
         filterItem.setFilterRangeStart(filterViewModel.getFilterRangeStart());
         filterItem.setFilterRangeEnd(filterViewModel.getFilterRangeEnd());
         filterItem.setMedicationName(filterViewModel.getMedicationName());
-        filterItem.setMissionTripInfo(filterViewModel.getMissionTrips()); //Andrew
+        filterItem.setMissionTripId(filterViewModel.getMissionTripId()); //Andrew Trip Filter
+
 
 
 

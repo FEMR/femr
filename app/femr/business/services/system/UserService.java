@@ -36,6 +36,7 @@ import femr.data.models.mysql.User;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,6 +228,7 @@ public class UserService implements IUserService {
                 }
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
+            user.setPasswordCreatedDate(DateTime.now());
             user = userRepository.update(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {

@@ -52,4 +52,11 @@ public interface IPatientService {
      * and/or errors if they exist.
      */
     ServiceResponse<PatientItem> createPatient(PatientItem patient);
+
+    /**
+     * Soft deletes a patient
+     * @return a service response that contains a PatientItem representing that the patient was deleted
+     * and/or errors if they exist.
+     */
+    ServiceResponse<PatientItem> deletePatient(int patientId);
 }

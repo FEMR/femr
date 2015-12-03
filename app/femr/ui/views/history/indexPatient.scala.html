@@ -1,3 +1,4 @@
+@import femr.ui.controllers.HistoryController
 @(currentUser: femr.common.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.history.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
 
 @import femr.ui.views.html.layouts.main
@@ -60,7 +61,16 @@
             </div>
             <div id="patientInformation">
                 <h1 class="bold margin-top-zero">Patient Id: @viewModel.getPatientItem.getId</h1>
+                @for(roles <- currentUser.getRoles()) {
 
+                    @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
+                        <span>
+                            @helper.form(action = HistoryController.deletePatientPost(viewModel.getPatientItem.getId())){
+                                <button type="submit" class="btn btn-default pull-right"> Delete this Patient</button>
+                            }
+                        </span>
+                    }
+                }
                 @helper.form(action = TriageController.indexPopulatedGet(viewModel.getPatientItem.getId)) {
                     <button type="submit" class="btn btn-default pull-right">See This Patient In Triage</button>
                 }

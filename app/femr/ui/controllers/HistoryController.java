@@ -33,6 +33,7 @@ import femr.ui.views.html.partials.history.listTabFieldHistory;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,14 +54,15 @@ public class HistoryController extends Controller {
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
-
+    private IPatientService patientService;
     @Inject
     public HistoryController(IEncounterService encounterService,
                              ISessionService sessionService,
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IPatientService patientService) {
 
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -68,6 +70,7 @@ public class HistoryController extends Controller {
         this.tabService = tabService;
         this.photoService = photoService;
         this.vitalService = vitalService;
+        this.patientService = patientService;
     }
 
     /**
@@ -275,7 +278,20 @@ public class HistoryController extends Controller {
 
         return ok("true");
     }
+    public Result deletePatientPost(int patientId){
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        //Getting UserItem
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId);
+        if(patientItemResponse.hasErrors())
+            throw new RuntimeException();
+
+        PatientItem patient = patientItemResponse.getResponseObject();
+        patient.setIsDeleted(DateTime.now());
+
+
+        return redirect(routes.TriageController.indexGet());
+    }
     /**
      * Gets the partial view that shows the history of tab field items. Called from AJAX.
      */

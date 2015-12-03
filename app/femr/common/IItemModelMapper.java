@@ -21,6 +21,7 @@ package femr.common;
 import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.data.models.mysql.MedicationInventory;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -88,6 +89,7 @@ public interface IItemModelMapper {
      * @param weight             how much the patient weighs, may be null
      * @param pathToPatientPhoto filepath to the patient photo, may be null
      * @param photoId            id of the patients photo, may be null
+     * @param isDeleted          timestamp when a patient is deleted, may be null
      * @return a new PatientItem or null if processing fails, may be null
      */
     PatientItem createPatientItem(int id,
@@ -103,7 +105,8 @@ public interface IItemModelMapper {
                                   Integer heightInches,
                                   Float weight,
                                   String pathToPatientPhoto,
-                                  Integer photoId);
+                                  Integer photoId,
+                                  DateTime isDeleted);
 
     /**
      * Generate and provide an instance of PatientEncounterItem

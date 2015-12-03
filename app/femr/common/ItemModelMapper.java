@@ -23,6 +23,8 @@ import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
+
 import java.util.Date;
 import java.util.List;
 
@@ -148,7 +150,8 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Integer heightInches,
                                                 Float weight,
                                                 String pathToPatientPhoto,
-                                                Integer photoId) {
+                                                Integer photoId,
+                                                DateTime isDeleted) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -196,6 +199,9 @@ public class ItemModelMapper implements IItemModelMapper {
 
         if (weight != null)
             patientItem.setWeight(weight);
+
+        if(isDeleted != null)
+            patientItem.setIsDeleted(isDeleted);
 
         return patientItem;
     }

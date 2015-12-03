@@ -33,6 +33,7 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -132,7 +133,8 @@ public class PatientService implements IPatientService {
                     null,
                     null,
                     photoPath,
-                    photoId);
+                    photoId,
+                    null);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -176,8 +178,61 @@ public class PatientService implements IPatientService {
                             null,
                             null,
                             photoPath,
-                            photoId)
+                            photoId,
+                            null)
             );
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientItem> deletePatient(int id){
+
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                .where()
+                .eq("id", id);
+
+        try {
+
+            IPatient savedPatient = patientRepository.findOne(query);
+
+            if( savedPatient == null ){
+
+                response.addError("exception", "Patient Not Found");
+                return response;
+            }
+
+            String photoPath = null;
+            Integer photoId = null;
+            if (savedPatient.getPhoto() != null) {
+                photoPath = savedPatient.getPhoto().getFilePath();
+                photoId = savedPatient.getPhoto().getId();
+            }
+            PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                    savedPatient.getFirstName(),
+                    savedPatient.getLastName(),
+                    savedPatient.getCity(),
+                    savedPatient.getAddress(),
+                    savedPatient.getUserId(),
+                    savedPatient.getAge(),
+                    savedPatient.getSex(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    photoPath,
+                    photoId,
+                    DateTime.now());
+            response.setResponseObject(patientItem);
+
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

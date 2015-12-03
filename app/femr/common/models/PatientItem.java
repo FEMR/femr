@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 import java.util.Date;
 
 public class PatientItem {
@@ -37,7 +39,7 @@ public class PatientItem {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
-
+    private DateTime isDeleted;
 
 
     public PatientItem(){
@@ -172,5 +174,11 @@ public class PatientItem {
 
     public void setFriendlyDateOfBirth(String friendlyDateOfBirth) {
         this.friendlyDateOfBirth = friendlyDateOfBirth;
+    }
+
+    public DateTime getIsDeleted(){return isDeleted;}
+
+    public void setIsDeleted(DateTime isDeleted){
+        this.isDeleted = isDeleted;
     }
 }

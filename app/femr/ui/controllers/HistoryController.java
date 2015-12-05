@@ -278,20 +278,7 @@ public class HistoryController extends Controller {
 
         return ok("true");
     }
-    public Result deletePatientPost(int patientId){
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId);
-        if(patientItemResponse.hasErrors())
-            throw new RuntimeException();
-
-        PatientItem patient = patientItemResponse.getResponseObject();
-        patient.setIsDeleted(DateTime.now());
-
-
-        return redirect(routes.TriageController.indexGet());
-    }
     /**
      * Gets the partial view that shows the history of tab field items. Called from AJAX.
      */

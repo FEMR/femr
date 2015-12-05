@@ -150,8 +150,7 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Integer heightInches,
                                                 Float weight,
                                                 String pathToPatientPhoto,
-                                                Integer photoId,
-                                                DateTime isDeleted) {
+                                                Integer photoId){
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -199,9 +198,6 @@ public class ItemModelMapper implements IItemModelMapper {
 
         if (weight != null)
             patientItem.setWeight(weight);
-
-        if(isDeleted != null)
-            patientItem.setIsDeleted(isDeleted);
 
         return patientItem;
     }

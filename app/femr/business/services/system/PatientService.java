@@ -133,8 +133,7 @@ public class PatientService implements IPatientService {
                     null,
                     null,
                     photoPath,
-                    photoId,
-                    null);
+                    photoId);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -178,8 +177,7 @@ public class PatientService implements IPatientService {
                             null,
                             null,
                             photoPath,
-                            photoId,
-                            null)
+                            photoId)
             );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -203,35 +201,8 @@ public class PatientService implements IPatientService {
         try {
 
             IPatient savedPatient = patientRepository.findOne(query);
-
-            if( savedPatient == null ){
-
-                response.addError("exception", "Patient Not Found");
-                return response;
-            }
-
-            String photoPath = null;
-            Integer photoId = null;
-            if (savedPatient.getPhoto() != null) {
-                photoPath = savedPatient.getPhoto().getFilePath();
-                photoId = savedPatient.getPhoto().getId();
-            }
-            PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
-                    savedPatient.getFirstName(),
-                    savedPatient.getLastName(),
-                    savedPatient.getCity(),
-                    savedPatient.getAddress(),
-                    savedPatient.getUserId(),
-                    savedPatient.getAge(),
-                    savedPatient.getSex(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    photoPath,
-                    photoId,
-                    DateTime.now());
-            response.setResponseObject(patientItem);
+            savedPatient.setIsDeleted(DateTime.now());
+            patientRepository.update(savedPatient);
 
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

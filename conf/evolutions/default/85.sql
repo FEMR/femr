@@ -3,7 +3,7 @@ ALTER TABLE `users`
 ADD COLUMN `passwordCreatedDate` DATETIME NOT NULL AFTER `password`;
 
 UPDATE `users`
-SET passwordCreatedDate = '9999-01-01';
+SET passwordCreatedDate = '0000-01-01';
 
 INSERT INTO vitals (name, data_type, unit_of_measurement)
   VALUES ('weeksPregnant', 'integer', 'weeks');

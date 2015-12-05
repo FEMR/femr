@@ -102,4 +102,8 @@ $(document).ready(function () {
 
         editEncounterFeature.hideEditDialog();
     });
+
+    $('#deletePatientBtn').click(function () {
+       alert("This patient will be deleted and unsearchable in fEMR. ");
+    });
 });

@@ -65,8 +65,8 @@
 
                     @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
                         <span>
-                            @helper.form(action = HistoryController.deletePatientPost(viewModel.getPatientItem.getId())){
-                                <button type="submit" class="btn btn-default pull-right"> Delete this Patient</button>
+                            @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
+                                <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
                             }
                         </span>
                     }

@@ -28,7 +28,7 @@
         }
         @if(viewModel.isLinkToMedical()){
 
-           <p> <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()">Patient has an open encounter!</a></p>
+           <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()">Go To Medical</a></p>
         }
         <h2 class="text-center">Check In - Triage</h2>
 

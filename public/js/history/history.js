@@ -104,6 +104,8 @@ $(document).ready(function () {
     });
 
     $('#deletePatientBtn').click(function () {
-       alert("This patient will be deleted and unsearchable in fEMR. ");
+        if (confirm("Are you sure you want to delete this patient?")) {
+            $("#deletePatient").click();
+        }
     });
 });

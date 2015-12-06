@@ -64,10 +64,11 @@
                 @for(roles <- currentUser.getRoles()) {
 
                     @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
-                        <span>
                             @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
-                                <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
+                                <button hidden="true" type="submit"  id="deletePatient"></button>
                             }
+                        <span>
+                            <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
                         </span>
                     }
                 }

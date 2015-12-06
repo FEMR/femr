@@ -3,6 +3,7 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import femr.business.helpers.LogicDoer;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -133,7 +134,7 @@ public class TriageController extends Controller {
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
         //Patient has an open encounter for medical
-        if(patientEncounter.getMedicalDateOfVisit() == null){
+        if(patientEncounter.getIsClosed() == false){
             viewModelGet.setLinkToMedical(true);
         }
         else{

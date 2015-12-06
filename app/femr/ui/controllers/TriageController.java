@@ -3,6 +3,7 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import femr.business.helpers.LogicDoer;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -100,6 +101,13 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
+        //AJ Saclayan New Encounter Warning
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if(patientEncounterItemServiceResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+
         //get the patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
@@ -126,6 +134,13 @@ public class TriageController extends Controller {
         viewModelGet.setPatient(patient);
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
+        //Patient has an open encounter for medical
+        if(patientEncounter.getIsClosed() == false){
+            viewModelGet.setLinkToMedical(true);
+        }
+        else{
+            viewModelGet.setLinkToMedical(false);
+        }
 
         return ok(index.render(currentUser, viewModelGet));
     }

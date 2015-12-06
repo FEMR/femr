@@ -120,7 +120,7 @@
     display: block;
     clear: both;
     margin-left: 1px;
-    width: 300px;
+    width: 100%;
 }
 
 .nav-sidebar li.submit{

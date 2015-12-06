@@ -147,8 +147,8 @@
                             </span>
                                 <span class="medication">
                                 <label>Filter Mission Trip City</label>
-                                    <select name="MissionTripId" class="medication">
-                                        <option selected value="">-- Select Trip --</option> @*Andrew Trip Filter*@
+                                    <select id="MissionTripId" name="MissionTripId" class="medication">
+                                        <option selected id="default" value="">-- Select Trip --</option> @*Andrew Trip Filter*@
                                         @for(i <- 1 to viewModel.getMissionTrips.size) {
                                             @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
                                                 @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {

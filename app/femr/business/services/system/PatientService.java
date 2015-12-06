@@ -33,6 +33,7 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -178,6 +179,31 @@ public class PatientService implements IPatientService {
                             photoPath,
                             photoId)
             );
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientItem> deletePatient(int id){
+
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                .where()
+                .eq("id", id);
+
+        try {
+
+            IPatient savedPatient = patientRepository.findOne(query);
+            savedPatient.setIsDeleted(DateTime.now());
+            patientRepository.update(savedPatient);
+
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
         }

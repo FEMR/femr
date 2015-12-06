@@ -16,6 +16,7 @@ import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.*;
 
@@ -232,6 +233,16 @@ public class TriageController extends Controller {
         return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
 
+    public Result deletePatientPost(int patientId){
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        //Getting UserItem
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId);
+        if(patientItemResponse.hasErrors())
+            throw new RuntimeException();
+
+        return redirect(routes.TriageController.indexGet());
+    }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
         PatientItem patient = new PatientItem();

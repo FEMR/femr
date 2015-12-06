@@ -102,6 +102,7 @@ public class QueryHelper {
                 .fetch("patientEncounters.missionTrip.missionCity")
                 .fetch("patientEncounters.missionTrip.missionCity.missionCountry")
                 .where()
+                .isNull("isDeleted")
                 .eq("patientEncounters.missionTrip.missionCity.missionCountry.name", country);
 
         return patientExpressionList.findList();
@@ -112,6 +113,11 @@ public class QueryHelper {
      */
     public static List<? extends IPatient> findPatients(IRepository<IPatient> patientRepository){
 
-        return patientRepository.findAll(Patient.class);
+        ExpressionList<Patient> patientExpressionList = QueryProvider.getPatientQuery()
+                .select("*")
+                .where()
+                .isNull("isDeleted");
+
+        return patientExpressionList.findList();
     }
 }

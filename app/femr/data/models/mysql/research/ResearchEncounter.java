@@ -49,7 +49,6 @@ public class ResearchEncounter implements IResearchEncounter {
             mappedBy = "patientEncounter")
     private List<ChiefComplaint> chiefComplaints;
 
-
     @OneToMany(fetch = FetchType.LAZY,
                mappedBy = "patientEncounter")
     @MapKey(name = "vitalId")

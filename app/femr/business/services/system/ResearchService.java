@@ -56,8 +56,6 @@ public class ResearchService implements IResearchService {
     private final IRepository<IResearchEncounter> researchEncounterRepository;
     private final IRepository<IVital> vitalRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
-    private final IRepository<IMissionTrip> missionTripIRepository; //Andrew Trip Filter
-
 
 
     /**
@@ -66,13 +64,11 @@ public class ResearchService implements IResearchService {
     @Inject
     public ResearchService(IRepository<IResearchEncounter> researchEncounterRepository,
                            IRepository<IVital> vitalRepository,
-                           IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
-                           IRepository<IMissionTrip> missionTripIRepository) {
+                           IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository) {
 
         this.researchEncounterRepository = researchEncounterRepository;
         this.vitalRepository = vitalRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
-        this.missionTripIRepository = missionTripIRepository; //Andrew Trip Filter
     }
 
 
@@ -436,7 +432,7 @@ public class ResearchService implements IResearchService {
 
         if ( filters.getMissionTripId() != null) {
 
-            researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId());
+            researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId()); //Andrew Trip Filter
         }
 
         // if the filters exist - use them in the query

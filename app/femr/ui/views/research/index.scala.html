@@ -142,19 +142,17 @@
                             </span>
                             <span class="medication">
                                 <label>Filter Medication</label>
-                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name" />
+                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name"/>
 
                             </span>
-                            
                                 <span class="medication">
                                 <label>Filter Mission Trip City</label>
                                     <select name="MissionTripId" class="medication">
-                                        <option selected value="">-- Select Trip --</option> @*Andrew Change*@
+                                        <option selected value="">-- Select Trip --</option> @*Andrew Trip Filter*@
                                         @for(i <- 1 to viewModel.getMissionTrips.size) {
                                             @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
                                                 @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
                                                     @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
-
                                                         <option value = "@missionTrip.getId()"> @missionItem.getTeamName - @missionTrip.getTripCountry - @missionTrip.getTripCity </option>
                                                     }
                                                 }
@@ -162,7 +160,7 @@
                                         }
                                     </select>
                                 </span>
-                            
+
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
                                 <input type="text" name="groupFactor" id="groupFactor" value="10" />

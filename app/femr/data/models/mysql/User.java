@@ -168,7 +168,6 @@ public class User implements IUser {
         this.notes = notes;
     }
 
-<<<<<<< HEAD
     @Override
     public List<IMissionTrip> getMissionTrips() {
         return missionTrips;
@@ -178,6 +177,4 @@ public class User implements IUser {
     public void setMissionTrips(List<IMissionTrip> missionTrips) {
         this.missionTrips = missionTrips;
     }
-=======
->>>>>>> 22276c0... Removed password constraints.  Playing around with typeahead for cities -AJ
 }

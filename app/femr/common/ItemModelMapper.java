@@ -24,6 +24,8 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.PatientPrescription;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
+
 import java.util.Date;
 import java.util.List;
 
@@ -149,7 +151,7 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Integer heightInches,
                                                 Float weight,
                                                 String pathToPatientPhoto,
-                                                Integer photoId) {
+                                                Integer photoId){
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -231,8 +233,16 @@ public class ItemModelMapper implements IItemModelMapper {
             patientEncounterItem.setPhysicianEmailAddress(patientEncounter.getDoctor().getEmail());
         if (patientEncounter.getPharmacist() != null)
             patientEncounterItem.setPharmacistEmailAddress(patientEncounter.getPharmacist().getEmail());
+        patientEncounterItem.setNurseFullName(patientEncounter.getNurse().getFirstName() + " " + patientEncounter.getNurse().getLastName()); // Andrew Change
 
+        if (patientEncounter.getDoctor() != null) {
+            patientEncounterItem.setPhysicianFullName(patientEncounter.getDoctor().getFirstName() + " " + patientEncounter.getDoctor().getLastName()); // Andrew Change
+        }
+        if (patientEncounter.getPharmacist() != null) {
+            patientEncounterItem.setPharmacistFullName(patientEncounter.getPharmacist().getFirstName() + " " + patientEncounter.getPharmacist().getLastName()); // Andrew Change
+        }
         return patientEncounterItem;
+
     }
 
     /**
@@ -510,7 +520,7 @@ public class ItemModelMapper implements IItemModelMapper {
         userItem.setNotes(user.getNotes());
         userItem.setDeleted(user.getDeleted());
         userItem.setPasswordReset(user.getPasswordReset());
-
+        userItem.setPasswordCreatedDate(dateUtils.getFriendlyDate(user.getPasswordCreatedDate()));
         return userItem;
     }
 

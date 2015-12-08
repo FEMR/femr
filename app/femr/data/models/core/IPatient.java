@@ -19,6 +19,8 @@
 package femr.data.models.core;
 
 import femr.data.models.mysql.PatientEncounter;
+import org.joda.time.DateTime;
+
 import java.util.Date;
 import java.util.List;
 
@@ -63,4 +65,8 @@ public interface IPatient {
     List<PatientEncounter> getPatientEncounters();
 
     void setPatientEncounters(List<PatientEncounter> patientEncounters);
+
+    DateTime getIsDeleted();
+
+    void setIsDeleted(DateTime isDeleted);
 }

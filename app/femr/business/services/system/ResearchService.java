@@ -399,7 +399,8 @@ public class ResearchService implements IResearchService {
 
         // Build Query based on Filters
         Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
-        researchEncounterQuery.fetch("patient");
+                researchEncounterQuery.fetch("patient");
+
 
         if( datasetName.equals("prescribedMeds") || datasetName.equals("dispensedMeds") ){
 
@@ -455,7 +456,7 @@ public class ResearchService implements IResearchService {
 //                e.ge("patient.age", sqlFormat.format(maxBirthDate.toDate()));
 //            }
 //        }
-
+        researchEncounterExpressionList.isNull("patient.isDeleted");
         // add age specific parameters
         if( datasetName.equals("age") ) {
 

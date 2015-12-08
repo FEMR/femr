@@ -33,6 +33,7 @@ import femr.ui.views.html.partials.history.listTabFieldHistory;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,14 +54,15 @@ public class HistoryController extends Controller {
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
-
+    private IPatientService patientService;
     @Inject
     public HistoryController(IEncounterService encounterService,
                              ISessionService sessionService,
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IPatientService patientService) {
 
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -68,6 +70,7 @@ public class HistoryController extends Controller {
         this.tabService = tabService;
         this.photoService = photoService;
         this.vitalService = vitalService;
+        this.patientService = patientService;
     }
 
     /**

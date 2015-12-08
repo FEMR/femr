@@ -102,4 +102,10 @@ $(document).ready(function () {
 
         editEncounterFeature.hideEditDialog();
     });
+
+    $('#deletePatientBtn').click(function () {
+        if (confirm("Are you sure you want to delete this patient?")) {
+            $("#deletePatient").click();
+        }
+    });
 });

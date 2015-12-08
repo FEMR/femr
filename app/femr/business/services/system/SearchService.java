@@ -83,6 +83,8 @@ public class SearchService implements ISearchService {
             return response;
         }
 
+
+
         //get patient encounters so we can use the newest one
         Query<PatientEncounter> peQuery = QueryProvider.getPatientEncounterQuery()
                 .where()
@@ -433,6 +435,7 @@ public class SearchService implements ISearchService {
             query = QueryProvider.getPatientQuery()
                     .where()
                     .eq("id", id)
+                    .isNull("isDeleted")
                     .order()
                     .desc("id");
 
@@ -443,6 +446,7 @@ public class SearchService implements ISearchService {
                     .where()
                     .eq("first_name", firstName)
                     .eq("last_name", lastName)
+                    .isNull("isDeleted")
                     .order()
                     .desc("id");
 
@@ -453,6 +457,7 @@ public class SearchService implements ISearchService {
                     .or(
                             Expr.eq("first_name", firstOrLastName),
                             Expr.eq("last_name", firstOrLastName))
+                    .isNull("isDeleted")
                     .order()
                     .desc("id");
 

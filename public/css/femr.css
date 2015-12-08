@@ -582,6 +582,9 @@ input[style] {
     color: rgb(198, 0, 0);
 }
 
+.input .errors{
+    display: block;
+}
 
 /* Custom Typeahead Styles */
 

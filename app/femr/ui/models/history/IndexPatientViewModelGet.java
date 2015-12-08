@@ -31,8 +31,6 @@ public class IndexPatientViewModelGet {
     //patient encounters available for the patient
     private List<PatientEncounterItem> patientEncounterItems;
 
-
-
     public List<PatientItem> getPatientItems() {
         return patientItems;
     }

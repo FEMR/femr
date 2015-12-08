@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 import java.util.Date;
 
 public class PatientItem {
@@ -37,7 +39,6 @@ public class PatientItem {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
-
 
 
     public PatientItem(){

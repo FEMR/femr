@@ -36,6 +36,7 @@ import femr.data.models.mysql.User;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class UserService implements IUserService {
                     .in("name", user.getRoles());
             List<? extends IRole> roles = roleRepository.find(query);
 
-
+            // AJ Saclayan - Password Constraints
             IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles);
             encryptAndSetUserPassword(newUser);
 
@@ -227,6 +228,7 @@ public class UserService implements IUserService {
                 }
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
+            user.setPasswordCreatedDate(DateTime.now());
             user = userRepository.update(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {

@@ -242,10 +242,34 @@ public class PDFController extends Controller {
 
         table.addCell(getDefaultHeaderCell("Encounter Information", 3));
 
+//        // Nurse
+//        PdfPCell cell = new PdfPCell(table.getDefaultCell());
+//        Paragraph title = new Paragraph("Nurse:", getTitleFont());
+//        Paragraph value = new Paragraph(outputStringOrNA(encounter.getNurseEmailAddress()), getValueFont());
+//        cell.addElement(title);
+//        cell.addElement(value);
+//        table.addCell(cell);
+//
+//        // Physician
+//        cell = new PdfPCell(table.getDefaultCell());
+//        title = new Paragraph("Physician:", getTitleFont());
+//        value = new Paragraph(outputStringOrNA(encounter.getPhysicianEmailAddress()), getValueFont());
+//        cell.addElement(title);
+//        cell.addElement(value);
+//        table.addCell(cell);
+//
+//        // Pharmacist
+//        cell = new PdfPCell(table.getDefaultCell());
+//        title = new Paragraph("Pharmacist:", getTitleFont());
+//        value = new Paragraph(outputStringOrNA(encounter.getPharmacistEmailAddress()), getValueFont());
+//        cell.addElement(title);
+//        cell.addElement(value);
+//        table.addCell(cell);
+
         // Nurse
         PdfPCell cell = new PdfPCell(table.getDefaultCell());
         Paragraph title = new Paragraph("Nurse:", getTitleFont());
-        Paragraph value = new Paragraph(outputStringOrNA(encounter.getNurseEmailAddress()), getValueFont());
+        Paragraph value = new Paragraph(outputStringOrNA(encounter.getNurseFullName()), getValueFont()); //Andrew Change
         cell.addElement(title);
         cell.addElement(value);
         table.addCell(cell);
@@ -253,7 +277,7 @@ public class PDFController extends Controller {
         // Physician
         cell = new PdfPCell(table.getDefaultCell());
         title = new Paragraph("Physician:", getTitleFont());
-        value = new Paragraph(outputStringOrNA(encounter.getPhysicianEmailAddress()), getValueFont());
+        value = new Paragraph(outputStringOrNA(encounter.getPhysicianFullName()), getValueFont()); //Andrew Change
         cell.addElement(title);
         cell.addElement(value);
         table.addCell(cell);
@@ -261,10 +285,11 @@ public class PDFController extends Controller {
         // Pharmacist
         cell = new PdfPCell(table.getDefaultCell());
         title = new Paragraph("Pharmacist:", getTitleFont());
-        value = new Paragraph(outputStringOrNA(encounter.getPharmacistEmailAddress()), getValueFont());
+        value = new Paragraph(outputStringOrNA(encounter.getPharmacistFullName()), getValueFont()); //Andrew Change
         cell.addElement(title);
         cell.addElement(value);
         table.addCell(cell);
+
 
         // Triage
         cell = new PdfPCell(table.getDefaultCell());

@@ -3,6 +3,7 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import femr.business.helpers.LogicDoer;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -16,6 +17,7 @@ import femr.common.models.VitalItem;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.*;
 
@@ -99,6 +101,13 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
+        //AJ Saclayan New Encounter Warning
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if(patientEncounterItemServiceResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+
         //get the patient
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
@@ -125,6 +134,13 @@ public class TriageController extends Controller {
         viewModelGet.setPatient(patient);
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
+        //Patient has an open encounter for medical
+        if(patientEncounter.getIsClosed() == false){
+            viewModelGet.setLinkToMedical(true);
+        }
+        else{
+            viewModelGet.setLinkToMedical(false);
+        }
 
         return ok(index.render(currentUser, viewModelGet));
     }
@@ -232,6 +248,16 @@ public class TriageController extends Controller {
         return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
 
+    public Result deletePatientPost(int patientId){
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        //Getting UserItem
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId);
+        if(patientItemResponse.hasErrors())
+            throw new RuntimeException();
+
+        return redirect(routes.TriageController.indexGet());
+    }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
         PatientItem patient = new PatientItem();

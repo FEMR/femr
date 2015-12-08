@@ -491,7 +491,7 @@ input[style] {
 }
 
 .twitter-typeahead{
-
+    display:inline;
     width: 100%;
 }
 

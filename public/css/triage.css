@@ -315,12 +315,11 @@
 
 /*AJ Saclayan*/
 
-
 #citySearchContainer {
     padding: 5px;
 }
 
-#citySearchContainer input[type="text"], .generalInfoInput input[type="date"] {
+#citySearchContainer input[type="text"], #citySearchContainer input[type="date"] {
     float: right;
     margin-right: 120px;
     width: 180px;

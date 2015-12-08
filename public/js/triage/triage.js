@@ -574,9 +574,7 @@ $(document).ready(function () {
                 },
                 templates: {
                     empty: [
-                        '<div class="emptyMessage">',
-                        'No matching cities found',
-                        '</div>'
+                        '<div class="emptyMessage">No matching cities found</div>'
                     ]
                 }
             }).on('typeahead:selected', function(event, item) {
@@ -589,7 +587,7 @@ $(document).ready(function () {
                 }
             ).on("change", function(event) {
                     // triggered when text is entered that is not part of the autocomplete
-                    var $cityName = $(this).closest(".cityRow").find(".medicationID");
+                    var $cityName = $(this).closest(".cityRow").find(".cityID");
                     $cityName.val("");
             });
 

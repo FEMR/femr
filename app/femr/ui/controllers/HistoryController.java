@@ -229,12 +229,12 @@ public class HistoryController extends Controller {
         indexEncounterPharmacyViewModel.setProblems(problems);
 
 
-        //Get original prescriptions
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(encounterId);
-        if (prescriptionItemServiceResponses.hasErrors()){
-            throw new RuntimeException();
-        }
-        indexEncounterPharmacyViewModel.setOriginalMedications(prescriptionItemServiceResponses.getResponseObject());
+//        //Get original prescriptions
+//        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponses = searchService.retrieveReplacedPrescriptionItems(encounterId);
+//        if (prescriptionItemServiceResponses.hasErrors()){
+//            throw new RuntimeException();
+//        }
+//        indexEncounterPharmacyViewModel.set(prescriptionItemServiceResponses.getResponseObject());
 
         //get prescriptions
         List<String> prescriptions = new ArrayList<>();

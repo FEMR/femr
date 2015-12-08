@@ -131,11 +131,4 @@ public interface ISearchService {
      */
     ServiceResponse<List<String>> findDiagnosisForSearch();
 
-    /**
-     * Get original prescriptions that were replaced in pharmacy (if they exist).
-     *
-     * @return a service response that contains a list of PrescriptionItems
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<PrescriptionItem>> retrieveReplacedPrescriptionItems(int encounterId);
 }

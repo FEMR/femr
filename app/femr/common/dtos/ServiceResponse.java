@@ -23,7 +23,7 @@ import femr.common.models.MissionTripItem;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceResponse<T> extends MissionTripItem {
+public class ServiceResponse<T> {
     private T responseObject;
     private Map<String, String> errors;
 

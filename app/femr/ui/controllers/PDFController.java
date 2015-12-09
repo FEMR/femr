@@ -439,10 +439,10 @@ public class PDFController extends Controller {
 
             for (PrescriptionItem prescription : prescriptionItems) {
 
-                if (prescription.getOriginalMedication() != null) {
+                if (prescription.getOriginalMedicationName() != null) {
 
                     //jank way to strikethrough
-                    Chunk strikeThrough = new Chunk(prescription.getOriginalMedication().getMedication().getName(), getValueFont());
+                    Chunk strikeThrough = new Chunk(prescription.getOriginalMedicationName(), getValueFont());
                     strikeThrough.setUnderline(0.1f, 3f);   // Thickness, the y axis location of
                     Paragraph originalMedName = new Paragraph(strikeThrough);
                     cell = new PdfPCell(originalMedName);

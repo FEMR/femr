@@ -26,7 +26,7 @@ import java.util.List;
 public class PrescriptionItem {
     private int id;
     private String name;
-    private IPatientPrescription originalMedication;
+    private String originalMedicationName;
     private String prescriberFirstName;
     private String prescriberLastName;
     private Integer administrationId;
@@ -146,11 +146,11 @@ public class PrescriptionItem {
         this.medicationActiveDrugs = medicationActiveDrugs;
     }
 
-    public IPatientPrescription getOriginalMedication(){
-        return originalMedication;
+    public String getOriginalMedicationName(){
+        return originalMedicationName;
     }
 
-    public void setOriginalMedication(IPatientPrescription originalMedication){
-        this.originalMedication = originalMedication;
+    public void setOriginalMedicationName(String originalMedicationName){
+        this.originalMedicationName = originalMedicationName;
     }
 }

@@ -270,7 +270,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionItem createPrescriptionItem(int id, String name, IPatientPrescription originalMedication, String firstName, String lastName,
+    public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
                                                    IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -282,8 +282,8 @@ public class ItemModelMapper implements IItemModelMapper {
 
         prescriptionItem.setId(id);
         prescriptionItem.setName(name);
-        if (originalMedication != null)
-            prescriptionItem.setOriginalMedication(originalMedication);
+        if (originalMedicationName != null)
+            prescriptionItem.setOriginalMedicationName(originalMedicationName);
         if (StringUtils.isNotNullOrWhiteSpace(firstName))
             prescriptionItem.setPrescriberFirstName(firstName);
         if (StringUtils.isNotNullOrWhiteSpace(lastName))

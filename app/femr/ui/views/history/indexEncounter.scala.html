@@ -199,8 +199,8 @@
                         @for(x <- 1 to viewModelPharmacy.getPrescriptions.size) {
                             @defining(viewModelPharmacy.getPrescriptions.get(x - 1)) { prescription =>
                               <tr>
-                                  @if(prescription.getOriginalMedication != null) {
-                                      <th><p><del><span>@prescription.getOriginalMedication.getMedication.getName</span></del></p></th>
+                                  @if(prescription.getOriginalMedicationName != null) {
+                                      <th><p><del><span>@prescription.getOriginalMedicationName</span></del></p></th>
                                       <th> @prescription.getAmount @outputStringOrNA(prescription.getName)
                                           (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
                                           @for(activeDrug <- prescription.getMedicationActiveDrugs) {

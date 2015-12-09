@@ -357,7 +357,7 @@ public class SearchService implements ISearchService {
 
                 //There is a replacement!
                 if(replacementResult != null)
-                    prescriptionItem.setOriginalMedication(replacementResult.getOriginalPrescription());
+                    prescriptionItem.setOriginalMedicationName(replacementResult.getOriginalPrescription().getMedication().getName());
             }
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {

@@ -45,18 +45,10 @@
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
-                <div id="citySearchContainer">
-                    <label for="city">City</label>
-                    <span class="red bold">*<input type = "text" class="citySearch fInput"  name="city" id="city" required></span>
+                <div class="generalInfoInput" id="citySearchContainer">
+                    <label for="city">City<span class="red bold">*</span></label>
+                    <input type = "text" class="citySearch fInput"  name="city" id="city" required>
                 </div>
-                @*<div id = "citySearchContainer">*@
-                    @*<label for="city">City</label>*@
-                    @*<span class="red bold">*<input type = "text" class="citySearch fInput tt-input"  name="city" id="city" required></span>*@
-                @*</div>*@
-                @*<div id = "citySearchContainer">*@
-                    @*<label for="city">City</label>*@
-                    @*<input type = "text" class="citySearch fInput typeahead loading"  name="city" id="city" required>*@
-                @*</div>*@
 
 
                 <div id="ageClassificationWrap">

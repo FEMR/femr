@@ -316,42 +316,53 @@
 /*AJ Saclayan*/
 
 #citySearchContainer {
-    padding: 5px;
+    padding: 5px !important;
 }
 
-#citySearchContainer input[type="text"], #citySearchContainer input[type="date"] {
-    float: right;
-    margin-right: 120px;
-    width: 180px;
+#citySearchContainer.generalInfoInput {
+    overflow: visible !important;
 }
-#citySearchContainer select{
-    width: 180px;
-    margin-right: 120px;
-    float: right;
+
+#citySearchContainer input.citySearch{
+    margin-right: 120px !important;
+    width: 180px !important;
 }
-#citySearchContainer input[type="radio"]{
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    margin: 0;
-    vertical-align: bottom;
+#citySearchContainer .tt-hint{
+    visibility:hidden;
+}
+#citySearchContainer .cityResult {
+    overflow: hidden;
+    border-bottom: 1px solid #9f9f9f;
     position: relative;
-    top: -1px;
+    display: block;
+    height: 96px;
+    color: #2f2f2f;
 }
-
-
-
 #citySearchContainer .cityResult span{
 
     color: #2f2f2f;
 }
-
 #citySearchContainer .cityResult:hover span,
 #citySearchContainer .cityResult.tt-cursor span{
 
-    color: #000000;
+    color: #2f2f2f;
 }
 
+#citySearchContainer .twitter-typeahead {
+   display: inline !important;
+    width: 100%;
+}
+.tt-dropdown-menu{
+    margin-right: 500px !important;
+    top:25px !important;
+    left: 100px !important;
+    max-height: 150px !important;
+}
+#citySearchContainer pre{
+    margin-right: 120px !important;
+    width: 100% !important;  left: 100px !important;
+}
 
-
-
+.tt-suggestion.tt-cursor{
+    color: black;
+}

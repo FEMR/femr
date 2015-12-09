@@ -123,7 +123,7 @@ var diabeticScreeningFeature = {
                 //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
                 //surpass the threshold required for the diabetes prompt
                 if (
-                    (recentVitals.getCurrentSystolic() !== null && parseInt(recentVitals.getCurrentSystolic()) >= 140) || (recentVitals.getCurrentDiastolic() !== null && parseInt(recentVitals.getCurrentDiastolic()) >= 90)
+                    (recentVitals.getCurrentSystolic() !== null && parseInt(recentVitals.getCurrentSystolic()) >= 135) || (recentVitals.getCurrentDiastolic() !== null && parseInt(recentVitals.getCurrentDiastolic()) >= 80)
                 ) {
                     //checks if the patient is 18 or older
                     if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {

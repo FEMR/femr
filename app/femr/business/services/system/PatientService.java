@@ -132,7 +132,8 @@ public class PatientService implements IPatientService {
                     null,
                     null,
                     photoPath,
-                    photoId);
+                    photoId,
+                    null);
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -176,7 +177,8 @@ public class PatientService implements IPatientService {
                             null,
                             null,
                             photoPath,
-                            photoId)
+                            photoId,
+                            null)
             );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

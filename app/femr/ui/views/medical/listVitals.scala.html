@@ -1,10 +1,11 @@
-
 @(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap, viewModel: femr.ui.models.medical.EditViewModelGet)
 
 @import femr.ui.views.html.partials.helpers.outputHeightOrNA
 @import femr.ui.views.html.partials.helpers.outputWeightOrNA
 @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
 
+@*IMPORTANT: The layout defined here is tightly coupled with the javascript logic used to
+keep track of the most recent vitals for a patient (see listVitals.js and medical.js*@
 
 <link rel="stylesheet" href="@routes.Assets.at("css/libraries/jquery.tablescroll.css")">
 <link rel="stylesheet" href="@routes.Assets.at("css/medical/listVitals.css")">
@@ -22,20 +23,22 @@
                 <td>@vitalMap.getFormatedDateTime(dateIndex - 1)</td>
             }
         </tr>
-        <tr>
+        <tr id="bloodPressure">
             <th>BP</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1))
-                    / @vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1))</td>
+                <td>
+                    <span class="systolic">@vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1))</span>
+                    / <span class="diastolic">@vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1))</span>
+                </td>
             }
         </tr>
-        <tr>
+        <tr id="heartRate">
             <th>HR</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@vitalMap.get("heartRate", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
-        <tr>
+        <tr id="temperature">
             <th>T</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@outputTemperatureOrNA(
@@ -45,19 +48,19 @@
                 )</td>
             }
         </tr>
-        <tr>
+        <tr id="respiratoryRate">
             <th>RR</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@vitalMap.get("respiratoryRate", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
-        <tr>
+        <tr id="glucose">
             <th>Gluc</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@vitalMap.get("glucose", vitalMap.getDate(dateIndex - 1))</td>
             }
         </tr>
-        <tr>
+        <tr id="oxygenSaturation">
             <th>SpO2</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
                 <td>@vitalMap.get("oxygenSaturation", vitalMap.getDate(dateIndex - 1))</td>

@@ -239,4 +239,13 @@ public interface IDataModelMapper {
      * @return an implementation of IUser or null if processing fails
      */
     IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+
+    /**
+     * Uses the user provider to update a patient encounter with diabetes screening information
+     *
+     * @param patientEncounter the patient encounter to be updated, not null
+     * @param diabetesScreenerId the id of the physician that screened the patient for diabetes, not null
+     * @return a PatientEncounter ready to be updated with the date of screening and the physician that did the screening
+     */
+    IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId);
 }

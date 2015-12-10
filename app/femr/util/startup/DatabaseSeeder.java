@@ -744,6 +744,15 @@ public class DatabaseSeeder {
             systemSettingRepository.create(systemSetting);
         }
 
+        //Asks a physician in medical if they screened the patient for diabetes based on
+        //criteria: (Age >= 18) AND (Systolic bp >= 140 OR Diastolic bp >= 90)
+        if (systemSettings != null && !containSetting(systemSettings, "Diabetes Prompt")){
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Diabetes Prompt");
+            systemSetting.setActive(false);
+            systemSettingRepository.create(systemSetting);
+        }
+
     }
 
     /**

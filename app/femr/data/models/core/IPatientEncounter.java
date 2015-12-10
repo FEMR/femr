@@ -67,4 +67,12 @@ public interface IPatientEncounter {
     IMissionTrip getMissionTrip();
 
     void setMissionTrip(IMissionTrip missionTrip);
+
+    DateTime getDateOfDiabeteseScreen();
+
+    void setDateOfDiabeteseScreen(DateTime dateOfDiabeteseScreen);
+
+    IUser getDiabetesScreener();
+
+    void setDiabetesScreener(IUser diabetesScreener);
 }

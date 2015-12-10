@@ -92,6 +92,12 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
 
+            String ageClassification = null;
+            if (recentEncounter.getPatientAgeClassification() != null){
+                ageClassification = recentEncounter.getPatientAgeClassification().getName();
+            }
+
+
             String pathToPhoto = null;
             Integer photoId = null;
             if (savedPatient.getPhoto() != null) {
@@ -112,7 +118,8 @@ public class SearchService implements ISearchService {
                     patientHeightInches,
                     patientWeight,
                     pathToPhoto,
-                    photoId
+                    photoId,
+                    ageClassification
             );
 
             //TODO: why is this being repeated?
@@ -154,6 +161,11 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
 
+            String ageClassification = null;
+            if (patientEncounter.getPatientAgeClassification() != null){
+                ageClassification = patientEncounter.getPatientAgeClassification().getName();
+            }
+
             String pathToPhoto = null;
             Integer photoId = null;
             if (patient.getPhoto() != null) {
@@ -174,7 +186,8 @@ public class SearchService implements ISearchService {
                     patientHeightInches,
                     patientWeight,
                     pathToPhoto,
-                    photoId
+                    photoId,
+                    ageClassification
             );
 
             // If metric setting enabled convert response patientItem to metric
@@ -463,7 +476,8 @@ public class SearchService implements ISearchService {
                         null,
                         null,
                         pathToPhoto,
-                        photoId
+                        photoId,
+                        null
                 ));
             }
             response.setResponseObject(patientItems);
@@ -560,7 +574,8 @@ public class SearchService implements ISearchService {
                         null,
                         null,
                         pathToPhoto,
-                        photoId
+                        photoId,
+                        null
                 );
 
                 if (patient.getPhoto() != null) {

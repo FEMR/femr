@@ -324,7 +324,6 @@
 }
 
 #citySearchContainer input.citySearch{
-    margin-right: 120px !important;
     width: 180px !important;
 }
 #citySearchContainer .tt-hint{
@@ -353,7 +352,6 @@
     width: 100%;
 }
 .tt-dropdown-menu{
-    margin-right: 500px !important;
     top:25px !important;
     left: 100px !important;
     max-height: 150px !important;

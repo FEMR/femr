@@ -130,7 +130,7 @@ public interface IItemModelMapper {
      *
      * @param id            id of the prescription, not null
      * @param name          name of the prescription, not null
-     * @param replacementId id of the prescription that replaced this prescription, may be null
+     * @param originalMedicationName original prescription that replaced this prescription, may be null
      * @param firstName     first name of the person that prescribed the medication, may be null
      * @param lastName      last name of the person that prescribed the medication, may be null
      * @param medicationAdministration
@@ -138,7 +138,7 @@ public interface IItemModelMapper {
      * @param medication
      * @return a new PrescriptionItem or null if processing fails
      */
-    PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+    PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
                                             IMedicationAdministration medicationAdministration, Integer amount, IMedication medication);
 
     /**

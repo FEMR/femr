@@ -130,4 +130,5 @@ public interface ISearchService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> findDiagnosisForSearch();
+
 }

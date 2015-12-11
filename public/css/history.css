@@ -307,6 +307,28 @@
 
 }
 
+/*Dispensed Meds Table*/
+#medTable{
+    border: 1px solid #ddd;
+    width: 95%;
+}
+#medTable ul{
+    list-style-type: none;
+}
+#medTable th{
+    border: 1px solid #ddd;
+    font-size: 14px;
+    text-align: center;
+    padding: 5px;
+}
+#medTable td{
+    padding: 5px;
+    border: 1px solid #ddd;
+    font-size: 11px;
+}
+#medTable ul{
+    padding: 0;
+}
 
 
 

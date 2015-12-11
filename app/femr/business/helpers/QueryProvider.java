@@ -98,6 +98,10 @@ public class QueryProvider {
         return Ebean.find(PatientPrescription.class);
     }
 
+    public static Query<PatientPrescriptionReplacement> getPatientPrescriptionReplacementQuery(){
+        return Ebean.find(PatientPrescriptionReplacement.class);
+    }
+
     public static Query<PatientPrescriptionReplacementReason> getPatientPrescriptionReasonQuery(){
         return Ebean.find(PatientPrescriptionReplacementReason.class);
     }

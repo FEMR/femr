@@ -48,6 +48,7 @@ public class SearchService implements ISearchService {
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
+    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
@@ -57,6 +58,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IMissionTripService missionTripService,
+                         IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
@@ -67,6 +69,7 @@ public class SearchService implements ISearchService {
         this.systemSettingRepository = systemSettingRepository;
         this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
+        this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
     }
 
     /**
@@ -320,15 +323,19 @@ public class SearchService implements ISearchService {
     @Override
     public ServiceResponse<List<PrescriptionItem>> retrieveDispensedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+//        ServiceResponse<List<PrescriptionItem>> replacedMedsResponse = retrieveDispensedPrescriptionItems(encounterId);
+//        List<PrescriptionItem> replacedMedicationItems = replacedMedsResponse.getResponseObject();
+
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .fetch("patientEncounter")
                 .where()
                 .eq("encounter_id", encounterId)
                 .ne("user_id_pharmacy", null);
+
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
             List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
-                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+                    .filter(pp -> pp.getDateDispensed() != null)
                     .map(pp -> itemModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),
@@ -340,6 +347,20 @@ public class SearchService implements ISearchService {
                             pp.getMedication()
                     ))
                     .collect(Collectors.toList());
+            List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
+                    .filter(pp -> pp.getPatientPrescriptionReplacements().size() > 0)
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
+                            pp.getMedication().getName(),
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication()
+                    ))
+                    .collect(Collectors.toList());
+            prescriptionItems.addAll(replacedPrescriptions);
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
@@ -628,4 +649,5 @@ public class SearchService implements ISearchService {
         ISystemSetting isMetric = systemSettingRepository.findOne(query);
         return isMetric.isActive();
     }
+
 }

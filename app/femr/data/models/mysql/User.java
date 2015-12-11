@@ -64,7 +64,6 @@ public class User implements IUser {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "mission_trip_id", referencedColumnName = "id")})
     private List<IMissionTrip> missionTrips;
-
     @Override
     public int getId() {
         return id;
@@ -170,7 +169,7 @@ public class User implements IUser {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-
+    
     @Override
     public List<IMissionTrip> getMissionTrips() {
         return missionTrips;

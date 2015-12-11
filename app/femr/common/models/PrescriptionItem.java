@@ -18,13 +18,15 @@
 */
 package femr.common.models;
 
+import femr.data.models.core.IPatientPrescription;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PrescriptionItem {
     private int id;
     private String name;
-    private Integer replacementId;
+    private String originalMedicationName;
     private String prescriberFirstName;
     private String prescriberLastName;
     private Integer administrationId;
@@ -60,14 +62,6 @@ public class PrescriptionItem {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getReplacementId() {
-        return replacementId;
-    }
-
-    public void setReplacementId(Integer replacementId) {
-        this.replacementId = replacementId;
     }
 
     public String getPrescriberFirstName() {
@@ -150,5 +144,13 @@ public class PrescriptionItem {
 
     public void setMedicationActiveDrugs(List<MedicationItem.ActiveIngredient> medicationActiveDrugs) {
         this.medicationActiveDrugs = medicationActiveDrugs;
+    }
+
+    public String getOriginalMedicationName(){
+        return originalMedicationName;
+    }
+
+    public void setOriginalMedicationName(String originalMedicationName){
+        this.originalMedicationName = originalMedicationName;
     }
 }

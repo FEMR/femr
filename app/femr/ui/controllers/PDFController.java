@@ -356,51 +356,51 @@ public class PDFController extends Controller {
      * @param problemItems a list of the encounter's problems
      * @return PdfPTable the itext table to add to the document
      */
-    private PdfPTable getAssessments(TabFieldMultiMap tabFieldMultiMap,  List<PrescriptionItem> prescriptionItems , List<ProblemItem> problemItems) {
+    private PdfPTable getAssessments(TabFieldMultiMap tabFieldMultiMap, List<PrescriptionItem> prescriptionItems , List<ProblemItem> problemItems) {
 
-        PdfPTable table = getDefaultTable(2);
-        table.addCell(getDefaultHeaderCell("Assessments", 2));
+        PdfPTable table = getDefaultTable(3);   //Set table to span 3 columns to counteract tablesize for dispensed prescriptions
+        table.addCell(getDefaultHeaderCell("Assessments", 3));
 
         // Row 1
         PdfPCell cellMSH = new PdfPCell(table.getDefaultCell());
         TabFieldItem msh = tabFieldMultiMap.getMostRecentOrEmpty("medicalSurgicalHistory", null);
         cellMSH.addElement(getStyledPhrase("Medical Surgical History: ", outputStringOrNA(msh.getValue())));
-        cellMSH.setColspan(2);
+        cellMSH.setColspan(3);
         table.addCell(cellMSH);
 
         // Row 2
         PdfPCell cellCM = new PdfPCell(table.getDefaultCell());
         TabFieldItem cm = tabFieldMultiMap.getMostRecentOrEmpty("currentMedication", null);
         cellCM.addElement(getStyledPhrase("Medication: ", outputStringOrNA(cm.getValue())));
-        cellCM.setColspan(2);
+        cellCM.setColspan(3);
         table.addCell(cellCM);
 
         // Row 3
         PdfPCell cellSH = new PdfPCell(table.getDefaultCell());
         TabFieldItem sh = tabFieldMultiMap.getMostRecentOrEmpty("socialHistory", null);
         cellSH.addElement(getStyledPhrase("Social History: ", outputStringOrNA(sh.getValue())));
-        cellSH.setColspan(2);
+        cellSH.setColspan(3);
         table.addCell(cellSH);
 
         // Row 4
         PdfPCell cellAssesment = new PdfPCell(table.getDefaultCell());
         TabFieldItem assessment = tabFieldMultiMap.getMostRecentOrEmpty("assessment", null);
         cellAssesment.addElement(getStyledPhrase("Assessment: ", outputStringOrNA(assessment.getValue())));
-        cellAssesment.setColspan(2);
+        cellAssesment.setColspan(3);
         table.addCell(cellAssesment);
 
         // Row 5
         PdfPCell cellFH = new PdfPCell(table.getDefaultCell());
         TabFieldItem fh = tabFieldMultiMap.getMostRecentOrEmpty("familyHistory", null);
         cellFH.addElement(getStyledPhrase("Family History: ", outputStringOrNA(fh.getValue())));
-        cellFH.setColspan(2);
+        cellFH.setColspan(3);
         table.addCell(cellFH);
 
         // Row 6
         PdfPCell cellTreatment = new PdfPCell(table.getDefaultCell());
         TabFieldItem treatment = tabFieldMultiMap.getMostRecentOrEmpty("treatment", null);
         cellTreatment.addElement(getStyledPhrase("Treatment: ", outputStringOrNA(treatment.getValue())));
-        cellTreatment.setColspan(2);
+        cellTreatment.setColspan(3);
         table.addCell(cellTreatment);
 
         // Loop through and add any potential Custom Field Names
@@ -409,22 +409,61 @@ public class PDFController extends Controller {
 
             String value = tabFieldMultiMap.getMostRecentOrEmpty(customField, null).getValue();
             PdfPCell customCell = new PdfPCell(table.getDefaultCell());
-            customCell.setColspan(2);
+            customCell.setColspan(3);
             customCell.addElement(getStyledPhrase(customField + " :", outputStringOrNA(value)));
             table.addCell(customCell);
         }
 
-        // Get Prescriptions -- add Paragraph for each one to the cell
-        Paragraph prescriptionsTitle = new Paragraph("Prescription(s):", getTitleFont());
+        // AJ Saclayan Dispensed Table
+        Paragraph prescriptionsTitle = new Paragraph("Dispensed Prescription(s):", getTitleFont());
         PdfPCell prescriptionCell = new PdfPCell(table.getDefaultCell());
+
         prescriptionCell.setPaddingRight(10);
         prescriptionCell.addElement(prescriptionsTitle);
-        for (PrescriptionItem prescription : prescriptionItems) {
-            Paragraph script = new Paragraph(" - "+prescription.getName(), getValueFont());
-            prescriptionCell.addElement(script);
-        }
+        prescriptionCell.setColspan(3);
         table.addCell(prescriptionCell);
+        table.completeRow();
+        if(!prescriptionItems.isEmpty()) {
+            //Create Dispensed Table.
+            Paragraph originalMedsTitle = new Paragraph("Original", getTitleFont());
+            PdfPCell cell = new PdfPCell(originalMedsTitle);
 
+            table.addCell(cell);
+
+            Paragraph replacedMedsTitle = new Paragraph("Replaced", getTitleFont());
+            cell = new PdfPCell(replacedMedsTitle);
+
+            table.addCell(cell);
+
+            table.completeRow();
+
+            for (PrescriptionItem prescription : prescriptionItems) {
+
+                if (prescription.getOriginalMedicationName() != null) {
+
+                    //jank way to strikethrough
+                    Chunk strikeThrough = new Chunk(prescription.getOriginalMedicationName(), getValueFont());
+                    strikeThrough.setUnderline(0.1f, 3f);   // Thickness, the y axis location of
+                    Paragraph originalMedName = new Paragraph(strikeThrough);
+                    cell = new PdfPCell(originalMedName);
+
+                    table.addCell(cell);
+
+                    Paragraph replacedMedName = new Paragraph(prescription.getName(), getValueFont());
+                    cell = new PdfPCell(replacedMedName);
+                    table.addCell(cell);
+                } else {
+                    Paragraph medName = new Paragraph(prescription.getName(), getValueFont());
+                    cell = new PdfPCell(medName);
+                    table.addCell(cell);
+
+                    Paragraph blankCell = new Paragraph(" ", getValueFont());
+                    cell = new PdfPCell(blankCell);
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+        }
         // Get Problems
         Paragraph problemsTitle = new Paragraph("Problem(s):", getTitleFont());
         PdfPCell problemsCell = new PdfPCell(table.getDefaultCell());
@@ -435,6 +474,7 @@ public class PDFController extends Controller {
         }
         table.addCell(problemsCell);
 
+        table.completeRow();
         return table;
     }
 

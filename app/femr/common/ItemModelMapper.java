@@ -21,6 +21,7 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.PatientPrescription;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -269,7 +270,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionItem createPrescriptionItem(int id, String name, Integer replacementId, String firstName, String lastName,
+    public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
                                                    IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -281,8 +282,8 @@ public class ItemModelMapper implements IItemModelMapper {
 
         prescriptionItem.setId(id);
         prescriptionItem.setName(name);
-        if (replacementId != null)
-            prescriptionItem.setReplacementId(replacementId);
+        if (originalMedicationName != null)
+            prescriptionItem.setOriginalMedicationName(originalMedicationName);
         if (StringUtils.isNotNullOrWhiteSpace(firstName))
             prescriptionItem.setPrescriberFirstName(firstName);
         if (StringUtils.isNotNullOrWhiteSpace(lastName))

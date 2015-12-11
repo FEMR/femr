@@ -335,7 +335,7 @@ public class SearchService implements ISearchService {
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
             List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
-                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
+                    .filter(pp -> pp.getDateDispensed() != null)
                     .map(pp -> itemModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),
@@ -347,18 +347,21 @@ public class SearchService implements ISearchService {
                             pp.getMedication()
                     ))
                     .collect(Collectors.toList());
-            //Loop through each prescription dispensed, query to find if replacementId returns not null so there is a replacement, if it does,
-            // take the replacementId and set that to the originalPrescription.
-            for(PrescriptionItem prescriptionItem : prescriptionItems){
-                ExpressionList<PatientPrescriptionReplacement> replacementQuery = QueryProvider.getPatientPrescriptionReplacementQuery()
-                        .where()
-                        .eq("patient_prescription_id_replacement", prescriptionItem.getId());
-                IPatientPrescriptionReplacement replacementResult = patientPrescriptionReplacementRepository.findOne(replacementQuery);
+            List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
+                    .filter(pp -> pp.getPatientPrescriptionReplacements().size() > 0)
+                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                            pp.getId(),
+                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
+                            pp.getMedication().getName(),
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication()
+                    ))
+                    .collect(Collectors.toList());
+            prescriptionItems.addAll(replacedPrescriptions);
 
-                //There is a replacement!
-                if(replacementResult != null)
-                    prescriptionItem.setOriginalMedicationName(replacementResult.getOriginalPrescription().getMedication().getName());
-            }
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

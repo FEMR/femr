@@ -33,6 +33,7 @@ public class UserItem {
     private String notes;
     private boolean isDeleted;
     private boolean isPasswordReset;
+    private String PasswordCreatedDate;
 
     public UserItem(){
         this.roles = new ArrayList<>();
@@ -117,6 +118,14 @@ public class UserItem {
         this.isPasswordReset = isPasswordReset;
     }
 
+    //AJ Saclayan Password Constraints
+    public String getPasswordCreatedDate(){
+        return PasswordCreatedDate;
+    }
+
+    public void setPasswordCreatedDate(String PasswordCreatedDate){
+        this.PasswordCreatedDate = PasswordCreatedDate;
+    }
     @Override
     public boolean equals(final Object obj){
 

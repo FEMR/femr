@@ -36,6 +36,7 @@ import femr.ui.views.html.admin.users.manage;
 import femr.ui.views.html.admin.users.create;
 import femr.ui.views.html.admin.users.edit;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -215,11 +216,12 @@ public class UsersController extends Controller {
                 }
                 userItem.setRoles(userRoles);
             }
-
+           
             ServiceResponse<UserItem> updateResponse = userService.updateUser(userItem, newPassword);
             if (updateResponse.hasErrors()) {
                 throw new RuntimeException();
             } else {
+
                 //return to manage user homepage
                 return redirect(routes.UsersController.manageGet());
             }

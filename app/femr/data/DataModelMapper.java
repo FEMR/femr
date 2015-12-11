@@ -589,7 +589,7 @@ public class DataModelMapper implements IDataModelMapper{
         user.setPasswordReset(isPasswordReset);
         user.setNotes(notes);
         user.setRoles(roles);
-
+        user.setPasswordCreatedDate(date);
         return user;
     }
 

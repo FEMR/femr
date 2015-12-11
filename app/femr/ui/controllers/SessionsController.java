@@ -10,9 +10,15 @@ import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
 import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class SessionsController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
@@ -48,6 +54,15 @@ public class SessionsController extends Controller {
             if (userResponse.hasErrors()){
                 throw new RuntimeException();
             }
+
+            DateTime start = new DateTime(user.getPasswordCreatedDate());
+            DateTime stop = new DateTime(DateTime.now());
+            int daysBetween = Days.daysBetween(start, stop).getDays();
+
+            if(daysBetween > 60){
+                user.setPasswordReset(true);
+            }
+
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }
@@ -58,7 +73,8 @@ public class SessionsController extends Controller {
     }
 
     public Result editPasswordGet(IUser user){
-        return ok(editPassword.render(user.getFirstName(), user.getLastName()));
+
+        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>()));
     }
 
     public Result editPasswordPost(){
@@ -67,8 +83,29 @@ public class SessionsController extends Controller {
         IUser user = userService.retrieveById(currentUser.getId());
         Boolean isNewPassword = false;
 
-        if (viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify())){
+        Pattern hasUppercase = Pattern.compile("[A-Z]");
+        Pattern hasNumber = Pattern.compile("\\d");
+        ArrayList<String> messages = new ArrayList<>();
+        if (StringUtils.isNullOrWhiteSpace(viewModel.getNewPassword()))
+            messages.add("password is a required field");
+        else
+        {
+            if(viewModel.getNewPassword().length() < 6)        //AJ Saclayan Password Constraints
+                messages.add("password is less than 6 characters");
+            if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
+                    messages.add("password must have an uppercase");
+            if (!hasNumber.matcher(viewModel.getNewPassword()).find())
+                    messages.add("password must have a number");
+            if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
+                messages.add("passwords do not match");
+        }
+
+        if(!messages.isEmpty())
+            return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages));
+        else
+        {
             user.setPassword(viewModel.getNewPassword());
+            user.setPasswordCreatedDate(DateTime.now());
             user.setPasswordReset(false);
             isNewPassword = true;
         }

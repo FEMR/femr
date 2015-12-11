@@ -313,5 +313,54 @@
 }
 
 
+/*AJ Saclayan*/
 
+#citySearchContainer {
+    padding: 5px !important;
+}
 
+#citySearchContainer.generalInfoInput {
+    overflow: visible !important;
+}
+
+#citySearchContainer input.citySearch{
+    width: 180px !important;
+}
+#citySearchContainer .tt-hint{
+    visibility:hidden;
+}
+#citySearchContainer .cityResult {
+    overflow: hidden;
+    border-bottom: 1px solid #9f9f9f;
+    position: relative;
+    display: block;
+    height: 96px;
+    color: #2f2f2f;
+}
+#citySearchContainer .cityResult span{
+
+    color: #2f2f2f;
+}
+#citySearchContainer .cityResult:hover span,
+#citySearchContainer .cityResult.tt-cursor span{
+
+    color: #2f2f2f;
+}
+
+#citySearchContainer .twitter-typeahead {
+   display: inline !important;
+    width: 100%;
+}
+.tt-dropdown-menu{
+    top:25px !important;
+    left: 100px !important;
+    max-height: 150px !important;
+}
+#citySearchContainer pre{
+    margin-right: 120px !important;
+    width: 100% !important;  left: 100px !important;
+}
+
+.tt-suggestion.tt-cursor{
+    color: black;
+}

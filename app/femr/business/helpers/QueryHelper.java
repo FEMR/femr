@@ -23,8 +23,10 @@ import com.avaje.ebean.Query;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterVital;
+import femr.data.models.mysql.MissionCity;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientEncounterVital;
+import femr.data.models.core.IMissionCity;
 
 import java.util.List;
 
@@ -119,5 +121,14 @@ public class QueryHelper {
                 .isNull("isDeleted");
 
         return patientExpressionList.findList();
+    }
+
+    /**
+     * AJ Saclayan
+     * Finds all cities*
+     */
+    public static List<? extends IMissionCity> findCities(IRepository<IMissionCity> cityRepository){
+
+        return cityRepository.findAll(MissionCity.class);
     }
 }

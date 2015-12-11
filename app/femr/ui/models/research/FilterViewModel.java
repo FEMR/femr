@@ -18,6 +18,11 @@
 */
 package femr.ui.models.research;
 
+import femr.common.models.CityItem;
+import femr.common.models.MissionItem;
+
+import java.util.List;
+
 public class FilterViewModel {
 
     private String primaryDataset;
@@ -30,7 +35,7 @@ public class FilterViewModel {
     private Float filterRangeStart;
     private Float filterRangeEnd;
     private String medicationName;
-
+    private List<MissionItem> missionItems;
     /*
     public List<ValidationError> validate() {
 
@@ -138,4 +143,11 @@ public class FilterViewModel {
 
     public void setMedicationName(String medicationId) { this.medicationName = medicationId; }
 
+    public List<MissionItem> getMissionItems() {
+        return missionItems;
+    }
+
+    public void setMissionItems(List<MissionItem> missionItems) {
+        this.missionItems = missionItems;
+    }
 }

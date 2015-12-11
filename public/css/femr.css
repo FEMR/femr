@@ -491,7 +491,7 @@ input[style] {
 }
 
 .twitter-typeahead{
-
+    display:inline;
     width: 100%;
 }
 
@@ -532,7 +532,7 @@ input[style] {
     font-size: 16px;
     min-width: 160px;
     margin-top: 2px;
-    padding: 5px d;
+    padding: 5px;
     background-color: #fff;
     *border-right-width: 2px;
     *border-bottom-width: 2px;
@@ -544,7 +544,7 @@ input[style] {
     box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    position: relative !important;
+    position: absolute; !important;
 
     max-height: 200px;
     overflow-y: auto;

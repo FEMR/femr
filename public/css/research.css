@@ -114,12 +114,13 @@
     width: 100%;
 }
 
+/*Andrew Trip Filter*/
 .nav-sidebar li.controls span.medication select{
 
     display: block;
     clear: both;
-    margin-left: 10px;
-    width: 150px;
+    margin-left: 1px;
+    width: 100%;
 }
 
 .nav-sidebar li.submit{

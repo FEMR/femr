@@ -70,8 +70,5 @@ public class MedicationInventory implements IMedicationInventory{
     }
 
     @Override
-    public void setMissionTrip(IMissionTrip missionTrip) {
-
-        this.missionTrip = (MissionTrip) missionTrip;
-    }
+    public void setMissionTrip(IMissionTrip missionTrip) { this.missionTrip = (MissionTrip) missionTrip; }
 }

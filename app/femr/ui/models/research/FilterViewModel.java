@@ -18,6 +18,15 @@
 */
 package femr.ui.models.research;
 
+
+import femr.common.models.MissionItem;
+import femr.data.models.mysql.MissionCity;
+import femr.data.models.mysql.MissionTrip;
+import femr.data.models.mysql.User;
+import play.data.Form;
+
+import java.util.List;
+
 public class FilterViewModel {
 
     private String primaryDataset;
@@ -30,6 +39,8 @@ public class FilterViewModel {
     private Float filterRangeStart;
     private Float filterRangeEnd;
     private String medicationName;
+    private List<MissionItem> MissionTrips; //Andrew Trip Filter
+    private Integer MissionTripId; //Andrew Trip Filter
 
     /*
     public List<ValidationError> validate() {
@@ -138,4 +149,13 @@ public class FilterViewModel {
 
     public void setMedicationName(String medicationId) { this.medicationName = medicationId; }
 
+    public List<MissionItem> getMissionTrips() { return MissionTrips; } //Andrew Trip Filter
+
+    public void setMissionTrips(List<MissionItem> MissionTrips) { this.MissionTrips = MissionTrips; } //Andrew Trip Filter
+
+    public Integer getMissionTripId() { return MissionTripId; }
+
+    public void setMissionTripId(Integer MissionTripId) { this.MissionTripId = MissionTripId; }
+
 }
+

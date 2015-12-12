@@ -18,6 +18,8 @@
 */
 package femr.common.dtos;
 
+import femr.common.models.MissionTripItem;
+
 import java.util.HashMap;
 import java.util.Map;
 

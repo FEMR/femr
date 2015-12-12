@@ -1,7 +1,12 @@
+@import java.util
 @(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.ResearchController
+@import scala.collection.JavaConversions._
+@import helper._
+
+
 
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.versioned("css/research.css")">
@@ -137,16 +142,25 @@
                             </span>
                             <span class="medication">
                                 <label>Filter Medication</label>
-                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name" />
-                                @*
-                                <select name="medicationId" id="medicationId">
-                                    <option value="-1">Any</option>
-                                    @for( (key,value) <- viewModel.getMedicationsList ){
-                                        <option value="@key">@value</option>
-                                    }
-                                </select>
-                                *@
+                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name"/>
+
                             </span>
+                                <span class="medication">
+                                <label>Filter Mission Trip City</label>
+                                    <select id="MissionTripId" name="MissionTripId" class="medication">
+                                        <option selected id="default" value="">-- Select Trip --</option> @*Andrew Trip Filter*@
+                                        @for(i <- 1 to viewModel.getMissionTrips.size) {
+                                            @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
+                                                @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                                                    @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+                                                        <option value = "@missionTrip.getId()"> @missionItem.getTeamName - @missionTrip.getTripCountry - @missionTrip.getTripCity </option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </span>
+
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
                                 <input type="text" name="groupFactor" id="groupFactor" value="10" />

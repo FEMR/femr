@@ -18,6 +18,7 @@
 */
 package femr.business.services.core;
 
+import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.models.core.IRole;
@@ -35,7 +36,7 @@ public interface IUserService {
      * @return ServiceResponse that contains the new UserItem
      * and/or errors if they exist.
      */
-    ServiceResponse<UserItem> createUser(UserItem user, String password);
+    ServiceResponse<UserItem> createUser(UserItem user, String password, CurrentUser currentUser); //Sam Zanni
 
     /**
      * Find all users.

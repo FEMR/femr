@@ -35,6 +35,8 @@ public class CreateViewModel {
     private String newPassword;
     private String newPasswordVerify;
     private String notes;
+    private Integer CreatedBy; //Sam Zanni
+    private String DateCreated; //Sam Zanni
 
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
@@ -137,5 +139,13 @@ public class CreateViewModel {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    public Integer getCreatedBy() { return CreatedBy; } //Sam Zanni
+
+    public void setCreatedBy(Integer CreatedBy) { this.CreatedBy = CreatedBy; } //Sam Zanni
+
+    public String getDateCreated() { return DateCreated; } //Sam Zanni
+
+    public void setDateCreated(String DateCreated) { this.DateCreated = DateCreated; } //Sam Zanni
 }
 

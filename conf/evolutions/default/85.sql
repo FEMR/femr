@@ -3,13 +3,13 @@ ALTER TABLE `users`
 
 ADD COLUMN `passwordCreatedDate` DATETIME NOT NULL AFTER `password`,
 ADD COLUMN `date_created` DATETIME NOT NULL AFTER `last_login`,
-ADD COLUMN `created_by` INT NOT NULL AFTER `creation_date`;
+ADD COLUMN `created_by` INT NOT NULL AFTER `date_created`;
 
 UPDATE `users`
-SET date_created = '9999-01-01'
+SET date_created = '0000-01-01 00:00:00';
 
 UPDATE `users`
-SET passwordCreatedDate = '0000-01-01';
+SET passwordCreatedDate = '0000-01-01 00:00:00';
 
 INSERT INTO vitals (name, data_type, unit_of_measurement)
   VALUES ('weeksPregnant', 'integer', 'weeks');

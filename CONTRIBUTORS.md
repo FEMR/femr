@@ -20,3 +20,5 @@ These people have contributed to fEMR's design and implementation:
 * [Amney Iskandar] (https://github.com/amney14)
 * [Andre Farah] (https://github.com/AndreFarah)
 * [AJ Saclayan] (https://github.com/ajsclyn)
+* [Samantha Zanni] (https://github.com/zanni022)
+* [Andrew Krebs] (https://github.com/akrebs1202)

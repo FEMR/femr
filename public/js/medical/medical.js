@@ -476,7 +476,8 @@ $(document).ready(function () {
         $('input[name=isDiabetesScreenPerformed]').val("true");
     });
 
-    $("form").submit(function(event) {
+
+    $('#medicalSubmitBtn').click(function () {
         var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
         if (isDiabeticScreeningPromptNecessary){
             var diabetesDialog = $('.historySubmitWrap.hidden');
@@ -485,8 +486,13 @@ $(document).ready(function () {
             $(diabetesDialog).removeClass('hidden');
         }
 
+        return (photoNameFixup() && validate() && !isDiabeticScreeningPromptNecessary); //validate from medicalClientValidation.js
+    });
+
+    $("form").submit(function(event) {
+
         //validate from medicalClientValidation.js
-        if (!photoNameFixup() || !validate() || isDiabeticScreeningPromptNecessary) {
+        if (!photoNameFixup() || !validate()) {
             event.preventDefault();
             return false;
         }

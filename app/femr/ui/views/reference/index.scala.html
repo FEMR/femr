@@ -4,7 +4,7 @@
 @import femr.ui.controllers.routes.ReferenceController
 
 @additionalStyles = {
-    <link rel="stylesheet" href="@routes.Assets.at("css/reference.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/reference.css")">
 }
 @additionalScripts = {
 
@@ -15,8 +15,8 @@
 
     <div class="referenceContentWrap">
 
-        <img src="@routes.Assets.at("img/reference/pt-chart-ros.png")"  />
-        <img src="@routes.Assets.at("img/reference/cass-physical.png")" class="physical" />
+        <img src="@routes.Assets.versioned("img/reference/pt-chart-ros.png")"  />
+        <img src="@routes.Assets.versioned("img/reference/cass-physical.png")" class="physical" />
 
     </div>
 

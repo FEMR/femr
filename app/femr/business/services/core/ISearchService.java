@@ -118,10 +118,11 @@ public interface ISearchService {
     /**
      * Get all patient information for searching users.
      *
+     * @param userId id of the user searching for patients
      * @return a service response that contains a list of PatientItems
      * and/or errors if they exist.
      */
-    ServiceResponse<List<PatientItem>> retrievePatientsForSearch();
+    ServiceResponse<List<PatientItem>> retrievePatientsForSearch(int userId);
 
     /**
      * Get all diagnosis for help on problem input fields in medical

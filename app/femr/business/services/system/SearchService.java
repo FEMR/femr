@@ -534,7 +534,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch() {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch(int userId) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
@@ -543,7 +543,7 @@ public class SearchService implements ISearchService {
                     .eq("name", "Country Filter");
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
-            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
+            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip(userId);
 
             List<? extends IPatient> allPatients;
 

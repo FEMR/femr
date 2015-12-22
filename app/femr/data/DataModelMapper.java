@@ -21,7 +21,6 @@ package femr.data;
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
-import femr.common.dtos.CurrentUser;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -572,7 +571,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, CurrentUser currentUser) {
+    public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(password) || StringUtils.isNullOrWhiteSpace(email) || date == null || roles == null || roles.size() < 1) {
 
@@ -591,8 +590,8 @@ public class DataModelMapper implements IDataModelMapper{
         user.setNotes(notes);
         user.setRoles(roles);
         user.setPasswordCreatedDate(date);
-        user.setDateCreated(date); //Sam Zanni
-        user.setCreatedBy(currentUser.getId()); //Sam Zanni
+        user.setDateCreated(date);
+        user.setCreatedBy(userId);
         return user;
     }
 

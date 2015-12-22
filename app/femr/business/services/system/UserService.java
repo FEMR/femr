@@ -69,7 +69,7 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<UserItem> createUser(UserItem user, String password, CurrentUser currentUser) {
+    public ServiceResponse<UserItem> createUser(UserItem user, String password, int userId) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         try {
 
@@ -79,7 +79,7 @@ public class UserService implements IUserService {
             List<? extends IRole> roles = roleRepository.find(query);
 
             // AJ Saclayan - Password Constraints
-            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, currentUser);
+            IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, userId);
 
             encryptAndSetUserPassword(newUser);
 

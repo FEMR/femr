@@ -19,8 +19,8 @@ public class MedicationInventory implements IMedicationInventory{
     @Column(name = "quantity_initial", unique = false, nullable = true)
     private Integer quantity_initial;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "medication_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "medication_id")
     private Medication medication;
 
     @ManyToOne(fetch = FetchType.EAGER)

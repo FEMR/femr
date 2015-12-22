@@ -42,7 +42,7 @@ public class InventoryViewModelPost {
             medicationQuantity = 0;
             //errors.add(new ValidationError("medicationQuantity", "quantity is a required field"));
         }
-
+        // Based on fEMR-95 in JIRA.  medicationForm is used to be able to add medication to inventory.
         if (StringUtils.isNullOrWhiteSpace(medicationName))
             errors.add(new ValidationError("medicationName", "name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(medicationForm))

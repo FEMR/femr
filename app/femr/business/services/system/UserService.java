@@ -103,25 +103,31 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<List<UserItem>> retrieveAllUsers() {
 
+        ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
+        List<UserItem> userItems = new ArrayList<>();
+
         Query<User> query = QueryProvider.getUserQuery()
                 .where()
                 .ne("email", "superuser")
                 .ne("email", "admin")
                 .orderBy("lastName");
 
+        try{
 
-        List<? extends IUser> users = userRepository.find(query);
+            List<? extends IUser> users = userRepository.find(query);
 
-        ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
-        List<UserItem> userItems = new ArrayList<>();
-        if (users.size() > 0) {
             for (IUser user : users) {
+
                 userItems.add(itemModelMapper.createUserItem(user));
             }
+
             response.setResponseObject(userItems);
-        } else {
-            response.addError("users", "could not find any users");
+
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
         }
+
         return response;
     }
 

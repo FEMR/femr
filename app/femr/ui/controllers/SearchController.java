@@ -7,6 +7,7 @@ import femr.business.services.core.IInventoryService;
 import femr.business.services.core.IMedicationService;
 import femr.business.services.core.ISearchService;
 import femr.business.services.core.ISessionService;
+import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.CityItem;
 import femr.common.models.MedicationAdministrationItem;
@@ -105,7 +106,9 @@ public class SearchController extends Controller {
 
     public Result typeaheadPatientsJSONGet(){
 
-        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch(currentUser.getTripId());
 
         if (patientItemsServiceResponse.hasErrors()){
             return ok("");

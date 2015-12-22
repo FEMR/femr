@@ -23,6 +23,7 @@ import femr.common.models.*;
 import femr.data.models.core.IMissionTrip;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IMissionTripService {
 
@@ -45,11 +46,12 @@ public interface IMissionTripService {
     ServiceResponse<MissionTripItem> removeUsersFromTrip(int tripId, List<Integer> userIds);
 
     /**
-     * Retrieve the current trip information.
+     * Retrieve the current trip information. If you are calling this, consider the fact that you
+     * can access the ID of the current trip through the CurrentUser you get out of a session.
      *
      * @return the current trip or null if an error occurs
      */
-    IMissionTrip retrieveCurrentMissionTrip();
+    Optional<IMissionTrip> retrieveCurrentMissionTrip(int userId);
 
     /**
      * Retrieve a list of all cities.

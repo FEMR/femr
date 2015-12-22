@@ -118,10 +118,11 @@ public interface ISearchService {
     /**
      * Get all patient information for searching users.
      *
+     * @param tripId id of the current trip. If this is null then all patients will be returned regardless of country, may be null
      * @return a service response that contains a list of PatientItems
      * and/or errors if they exist.
      */
-    ServiceResponse<List<PatientItem>> retrievePatientsForSearch();
+    ServiceResponse<List<PatientItem>> retrievePatientsForSearch(Integer tripId);
 
     /**
      * Get all diagnosis for help on problem input fields in medical

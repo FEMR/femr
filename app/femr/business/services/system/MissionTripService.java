@@ -34,7 +34,9 @@ import femr.data.models.mysql.*;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MissionTripService implements IMissionTripService {
@@ -151,9 +153,29 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public IMissionTrip retrieveCurrentMissionTrip() {
+    public Optional<IMissionTrip> retrieveCurrentMissionTrip(int userId) {
 
-        return getCurrentMissionTrip();
+        ExpressionList<User> userQuery = QueryProvider.getUserQuery()
+                .where()
+                .eq("id", userId);
+        IUser user;
+
+        Optional<IMissionTrip> newestTrip = Optional.empty();
+        try {
+
+            user = userRepository.findOne(userQuery);
+
+            newestTrip = user.getMissionTrips()
+                    .stream()
+                    .sorted((mt1, mt2) -> mt1.getEndDate()
+                            .compareTo(mt2.getEndDate()))
+                    .reduce((a, b) -> b);
+
+        } catch (Exception ignored) {
+
+        }
+
+        return newestTrip;
     }
 
     /**
@@ -379,28 +401,6 @@ public class MissionTripService implements IMissionTripService {
         }
 
         return response;
-    }
-
-    /**
-     * Get the current mission trip.
-     *
-     * @return null if none or more than one exists
-     */
-    private IMissionTrip getCurrentMissionTrip() {
-
-        ExpressionList<MissionTrip> missionTripQuery = QueryProvider.getMissionTripQuery()
-                .where()
-                .eq("isCurrent", true);
-        IMissionTrip missionTrip = null;
-
-        try {
-
-            missionTrip = missionTripRepository.findOne(missionTripQuery);
-        } catch (Exception ex) {
-
-        }
-
-        return missionTrip;
     }
 
     /**

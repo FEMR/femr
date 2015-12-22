@@ -41,35 +41,35 @@ import java.util.stream.Collectors;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
+    private final IRepository<IMissionTrip> missionTripRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IMissionCity> cityRepository;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
+                         IRepository<IMissionTrip> missionTripRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         IMissionTripService missionTripService,
                          IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                          IRepository<IMissionCity> cityRepository,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
+        this.missionTripRepository = missionTripRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
-        this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.cityRepository = cityRepository;
@@ -551,7 +551,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch() {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch(Integer tripId) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
@@ -560,22 +560,34 @@ public class SearchService implements ISearchService {
                     .eq("name", "Country Filter");
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
-            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
-
+            IMissionTrip missionTrip = null;
             List<? extends IPatient> allPatients;
 
-            //Make sure that none of the values we will be checking are null.
-            //If they are, just get all of the possible patients.
+            if (tripId != null) {
+                //If the trip ID is not null then we can try to figure out which trip
+                ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
+                        .where()
+                        .eq("id", tripId);
+                missionTrip = missionTripRepository.findOne(missionTripExpressionList);
+
+                if (missionTrip == null)
+                    response.addError("", "a trip was not found with that tripId");
+
+            }
+
             if (systemSetting != null &&
                     systemSetting.isActive() &&
                     missionTrip != null &&
                     missionTrip.getMissionCity() != null &&
                     missionTrip.getMissionCity().getMissionCountry() != null &&
-                    StringUtils.isNotNullOrWhiteSpace(missionTrip.getMissionCity().getMissionCountry().getName())){
+                    StringUtils.isNotNullOrWhiteSpace(missionTrip.getMissionCity().getMissionCountry().getName())) {
+                allPatients = QueryHelper.findPatients(
+                        patientRepository,
+                        missionTrip.getMissionCity().getMissionCountry().getName()
+                );
+            } else {
 
-                allPatients = QueryHelper.findPatients(patientRepository, missionTrip.getMissionCity().getMissionCountry().getName());
-            }else{
-
+                //Otherwise we can just get ALL OF THE PATIENTS EVER MADE
                 allPatients = QueryHelper.findPatients(patientRepository);
             }
 

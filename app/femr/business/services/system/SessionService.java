@@ -31,6 +31,7 @@ import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;
 
 import java.net.InetAddress;
+import java.util.Optional;
 
 public class SessionService implements ISessionService {
 
@@ -68,18 +69,22 @@ public class SessionService implements ISessionService {
      */
     @Override
     public ServiceResponse<CurrentUser> createSession(String email, String password, String ipAddress) {
+
         IUser userWithEmail = userService.retrieveByEmail(email);
-        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip();
-        Integer tripId = currentTrip == null ? null : currentTrip.getId();
+
+        Optional<IMissionTrip> currentTrip;
+        Integer tripId = null;
         boolean isSuccessful = false;
         Integer userId = null;
-        byte[] ipAddressBinary;
+        //set to a default IP address
+        byte[] ipAddressBinary = new byte[]{0, 0, 0, 0};
+        //try to get the IP address of the incoming request to create a session
         try {
-
             ipAddressBinary = InetAddress.getByName(ipAddress).getAddress();
+
         } catch (Exception ex) {
-            //if shit hits the fan, use an empty ip address
-            ipAddressBinary = new byte[]{0, 0, 0, 0};
+
+            //don't do anything because the default IP address was initalized
         }
 
 
@@ -87,20 +92,24 @@ public class SessionService implements ISessionService {
 
         if (userWithEmail == null) {
             //user doesn't exist
+
             response.addError("", "Invalid email or password.");
-        } else if (userWithEmail.getDeleted()) {
-            //user has been deleted
-            userId = userWithEmail.getId();//set the ID of the deleted user for the log
-            response.addError("", "Invalid email or password.");
-        } else if (!passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
-            //wrong password
+        } else if (userWithEmail.getDeleted() || !passwordEncryptor.verifyPassword(password, userWithEmail.getPassword())) {
+            //user has been deleted or they entered a wrong password
+
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
             response.addError("", "Invalid email or password.");
         } else {
             //success!
+
             isSuccessful = true;
+
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
-            sessionHelper.set("currentUser", String.valueOf(userWithEmail.getId()));//initiate the session
+            currentTrip = missionTripService.retrieveCurrentMissionTrip(userId);//grab the current trip that the user is on
+            if (currentTrip.isPresent()){
+                tripId = currentTrip.get().getId();
+            }
+            sessionHelper.set("currentUser", String.valueOf(userId));//initiate the session
             response.setResponseObject(createCurrentUser(userWithEmail, tripId));//send the user back in the response object
         }
 
@@ -118,13 +127,18 @@ public class SessionService implements ISessionService {
 
         int currentUserId = sessionHelper.getInt("currentUser");
 
-        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip();
-        Integer tripId = currentTrip == null ? null : currentTrip.getId();
-
+        //if the current user id is 0 then there is no session and the user will be directed back to the
+        //login page.
         if (currentUserId > 0) {
             IUser userFoundById = userService.retrieveById(currentUserId);
             if (userFoundById == null) {
                 return null;
+            }
+
+            Optional<IMissionTrip> currentTrip = missionTripService.retrieveCurrentMissionTrip(currentUserId);
+            Integer tripId = null;
+            if (currentTrip.isPresent()){
+                tripId = currentTrip.get().getId();
             }
 
             return createCurrentUser(userFoundById, tripId);

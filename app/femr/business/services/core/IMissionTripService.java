@@ -49,7 +49,7 @@ public interface IMissionTripService {
      *
      * @return the current trip or null if an error occurs
      */
-    IMissionTrip retrieveCurrentMissionTrip();
+    IMissionTrip retrieveCurrentMissionTrip(int userId);
 
     /**
      * Retrieve a list of all cities.

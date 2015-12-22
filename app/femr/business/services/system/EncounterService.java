@@ -101,7 +101,7 @@ public class EncounterService implements IEncounterService {
                 patientAgeClassificationId = patientAgeClassification.getId();
 
             //find the current trip, if one exists
-            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip();
+            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip(nurseUser.getId());
             Integer missionTripId = null;
             if (missionTrip != null)
                 missionTripId = missionTrip.getId();

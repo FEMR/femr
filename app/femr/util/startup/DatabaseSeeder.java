@@ -1381,7 +1381,7 @@ public class DatabaseSeeder {
             Role role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
-            adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
+            superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
             userRepository.create(superUser);
         }
     }

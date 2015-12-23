@@ -30,11 +30,15 @@ public interface IEncounterService {
      * Create a new patient encounter. Chief complaint sort order is the same as
      * the order they exist in the list.
      *
-     * @param patientEncounterItem the new patient encounter, not null TODO: separate this into parameters.
+     * @param patientId id of the patient to create a new encounter for, not null
+     * @param userId id of the user creating the new encounter, not null
+     * @param tripId id of the current mission trip if it exists, may be null
+     * @param ageClassification age classification of the patient if it exists (child, adult, etc), may be null
+     * @param chiefComplaints a list of chief complaints that were entered for this patient, may be null or empty
      * @return a service response that contains a PatientEncounterItem representing the patient encounter that was created
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientEncounterItem> createPatientEncounter(PatientEncounterItem patientEncounterItem);
+    ServiceResponse<PatientEncounterItem> createPatientEncounter(int patientId, int userId, Integer tripId, String ageClassification, List<String> chiefComplaints);
 
     /**
      * Checks a patient into medical by updating the time of their visit and the user who saw them.

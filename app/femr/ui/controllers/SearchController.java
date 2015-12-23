@@ -106,7 +106,7 @@ public class SearchController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch(currentUser.getId());
+        ServiceResponse<List<PatientItem>> patientItemsServiceResponse = searchService.retrievePatientsForSearch(currentUser.getId(), currentUser.getTripId());
 
         if (patientItemsServiceResponse.hasErrors()){
             return ok("");

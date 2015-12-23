@@ -33,6 +33,7 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.*;
 import femr.common.models.MedicationItem;
 import femr.ui.views.html.admin.inventory.manage;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -210,11 +211,29 @@ public class InventoryController extends Controller {
 
     }
 
-    public Result ajaxDelete(int medicationID) {
-        ServiceResponse<MedicationItem> inventoryServiceResponse = medicationService.deleteMedication(medicationID);
+    public Result ajaxDelete(int medicationID, int tripId) {
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
         if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         return ok("true");
     }
+
+
+    /**
+     * Alters medication based on submit.
+     */
+    public Result ajaxEdit(int medicationID, int tripId) {
+        // Get POST data
+        DynamicForm df = play.data.Form.form().bindFromRequest();
+        int quantity = Integer.parseInt(df.get("quantity"));
+
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityCurrent(medicationID, tripId, quantity);
+        if (inventoryServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        return ok("true");
+    }
+
+
 }

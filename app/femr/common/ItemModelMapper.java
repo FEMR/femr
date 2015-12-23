@@ -23,6 +23,7 @@ import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -56,7 +57,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted) {
 
         if (medication == null) {
 
@@ -84,6 +85,10 @@ public class ItemModelMapper implements IItemModelMapper {
         }
 
         medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
+
+        //Check to see if medication is deleted.
+        if(isDeleted != null)
+            medicationItem.setIsDeleted(isDeleted);
 
         return medicationItem;
     }
@@ -309,7 +314,7 @@ public class ItemModelMapper implements IItemModelMapper {
             prescriptionItem.setCounseled(isCounseled);
 
         if (medication != null) {
-            MedicationItem medicationItem = createMedicationItem(medication, null, null);
+            MedicationItem medicationItem = createMedicationItem(medication, null, null, null);
             prescriptionItem.setMedicationID(medicationItem.getId());
 
             if (medicationItem.getForm() != null)

@@ -126,14 +126,16 @@ public class SessionService implements ISessionService {
 
         int currentUserId = sessionHelper.getInt("currentUser");
 
-        IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip(currentUserId);
-        Integer tripId = currentTrip == null ? null : currentTrip.getId();
-
+        //if the current user id is 0 then there is no session and the user will be directed back to the
+        //login page.
         if (currentUserId > 0) {
             IUser userFoundById = userService.retrieveById(currentUserId);
             if (userFoundById == null) {
                 return null;
             }
+
+            IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip(currentUserId);
+            Integer tripId = currentTrip == null ? null : currentTrip.getId();
 
             return createCurrentUser(userFoundById, tripId);
         }

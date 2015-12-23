@@ -154,6 +154,9 @@ public class MissionTripService implements IMissionTripService {
     @Override
     public IMissionTrip retrieveCurrentMissionTrip(int userId) {
 
+        //TODO should this be moved to just be identified whenever a CurrentUser is retrieved?
+        // This should be contained in the session service??
+
         ExpressionList<User> userQuery = QueryProvider.getUserQuery()
                 .where()
                 .eq("id", userId);

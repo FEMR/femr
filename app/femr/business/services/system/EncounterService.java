@@ -76,49 +76,40 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientEncounterItem> createPatientEncounter(PatientEncounterItem patientEncounterItem) {
+    public ServiceResponse<PatientEncounterItem> createPatientEncounter(int patientId, int userId, Integer tripId, String ageClassification, List<String> chiefComplaints) {
+
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
-        if (patientEncounterItem == null) {
-            response.addError("", "no patient encounter item specified");
-            return response;
-        }
 
         try {
             //find the nurse that checked in the patient
             ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
                     .where()
-                    .eq("email", patientEncounterItem.getNurseEmailAddress());
+                    .eq("id", userId);
 
             IUser nurseUser = userRepository.findOne(nurseQuery);
 
             //find the age classification of the patient, if it exists
             ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
-                    .eq("name", patientEncounterItem.getAgeClassification());
+                    .eq("name", ageClassification);
             IPatientAgeClassification patientAgeClassification = patientAgeClassificationRepository.findOne(patientAgeClassificationExpressionList);
             Integer patientAgeClassificationId = null;
             if (patientAgeClassification != null)
                 patientAgeClassificationId = patientAgeClassification.getId();
 
-            //find the current trip, if one exists
-            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip(nurseUser.getId());
-            Integer missionTripId = null;
-            if (missionTrip != null)
-                missionTripId = missionTrip.getId();
-
-            IPatientEncounter newPatientEncounter = dataModelMapper.createPatientEncounter(patientEncounterItem.getPatientId(), dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, missionTripId);
+            IPatientEncounter newPatientEncounter = dataModelMapper.createPatientEncounter(patientId, dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, tripId);
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
 
-            List<IChiefComplaint> chiefComplaints = new ArrayList<>();
+            List<IChiefComplaint> chiefComplaintBeans = new ArrayList<>();
             Integer chiefComplaintSortOrder = 0;
-            for (String cc : patientEncounterItem.getChiefComplaints()) {
+            for (String cc : chiefComplaints) {
 
-                chiefComplaints.add(dataModelMapper.createChiefComplaint(cc, newPatientEncounter.getId(), chiefComplaintSortOrder));
+                chiefComplaintBeans.add(dataModelMapper.createChiefComplaint(cc, newPatientEncounter.getId(), chiefComplaintSortOrder));
                 chiefComplaintSortOrder++;
             }
-            if (chiefComplaints.size() > 0) {
+            if (chiefComplaintBeans.size() > 0) {
 
-                chiefComplaintRepository.createAll(chiefComplaints);
+                chiefComplaintRepository.createAll(chiefComplaintBeans);
             }
 
 

@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,13 +176,14 @@ public class TriageController extends Controller {
         //Http.MultipartFormData.FilePart fpPhoto = request().body().asMultipartFormData().getFile("patientPhoto");
 
 
-        //create and save a new encounter
-		       PatientEncounterItem patientEncounterItem =
-                populatePatientEncounterItem(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON(), currentUser, patientServiceResponse.getResponseObject().getId(), viewModel.getAgeClassification());
-        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientEncounterItem);
+        List<String> chiefComplaints = parseChiefComplaintsJSON(viewModel.getChiefComplaint(), viewModel.getChiefComplaintsJSON());
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = encounterService.createPatientEncounter(patientItem.getId(), currentUser.getId(), currentUser.getTripId(), viewModel.getAgeClassification(), chiefComplaints);
+        PatientEncounterItem patientEncounterItem;
         if (patientEncounterServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         } else {
+
             patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
         }
 
@@ -291,29 +293,24 @@ public class TriageController extends Controller {
         return patient;
     }
 
-    private PatientEncounterItem populatePatientEncounterItem(String chiefComplaint, String chiefComplaintJSON, CurrentUser currentUser, int patientId, String ageClassification) {
-        PatientEncounterItem patientEncounterItem = new PatientEncounterItem();
-        patientEncounterItem.setPatientId(patientId);
-        patientEncounterItem.setNurseEmailAddress(currentUser.getEmail());
-        patientEncounterItem.setAgeClassification(ageClassification);
+    private List<String> parseChiefComplaintsJSON(String chiefComplaint, String chiefComplaintJSON) {
+        List<String> chiefComplaints = new ArrayList<>();
         //JSON chief complaints (multiple chief complaints - requires javascript)
         //this won't happen if the multiple chief complaint
         // feature is turned off (chiefComplaintJSON will be null)
         if (StringUtils.isNotNullOrWhiteSpace(chiefComplaintJSON)) {
+
             Gson gson = new Gson();
-            List<String> multipleChiefComplaints = gson.fromJson(chiefComplaintJSON, new TypeToken<List<String>>() {
+            chiefComplaints = gson.fromJson(chiefComplaintJSON, new TypeToken<List<String>>() {
             }.getType());
-            for (String mcc : multipleChiefComplaints) {
-                patientEncounterItem.addChiefComplaint(mcc);
-            }
+
         } else {
             if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
-                patientEncounterItem.addChiefComplaint(chiefComplaint);
+                chiefComplaints.add(chiefComplaint);
             }
         }
 
-        //patientEncounterItem.setWeeksPregnant(weeksPregnant);
-        return patientEncounterItem;
+        return chiefComplaints;
     }
 
 //    //AJ Saclayan Cities

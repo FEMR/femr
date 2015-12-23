@@ -41,35 +41,35 @@ import java.util.stream.Collectors;
 public class SearchService implements ISearchService {
 
     private final IRepository<IDiagnosis> diagnosisRepository;
+    private final IRepository<IMissionTrip> missionTripRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IMissionTripService missionTripService;
     private final IItemModelMapper itemModelMapper;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IMissionCity> cityRepository;
 
     @Inject
     public SearchService(IRepository<IDiagnosis> diagnosisRepository,
+                         IRepository<IMissionTrip> missionTripRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
-                         IMissionTripService missionTripService,
                          IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                          IRepository<IMissionCity> cityRepository,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.diagnosisRepository = diagnosisRepository;
+        this.missionTripRepository = missionTripRepository;
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
-        this.missionTripService = missionTripService;
         this.itemModelMapper = itemModelMapper;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.cityRepository = cityRepository;
@@ -551,7 +551,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch(int userId) {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch(int userId, Integer tripId) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {
@@ -560,7 +560,13 @@ public class SearchService implements ISearchService {
                     .eq("name", "Country Filter");
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
-            IMissionTrip missionTrip = missionTripService.retrieveCurrentMissionTrip(userId);
+            IMissionTrip missionTrip = null;
+            if (tripId != null) {
+                ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
+                        .where()
+                        .eq("id", tripId);
+                missionTrip = missionTripRepository.findOne(missionTripExpressionList);
+            }
 
             List<? extends IPatient> allPatients;
 

@@ -28,7 +28,7 @@ public class CurrentUser {
     private String lastName;
     private String email;
     private List<IRole> roles;
-    //may run into issues with this on new installations if a trip is never assigned
+    //the id of the current trip, can be null if it doesn't exist
     private Integer tripId;
 
     public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles, Integer tripId) {

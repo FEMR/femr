@@ -31,6 +31,7 @@ import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;
 
 import java.net.InetAddress;
+import java.util.Optional;
 
 public class SessionService implements ISessionService {
 
@@ -71,8 +72,8 @@ public class SessionService implements ISessionService {
 
         IUser userWithEmail = userService.retrieveByEmail(email);
 
-        IMissionTrip currentTrip;
-        Integer tripId;
+        Optional<IMissionTrip> currentTrip;
+        Integer tripId = null;
         boolean isSuccessful = false;
         Integer userId = null;
         //set to a default IP address
@@ -98,7 +99,10 @@ public class SessionService implements ISessionService {
 
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
             currentTrip = missionTripService.retrieveCurrentMissionTrip(userId);
-            tripId = currentTrip == null ? null : currentTrip.getId();
+            if (currentTrip.isPresent()){
+                tripId = currentTrip.get().getId();
+            }
+
             response.addError("", "Invalid email or password.");
         } else {
             //success!
@@ -107,7 +111,9 @@ public class SessionService implements ISessionService {
 
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
             currentTrip = missionTripService.retrieveCurrentMissionTrip(userId);//grab the current trip that the user is on
-            tripId = currentTrip == null ? null : currentTrip.getId();
+            if (currentTrip.isPresent()){
+                tripId = currentTrip.get().getId();
+            }
             sessionHelper.set("currentUser", String.valueOf(userId));//initiate the session
             response.setResponseObject(createCurrentUser(userWithEmail, tripId));//send the user back in the response object
         }
@@ -134,8 +140,11 @@ public class SessionService implements ISessionService {
                 return null;
             }
 
-            IMissionTrip currentTrip = missionTripService.retrieveCurrentMissionTrip(currentUserId);
-            Integer tripId = currentTrip == null ? null : currentTrip.getId();
+            Optional<IMissionTrip> currentTrip = missionTripService.retrieveCurrentMissionTrip(currentUserId);
+            Integer tripId = null;
+            if (currentTrip.isPresent()){
+                tripId = currentTrip.get().getId();
+            }
 
             return createCurrentUser(userFoundById, tripId);
         }

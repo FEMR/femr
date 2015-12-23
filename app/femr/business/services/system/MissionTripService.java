@@ -34,6 +34,7 @@ import femr.data.models.mysql.*;
 import femr.util.stringhelpers.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -152,48 +153,29 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public IMissionTrip retrieveCurrentMissionTrip(int userId) {
-
-        //TODO should this be moved to just be identified whenever a CurrentUser is retrieved?
-        // This should be contained in the session service??
+    public Optional<IMissionTrip> retrieveCurrentMissionTrip(int userId) {
 
         ExpressionList<User> userQuery = QueryProvider.getUserQuery()
                 .where()
                 .eq("id", userId);
         IUser user;
 
-//        ExpressionList<MissionTrip> missionTripQuery = QueryProvider.getMissionTripQuery()
-//                .where()
-//                .eq("isCurrent", true);
-        IMissionTrip missionTrip = null;
-
-
+        Optional<IMissionTrip> newestTrip = Optional.empty();
         try {
 
             user = userRepository.findOne(userQuery);
 
-            /*Optional<IMissionTrip> newestTrip = user.getMissionTrips()
+            newestTrip = user.getMissionTrips()
                     .stream()
                     .sorted((mt1, mt2) -> mt1.getEndDate()
                             .compareTo(mt2.getEndDate()))
-                    .reduce((a, b) -> b);*/
+                    .reduce((a, b) -> b);
 
-            List<? extends IMissionTrip> missionTrips = user.getMissionTrips()
-                    .stream()
-                    .sorted((mt1, mt2) -> mt1.getEndDate()
-                            .compareTo(mt2.getEndDate()))
-                    .collect(Collectors.toList());
-
-
-
-
-
-
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
 
-        return missionTrip;
+        return newestTrip;
     }
 
     /**

@@ -544,27 +544,33 @@ public class SearchService implements ISearchService {
             ISystemSetting systemSetting = systemSettingRepository.findOne(expressionList);
 
             IMissionTrip missionTrip = null;
+            List<? extends IPatient> allPatients;
+
             if (tripId != null) {
+                //If the trip ID is not null then we can try to figure out which trip
                 ExpressionList<MissionTrip> missionTripExpressionList = QueryProvider.getMissionTripQuery()
                         .where()
                         .eq("id", tripId);
                 missionTrip = missionTripRepository.findOne(missionTripExpressionList);
+
+                if (missionTrip == null)
+                    response.addError("", "a trip was not found with that tripId");
+
             }
 
-            List<? extends IPatient> allPatients;
-
-            //Make sure that none of the values we will be checking are null.
-            //If they are, just get all of the possible patients.
             if (systemSetting != null &&
                     systemSetting.isActive() &&
                     missionTrip != null &&
                     missionTrip.getMissionCity() != null &&
                     missionTrip.getMissionCity().getMissionCountry() != null &&
-                    StringUtils.isNotNullOrWhiteSpace(missionTrip.getMissionCity().getMissionCountry().getName())){
+                    StringUtils.isNotNullOrWhiteSpace(missionTrip.getMissionCity().getMissionCountry().getName())) {
+                allPatients = QueryHelper.findPatients(
+                        patientRepository,
+                        missionTrip.getMissionCity().getMissionCountry().getName()
+                );
+            } else {
 
-                allPatients = QueryHelper.findPatients(patientRepository, missionTrip.getMissionCity().getMissionCountry().getName());
-            }else{
-
+                //Otherwise we can just get ALL OF THE PATIENTS EVER MADE
                 allPatients = QueryHelper.findPatients(patientRepository);
             }
 

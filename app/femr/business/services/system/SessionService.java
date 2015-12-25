@@ -98,11 +98,6 @@ public class SessionService implements ISessionService {
             //user has been deleted or they entered a wrong password
 
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
-            currentTrip = missionTripService.retrieveCurrentMissionTrip(userId);
-            if (currentTrip.isPresent()){
-                tripId = currentTrip.get().getId();
-            }
-
             response.addError("", "Invalid email or password.");
         } else {
             //success!

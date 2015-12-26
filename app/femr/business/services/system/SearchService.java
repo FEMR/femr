@@ -551,7 +551,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch(int userId, Integer tripId) {
+    public ServiceResponse<List<PatientItem>> retrievePatientsForSearch(Integer tripId) {
         ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
         try {

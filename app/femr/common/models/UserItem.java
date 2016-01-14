@@ -32,8 +32,10 @@ public class UserItem {
     private boolean isDeleted;
     private boolean isPasswordReset;
     private String PasswordCreatedDate;
+    private String DateCreated; //Sam Zanni
+    private Integer CreatedBy; //Sam Zanni
 
-    public UserItem(){
+    public UserItem() {
         this.roles = new ArrayList<>();
     }
 
@@ -72,7 +74,7 @@ public class UserItem {
         this.roles = roles;
     }
 
-    public void addRole(String role){
+    public void addRole(String role) {
         this.roles.add(role);
     }
 
@@ -117,17 +119,18 @@ public class UserItem {
     }
 
     //AJ Saclayan Password Constraints
-    public String getPasswordCreatedDate(){
+    public String getPasswordCreatedDate() {
         return PasswordCreatedDate;
     }
 
-    public void setPasswordCreatedDate(String PasswordCreatedDate){
+    public void setPasswordCreatedDate(String PasswordCreatedDate) {
         this.PasswordCreatedDate = PasswordCreatedDate;
     }
-    @Override
-    public boolean equals(final Object obj){
 
-        if (obj == null || obj == this || !(obj instanceof UserItem)){
+    @Override
+    public boolean equals(final Object obj) {
+
+        if (obj == null || obj == this || !(obj instanceof UserItem)) {
             return false;
         }
 
@@ -139,4 +142,12 @@ public class UserItem {
         return true;
     }
 
-}
+    public String getDateCreated() {return DateCreated; } //Sam Zanni
+
+    public void setDateCreated (String DateCreated) { this.DateCreated = DateCreated; } //Sam Zanni
+
+    public Integer getCreatedBy() {return CreatedBy; } //Sam Zanni
+
+    public void setCreatedBy (Integer CreatedBy) { this.CreatedBy = CreatedBy; } //Sam Zanni
+
+ }

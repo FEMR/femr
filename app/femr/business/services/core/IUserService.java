@@ -32,10 +32,11 @@ public interface IUserService {
      *
      * @param user user to be created, TODO: change to parameters
      * @param password the users password to be encrypted, nto null
+     * @param userId id of the user creating the user
      * @return ServiceResponse that contains the new UserItem
      * and/or errors if they exist.
      */
-    ServiceResponse<UserItem> createUser(UserItem user, String password);
+    ServiceResponse<UserItem> createUser(UserItem user, String password, int userId);
 
     /**
      * Find all users.

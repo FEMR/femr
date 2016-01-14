@@ -263,9 +263,10 @@ public interface IDataModelMapper {
      * @param isDeleted       is the user deleted, not null
      * @param isPasswordReset is the users password marked for a reset the next time they log in, not null
      * @param roles           a list of roles, must have at least one, not null
+     * @param userId          id of the user responsible for creating new users, not null
      * @return an implementation of IUser or null if processing fails
      */
-    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles);
+    IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId);
 
     /**
      * Provider a reference object for a user
@@ -274,4 +275,6 @@ public interface IDataModelMapper {
      * @return a User reference object
      */
     IUser createUser(int userId);
+
+
 }

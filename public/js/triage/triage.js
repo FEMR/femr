@@ -581,27 +581,3 @@ window.setInterval(function () {
     }
 
 }, 500);
-
-//
-///* Alaa Serhan - Metric BMI*/
-///* BMI auto- calculator */
-//window.setInterval(function () {
-//
-//    if ($('#heightFeet').val() && $('#weight').val()) {
-//
-//        var weight_lbs = parseInt($('#weight').val());
-//        var height_in = parseInt($('#heightInches').val());
-//        var height_ft = parseInt($('#heightFeet').val());
-//
-//        if (!$('#heightInches').val()) {
-//            height_in = 0;
-//        }
-//
-//        var total_height = height_ft + "." + height_in;
-//        $('#bmi').val(Math.round((weight_lbs / (total_height * total_height))));
-//
-//    }
-//
-//}, 500);
-
-

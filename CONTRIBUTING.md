@@ -1,29 +1,31 @@
-#Community
-1. [JIRA](https://teamfemr.atlassian.net)
-2. We collaborate on Slack - contact ken.dunlap@teamfemr.org for an invite!
+#Community:
 
-#Installation and Configuration using IntelliJ IDEA 14*
-*use development branch for most up-to-date information
+### -Channels of communication
+1. [Slack](http://teamfemr.org/slack.html)
+2. [JIRA](https://teamfemr.atlassian.net)
+3. [Mailing List](https://groups.google.com/forum/#!forum/team-femr)
 
-### Required downloads
+#Installation and Configuration using IntelliJ IDEA:
+
+### -Required downloads
 1. [MySQL 5.6](http://www.mysql.com/)
 2. [Play Framework 2.3.7](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
 3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-4. [IntelliJ IDEA Ultimate 14](http://www.jetbrains.com/idea/)
+4. [IntelliJ IDEA Ultimate 15](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 
-### Configuration
-####1. make sure java and play environment variables are set
+### -Installation and Configuration
+#####1. make sure java and play environment variables are set
 
-####2. fork the repository to your GitHub account
+#####2. fork the repository to your GitHub account
 
-####3. clone the repository
+#####3. clone the repository
     git clone https://github.com/yourusername/femr.git
 
-####4. clean and compile the project
+#####4. clean and compile the project
     activator clean compile
 
-### Setting up IntelliJ IDEA 14
+### -Setting up IntelliJ IDEA
 1. Install Plugin: Scala
 2. File -> Import
 3. Select the femr folder, click next
@@ -31,73 +33,83 @@
 5. Select 'SBT'
 6. Click Next
 7. Select 'Use auto-import'
-8. Ensure the Project SDK is java version 1.7, click finish
-9. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
-10. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
-11. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables:
+8. Ensure the Project SDK is java version 1.8, click finish
+9. If asked to select modules/data, select fEMR(root module) and fEMR-build.
+10. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
+11. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
+12. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables:
      [config.file // /absolute/location/to/conf/application.dev.conf]
      [user.dir // /absolute/location/to/femr]
-12. Run
-13. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
+13. Run
+14. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
 
 
-# Git
+# Common Git commands during development:
 
-### Common commands during development:
+### -Create a branch to work on
 
-#### Create a branch to work on:
+After assigning yourself an issue from [JIRA](https://teamfemr.atlassian.net):
 
 #####1. features:
-    git checkout development
-    git checkout -b feature-[JIRA_Name]-Description
+    git checkout master
+    git checkout -b feature-[JIRA_ID]-Description
 
 #####2. bugs:
-    git checkout development
-    git checkout -b bug-[JIRA_Name]-Description
+    git checkout master
+    git checkout -b bug-[JIRA_ID]-Description
 
+#####3. improvements:
+    git checkout master
+    git checkout -b improvement-[JIRA_ID]-Description
 
-#### Sync development branch (fork) with development branch (main repository):
+#####4. tasks:
+    git checkout master
+    git checkout -b task-[JIRA_ID]-Description
+
+### -Sync your master branch (username/femr) with the project's master branch (femr/femr)
 
 #####1. make sure you have a remote pointing upstream:
-    git remote
+    git remote -v
 
 #####2. if you don't, add one:
     git remote add upstream https://github.com/femr/femr.git
 
 #####3. sync:
-    git checkout development
-    git pull upstream development
-    git push origin development
+    git checkout master
+    git pull upstream master
+    git push origin master
 
 
-#### Prepare to send a pull request:
+### -Sending a pull request
 
-    git checkout development
-    git pull upstream development
+#####1. update your branch with the newest code by rebasing
+    git checkout master
+    git pull upstream master
     git checkout branchName
-    git rebase development
+    git rebase master
 
-Rebasing will update your branch with the development branch.
-You can find more info on rebasing [here](http://git-scm.com/book/ch3-6.html).
+#####2. initiate a pull request:
 
-#### Sending a Pull Request from GitHub
+Initiate a pull request from your fork's feature branch into the main repository's master branch. Information on initating pull requests can be found [here](https://help.github.com/articles/using-pull-requests).
 
-Information on doing pull requests can be found [here](https://help.github.com/articles/using-pull-requests).
+#####3. if your Pull Request is Accepted
+	git checkout master
+	git pull upstream master
 
-#### If your Pull Request is Rejected
+#####4. if your Pull Request is Rejected
 
-    git checkout development
-    git pull upstream development
+    git checkout master
+    git pull upstream master
     git checkout branchName
-    git rebase development
+    git rebase master
     ~~~fix issues~~~
-    git checkout development
-    git pull upstream development
+    git checkout master
+    git pull upstream master
     git checkout branchName
-    git rebase development
+    git rebase master
     git push origin branchName
 
-#### Deleting your branch:
+#####5. deleting your branch:
 
     git branch -d branchName
     git push origin :branchName

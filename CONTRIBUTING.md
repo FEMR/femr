@@ -11,7 +11,7 @@
 1. [MySQL 5.6](http://www.mysql.com/)
 2. [Play Framework 2.3.7](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
 3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-4. [IntelliJ IDEA Ultimate 14](http://www.jetbrains.com/idea/)
+4. [IntelliJ IDEA Ultimate 15](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 
 ### -Installation and Configuration
@@ -33,14 +33,15 @@
 5. Select 'SBT'
 6. Click Next
 7. Select 'Use auto-import'
-8. Ensure the Project SDK is java version 1.7, click finish
-9. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
-10. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
-11. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables:
+8. Ensure the Project SDK is java version 1.8, click finish
+9. If asked to select modules/data, select fEMR(root module) and fEMR-build.
+10. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
+11. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
+12. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables:
      [config.file // /absolute/location/to/conf/application.dev.conf]
      [user.dir // /absolute/location/to/femr]
-12. Run
-13. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
+13. Run
+14. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
 
 
 # Common Git commands during development:

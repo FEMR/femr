@@ -5,9 +5,9 @@
 A simple and fast EMR system.
 
 ###Community
-1. [Mailing List](https://groups.google.com/forum/#!forum/team-femr)
+1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
-3. We collaborate on Slack - contact ken.dunlap@teamfemr.org for an invite!
+3. [Mailing List](https://groups.google.com/forum/#!forum/team-femr)
 
 ### Description
 

@@ -1,0 +1,21 @@
+.referenceContentWrap{
+
+    overflow: hidden;
+    text-align: center;
+    margin-top: 10px;
+
+    background-color: #ffffff;
+}
+
+.referenceContentWrap img{
+
+    max-width: 95%;
+    display: block;
+    margin: 15px auto;
+}
+
+.referenceContentWrap img.physical{
+
+    max-width: 80%;
+}
+

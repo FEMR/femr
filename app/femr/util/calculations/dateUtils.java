@@ -32,6 +32,14 @@ import java.util.Date;
  */
 public class dateUtils {
 
+    public static int calculateYears(Date age) {
+
+        LocalDate birthdate = new LocalDate(age);
+        LocalDate now = new LocalDate();
+        Years years = Years.yearsBetween(birthdate, now);
+        return years.getYears();
+    }
+
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
                 .forPattern("yyyy/mm/dd HH:mm:ss");

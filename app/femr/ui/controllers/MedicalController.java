@@ -302,15 +302,15 @@ public class MedicalController extends Controller {
         //create patient encounter photos
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
 
-        //for now, only ingest the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
-        List<PrescriptionItem> prescriptionItems = viewModelPost.getPrescriptions()
+        //get the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
+        List<PrescriptionItem> prescriptionItemsWithID = viewModelPost.getPrescriptions()
                 .stream()
                 .filter(prescription -> prescription.getMedicationID() != null)
                 .collect(Collectors.toList());
 
-        //create the prescriptions
+        //create the prescriptions that already have an ID
         ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
-        for (PrescriptionItem prescriptionItem : prescriptionItems){
+        for (PrescriptionItem prescriptionItem : prescriptionItemsWithID){
 
             createPrescriptionServiceResponse = medicationService.createPrescription(
                     prescriptionItem.getMedicationID(),
@@ -325,6 +325,30 @@ public class MedicalController extends Controller {
                 throw new RuntimeException();
             }
         }
+
+        //get the prescriptions that DO NOT have an ID (e.g. prescriptions that DO NOT exist in the dictionary).
+        List<PrescriptionItem> prescriptionItemsWithoutID = viewModelPost.getPrescriptions()
+                .stream()
+                .filter(prescription -> prescription.getMedicationID() == null)
+                .collect(Collectors.toList());
+
+        for (PrescriptionItem prescriptionItem : prescriptionItemsWithoutID){
+
+            createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
+                    prescriptionItem.getMedicationName(),
+                    prescriptionItem.getAdministrationId(),
+                    patientEncounterItem.getId(),
+                    currentUserSession.getId(),
+                    prescriptionItem.getAmount(),
+                    null);
+
+            if (createPrescriptionServiceResponse.hasErrors()){
+
+                throw new RuntimeException();
+            }
+        }
+
+
 
         String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
 

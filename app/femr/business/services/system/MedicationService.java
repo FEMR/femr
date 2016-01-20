@@ -37,6 +37,7 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.jboss.netty.util.internal.StringUtil;
 import org.joda.time.DateTime;
 import play.libs.Json;
 
@@ -356,6 +357,58 @@ public class MedicationService implements IMedicationService {
         } catch (Exception ex) {
 
             response.addError("", "there was an issue creating the prescription");
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
+
+        ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
+
+        if (StringUtils.isNullOrWhiteSpace(medicationName)) {
+
+            response.addError("", "medicationName can't be null or empty");
+            return response;
+        }
+
+        try {
+
+            IMedication medication = dataModelMapper.createMedication(medicationName);
+            medication = medicationRepository.create(medication);
+
+            IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
+                    amount,
+                    medication.getId(),
+                    administrationId,
+                    userId,
+                    encounterId,
+                    null,
+                    false);
+
+            patientPrescription = patientPrescriptionRepository.create(patientPrescription);
+
+
+            PrescriptionItem prescriptionItem = itemModelMapper.createPrescriptionItem(
+                    patientPrescription.getId(),
+                    patientPrescription.getMedication().getName(),
+                    null,
+                    patientPrescription.getPhysician().getFirstName(),
+                    patientPrescription.getPhysician().getLastName(),
+                    patientPrescription.getMedicationAdministration(),
+                    patientPrescription.getAmount(),
+                    patientPrescription.getMedication());
+            response.setResponseObject(prescriptionItem);
+
+        } catch (Exception ex) {
+
+
+
+            response.addError("", ex.getMessage());
         }
 
         return response;

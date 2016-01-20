@@ -48,6 +48,19 @@ public interface IMedicationService {
     ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
 
     /**
+     * Creates a new prescription when the medication doesn't already exist in the inventory. It is assumed the prescription is not yet dispensed.
+     *
+     * @param medicationName name of the medication being prescribed
+     * @param administrationId how the medication is administered (BID, etc), may be null.
+     * @param encounterId id of the patient encounter, not null.
+     * @param userId id of the user dispensing the medication, not null.
+     * @param amount how much of the medication is dispensed, not null.
+     * @param specialInstructions any special instructions for the prescription, may be null.
+     * @return a PrescriptionItem representing the prescription that was just created and/or errors if they exist.
+     */
+    ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
+
+    /**
      * Replace an existing prescription with an existing prescription.
      *
      * @param prescriptionPairs A mapping of prescriptions to replace in the form <newPrescription, oldPrescription> neither of which are null.

@@ -32,6 +32,8 @@ public class PrescriptionItem {
     private Float administrationModifier;
     private Integer amount;
     private Integer medicationID;
+    //medicationName is used for prescriptions that don't have an ID
+    private String medicationName;
     private String medicationForm;
     //of the particular medication, how much remains in the inventory?
     private Integer medicationRemaining;
@@ -150,5 +152,13 @@ public class PrescriptionItem {
 
     public void setOriginalMedicationName(String originalMedicationName){
         this.originalMedicationName = originalMedicationName;
+    }
+
+    public String getMedicationName() {
+        return medicationName;
+    }
+
+    public void setMedicationName(String medicationName) {
+        this.medicationName = medicationName;
     }
 }

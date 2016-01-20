@@ -2,8 +2,8 @@
 ALTER TABLE `users`
 
 ADD COLUMN `passwordCreatedDate` DATETIME NOT NULL AFTER `password`,
-ADD COLUMN `date_created` DATETIME NOT NULL AFTER `last_login`,
-ADD COLUMN `created_by` INT NOT NULL AFTER `date_created`;
+ADD COLUMN `date_created` DATETIME DEFAULT '0000-01-01 00:00:00' AFTER `last_login`,
+ADD COLUMN `created_by` INT AFTER `date_created`;
 
 UPDATE `users`
 SET date_created = '0000-01-01 00:00:00';

@@ -1360,6 +1360,7 @@ public class DatabaseSeeder {
             adminUser.setEmail(defaultAdminUsername);
             adminUser.setPassword(encryptedAdminPassword);
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
+            adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
             adminUser.setDeleted(false);
             Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
             adminUser.addRole(role);
@@ -1377,6 +1378,7 @@ public class DatabaseSeeder {
             superUser.setEmail(defaultSuperuserUsername);
             superUser.setPassword(encryptedSuperuserPassword);
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
+            superUser.setDateCreated( dateUtils.getCurrentDateTime() );
             superUser.setDeleted(false);
             Role role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
             superUser.addRole(role1);

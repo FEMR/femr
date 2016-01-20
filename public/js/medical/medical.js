@@ -172,7 +172,7 @@ var prescriptionFeature = {
         var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
         var $prescriptionRow = $("<div>").addClass("prescriptionRow prescriptionInput");
 
-        var $medicationTypeAhead = $("<input type='text' class='medicationName form-control input-sm'/>");
+        var $medicationTypeAhead = $("<input type='text' name='prescriptions[" + scriptIndex + "].medicationName' class='medicationName form-control input-sm'/>");
         $prescriptionRow.append(
             $("<span class='prescriptionName'></span>").append($medicationTypeAhead)
         );

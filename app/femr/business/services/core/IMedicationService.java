@@ -50,7 +50,7 @@ public interface IMedicationService {
     /**
      * Creates a new prescription when the medication doesn't already exist in the inventory. It is assumed the prescription is not yet dispensed.
      *
-     * @param medicationName name of the medication being prescribed
+     * @param medicationName name of the medication being prescribed, not null
      * @param administrationId how the medication is administered (BID, etc), may be null.
      * @param encounterId id of the patient encounter, not null.
      * @param userId id of the user dispensing the medication, not null.

@@ -1,14 +1,14 @@
 
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
-    newProblems: $('.newProblems'),
+    newProblems: $('input[name].newProblems'),
     refreshSelectors: function () {
         problemFeature.allProblems = $(problemFeature.allProblems.selector);
         problemFeature.newProblems = $(problemFeature.newProblems.selector);
     },
     getNumberOfNonReadonlyProblemFields: function () {
         problemFeature.refreshSelectors();
-        return problemFeature.newProblems.length / 2;
+        return problemFeature.newProblems.length;
     },
     addProblemField: function () {
         var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
@@ -26,7 +26,7 @@ var problemFeature = {
     removeProblemField: function () {
         problemFeature.refreshSelectors();
         var lastProblem = $(problemFeature.newProblems).last();
-        if ($(problemFeature.newProblems).size() / 2 > 1) {
+        if ($(problemFeature.newProblems).size() > 1) {
             if (!$(lastProblem).is('[readonly]')) {
                 $(lastProblem).parent().parent().remove();
             }

@@ -21,6 +21,7 @@ package femr.util.calculations;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import play.Logger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,13 @@ public class dateUtils {
         return new DateTime();
     }
 
+    /**
+     * Gets the integer age of a patient, then appends "YO" or "MO"
+     * depending on if the patient age is in years(adult) or months(baby)
+     *
+     * @param born the birthdate of the patient
+     * @return a string with the patient's age
+     */
     public static String getAge(Date born) {
         LocalDate birthdate = new LocalDate(born);
         LocalDate now = new LocalDate();
@@ -60,13 +68,57 @@ public class dateUtils {
             return Integer.toString(monthsInt/12) + " YO";
     }
 
-    public static float getAgeFloat(Date born) {
+    /**
+     * Gets the patient's age in years. If the patient is an infant with less than 12 years of life,
+     * 0 will be returned.
+     *
+     * @param born the birthdate of the patient
+     * @return an Integer that represents the number of years the patient has been alive. Returns null
+     * if an error occured OR if the patient does not have an age (just an age classification).
+     */
+    public static Integer getYearsInteger(Date born) {
+
+        if (born == null){
+            return null;
+        }
+
+        LocalDate birthdate = new LocalDate(born);
+        LocalDate now = new LocalDate();
+        Integer age = 0;
+        Months months = Months.monthsBetween(birthdate, now);
+        int monthsInt = months.getMonths();
+        if (monthsInt >= 12) {
+            double temp = Math.floor(monthsInt / 12);
+            try {
+                age = (int) Math.round(temp);
+            } catch (Exception ex) {
+                age = null;
+                Logger.error("a patient's age could not be handled as an int");
+            }
+
+        }
+
+        return age;
+    }
+
+    /**
+     * Gets the patient's age in months.
+     *
+     * @param born the birthdate of the patient
+     * @return an Integer that represents the number of months the patient has been alive. Returns null
+     * if an error occured OR if the patient does not have an age (just an age classification).
+     */
+    public static Integer getMonthsInteger(Date born) {
+
+        if (born == null){
+            return null;
+        }
+
         LocalDate birthdate = new LocalDate(born);
         LocalDate now = new LocalDate();
         Months months = Months.monthsBetween(birthdate, now);
-        int monthsInt = months.getMonths();
-        float result = (float) monthsInt;
-        return result/12;
+
+        return months.getMonths();
     }
 
     public static float getAgeAsOfDateFloat(Date born, DateTime asOfDate) {

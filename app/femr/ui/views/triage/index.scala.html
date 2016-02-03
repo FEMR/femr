@@ -40,7 +40,7 @@
 
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>
-                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient.getAge else null)
+                    @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     <span class="orSpan">OR</span>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
                     <span class="orSpan">OR</span>
@@ -48,8 +48,6 @@
                         <div id="classificationRadioWrap">
                         @for((key, valyew) <- viewModel.getPossibleAgeClassifications) {
                             <label><input type="radio" name="ageClassification" value="@key" /> @key <span>@valyew</span></label>
-
-
                         }
 
                         </div>
@@ -227,17 +225,29 @@
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>
                     <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
+                    @if(viewModel.getPatient.getId != 0) {
+                        @helper.form(action = SearchController.handleSearch("history")) {
+                            <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatient.getId"/>
+                            <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
+                        }
+                    }
+                </div>
+
+                <div class="submitResetWrap hidden">
+                    <h3>Did you screen this patient for Diabetes?</h3>
+                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">
+                        No</button>
+                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
+                        Yes</button>
+                        <!-- Data elements for server-side logic, Diabetes Screen -->
+                    <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
+                    <input type="hidden" name="isDiabetesScreenPerformed" value="false" />
                 </div>
 
 
                 }
 
-        @if(viewModel.getPatient.getId != 0) {
-            @helper.form(action = SearchController.handleSearch("history")) {
-                <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatient.getId"/>
-                <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
-            }
-        }
+
 
     </div>
 

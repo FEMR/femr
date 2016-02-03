@@ -18,9 +18,12 @@
 */
 package femr.ui.models.triage;
 
+import femr.common.models.PatientItem;
+
 import java.util.Date;
 
 public class IndexViewModelPost {
+
     //begin patient
     private String firstName;
     private String lastName;
@@ -47,6 +50,9 @@ public class IndexViewModelPost {
 
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
+
+    //indicates if the "yes" button was clicked for the diabetes screening prompt
+    private String isDiabetesScreenPerformed;
 
 
     private String patientPhotoCropped;
@@ -224,5 +230,13 @@ public class IndexViewModelPost {
 
     public void setAgeClassification(String ageClassification) {
         this.ageClassification = ageClassification;
+    }
+
+    public String getIsDiabetesScreenPerformed() {
+        return isDiabetesScreenPerformed;
+    }
+
+    public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
+        this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;
     }
 }

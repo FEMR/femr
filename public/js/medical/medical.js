@@ -110,43 +110,7 @@ var multipleChiefComplaintFeature = {
         }
     }
 };
-var diabeticScreeningFeature = {
-    shouldPatientBeScreened: function () {
-        if ($('#isDiabetesScreenSettingEnabled').val() === "true") {
-            //check to make sure the patient hasn't already been screened for diabetes
-            //during this encounter
-            if ($('[name=isDiabetesScreenPerformed]').val() === "false") {
-                //get these values for checking BMI later
-                var heightTotalInches = recentVitals.getCurrentHeightInches() + recentVitals.getCurrentHeightFeet() * 12;
-                var weightPounds = recentVitals.getCurrentWeight();
-                var bmiScore = calculateBMIScore("standard", weightPounds, heightTotalInches);
-                //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
-                //surpass the threshold required for the diabetes prompt
-                if (
-                    (recentVitals.getCurrentSystolic() !== null && parseInt(recentVitals.getCurrentSystolic()) >= 135) || (recentVitals.getCurrentDiastolic() !== null && parseInt(recentVitals.getCurrentDiastolic()) >= 80)
-                ) {
-                    //checks if the patient is 18 or older
-                    if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {
-                        if ($('input[name=isDiabetesScreenPerformed]').val() === "false") {
-                            return true;
-                        }
-                    }
-                }
-                //checks to see if a BMI score is available then checks to see if it
-                //surpasses the threshold required for the diabetes prompt
-                if (isFinite(bmiScore) && bmiScore !== null && bmiScore >= 25) {
-                    //checks if the patient is 25 or older
-                    if (typeof $('#isOverTwentyfour').val() != 'undefined' && $('#isOverTwentyfour').val() === 'true') {
-                        return true;
-                    }
-                }
-            }
-        }
 
-        return false;
-    }
-
-};
 //every function in here gets the most recent value of
 //a vital from the "record new vitals menu"
 //Add new fields as you need them #lazy
@@ -330,21 +294,9 @@ $(document).ready(function () {
         multipleChiefComplaintFeature.slideChiefComplaintLeft();
     });
 
-    $('#yesDiabetesScreen').click(function(){
-        $('input[name=isDiabetesScreenPerformed]').val("true");
-    });
-
-
     $('#medicalSubmitBtn').click(function () {
-        var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
-        if (isDiabeticScreeningPromptNecessary){
-            var diabetesDialog = $('.historySubmitWrap.hidden');
-            var submitMenu = $('.historySubmitWrap').not('.hidden');
-            $(submitMenu).addClass('hidden');
-            $(diabetesDialog).removeClass('hidden');
-        }
 
-        return (photoNameFixup() && validate() && !isDiabeticScreeningPromptNecessary); //validate from medicalClientValidation.js
+        return (photoNameFixup() && validate()); //validate from medicalClientValidation.js
     });
 
     typeaheadFeature.setGlobalVariable("/search/typeahead/diagnoses").then(function () {

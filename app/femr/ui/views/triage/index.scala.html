@@ -27,8 +27,8 @@
     }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
-    <input type="hidden" value="@viewModel.getPatientItem.getIsOverSeventeen" id="isOverSeventeen"/>
-    <input type="hidden" value="@viewModel.getPatientItem.getIsOverTwentyFour" id="isOverTwentyfour"/>
+    <input type="hidden" value="@viewModel.getPatient.getIsOverSeventeen" id="isOverSeventeen"/>
+    <input type="hidden" value="@viewModel.getPatient.getIsOverTwentyFour" id="isOverTwentyfour"/>
 
     <div id="triageContentWrap">
         @if(viewModel.isSearchError) {
@@ -253,7 +253,6 @@
                         Yes</button>
                         <!-- Data elements for server-side logic, Diabetes Screen -->
                     <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
-                    <input type="hidden" name="isDiabetesScreenPerformed" value="@if(viewModel.getPatientEncounterItem.getScreenedForDiabetes){true}else{false}" />
                 </div>
                 }
 

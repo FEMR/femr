@@ -38,9 +38,6 @@ public class EditViewModelPost {
     private List<String>  imageDescText;
     private List<Integer> photoId;
 
-    //indicates if the "yes" button was clicked for the diabetes screening prompt
-    private String isDiabetesScreenPerformed;
-
     public List<Boolean> getDeleteRequested() {
         return deleteRequested;
     }
@@ -99,13 +96,5 @@ public class EditViewModelPost {
 
     public void setProblems(List<ProblemItem> problems) {
         this.problems = problems;
-    }
-
-    public String getIsDiabetesScreenPerformed() {
-        return isDiabetesScreenPerformed;
-    }
-
-    public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
-        this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;
     }
 }

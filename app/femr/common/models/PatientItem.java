@@ -18,8 +18,6 @@
 */
 package femr.common.models;
 
-import org.joda.time.DateTime;
-
 import java.util.Date;
 
 public class PatientItem {
@@ -28,8 +26,10 @@ public class PatientItem {
     private String lastName;
     private String address;
     private String city;
-    private String age;//age (int)
-    private Date birth;//date of birth (Date)
+    private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
+    private Integer yearsOld;//the age of the patient as an integer. 0 if the patient is less than a year old
+    private Integer monthsOld;
+    private Date birth;
     private String friendlyDateOfBirth;
     private String sex;
     private Integer photoId;
@@ -39,9 +39,6 @@ public class PatientItem {
     private Integer heightFeet;
     private Integer heightInches;
     private Float weight;
-    //can be determined from age classification and/or age itself
-    private Boolean isOverSeventeen;
-    private Boolean isOverTwentyFour;
 
     public PatientItem(){
         //default empty values
@@ -177,28 +174,19 @@ public class PatientItem {
         this.friendlyDateOfBirth = friendlyDateOfBirth;
     }
 
-    /**
-     * returning null does not imply anything other than laziness.
-     * >=18 is true
-     * < 18 is false
-     */
-    public Boolean getIsOverSeventeen() {
-        return isOverSeventeen;
+    public Integer getYearsOld() {
+        return yearsOld;
     }
 
-    public void setIsOverSeventeen(Boolean isOverSeventeen) {
-        this.isOverSeventeen = isOverSeventeen;
+    public void setYearsOld(Integer yearsOld) {
+        this.yearsOld = yearsOld;
     }
 
-    /**
-     * >=25 is true
-     * < 25 is false
-     */
-    public Boolean getIsOverTwentyFour() {
-        return isOverTwentyFour;
+    public Integer getMonthsOld() {
+        return monthsOld;
     }
 
-    public void setIsOverTwentyFour(Boolean overTwentyFour) {
-        isOverTwentyFour = overTwentyFour;
+    public void setMonthsOld(Integer monthsOld) {
+        this.monthsOld = monthsOld;
     }
 }

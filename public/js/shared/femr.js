@@ -285,3 +285,12 @@ function calculateBMIScore(system, weight, height) {
 
     return bmi;
 }
+
+/**
+ * checks if a value is numeric
+ * @param n value to check
+ * @returns boolean true if numeric, false if not
+ */
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}

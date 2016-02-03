@@ -233,6 +233,98 @@ var patientPhotoFeature = {
 
 };
 
+var diabeticScreeningFeature = {
+    shouldPatientBeScreened: function () {
+        if ($('#isDiabetesScreenSettingEnabled').val() === "true") {
+
+            var patientVitals = triageFields.patientVitals;
+            var bmiScore = $('#bmi').val();
+            //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
+            //surpass the threshold required for the diabetes prompt
+            if (
+                (patientVitals.bloodPressureSystolic.val() !== null && parseInt(patientVitals.bloodPressureSystolic.val()) >= 135) || (patientVitals.bloodPressureDiastolic.val() !== null && parseInt(patientVitals.bloodPressureDiastolic.val()) >= 80)
+            ) {
+                //checks if the patient is 18 or older
+                return diabeticScreeningFeature.isAgeOrOlder(18);
+            }
+            //checks to see if a BMI score is available then checks to see if it
+            //surpasses the threshold required for the diabetes prompt
+            if (isFinite(bmiScore) && bmiScore !== null && bmiScore >= 25) {
+                //checks if the patient is 25 or older
+                return diabeticScreeningFeature.isAgeOrOlder(25);
+            }
+        }
+
+
+        return false;
+    },
+    /**
+     * checks to see if a patient is a specific age or older
+     * @param age age of the patient
+     * @returns {boolean} true if they are older than the age, false otherwise
+     */
+    isAgeOrOlder: function(age){
+        if (!isNumeric(age)){
+            return false;
+        }
+        var patientInfo = triageFields.patientInformation;
+        var years = patientInfo.years.val();
+        var months = patientInfo.months.val();
+        if (isNumeric(months)){
+            years = years + months*12;
+        }
+        var ageClassification = $('input[name=ageClassification]:checked').val();
+        if (ageClassification === "adult" || ageClassification === "elder"){
+            return true;
+        }
+        if (years  >= age){
+            return true;
+        }
+        return false;
+    },
+    /**
+     * Sets everything to read only while the user indicates whether or not
+     * the patient was screened for diabetes.
+     */
+    readonlyEverything: function(){
+
+        //disable general info except age classification and sex buttons
+        //because they are stupid
+        triageFields.patientInformation.firstName.prop('readonly', true);
+        triageFields.patientInformation.lastName.prop('readonly', true);
+        triageFields.patientInformation.age.prop('readonly', true);
+        triageFields.patientInformation.years.prop('readonly', true);
+        triageFields.patientInformation.months.prop('readonly', true);
+        triageFields.patientInformation.city.prop('readonly', true);
+        //disable all vitals
+        triageFields.patientVitals.respiratoryRate.prop('readonly', true);
+        triageFields.patientVitals.bloodPressureSystolic.prop('readonly', true);
+        triageFields.patientVitals.bloodPressureDiastolic.prop('readonly', true);
+        triageFields.patientVitals.heartRate.prop('readonly', true);
+        triageFields.patientVitals.oxygenSaturation.prop('readonly', true);
+        triageFields.patientVitals.temperature.prop('readonly', true);
+        triageFields.patientVitals.weight.prop('readonly', true);
+        triageFields.patientVitals.heightFeet.prop('readonly', true);
+        triageFields.patientVitals.heightInches.prop('readonly', true);
+        triageFields.patientVitals.glucose.prop('readonly', true);
+        triageFields.patientVitals.weeksPregnant.prop('readonly', true);
+        //disable chief complaint
+        triageFields.chiefComplaint.chiefComplaint.prop('readonly', true);
+        //disable age classification, need to handle absence of POST data
+        var value = $("[name=ageClassification]:checked").val();
+        triageFields.patientInformation.ageClassification.prop('disabled', true);
+        if (value){//checks to make sure there is a value to POST. If there isn't, don't post anythign (normal behavior)
+            triageFields.patientInformation.ageClassification.last().append("<input type='text' class='hidden' name='ageClassification' value='" + value + "'/>");
+        }
+        //disable sex buttons, since this is weird and added to the label we still get POST data
+        triageFields.patientInformation.sex.parent().addClass('disabled');
+        //disable photo, POST data still comes through for a photo. probably because of cropping!
+        triageFields.patientInformation.photo.prop('disabled', true);
+
+    }
+
+};
+
 var multipleChiefComplaintFeature = {
     isActive: ($("#addChiefComplaint").length > 0),
     chiefComplaintsJSON: [],
@@ -275,14 +367,19 @@ var multipleChiefComplaintFeature = {
 };
 
 var triageFields = {
+
     patientInformation: {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
-        age: $('#age'),
+        age: $('#age'),//doesn't work for an existing patient
         years: $('#years'),
         months: $('#months'),
+        ageClassification: $('[name=ageClassification]'),
         city: $('#city'),
-        ageClassification: $('[name=ageClassification]')
+        maleButton: $('#maleBtn'),
+        femaleButton: $('#femaleBtn'),
+        sex: $('[name=sex]'),
+        photo: $('#photoInput')
     },
     patientVitals: {
         respiratoryRate: $('#respiratoryRate'),
@@ -422,6 +519,9 @@ $(document).ready(function () {
         $('#weeksPregnant').val('');
         $('#weeksPregnant').attr('disabled', true);
     });
+    $('#yesDiabetesScreen').click(function(){
+        $('input[name=isDiabetesScreenPerformed]').val("true");
+    });
     //birthday shit
     $('#age').change(function () {
         var inputYear = $('#age').val().split('-')[0];
@@ -502,13 +602,31 @@ $(document).ready(function () {
     });
 
     $('#triageSubmitBtn').click(function () {
-        //get the base64 URI string from the canvas
-        patientPhotoFeature.prepareForPOST();
-        //make sure the feature is turned on before JSONifying
-        if (multipleChiefComplaintFeature.isActive === true) {
-            multipleChiefComplaintFeature.JSONifyChiefComplaints();
+        var pass = validate();
+
+        //only prepare for POST if the fields are validated
+        //also only do the diabetes prompt checking if the fields are validated
+        if (pass === true){
+            //get the base64 URI string from the canvas
+            patientPhotoFeature.prepareForPOST();
+            //make sure the feature is turned on before JSONifying
+            if (multipleChiefComplaintFeature.isActive === true) {
+                multipleChiefComplaintFeature.JSONifyChiefComplaints();
+            }
+
+            var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+            if (isDiabeticScreeningPromptNecessary){
+                var diabetesDialog = $('.submitResetWrap.hidden');
+                var submitMenu = $('.submitResetWrap').not('.hidden');
+                $(submitMenu).addClass('hidden');
+                $(diabetesDialog).removeClass('hidden');
+                diabeticScreeningFeature.readonlyEverything();
+            }
+            pass = !isDiabeticScreeningPromptNecessary;
         }
-        return validate(); //located in triageClientValidation.js
+
+
+        return pass; //located in triageClientValidation.js
     });
 
     patientPhotoFeature.init();

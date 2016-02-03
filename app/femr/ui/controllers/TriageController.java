@@ -244,6 +244,13 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
+        if (isDiabetesPromptTurnedOn() && viewModelPost.getIsDiabetesScreenPerformed().equals("true") && !patientEncounterItem.getScreenedForDiabetes()){
+            ServiceResponse<PatientEncounterItem> diabetesScreenServiceResponse = encounterService.screenPatientForDiabetes(patientEncounterItem.getId(), currentUserSession.getId());
+            if (diabetesScreenServiceResponse.hasErrors()){
+                throw new RuntimeException();
+            }
+        }
+
         return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
 
@@ -256,6 +263,17 @@ public class TriageController extends Controller {
             throw new RuntimeException();
 
         return redirect(routes.TriageController.indexGet());
+    }
+
+    private boolean isDiabetesPromptTurnedOn(){
+
+        //get system settings to determine if diabetes prompt is turned on
+        ServiceResponse<SettingItem> settingsResponse = searchService.retrieveSystemSettings();
+        if (settingsResponse.hasErrors()){
+            throw new RuntimeException();
+        }
+
+        return settingsResponse.getResponseObject().isDiabetesPrompt();
     }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {

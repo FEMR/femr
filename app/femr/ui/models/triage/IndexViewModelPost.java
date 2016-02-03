@@ -48,6 +48,9 @@ public class IndexViewModelPost {
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
 
+    //indicates if the "yes" button was clicked for the diabetes screening prompt
+    private String isDiabetesScreenPerformed;
+
 
     private String patientPhotoCropped;
 
@@ -224,5 +227,13 @@ public class IndexViewModelPost {
 
     public void setAgeClassification(String ageClassification) {
         this.ageClassification = ageClassification;
+    }
+
+    public String getIsDiabetesScreenPerformed() {
+        return isDiabetesScreenPerformed;
+    }
+
+    public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
+        this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;
     }
 }

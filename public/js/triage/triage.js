@@ -233,6 +233,42 @@ var patientPhotoFeature = {
 
 };
 
+var diabeticScreeningFeature = {
+    shouldPatientBeScreened: function () {
+        if ($('#isDiabetesScreenSettingEnabled').val() === "true") {
+            //get these values for checking BMI later
+            var heightTotalInches = triageFields.patientVitals.heightInches + triageFields.patientVitals.heightFeet * 12;
+            var weightPounds = triageFields.patientVitals.weight;
+            var bmiScore = calculateBMIScore("standard", weightPounds, heightTotalInches);
+            //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
+            //surpass the threshold required for the diabetes prompt
+            if (
+                (triageFields.patientVitals.bloodPressureSystolic !== null && parseInt(triageFields.patientVitals.bloodPressureSystolic) >= 135) || (triageFields.patientVitals.bloodPressureDiastolic !== null && parseInt(triageFields.patientVitals.bloodPressureDiastolic) >= 80)
+            ) {
+                //checks if the patient is 18 or older
+                if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {
+                    if ($('input[name=isDiabetesScreenPerformed]').val() === "false") {
+                        return true;
+                    }
+                }
+            }
+            //checks to see if a BMI score is available then checks to see if it
+            //surpasses the threshold required for the diabetes prompt
+            if (isFinite(bmiScore) && bmiScore !== null && bmiScore >= 25) {
+                //checks if the patient is 25 or older
+                if (typeof $('#isOverTwentyfour').val() != 'undefined' && $('#isOverTwentyfour').val() === 'true') {
+
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
+    }
+
+};
+
 var multipleChiefComplaintFeature = {
     isActive: ($("#addChiefComplaint").length > 0),
     chiefComplaintsJSON: [],
@@ -422,6 +458,9 @@ $(document).ready(function () {
         $('#weeksPregnant').val('');
         $('#weeksPregnant').attr('disabled', true);
     });
+    $('#yesDiabetesScreen').click(function(){
+        $('input[name=isDiabetesScreenPerformed]').val("true");
+    });
     //birthday shit
     $('#age').change(function () {
         var inputYear = $('#age').val().split('-')[0];
@@ -508,7 +547,16 @@ $(document).ready(function () {
         if (multipleChiefComplaintFeature.isActive === true) {
             multipleChiefComplaintFeature.JSONifyChiefComplaints();
         }
-        return validate(); //located in triageClientValidation.js
+
+        var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+        if (isDiabeticScreeningPromptNecessary){
+            var diabetesDialog = $('.submitResetWrap.hidden');
+            var submitMenu = $('.submitResetWrap').not('.hidden');
+            $(submitMenu).addClass('hidden');
+            $(diabetesDialog).removeClass('hidden');
+        }
+
+        return (validate() && !isDiabeticScreeningPromptNecessary); //located in triageClientValidation.js
     });
 
     patientPhotoFeature.init();

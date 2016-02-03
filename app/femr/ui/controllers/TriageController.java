@@ -244,8 +244,8 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        if (isDiabetesPromptTurnedOn() && viewModelPost.getIsDiabetesScreenPerformed().equals("true")){
-            ServiceResponse<PatientEncounterItem> diabetesScreenServiceResponse = encounterService.screenPatientForDiabetes(patientEncounterItem.getId(), currentUserSession.getId());
+        if (isDiabetesPromptTurnedOn() && viewModel.getIsDiabetesScreenPerformed().equals("true")){
+            ServiceResponse<PatientEncounterItem> diabetesScreenServiceResponse = encounterService.screenPatientForDiabetes(patientEncounterItem.getId(), currentUser.getId());
             if (diabetesScreenServiceResponse.hasErrors()){
                 throw new RuntimeException();
             }

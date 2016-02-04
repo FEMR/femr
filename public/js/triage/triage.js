@@ -236,14 +236,13 @@ var patientPhotoFeature = {
 var diabeticScreeningFeature = {
     shouldPatientBeScreened: function () {
         if ($('#isDiabetesScreenSettingEnabled').val() === "true") {
-            //get these values for checking BMI later
-            var heightTotalInches = triageFields.patientVitals.heightInches + triageFields.patientVitals.heightFeet * 12;
-            var weightPounds = triageFields.patientVitals.weight;
-            var bmiScore = calculateBMIScore("standard", weightPounds, heightTotalInches);
+
+            var patientVitals = triageFields.patientVitals;
+            var bmiScore = $('#bmi').val();
             //checks to see if a systolic and/or diastolic blood pressure were taken then checks to see if they
             //surpass the threshold required for the diabetes prompt
             if (
-                (triageFields.patientVitals.bloodPressureSystolic !== null && parseInt(triageFields.patientVitals.bloodPressureSystolic) >= 135) || (triageFields.patientVitals.bloodPressureDiastolic !== null && parseInt(triageFields.patientVitals.bloodPressureDiastolic) >= 80)
+                (patientVitals.bloodPressureSystolic.val() !== null && parseInt(patientVitals.bloodPressureSystolic.val()) >= 135) || (patientVitals.bloodPressureDiastolic.val() !== null && parseInt(patientVitals.bloodPressureDiastolic.val()) >= 80)
             ) {
                 //checks if the patient is 18 or older
                 if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {
@@ -549,6 +548,7 @@ $(document).ready(function () {
         }
 
         var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+        console.log(isDiabeticScreeningPromptNecessary);
         if (isDiabeticScreeningPromptNecessary){
             var diabetesDialog = $('.submitResetWrap.hidden');
             var submitMenu = $('.submitResetWrap').not('.hidden');

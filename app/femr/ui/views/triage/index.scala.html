@@ -243,6 +243,12 @@
                     <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                         Submit Patient</button>
                     <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
+                    @if(viewModel.getPatient.getId != 0) {
+                        @helper.form(action = SearchController.handleSearch("history")) {
+                            <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatient.getId"/>
+                            <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
+                        }
+                    }
                 </div>
 
                 <div class="submitResetWrap hidden">
@@ -253,15 +259,11 @@
                         Yes</button>
                         <!-- Data elements for server-side logic, Diabetes Screen -->
                     <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
+                    <input type="hidden" name="isDiabetesScreenPerformed" value="false" />
                 </div>
                 }
 
-        @if(viewModel.getPatient.getId != 0) {
-            @helper.form(action = SearchController.handleSearch("history")) {
-                <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatient.getId"/>
-                <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
-            }
-        }
+
 
     </div>
 

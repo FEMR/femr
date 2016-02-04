@@ -245,23 +245,42 @@ var diabeticScreeningFeature = {
                 (patientVitals.bloodPressureSystolic.val() !== null && parseInt(patientVitals.bloodPressureSystolic.val()) >= 135) || (patientVitals.bloodPressureDiastolic.val() !== null && parseInt(patientVitals.bloodPressureDiastolic.val()) >= 80)
             ) {
                 //checks if the patient is 18 or older
-                if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {
-
-                    return true;
-                }
+                console.log(diabeticScreeningFeature.isAgeOrOlder(18))
+                return diabeticScreeningFeature.isAgeOrOlder(18);
             }
             //checks to see if a BMI score is available then checks to see if it
             //surpasses the threshold required for the diabetes prompt
             if (isFinite(bmiScore) && bmiScore !== null && bmiScore >= 25) {
                 //checks if the patient is 25 or older
-                if (typeof $('#isOverTwentyfour').val() != 'undefined' && $('#isOverTwentyfour').val() === 'true') {
-
-                    return true;
-                }
+                return diabeticScreeningFeature.isAgeOrOlder(25);
             }
         }
 
 
+        return false;
+    },
+    /**
+     * checks to see if a patient is a specific age or older
+     * @param age age of the patient
+     * @returns {boolean} true if they are older than the age, false otherwise
+     */
+    isAgeOrOlder: function(age){
+        if (!isNumeric(age)){
+            return false;
+        }
+        var patientInfo = triageFields.patientInformation;
+        var years = patientInfo.years.val();
+        var months = patientInfo.months.val();
+        if (isNumeric(months)){
+            years = years + months*12;
+        }
+        var ageClassification = $('input[name=ageClassification]:checked').val();
+        if (ageClassification === "adult" || ageClassification === "elder"){
+            return true;
+        }
+        if (years  >= age){
+            return true;
+        }
         return false;
     }
 
@@ -315,8 +334,7 @@ var triageFields = {
         age: $('#age'),
         years: $('#years'),
         months: $('#months'),
-        city: $('#city'),
-        ageClassification: $('[name=ageClassification]')
+        city: $('#city')
     },
     patientVitals: {
         respiratoryRate: $('#respiratoryRate'),

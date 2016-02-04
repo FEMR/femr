@@ -276,41 +276,43 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     height: 300px;
 }
 
-.prescriptionHeader {
-    width: 75%;
+/** Prescription Fields **/
+
+.prescription-grid{
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 5px;
 }
-.prescriptionRow > span {
-    display: inline-block;
-}
-.prescriptionName {
-    width: 50%;
-}
-.prescriptionName input {
-    width: 100%;
+.prescription-grid .prescription-field{
+
+    margin-right: 5px;
 }
 
-.prescriptionAdministrationName {
-    width: 25%;
+.prescription-grid .prescriptionName{
+
+    flex: 8;
 }
 
-.prescriptionInput > span {
-    vertical-align: top;
-}
-.prescriptionInput .prescriptionAdministrationName {
-    width: 12%;
-}
-.prescriptionInput .prescriptionAdministrationName select {
-    padding: 0;
-}
-.prescriptionInput .prescriptionAdministrationDays {
-    width: 12%;
+.prescription-grid .prescriptionAdministration{
+
+    flex: 3;
 }
 
-.prescriptionAmount {
-    width: 20%;
+.prescription-grid .prescriptionAdministration select{
+
+    height: 30px;
 }
 
-.medication_ingredient {
-    font-size: 8px;
-    padding-left: 5px;
+.prescription-grid .prescriptionAdministrationDays{
+
+    flex: 2;
 }
+
+.prescription-grid .prescriptionAmount{
+
+    flex: 2;
+    margin-right: 0;
+}
+

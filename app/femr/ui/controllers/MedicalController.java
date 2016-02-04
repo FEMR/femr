@@ -14,6 +14,7 @@ import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
+import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
@@ -220,6 +221,26 @@ public class MedicalController extends Controller {
         VitalMultiMap vitalMultiMap = vitalMapResponse.getResponseObject();
 
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet));
+    }
+
+    /**
+     * Get the populated partial view that represents 1 row of new prescription fields
+     * - meant to be an AJAX call
+     *
+     * @param index
+     * @return
+     */
+    public Result prescriptionRowGet( int index )
+    {
+        //get MedicationAdministrationItems
+        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
+                medicationService.retrieveAvailableMedicationAdministrations();
+        if (medicationAdministrationItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        List<MedicationAdministrationItem> items = medicationAdministrationItemServiceResponse.getResponseObject();
+
+        return ok( prescriptionRow.render( items, index ) );
     }
 
     public Result editPost(int patientId) {

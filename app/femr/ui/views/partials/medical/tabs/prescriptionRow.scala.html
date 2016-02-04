@@ -1,0 +1,26 @@
+@( medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem],
+   index: Integer )
+
+<div class="prescription-grid prescriptionRow prescriptionInput">
+    <input class='medicationID' name='prescriptions[@index].medicationID' type='hidden' />
+    <input class='administrationID' name="prescriptions[@index].administrationID" type='hidden' />
+
+    <span class="prescription-field prescriptionName">
+        <input type='text' name="prescriptions[@index].medicationName" class='medicationName form-control input-sm'/>
+    </span>
+    <span class="prescription-field prescriptionAdministration">
+        @*<input type="text" class="administrationName form-control input-sm"/>*@
+        <select class="administrationName form-control" name="prescriptions[@index].medicationAdministration">
+            <option value="-1">- Select -</option>
+            @for(  item <- medicationAdministrationItems ){
+                <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
+            }
+        </select>
+    </span>
+    <span class="prescription-field prescriptionAdministrationDays">
+        <input type="number" class="form-control input-sm" />
+    </span>
+    <span class="prescription-field prescriptionAmount">
+        <input name="prescriptions[@index].amount" type="number" class="form-control input-sm"/>
+    </span>
+</div>

@@ -169,8 +169,6 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setLastName(lastName);
         patientItem.setCity(city);
         patientItem.setUserId(userId);
-        patientItem.setIsOverSeventeen(false);//assume false until proven true below
-        patientItem.setIsOverTwentyFour(false);
         //optional fields
         if (StringUtils.isNotNullOrWhiteSpace(address))
             patientItem.setAddress(address);
@@ -181,20 +179,7 @@ public class ItemModelMapper implements IItemModelMapper {
             patientItem.setAge(dateUtils.getAge(age));//age (int)
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
-            if (dateUtils.calculateYears(age) > 17) {
 
-                patientItem.setIsOverSeventeen(true);
-                if (dateUtils.calculateYears(age) > 24) {
-
-                    patientItem.setIsOverTwentyFour(true);
-                }
-            }
-
-        } else if (StringUtils.isNotNullOrWhiteSpace(ageClassification)){
-            if (ageClassification.equals("adult") || ageClassification.equals("elder")) {
-                patientItem.setIsOverSeventeen(true);
-                patientItem.setIsOverTwentyFour(true);
-            }
         }
         if (StringUtils.isNotNullOrWhiteSpace(pathToPatientPhoto) && photoId != null) {
 

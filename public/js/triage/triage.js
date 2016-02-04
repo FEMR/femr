@@ -246,9 +246,8 @@ var diabeticScreeningFeature = {
             ) {
                 //checks if the patient is 18 or older
                 if (typeof $('#isOverSeventeen').val() != 'undefined' && $('#isOverSeventeen').val() === 'true') {
-                    if ($('input[name=isDiabetesScreenPerformed]').val() === "false") {
-                        return true;
-                    }
+
+                    return true;
                 }
             }
             //checks to see if a BMI score is available then checks to see if it
@@ -548,7 +547,6 @@ $(document).ready(function () {
         }
 
         var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
-        console.log(isDiabeticScreeningPromptNecessary);
         if (isDiabeticScreeningPromptNecessary){
             var diabetesDialog = $('.submitResetWrap.hidden');
             var submitMenu = $('.submitResetWrap').not('.hidden');

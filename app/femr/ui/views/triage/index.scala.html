@@ -27,9 +27,6 @@
     }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
-    <input type="hidden" value="@viewModel.getPatient.getIsOverSeventeen" id="isOverSeventeen"/>
-    <input type="hidden" value="@viewModel.getPatient.getIsOverTwentyFour" id="isOverTwentyfour"/>
-
     <div id="triageContentWrap">
         @if(viewModel.isSearchError) {
             <p>That patient could not be found.</p>

@@ -65,6 +65,7 @@ GET         /medical/edit/:id                                  @femr.ui.controll
 POST        /medical/edit/:id                                  @femr.ui.controllers.MedicalController.editPost(id: Integer)
 GET         /medical                                           @femr.ui.controllers.MedicalController.indexGet()
 POST        /medical                                           @femr.ui.controllers.MedicalController.indexPost()
+GET         /medical/prescriptionRow/:index                    @femr.ui.controllers.MedicalController.prescriptionRowGet( index: Integer )
 #Research
 GET         /research                                          @femr.ui.controllers.ResearchController.indexGet()
 POST        /research                                          @femr.ui.controllers.ResearchController.indexPost()

@@ -21,10 +21,8 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
-import femr.data.models.mysql.PatientPrescription;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -299,7 +297,7 @@ public class ItemModelMapper implements IItemModelMapper {
             prescriptionItem.setPrescriberLastName(lastName);
 
         if (medicationAdministration != null) {
-            prescriptionItem.setAdministrationId(medicationAdministration.getId());
+            prescriptionItem.setAdministrationID(medicationAdministration.getId());
             prescriptionItem.setAdministrationName(medicationAdministration.getName());
             prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
         }

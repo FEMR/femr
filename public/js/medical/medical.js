@@ -39,52 +39,9 @@ var problemFeature = {
 var prescriptionFeature = {
     medicationTypeaheadData: [],
     administrationTypeaheadData: [],
-    allPrescriptions: $('.prescriptionWrap > .prescriptionRow'),
+    allPrescriptions: $('.newPrescriptionsContainer').find('.prescriptionRow'),
     refreshSelectors: function () {
         prescriptionFeature.allPrescriptions = $(prescriptionFeature.allPrescriptions.selector);
-    },
-    initializeAdministrationTypeahead: function() {
-        return $.getJSON("/search/typeahead/medicationAdministrations", function (data) {
-            prescriptionFeature.administrationTypeaheadData = data;
-        });
-    },
-    administrationTypeaheadMatcher: function(strs) {
-        return function findMatches(q, cb) {
-            var substrRegex = new RegExp(q, 'i'); //Regex used to determine if a string contains substring 'q'
-            var matches = []; //Array to be populated with matches
-            //Iterate through administrations and find matches
-            $.each(strs, function (i, administration) {
-                if (substrRegex.test(administration.name)) {
-                    matches.push({
-                        id: administration.Id,
-                        modifier: administration.dailyModifier,
-                        value: administration.name
-                    });
-                }
-            });
-            cb(matches);
-        };
-    },
-    addAdministrationTypeahead: function() {
-        var $element = prescriptionFeature.allPrescriptions.last().find(".administrationName");
-        $element.typeahead({ hint: true, highlight: true },
-            {
-                displayKey: 'value',
-                name: "administration",
-                source: prescriptionFeature.administrationTypeaheadMatcher(prescriptionFeature.administrationTypeaheadData)
-            }).on('typeahead:selected', function(event, item) {
-                var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
-                $administrationID.val(item.id); // Set ID in the field to be submitted
-                // Set modifier to attribute for calculating total med
-                $administrationID.attr("data-modifier", item.modifier);
-                prescriptionFeature.calculateTotalPrescriptionAmount.call(this);
-            }).on('typeahead:autocompleted', function(event, item, data) {
-                $(this).trigger("typeahead:selected", item);
-            }
-        ).on("change", function() {
-                var $administrationID = $(this).closest(".prescriptionRow").find(".administrationID");
-                $administrationID.val(""); //Remove value if it is not one from typeahead
-        });
     },
     initializeMedicationTypeahead: function() {
         return $.getJSON("/search/typeahead/medicationsWithID", function (data) {
@@ -108,12 +65,14 @@ var prescriptionFeature = {
             cb(matches);
         };
     },
+    // Only adds typeahead to the last prescription row
     addMedicationTypeahead: function() {
         var $element = prescriptionFeature.allPrescriptions.last().find(".medicationName");
         $element.typeahead({ hint: true, highlight: true },
             {
                 displayKey: 'value',
                 name: "medications",
+                minLength: 0,
                 source: prescriptionFeature.medicationTypeaheadMatcher(prescriptionFeature.medicationTypeaheadData),
                 templates: {
                 //    suggestion: Handlebars.compile("<div>{{value}} {{#each ingredients}}<div class='medication_ingredient'>{{name}} {{value}}{{unit}}</div>{{/each}}</div>")
@@ -133,16 +92,19 @@ var prescriptionFeature = {
         });
     },
     setupNewPrescriptionRow: function(skipTypeahead) {
+
         prescriptionFeature.refreshSelectors();
 
-        /* Setup calculate to days input on keyup/change events */
+        /* Setup calculate to days input on keyup/change events - both administration and days change */
         prescriptionFeature.allPrescriptions.last().find(".prescriptionAdministrationDays > input").on("keyup change",
+            prescriptionFeature.calculateTotalPrescriptionAmount
+        );
+        prescriptionFeature.allPrescriptions.last().find(".prescriptionAdministration > select").on("change",
             prescriptionFeature.calculateTotalPrescriptionAmount
         );
 
         if (skipTypeahead !== true) {
             prescriptionFeature.addMedicationTypeahead();
-            prescriptionFeature.addAdministrationTypeahead();
         }
     },
     getNumberOfNonReadonlyPrescriptionFields: function () {
@@ -156,11 +118,13 @@ var prescriptionFeature = {
         return number;
     },
     calculateTotalPrescriptionAmount: function() {
+
         var $prescriptionRow = $(this).closest(".prescriptionRow");
         var $amountInput = $prescriptionRow.find(".prescriptionAmount input");
 
         // Modifer per day for administration type
-        var modifier = parseFloat($prescriptionRow.find(".administrationID").attr("data-modifier"));
+        var selectedOption= $prescriptionRow.find(".prescriptionAdministration").find("select.administrationName > option:selected");
+        var modifier = parseFloat( $(selectedOption).data("modifier") );
 
         // Days to prescribe
         var days = parseFloat($prescriptionRow.find(".prescriptionAdministrationDays input").val());
@@ -169,34 +133,21 @@ var prescriptionFeature = {
         $amountInput.val(amount);
     },
     addPrescriptionField: function () {
+
         var scriptIndex = prescriptionFeature.getNumberOfNonReadonlyPrescriptionFields();
-        var $prescriptionRow = $("<div>").addClass("prescriptionRow prescriptionInput");
 
-        var $medicationTypeAhead = $("<input type='text' name='prescriptions[" + scriptIndex + "].medicationName' class='medicationName form-control input-sm'/>");
-        $prescriptionRow.append(
-            $("<span class='prescriptionName'></span>").append($medicationTypeAhead)
-        );
-        $prescriptionRow.append("<input class='medicationID' name='prescriptions[" + scriptIndex + "].medicationID' type='hidden' />");
+        // get prescription row view from server
+        $.ajax({
+            url: '/medical/prescriptionRow/' + scriptIndex,
+            data: {},
+            success: function( data ){
 
-        var $administrationTypeAhead = $("<input type='text' class='administrationName form-control input-sm' />");
-        $prescriptionRow.append(
-          $("<span class='prescriptionAdministrationName'></span>").append($administrationTypeAhead)
-        );
-        $prescriptionRow.append(" <input class='administrationID' name='prescriptions[" + scriptIndex + "].administrationID' type='hidden' />");
+                $(".newPrescriptionsContainer").append( data );
 
+                prescriptionFeature.setupNewPrescriptionRow();
+            }
+        });
 
-        var $daysInput = $("<input type='number' placeholder='X'  class='form-control input-sm' />");
-        $prescriptionRow.append(
-            $("<span class='prescriptionAdministrationDays'></span>").append($daysInput)
-        );
-
-        $prescriptionRow.append(
-            $("<span class='prescriptionAmount'><input name='prescriptions[" + scriptIndex + "].amount' type='number' class='form-control input-sm'/></span> ")
-        );
-
-        $(".prescriptionWrap").append($prescriptionRow);
-
-        prescriptionFeature.setupNewPrescriptionRow();
     },
     removePrescriptionField: function () {
         prescriptionFeature.refreshSelectors();
@@ -453,9 +404,6 @@ $(document).ready(function () {
     prescriptionFeature.setupNewPrescriptionRow(true);
     prescriptionFeature.initializeMedicationTypeahead().then(function() {
         prescriptionFeature.addMedicationTypeahead();
-    });
-    prescriptionFeature.initializeAdministrationTypeahead().then(function() {
-        prescriptionFeature.addAdministrationTypeahead();
     });
 
     typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);

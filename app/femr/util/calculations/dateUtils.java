@@ -53,6 +53,13 @@ public class dateUtils {
         return new DateTime();
     }
 
+    /**
+     * Gets the integer age of a patient, then appends "YO" or "MO"
+     * depending on if the patient age is in years(adult) or months(baby)
+     *
+     * @param born the birthdate of the patient
+     * @return a string with the patient's age
+     */
     public static String getAge(Date born) {
         LocalDate birthdate = new LocalDate(born);
         LocalDate now = new LocalDate();

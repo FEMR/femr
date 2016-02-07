@@ -328,12 +328,13 @@ var multipleChiefComplaintFeature = {
 };
 
 var triageFields = {
+
     patientInformation: {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
-        age: $('#age'),
-        years: $('#years'),
-        months: $('#months'),
+        age: $('#age'),//doesn't work for an existing patient
+        years: $('#years'),//doesn't work for an existing patient
+        months: $('#months'),//doesn't work for an existing patient
         city: $('#city')
     },
     patientVitals: {

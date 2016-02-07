@@ -558,22 +558,30 @@ $(document).ready(function () {
     });
 
     $('#triageSubmitBtn').click(function () {
-        //get the base64 URI string from the canvas
-        patientPhotoFeature.prepareForPOST();
-        //make sure the feature is turned on before JSONifying
-        if (multipleChiefComplaintFeature.isActive === true) {
-            multipleChiefComplaintFeature.JSONifyChiefComplaints();
+        var pass = validate();
+
+        //only prepare for POST if the fields are validated
+        //also only do the diabetes prompt checking if the fields are validated
+        if (pass === true){
+            //get the base64 URI string from the canvas
+            patientPhotoFeature.prepareForPOST();
+            //make sure the feature is turned on before JSONifying
+            if (multipleChiefComplaintFeature.isActive === true) {
+                multipleChiefComplaintFeature.JSONifyChiefComplaints();
+            }
+
+            var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+            if (isDiabeticScreeningPromptNecessary){
+                var diabetesDialog = $('.submitResetWrap.hidden');
+                var submitMenu = $('.submitResetWrap').not('.hidden');
+                $(submitMenu).addClass('hidden');
+                $(diabetesDialog).removeClass('hidden');
+            }
+            pass = !isDiabeticScreeningPromptNecessary;
         }
 
-        var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
-        if (isDiabeticScreeningPromptNecessary){
-            var diabetesDialog = $('.submitResetWrap.hidden');
-            var submitMenu = $('.submitResetWrap').not('.hidden');
-            $(submitMenu).addClass('hidden');
-            $(diabetesDialog).removeClass('hidden');
-        }
 
-        return (validate() && !isDiabeticScreeningPromptNecessary); //located in triageClientValidation.js
+        return pass; //located in triageClientValidation.js
     });
 
     patientPhotoFeature.init();

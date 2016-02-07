@@ -2,7 +2,7 @@
     @inputBlock = {
         <div class="generalInfoInput">
             <label for="@label">Years</label>
-            @if(value == null) {
+            @if(value.getAge == null) {
                 <input type="text" class="age-input fInput" id="@forInput1" name="@forInput1" placeholder="@field1">
                 <input type="text" class="age-input fInput" id="@forInput2" name="@forInput2" placeholder="@field2">
             } else {

@@ -333,8 +333,8 @@ var triageFields = {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
         age: $('#age'),//doesn't work for an existing patient
-        years: $('#years'),//doesn't work for an existing patient
-        months: $('#months'),//doesn't work for an existing patient
+        years: $('#years'),
+        months: $('#months'),
         city: $('#city')
     },
     patientVitals: {

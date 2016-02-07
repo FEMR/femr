@@ -105,6 +105,26 @@ public class dateUtils {
         return age;
     }
 
+    /**
+     * Gets the patient's age in months.
+     *
+     * @param born the birthdate of the patient
+     * @return an Integer that represents the number of months the patient has been alive. Returns null
+     * if an error occured OR if the patient does not have an age (just an age classification).
+     */
+    public static Integer getMonthsInteger(Date born) {
+
+        if (born == null){
+            return null;
+        }
+
+        LocalDate birthdate = new LocalDate(born);
+        LocalDate now = new LocalDate();
+        Months months = Months.monthsBetween(birthdate, now);
+
+        return months.getMonths();
+    }
+
     public static float getAgeAsOfDateFloat(Date born, DateTime asOfDate) {
 
         LocalDate birthdate = new LocalDate(born);

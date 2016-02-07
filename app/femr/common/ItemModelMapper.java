@@ -168,6 +168,7 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setFirstName(firstName);
         patientItem.setLastName(lastName);
         patientItem.setYearsOld(dateUtils.getYearsInteger(age));
+        patientItem.setMonthsOld(dateUtils.getMonthsInteger(age));
         patientItem.setCity(city);
         patientItem.setUserId(userId);
         //optional fields

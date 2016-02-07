@@ -245,7 +245,6 @@ var diabeticScreeningFeature = {
                 (patientVitals.bloodPressureSystolic.val() !== null && parseInt(patientVitals.bloodPressureSystolic.val()) >= 135) || (patientVitals.bloodPressureDiastolic.val() !== null && parseInt(patientVitals.bloodPressureDiastolic.val()) >= 80)
             ) {
                 //checks if the patient is 18 or older
-                console.log(diabeticScreeningFeature.isAgeOrOlder(18))
                 return diabeticScreeningFeature.isAgeOrOlder(18);
             }
             //checks to see if a BMI score is available then checks to see if it
@@ -335,6 +334,7 @@ var triageFields = {
         age: $('#age'),//doesn't work for an existing patient
         years: $('#years'),
         months: $('#months'),
+        ageClassification: $('[name=ageClassification]'),
         city: $('#city')
     },
     patientVitals: {

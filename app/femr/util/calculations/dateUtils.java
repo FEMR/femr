@@ -21,6 +21,7 @@ package femr.util.calculations;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import play.Logger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -71,13 +72,37 @@ public class dateUtils {
             return Integer.toString(monthsInt/12) + " YO";
     }
 
-    public static float getAgeFloat(Date born) {
+    /**
+     * Gets the patient's age in years. If the patient is an infant with less than 12 years of life,
+     * 0 will be returned.
+     *
+     * @param born the birthdate of the patient
+     * @return an Integer that represents the number of years the patient has been alive. Returns null
+     * if an error occured OR if the patient does not have an age (just an age classification).
+     */
+    public static Integer getYearsInteger(Date born) {
+
+        if (born == null){
+            return null;
+        }
+
         LocalDate birthdate = new LocalDate(born);
         LocalDate now = new LocalDate();
+        Integer age = 0;
         Months months = Months.monthsBetween(birthdate, now);
         int monthsInt = months.getMonths();
-        float result = (float) monthsInt;
-        return result/12;
+        if (monthsInt >= 12) {
+            double temp = Math.floor(monthsInt / 12);
+            try {
+                age = (int) Math.round(temp);
+            } catch (Exception ex) {
+                age = null;
+                Logger.error("a patient's age could not be handled as an int");
+            }
+
+        }
+
+        return age;
     }
 
     public static float getAgeAsOfDateFloat(Date born, DateTime asOfDate) {

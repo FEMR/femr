@@ -18,8 +18,6 @@
 */
 package femr.common.models;
 
-import org.joda.time.DateTime;
-
 import java.util.Date;
 
 public class PatientItem {
@@ -28,8 +26,9 @@ public class PatientItem {
     private String lastName;
     private String address;
     private String city;
-    private String age;//age (int)
-    private Date birth;//date of birth (Date)
+    private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
+    private Integer yearsOld;//the age of the patient as an integer. 0 if the patient is less than a year old
+    private Date birth;
     private String friendlyDateOfBirth;
     private String sex;
     private Integer photoId;
@@ -172,5 +171,13 @@ public class PatientItem {
 
     public void setFriendlyDateOfBirth(String friendlyDateOfBirth) {
         this.friendlyDateOfBirth = friendlyDateOfBirth;
+    }
+
+    public Integer getYearsOld() {
+        return yearsOld;
+    }
+
+    public void setYearsOld(Integer yearsOld) {
+        this.yearsOld = yearsOld;
     }
 }

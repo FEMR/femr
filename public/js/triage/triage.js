@@ -281,6 +281,33 @@ var diabeticScreeningFeature = {
             return true;
         }
         return false;
+    },
+    /**
+     * Sets everything to read only while the user indicates whether or not
+     * the patient was screened for diabetes.
+     */
+    readonlyEverything: function(){
+
+        triageFields.patientInformation.firstName.prop('readonly', true);
+        triageFields.patientInformation.lastName.prop('readonly', true);
+        triageFields.patientInformation.age.prop('readonly', true);
+        triageFields.patientInformation.years.prop('readonly', true);
+        triageFields.patientInformation.months.prop('readonly', true);
+        triageFields.patientInformation.city.prop('readonly', true);
+        //age classification?
+        triageFields.patientVitals.respiratoryRate.prop('readonly', true);
+        triageFields.patientVitals.bloodPressureSystolic.prop('readonly', true);
+        triageFields.patientVitals.bloodPressureDiastolic.prop('readonly', true);
+        triageFields.patientVitals.heartRate.prop('readonly', true);
+        triageFields.patientVitals.oxygenSaturation.prop('readonly', true);
+        triageFields.patientVitals.temperature.prop('readonly', true);
+        triageFields.patientVitals.weight.prop('readonly', true);
+        triageFields.patientVitals.heightFeet.prop('readonly', true);
+        triageFields.patientVitals.heightInches.prop('readonly', true);
+        triageFields.patientVitals.glucose.prop('readonly', true);
+        triageFields.patientVitals.weeksPregnant.prop('readonly', true);
+
+        triageFields.chiefComplaint.chiefComplaint.prop('readonly', true);
     }
 
 };
@@ -576,6 +603,7 @@ $(document).ready(function () {
                 var submitMenu = $('.submitResetWrap').not('.hidden');
                 $(submitMenu).addClass('hidden');
                 $(diabetesDialog).removeClass('hidden');
+                diabeticScreeningFeature.readonlyEverything();
             }
             pass = !isDiabeticScreeningPromptNecessary;
         }

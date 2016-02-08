@@ -47,7 +47,12 @@
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 <div class="generalInfoInput" id="citySearchContainer">
                     <label for="city">City<span class="red bold">*</span></label>
-                    <input type = "text" class="citySearch fInput"  name="city" id="city" required>
+                    @if(viewModel.getPatient.getCity == null) {
+                        <input type = "text" class="citySearch fInput" name="city" id="city" required>
+                    } else {
+                        <input type = "text" class="citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
+                        }
+
                 </div>
 
 

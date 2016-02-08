@@ -288,13 +288,15 @@ var diabeticScreeningFeature = {
      */
     readonlyEverything: function(){
 
+        //disable general info except age classification and sex buttons
+        //because they are stupid
         triageFields.patientInformation.firstName.prop('readonly', true);
         triageFields.patientInformation.lastName.prop('readonly', true);
         triageFields.patientInformation.age.prop('readonly', true);
         triageFields.patientInformation.years.prop('readonly', true);
         triageFields.patientInformation.months.prop('readonly', true);
         triageFields.patientInformation.city.prop('readonly', true);
-        //age classification?
+        //disable all vitals
         triageFields.patientVitals.respiratoryRate.prop('readonly', true);
         triageFields.patientVitals.bloodPressureSystolic.prop('readonly', true);
         triageFields.patientVitals.bloodPressureDiastolic.prop('readonly', true);
@@ -306,8 +308,19 @@ var diabeticScreeningFeature = {
         triageFields.patientVitals.heightInches.prop('readonly', true);
         triageFields.patientVitals.glucose.prop('readonly', true);
         triageFields.patientVitals.weeksPregnant.prop('readonly', true);
-
+        //disable chief complaint
         triageFields.chiefComplaint.chiefComplaint.prop('readonly', true);
+        //disable age classification, need to handle absence of POST data
+        var value = $("[name=ageClassification]:checked").val();
+        triageFields.patientInformation.ageClassification.prop('disabled', true);
+        if (value){//checks to make sure there is a value to POST. If there isn't, don't post anythign (normal behavior)
+            triageFields.patientInformation.ageClassification.last().append("<input type='text' class='hidden' name='ageClassification' value='" + value + "'/>");
+        }
+        //disable sex buttons, since this is weird and added to the label we still get POST data
+        triageFields.patientInformation.sex.parent().addClass('disabled');
+        //disable photo, POST data still comes through for a photo. probably because of cropping!
+        triageFields.patientInformation.photo.prop('disabled', true);
+
     }
 
 };
@@ -362,7 +375,11 @@ var triageFields = {
         years: $('#years'),
         months: $('#months'),
         ageClassification: $('[name=ageClassification]'),
-        city: $('#city')
+        city: $('#city'),
+        maleButton: $('#maleBtn'),
+        femaleButton: $('#femaleBtn'),
+        sex: $('[name=sex]'),
+        photo: $('#photoInput')
     },
     patientVitals: {
         respiratoryRate: $('#respiratoryRate'),

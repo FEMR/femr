@@ -232,6 +232,7 @@ public class MedicalController extends Controller {
      */
     public Result prescriptionRowGet( int index )
     {
+
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
                 medicationService.retrieveAvailableMedicationAdministrations();
@@ -240,7 +241,7 @@ public class MedicalController extends Controller {
         }
         List<MedicationAdministrationItem> items = medicationAdministrationItemServiceResponse.getResponseObject();
 
-        return ok( prescriptionRow.render( items, index ) );
+        return ok( prescriptionRow.render( items, index, null ) );
     }
 
     public Result editPost(int patientId) {

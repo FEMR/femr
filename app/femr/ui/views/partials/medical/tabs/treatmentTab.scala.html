@@ -45,24 +45,12 @@
                 </div>
 
                 @for(script <- prescriptions) {
-                    <div class="prescription-grid prescriptionRow">
-                        <input class='medicationID' value='@script.getMedicationID' type='hidden' />
-                        <input class='administrationID' value='@script.getAdministrationId' type='hidden' />
 
-                        <span class="prescription-field prescriptionName">
-                            <input type="text" class="medicationName form-control input-sm" value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly/>
-                        </span>
-                        <span class="prescription-field prescriptionAdministration">
-                            <input type="text" class="form-control input-sm" value="@script.getAdministrationName" readonly/>
-                        </span>
-                        <span class="prescription-field prescriptionAmount">
-                            <input type="text" class="form-control input-sm" value="@script.getAmount" readonly />
-                        </span>
-                    </div>
+                    @prescriptionRow( medicationAdministrationItems, 0, script )
                 }
 
                 <div class="newPrescriptionsContainer">
-                @prescriptionRow( medicationAdministrationItems, 0 )
+                @prescriptionRow( medicationAdministrationItems, 0, null )
                 </div>
 
             </div>

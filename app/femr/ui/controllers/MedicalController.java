@@ -232,7 +232,6 @@ public class MedicalController extends Controller {
      */
     public Result prescriptionRowGet( int index )
     {
-
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
                 medicationService.retrieveAvailableMedicationAdministrations();
@@ -348,10 +347,12 @@ public class MedicalController extends Controller {
             }
         }
 
-        //get the prescriptions that DO NOT have an ID (e.g. prescriptions that DO NOT exist in the dictionary).
+        // get the prescriptions that DO NOT have an ID (e.g. prescriptions that DO NOT exist in the dictionary).
+        // also ignore new new prescriptions that do not have a name
         List<PrescriptionItem> prescriptionItemsWithoutID = viewModelPost.getPrescriptions()
                 .stream()
-                .filter(prescription -> prescription.getMedicationID() == null)
+                .filter( prescription -> prescription.getMedicationID() == null )
+                .filter( prescription -> StringUtils.isNotNullOrWhiteSpace( prescription.getMedicationName() ) )
                 .collect(Collectors.toList());
 
         for (PrescriptionItem prescriptionItem : prescriptionItemsWithoutID){

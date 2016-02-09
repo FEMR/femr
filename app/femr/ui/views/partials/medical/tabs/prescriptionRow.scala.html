@@ -16,7 +16,7 @@
         </span>
         <span class="prescription-field prescriptionAdministration">
             @*<input type="text" class="administrationName form-control input-sm"/>*@
-            <select class="administrationName form-control" name="prescriptions[@index].medicationAdministration">
+            <select class="administrationName form-control" name="prescriptions[@index].administrationId">
                 <option value="-1">- Select -</option>
                 @for(item <- medicationAdministrationItems) {
                     <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
@@ -34,21 +34,17 @@
 }else{
 
     <div class="prescription-grid prescriptionRow prescriptionInput">
-        <input class='medicationID' name='prescriptions[@index].medicationID' value='@script.getMedicationID' type='hidden' />
-        @*<input class='administrationID' name="prescriptions[@index].administrationID" value='@script.getAdministrationId' type='hidden' />*@
+        <input class='medicationID' value='@script.getMedicationID' type='hidden' />
 
         <span class="prescription-field prescriptionName">
-            <input type='text' name="prescriptions[@index].medicationName" class='medicationName form-control input-sm' value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly />
+            <input type='text' class='medicationName form-control input-sm' value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly />
         </span>
         <span class="prescription-field prescriptionAdministration">
-            @*<input type="text" class="administrationName form-control input-sm"/>*@
 
-            <select class="administrationName form-control" name="prescriptions[@index].medicationAdministration" readonly disabled>
+            <select class="administrationName form-control" readonly disabled>
                 <option value="-1">- Select -</option>
                 @for(item <- medicationAdministrationItems) {
                     <option value="@item.getId" data-modifier="@item.getDailyModifier" @if( item.getId == script.getAdministrationId ){ selected="selected" }>@item.getName</option>
-
-                    @* value="@script.getAdministrationName" readonly *@
                 }
             </select>
         </span>
@@ -56,7 +52,7 @@
             <input type="number" class="form-control input-sm" readonly />
         </span>
         <span class="prescription-field prescriptionAmount">
-            <input name="prescriptions[@index].amount" type="number" class="form-control input-sm" value="@script.getAmount" readonly />
+            <input type="number" class="form-control input-sm" readonly />
         </span>
     </div>
 }

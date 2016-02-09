@@ -258,6 +258,10 @@
         float: left;
         display: block;
     }
+
+    #ageClassificationWrap{
+        margin-top: 40px;
+    }
 }
 
 @media (max-width: 620px) {
@@ -323,9 +327,6 @@
     overflow: visible !important;
 }
 
-#citySearchContainer input.citySearch{
-    width: 180px !important;
-}
 #citySearchContainer .tt-hint{
     visibility:hidden;
 }
@@ -353,12 +354,13 @@
 }
 .tt-dropdown-menu{
     top:25px !important;
-    left: 100px !important;
+    /*left: 100px !important;*/
     max-height: 150px !important;
 }
 #citySearchContainer pre{
     margin-right: 120px !important;
-    width: 100% !important;  left: 100px !important;
+    width: 100% !important;
+    /*left: 100px !important;*/
 }
 
 .tt-suggestion.tt-cursor{

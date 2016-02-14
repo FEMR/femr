@@ -186,39 +186,52 @@ public class PharmaciesController extends Controller {
         }
 
 
-        // Map<newId, oldId>
+        // Map<id of the new prescription, id of the old prescription>
         Map<Integer, Integer> prescriptionsToReplace = new HashMap<>();
         // Map<id, isCounseled>
         Map<Integer, Boolean> prescriptionsToDispense = new HashMap<>();
 
         for(PrescriptionItem script : createViewModelPost.getPrescriptions()) {
-            //If getMedicationID is not null then a replacement is being done
-            if (script.getMedicationID() != null) {
-                //create the prescription
-                ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
-                        script.getAdministrationID(),
-                        patientEncounterItem.getId(),
-                        currentUserSession.getId(),
-                        script.getAmount(),
-                        null);
-                PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
 
-                //replace the prescription
-                prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());
+            if (StringUtils.isNotNullOrWhiteSpace(script.getMedicationName())) {
+                //create a new prescription to replace the old prescription.
+                if (script.getAmount() == null){
+                    script.setAmount(0);
+                }
+
+                if (script.getMedicationID() != null){
+                    //the medication has already been entered into the medications table (through admin inventory?)
+                    ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
+                            script.getAdministrationID(),
+                            patientEncounterItem.getId(),
+                            currentUserSession.getId(),
+                            script.getAmount(),
+                            null);
+                    PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
+                    //mark the prescription for replacing
+                    prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());
+
+                }else{
+                    //the medication has not already been entered into the medications table
+                    ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescriptionWithNewMedication(
+                            script.getMedicationName(),
+                            script.getAdministrationID(),
+                            patientEncounterItem.getId(),
+                            currentUserSession.getId(),
+                            script.getAmount(),
+                            null);
+                    PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
+                    //mark the prescription for replacing
+                    prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());
+                }
+
+
+
+
 
             } else {
-
+                // mark the prescription for dispensing
                 prescriptionsToDispense.put(script.getId(), isCounseled);
-            }
-        }
-
-
-        // dispense the prescriptions!
-        if (prescriptionsToDispense.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense);
-            if (dispensePrescriptionsServiceResponse.hasErrors()){
-
-                throw new RuntimeException();
             }
         }
 
@@ -226,6 +239,15 @@ public class PharmaciesController extends Controller {
         if (prescriptionsToReplace.size() > 0){
             ServiceResponse<List<PrescriptionItem>> replacePrescriptionsServiceResponse = medicationService.replacePrescriptions(prescriptionsToReplace);
             if (replacePrescriptionsServiceResponse.hasErrors()){
+
+                throw new RuntimeException();
+            }
+        }
+
+        // dispense the prescriptions!
+        if (prescriptionsToDispense.size() > 0) {
+            ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense);
+            if (dispensePrescriptionsServiceResponse.hasErrors()){
 
                 throw new RuntimeException();
             }

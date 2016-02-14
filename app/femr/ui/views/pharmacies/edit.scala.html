@@ -57,6 +57,7 @@
                 @for(x <- 1 to viewModel.getPrescriptions.size) {
                     @defining(viewModel.getPrescriptions.get(x - 1)) { prescription =>
                         <li class="prescription" id="med@(x-1)" data-medID="@prescription.getMedicationID">
+                            <input type="text" class="hidden" name="prescriptions[@(x-1)].id" value="@prescription.getId"/>
                             <button type="button" class="fButton fOtherButton replaceBtn">R</button>
                             <div>
                                 <span>@prescription.getAmount @prescription.getName (@outputStringOrNA(prescription.getMedicationForm).toString().trim()) - @prescription.getAdministrationName </span>

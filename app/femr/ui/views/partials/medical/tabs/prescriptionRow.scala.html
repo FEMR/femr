@@ -6,6 +6,8 @@
 @import femr.ui.views.html.partials.helpers.outputStringOrNA
 
 @if( script == null ) {
+@* Will get submitted - new prescriptions in medical and replaced prescriptions in pharmacy *@
+@* The index variable is how we link the replaced prescription back to the prescribed prescription? *@
 
     <div class="prescription-grid prescriptionRow prescriptionInput">
 
@@ -32,7 +34,7 @@
     </div>
 
 }else{
-
+@* won't get submitted, the prescription has already been prescribed for the encounter (happens in medical) *@
     <div class="prescription-grid prescriptionRow prescriptionInput">
 
         <input class='medicationID' value='@script.getMedicationID' type='hidden' />

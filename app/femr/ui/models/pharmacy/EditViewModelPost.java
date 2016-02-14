@@ -27,7 +27,7 @@ public class EditViewModelPost {
 
     private List<PrescriptionItem> prescriptions;
 
-    private Boolean disclaimer;
+    private int disclaimer;
 
     public List<PrescriptionItem> getPrescriptions() {
         return prescriptions;
@@ -37,22 +37,22 @@ public class EditViewModelPost {
         this.prescriptions = prescriptions;
     }
 
-    public Boolean getDisclaimer() {
+    public int getDisclaimer() {
         return disclaimer;
     }
 
-    public void setDisclaimer(Boolean disclaimer) {
+    public void setDisclaimer(int disclaimer) {
         this.disclaimer = disclaimer;
     }
 
 
 
-    public String validate() {
+    /*public String validate() {
 
         if( ! disclaimer ) {
             return "Patients must be counseled before medications can be dispensed";
         }
         return null;
-    }
+    }  */
 
 }

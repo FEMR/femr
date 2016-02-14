@@ -179,7 +179,11 @@ public class PharmaciesController extends Controller {
         }
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
-        boolean isCounseled = createViewModelPost.getDisclaimer();
+        //assume the patient was not counseled, set to true if they were.
+        boolean isCounseled = false;
+        if (createViewModelPost.getDisclaimer() == 1){
+            isCounseled = true;
+        }
 
 
         // Map<newId, oldId>

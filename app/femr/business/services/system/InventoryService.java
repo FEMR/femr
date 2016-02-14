@@ -278,11 +278,44 @@ public class InventoryService implements IInventoryService {
 
     /**
      * {@inheritDoc}
-
+     */
     @Override
     public ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract) {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+        MedicationItem medicationItem = null;
+
+        ExpressionList<Medication> medicationExpressionList = QueryProvider.getMedicationQuery()
+                .where()
+                .eq("id", medicationId);
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("medication_id", medicationId)
+                .eq("mission_trip_id", tripId);
+
+        try {
+
+
+            IMedication medication = medicationRepository.findOne(medicationExpressionList);
+            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            Integer currentQuantity = null;
+            Integer totalQuantity = null;
+
+            if (medicationInventory != null) {
+
+                medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - quantityToSubtract);
+                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                currentQuantity = medicationInventory.getQuantity_current();
+                totalQuantity = medicationInventory.getQuantity_total();
+            }
+
+            medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+        response.setResponseObject(medicationItem);
+
         return response;
-    }  */
+    }
 }

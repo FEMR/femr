@@ -1,9 +1,10 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean )
 
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.views.html.partials.patientOverview
+@import femr.ui.views.html.partials.medical.tabs.prescriptionRow
 @import femr.ui.views.html.partials.helpers.outputStringOrNA
 
     @additionalScripts = {
@@ -69,17 +70,16 @@
                                 <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
                             }
                             <div class="replacement hidden">
-                                <input type="hidden" name="prescriptions[@(x-1)].id" value="@medication.getId" />
-                                <div class="prescriptionRow prescriptionInput">
-                                    <input type="hidden" class="medicationID" name="prescriptions[@(x-1)].medicationID" value="" />
-                                    <input type="hidden" class="administrationID" name="prescriptions[@(x-1)].administrationID" value="" />
-                                    <span class="prescriptionName"><input type='text' class='medicationName form-control input-sm'/></span
-                                    ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
-                                ><span class="prescriptionAdministrationDays">
-                                    <input type="number" placeholder="X"  class="form-control input-sm" />
-                                </span
-                                ><span class="prescriptionAmount"><input name="prescriptions[@(x-1)].amount" type="number" placeholder="Amount" value="0" class="form-control input-sm"/></span>
+
+                                <div class="prescription-grid prescriptionHeader">
+                                    <label class="prescription-field prescriptionName" for="prescription">Prescription</label>
+                                    <label class="prescription-field prescriptionAdministration">Administration</label>
+                                    <label class="prescription-field prescriptionAdministrationDays">Days</label>
+                                    <label class="prescription-field prescriptionAmount">Amount</label>
                                 </div>
+
+                                @prescriptionRow( viewModel.getMedicationAdministrationItems, x-1, null )
+
                             </div>
                         </li>
                     }
@@ -93,7 +93,9 @@
             <div id="disclaimerWrap">
                 <label for="disclaimer">
                     The patient was counseled on the risks and side effects of the medications dispensed.</label>
-                <input type="checkbox" name="disclaimer" value="disclaimer">
+                <input type="hidden" name="disclaimer" value="0" />
+                <input type="checkbox" name="disclaimer" value="1" />
+
             </div>
             <div id="submitWrap">
                 <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">

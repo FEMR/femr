@@ -8,15 +8,15 @@
 @if( script == null ) {
 
     <div class="prescription-grid prescriptionRow prescriptionInput">
+
         <input class='medicationID' name='prescriptions[@index].medicationID' type='hidden' />
-        <input class='administrationID' name="prescriptions[@index].administrationID" type='hidden' />
 
         <span class="prescription-field prescriptionName">
             <input type='text' name="prescriptions[@index].medicationName" class='medicationName form-control input-sm'/>
         </span>
         <span class="prescription-field prescriptionAdministration">
             @*<input type="text" class="administrationName form-control input-sm"/>*@
-            <select class="administrationName form-control" name="prescriptions[@index].administrationId">
+            <select class="administrationName form-control" name="prescriptions[@index].administrationID">
                 <option value="-1">- Select -</option>
                 @for(item <- medicationAdministrationItems) {
                     <option value="@item.getId" data-modifier="@item.getDailyModifier">@item.getName</option>
@@ -34,6 +34,7 @@
 }else{
 
     <div class="prescription-grid prescriptionRow prescriptionInput">
+
         <input class='medicationID' value='@script.getMedicationID' type='hidden' />
 
         <span class="prescription-field prescriptionName">
@@ -44,7 +45,7 @@
             <select class="administrationName form-control" readonly disabled>
                 <option value="-1">- Select -</option>
                 @for(item <- medicationAdministrationItems) {
-                    <option value="@item.getId" data-modifier="@item.getDailyModifier" @if( item.getId == script.getAdministrationId ){ selected="selected" }>@item.getName</option>
+                    <option value="@item.getId" data-modifier="@item.getDailyModifier" @if( item.getId == script.getAdministrationID ){ selected="selected" }>@item.getName</option>
                 }
             </select>
         </span>
@@ -52,7 +53,7 @@
             <input type="number" class="form-control input-sm" readonly />
         </span>
         <span class="prescription-field prescriptionAmount">
-            <input type="number" class="form-control input-sm" readonly />
+            <input type="number" class="form-control input-sm" value='@script.getAmount' readonly />
         </span>
     </div>
 }

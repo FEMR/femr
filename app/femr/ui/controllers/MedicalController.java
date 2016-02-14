@@ -335,7 +335,7 @@ public class MedicalController extends Controller {
 
             createPrescriptionServiceResponse = medicationService.createPrescription(
                     prescriptionItem.getMedicationID(),
-                    prescriptionItem.getAdministrationId(),
+                    prescriptionItem.getAdministrationID(),
                     patientEncounterItem.getId(),
                     currentUserSession.getId(),
                     prescriptionItem.getAmount(),
@@ -359,7 +359,7 @@ public class MedicalController extends Controller {
 
             createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
                     prescriptionItem.getMedicationName(),
-                    prescriptionItem.getAdministrationId(),
+                    prescriptionItem.getAdministrationID(),
                     patientEncounterItem.getId(),
                     currentUserSession.getId(),
                     prescriptionItem.getAmount(),

@@ -27,7 +27,7 @@ public class PrescriptionItem {
     private String originalMedicationName;
     private String prescriberFirstName;
     private String prescriberLastName;
-    private Integer administrationId;
+    private Integer administrationID;
     private String administrationName;
     private Float administrationModifier;
     private Integer amount;
@@ -80,12 +80,12 @@ public class PrescriptionItem {
         this.prescriberLastName = prescriberLastName;
     }
 
-    public Integer getAdministrationId() {
-        return administrationId;
+    public Integer getAdministrationID() {
+        return administrationID;
     }
 
-    public void setAdministrationId(Integer administrationId) {
-        this.administrationId = administrationId;
+    public void setAdministrationID(Integer administrationID) {
+        this.administrationID = administrationID;
     }
 
     public String getAdministrationName() {

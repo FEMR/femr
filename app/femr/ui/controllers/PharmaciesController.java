@@ -17,7 +17,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,8 +157,13 @@ public class PharmaciesController extends Controller {
     }
 
     public Result editPost(int id) {
+
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+
+        // If form errors exist
         EditViewModelPost createViewModelPost = populatedViewModelPostForm.bindFromRequest().get();
+
+        // @TODO -- Do validation on  the counseled flag
 
         //get patient encounter
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(id);
@@ -175,7 +179,7 @@ public class PharmaciesController extends Controller {
         }
         PatientItem patientItem = patientItemServiceResponse.getResponseObject();
 
-        boolean isCounseled = StringUtils.isNotNullOrWhiteSpace(createViewModelPost.getDisclaimer());
+        boolean isCounseled = createViewModelPost.getDisclaimer();
 
 
         // Map<newId, oldId>
@@ -188,7 +192,7 @@ public class PharmaciesController extends Controller {
             if (script.getMedicationID() != null) {
                 //create the prescription
                 ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
-                        script.getAdministrationId(),
+                        script.getAdministrationID(),
                         patientEncounterItem.getId(),
                         currentUserSession.getId(),
                         script.getAmount(),
@@ -210,7 +214,7 @@ public class PharmaciesController extends Controller {
             ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense);
             if (dispensePrescriptionsServiceResponse.hasErrors()){
 
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
 
@@ -219,7 +223,7 @@ public class PharmaciesController extends Controller {
             ServiceResponse<List<PrescriptionItem>> replacePrescriptionsServiceResponse = medicationService.replacePrescriptions(prescriptionsToReplace);
             if (replacePrescriptionsServiceResponse.hasErrors()){
 
-                return internalServerError();
+                throw new RuntimeException();
             }
         }
 

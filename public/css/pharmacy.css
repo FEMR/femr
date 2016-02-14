@@ -32,12 +32,12 @@
     margin-top: -6px;
 }
 
+.replacement{
 
-
-.medication input {
-    width: 100%;
-    margin-top: 10px;
+    padding-top: 15px;
 }
+
+
 
 /* Override the overflow style so the user can see the full drop down
  in medication typeahead list*/
@@ -187,39 +187,6 @@ input[style] {
 }
 
 
-.prescriptionHeader {
-    width: 75%;
-}
-.prescriptionRow > span {
-    display: inline-block;
-}
-.prescriptionRow input {
-    margin-top: 0;
-}
-.prescriptionName {
-    width: 50%;
-}
-
-.prescriptionAdministrationName {
-    width: 25%;
-}
-
-.prescriptionInput .prescriptionAdministrationName {
-    width: 12%;
-}
-.prescriptionInput .prescriptionAdministrationName select {
-    padding: 0;
-}
-.prescriptionInput .prescriptionAdministrationDays {
-    width: 12%;
-}
-
-.prescriptionAmount {
-    width: 20%;
-}
-.prescriptionInput > span {
-    vertical-align: top;
-}
 
 .medicationRemaining {
     font-size: 10px;

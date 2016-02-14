@@ -19,13 +19,15 @@
 package femr.ui.models.pharmacy;
 
 import femr.common.models.PrescriptionItem;
+import play.data.validation.Constraints;
 
 import java.util.List;
 
 public class EditViewModelPost {
+
     private List<PrescriptionItem> prescriptions;
 
-    private String disclaimer;
+    private Boolean disclaimer;
 
     public List<PrescriptionItem> getPrescriptions() {
         return prescriptions;
@@ -35,12 +37,22 @@ public class EditViewModelPost {
         this.prescriptions = prescriptions;
     }
 
-    public String getDisclaimer() {
+    public Boolean getDisclaimer() {
         return disclaimer;
     }
 
-    public void setDisclaimer(String disclaimer) {
+    public void setDisclaimer(Boolean disclaimer) {
         this.disclaimer = disclaimer;
+    }
+
+
+
+    public String validate() {
+
+        if( ! disclaimer ) {
+            return "Patients must be counseled before medications can be dispensed";
+        }
+        return null;
     }
 
 }

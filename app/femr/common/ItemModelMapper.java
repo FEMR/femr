@@ -278,7 +278,7 @@ public class ItemModelMapper implements IItemModelMapper {
      */
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication) {
+                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication, Integer medicationRemaining) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -311,7 +311,7 @@ public class ItemModelMapper implements IItemModelMapper {
             if (medicationItem.getForm() != null)
                 prescriptionItem.setMedicationForm(medicationItem.getForm());
 
-            prescriptionItem.setMedicationRemaining(medicationItem.getQuantity_current());
+            prescriptionItem.setMedicationRemaining(medicationRemaining);
 
 
 

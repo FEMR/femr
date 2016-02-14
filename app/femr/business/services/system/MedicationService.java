@@ -50,6 +50,7 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
     private final IRepository<IMedicationForm> medicationFormRepository;
+    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
@@ -64,6 +65,7 @@ public class MedicationService implements IMedicationService {
                              IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                              IRepository<IMedicationAdministration> medicationAdministrationRepository,
                              IRepository<IMedicationForm> medicationFormRepository,
+                             IRepository<IMedicationInventory> medicationInventoryRepository,
                              IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
@@ -75,6 +77,7 @@ public class MedicationService implements IMedicationService {
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
         this.medicationFormRepository = medicationFormRepository;
+        this.medicationInventoryRepository = medicationInventoryRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.medicationAdministrationRepository = medicationAdministrationRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
@@ -270,7 +273,9 @@ public class MedicationService implements IMedicationService {
                         prescriptionReplacement.getReplacementPrescription().getPhysician().getLastName(),
                         prescriptionReplacement.getReplacementPrescription().getMedicationAdministration(),
                         prescriptionReplacement.getReplacementPrescription().getAmount(),
-                        prescriptionReplacement.getReplacementPrescription().getMedication()));
+                        prescriptionReplacement.getReplacementPrescription().getMedication(),
+                        null)
+                );
             }
         } catch (Exception ex) {
 
@@ -287,7 +292,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense) {
+    public ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense, int tripId) {
 
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
@@ -308,6 +313,24 @@ public class MedicationService implements IMedicationService {
                 prescription.setCounseled(isCounseled);
                 prescription = patientPrescriptionRepository.update(prescription);
 
+                ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                        .where()
+                        .eq("medication_id", prescription.getId())
+                        .eq("mission_trip_id", tripId);
+                Integer remainingQuantity = null;
+                try{
+
+                    IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+                    medicationInventory.setQuantity_current(medicationInventory.getQuantity_total() - prescription.getAmount());
+                    medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                    remainingQuantity = medicationInventory.getQuantity_current();
+                }catch(Exception ex){
+
+                    //the inventory item probably did not exist for the medication
+                }
+
+
+
                 prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
                         prescription.getMedication().getName(),
                         null,
@@ -315,7 +338,9 @@ public class MedicationService implements IMedicationService {
                         prescription.getPhysician().getLastName(),
                         prescription.getMedicationAdministration(),
                         prescription.getAmount(),
-                        prescription.getMedication()));
+                        prescription.getMedication(),
+                        remainingQuantity)
+                );
 
             } catch (Exception ex) {
 
@@ -356,7 +381,8 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.getPhysician().getLastName(),
                     patientPrescription.getMedicationAdministration(),
                     patientPrescription.getAmount(),
-                    patientPrescription.getMedication());
+                    patientPrescription.getMedication(),
+                    null);
             response.setResponseObject(prescriptionItem);
         } catch (Exception ex) {
 
@@ -405,7 +431,8 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.getPhysician().getLastName(),
                     patientPrescription.getMedicationAdministration(),
                     patientPrescription.getAmount(),
-                    patientPrescription.getMedication());
+                    patientPrescription.getMedication(),
+                    null);
             response.setResponseObject(prescriptionItem);
 
         } catch (Exception ex) {

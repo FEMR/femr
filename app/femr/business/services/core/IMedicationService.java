@@ -72,9 +72,10 @@ public interface IMedicationService {
      * Dispense an existing prescription. This will not update the inventory.
      *
      * @param prescriptionsToDispense A mapping of prescriptions to dispense in the form <prescriptionId, isCounseled> neither of which are null.
+     * @param tripId id of the trip dispensing the prescription, not null
      * @return a PrescriptionItem representing the dispensed prescription and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense);
+    ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense, int tripId);
 
 
 

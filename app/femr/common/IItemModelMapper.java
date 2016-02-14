@@ -138,10 +138,11 @@ public interface IItemModelMapper {
      * @param medicationAdministration
      * @param amount
      * @param medication
+     * @param medicationRemaining how much of the medication required for this prescription is remaining in the inventory, may be null
      * @return a new PrescriptionItem or null if processing fails
      */
     PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                            IMedicationAdministration medicationAdministration, Integer amount, IMedication medication);
+                                            IMedicationAdministration medicationAdministration, Integer amount, IMedication medication, Integer medicationRemaining);
 
     /**
      * Generate and provide an instance of ProblemItem.

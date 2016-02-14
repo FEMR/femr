@@ -320,7 +320,8 @@ public class SearchService implements ISearchService {
                         pp.getPhysician().getLastName(),
                         pp.getMedicationAdministration(),
                         pp.getAmount(),
-                        pp.getMedication()
+                        pp.getMedication(),
+                            null
 
                     ))
                     .collect(Collectors.toList());
@@ -358,7 +359,8 @@ public class SearchService implements ISearchService {
                             pp.getPhysician().getLastName(),
                             pp.getMedicationAdministration(),
                             pp.getAmount(),
-                            pp.getMedication()
+                            pp.getMedication(),
+                            null
                     ))
                     .collect(Collectors.toList());
             List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
@@ -371,7 +373,8 @@ public class SearchService implements ISearchService {
                             pp.getPhysician().getLastName(),
                             pp.getMedicationAdministration(),
                             pp.getAmount(),
-                            pp.getMedication()
+                            pp.getMedication(),
+                            null
                     ))
                     .collect(Collectors.toList());
             prescriptionItems.addAll(replacedPrescriptions);

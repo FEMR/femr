@@ -54,19 +54,19 @@
             <div id="medicationWrap" class="form-group">
                 <h4>List of Medications</h4>
                 <ol id="medicationList">
-                @for(x <- 1 to viewModel.getMedications.size) {
-                    @defining(viewModel.getMedications.get(x - 1)) { medication =>
-                        <li class="medication" id="med@(x-1)" data-medID="@medication.getMedicationID">
+                @for(x <- 1 to viewModel.getPrescriptions.size) {
+                    @defining(viewModel.getPrescriptions.get(x - 1)) { prescription =>
+                        <li class="prescription" id="med@(x-1)" data-medID="@prescription.getMedicationID">
                             <button type="button" class="fButton fOtherButton replaceBtn">R</button>
                             <div>
-                                <span>@medication.getAmount @medication.getName (@outputStringOrNA(medication.getMedicationForm).toString().trim()) - @medication.getAdministrationName </span>
+                                <span>@prescription.getAmount @prescription.getName (@outputStringOrNA(prescription.getMedicationForm).toString().trim()) - @prescription.getAdministrationName </span>
                             </div>
                             <div>
                                 <span id="prescriber">
-                                    Prescriber: @medication.getPrescriberLastName, @medication.getPrescriberFirstName</span>
+                                    Prescriber: @prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
                             </div>
-                            @if(medication.getAmount > medication.getMedicationRemaining) {
-                                <div class="medicationRemaining">Current Quantity: @medication.getMedicationRemaining</div>
+                            @if(prescription.getAmount > prescription.getMedicationRemaining) {
+                                <div class="medicationRemaining">Current Quantity: @prescription.getMedicationRemaining</div>
                                 <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
                             }
                             <div class="replacement hidden">

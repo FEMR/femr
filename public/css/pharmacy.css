@@ -21,12 +21,12 @@
     padding-left: 80px;
 }
 
-.medication {
+.prescription {
     padding: 15px;
     border-bottom: 1px solid #b2b2b0;
 }
 
-.medication button {
+.prescription button {
     position: absolute;
     margin-left: -80px;
     margin-top: -6px;

@@ -132,7 +132,7 @@ public class PharmaciesController extends Controller {
         } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
             return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
         }
-        viewModelGet.setMedications(prescriptionItemServiceResponse.getResponseObject());
+        viewModelGet.setPrescriptions(prescriptionItemServiceResponse.getResponseObject());
 
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =

@@ -27,17 +27,17 @@ public class EditViewModelGet {
     private PatientItem patient;
     private PatientEncounterItem patientEncounterItem;
     //Prescriptions
-    private List<PrescriptionItem> medications;
+    private List<PrescriptionItem> prescriptions;
     //Problems
     private List<ProblemItem> problems;
     private List<MedicationAdministrationItem> medicationAdministrationItems;
 
-    public List<PrescriptionItem> getMedications() {
-        return medications;
+    public List<PrescriptionItem> getPrescriptions() {
+        return prescriptions;
     }
 
-    public void setMedications(List<PrescriptionItem> medications) {
-        this.medications = medications;
+    public void setPrescriptions(List<PrescriptionItem> prescriptions) {
+        this.prescriptions = prescriptions;
     }
 
     public PatientItem getPatient() {

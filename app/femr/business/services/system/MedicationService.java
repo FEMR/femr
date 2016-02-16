@@ -55,6 +55,7 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
+    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -68,6 +69,7 @@ public class MedicationService implements IMedicationService {
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
                              IDataModelMapper dataModelMapper,
+                             IRepository<IMedicationInventory> medicationInventoryRepository,
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
@@ -75,6 +77,7 @@ public class MedicationService implements IMedicationService {
         this.medicationFormRepository = medicationFormRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.medicationAdministrationRepository = medicationAdministrationRepository;
+        this.medicationInventoryRepository = medicationInventoryRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
@@ -531,26 +534,26 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory() {
+    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId) {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
-        // only show medications with an inventory entry
-
-        ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
+        //Querying based on the trip id.  Each trip will have its own inventory.
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
                 .where()
-                .eq("isDeleted", false);
+                .eq("missionTrip.id", tripId);
 
-        List<? extends IMedication> medications;
+        List<? extends IMedicationInventory> medicationsInventory;
         try {
-            medications = medicationRepository.find(query);
+            medicationsInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
             return response;
         }
 
         List<MedicationItem> medicationItems = new ArrayList<>();
-        for (IMedication m : medications) {
-            medicationItems.add(itemModelMapper.createMedicationItem(m, null, null));
+
+        for (IMedicationInventory m : medicationsInventory) {
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantity_current(), m.getQuantity_total()));
         }
         response.setResponseObject(medicationItems);
 

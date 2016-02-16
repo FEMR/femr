@@ -152,7 +152,7 @@ public interface IMedicationService {
      * @return a service response that contains a list of MedicationItems
      * and/or errors if they exist.
      */
-    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory();
+    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId);
 
     /**
      * Retrieves a ObjectNode of all medications in the system

@@ -75,7 +75,7 @@ public class InventoryController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         InventoryViewModelGet viewModel = new InventoryViewModelGet();
-        ServiceResponse<List<MedicationItem>> medicationServiceResponse = medicationService.retrieveMedicationInventory();
+        ServiceResponse<List<MedicationItem>> medicationServiceResponse = medicationService.retrieveMedicationInventory(currentUser.getTripId());
         if (medicationServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else {

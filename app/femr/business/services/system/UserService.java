@@ -28,16 +28,15 @@ import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
-import femr.data.daos.IRepository;
 import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
-import femr.common.dtos.CurrentUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -297,6 +296,12 @@ public class UserService implements IUserService {
         String encryptedPassword = passwordEncryptor.encryptPassword(user.getPassword());
 
         user.setPassword(encryptedPassword);
+    }
+
+    @Override
+    public Boolean checkOldPassword(String newpassword, String oldpassword)
+    {
+        return passwordEncryptor.verifyPassword(newpassword,oldpassword);
     }
 
     private boolean userExistsWithEmail(String email) {

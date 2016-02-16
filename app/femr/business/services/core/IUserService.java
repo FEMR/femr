@@ -116,4 +116,13 @@ public interface IUserService {
      * and/or errors if they exist.
      */
     ServiceResponse<IUser> update(IUser currentUser, Boolean isNewPassword);
+
+        /**
+     * Check if the old password is equal to the new password
+     *
+     * @param newpassword, the new password (not hashed), not null
+     * @param oldpassword, the old password (hashed), not null
+     * @return Boolean that returns true if the passwords are equal and false if not
+     */
+    Boolean checkOldPassword(String newpassword,String oldpassword);
 }

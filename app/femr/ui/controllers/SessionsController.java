@@ -1,10 +1,10 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
-import femr.common.dtos.CurrentUser;
-import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
+import femr.common.dtos.CurrentUser;
+import femr.common.dtos.ServiceResponse;
 import femr.data.models.core.IUser;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
@@ -98,6 +98,11 @@ public class SessionsController extends Controller {
                     messages.add("password must have a number");
             if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
                 messages.add("passwords do not match");
+            //check if new password is equal to the old password
+            if(userService.checkOldPassword(viewModel.getNewPassword(),userService.retrieveById(currentUser.getId()).getPassword()))
+                messages.add("password must not be the same one used before reset");
+
+
         }
 
         if(!messages.isEmpty())

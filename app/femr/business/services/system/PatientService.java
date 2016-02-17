@@ -20,6 +20,11 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
+
+
+
+
+
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -192,7 +197,7 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> deletePatient(int id){
+    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID){
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -204,6 +209,7 @@ public class PatientService implements IPatientService {
 
             IPatient savedPatient = patientRepository.findOne(query);
             savedPatient.setIsDeleted(DateTime.now());
+            savedPatient.setDeletedByUserId(deleteByUserID);
             patientRepository.update(savedPatient);
 
         } catch (Exception ex) {

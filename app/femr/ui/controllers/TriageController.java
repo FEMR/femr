@@ -255,12 +255,13 @@ public class TriageController extends Controller {
 
         return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
-
+  //  public Result deletePatientPost(int patientId, int deleteByUserID){
     public Result deletePatientPost(int patientId){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId);
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId());
+
         if(patientItemResponse.hasErrors())
             throw new RuntimeException();
 

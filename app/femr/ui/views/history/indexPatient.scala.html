@@ -4,12 +4,12 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.controllers.routes.TriageController
-    @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
-    }
-    @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
-    }
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
+}
+@additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
+}
 
 @main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history")) {
     @if(viewModel.getPatientItems.size > 1) {
@@ -64,9 +64,9 @@
                 @for(roles <- currentUser.getRoles()) {
 
                     @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
-                            @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
-                                <button hidden="true" type="submit"  id="deletePatient"></button>
-                            }
+                        @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
+                            <button hidden="true" type="submit"  id="deletePatient"></button>
+                        }
                         <span>
                             <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
                         </span>
@@ -75,6 +75,7 @@
                 @helper.form(action = TriageController.indexPopulatedGet(viewModel.getPatientItem.getId)) {
                     <button type="submit" class="btn btn-default pull-right">See This Patient In Triage</button>
                 }
+
                 <br/><br/>
             </div>
         </div>

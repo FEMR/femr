@@ -69,4 +69,10 @@ public interface IPatient {
     DateTime getIsDeleted();
 
     void setIsDeleted(DateTime isDeleted);
+    
+    int getDeletedByUserId() ;
+
+    void setDeletedByUserId(int userId) ;
+
+    
 }

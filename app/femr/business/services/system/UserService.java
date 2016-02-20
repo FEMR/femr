@@ -298,6 +298,7 @@ public class UserService implements IUserService {
         user.setPassword(encryptedPassword);
     }
 
+    @Override
     public Boolean checkOldPassword(String newpassword, String oldpassword)
     {
         return passwordEncryptor.verifyPassword(newpassword,oldpassword);

@@ -318,15 +318,19 @@ public class MedicationService implements IMedicationService {
                         .eq("medication_id", prescription.getId())
                         .eq("mission_trip_id", tripId);
                 Integer remainingQuantity = null;
-                try{
+                try {
 
                     IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-                    medicationInventory.setQuantity_current(medicationInventory.getQuantity_total() - prescription.getAmount());
-                    medicationInventory = medicationInventoryRepository.update(medicationInventory);
-                    remainingQuantity = medicationInventory.getQuantity_current();
-                }catch(Exception ex){
+                    if (medicationInventory != null) {
 
-                    //the inventory item probably did not exist for the medication
+                        medicationInventory.setQuantity_current(medicationInventory.getQuantity_total() - prescription.getAmount());
+                        medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                        remainingQuantity = medicationInventory.getQuantity_current();
+                    }
+
+                } catch (Exception ex) {
+
+                    response.addError("", ex.getMessage());
                 }
 
 

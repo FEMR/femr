@@ -4,6 +4,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
+import femr.util.stringhelpers.StringUtils;
 
 import java.util.*;
 
@@ -13,9 +14,9 @@ import java.util.*;
 public class FieldHelper {
 
     //READ THE METHOD NAME LOL
-    public static Map<String, List<TabFieldItem>> structurePMHFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
+    public static Map<String, List<TabFieldItem>> structurePMHFieldsForView(TabFieldMultiMap tabFieldMultiMap, List<String> fields) {
 
-        if (tabFieldMultiMap == null) {
+        if (tabFieldMultiMap == null || fields.isEmpty()) {
 
             return null;
         }
@@ -24,24 +25,21 @@ public class FieldHelper {
         List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
         TabFieldItem tabFieldItem;
 
-        //get non HPI fields
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("medicalSurgicalHistory", null);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("socialHistory", null);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("currentMedication", null);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("familyHistory", null);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
+        //get pmh fields
+        for (String field : fields){
+
+            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty(field, null);
+            tabFieldItemsForChiefComplaint.add(tabFieldItem);
+        }
         chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
 
         return chiefComplaintFieldMap;
     }
 
     //READ THE METHOD NAME LOL
-    public static Map<String, List<TabFieldItem>> structureTreatmentFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
+    public static Map<String, List<TabFieldItem>> structureTreatmentFieldsForView(TabFieldMultiMap tabFieldMultiMap, List<String> fields) {
 
-        if (tabFieldMultiMap == null) {
+        if (tabFieldMultiMap == null || fields.isEmpty()) {
 
             return null;
         }
@@ -50,10 +48,11 @@ public class FieldHelper {
         List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
         TabFieldItem tabFieldItem;
 
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("assessment", null);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
-        tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("treatment", null);
-        tabFieldItemsForChiefComplaint.add(tabFieldItem);
+        for (String field : fields){
+
+            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty(field, null);
+            tabFieldItemsForChiefComplaint.add(tabFieldItem);
+        }
         chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
 
         return chiefComplaintFieldMap;
@@ -65,15 +64,14 @@ public class FieldHelper {
      * @param tabFieldMultiMap
      * @return
      */
-    public Map<String, List<TabFieldItem>> structureDynamicFieldsForView(String tabName, TabFieldMultiMap tabFieldMultiMap) {
+    public Map<String, List<TabFieldItem>> structureDynamicFieldsForView(TabFieldMultiMap tabFieldMultiMap, List<String> customFields) {
 
-        if (tabFieldMultiMap == null) {
+        if (tabFieldMultiMap == null || customFields.isEmpty()) {
 
             return null;
         }
 
         Map<String, List<TabFieldItem>> chiefComplaintFieldMap = new HashMap<>();
-        List<String> customFields = tabFieldMultiMap.getCustomFieldNameList();
         List<TabFieldItem> tabFieldItemsForChiefComplaint = new ArrayList<>();
         TabFieldItem tabFieldItem;
 
@@ -91,9 +89,9 @@ public class FieldHelper {
     }
 
     //READ THE METHOD NAME LOL
-    public static Map<String, List<TabFieldItem>> structureHPIFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
+    public static Map<String, List<TabFieldItem>> structureHPIFieldsForView(TabFieldMultiMap tabFieldMultiMap, List<String> fields) {
 
-        if (tabFieldMultiMap == null) {
+        if (tabFieldMultiMap == null || fields.isEmpty()) {
 
             return null;
         }
@@ -106,48 +104,22 @@ public class FieldHelper {
 
         if (availableChiefComplaints.size() == 0) {
             //no chief complaint - needs at least one set of fields which wouldn't be
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("onset", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("radiation", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("quality", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("severity", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("provokes", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("palliates", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("narrative", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", null);
-            tabFieldItemsForChiefComplaint.add(tabFieldItem);
-            chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
+            for (String field : fields){
 
+                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty(field, null);
+                tabFieldItemsForChiefComplaint.add(tabFieldItem);
+            }
+            chiefComplaintFieldMap.put(null, tabFieldItemsForChiefComplaint);
         } else if (availableChiefComplaints.size() > 0) {
-            //one or more chief complaints
+            //one or more chief complaints. each chief complaint in HPI requires a new set of fields
             for (String chiefComplaint : availableChiefComplaints) {
+
                 tabFieldItemsForChiefComplaint = new ArrayList<>();
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("onset", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("radiation", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("quality", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("severity", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("provokes", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("palliates", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("narrative", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
-                tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", chiefComplaint);
-                tabFieldItemsForChiefComplaint.add(tabFieldItem);
+                for (String field : fields){
+
+                    tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty(field, chiefComplaint);
+                    tabFieldItemsForChiefComplaint.add(tabFieldItem);
+                }
                 chiefComplaintFieldMap.put(chiefComplaint, tabFieldItemsForChiefComplaint);
             }
         }

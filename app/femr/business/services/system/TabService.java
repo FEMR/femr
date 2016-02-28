@@ -713,10 +713,8 @@ public class TabService implements ITabService {
         ServiceResponse<Map<String, List<String>>> response = new ServiceResponse<>();
         Map<String, List<String>> responseObject = new HashMap<>();
         ExpressionList tabQuery = QueryProvider.getTabQuery()
-                .fetch("tabFields")
                 .where()
-                .eq("isDeleted", isTabDeleted)
-                .eq("tabFields.isDeleted", isTabFieldDeleted);
+                .eq("isDeleted", isTabDeleted);
 
         try{
 
@@ -725,10 +723,11 @@ public class TabService implements ITabService {
 
                 List<String> tabFieldNames = tab.getTabFields()
                         .stream()
+                        .filter(tf -> tf.getIsDeleted().equals(isTabFieldDeleted))
                         .map(TabField::getName)
                         .collect(Collectors.toCollection(ArrayList::new));
 
-                responseObject.put(tab.getName(), tabFieldNames);
+                responseObject.put(tab.getName().toLowerCase(), tabFieldNames);
             }
 
             response.setResponseObject(responseObject);

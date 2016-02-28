@@ -179,7 +179,8 @@ public interface ITabService {
      *
      * @param isTabDeleted if true, deleted tabs will be retrieved, not null
      * @param isTabFieldDeleted if true, deleted tab fields will be retrieved, not null
-     * @return a map of tab names as the key and tab fields that map to that tab name as the value.
+     * @return a map of tab names as the key and tab fields that map to that tab name as the value. All
+     * tab names are lowercased.
      */
     ServiceResponse<Map<String, List<String>>> retrieveTabFieldToTabMapping(boolean isTabDeleted, boolean isTabFieldDeleted);
 }

@@ -197,18 +197,18 @@ public class MedicalController extends Controller {
 
             switch (tabItem.getName().toLowerCase()) {
                 case "hpi":
-                    tabItem.setFields(FieldHelper.structureHPIFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(FieldHelper.structureHPIFieldsForView(tabFieldMultiMap, tabFieldToTabMapping.get("hpi")));
                     break;
                 case "pmh":
-                    tabItem.setFields(FieldHelper.structurePMHFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(FieldHelper.structurePMHFieldsForView(tabFieldMultiMap, tabFieldToTabMapping.get("pmh")));
                     break;
                 case "treatment":
-                    tabItem.setFields(FieldHelper.structureTreatmentFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(FieldHelper.structureTreatmentFieldsForView(tabFieldMultiMap, tabFieldToTabMapping.get("treatment")));
                     break;
                 case "photos":
                     break;
                 default:
-                    tabItem.setFields(fieldHelper.structureDynamicFieldsForView(tabItem.getName(), tabFieldMultiMap));
+                    tabItem.setFields(fieldHelper.structureDynamicFieldsForView(tabFieldMultiMap, tabFieldToTabMapping.get(tabItem.getName())));
                     break;
             }
         }

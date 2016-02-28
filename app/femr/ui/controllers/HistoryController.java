@@ -173,30 +173,42 @@ public class HistoryController extends Controller {
         indexEncounterMedicalViewModel.setPhotos(photoListResponse.getResponseObject());
 
 
-        // Get patient encounter tab fields
+        // Get patient encounter tab field multimap
         ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(encounterId);
-
         if (patientEncounterTabFieldResponse.hasErrors()) {
             throw new RuntimeException();
         }
         TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
 
+        //Get a mapping of tabs to tab fields in string form
+        ServiceResponse<Map<String, List<String>>> tabFieldToTabMappingServiceResponse = tabService.retrieveTabFieldToTabMapping(false, false);
+        if (tabFieldToTabMappingServiceResponse.hasErrors()){
+
+            throw new RuntimeException();
+        }
+        Map<String, List<String>> tabFieldToTabMapping = tabFieldToTabMappingServiceResponse.getResponseObject();
+
+
+
         //extract the most recent treatment fields
         Map<String, TabFieldItem> treatmentFields = new HashMap<>();
-        treatmentFields.put("assessment", tabFieldMultiMap.getMostRecentOrEmpty("assessment", null));
-        treatmentFields.put("treatment", tabFieldMultiMap.getMostRecentOrEmpty("treatment", null));
+        for (String field : tabFieldToTabMapping.get("treatment")){
+
+            treatmentFields.put(field, tabFieldMultiMap.getMostRecentOrEmpty(field, null));
+        }
         indexEncounterMedicalViewModel.setTreatmentFields(treatmentFields);
 
         //extract the most recent pmh fields
         Map<String, TabFieldItem> pmhFields = new HashMap<>();
-        pmhFields.put("medicalSurgicalHistory", tabFieldMultiMap.getMostRecentOrEmpty("medicalSurgicalHistory", null));
-        pmhFields.put("socialHistory", tabFieldMultiMap.getMostRecentOrEmpty("socialHistory", null));
-        pmhFields.put("currentMedications", tabFieldMultiMap.getMostRecentOrEmpty("currentMedication", null));
-        pmhFields.put("familyHistory", tabFieldMultiMap.getMostRecentOrEmpty("familyHistory", null));
+        for (String field : tabFieldToTabMapping.get("pmh")){
+
+            pmhFields.put(field, tabFieldMultiMap.getMostRecentOrEmpty(field, null));
+        }
         indexEncounterMedicalViewModel.setPmhFields(pmhFields);
 
         //extract the most recent hpi fields
         if (patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints().size() > 1) {
+            //extract the HPI fields while the user has entered multiple chief complaints
             indexEncounterMedicalViewModel.setHpiFieldsWithMultipleChiefComplaints(extractHpiFieldsWithMultipleChiefComplaints(tabFieldMultiMap, patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints()));
             indexEncounterMedicalViewModel.setIsMultipleChiefComplaints(true);
         } else {
@@ -204,15 +216,10 @@ public class HistoryController extends Controller {
             if (patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints().size() == 1)
                 chiefComplaint = patientEncounterItemServiceResponse.getResponseObject().getChiefComplaints().get(0);
             Map<String, TabFieldItem> hpiFields = new HashMap<>();
-            hpiFields.put("onset", tabFieldMultiMap.getMostRecentOrEmpty("onset", chiefComplaint));
-            hpiFields.put("quality", tabFieldMultiMap.getMostRecentOrEmpty("quality", chiefComplaint));
-            hpiFields.put("radiation", tabFieldMultiMap.getMostRecentOrEmpty("radiation", chiefComplaint));
-            hpiFields.put("severity", tabFieldMultiMap.getMostRecentOrEmpty("severity", chiefComplaint));
-            hpiFields.put("provokes", tabFieldMultiMap.getMostRecentOrEmpty("provokes", chiefComplaint));
-            hpiFields.put("palliates", tabFieldMultiMap.getMostRecentOrEmpty("palliates", chiefComplaint));
-            hpiFields.put("timeOfDay", tabFieldMultiMap.getMostRecentOrEmpty("timeOfDay", chiefComplaint));
-            hpiFields.put("narrative", tabFieldMultiMap.getMostRecentOrEmpty("narrative", chiefComplaint));
-            hpiFields.put("physicalExamination", tabFieldMultiMap.getMostRecentOrEmpty("physicalExamination", chiefComplaint));
+            for (String field : tabFieldToTabMapping.get("hpi")){
+
+                hpiFields.put(field, tabFieldMultiMap.getMostRecentOrEmpty(field, chiefComplaint));
+            }
             indexEncounterMedicalViewModel.setHpiFieldsWithoutMultipleChiefComplaints(hpiFields);
             indexEncounterMedicalViewModel.setIsMultipleChiefComplaints(false);
         }
@@ -302,7 +309,8 @@ public class HistoryController extends Controller {
     }
 
     /**
-     * A helper that extracts the most recent custom fields from the tabfieldmultimap.
+     * A helper that extracts the most recent custom fields from the tabfieldmultimap. This method
+     * is not aware of which tab the fields are under, nor does it care.
      */
     private Map<String, TabFieldItem> extractCustomFields(TabFieldMultiMap tabFieldMultiMap) {
 

@@ -24,6 +24,7 @@ import femr.common.models.TabItem;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITabService {
 
@@ -97,7 +98,7 @@ public interface ITabService {
     ServiceResponse<List<TabItem>> retrieveCustomTabs(boolean isDeleted);
 
     /**
-     * Get all fields for one tab.
+     * Get all fields for one tab. This only works for custom tabs.
      *
      * @param tabName name of the tab to get fields for, not null
      * @param isDeleted whether or not the fields are deleted, not null
@@ -105,6 +106,7 @@ public interface ITabService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<TabFieldItem>> retrieveTabFieldsByTabName(String tabName, boolean isDeleted);
+
 
     /**
      * Get all possible types of tab fields.
@@ -171,4 +173,14 @@ public interface ITabService {
      * @return list of available tabs
      */
     ServiceResponse<List<TabItem>> retrieveAvailableTabs(boolean isDeleted);
+
+    /**
+     * Gets a mapping of all the tab fields to their tab as strings.
+     *
+     * @param isTabDeleted if true, deleted tabs will be retrieved, not null
+     * @param isTabFieldDeleted if true, deleted tab fields will be retrieved, not null
+     * @return a map of tab names as the key and tab fields that map to that tab name as the value. All
+     * tab names are lowercased.
+     */
+    ServiceResponse<Map<String, List<String>>> retrieveTabFieldToTabMapping(boolean isTabDeleted, boolean isTabFieldDeleted);
 }

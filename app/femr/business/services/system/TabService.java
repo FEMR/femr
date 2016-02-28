@@ -38,6 +38,7 @@ import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TabService implements ITabService {
 
@@ -701,6 +702,42 @@ public class TabService implements ITabService {
         }
 
         return tabFieldMultiMap;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Map<String, List<String>>> retrieveTabFieldToTabMapping(boolean isTabDeleted, boolean isTabFieldDeleted){
+
+        ServiceResponse<Map<String, List<String>>> response = new ServiceResponse<>();
+        Map<String, List<String>> responseObject = new HashMap<>();
+        ExpressionList tabQuery = QueryProvider.getTabQuery()
+                .fetch("tabFields")
+                .where()
+                .eq("isDeleted", isTabDeleted)
+                .eq("tabFields.isDeleted", isTabFieldDeleted);
+
+        try{
+
+            List<? extends ITab> tabs = tabRepository.find(tabQuery);
+            for (ITab tab : tabs){
+
+                List<String> tabFieldNames = tab.getTabFields()
+                        .stream()
+                        .map(TabField::getName)
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                responseObject.put(tab.getName(), tabFieldNames);
+            }
+
+            response.setResponseObject(responseObject);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
     }
 
 

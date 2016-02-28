@@ -181,6 +181,16 @@ public class MedicalController extends Controller {
 
             throw new RuntimeException();
         }
+
+        ServiceResponse<Map<String, List<String>>> tabFieldToTabMappingServiceResponse = tabService.retrieveTabFieldToTabMapping(false, false);
+        if (tabFieldToTabMappingServiceResponse.hasErrors()){
+
+            throw new RuntimeException();
+        }
+        Map<String, List<String>> tabFieldToTabMapping = tabFieldToTabMappingServiceResponse.getResponseObject();
+
+
+
         List<TabItem> tabItems = tabItemServiceResponse.getResponseObject();
         //match the fields to their respective tabs
         for (TabItem tabItem : tabItems) {
@@ -195,8 +205,10 @@ public class MedicalController extends Controller {
                 case "treatment":
                     tabItem.setFields(FieldHelper.structureTreatmentFieldsForView(tabFieldMultiMap));
                     break;
+                case "photos":
+                    break;
                 default:
-                    tabItem.setFields(fieldHelper.structureDynamicFieldsForView(tabFieldMultiMap));
+                    tabItem.setFields(fieldHelper.structureDynamicFieldsForView(tabItem.getName(), tabFieldMultiMap));
                     break;
             }
         }

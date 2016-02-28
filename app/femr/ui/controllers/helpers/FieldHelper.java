@@ -1,5 +1,6 @@
 package femr.ui.controllers.helpers;
 
+import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
@@ -64,7 +65,7 @@ public class FieldHelper {
      * @param tabFieldMultiMap
      * @return
      */
-    public Map<String, List<TabFieldItem>> structureDynamicFieldsForView(TabFieldMultiMap tabFieldMultiMap) {
+    public Map<String, List<TabFieldItem>> structureDynamicFieldsForView(String tabName, TabFieldMultiMap tabFieldMultiMap) {
 
         if (tabFieldMultiMap == null) {
 

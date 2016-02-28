@@ -44,31 +44,29 @@
 14. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
 
 
-# Common Git commands during development:
+# Important workflow information and common Git commands:
 
-### -Create a branch to work on
-
-After assigning yourself an issue from [JIRA](https://teamfemr.atlassian.net):
+### -Each JIRA issue (e.g. bug, feature, improvement) should be developed in a separate branch. To create a branch after selecting a JIRA(https://teamfemr.atlassian.net) issue:
 
 #####1. features:
     git checkout master
-    git checkout -b feature-[JIRA_ID]-Description
+    git checkout -b feature-[JIRA_ID]-[briefDescriptionOfFeature]
 
 #####2. bugs:
     git checkout master
-    git checkout -b bug-[JIRA_ID]-Description
+    git checkout -b bug-[JIRA_ID]-[briefDescriptionOfBug]
 
 #####3. improvements:
     git checkout master
-    git checkout -b improvement-[JIRA_ID]-Description
+    git checkout -b improvement-[JIRA_ID]-[briefDescriptionOfImprovement]
 
 #####4. tasks:
     git checkout master
-    git checkout -b task-[JIRA_ID]-Description
+    git checkout -b task-[JIRA_ID]-[briefDescriptionOfTask]
 
-### -Sync your master branch (username/femr) with the project's master branch (femr/femr)
+### -Always sync your fork's (username/femr) master branch with the project's (femr/femr) master branch. This ensures your code is always up to date:
 
-#####1. make sure you have a remote pointing upstream:
+#####1. make sure you have a remote pointing upstream to the main project repository (femr/femr):
     git remote -v
 
 #####2. if you don't, add one:
@@ -79,37 +77,41 @@ After assigning yourself an issue from [JIRA](https://teamfemr.atlassian.net):
     git pull upstream master
     git push origin master
 
+#####4. if needed, move new code into your issue branch. Note that rebasing rewrites history and should be used with caution:
+	git checkout [issueBranchName]
+	git rebase master
 
-### -Sending a pull request
 
-#####1. update your branch with the newest code by rebasing
+### -Submit your code for review to be accepted into the main project repository (femr/femr) by sending a pull request:
+
+#####1. update your branch with the newest code by syncing master and then rebasing your issue branch
     git checkout master
     git pull upstream master
-    git checkout branchName
+    git checkout [issueBranchName]
     git rebase master
 
 #####2. initiate a pull request:
 
-Initiate a pull request from your fork's feature branch into the main repository's master branch. Information on initating pull requests can be found [here](https://help.github.com/articles/using-pull-requests).
+Initiate a pull request from your fork's (username/femr) issue branch into the main repository's (femr/femr) master branch. Information on initating pull requests can be found [here](https://help.github.com/articles/using-pull-requests).
 
 #####3. if your Pull Request is Accepted
 	git checkout master
 	git pull upstream master
 
 #####4. if your Pull Request is Rejected
-
     git checkout master
     git pull upstream master
-    git checkout branchName
+    git checkout [issueBranchName]
     git rebase master
     ~~~fix issues~~~
     git checkout master
     git pull upstream master
-    git checkout branchName
+    git checkout [issueBranchName]
     git rebase master
-    git push origin branchName
+    git push -f origin [issueBranchName]
 
-#####5. deleting your branch:
+#####5. delete your branch locally:
+    git branch -d [issueBranchName]
 
-    git branch -d branchName
-    git push origin :branchName
+#####6. delete your branch from your fork:
+	git push origin :[issueBranchName]

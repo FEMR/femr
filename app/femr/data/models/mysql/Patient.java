@@ -53,7 +53,7 @@ public class Patient implements IPatient {
     private List<PatientEncounter> patientEncounters;
     @Column(name = "isDeleted", nullable = true)
     private DateTime isDeleted;
-    @Column(name = "deleted_by_user_id", unique = false, nullable = false) 
+    @Column(name = "deleted_by_user_id", unique = false, nullable = true)
     private int deletedByUserId;
 
 
@@ -166,19 +166,7 @@ public class Patient implements IPatient {
     public void setIsDeleted(DateTime isDeleted) {
         this.isDeleted = isDeleted;
     }
-/*
-    @Override
-    public int getDeletedByUserId() {
-        return deleted_by_user_id;
-    }
 
-    @Override
-    public void setDeletedByUserId(int deleted_by_user_id) {
-        this.deleted_by_user_id = deleted_by_user_id;
-    }
-    
-  */
-  
     @Override
     public int getDeletedByUserId() {
         return deletedByUserId;

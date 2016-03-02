@@ -202,6 +202,8 @@ public class TriageController extends Controller {
             newVitals.put("temperature", temperature);
         }
 
+
+
         if (viewModel.getOxygenSaturation() != null) {
             newVitals.put("oxygenSaturation", viewModel.getOxygenSaturation());
         }
@@ -286,6 +288,7 @@ public class TriageController extends Controller {
         }
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
+        patient.setPhoneNo(viewModelPost.getPhoneNo());
         patient.setCity(viewModelPost.getCity());
 
         return patient;

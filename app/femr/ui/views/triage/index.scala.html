@@ -20,7 +20,7 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triageClientValidation.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/shared/vitalClientValidation.js")"></script>
             <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
-            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+             <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
     }
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.versioned("css/triage.css")">
@@ -46,6 +46,9 @@
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
+
+
+                @inputText("Phone No.", "phoneNo", true, if(viewModel != null) viewModel.getPatient.getPhoneNo else null, "text")
                 <div class="generalInfoInput" id="citySearchContainer">
                     <label for="city">City<span class="red bold">*</span></label>
                     @if(viewModel.getPatient.getCity == null) {
@@ -55,6 +58,10 @@
                         }
 
                 </div>
+               <br>
+
+
+
 
 
                 <div id="ageClassificationWrap">

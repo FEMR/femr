@@ -29,6 +29,7 @@ POST        /admin/inventory/delete/:id                        @femr.ui.controll
 GET         /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.manageGet()
 POST        /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.managePost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
+
 #Pharmacy
 GET         /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editPost(id: Integer)

@@ -21,6 +21,7 @@ package femr.ui.controllers.admin;
 import com.google.inject.Inject;
 import femr.business.services.core.IConfigureService;
 import femr.business.services.core.ISessionService;
+import femr.business.services.system.ConfigureService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.data.models.core.ISystemSetting;
@@ -44,29 +45,35 @@ public class ConfigureController extends Controller {
     private ISessionService sessionService;
     private IConfigureService configureService;
 
+
+
     @Inject
     public ConfigureController(ISessionService sessionService,
                                IConfigureService configureService) {
         this.sessionService = sessionService;
         this.configureService = configureService;
+
     }
 
     public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         IndexViewModelGet indexViewModel = new IndexViewModelGet();
-
+        ServiceResponse serviceResponse = configureService.retrieveCurrentSettings();
 
         ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.retrieveCurrentSettings();
         if (systemSettingsResponse.hasErrors()) {
             throw new RuntimeException();
         }
+
         for (ISystemSetting ss : systemSettingsResponse.getResponseObject()) {
             indexViewModel.setSetting(ss.getName(), ss.isActive());
+
         }
 
 
         return ok(manage.render(currentUser, indexViewModel));
     }
+
 
     public Result managePost() {
         IndexViewModelPost viewModel = indexViewModelForm.bindFromRequest().get();

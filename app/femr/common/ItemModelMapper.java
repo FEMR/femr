@@ -150,7 +150,8 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Float weight,
                                                 String pathToPatientPhoto,
                                                 Integer photoId,
-                                                String ageClassification) {
+                                                String ageClassification,
+                                                String phoneNo) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -169,6 +170,7 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setMonthsOld(dateUtils.getMonthsInteger(age));
         patientItem.setCity(city);
         patientItem.setUserId(userId);
+        patientItem.setPhoneNo(phoneNo);
         //optional fields
         if (StringUtils.isNotNullOrWhiteSpace(address))
             patientItem.setAddress(address);

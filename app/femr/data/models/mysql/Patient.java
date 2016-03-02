@@ -21,6 +21,7 @@ package femr.data.models.mysql;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPhoto;
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -51,10 +52,13 @@ public class Patient implements IPatient {
     private Photo photo;
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private List<PatientEncounter> patientEncounters;
+    @Column(name = "phone_no", nullable = true)
+    private String phoneNo;
     @Column(name = "isDeleted", nullable = true)
     private DateTime isDeleted;
     @Column(name = "deleted_by_user_id", unique = false, nullable = true)
     private Integer deletedByUserId;
+
 
 
     @Override
@@ -85,6 +89,16 @@ public class Patient implements IPatient {
     @Override
     public String getLastName() {
         return lastName;
+    }
+
+    @Override
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    @Override
+    public String getPhoneNo() {
+        return phoneNo;
     }
 
     @Override

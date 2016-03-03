@@ -54,7 +54,7 @@ public class Patient implements IPatient {
     @Column(name = "isDeleted", nullable = true)
     private DateTime isDeleted;
     @Column(name = "deleted_by_user_id", unique = false, nullable = true)
-    private int deletedByUserId;
+    private Integer deletedByUserId;
 
 
     @Override

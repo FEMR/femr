@@ -64,7 +64,7 @@
                 @for(roles <- currentUser.getRoles()) {
 
                     @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
-                            @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
+                            @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId , currentUser.getId())){
                                 <button hidden="true" type="submit"  id="deletePatient"></button>
                             }
                         <span>
@@ -75,6 +75,7 @@
                 @helper.form(action = TriageController.indexPopulatedGet(viewModel.getPatientItem.getId)) {
                     <button type="submit" class="btn btn-default pull-right">See This Patient In Triage</button>
                 }
+
                 <br/><br/>
             </div>
         </div>

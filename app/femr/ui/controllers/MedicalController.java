@@ -332,7 +332,13 @@ public class MedicalController extends Controller {
                 .filter(prescription -> prescription.getMedicationID() == null)
                 .collect(Collectors.toList());
 
+
+
         for (PrescriptionItem prescriptionItem : prescriptionItemsWithoutID){
+
+            if (StringUtils.isNullOrWhiteSpace(prescriptionItem.getMedicationName())) {
+                continue;
+            }
 
             createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
                     prescriptionItem.getMedicationName(),

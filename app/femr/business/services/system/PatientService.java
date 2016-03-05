@@ -29,12 +29,14 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
+import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.models.core.*;
+import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
@@ -153,10 +155,14 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> createPatient(PatientItem patient) {
+    public ServiceResponse<PatientItem> createPatient(PatientItem patient, ISearchService searchService) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (patient == null) {
             response.addError("", "no patient received");
+            return response;
+        }
+        else if (searchService.checkExistingPatients(patient.getFirstName(), patient.getLastName(),patient.getBirth(),patient.getCity())) {
+            response.addError("", "patient already exists");
             return response;
         }
 

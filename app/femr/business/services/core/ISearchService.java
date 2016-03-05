@@ -20,6 +20,8 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+
+import java.util.Date;
 import java.util.List;
 
 public interface ISearchService {
@@ -149,4 +151,10 @@ public interface ISearchService {
     ServiceResponse<List<CityItem>> retrieveCitiesForSearch();
 
 
+    /**
+     * @param first_name
+     * @param last_name
+     * @return true if the patient exists and false if not
+     */
+    boolean checkExistingPatients(String first_name, String last_name, Date age,String city);
 }

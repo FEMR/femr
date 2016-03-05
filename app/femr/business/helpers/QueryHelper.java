@@ -131,4 +131,13 @@ public class QueryHelper {
 
         return cityRepository.findAll(MissionCity.class);
     }
+
+    public static List<? extends IPatient> retrievePatients(IRepository<IPatient> patientRepository) {
+        ExpressionList<Patient> patientExpressionList = QueryProvider.getPatientQuery()
+                .select("*")
+                .where()
+                .isNull("isDeleted");
+
+        return patientExpressionList.findList();
+    }
 }

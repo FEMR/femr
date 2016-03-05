@@ -116,8 +116,12 @@ public class UsersController extends Controller {
                 messages.add(response.getErrors().get(""));
                 return ok(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject()));
             }
-            else
+            else if (user.getLastName() != null){
+                messages.add("An account for " + user.getFirstName() +" "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
+            }
+            else {
                 messages.add("An account for " + user.getFirstName() + " was created successfully. You may begin creating a new user.");
+            }
 
             return ok(create.render(currentUser, createViewModelForm, messages, roleServiceResponse.getResponseObject()));
         }

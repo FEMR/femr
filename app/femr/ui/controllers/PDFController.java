@@ -218,7 +218,12 @@ public class PDFController extends Controller {
 
         // Row 2
         table.addCell(getStyledPhrase("Sex: ", outputStringOrNA(patientItem.getSex())));
-        table.addCell(getStyledPhrase("Height: ", outputHeightOrNA(patientItem.getHeightFeet(), patientItem.getHeightInches())));
+
+        if(patientItem.getHeightFeet() == 0 && patientItem.getHeightInches() == 0)  //changes null height to N/A
+             table.addCell(getStyledPhrase("Height: ","N/A"));
+
+        else table.addCell(getStyledPhrase("Height: ", outputHeightOrNA(patientItem.getHeightFeet(), patientItem.getHeightInches())));
+
         table.addCell(getStyledPhrase("Weight: ", outputFloatOrNA(patientItem.getWeight()) + " lbs"));
         table.completeRow();
 

@@ -168,12 +168,12 @@ public class Patient implements IPatient {
     }
 
     @Override
-    public int getDeletedByUserId() {
+    public Integer getDeletedByUserId() {
         return deletedByUserId;
     }
 
     @Override
-    public void setDeletedByUserId(int userId) {
+    public void setDeletedByUserId(Integer userId) {
         this.deletedByUserId= userId;
     }
   

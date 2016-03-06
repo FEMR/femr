@@ -70,9 +70,9 @@ public interface IPatient {
 
     void setIsDeleted(DateTime isDeleted);
     
-    int getDeletedByUserId() ;
+    Integer getDeletedByUserId() ;
 
-    void setDeletedByUserId(int userId) ;
+    void setDeletedByUserId(Integer userId) ;
 
     
 }

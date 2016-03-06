@@ -18,6 +18,7 @@
 */
 package femr.common.models;
 
+import java.security.PublicKey;
 import java.util.Date;
 
 public class PatientItem {
@@ -25,6 +26,7 @@ public class PatientItem {
     private String firstName;
     private String lastName;
     private String address;
+    private String phoneNo;
     private String city;
     private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
     private Integer yearsOld;//the age of the patient as an integer. 0 if the patient is less than a year old
@@ -61,6 +63,10 @@ public class PatientItem {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    public String getPhoneNo() { return phoneNo; }
+
+    public void  setPhoneNo(String phoneNo) { this.phoneNo = phoneNo; }
 
     public String getLastName() {
         return lastName;

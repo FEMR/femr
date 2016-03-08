@@ -138,8 +138,8 @@ public class MedicationService implements IMedicationService {
                 medicationForm = dataModelMapper.createMedicationForm(form);
             }
 
-            //Query<MedicationInventory> query3 = QueryProvider.getMedicationInventoryQuery().select("*").where().query();
-            // Retrieve all medication with the same name AND not an old medication
+            // Based on fEMR-95.  Retrieve all medication with the same name AND not an old medication from previous trips
+            // that did not require a medication form.
             Query<Medication> query = QueryProvider.getMedicationQuery()
                     .where()
                     .ne("medication_forms_id", null)

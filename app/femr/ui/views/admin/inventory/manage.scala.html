@@ -1,6 +1,8 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.InventoryViewModelGet)
 
 @import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.admin.routes.TripController
+
 
 @import femr.ui.views.html.layouts.admin
 
@@ -22,9 +24,9 @@
 
             <h3>Your user is not assigned to a trip</h3>
 
-            <p>In order to edit medication inventory, your user must be assigned to a trip. Please <a href="#">assign yourself to a trip</a> before you can edit medication inventory.</p>
+            <p>In order to edit medication inventory, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
 
-            <a class="fButton" href="#">Manage Trip Users &raquo;</a>
+            <a class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
         </div>
     }
 

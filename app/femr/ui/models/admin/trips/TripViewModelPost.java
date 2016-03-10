@@ -16,7 +16,7 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.ui.models.superuser.trips;
+package femr.ui.models.admin.trips;
 
 import java.util.Date;
 

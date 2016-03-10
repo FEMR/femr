@@ -12,7 +12,7 @@
 @import femr.ui.controllers.admin.routes.InventoryController
 @import femr.ui.controllers.superuser.routes.SuperuserController
 @import femr.ui.controllers.superuser.routes.TabController
-@import femr.ui.controllers.superuser.routes.TripController
+@import femr.ui.controllers.admin.routes.TripController
 
         @* Add scripts to script variable, how? *@
     @adminScripts = {
@@ -33,11 +33,12 @@
                 Configure</a>
             <a href="@InventoryController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
                 Inventory</a>
+            <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-globe"></span>
+                Trips</a>
             @if(currentUser.getEmail == "superuser"){
                 <a href="@TabController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-wrench"></span>
                     Tabs</a>
-                <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-globe"></span>
-                    Trips</a>
+
             }
             <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
                 Users</a>

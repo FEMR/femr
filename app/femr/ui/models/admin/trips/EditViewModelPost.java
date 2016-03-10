@@ -1,4 +1,4 @@
-package femr.ui.models.superuser.trips;
+package femr.ui.models.admin.trips;
 
 import java.util.List;
 

@@ -74,12 +74,24 @@ public class InventoryController extends Controller {
     public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+
         InventoryViewModelGet viewModel = new InventoryViewModelGet();
-        ServiceResponse<List<MedicationItem>> medicationServiceResponse = medicationService.retrieveMedicationInventory(currentUser.getTripId());
-        if (medicationServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        } else {
-            viewModel.setMedications(medicationServiceResponse.getResponseObject());
+
+        // If the use does not have a trip ID, we cannot retrieve the list of medications
+        // since they are tied to a trip
+        if( currentUser.getTripId() != null ){
+
+            ServiceResponse<List<MedicationItem>> medicationServiceResponse = medicationService.retrieveMedicationInventory(currentUser.getTripId());
+            if (medicationServiceResponse.hasErrors()) {
+                throw new RuntimeException();
+            } else {
+                viewModel.setMedications(medicationServiceResponse.getResponseObject());
+            }
+
+        }
+        else{
+
+            viewModel.setMedications( new ArrayList<>() );
         }
 
         ServiceResponse<List<String>> availableMedicationUnitsResponse = medicationService.retrieveAvailableMedicationUnits();

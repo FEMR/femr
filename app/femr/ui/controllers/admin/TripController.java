@@ -1,4 +1,4 @@
-package femr.ui.controllers.superuser;
+package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
 import femr.business.services.core.IMissionTripService;
@@ -10,11 +10,11 @@ import femr.common.models.*;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.superuser.trips.EditViewModelGet;
-import femr.ui.models.superuser.trips.EditViewModelPost;
-import femr.ui.models.superuser.trips.TripViewModelGet;
-import femr.ui.models.superuser.trips.TripViewModelPost;
-import femr.ui.views.html.superuser.trips.*;
+import femr.ui.models.admin.trips.EditViewModelGet;
+import femr.ui.models.admin.trips.EditViewModelPost;
+import femr.ui.models.admin.trips.TripViewModelGet;
+import femr.ui.models.admin.trips.TripViewModelPost;
+import femr.ui.views.html.admin.trips.*;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
-@AllowedRoles({Roles.SUPERUSER})
+@AllowedRoles({Roles.ADMINISTRATOR})
 public class TripController extends Controller {
 
     private Form<TripViewModelPost> tripViewModelPostForm = Form.form(TripViewModelPost.class);

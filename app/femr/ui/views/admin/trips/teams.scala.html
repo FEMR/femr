@@ -1,8 +1,8 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.trips.TripViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.trips.TripViewModelGet)
 
 @import femr.ui.views.html.layouts.admin
-@import femr.ui.views.html.partials.superuser.trips.tripsMenu
-@import femr.ui.controllers.superuser.routes.TripController
+@import femr.ui.views.html.partials.admin.trips.tripsMenu
+@import femr.ui.controllers.admin.routes.TripController
 
 @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">

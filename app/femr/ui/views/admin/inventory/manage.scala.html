@@ -1,6 +1,8 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.InventoryViewModelGet)
 
 @import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.admin.routes.TripController
+
 
 @import femr.ui.views.html.layouts.admin
 
@@ -16,7 +18,24 @@
     }
 
 @admin("Inventory", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+
+    @if( currentUser.getTripId() == null ){
+        <div class="alert warning">
+
+            <h3>Your user is not assigned to a trip</h3>
+
+            <p>In order to edit medication inventory, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
+
+            <a class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
+        </div>
+    }
+
+
     @helper.form(action = InventoryController.managePost()) {
+
+        @if( currentUser.getTripId() == null ){
+            <fieldset disabled="disabled">
+        }
 
         <div class="newMedicationWrap">
 
@@ -88,6 +107,9 @@
 
         </div>
 
+        @if( currentUser.getTripId() == null ){
+            </fieldset>
+        }
     }
 
 

@@ -132,6 +132,34 @@
     width: 50%;
 }
 
+.alert{
+
+    padding: 15px;
+    border: 1px solid #3f3f3f;
+}
+
+.alert h3{
+
+    margin-top: 10px;
+}
+
+.alert.warning{
+
+    background-color: #FEBABB;
+    border: 1px solid #DD3645;
+}
+
+.alert.warning .fButton{
+
+    margin: 15px 0 5px;
+    background-color: #ffffff;
+    color: #3f3f3f;
+    display: inline-block;
+}
+
+
+
+
 @media only screen  and (max-width : 1200px) {
 
     .newMedicationWrap .ingredientWrap {

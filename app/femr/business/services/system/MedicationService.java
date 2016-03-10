@@ -56,7 +56,6 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -71,7 +70,6 @@ public class MedicationService implements IMedicationService {
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
                              IDataModelMapper dataModelMapper,
-                             IRepository<IMedicationInventory> medicationInventoryRepository,
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
@@ -80,7 +78,6 @@ public class MedicationService implements IMedicationService {
         this.medicationInventoryRepository = medicationInventoryRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.medicationAdministrationRepository = medicationAdministrationRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
@@ -313,21 +310,27 @@ public class MedicationService implements IMedicationService {
                 prescription.setCounseled(isCounseled);
                 prescription = patientPrescriptionRepository.update(prescription);
 
-                ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                        .where()
-                        .eq("medication_id", prescription.getId())
-                        .eq("mission_trip_id", tripId);
+                Integer medicationId = null;
+                if (prescription.getMedication() != null)//null check - safety first!!!
+                    medicationId = prescription.getMedication().getId();
+
                 Integer remainingQuantity = null;
                 try {
 
-                    IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-                    if (medicationInventory != null) {
+                    if (medicationId != null){
 
-                        medicationInventory.setQuantity_current(medicationInventory.getQuantity_total() - prescription.getAmount());
-                        medicationInventory = medicationInventoryRepository.update(medicationInventory);
-                        remainingQuantity = medicationInventory.getQuantity_current();
+                        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                                .where()
+                                .eq("medication_id", medicationId)
+                                .eq("mission_trip_id", tripId);
+                        IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+                        if (medicationInventory != null) {
+
+                            medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - prescription.getAmount());
+                            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                            remainingQuantity = medicationInventory.getQuantity_current();
+                        }
                     }
-
                 } catch (Exception ex) {
 
                     response.addError("", ex.getMessage());

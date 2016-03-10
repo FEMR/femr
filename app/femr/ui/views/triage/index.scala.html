@@ -47,7 +47,7 @@
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
 
 
-                @inputText("Phone No.", "phoneNo", true, if(viewModel != null) viewModel.getPatient.getPhoneNo else null, "text")
+                @inputText("Phone No.", "phoneNo", false, if(viewModel != null) viewModel.getPatient.getPhoneNo else null, "text")
                 <div class="generalInfoInput" id="citySearchContainer">
                     <label for="city">City<span class="red bold">*</span></label>
                     <input type = "text" class="citySearch fInput"  name="city" id="city" required>

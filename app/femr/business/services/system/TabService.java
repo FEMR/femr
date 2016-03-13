@@ -712,7 +712,7 @@ public class TabService implements ITabService {
 
         ServiceResponse<Map<String, List<String>>> response = new ServiceResponse<>();
         Map<String, List<String>> responseObject = new HashMap<>();
-        ExpressionList tabQuery = QueryProvider.getTabQuery()
+        ExpressionList<? extends Tab> tabQuery = QueryProvider.getTabQuery()
                 .where()
                 .eq("isDeleted", isTabDeleted);
 

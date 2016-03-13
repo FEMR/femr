@@ -26,6 +26,7 @@ import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
+import org.apache.commons.codec.binary.StringUtils;
 import play.Play;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1212,6 +1213,138 @@ public class DatabaseSeeder {
                 medicationAdministration.setDailyModifier(0.42857f);
                 medicationAdministrationsToAdd.add(medicationAdministration);
             }
+
+
+            //a whole bunch of if statements to fix the problem with the daily modifier turning to 0 when navigating through evolutions
+            for (IMedicationAdministration existingMedicationAdministrations : administrations) {
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "alt") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(0.5f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "BID") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(2f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "BIW") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(0.2857f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "CID") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(5f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "HS") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(1f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q12h") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(2f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q24h") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(1f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q4-6h") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(5f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q4h") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(6f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q6h") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(4f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q8h") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(3f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qAM") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(1f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qd") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(1f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qHS") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(1f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "QID") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(4f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q5min") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(288f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qOd") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(0.5f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qPM") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(1f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q week") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(0.142857f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "TID") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(3f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                if (StringUtils.equals(existingMedicationAdministrations.getName(), "TIW") && existingMedicationAdministrations.getDailyModifier() != 0.0) {
+
+                    existingMedicationAdministrations.setDailyModifier(0.42857f);
+                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                }
+
+                }
 
 
             medicationAdministrationRepository.createAll(medicationAdministrationsToAdd);

@@ -225,10 +225,6 @@ public class PharmaciesController extends Controller {
                     prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());
                 }
 
-
-
-
-
             } else {
                 // mark the prescription for dispensing
                 prescriptionsToDispense.put(script.getId(), isCounseled);
@@ -252,6 +248,11 @@ public class PharmaciesController extends Controller {
                 throw new RuntimeException();
             }
         }
+
+        //remove hte prescription from inventory!
+
+
+        //TODO: update the inventory
 
         //check the patient in!
         encounterService.checkPatientInToPharmacy(patientEncounterItem.getId(), currentUserSession.getId());

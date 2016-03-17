@@ -218,24 +218,17 @@ public class InventoryController extends Controller {
         return ok("true");
     }
 
+
     /**
      * Alters medication based on submit.
      */
-    public Result alterMedicationPost() {
+    public Result editPost(int medicationID, int tripId, int quantity) {
 
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-        Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
-        if (form.hasErrors()) {
-            System.out.println(form.errors().toString());
-            //if the request gets past the javascript validation and fails validation in the viewmodel, then
-            //don't proceed to save anything. In the future, this should alert the user as to what they did
-            //wrong.
-            /* Should be validated client side and server-side throws error */
+       ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityCurrent(medicationID, tripId, quantity);
+        if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();
-            //return redirect("/admin/inventory");
         }
-        return redirect("/admin/inventory");
+        return ok("true");
     }
 
 

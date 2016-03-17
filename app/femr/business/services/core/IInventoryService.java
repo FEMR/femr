@@ -63,7 +63,7 @@ public interface IInventoryService {
      * @param tripId id of the trip that has the medication.
      * @param quantityCurrent amount of the medication currently in the inventory.
      * @return a medication item that contains quantity information.
-
+**/
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
     */
 

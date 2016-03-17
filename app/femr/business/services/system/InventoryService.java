@@ -265,15 +265,31 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
-    /*
-    /**
-     * {@inheritDoc}
 
+    /**
+    *{@inheritDoc}
+    **/
     @Override
     public ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent) {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
+                .eq("missionTrip.id", tripId);
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
+        try {
+            //This should exist already, so no need to query for unique.
+            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            medicationInventory.setQuantity_current(quantityCurrent);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantity_total(), medicationInventory.getQuantity_current());
+            response.setResponseObject(medicationItem);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
         return response;
+
     }
 
     /**

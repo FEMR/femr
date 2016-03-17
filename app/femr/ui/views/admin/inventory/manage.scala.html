@@ -122,11 +122,10 @@
         <div id="currentMedication">
             <h3>Current Medications:</h3>
             <div id="currentMedicationsWrap">
-                <table id="inventoryTable">
+                <table id="inventoryTable" class="table">
                     <thead>
                         <th>Edit</th>
                         <th>Medication</th>
-                        <th>Alter Current Quantity</th>
                         <th>Current Quantity</th>
                         <th>Total Quantity</th>
                         <th>Remove</th>
@@ -136,12 +135,16 @@
                         <tr>
                             <td><button type="button" class="btn btn-info-outline">@m</button></td>
                             <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
-                            <td class="alterQuantity"><input class="fInput" type="number" value="0"/></td>
-                            <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
+                            <td class="currentQuantity">
+                                <span class="editQuantity" style="display:block;">@viewModel.getMedications.get(m - 1).getQuantity_current</span>
+                                <input class="editInput" style="display:none;" type="text" value="@viewModel.getMedications.get(m - 1).getQuantity_current" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()"/>
+                                <button type="button" class="btn btn-success editMedication" data-id="@viewModel.getMedications.get(m-1).getId()">Submit</button>
+                            </td>
                             <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
                             @*<td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>*@
-                            <td><button class="fButton btn-danger" id="removeMedicationButton">Remove</button>
-                                <button class="fButton btn-success" id="submitMedicationButton">Submit</button></td>
+                            <td>
+                                <button class="btn btn-danger" >Remove</button>
+                                </td>
                         </tr>
                     }
                     </tbody>

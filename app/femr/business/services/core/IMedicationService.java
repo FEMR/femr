@@ -61,7 +61,8 @@ public interface IMedicationService {
     ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
 
     /**
-     * Replace an existing prescription with an existing prescription.
+     * Replace an existing prescription with an existing prescription. This will not update the inventory. This method does update the
+     * patient_prescription_replacements table (which infers the prescription has been replaced).
      *
      * @param prescriptionPairs A mapping of prescriptions to replace in the form <newPrescription, oldPrescription> neither of which are null.
      * @return a PrescriptionItem representing the new prescription and/or errors if they exist.
@@ -69,32 +70,13 @@ public interface IMedicationService {
     ServiceResponse<List<PrescriptionItem>> replacePrescriptions(Map<Integer, Integer> prescriptionPairs);
 
     /**
-     * Dispense an existing prescription. This will not update the inventory.
+     * Dispense an existing prescription. This will not update the inventory. It does update the date dispensed and whether or not the patient
+     * was counseled.
      *
      * @param prescriptionsToDispense A mapping of prescriptions to dispense in the form <prescriptionId, isCounseled> neither of which are null.
-     * @param tripId id of the trip dispensing the prescription, not null
      * @return a PrescriptionItem representing the dispensed prescription and/or errors if they exist.
      */
-    ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense, int tripId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense);
 
     /**
      * Adds a new medication to the system. Does NOT update inventory quantities.
@@ -162,4 +144,13 @@ public interface IMedicationService {
      * and/or errors if they exist
      */
     ServiceResponse<ObjectNode> retrieveAllMedicationsWithID();
+
+    /**
+     * Updates the inventory for the prescriptions in the map.
+     *
+     * @param prescriptions a map with prescription ID as the key and the amount of that prescription to dispense as the value
+     * @param tripId id of the trip that the patient was seen on
+     * @return a list of PrescriptionItems with everything updated (included the current amount of that prescription)
+     */
+    ServiceResponse<List<PrescriptionItem>> updateInventory(Map<Integer, Integer> prescriptions, int tripId);
 }

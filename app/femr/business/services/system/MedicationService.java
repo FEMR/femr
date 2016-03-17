@@ -37,7 +37,6 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
-import org.jboss.netty.util.internal.StringUtil;
 import org.joda.time.DateTime;
 import play.libs.Json;
 
@@ -289,7 +288,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense, int tripId) {
+    public ServiceResponse<List<PrescriptionItem>> dispensePrescriptions(Map<Integer, Boolean> prescriptionsToDispense) {
 
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
@@ -310,33 +309,65 @@ public class MedicationService implements IMedicationService {
                 prescription.setCounseled(isCounseled);
                 prescription = patientPrescriptionRepository.update(prescription);
 
+
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
+                        prescription.getMedication().getName(),
+                        null,
+                        prescription.getPhysician().getFirstName(),
+                        prescription.getPhysician().getLastName(),
+                        prescription.getMedicationAdministration(),
+                        prescription.getAmount(),
+                        prescription.getMedication(),
+                        null)
+                );
+
+            } catch (Exception ex) {
+
+                response.addError("", ex.getMessage());
+            }
+        });
+
+        response.setResponseObject(prescriptionItems);
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<List<PrescriptionItem>> updateInventory(Map<Integer, Integer> prescriptions, int tripId) {
+
+
+        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
+        List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+
+        try {
+
+
+            prescriptions.forEach((prescriptionId, amount) -> {
+
+                ExpressionList<PatientPrescription> prescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
+                        .where()
+                        .eq("id", prescriptionId);
+                IPatientPrescription prescription = patientPrescriptionRepository.findOne(prescriptionExpressionList);
+
                 Integer medicationId = null;
                 if (prescription.getMedication() != null)//null check - safety first!!!
                     medicationId = prescription.getMedication().getId();
 
                 Integer remainingQuantity = null;
-                try {
 
-                    if (medicationId != null){
+                if (medicationId != null) {
 
-                        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                                .where()
-                                .eq("medication_id", medicationId)
-                                .eq("mission_trip_id", tripId);
-                        IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-                        if (medicationInventory != null) {
+                    ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                            .where()
+                            .eq("medication_id", medicationId)
+                            .eq("mission_trip_id", tripId);
+                    IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+                    if (medicationInventory != null) {
 
-                            medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - prescription.getAmount());
-                            medicationInventory = medicationInventoryRepository.update(medicationInventory);
-                            remainingQuantity = medicationInventory.getQuantity_current();
-                        }
+                        medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - prescription.getAmount());
+                        medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                        remainingQuantity = medicationInventory.getQuantity_current();
                     }
-                } catch (Exception ex) {
-
-                    response.addError("", ex.getMessage());
                 }
-
-
 
                 prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
                         prescription.getMedication().getName(),
@@ -349,15 +380,18 @@ public class MedicationService implements IMedicationService {
                         remainingQuantity)
                 );
 
-            } catch (Exception ex) {
+            });
 
-                response.addError("", ex.getMessage());
-            }
-        });
+        } catch (Exception ex) {
 
+            response.addError("", ex.getMessage());
+        }
 
+        response.setResponseObject(prescriptionItems);
         return response;
     }
+
+
 
     /**
      * {@inheritDoc}

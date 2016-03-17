@@ -246,7 +246,7 @@ public class PharmaciesController extends Controller {
 
         // dispense the prescriptions!
         if (prescriptionsToDispense.size() > 0) {
-            ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense, currentUserSession.getTripId());
+            ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense);
             if (dispensePrescriptionsServiceResponse.hasErrors()){
 
                 throw new RuntimeException();

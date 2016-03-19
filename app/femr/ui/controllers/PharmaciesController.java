@@ -231,29 +231,44 @@ public class PharmaciesController extends Controller {
             }
         }
 
-        // replace the prescriptions!
+        // replace the prescriptions! (but do not dispense them)
         if (prescriptionsToReplace.size() > 0){
             ServiceResponse<List<PrescriptionItem>> replacePrescriptionsServiceResponse = medicationService.replacePrescriptions(prescriptionsToReplace);
-            if (replacePrescriptionsServiceResponse.hasErrors()){
+            if (replacePrescriptionsServiceResponse.hasErrors()) {
 
                 throw new RuntimeException();
-            }else{
-                for (PrescriptionItem prescriptionItem : replacePrescriptionsServiceResponse.getResponseObject()){
-                    prescriptionsToDispense.put(prescriptionItem.getId(), prescriptionItem.get)
+            } else {
+
+                for (PrescriptionItem prescriptionItem : replacePrescriptionsServiceResponse.getResponseObject()) {
+
+                    prescriptionsToDispense.put(prescriptionItem.getId(), prescriptionItem.getCounseled());
                 }
             }
         }
 
-        // dispense the prescriptions!
+        // dispense the prescriptions! then inventory them!
         if (prescriptionsToDispense.size() > 0) {
+            //dispense!
             ServiceResponse<List<PrescriptionItem>> dispensePrescriptionsServiceResponse = medicationService.dispensePrescriptions(prescriptionsToDispense);
-            if (dispensePrescriptionsServiceResponse.hasErrors()){
+            if (dispensePrescriptionsServiceResponse.hasErrors()) {
 
                 throw new RuntimeException();
+            } else {
+                //inventory!
+                for (PrescriptionItem prescriptionItem : dispensePrescriptionsServiceResponse.getResponseObject()) {
+
+                    ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.subtractFromQuantityCurrent(prescriptionItem.getMedicationID(), currentUserSession.getTripId(), prescriptionItem.getAmount());
+                    if (inventoryServiceResponse.hasErrors()){
+
+                        throw new RuntimeException();
+                    }
+                }
             }
+
         }
 
-        //remove hte prescription from inventory!
+
+
 
 
         //TODO: update the inventory

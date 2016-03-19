@@ -61,8 +61,8 @@ public interface IMedicationService {
     ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
 
     /**
-     * Replace an existing prescription with an existing prescription. This will not update the inventory. This method does update the
-     * patient_prescription_replacements table (which infers the prescription has been replaced).
+     * Replace an existing prescription with an existing prescription. This will not update the inventory. This will not dispense the prescription.
+     * This method does update the patient_prescription_replacements table (which infers the prescription has been replaced).
      *
      * @param prescriptionPairs A mapping of prescriptions to replace in the form <newPrescription, oldPrescription> neither of which are null.
      * @return a PrescriptionItem representing the prescriptions that replaced the old prescriptions and/or errors if they exist.
@@ -71,7 +71,7 @@ public interface IMedicationService {
 
     /**
      * Dispense an existing prescription. This will not update the inventory. It does update the date dispensed and whether or not the patient
-     * was counseled.
+     * was counseled in the patient_prescriptions table.
      *
      * @param prescriptionsToDispense A mapping of prescriptions to dispense in the form <prescriptionId, isCounseled> neither of which are null.
      * @return a PrescriptionItem representing the dispensed prescription and/or errors if they exist.

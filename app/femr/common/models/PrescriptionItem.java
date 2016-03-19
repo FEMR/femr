@@ -38,6 +38,8 @@ public class PrescriptionItem {
     //of the particular medication, how much remains in the inventory?
     private Integer medicationRemaining;
     private List<MedicationItem.ActiveIngredient> medicationActiveDrugs;
+    //was the checkbox checked for this prescription indicating the patient was counseled by the pharmacist
+    private Boolean isCounseled;
 
     public PrescriptionItem(String name){
         medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
@@ -160,5 +162,13 @@ public class PrescriptionItem {
 
     public void setMedicationName(String medicationName) {
         this.medicationName = medicationName;
+    }
+
+    public Boolean getCounseled() {
+        return isCounseled;
+    }
+
+    public void setCounseled(Boolean counseled) {
+        isCounseled = counseled;
     }
 }

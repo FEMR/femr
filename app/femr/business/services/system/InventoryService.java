@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import femr.business.helpers.LogicDoer;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
@@ -278,11 +279,40 @@ public class InventoryService implements IInventoryService {
 
     /**
      * {@inheritDoc}
-
+     */
     @Override
     public ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract) {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+        MedicationItem medicationItem = null;
+
+        ExpressionList<Medication> medicationExpressionList = QueryProvider.getMedicationQuery()
+                .where()
+                .eq("id", medicationId);
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("medication_id", medicationId)
+                .eq("mission_trip_id", tripId);
+
+        try {
+
+
+            IMedication medication = medicationRepository.findOne(medicationExpressionList);
+
+            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            if (medicationInventory != null) {
+
+                medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - quantityToSubtract);
+                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+            }
+
+            medicationItem = itemModelMapper.createMedicationItem(medication, medicationInventory.getQuantity_current(), medicationInventory.getQuantity_total());
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+        response.setResponseObject(medicationItem);
+
         return response;
-    }  */
+    }
 }

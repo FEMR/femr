@@ -278,7 +278,8 @@ public class ItemModelMapper implements IItemModelMapper {
      */
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication, Integer medicationRemaining) {
+                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication,
+                                                   Integer medicationRemaining, Boolean isCounseled) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -304,6 +305,9 @@ public class ItemModelMapper implements IItemModelMapper {
         if (amount != null)
             prescriptionItem.setAmount(amount);
 
+        if (isCounseled != null)
+            prescriptionItem.setCounseled(isCounseled);
+
         if (medication != null) {
             MedicationItem medicationItem = createMedicationItem(medication, null, null);
             prescriptionItem.setMedicationID(medicationItem.getId());
@@ -312,7 +316,6 @@ public class ItemModelMapper implements IItemModelMapper {
                 prescriptionItem.setMedicationForm(medicationItem.getForm());
 
             prescriptionItem.setMedicationRemaining(medicationRemaining);
-
 
 
             if (medicationItem.getActiveIngredients() != null)

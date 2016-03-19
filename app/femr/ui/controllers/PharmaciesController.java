@@ -237,6 +237,10 @@ public class PharmaciesController extends Controller {
             if (replacePrescriptionsServiceResponse.hasErrors()){
 
                 throw new RuntimeException();
+            }else{
+                for (PrescriptionItem prescriptionItem : replacePrescriptionsServiceResponse.getResponseObject()){
+                    prescriptionsToDispense.put(prescriptionItem.getId(), prescriptionItem.get)
+                }
             }
         }
 

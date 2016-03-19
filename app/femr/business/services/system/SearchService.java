@@ -313,15 +313,16 @@ public class SearchService implements ISearchService {
                     .stream()
                     .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
                     .map(pp -> itemModelMapper.createPrescriptionItem(
-                        pp.getId(),
-                        pp.getMedication().getName(),
-                        null,
-                        pp.getPhysician().getFirstName(),
-                        pp.getPhysician().getLastName(),
-                        pp.getMedicationAdministration(),
-                        pp.getAmount(),
-                        pp.getMedication(),
-                            null
+                            pp.getId(),
+                            pp.getMedication().getName(),
+                            null,
+                            pp.getPhysician().getFirstName(),
+                            pp.getPhysician().getLastName(),
+                            pp.getMedicationAdministration(),
+                            pp.getAmount(),
+                            pp.getMedication(),
+                            null,
+                            pp.isCounseled()
 
                     ))
                     .collect(Collectors.toList());
@@ -360,7 +361,8 @@ public class SearchService implements ISearchService {
                             pp.getMedicationAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
-                            null
+                            null,
+                            pp.isCounseled()
                     ))
                     .collect(Collectors.toList());
             List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
@@ -374,7 +376,8 @@ public class SearchService implements ISearchService {
                             pp.getMedicationAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
-                            null
+                            null,
+                            pp.isCounseled()
                     ))
                     .collect(Collectors.toList());
             prescriptionItems.addAll(replacedPrescriptions);

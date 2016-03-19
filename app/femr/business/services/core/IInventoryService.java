@@ -65,6 +65,7 @@ public interface IInventoryService {
      * @return a medication item that contains quantity information.
 
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
+    */
 
     /**
      * Subtracts quantity from the current quantity when someone dispenses medication.
@@ -73,7 +74,7 @@ public interface IInventoryService {
      * @param tripId id of the trip that is bringing the medication.
      * @param quantity amount of medication to subtract from the current amount available.
      * @return a medication item that contains quantity information.
-
+     */
     ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract);
-    */
+
 }

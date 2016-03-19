@@ -213,12 +213,13 @@ public class MedicationService implements IMedicationService {
         List<PrescriptionItem> prescriptionItems = new ArrayList<>();
         List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
 
+        //get the reason for replacing
         ExpressionList<PatientPrescriptionReplacementReason> replacementReasonExpressionList = QueryProvider.getPatientPrescriptionReasonQuery()
                 .where()
                 .eq("name", "pharmacist replacement");
-
         IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = patientPrescriptionReplacementReasonRepository.findOne(replacementReasonExpressionList);
 
+        //iterate over each prescription and its replacement
         prescriptionPairs.forEach((newId, oldId) -> {
 
             ExpressionList<PatientPrescription> newPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
@@ -262,7 +263,8 @@ public class MedicationService implements IMedicationService {
             List<? extends IPatientPrescriptionReplacement> replacements = patientPrescriptionReplacementRepository.createAll(patientPrescriptionReplacements);
             for (IPatientPrescriptionReplacement prescriptionReplacement : replacements) {
 
-                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescriptionReplacement.getId(),
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(
+                        prescriptionReplacement.getReplacementPrescription().getId(),
                         prescriptionReplacement.getReplacementPrescription().getMedication().getName(),
                         null,
                         prescriptionReplacement.getReplacementPrescription().getPhysician().getFirstName(),
@@ -270,7 +272,8 @@ public class MedicationService implements IMedicationService {
                         prescriptionReplacement.getReplacementPrescription().getMedicationAdministration(),
                         prescriptionReplacement.getReplacementPrescription().getAmount(),
                         prescriptionReplacement.getReplacementPrescription().getMedication(),
-                        null)
+                        null,
+                        prescriptionReplacement.getReplacementPrescription().isCounseled())
                 );
             }
         } catch (Exception ex) {
@@ -310,6 +313,8 @@ public class MedicationService implements IMedicationService {
                 prescription = patientPrescriptionRepository.update(prescription);
 
 
+
+
                 prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
                         prescription.getMedication().getName(),
                         null,
@@ -318,7 +323,8 @@ public class MedicationService implements IMedicationService {
                         prescription.getMedicationAdministration(),
                         prescription.getAmount(),
                         prescription.getMedication(),
-                        null)
+                        null,
+                        prescription.isCounseled())
                 );
 
             } catch (Exception ex) {
@@ -330,68 +336,6 @@ public class MedicationService implements IMedicationService {
         response.setResponseObject(prescriptionItems);
         return response;
     }
-
-    @Override
-    public ServiceResponse<List<PrescriptionItem>> updateInventory(Map<Integer, Integer> prescriptions, int tripId) {
-
-
-        ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
-        List<PrescriptionItem> prescriptionItems = new ArrayList<>();
-
-        try {
-
-
-            prescriptions.forEach((prescriptionId, amount) -> {
-
-                ExpressionList<PatientPrescription> prescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                        .where()
-                        .eq("id", prescriptionId);
-                IPatientPrescription prescription = patientPrescriptionRepository.findOne(prescriptionExpressionList);
-
-                Integer medicationId = null;
-                if (prescription.getMedication() != null)//null check - safety first!!!
-                    medicationId = prescription.getMedication().getId();
-
-                Integer remainingQuantity = null;
-
-                if (medicationId != null) {
-
-                    ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                            .where()
-                            .eq("medication_id", medicationId)
-                            .eq("mission_trip_id", tripId);
-                    IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-                    if (medicationInventory != null) {
-
-                        medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - prescription.getAmount());
-                        medicationInventory = medicationInventoryRepository.update(medicationInventory);
-                        remainingQuantity = medicationInventory.getQuantity_current();
-                    }
-                }
-
-                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
-                        prescription.getMedication().getName(),
-                        null,
-                        prescription.getPhysician().getFirstName(),
-                        prescription.getPhysician().getLastName(),
-                        prescription.getMedicationAdministration(),
-                        prescription.getAmount(),
-                        prescription.getMedication(),
-                        remainingQuantity)
-                );
-
-            });
-
-        } catch (Exception ex) {
-
-            response.addError("", ex.getMessage());
-        }
-
-        response.setResponseObject(prescriptionItems);
-        return response;
-    }
-
-
 
     /**
      * {@inheritDoc}
@@ -423,7 +367,8 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.getMedicationAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
-                    null);
+                    null,
+                    patientPrescription.isCounseled());
             response.setResponseObject(prescriptionItem);
         } catch (Exception ex) {
 
@@ -473,7 +418,8 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.getMedicationAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
-                    null);
+                    null,
+                    patientPrescription.isCounseled());
             response.setResponseObject(prescriptionItem);
 
         } catch (Exception ex) {

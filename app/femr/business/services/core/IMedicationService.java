@@ -65,7 +65,7 @@ public interface IMedicationService {
      * patient_prescription_replacements table (which infers the prescription has been replaced).
      *
      * @param prescriptionPairs A mapping of prescriptions to replace in the form <newPrescription, oldPrescription> neither of which are null.
-     * @return a PrescriptionItem representing the new prescription and/or errors if they exist.
+     * @return a PrescriptionItem representing the prescriptions that replaced the old prescriptions and/or errors if they exist.
      */
     ServiceResponse<List<PrescriptionItem>> replacePrescriptions(Map<Integer, Integer> prescriptionPairs);
 
@@ -144,13 +144,4 @@ public interface IMedicationService {
      * and/or errors if they exist
      */
     ServiceResponse<ObjectNode> retrieveAllMedicationsWithID();
-
-    /**
-     * Updates the inventory for the prescriptions in the map.
-     *
-     * @param prescriptions a map with prescription ID as the key and the amount of that prescription to dispense as the value
-     * @param tripId id of the trip that the patient was seen on
-     * @return a list of PrescriptionItems with everything updated (included the current amount of that prescription)
-     */
-    ServiceResponse<List<PrescriptionItem>> updateInventory(Map<Integer, Integer> prescriptions, int tripId);
 }

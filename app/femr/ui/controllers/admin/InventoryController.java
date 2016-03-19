@@ -26,8 +26,7 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IInventoryService;
 import femr.business.services.core.ISessionService;
-import femr.data.models.core.IMissionTrip;
-import femr.data.models.mysql.MissionTrip;
+import femr.common.models.MissionTripItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -41,13 +40,7 @@ import play.mvc.Security;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Right now, the inventory feature supports the adding of medications, but
- * when a physician submits a prescription it simply creates a new medication
- * with a name equal to the prescription. The feature is not complete, yet.
- */
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
@@ -86,6 +79,15 @@ public class InventoryController extends Controller {
                 throw new RuntimeException();
             } else {
                 viewModel.setMedications(medicationServiceResponse.getResponseObject());
+            }
+
+            ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
+            if (missionTripServiceResponse.hasErrors()) {
+
+                throw new RuntimeException();
+            } else {
+
+                viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
             }
 
         }

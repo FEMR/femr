@@ -267,12 +267,6 @@ public class PharmaciesController extends Controller {
 
         }
 
-
-
-
-
-        //TODO: update the inventory
-
         //check the patient in!
         encounterService.checkPatientInToPharmacy(patientEncounterItem.getId(), currentUserSession.getId());
         String message = "Patient information for " +

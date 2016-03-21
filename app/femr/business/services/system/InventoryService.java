@@ -281,8 +281,20 @@ public class InventoryService implements IInventoryService {
         try {
             //This should exist already, so no need to query for unique.
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            int medicationTotal = medicationInventory.getQuantity_total();
+            int medicationCurrent = medicationInventory.getQuantity_current();
+            //If quantity is lower than previous quantity, we are removing medication, so total quantity is minus.
+            if(medicationCurrent > quantityCurrent)
+                medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - quantityCurrent));
+            else
+            {
+                //Inventory total changes as well.
+                medicationInventory.setQuantity_total(quantityCurrent+medicationInventory.getQuantity_total());
+            }
             medicationInventory.setQuantity_current(quantityCurrent);
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantity_total(), medicationInventory.getQuantity_current());
+
+            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantity_current(), medicationInventory.getQuantity_total());
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());

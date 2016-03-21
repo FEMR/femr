@@ -28,22 +28,6 @@ $(document).ready(function () {
        $(this).find("input")[0].focus();
     });
 
-    //$(".editInput").blur(function(){
-    //    $(this)[0].style.display="none";
-    //    $(this).prev()[0].innerText=$(this)[0].value;
-    //    $(this).prev().show();
-    //
-    //});
-    //$(".editInput").keypress(function(e) {
-    //    if (e.which == 13) {
-    //        $(this)[0].style.display = "none";
-    //        $(this).prev()[0].innerText = $(this)[0].value;
-    //        $(this).prev().show();
-    //
-    //        return false;
-    //    }
-    //});
-
     // AJAX STUFF
     var manageUsers = {
         elements: {
@@ -55,27 +39,17 @@ $(document).ready(function () {
             //});
 
         },
-        toggleUser: function (btn) {
+        toggleUser: function (object) {
             //user ID
-            var id = $(btn).attr('data-id');
-            var value = $(btn).attr('value')
+            var id = $(object).attr('data-id');
+            var value = $(object).attr('value')
+            var tripId = $(object).attr('tripid');
             $.ajax({
-                url: '/admin/inventory/edit/' + id,
+                url: '/admin/inventory/edit/' + id + "/" + value + "/" + tripId,
                 type: 'POST',
                 data: {},
                 dataType: 'text',
                 success: function () {
-                    //on success, toggle button to reflect current state of the user
-                    //if (isDeleted === "false") {
-                    //    $(btn).html("Deactivate");
-                    //    $(btn).removeClass("btn-success");
-                    //    $(btn).addClass("btn-danger");
-                    //
-                    //} else {
-                    //    $(btn).html("Activate");
-                    //    $(btn).removeClass("btn-danger");
-                    //    $(btn).addClass("btn-success");
-                    //}
                     alert("Yay");
                 },
                 error: function () {
@@ -85,16 +59,19 @@ $(document).ready(function () {
             });
         }
     };
-    manageUsers.elements.userToggleButtons.keypress(function(e) {
+    $(".editInput").keypress(function(e) {
         if (e.which == 13) {
             $(this)[0].style.display = "none";
             $(this).prev()[0].innerText = $(this)[0].value;
+            var value = $(this)[0].value;
+            $(this).prev().attr({
+                "value" : value
+            })
             $(this).prev().show();
-            manageUsers.toggleUser(this);
+            manageUsers.toggleUser($(this).prev());
             return false;
         }
     });
-
 });
 
 function bindRemoveAction(element){

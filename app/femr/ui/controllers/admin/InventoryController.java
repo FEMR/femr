@@ -222,7 +222,7 @@ public class InventoryController extends Controller {
     /**
      * Alters medication based on submit.
      */
-    public Result editPost(int medicationID, int tripId, int quantity) {
+    public Result editPost(int medicationID, int quantity, int tripId) {
 
        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityCurrent(medicationID, tripId, quantity);
         if (inventoryServiceResponse.hasErrors()) {

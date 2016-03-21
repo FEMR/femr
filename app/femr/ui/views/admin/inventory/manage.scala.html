@@ -136,9 +136,8 @@
                             <td><button type="button" class="btn btn-info-outline">@m</button></td>
                             <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
                             <td class="currentQuantity">
-                                <span class="editQuantity" style="display:block;">@viewModel.getMedications.get(m - 1).getQuantity_current</span>
-                                <input class="editInput" style="display:none;" type="text" value="@viewModel.getMedications.get(m - 1).getQuantity_current" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()"/>
-                                <button type="button" class="btn btn-success editMedication" data-id="@viewModel.getMedications.get(m-1).getId()">Submit</button>
+                                <span class="editQuantity" style="display:block;" value="@viewModel.getMedications.get(m - 1).getQuantity_current" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()">@viewModel.getMedications.get(m - 1).getQuantity_current</span>
+                                <input class="editInput" style="display:none;" type="text" value="@viewModel.getMedications.get(m - 1).getQuantity_current""/>
                             </td>
                             <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
                             @*<td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>*@

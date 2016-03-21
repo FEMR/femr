@@ -155,13 +155,13 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> createPatient(PatientItem patient, ISearchService searchService) {
+    public ServiceResponse<PatientItem> createPatient(PatientItem patient, ISearchService searchService, int check) {
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
         if (patient == null) {
             response.addError("", "no patient received");
             return response;
         }
-        else if (searchService.checkExistingPatients(patient.getFirstName(), patient.getLastName(),patient.getBirth(),patient.getCity())) {
+        else if (searchService.checkExistingPatients(patient.getFirstName(), patient.getLastName(),patient.getBirth(),patient.getCity()) && check==0) {
             response.addError("", "patient already exists");
             return response;
         }

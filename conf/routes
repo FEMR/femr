@@ -56,7 +56,7 @@ GET         /photo/encounter/:id                               @femr.ui.controll
 #Triage
 GET         /triage/:id                                        @femr.ui.controllers.TriageController.indexPopulatedGet(id: Integer)
 GET         /triage                                            @femr.ui.controllers.TriageController.indexGet()
-POST        /triage                                            @femr.ui.controllers.TriageController.indexPost(id: Integer)
+POST        /triage                                            @femr.ui.controllers.TriageController.indexPost(id: Integer, message: String)
 POST        /triage/:id                                        @femr.ui.controllers.TriageController.deletePatientPost(id: Integer)
 
 #Medical

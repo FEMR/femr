@@ -158,7 +158,7 @@ public class TriageController extends Controller {
    *if id is 0 then it is a new patient and a new encounter
    * if id is > 0 then it is only a new encounter
     */
-    public Result indexPost(int id) {
+    public Result indexPost(int id, String message) {
 
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
@@ -169,17 +169,23 @@ public class TriageController extends Controller {
         PatientItem patientItem;
         if (id == 0) {
             patientItem = populatePatientItem(viewModel, currentUser);
-                patientServiceResponse = patientService.createPatient(patientItem,searchService);
+                if(message.equals("")) {
+                    patientServiceResponse = patientService.createPatient(patientItem, searchService,0);
+                }
+            else
+                {
+                    patientServiceResponse = patientService.createPatient(patientItem, searchService,1);
+                }
         } else {
                 patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
             if(patientServiceResponse.getErrors().get("").equals("patient already exists")) {
                 //initalize an empty patient
-                PatientItem patientItemNew = new PatientItem();
+                patientItem = populatePatientItem(viewModel, currentUser);
                 IndexViewModelGet viewModelGet = new IndexViewModelGet();
-                indexGetInitialize(currentUser, patientItemNew, viewModelGet);
-                return ok(index.render(currentUser, viewModelGet, "The patient already exists!"));
+                indexGetInitialize(currentUser, patientItem, viewModelGet);
+                return ok(index.render(currentUser, viewModelGet, "The patient might already exist, please submit again to confirm adding this patient!"));
             }
             else {
                 throw new RuntimeException();

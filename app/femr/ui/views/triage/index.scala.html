@@ -27,7 +27,7 @@
 
     }
     @additionalMessage = {
-        <h5>@message</h5>
+        <h3>@message</h3>
     }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
@@ -42,7 +42,7 @@
         <h2 class="text-center">Check In - Triage</h2>
         @additionalMessage
 
-        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId,message), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
                 <h2>General Info</h2>

@@ -18,6 +18,8 @@
 */
 package femr.common.models;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class MedicationItem {
     //a medication can have more than one active ingredient.
     private List<ActiveIngredient> activeIngredients;
 
-
+    private DateTime isDeleted;
     public MedicationItem() {
         this.activeIngredients = new ArrayList<>();
     }
@@ -113,6 +115,10 @@ public class MedicationItem {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
+    public DateTime getIsDeleted() { return isDeleted; }
+
+    public void setIsDeleted(DateTime isDeleted) {this.isDeleted = isDeleted; }
 
     public class ActiveIngredient {
         private String name;

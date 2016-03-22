@@ -132,6 +132,7 @@
                     </thead>
                     <tbody>
                     @for(m <- 1 to viewModel.getMedications.size) {
+                        @if(viewModel.getMedications.get(m - 1).getIsDeleted == null){
                         <tr>
                             <td><button type="button" class="btn btn-info-outline">@m</button></td>
                             <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
@@ -142,9 +143,10 @@
                             <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
                             @*<td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>*@
                             <td>
-                                <button class="btn btn-danger" >Remove</button>
+                                <button type="button" class="btn btn-danger toggleBtn" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()">Remove</button>
                                 </td>
                         </tr>
+                        }
                     }
                     </tbody>
                 </table>

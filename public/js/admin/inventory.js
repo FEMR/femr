@@ -31,18 +31,17 @@ $(document).ready(function () {
     // AJAX STUFF
     var manageUsers = {
         elements: {
-            userToggleButtons: $('.editQuantity')
+            userToggleButtons: $('.toggleBtn')
         },
         bindUserToggleButtons: function () {
             //manageUsers.elements.userToggleButtons.click(function () {
-            //    manageUsers.toggleUser(this);
+            //    manageUsers.toggleMedication(this);
             //});
-
         },
         toggleUser: function (object) {
             //user ID
             var id = $(object).attr('data-id');
-            var value = $(object).attr('value')
+            var value = $(object).attr('value');
             var tripId = $(object).attr('tripid');
             $.ajax({
                 url: '/admin/inventory/edit/' + id + "/" + value + "/" + tripId,
@@ -51,6 +50,34 @@ $(document).ready(function () {
                 dataType: 'text',
                 success: function () {
                     alert("Yay");
+                },
+                error: function () {
+                    //don't change button - implies an error
+                    alert("Fuck");
+                }
+            });
+        },
+        toggleMedication: function (btn){
+            var id = $(btn).attr('data-id');
+            var tripId = $(btn).attr('tripid');
+            $.ajax({
+                url: '/admin/inventory/delete/' + id + "/" + tripId,
+                type: 'POST',
+                data: {},
+                dataType: 'text',
+                success: function (isDeleted) {
+
+                        if($(btn).hasClass("btn-danger")){
+                            $(btn).html("Undo");
+                            $(btn).removeClass("btn-danger");
+                            $(btn).addClass("btn-success");
+                        }
+                        else{
+                            $(btn).html("Remove");
+                            $(btn).removeClass("btn-success");
+                            $(btn).addClass("btn-danger");
+                        }
+
                 },
                 error: function () {
                     //don't change button - implies an error
@@ -71,6 +98,9 @@ $(document).ready(function () {
             manageUsers.toggleUser($(this).prev());
             return false;
         }
+    });
+    $('.toggleBtn').click(function () {
+        manageUsers.toggleMedication(this);
     });
 });
 

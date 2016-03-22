@@ -210,8 +210,8 @@ public class InventoryController extends Controller {
 
     }
 
-    public Result ajaxDelete(int medicationID) {
-        ServiceResponse<MedicationItem> inventoryServiceResponse = medicationService.deleteMedication(medicationID);
+    public Result ajaxDelete(int medicationID, int tripId) {
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
         if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

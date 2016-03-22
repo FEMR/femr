@@ -65,9 +65,17 @@ public interface IInventoryService {
      * @return a medication item that contains quantity information.
 **/
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
-    */
 
     /**
+     * Deletes inventory medication by medication/tripId.
+     *
+     * @param medicationId id of the medication.
+     * @param tripId id of the trip that has the medication.
+     * @return
+     **/
+    ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId);
+    /**
+     * Subtracts quantity from the current quantity when someone dispenses medication.
      * Subtracts amount dispensed from the current quantity of a medication when someone dispenses a prescription. This
      * will also make sure inventory exists for the medication in a trip before trying to subtract the quantity.
      *

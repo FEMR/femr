@@ -185,13 +185,13 @@ public class MedicationService implements IMedicationService {
                 matchingMedication.setIsDeleted(false);
 
                 medicationRepository.update(matchingMedication);
-                response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null));
+                response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
             } else {
                 // Create a new medication in the DB
                 IMedication medication = dataModelMapper.createMedication(name, medicationActiveDrugs, medicationForm);
                 medication = medicationRepository.create(medication);
                 //creates the medication item - quantities are null because the medication was just created.
-                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null);
+                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
                 response.setResponseObject(newMedicationItem);
             }
 
@@ -568,7 +568,7 @@ public class MedicationService implements IMedicationService {
         List<MedicationItem> medicationItems = new ArrayList<>();
 
         for (IMedicationInventory m : medicationsInventory) {
-            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantity_current(), m.getQuantity_total()));
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantity_current(), m.getQuantity_total(), m.getIsDeleted()));
         }
         response.setResponseObject(medicationItems);
 

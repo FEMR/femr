@@ -25,19 +25,11 @@ $(document).ready(function () {
     $(".currentQuantity").dblclick(function(){
        $(this).find("span")[0].style.display="none";
        $(this).find("input")[0].style.display="block";
-       $(this).find("input")[0].focus();
+        $(this).find("input")[0].style.display="block";
     });
 
     // AJAX STUFF
     var manageUsers = {
-        elements: {
-            userToggleButtons: $('.toggleBtn')
-        },
-        bindUserToggleButtons: function () {
-            //manageUsers.elements.userToggleButtons.click(function () {
-            //    manageUsers.toggleMedication(this);
-            //});
-        },
         toggleUser: function (object) {
             //user ID
             var id = $(object).attr('data-id');
@@ -49,11 +41,17 @@ $(document).ready(function () {
                 data: {},
                 dataType: 'text',
                 success: function () {
-                    alert("Yay");
+                    var previousQuantity = $('.totalQuantity[data-id="'+id+'"]').attr('quantity');
+                    var newTotal = $('.totalQuantity[data-id="'+id+'"]').attr('value');
+                    newTotal = newTotal - (previousQuantity - value);
+
+                    //Need to update my quantity as well as my total
+                    $('.totalQuantity[data-id="'+id+'"]').attr('value',newTotal);
+                    $('.totalQuantity[data-id="'+id+'"]').attr('quantity', value);
+                    $('.totalQuantity[data-id="'+id+'"]').html(newTotal);
                 },
                 error: function () {
                     //don't change button - implies an error
-                    alert("Fuck");
                 }
             });
         },
@@ -65,7 +63,7 @@ $(document).ready(function () {
                 type: 'POST',
                 data: {},
                 dataType: 'text',
-                success: function (isDeleted) {
+                success: function () {
 
                         if($(btn).hasClass("btn-danger")){
                             $(btn).html("Undo");

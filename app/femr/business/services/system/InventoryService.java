@@ -271,7 +271,7 @@ public class InventoryService implements IInventoryService {
     *{@inheritDoc}
     **/
     @Override
-    public ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent) {
+    public ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int newQuantity) {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
@@ -284,15 +284,10 @@ public class InventoryService implements IInventoryService {
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
             int medicationTotal = medicationInventory.getQuantity_total();
             int medicationCurrent = medicationInventory.getQuantity_current();
-            //If quantity is lower than previous quantity, we are removing medication, so total quantity is minus.
-            if(medicationCurrent > quantityCurrent)
-                medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - quantityCurrent));
-            else
-            {
-                //Inventory total changes as well.
-                medicationInventory.setQuantity_total(quantityCurrent+medicationInventory.getQuantity_total());
-            }
-            medicationInventory.setQuantity_current(quantityCurrent);
+
+            medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - newQuantity));
+
+            medicationInventory.setQuantity_current(newQuantity);
 
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantity_current(), medicationInventory.getQuantity_total(), null);

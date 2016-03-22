@@ -81,7 +81,6 @@ $(document).ready(function () {
                 },
                 error: function () {
                     //don't change button - implies an error
-                    alert("Fuck");
                 }
             });
         }

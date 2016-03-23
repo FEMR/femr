@@ -31,7 +31,6 @@ $(document).ready(function () {
     // AJAX STUFF
     var manageUsers = {
         toggleUser: function (object) {
-            //user ID
             var id = $(object).attr('data-id');
             var value = $(object).attr('value');
             var tripId = $(object).attr('tripid');

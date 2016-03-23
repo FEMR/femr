@@ -8,13 +8,13 @@ import org.joda.time.DateTime;
 public interface IMedicationInventory {
     int getId();
 
-    Integer getQuantity_current();
+    Integer getQuantityCurrent();
 
-    void setQuantity_current(Integer quantity_current);
+    void setQuantityCurrent(Integer quantityCurrent);
 
-    Integer getQuantity_total();
+    Integer getQuantityInitial();
 
-    void setQuantity_total(Integer quantity_initial);
+    void setQuantityInitial(Integer quantityInitial);
 
     IMedication getMedication();
 

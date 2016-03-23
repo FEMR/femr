@@ -64,6 +64,10 @@ public class InventoryService implements IInventoryService {
         this.itemModelMapper = itemModelMapper;
     }
 
+
+
+
+
     /**
      * {@inheritDoc}
      */
@@ -90,10 +94,11 @@ public class InventoryService implements IInventoryService {
             } else {
 
 
-                medicationInventory.setQuantity_total(quantityTotal);
+                medicationInventory.setQuantityInitial(quantityTotal);
                 medicationInventory = medicationInventoryRepository.update(medicationInventory);
             }
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantity_total(), medicationInventory.getQuantity_current(), null);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null);
+
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
 
@@ -119,16 +124,16 @@ public class InventoryService implements IInventoryService {
         try {
             //This should exist already, so no need to query for unique.
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            int medicationTotal = medicationInventory.getQuantity_total();
-            int medicationCurrent = medicationInventory.getQuantity_current();
+            int medicationTotal = medicationInventory.getQuantityInitial();
+            int medicationCurrent = medicationInventory.getQuantityCurrent();
 
             //Currently left out to leave out editing Initial Quantity
             // medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - newQuantity));
 
-            medicationInventory.setQuantity_current(newQuantity);
+            medicationInventory.setQuantityCurrent(newQuantity);
 
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantity_current(), medicationInventory.getQuantity_total(), null);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -157,7 +162,7 @@ public class InventoryService implements IInventoryService {
             else
                 medicationInventory.setIsDeleted(DateTime.now());
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantity_current(), medicationInventory.getQuantity_total(), medicationInventory.getIsDeleted());
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted());
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -188,15 +193,15 @@ public class InventoryService implements IInventoryService {
 
             IMedication medication = medicationRepository.findOne(medicationExpressionList);
             IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            Integer currentQuantity = null;
-            Integer totalQuantity = null;
+            int currentQuantity = 0;
+            int totalQuantity = 0;
 
             if (medicationInventory != null) {
 
-                medicationInventory.setQuantity_current(medicationInventory.getQuantity_current() - quantityToSubtract);
+                medicationInventory.setQuantityCurrent(medicationInventory.getQuantityCurrent() - quantityToSubtract);
                 medicationInventory = medicationInventoryRepository.update(medicationInventory);
-                currentQuantity = medicationInventory.getQuantity_current();
-                totalQuantity = medicationInventory.getQuantity_total();
+                currentQuantity = medicationInventory.getQuantityCurrent();
+                totalQuantity = medicationInventory.getQuantityInitial();
             }
 
             medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity, null);

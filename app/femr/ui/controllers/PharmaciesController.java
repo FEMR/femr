@@ -78,7 +78,7 @@ public class PharmaciesController extends Controller {
         }
 
         //ensure prescriptions exist for that patient
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItemServiceResponse.getResponseObject().getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId());
         if (prescriptionItemsResponse.hasErrors()) {
             throw new RuntimeException();
 
@@ -133,6 +133,8 @@ public class PharmaciesController extends Controller {
             return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
         }
         viewModelGet.setPrescriptions(prescriptionItemServiceResponse.getResponseObject());
+
+        // get inventory for prescriptions
 
         //get MedicationAdministrationItems
         ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =

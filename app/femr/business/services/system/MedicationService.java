@@ -186,12 +186,14 @@ public class MedicationService implements IMedicationService {
 
                 medicationRepository.update(matchingMedication);
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
+
             } else {
                 // Create a new medication in the DB
                 IMedication medication = dataModelMapper.createMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 medication = medicationRepository.create(medication);
                 //creates the medication item - quantities are null because the medication was just created.
                 MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
+
                 response.setResponseObject(newMedicationItem);
             }
 
@@ -568,7 +570,8 @@ public class MedicationService implements IMedicationService {
         List<MedicationItem> medicationItems = new ArrayList<>();
 
         for (IMedicationInventory m : medicationsInventory) {
-            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantity_current(), m.getQuantity_total(), m.getIsDeleted()));
+
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(), m.getQuantityInitial(), m.getIsDeleted()));
         }
         response.setResponseObject(medicationItems);
 
@@ -606,8 +609,8 @@ public class MedicationService implements IMedicationService {
                 medication.put("name", medicationDisplayName);
 
                 /*  //not including medication quantities right now
-                if (m.getQuantity_current() != null) {
-                    medication.put("quantityCurrent", m.getQuantity_current());
+                if (m.getQuantityCurrent() != null) {
+                    medication.put("quantityCurrent", m.getQuantityCurrent());
                 } else {
                     medication.put("quantityCurrent", 0);
                 } */

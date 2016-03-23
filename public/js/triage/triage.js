@@ -305,7 +305,7 @@ var diabeticScreeningFeature = {
         triageFields.patientVitals.weight.prop('readonly', true);
         triageFields.patientVitals.heightFeet.prop('readonly', true);
         triageFields.patientVitals.heightInches.prop('readonly', true);
-        triageFields.patientVitals.glucose.prop('readonly', true);
+        triageFields.patientVitals.glucose.prop('readonly', false);
         triageFields.patientVitals.weeksPregnant.prop('readonly', true);
         //disable chief complaint
         triageFields.chiefComplaint.chiefComplaint.prop('readonly', true);

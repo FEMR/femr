@@ -21,6 +21,7 @@ package femr.common;
 import femr.common.models.*;
 import femr.data.models.core.*;
 import org.joda.time.DateTime;
+import femr.data.models.mysql.MedicationInventory;
 
 import java.util.Date;
 import java.util.List;
@@ -138,12 +139,13 @@ public interface IItemModelMapper {
      * @param conceptPrescriptionAdministration
      * @param amount
      * @param medication
-     * @param medicationRemaining how much of the medication required for this prescription is remaining in the inventory, may be null
+     * @param medicationInventory the inventory of the medication, may be null
      * @param isCounseled indicates whether or not the pharmacist checked the checkbox indicating that they counseled the patient on this prescription, may be null
      * @return a new PrescriptionItem or null if processing fails
      */
     PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                            IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, IMedication medication, Integer medicationRemaining, Boolean isCounseled);
+                                            IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
+                                            IMedication medication, MedicationInventory medicationInventory, Boolean isCounseled);
 
     /**
      * Generate and provide an instance of ProblemItem.

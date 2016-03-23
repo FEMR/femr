@@ -26,8 +26,8 @@ import java.util.List;
 public class MedicationItem {
 
     private int id;
-    private Integer quantity_current;
-    private Integer quantity_total;
+    private Integer quantityCurrent;
+    private Integer quantityTotal;
     private String form;
     //name is only the name of the medication
     //ex: "Vicodin"
@@ -83,22 +83,21 @@ public class MedicationItem {
         this.name = name;
     }
 
-    public Integer getQuantity_current() {
-        return quantity_current;
+    public Integer getQuantityCurrent() {
+        return quantityCurrent;
     }
 
-    public void setQuantity_current(Integer quantity_current) {
-        this.quantity_current = quantity_current;
+    public void setQuantityCurrent(Integer quantityCurrent) {
+        this.quantityCurrent = quantityCurrent;
     }
 
-    public Integer getQuantity_total() {
-        return quantity_total;
+    public Integer getQuantityTotal() {
+        return quantityTotal;
     }
 
-    public void setQuantity_total(Integer quantity_total) {
-        this.quantity_total = quantity_total;
+    public void setQuantityTotal(Integer quantityTotal) {
+        this.quantityTotal = quantityTotal;
     }
-
 
     public String getForm() {
         return form;

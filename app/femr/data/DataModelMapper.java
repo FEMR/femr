@@ -282,8 +282,8 @@ public class DataModelMapper implements IDataModelMapper{
             medicationInventory = medicationInventoryProvider.get();
             medicationInventory.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
             medicationInventory.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), missionTripId));
-            medicationInventory.setQuantity_current(quantityCurrent);
-            medicationInventory.setQuantity_total(quantityTotal);
+            medicationInventory.setQuantityCurrent(quantityCurrent);
+            medicationInventory.setQuantityInitial(quantityTotal);
         }catch(Exception ex){
 
             medicationInventory = null;

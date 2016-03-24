@@ -356,7 +356,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID) {
+    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID,String phoneNo) {
 
         if (userID < 0 || StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName)) {
 
@@ -373,6 +373,8 @@ public class DataModelMapper implements IDataModelMapper{
         patient.setSex(sex);
         patient.setAddress(address);
         patient.setCity(city);
+        patient.setPhoneNo(phoneNo);
+       // patient.setPhoneNo("5555555");
         if (photoID != null)
             patient.setPhoto(Ebean.getReference(photoProvider.get().getClass(), photoID));
 

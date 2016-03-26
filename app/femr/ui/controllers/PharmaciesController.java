@@ -196,6 +196,11 @@ public class PharmaciesController extends Controller {
         for(PrescriptionItem script : createViewModelPost.getPrescriptions()) {
 
             if (StringUtils.isNotNullOrWhiteSpace(script.getMedicationName())) {
+                //The POST data sends -1 if an administration ID is not set. Null is more appropriate for the
+                //service layer
+                if (script.getAdministrationID() == -1)
+                    script.setAdministrationID(null);
+
                 //create a new prescription to replace the old prescription.
                 if (script.getAmount() == null){
                     script.setAmount(0);
@@ -203,6 +208,7 @@ public class PharmaciesController extends Controller {
 
                 if (script.getMedicationID() != null){
                     //the medication has already been entered into the medications table (through admin inventory?)
+
                     ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
                             script.getAdministrationID(),
                             patientEncounterItem.getId(),

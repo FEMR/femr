@@ -86,8 +86,6 @@ public class SearchService implements ISearchService {
             return response;
         }
 
-
-
         //get patient encounters so we can use the newest one
         Query<PatientEncounter> peQuery = QueryProvider.getPatientEncounterQuery()
                 .where()
@@ -142,8 +140,12 @@ public class SearchService implements ISearchService {
             }
 
             // If metric setting enabled convert response patientItem to metric
-            if (isMetric())
+            if (isMetric()){
                 patientItem = LocaleUnitConverter.toMetric(patientItem);
+            }else {
+               //added for femr-136 - dual unit display
+                patientItem = LocaleUnitConverter.forDualUnitDisplay(patientItem);
+            }
 
             response.setResponseObject(patientItem);
         } catch (Exception ex) {

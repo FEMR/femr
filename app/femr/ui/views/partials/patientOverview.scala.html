@@ -23,8 +23,9 @@
     @if(pageName == "Medical") {
         <label for="">BMI: </label> <span id="bmi"></span>
     } else {
-        <label>Height: </label> <span>@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric)</span>
-        <label>Weight: </label> <span>@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric)</span>
+           <label>Height: </label> <span>@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric) / @outputHeightOrNA(String.valueOf(patient.getHeightFeetDual), String.valueOf(patient.getHeightInchesDual), !settings.isMetric)</span>
+            <label>Weight: </label> <span>@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric) / @outputWeightOrNA(String.valueOf(patient.getWeightDual), !settings.isMetric)</span>
+
     }
 
     @* Weeks Pregnant *@

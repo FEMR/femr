@@ -41,11 +41,15 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         <tr id="temperature">
             <th>T</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>@outputTemperatureOrNA(
-                        vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)),
-                        viewModel.getSettings.isMetric,
-                        ""
-                )</td>
+                <td>
+                @if(viewModel.getSettings.isMetric) {
+                    @outputTemperatureOrNA(vitalMap.get("temperatureC", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                    /@outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
+                } else {
+                    @outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                    /@outputTemperatureOrNA(vitalMap.get("temperatureCelcius", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
+                }
+                </td>
             }
         </tr>
         <tr id="respiratoryRate">
@@ -87,12 +91,23 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
                         viewModel.getSettings.isMetric,
                         ""
                     )
+                    /@outputHeightOrNA(
+                        vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1)),
+                        vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1)),
+                        !viewModel.getSettings.isMetric,
+                        ""
+                    )
                 } else {
                     @* Output height formatted as imperial (5' 6") *@
                     @outputHeightOrNA(
                         vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1)),
                         vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1)),
                         viewModel.getSettings.isMetric,
+                        ""
+                    ) /@outputHeightOrNA(
+                        vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
+                        vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1)),
+                        !viewModel.getSettings.isMetric,
                         ""
                     )
                 }
@@ -105,8 +120,11 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
                 <td data-weight="@vitalMap.get("weight", vitalMap.getDate(dateIndex - 1))">
                 @if(viewModel.getSettings.isMetric) {
                     @outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                    /@outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
                 } else {
                     @outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                  /@outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
+
                 }
                 </td>
             }

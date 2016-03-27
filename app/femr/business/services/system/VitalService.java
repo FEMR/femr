@@ -153,12 +153,11 @@ public class VitalService implements IVitalService {
         if (isMetric())
             LocaleUnitConverter.toImperial(patientEncounterVitalMap);
 
+
         try {
-
-
+            
             for (String key : patientEncounterVitalMap.keySet()) {
                 if (patientEncounterVitalMap.get(key) != null) {
-
                     query = QueryProvider.getVitalQuery().where().eq("name", key);
                     vital = vitalRepository.findOne(query);
                     patientEncounterVitals.add(dataModelMapper.createPatientEncounterVital(encounterId, userId, currentTime, vital.getId(), patientEncounterVitalMap.get(key)));
@@ -167,9 +166,10 @@ public class VitalService implements IVitalService {
 
             List<? extends IPatientEncounterVital> newPatientEncounterVitals = patientEncounterVitalRepository.createAll(patientEncounterVitals);
             List<VitalItem> vitalItems = new ArrayList<>();
+
             for (IPatientEncounterVital pev : patientEncounterVitals) {
                 if (pev.getVital() != null)
-                    vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
+                   vitalItems.add(itemModelMapper.createVitalItem(pev.getVital().getName(), pev.getVitalValue()));
             }
 
             response.setResponseObject(vitalItems);
@@ -205,6 +205,9 @@ public class VitalService implements IVitalService {
             // If metric convert the multimap to metric
             if (isMetric()) {
                 vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
+            } else {
+            // added for femr-136 - dual unit display
+                vitalMultiMap = LocaleUnitConverter.forDualUnitDisplay(vitalMultiMap);
             }
 
         } catch (Exception ex) {

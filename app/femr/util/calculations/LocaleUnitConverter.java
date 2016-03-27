@@ -18,6 +18,7 @@ public class LocaleUnitConverter {
      * @return VitalMultiMap with metric values
      */
     public static VitalMultiMap toMetric(VitalMultiMap vitalMap) {
+
         for (int dateIndex = 0; dateIndex < vitalMap.getDateListChronological().size(); dateIndex++) {
 
             // Get imperial temperature(F)
@@ -25,7 +26,53 @@ public class LocaleUnitConverter {
 
             // If temp is not null convert to metric(C) and store in map as temperature
             if (tempC != null) {
-                vitalMap.put("temperature", vitalMap.getDate(dateIndex), getCelcius(tempC));
+                vitalMap.put("temperature", vitalMap.getDate(dateIndex), getCelcius(tempC));  // temperature is in Fahrenheit
+                vitalMap.put("temperatureC", vitalMap.getDate(dateIndex), tempC);   // added for femr-136 - dual unit display
+            }
+
+            // Get imperial height from Map
+            String feetS = vitalMap.get("heightFeet", vitalMap.getDate(dateIndex));
+            String inchesS = vitalMap.get("heightInches", vitalMap.getDate(dateIndex));
+
+            if (feetS != null && inchesS != null) {
+                // Convert Height to Metric
+                Integer meters = getMeters(feetS, inchesS);
+                Integer cm = getCentimetres(feetS, inchesS);
+
+                // Store metric height in multimap as heightMeters and heightCm
+                vitalMap.put("heightMeters", vitalMap.getDate(dateIndex), meters); // puts it back into map
+                vitalMap.put("heightCm", vitalMap.getDate(dateIndex), String.format("%02d", cm)); // puts it back into map
+            }
+
+            // Get the imperial weight
+            String lbs = vitalMap.get("weight", vitalMap.getDate(dateIndex));
+            if (lbs != null) {
+                // Convert to metric and store as weightKgs
+                vitalMap.put("weightKgs", vitalMap.getDate(dateIndex), getKgs(lbs)); // puts it back into map
+
+            }
+        }
+
+        return vitalMap;
+    }
+
+
+    /**
+     * added for femr-136 - Dual Unit display
+     * Converts all imperial values in a VitalMultiMap to metric values for Dual Unit Display
+     * @param vitalMap MultiMap to get imperial values from and store metric values into
+     * @return VitalMultiMap with metric values
+     */
+    public static VitalMultiMap forDualUnitDisplay(VitalMultiMap vitalMap) {
+        for (int dateIndex = 0; dateIndex < vitalMap.getDateListChronological().size(); dateIndex++) {
+
+            // Get imperial temperature(F)
+            String tempC = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
+
+            // If temp is not null convert to metric(C) and store in map as temperature
+            if (tempC != null) {
+                vitalMap.put("temperatureCelcius", vitalMap.getDate(dateIndex), getCelcius(tempC));
+
             }
 
             // Get imperial height from Map
@@ -68,6 +115,10 @@ public class LocaleUnitConverter {
             Integer feet = patient.getHeightFeet();
             Integer inches = patient.getHeightInches();
 
+            //added for femr-136 - dulal unit display
+            patient.setHeightFeetDual(patient.getHeightFeet());
+            patient.setHeightInchesDual(patient.getHeightInches());
+
             // Overwrite patient height feet with meters
             patient.setHeightFeet(LocaleUnitConverter.getMeters(feet, inches));
 
@@ -76,11 +127,45 @@ public class LocaleUnitConverter {
         }
 
         // Overwrite patients weight with kg
-        if (patient.getWeight() != null)
+        if (patient.getWeight() != null) {
             patient.setWeight(LocaleUnitConverter.getKgs(patient.getWeight()).floatValue());
-
+            //added for femr-136 - dual unit display
+            patient.setWeightDual(LocaleUnitConverter.getLbs(patient.getWeight()));
+        }
         return patient;
     }
+
+    /**
+     * Added for femr-136 - dual unit display
+     * Converts all imperial values in a PatientItem to metric values for dual unit display
+     * @param patient PatientItem to get imperial values from and store metric values into
+     * @return PatientItem with metric values
+     */
+
+    public static PatientItem forDualUnitDisplay(PatientItem patient) {
+        if (patient == null) return patient;
+
+        // Store seperate height variables temporarilyl
+        // Wish getHeightFeet() and getHeightInches() were'nt stored as Integer in PatientItem.
+        // Causes issues with precision when value stored in database as a non whole number
+        if (patient.getHeightFeet() != null && patient.getHeightInches() != null) {
+            Integer feet = patient.getHeightFeet();
+            Integer inches = patient.getHeightInches();
+
+            // Overwrite patient height feet with meters
+            patient.setHeightFeetDual(LocaleUnitConverter.getMeters(feet, inches));
+
+            // Overwrite patient height inches with centimeters
+            patient.setHeightInchesDual(LocaleUnitConverter.getCentimetres(feet, inches));
+        }
+
+        // Overwrite patients weight with kg
+        if (patient.getWeight() != null) {
+            patient.setWeightDual(LocaleUnitConverter.getKgs(patient.getWeight()).floatValue());
+        }
+        return patient;
+    }
+
 
     /**
      * Converts vitals to imperial (Map<String, Float> used when user is submitting vitals
@@ -252,7 +337,9 @@ public class LocaleUnitConverter {
     public static BigDecimal getKgs(String lbs) {
         if (lbs == null)
             return BigDecimal.ZERO;
+      //  return getKgs(Float.parseFloat(lbs));
         return getKgs(Float.parseFloat(lbs));
+
     }
 
     /**

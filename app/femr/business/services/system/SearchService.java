@@ -786,13 +786,17 @@ public class SearchService implements ISearchService {
      */
     @Override
     public boolean checkExistingPatients(String first_name, String last_name, Date age,String city){
-        List<? extends IPatient> allPatients;
-        allPatients = QueryHelper.retrievePatients(patientRepository);
-        for (IPatient patient : allPatients) {
-        if ((patient.getFirstName().equals(first_name)) && (patient.getLastName().equals(last_name)) && (patient.getAge().equals(age)) && (patient.getCity().equals(city))) {
-            return true;
+        try {
+            List<? extends IPatient> allPatients;
+            allPatients = QueryHelper.retrievePatients(patientRepository);
+            for (IPatient patient : allPatients) {
+                if ((patient.getFirstName().equals(first_name)) && (patient.getLastName().equals(last_name)) && (patient.getAge().equals(age)) && (patient.getCity().equals(city))) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception ex) {
+            return false;
         }
-        }
-        return false;
     }
 }

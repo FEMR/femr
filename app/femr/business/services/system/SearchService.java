@@ -423,6 +423,7 @@ public class SearchService implements ISearchService {
         String firstName = null;
         String lastName = null;
         String firstOrLastName = null;
+        Integer phoneNo = null;
         if (words.length == 0) {
             //nothing was in the query
             response.addError("", "query string empty");
@@ -432,6 +433,7 @@ public class SearchService implements ISearchService {
             try {
                 //see if it is a number
                 id = Integer.parseInt(words[0]);
+                phoneNo = Integer.parseInt(words[0]);
             } catch (NumberFormatException ex) {
                 //see if it it a string
                 firstOrLastName = words[0];
@@ -453,7 +455,8 @@ public class SearchService implements ISearchService {
             //this is the most ideal scenario
             query = QueryProvider.getPatientQuery()
                     .where()
-                    .eq("id", id)
+                    .or(Expr.eq("id", id),
+                            Expr.eq("phone_no",phoneNo))
                     .isNull("isDeleted")
                     .order()
                     .desc("id");

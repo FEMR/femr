@@ -472,7 +472,10 @@ public class MedicationService implements IMedicationService {
 
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                     .where()
-                    .eq("isDeleted", false).orderBy("name");
+                    .isNotNull("medicationForm")
+                    .eq("isDeleted", false)
+                    .orderBy("name");
+
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
             for (IMedication m : medications) {
@@ -583,7 +586,10 @@ public class MedicationService implements IMedicationService {
         try {
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                     .where()
-                    .eq("isDeleted", false).orderBy("name");
+                    .eq("isDeleted", false)
+                    .isNotNull( "medicationForm" )
+                    .orderBy("name");
+
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
             for (IMedication m : medications) {

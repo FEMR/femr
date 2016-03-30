@@ -105,7 +105,7 @@ public class SessionService implements ISessionService {
             isSuccessful = true;
 
             userId = userWithEmail.getId();//set the ID of the deleted user for the log
-            currentTrip = missionTripService.retrieveCurrentMissionTrip(userId);//grab the current trip that the user is on
+            currentTrip = missionTripService.retrieveMissionTripForUser(userId);//grab the current trip that the user is on
             if (currentTrip.isPresent()){
                 tripId = currentTrip.get().getId();
             }
@@ -135,7 +135,7 @@ public class SessionService implements ISessionService {
                 return null;
             }
 
-            Optional<IMissionTrip> currentTrip = missionTripService.retrieveCurrentMissionTrip(currentUserId);
+            Optional<IMissionTrip> currentTrip = missionTripService.retrieveMissionTripForUser(currentUserId);
             Integer tripId = null;
             if (currentTrip.isPresent()){
                 tripId = currentTrip.get().getId();

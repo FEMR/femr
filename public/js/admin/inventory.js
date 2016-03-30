@@ -35,19 +35,23 @@ $(document).ready(function () {
             var value = $(object).attr('value');
             var tripId = $(object).attr('tripid');
             $.ajax({
-                url: '/admin/inventory/edit/' + id + "/" + value + "/" + tripId,
+                url: '/admin/inventory/edit/' + id + "/" + tripId,
                 type: 'POST',
-                data: {},
+                data: {
+                    quantity: value
+                },
                 dataType: 'text',
                 success: function () {
-                    var previousQuantity = $('.totalQuantity[data-id="'+id+'"]').attr('quantity');
-                    var newTotal = $('.totalQuantity[data-id="'+id+'"]').attr('value');
-                    newTotal = newTotal - (previousQuantity - value);
+                    //Currently left out to leave out editing Initial Quantity
+                    //var previousQuantity = $('.totalQuantity[data-id="'+id+'"]').attr('quantity');
+                    //var newTotal = $('.totalQuantity[data-id="'+id+'"]').attr('value');
+                    //newTotal = newTotal - (previousQuantity - value);
+
 
                     //Need to update my quantity as well as my total
-                    $('.totalQuantity[data-id="'+id+'"]').attr('value',newTotal);
-                    $('.totalQuantity[data-id="'+id+'"]').attr('quantity', value);
-                    $('.totalQuantity[data-id="'+id+'"]').html(newTotal);
+                    // $('.totalQuantity[data-id="'+id+'"]').attr('value',newTotal);
+                    // $('.totalQuantity[data-id="'+id+'"]').attr('quantity', value);
+                    // $('.totalQuantity[data-id="'+id+'"]').html(newTotal);
                 },
                 error: function () {
                     //don't change button - implies an error

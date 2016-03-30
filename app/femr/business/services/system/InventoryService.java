@@ -285,7 +285,8 @@ public class InventoryService implements IInventoryService {
             int medicationTotal = medicationInventory.getQuantity_total();
             int medicationCurrent = medicationInventory.getQuantity_current();
 
-            medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - newQuantity));
+            //Currently left out to leave out editing Initial Quantity
+            // medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - newQuantity));
 
             medicationInventory.setQuantity_current(newQuantity);
 

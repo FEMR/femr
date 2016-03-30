@@ -26,8 +26,8 @@ public class LocaleUnitConverter {
 
             // If temp is not null convert to metric(C) and store in map as temperature
             if (tempC != null) {
-                vitalMap.put("temperature", vitalMap.getDate(dateIndex), getCelcius(tempC));  // temperature is in Fahrenheit
-                vitalMap.put("temperatureC", vitalMap.getDate(dateIndex), tempC);   // added for femr-136 - dual unit display
+                vitalMap.put("temperatureFahernheit", vitalMap.getDate(dateIndex), getCelcius(tempC));  // temperature is in Fahrenheit
+                vitalMap.put("temperatureCelsius", vitalMap.getDate(dateIndex), tempC);   // added for femr-136 - dual unit display, temperature is in Celsius
             }
 
             // Get imperial height from Map
@@ -59,7 +59,7 @@ public class LocaleUnitConverter {
 
     /**
      * added for femr-136 - Dual Unit display
-     * Converts all imperial values in a VitalMultiMap to metric values for Dual Unit Display
+     * Converts all Metric values in a VitalMultiMap to Imperial values for Dual Unit Display
      * @param vitalMap MultiMap to get imperial values from and store metric values into
      * @return VitalMultiMap with metric values
      */
@@ -69,9 +69,10 @@ public class LocaleUnitConverter {
             // Get imperial temperature(F)
             String tempC = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
 
-            // If temp is not null convert to metric(C) and store in map as temperature
+            // If temp is not null convert to Celcius(C) and store in map as temperatureCelcius
             if (tempC != null) {
-                vitalMap.put("temperatureCelcius", vitalMap.getDate(dateIndex), getCelcius(tempC));
+                vitalMap.put("temperatureCelsius", vitalMap.getDate(dateIndex), getCelcius(tempC));
+                vitalMap.put("temperatureFahernheit", vitalMap.getDate(dateIndex), tempC);  // temperature is in Fahrenheit
 
             }
 

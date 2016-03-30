@@ -49,5 +49,4 @@ public interface IMedication {
     public List<MedicationInventory> getMedicationInventory();
 
     public void setMedicationInventory(List<MedicationInventory> medicationInventory);
-
 }

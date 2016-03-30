@@ -73,10 +73,13 @@ hr {
 .fOtherButton{
     background-color: #d3d3d3;
     width: 150px;
-
+    color: #000000;
+    text-align: center;
 }
 .fOtherButton:hover{
     background-color: #bdbdbd;
+    text-decoration: none;
+    color: #000000;
 }
 .fRedButton{
     /*background-color: rgb(198, 0, 0);*/

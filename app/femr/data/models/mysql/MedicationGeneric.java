@@ -18,30 +18,30 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IMedicationForm;
+import femr.data.models.core.IMedicationGeneric;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-//example of medication form: name: caps, description: capsules (predefined in the table)
 @Entity
-@Table(name = "medication_forms")
-public class MedicationForm implements IMedicationForm {
+@Table(name = "medication_generics")
+public class MedicationGeneric implements IMedicationGeneric {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
-    @Column(name="description")
-    private String description;
-    @Column(name="isDeleted")
-    private Boolean isDeleted;
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -52,25 +52,5 @@ public class MedicationForm implements IMedicationForm {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    @Override
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
     }
 }

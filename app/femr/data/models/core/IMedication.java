@@ -21,7 +21,9 @@ package femr.data.models.core;
 import java.util.List;
 
 /**
- * Represents a medication by name (not active/inactive ingrediant).
+ * Represents a medication by Brand name instead of generic name. A brand name
+ * can have multiple generic names in it.
+ * Example: (Brand: Aleve, Generic: Naproxen, Sodium
  */
 public interface IMedication {
     int getId();
@@ -34,11 +36,11 @@ public interface IMedication {
 
     void setIsDeleted(Boolean isDeleted);
 
-    IMedicationForm getMedicationForm();
+    IConceptMedicationForm getConceptMedicationForm();
 
-    void setMedicationForm(IMedicationForm medicationForm);
+    void setConceptMedicationForm(IConceptMedicationForm conceptmedicationForm);
 
-    List<IMedicationActiveDrug> getMedicationActiveDrugs();
+    List<IMedicationGenericStrength> getMedicationGenericStrengths();
 
-    void setMedicationActiveDrugs(List<IMedicationActiveDrug> medicationActiveDrugs);
+    void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths);
 }

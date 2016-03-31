@@ -19,12 +19,11 @@
 package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
-import femr.data.models.core.IMedicationAdministration;
-import femr.data.models.mysql.MedicationAdministration;
+import femr.data.models.mysql.ConceptMedicationForm;
 
-public class MedicationAdministrationProvider implements Provider<IMedicationAdministration> {
+public class ConceptMedicationFormProvider implements Provider<ConceptMedicationForm> {
     @Override
-    public IMedicationAdministration get() {
-        return new MedicationAdministration();
+    public ConceptMedicationForm get() {
+        return new ConceptMedicationForm();
     }
 }

@@ -18,7 +18,7 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IMedicationMeasurementUnit;
+import femr.data.models.core.IConceptPrescriptionAdministration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,17 +26,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "medication_measurement_units")
-public class MedicationMeasurementUnit implements IMedicationMeasurementUnit {
+@Table(name = "concept_prescription_administrations")
+public class ConceptPrescriptionAdministration implements IConceptPrescriptionAdministration {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
-    @Column(name="description")
-    private String description;
-    @Column(name="isDeleted")
-    private Boolean isDeleted;
+    @Column(name = "daily_modifier", unique = false, nullable = false)
+    private float dailyModifier;
 
     @Override
     public int getId() {
@@ -54,22 +52,8 @@ public class MedicationMeasurementUnit implements IMedicationMeasurementUnit {
     }
 
     @Override
-    public String getDescription() {
-        return description;
-    }
+    public float getDailyModifier() { return dailyModifier; };
 
     @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public Boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    @Override
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
+    public void setDailyModifier(float dailyModifier) { this.dailyModifier = dailyModifier; }
 }

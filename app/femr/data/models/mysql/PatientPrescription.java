@@ -36,8 +36,8 @@ public class PatientPrescription implements IPatientPrescription {
     @JoinColumn(name = "medication_id", nullable = false, insertable = true, updatable = true)
     private Medication medication;
     @ManyToOne
-    @JoinColumn(name = "medication_administrations_id", nullable = true)
-    private MedicationAdministration medicationAdministration;
+    @JoinColumn(name = "concept_prescription_administrations_id", nullable = true)
+    private ConceptPrescriptionAdministration conceptPrescriptionAdministration;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User physician;
@@ -80,13 +80,13 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public IMedicationAdministration getMedicationAdministration() {
-        return medicationAdministration;
+    public IConceptPrescriptionAdministration getConceptPrescriptionAdministration() {
+        return conceptPrescriptionAdministration;
     }
 
     @Override
-    public void setMedicationAdministration(IMedicationAdministration medicationAdministration) {
-        this.medicationAdministration = (MedicationAdministration) medicationAdministration;
+    public void setConceptPrescriptionAdministration(IConceptPrescriptionAdministration conceptPrescriptionAdministration) {
+        this.conceptPrescriptionAdministration = (ConceptPrescriptionAdministration) conceptPrescriptionAdministration;
     }
 
     @Override

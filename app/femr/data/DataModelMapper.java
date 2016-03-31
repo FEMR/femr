@@ -39,11 +39,11 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IChiefComplaint> chiefComplaintProvider;
     private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IMedication> medicationProvider;
-    private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
-    private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
-    private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
-    private final Provider<IMedicationAdministration> medicationAdministrationProvider;
-    private final Provider<IMedicationForm> medicationFormProvider;
+    private final Provider<IMedicationGeneric> medicationGenericProvider;
+    private final Provider<IMedicationGenericStrength> medicationGenericStrengthProvider;
+    private final Provider<IConceptMedicationUnit> conceptMedicationUnitProvider;
+    private final Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider;
+    private final Provider<IConceptMedicationForm> conceptMedicationFormProvider;
     private final Provider<IMedicationInventory> medicationInventoryProvider;
     private final Provider<IMissionCity> missionCityProvider;
     private final Provider<IMissionCountry> missionCountryProvider;
@@ -72,11 +72,11 @@ public class DataModelMapper implements IDataModelMapper{
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
                            Provider<ILoginAttempt> loginAttemptProvider,
                            Provider<IMedication> medicationProvider,
-                           Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
-                           Provider<IMedicationForm> medicationFormProvider,
-                           Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
-                           Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
-                           Provider<IMedicationAdministration> medicationAdministrationProvider,
+                           Provider<IMedicationGeneric> medicationGenericProvider,
+                           Provider<IConceptMedicationForm> conceptMedicationFormProvider,
+                           Provider<IMedicationGenericStrength> medicationGenericStrengthProvider,
+                           Provider<IConceptMedicationUnit> conceptMedicationUnitProvider,
+                           Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider,
                            Provider<IMedicationInventory> medicationInventoryProvider,
                            Provider<IMissionCity> missionCityProvider,
                            Provider<IMissionCountry> missionCountryProvider,
@@ -105,11 +105,11 @@ public class DataModelMapper implements IDataModelMapper{
         this.loginAttemptProvider = loginAttemptProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
-        this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
-        this.medicationAdministrationProvider = medicationAdministrationProvider;
-        this.medicationFormProvider = medicationFormProvider;
-        this.medicationActiveDrugProvider = medicationActiveDrugProvider;
-        this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
+        this.medicationGenericProvider = medicationGenericProvider;
+        this.conceptPrescriptionAdministrationProvider = conceptPrescriptionAdministrationProvider;
+        this.conceptMedicationFormProvider = conceptMedicationFormProvider;
+        this.medicationGenericStrengthProvider = medicationGenericStrengthProvider;
+        this.conceptMedicationUnitProvider = conceptMedicationUnitProvider;
         this.medicationInventoryProvider = medicationInventoryProvider;
         this.missionCityProvider = missionCityProvider;
         this.missionCountryProvider = missionCountryProvider;
@@ -199,7 +199,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
+    public IMedication createMedication(String name, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -210,8 +210,8 @@ public class DataModelMapper implements IDataModelMapper{
 
         medication.setName(name);
         medication.setIsDeleted(false);
-        medication.setMedicationActiveDrugs(medicationActiveDrugs);
-        medication.setMedicationForm(medicationForm);
+        medication.setMedicationGenericStrengths(medicationGenericStrengths);
+        medication.setConceptMedicationForm(conceptMedicationForm);
 
         return medication;
     }
@@ -220,53 +220,53 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
+    public IMedicationGenericStrength createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric) {
 
-        IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
+        IMedicationGenericStrength medicationGenericStrength = medicationGenericStrengthProvider.get();
 
-        medicationActiveDrug.setValue(value);
-        medicationActiveDrug.setDenominator(isDenominator);
-        medicationActiveDrug.setMedicationMeasurementUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
-        medicationActiveDrug.setMedicationActiveDrugName(medicationActiveDrugName);
+        medicationGenericStrength.setValue(value);
+        medicationGenericStrength.setDenominator(isDenominator);
+        medicationGenericStrength.setConceptMedicationUnit(Ebean.getReference(conceptMedicationUnitProvider.get().getClass(), activeDrugUnitId));
+        medicationGenericStrength.setMedicationGeneric(medicationGeneric);
 
-        return medicationActiveDrug;
+        return medicationGenericStrength;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IMedicationActiveDrugName createMedicationActiveDrugName(String name) {
+    public IMedicationGeneric createMedicationActiveDrugName(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
 
-        IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameProvider.get();
+        IMedicationGeneric medicationGeneric = medicationGenericProvider.get();
 
-        medicationActiveDrugName.setName(name);
+        medicationGeneric.setName(name);
 
-        return medicationActiveDrugName;
+        return medicationGeneric;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public IMedicationForm createMedicationForm(String name) {
+    public IConceptMedicationForm createConceptMedicationForm(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
 
-        IMedicationForm medicationForm = medicationFormProvider.get();
+        IConceptMedicationForm conceptMedicationForm = conceptMedicationFormProvider.get();
 
-        medicationForm.setName(name);
-        medicationForm.setIsDeleted(false);
+        conceptMedicationForm.setName(name);
+        conceptMedicationForm.setIsDeleted(false);
 
-        return medicationForm;
+        return conceptMedicationForm;
     }
 
     /**
@@ -463,7 +463,7 @@ public class DataModelMapper implements IDataModelMapper{
         patientPrescription.setPatientEncounter(Ebean.getReference(patientEncounterProvider.get().getClass(), encounterId));
         patientPrescription.setMedication(Ebean.getReference(medicationProvider.get().getClass(), medicationId));
         if (medicationAdministrationId != null)
-            patientPrescription.setMedicationAdministration(Ebean.getReference(medicationAdministrationProvider.get().getClass(), medicationAdministrationId));
+            patientPrescription.setConceptPrescriptionAdministration(Ebean.getReference(conceptPrescriptionAdministrationProvider.get().getClass(), medicationAdministrationId));
         patientPrescription.setPhysician(Ebean.getReference(userProvider.get().getClass(), userId));
         patientPrescription.setDateDispensed(dateDispensed);
         patientPrescription.setCounseled(isCounseled);

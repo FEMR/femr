@@ -19,15 +19,22 @@
 package femr.data.models.core;
 
 /**
- * MedicationActiveDrugName is the name of the active drug inside
- * a medication. e.g. acetominophen/hydrocodone/etc
+ * ConceptMedicationUnit represents the unit of
+ * measurement for a medication. e.g. g/mg/mL. This
+ * is a concept.
  */
-public interface IMedicationActiveDrugName {
+public interface IConceptMedicationUnit {
     int getId();
-
-    void setId(int id);
 
     String getName();
 
     void setName(String name);
+
+    String getDescription();
+
+    void setDescription(String description);
+
+    Boolean getIsDeleted();
+
+    void setIsDeleted(Boolean isDeleted);
 }

@@ -16,14 +16,18 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.util.dependencyinjection.providers;
+package femr.data.models.core;
 
-import com.google.inject.Provider;
-import femr.data.models.mysql.MedicationActiveDrug;
+/**
+ * MedicationGeneric is the name of the generic drug inside
+ * a medication. e.g. acetominophen/hydrocodone/etc
+ */
+public interface IMedicationGeneric {
+    int getId();
 
-public class MedicationActiveDrugProvider implements Provider<MedicationActiveDrug> {
-    @Override
-    public MedicationActiveDrug get() {
-        return new MedicationActiveDrug();
-    }
+    void setId(int id);
+
+    String getName();
+
+    void setName(String name);
 }

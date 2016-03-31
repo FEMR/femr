@@ -39,10 +39,10 @@ public interface IItemModelMapper {
     /**
      * Generate and provide an instance of MedicationAdministrationItem
      *
-     * @param medicationAdministration
+     * @param conceptPrescriptionAdministration
      * @return
      */
-    MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration);
+    MedicationAdministrationItem createMedicationAdministrationItem(IConceptPrescriptionAdministration conceptPrescriptionAdministration);
 
     /**
      * Generate and provide an instance of MedicationItem, including the quantity available
@@ -135,7 +135,7 @@ public interface IItemModelMapper {
      * @param originalMedicationName original prescription that replaced this prescription, may be null
      * @param firstName     first name of the person that prescribed the medication, may be null
      * @param lastName      last name of the person that prescribed the medication, may be null
-     * @param medicationAdministration
+     * @param conceptPrescriptionAdministration
      * @param amount
      * @param medication
      * @param medicationRemaining how much of the medication required for this prescription is remaining in the inventory, may be null
@@ -143,7 +143,7 @@ public interface IItemModelMapper {
      * @return a new PrescriptionItem or null if processing fails
      */
     PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                            IMedicationAdministration medicationAdministration, Integer amount, IMedication medication, Integer medicationRemaining, Boolean isCounseled);
+                                            IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, IMedication medication, Integer medicationRemaining, Boolean isCounseled);
 
     /**
      * Generate and provide an instance of ProblemItem.

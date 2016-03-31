@@ -18,14 +18,27 @@
 */
 package femr.data.models.core;
 
-public interface IDiagnosis {
-
-
+/**
+ * MedicationGenericStrength represents the amount and units of measurement
+ * inside of a generic drug.
+ * e.g. 500(amount) mg(unit) Acetominophen(generic drug)
+ */
+public interface IMedicationGenericStrength {
     int getId();
 
-    void setId(int id);
+    IConceptMedicationUnit getConceptMedicationUnit();
 
-    String getName();
+    void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit);
 
-    void setName(String name);
+    IMedicationGeneric getMedicationGeneric();
+
+    void setMedicationGeneric(IMedicationGeneric medicationGeneric);
+
+    boolean isDenominator();
+
+    void setDenominator(boolean isDenominator);
+
+    int getValue();
+
+    void setValue(int value);
 }

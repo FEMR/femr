@@ -18,24 +18,24 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IMedicationActiveDrug;
-import femr.data.models.core.IMedicationActiveDrugName;
-import femr.data.models.core.IMedicationMeasurementUnit;
+import femr.data.models.core.IMedicationGenericStrength;
+import femr.data.models.core.IMedicationGeneric;
+import femr.data.models.core.IConceptMedicationUnit;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medication_active_drugs")
-public class MedicationActiveDrug implements IMedicationActiveDrug {
+@Table(name = "medication_generic_strengths")
+public class MedicationGenericStrength implements IMedicationGenericStrength {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_measurement_units_id")
-    private MedicationMeasurementUnit medicationMeasurementUnit;
+    @JoinColumn(name = "concept_medication_units_id")
+    private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_active_drug_names_id")
-    private MedicationActiveDrugName medicationActiveDrugName;
+    @JoinColumn(name = "medication_generics_id")
+    private MedicationGeneric medicationGeneric;
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;
     @Column(name = "value", unique = true, nullable = false)
@@ -47,23 +47,20 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     }
 
     @Override
-    public IMedicationMeasurementUnit getMedicationMeasurementUnit() {
-        return medicationMeasurementUnit;
+    public IConceptMedicationUnit getConceptMedicationUnit() {
+        return conceptMedicationUnit;
     }
 
-    @Override
-    public void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit) {
-        this.medicationMeasurementUnit = (MedicationMeasurementUnit) medicationMeasurementUnit;
+    public void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit) {
+        this.conceptMedicationUnit = (ConceptMedicationUnit) conceptMedicationUnit;
     }
 
-    @Override
-    public IMedicationActiveDrugName getMedicationActiveDrugName() {
-        return medicationActiveDrugName;
+    public IMedicationGeneric getMedicationGeneric() {
+        return medicationGeneric;
     }
 
-    @Override
-    public void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName) {
-        this.medicationActiveDrugName = (MedicationActiveDrugName) medicationActiveDrugName;
+    public void setMedicationGeneric(IMedicationGeneric medicationGeneric) {
+        this.medicationGeneric = (MedicationGeneric) medicationGeneric;
     }
 
     @Override

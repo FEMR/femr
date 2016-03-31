@@ -47,11 +47,11 @@ import java.util.Map;
 public class MedicationService implements IMedicationService {
 
     private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
-    private final IRepository<IMedicationForm> medicationFormRepository;
+    private final IRepository<IMedicationGeneric> medicationGenericRepository;
+    private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
-    private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
+    private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
+    private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
@@ -60,11 +60,11 @@ public class MedicationService implements IMedicationService {
 
     @Inject
     public MedicationService(IRepository<IMedication> medicationRepository,
-                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
-                             IRepository<IMedicationAdministration> medicationAdministrationRepository,
-                             IRepository<IMedicationForm> medicationFormRepository,
+                             IRepository<IMedicationGeneric> medicationGenericRepository,
+                             IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
+                             IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
                              IRepository<IMedicationInventory> medicationInventoryRepository,
-                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
+                             IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
@@ -72,11 +72,11 @@ public class MedicationService implements IMedicationService {
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
-        this.medicationFormRepository = medicationFormRepository;
+        this.medicationGenericRepository = medicationGenericRepository;
+        this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
-        this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
-        this.medicationAdministrationRepository = medicationAdministrationRepository;
+        this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
+        this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
@@ -98,50 +98,50 @@ public class MedicationService implements IMedicationService {
         try {
 
             //set each active drug
-            List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
-            ExpressionList<MedicationMeasurementUnit> medicationMeasurementUnitExpressionList;
-            ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
+            List<IMedicationGenericStrength> medicationGenericStrengths = new ArrayList<>();
+            ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
+            ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
             if (activeIngredients != null) {
 
                 for (MedicationItem.ActiveIngredient miac : activeIngredients) {
-                    medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
+                    medicationMeasurementUnitExpressionList = QueryProvider.getConceptMedicationUnitQuery()
                             .where()
                             .eq("name", miac.getUnit());
-                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationActiveDrugNameQuery()
+                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationGenericQuery()
                             .where()
                             .eq("name", miac.getName());
 
                     //get the measurement unit ID (they are pre recorded)
-                    IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
-                    IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
-                    if (medicationActiveDrugName == null) {
+                    IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
+                    IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
+                    if (medicationGeneric == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
-                        medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
+                        medicationGeneric = dataModelMapper.createMedicationActiveDrugName(miac.getName());
                     }
-                    if (medicationMeasurementUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
-                        medicationActiveDrugs.add(medicationActiveDrug);
+                    if (conceptMedicationUnit != null) {
+                        IMedicationGenericStrength medicationGenericStrength = dataModelMapper.createMedicationGenericStrength(miac.getValue(), false, conceptMedicationUnit.getId(), medicationGeneric);
+                        medicationGenericStrengths.add(medicationGenericStrength);
                     }
 
                 }
             }
 
             //set the form
-            ExpressionList<MedicationForm> medicationFormExpressionList;
+            ExpressionList<ConceptMedicationForm> medicationFormExpressionList;
 
-            medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
+            medicationFormExpressionList = QueryProvider.getConceptMedicationFormQuery()
                     .where()
                     .eq("name", form);
-            IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
-            if (medicationForm == null) {
-                medicationForm = dataModelMapper.createMedicationForm(form);
+            IConceptMedicationForm conceptMedicationForm = conceptMedicationFormRepository.findOne(medicationFormExpressionList);
+            if (conceptMedicationForm == null) {
+                conceptMedicationForm = dataModelMapper.createConceptMedicationForm(form);
             }
 
             // Based on fEMR-95.  Retrieve all medication with the same name AND not an old medication from previous trips
             // that did not require a medication form.
             Query<Medication> query = QueryProvider.getMedicationQuery()
                     .where()
-                    .ne("medication_forms_id", null)
+                    .ne("concept_medication_forms_id", null)
                     .orderBy("isDeleted asc");
 
             IMedication matchingMedication = null;
@@ -154,15 +154,15 @@ public class MedicationService implements IMedicationService {
                 if (!medication.getName().equalsIgnoreCase(name)) continue;
 
                 // Check if the medications form match
-                if (medication.getMedicationForm().getId() != medicationForm.getId()) continue;
+                if (medication.getConceptMedicationForm().getId() != conceptMedicationForm.getId()) continue;
 
                 // Check if the medication ingredients match
                 boolean allDrugsMatch = true;
-                for (IMedicationActiveDrug newMedicationDrug : medicationActiveDrugs) {
+                for (IMedicationGenericStrength newMedicationGenericDrug : medicationGenericStrengths) {
                     boolean drugMatch = false;
-                    for (IMedicationActiveDrug drug : medication.getMedicationActiveDrugs()) {
-                        if (newMedicationDrug.getMedicationActiveDrugName().getId() == drug.getMedicationActiveDrugName().getId()
-                                && newMedicationDrug.getMedicationMeasurementUnit().getId() == drug.getMedicationMeasurementUnit().getId()) {
+                    for (IMedicationGenericStrength drug : medication.getMedicationGenericStrengths()) {
+                        if (newMedicationGenericDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId()
+                                && newMedicationGenericDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId()) {
                             drugMatch = true;
                         }
                         if (!drugMatch) allDrugsMatch = false;
@@ -188,7 +188,7 @@ public class MedicationService implements IMedicationService {
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
             } else {
                 // Create a new medication in the DB
-                IMedication medication = dataModelMapper.createMedication(name, medicationActiveDrugs, medicationForm);
+                IMedication medication = dataModelMapper.createMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 medication = medicationRepository.create(medication);
                 //creates the medication item - quantities are null because the medication was just created.
                 MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
@@ -269,7 +269,7 @@ public class MedicationService implements IMedicationService {
                         null,
                         prescriptionReplacement.getReplacementPrescription().getPhysician().getFirstName(),
                         prescriptionReplacement.getReplacementPrescription().getPhysician().getLastName(),
-                        prescriptionReplacement.getReplacementPrescription().getMedicationAdministration(),
+                        prescriptionReplacement.getReplacementPrescription().getConceptPrescriptionAdministration(),
                         prescriptionReplacement.getReplacementPrescription().getAmount(),
                         prescriptionReplacement.getReplacementPrescription().getMedication(),
                         null,
@@ -320,7 +320,7 @@ public class MedicationService implements IMedicationService {
                         null,
                         prescription.getPhysician().getFirstName(),
                         prescription.getPhysician().getLastName(),
-                        prescription.getMedicationAdministration(),
+                        prescription.getConceptPrescriptionAdministration(),
                         prescription.getAmount(),
                         prescription.getMedication(),
                         null,
@@ -364,7 +364,7 @@ public class MedicationService implements IMedicationService {
                     null,
                     patientPrescription.getPhysician().getFirstName(),
                     patientPrescription.getPhysician().getLastName(),
-                    patientPrescription.getMedicationAdministration(),
+                    patientPrescription.getConceptPrescriptionAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
                     null,
@@ -415,7 +415,7 @@ public class MedicationService implements IMedicationService {
                     null,
                     patientPrescription.getPhysician().getFirstName(),
                     patientPrescription.getPhysician().getLastName(),
-                    patientPrescription.getMedicationAdministration(),
+                    patientPrescription.getConceptPrescriptionAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
                     null,
@@ -492,9 +492,9 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);
+            List<? extends IConceptMedicationForm> conceptMedicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
             List<String> availableForms = new ArrayList<>();
-            for (IMedicationForm mf : medicationForms) {
+            for (IConceptMedicationForm mf : conceptMedicationForms) {
                 availableForms.add(mf.getName());
             }
             response.setResponseObject(availableForms);
@@ -511,11 +511,11 @@ public class MedicationService implements IMedicationService {
         ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
         try {
             // Retrieve a list of all medicationAdministrations from the database
-            List<? extends IMedicationAdministration> medicationAdministrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
+            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = conceptPrescriptionAdministrationRepository.findAll(ConceptPrescriptionAdministration.class);
 
             // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
-            for (IMedicationAdministration ma : medicationAdministrations) {
+            for (IConceptPrescriptionAdministration ma : medicationAdministrations) {
                 availableAdministrations.add(itemModelMapper.createMedicationAdministrationItem(ma));
             }
 
@@ -533,9 +533,9 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationUnits() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
+            List<? extends IConceptMedicationUnit> conceptMedicationUnits = conceptMedicationUnitRepository.findAll(ConceptMedicationUnit.class);
             List<String> availableUnits = new ArrayList<>();
-            for (IMedicationMeasurementUnit mmu : medicationMeasurementUnits) {
+            for (IConceptMedicationUnit mmu : conceptMedicationUnits) {
                 availableUnits.add(mmu.getName());
             }
             response.setResponseObject(availableUnits);
@@ -594,11 +594,11 @@ public class MedicationService implements IMedicationService {
                 String medicationDisplayName = m.getName();
                 //Create list of drug name/unit/values to append to the medication name
                 List<String> formattedDrugNames = new ArrayList<String>();
-                for (IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+                for (IMedicationGenericStrength drug : m.getMedicationGenericStrengths()) {
                     formattedDrugNames.add(String.format("%s%s %s",
                                     drug.getValue(),
-                                    drug.getMedicationMeasurementUnit().getName(),
-                                    drug.getMedicationActiveDrugName().getName())
+                                    drug.getConceptMedicationUnit().getName(),
+                                    drug.getMedicationGeneric().getName())
                     );
                 }
                 if (formattedDrugNames.size() > 0)
@@ -612,22 +612,22 @@ public class MedicationService implements IMedicationService {
                     medication.put("quantityCurrent", 0);
                 } */
 
-                if (m.getMedicationForm() != null)
-                    medication.put("form", m.getMedicationForm().getName());
+                if (m.getConceptMedicationForm() != null)
+                    medication.put("form", m.getConceptMedicationForm().getName());
                 else
                     medication.put("form", "N/A");
 
                 ArrayNode ingredientsArray = medication.putArray("ingredients");
                 // Add all the important information about ingredients to the medications object node
-                if (m.getMedicationActiveDrugs() != null) {
-                    List<IMedicationActiveDrug> ingredients = m.getMedicationActiveDrugs();
-                    for (IMedicationActiveDrug i : ingredients) {
+                if (m.getMedicationGenericStrengths() != null) {
+                    List<IMedicationGenericStrength> ingredients = m.getMedicationGenericStrengths();
+                    for (IMedicationGenericStrength i : ingredients) {
                         ObjectNode ingredientNode = ingredientsArray.addObject();
 
-                        if (i.getMedicationActiveDrugName() != null)
-                            ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
-                        if (i.getMedicationMeasurementUnit() != null)
-                            ingredientNode.put("unit", i.getMedicationMeasurementUnit().getName());
+                        if (i.getMedicationGeneric() != null)
+                            ingredientNode.put("name", i.getMedicationGeneric().getName());
+                        if (i.getConceptMedicationUnit() != null)
+                            ingredientNode.put("unit", i.getConceptMedicationUnit().getName());
                         ingredientNode.put("value", i.getValue());
                     }
                 }

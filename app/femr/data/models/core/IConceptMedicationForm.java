@@ -16,15 +16,26 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.util.dependencyinjection.providers;
+package femr.data.models.core;
 
-import com.google.inject.Provider;
-import femr.data.models.core.IMedicationActiveDrugName;
-import femr.data.models.mysql.MedicationActiveDrugName;
+/**
+ * ConceptMedicationForm represents the form of the medication
+ * being dispensed. e.g. cream/chewable/pill. This is a
+ * pre-defined concept.
+ */
+public interface IConceptMedicationForm {
 
-public class MedicationActiveDrugNameProvider implements Provider<IMedicationActiveDrugName> {
-    @Override
-    public IMedicationActiveDrugName get() {
-        return new MedicationActiveDrugName();
-    }
+    int getId();
+
+    String getName();
+
+    void setName(String name);
+
+    String getDescription();
+
+    void setDescription(String description);
+
+    Boolean getIsDeleted();
+
+    void setIsDeleted(Boolean isDeleted);
 }

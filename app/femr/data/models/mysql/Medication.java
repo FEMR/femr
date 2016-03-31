@@ -46,6 +46,9 @@ public class Medication implements IMedication {
             inverseJoinColumns = {@JoinColumn(name = "medication_generic_strength_id", referencedColumnName = "id")})
     private List<IMedicationGenericStrength> medicationGenericStrengths;
 
+    @OneToMany( mappedBy = "medication" )
+    private List<MedicationInventory> medicationInventory;
+
     @Override
     public int getId() {
         return id;
@@ -87,5 +90,15 @@ public class Medication implements IMedication {
 
     public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
         this.medicationGenericStrengths = medicationGenericStrengths;
+    }
+
+    @Override
+    public List<MedicationInventory> getMedicationInventory() {
+        return medicationInventory;
+    }
+
+    @Override
+    public void setMedicationInventory(List<MedicationInventory> medicationInventory) {
+        this.medicationInventory = medicationInventory;
     }
 }

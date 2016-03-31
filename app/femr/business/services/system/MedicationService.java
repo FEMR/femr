@@ -471,8 +471,10 @@ public class MedicationService implements IMedicationService {
             List<String> medicationNames = new ArrayList<>();
 
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .fetch("medicationInventory")
                     .where()
                     .isNotNull("medicationForm")
+                    .gt("medicationInventory.quantity_current", 0)
                     .eq("isDeleted", false)
                     .orderBy("name");
 
@@ -588,6 +590,7 @@ public class MedicationService implements IMedicationService {
                     .where()
                     .eq("isDeleted", false)
                     .isNotNull( "medicationForm" )
+                    .gt("medicationInventory.quantity_current", 0)
                     .orderBy("name");
 
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);

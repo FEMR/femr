@@ -199,7 +199,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IConceptMedicationForm medicationForm) {
+    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IConceptMedicationForm conceptMedicationForm) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -211,7 +211,7 @@ public class DataModelMapper implements IDataModelMapper{
         medication.setName(name);
         medication.setIsDeleted(false);
         medication.setMedicationActiveDrugs(medicationActiveDrugs);
-        medication.setMedicationForm(medicationForm);
+        medication.setConceptMedicationForm(conceptMedicationForm);
 
         return medication;
     }
@@ -254,7 +254,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IConceptMedicationForm createMedicationForm(String name) {
+    public IConceptMedicationForm createConceptMedicationForm(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 

@@ -70,8 +70,8 @@ public class ItemModelMapper implements IItemModelMapper {
         medicationItem.setName(medication.getName());
         medicationItem.setQuantity_current(quantityCurrent);
         medicationItem.setQuantity_total(quantityTotal);
-        if (medication.getMedicationForm() != null) {
-            medicationItem.setForm(medication.getMedicationForm().getName());
+        if (medication.getConceptMedicationForm() != null) {
+            medicationItem.setForm(medication.getConceptMedicationForm().getName());
         }
 
         String fullActiveDrugName = "";

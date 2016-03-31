@@ -34,9 +34,9 @@ public interface IMedication {
 
     void setIsDeleted(Boolean isDeleted);
 
-    IConceptMedicationForm getMedicationForm();
+    IConceptMedicationForm getConceptMedicationForm();
 
-    void setMedicationForm(IConceptMedicationForm medicationForm);
+    void setConceptMedicationForm(IConceptMedicationForm conceptmedicationForm);
 
     List<IMedicationActiveDrug> getMedicationActiveDrugs();
 

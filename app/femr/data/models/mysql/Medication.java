@@ -72,13 +72,13 @@ public class Medication implements IMedication {
     }
 
     @Override
-    public IConceptMedicationForm getMedicationForm() {
+    public IConceptMedicationForm getConceptMedicationForm() {
         return medicationForm;
     }
 
     @Override
-    public void setMedicationForm(IConceptMedicationForm medicationForm) {
-        this.medicationForm = (ConceptMedicationForm) medicationForm;
+    public void setConceptMedicationForm(IConceptMedicationForm conceptMedicationForm) {
+        this.medicationForm = (ConceptMedicationForm) conceptMedicationForm;
     }
 
     @Override

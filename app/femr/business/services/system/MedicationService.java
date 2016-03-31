@@ -132,9 +132,9 @@ public class MedicationService implements IMedicationService {
             medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
                     .where()
                     .eq("name", form);
-            IConceptMedicationForm medicationForm = conceptMedicationFormRepository.findOne(medicationFormExpressionList);
-            if (medicationForm == null) {
-                medicationForm = dataModelMapper.createMedicationForm(form);
+            IConceptMedicationForm conceptMedicationForm = conceptMedicationFormRepository.findOne(medicationFormExpressionList);
+            if (conceptMedicationForm == null) {
+                conceptMedicationForm = dataModelMapper.createConceptMedicationForm(form);
             }
 
             // Based on fEMR-95.  Retrieve all medication with the same name AND not an old medication from previous trips
@@ -154,7 +154,7 @@ public class MedicationService implements IMedicationService {
                 if (!medication.getName().equalsIgnoreCase(name)) continue;
 
                 // Check if the medications form match
-                if (medication.getMedicationForm().getId() != medicationForm.getId()) continue;
+                if (medication.getConceptMedicationForm().getId() != conceptMedicationForm.getId()) continue;
 
                 // Check if the medication ingredients match
                 boolean allDrugsMatch = true;
@@ -188,7 +188,7 @@ public class MedicationService implements IMedicationService {
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
             } else {
                 // Create a new medication in the DB
-                IMedication medication = dataModelMapper.createMedication(name, medicationActiveDrugs, medicationForm);
+                IMedication medication = dataModelMapper.createMedication(name, medicationActiveDrugs, conceptMedicationForm);
                 medication = medicationRepository.create(medication);
                 //creates the medication item - quantities are null because the medication was just created.
                 MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
@@ -492,9 +492,9 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IConceptMedicationForm> medicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
+            List<? extends IConceptMedicationForm> conceptMedicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
             List<String> availableForms = new ArrayList<>();
-            for (IConceptMedicationForm mf : medicationForms) {
+            for (IConceptMedicationForm mf : conceptMedicationForms) {
                 availableForms.add(mf.getName());
             }
             response.setResponseObject(availableForms);
@@ -612,8 +612,8 @@ public class MedicationService implements IMedicationService {
                     medication.put("quantityCurrent", 0);
                 } */
 
-                if (m.getMedicationForm() != null)
-                    medication.put("form", m.getMedicationForm().getName());
+                if (m.getConceptMedicationForm() != null)
+                    medication.put("form", m.getConceptMedicationForm().getName());
                 else
                     medication.put("form", "N/A");
 

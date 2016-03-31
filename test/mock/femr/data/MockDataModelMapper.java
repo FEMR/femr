@@ -169,7 +169,7 @@
 //        //medication.setQuantity_current(current);
 //        medication.setIsDeleted(false);
 //        medication.setMedicationActiveDrugs(medicationActiveDrugs);
-//        medication.setMedicationForm(medicationForm);
+//        medication.setConceptMedicationForm(medicationForm);
 //
 //        return medication;
 //    }
@@ -212,7 +212,7 @@
 //     * {@inheritDoc}
 //     */
 //    @Override
-//    public IMedicationForm createMedicationForm(String name) {
+//    public IMedicationForm createConceptMedicationForm(String name) {
 //
 //        if (StringUtils.isNullOrWhiteSpace(name)) {
 //

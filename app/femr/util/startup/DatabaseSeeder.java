@@ -1404,8 +1404,8 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private static boolean containForm(List<? extends IConceptMedicationForm> medicationForms, String form) {
-        for (IConceptMedicationForm mf : medicationForms) {
+    private static boolean containForm(List<? extends IConceptMedicationForm> conceptMedicationForms, String form) {
+        for (IConceptMedicationForm mf : conceptMedicationForms) {
             if (mf.getName().equals(form)) {
                 return true;
             }

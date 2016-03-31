@@ -202,10 +202,10 @@ public class InventoryService implements IInventoryService {
 
 
 
-            if (m.getMedicationForm() != null) {
-                js.put("form", m.getMedicationForm().getName());
+            if (m.getConceptMedicationForm() != null) {
+                js.put("form", m.getConceptMedicationForm().getName());
                 //Redundant form name... hack for bs_grid to work without changing it's code further
-                js.put("medicationForm.name", m.getMedicationForm().getName());
+                js.put("medicationForm.name", m.getConceptMedicationForm().getName());
             }
 
             ArrayNode ingredientsArray = js.putArray("ingredients");

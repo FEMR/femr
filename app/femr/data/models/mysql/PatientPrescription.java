@@ -36,7 +36,7 @@ public class PatientPrescription implements IPatientPrescription {
     @JoinColumn(name = "medication_id", nullable = false, insertable = true, updatable = true)
     private Medication medication;
     @ManyToOne
-    @JoinColumn(name = "medication_administrations_id", nullable = true)
+    @JoinColumn(name = "concept_prescription_administrations_id", nullable = true)
     private ConceptPrescriptionAdministration conceptPrescriptionAdministration;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)

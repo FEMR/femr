@@ -33,7 +33,7 @@ public class DataLayerModule extends AbstractModule {
     protected void configure() {
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
-        bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
+        bind(IConceptDiagnosis.class).toProvider(ConceptDiagnosisProvider.class);
         bind(ILoginAttempt.class).toProvider(LoginAttemptProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
@@ -70,7 +70,7 @@ public class DataLayerModule extends AbstractModule {
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
-        bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
+        bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<ILoginAttempt>>() {}).to(new TypeLiteral<Repository<ILoginAttempt>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});

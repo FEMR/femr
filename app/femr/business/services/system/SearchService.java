@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class SearchService implements ISearchService {
 
-    private final IRepository<IDiagnosis> diagnosisRepository;
+    private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
@@ -51,7 +51,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IMissionCity> cityRepository;
 
     @Inject
-    public SearchService(IRepository<IDiagnosis> diagnosisRepository,
+    public SearchService(IRepository<IConceptDiagnosis> diagnosisRepository,
                          IRepository<IMissionTrip> missionTripRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
@@ -655,10 +655,10 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
 
-            List<? extends IDiagnosis> allDiagnoses = diagnosisRepository.findAll(Diagnosis.class);
+            List<? extends IConceptDiagnosis> allDiagnoses = diagnosisRepository.findAll(ConceptDiagnosis.class);
             List<String> diagnoses = new ArrayList<>();
 
-            for (IDiagnosis d : allDiagnoses) {
+            for (IConceptDiagnosis d : allDiagnoses) {
                 if (StringUtils.isNotNullOrWhiteSpace(d.getName()))
                     diagnoses.add(d.getName());
             }

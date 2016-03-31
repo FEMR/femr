@@ -18,7 +18,7 @@
 */
 package femr.data.models.core;
 
-public interface IDiagnosis {
+public interface IConceptDiagnosis {
 
 
     int getId();

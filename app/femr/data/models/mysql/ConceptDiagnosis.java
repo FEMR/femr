@@ -18,13 +18,13 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IDiagnosis;
+import femr.data.models.core.IConceptDiagnosis;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "diagnoses")
-public class Diagnosis implements IDiagnosis {
+@Table(name = "concept_diagnoses")
+public class ConceptDiagnosis implements IConceptDiagnosis {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

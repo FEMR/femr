@@ -15,6 +15,9 @@ ADD CONSTRAINT `fk_patient_prescriptions_concept_prescription_administrations`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+ALTER TABLE `diagnoses`
+RENAME TO  `concept_diagnoses` ;
+
 
 # --- !Downs
 
@@ -33,3 +36,6 @@ ADD CONSTRAINT `fk_patient_prescriptions_medication_administrations`
 
 ALTER TABLE  `concept_prescription_administrations`
 RENAME TO `medication_administrations`;
+
+ALTER TABLE `concept_diagnoses`
+RENAME TO  `diagnoses` ;

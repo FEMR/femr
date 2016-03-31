@@ -34,7 +34,7 @@ import java.util.List;
 //TODO: stop assigning primary keys
 public class DatabaseSeeder {
 
-    private final Repository<Diagnosis> diagnosisRepository;
+    private final Repository<ConceptDiagnosis> diagnosisRepository;
     private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final Repository<MedicationForm> medicationFormRepository;
     private final Repository<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
@@ -85,7 +85,7 @@ public class DatabaseSeeder {
     }
 
     private void seedDiagnosis() {
-        List<? extends IDiagnosis> diagnosis_but_plural = diagnosisRepository.findAll(Diagnosis.class);
+        List<? extends IConceptDiagnosis> diagnosis_but_plural = diagnosisRepository.findAll(ConceptDiagnosis.class);
         List<String> availableDiagnosis = new ArrayList<>();
 
         availableDiagnosis.add("Acne Vulgaris");
@@ -199,11 +199,11 @@ public class DatabaseSeeder {
         availableDiagnosis.add("Candiasis, Oral");
         availableDiagnosis.add("Candiasis, Cutaneous");
 
-        List<Diagnosis> newDiagnosis = new ArrayList<>();
-        Diagnosis diagnosis;
+        List<ConceptDiagnosis> newDiagnosis = new ArrayList<>();
+        ConceptDiagnosis diagnosis;
         for (String diag : availableDiagnosis)
             if (diagnosis_but_plural != null && !containDiagnosis(diagnosis_but_plural, diag)) {
-                diagnosis = new Diagnosis();
+                diagnosis = new ConceptDiagnosis();
                 diagnosis.setName(diag);
                 newDiagnosis.add(diagnosis);
             }
@@ -1386,8 +1386,8 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private static boolean containDiagnosis(List<? extends IDiagnosis> diagnosises, String name) {
-        for (IDiagnosis d : diagnosises) {
+    private static boolean containDiagnosis(List<? extends IConceptDiagnosis> diagnosises, String name) {
+        for (IConceptDiagnosis d : diagnosises) {
             if (d.getName().equals(name)) {
                 return true;
             }

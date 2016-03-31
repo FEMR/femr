@@ -19,10 +19,12 @@
 package femr.data.models.core;
 
 /**
- * MedicationAdministration represents the manner in which a medication
- * is administered to the patient. e.g. orally/into the eyeball/rectally
+ * ConceptPrescriptionAdministration represents the manner in which a medication
+ * is administered to the patient. e.g. orally/into the eyeball/rectally. This is
+ * part of a prescription and is in the database as a concept dictionary to be
+ * referenced.
  */
-public interface IMedicationAdministration {
+public interface IConceptPrescriptionAdministration {
     int getId();
 
     String getName();

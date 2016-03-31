@@ -29,7 +29,6 @@ import femr.util.encryptions.IPasswordEncryptor;
 import org.apache.commons.codec.binary.StringUtils;
 import play.Play;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 //TODO: stop assigning primary keys
@@ -38,7 +37,7 @@ public class DatabaseSeeder {
     private final Repository<Diagnosis> diagnosisRepository;
     private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final Repository<MedicationForm> medicationFormRepository;
-    private final Repository<MedicationAdministration> medicationAdministrationRepository;
+    private final Repository<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<MissionCountry> missionCountryRepository;
     private final IRepository<MissionCity> missionCityRepository;
     private final IRepository<MissionTeam> missionTeamRepository;
@@ -55,7 +54,7 @@ public class DatabaseSeeder {
         diagnosisRepository = new Repository<>();
         medicationMeasurementUnitRepository = new Repository<>();
         medicationFormRepository = new Repository<>();
-        medicationAdministrationRepository = new Repository<>();
+        conceptPrescriptionAdministrationRepository = new Repository<>();
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
         systemSettingRepository = new Repository<>();
@@ -82,7 +81,7 @@ public class DatabaseSeeder {
         seedMedicationForms();
         seedPatientAgeClassification();
         seedDiagnosis();
-        seedMedicationAdministrations();
+        seedConceptPrescriptionAdministrations();
     }
 
     private void seedDiagnosis() {
@@ -1076,278 +1075,278 @@ public class DatabaseSeeder {
         tabFieldSizeRepository.createAll(tabFieldSizesToAdd);
     }
 
-    private void seedMedicationAdministrations() {
-        List<? extends IMedicationAdministration> administrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
-        List<MedicationAdministration> medicationAdministrationsToAdd = new ArrayList<>();
+    private void seedConceptPrescriptionAdministrations() {
+        List<? extends IConceptPrescriptionAdministration> administrations = conceptPrescriptionAdministrationRepository.findAll(ConceptPrescriptionAdministration.class);
+        List<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationsToAdd = new ArrayList<>();
 
         if (administrations != null) {
-            MedicationAdministration medicationAdministration;
+            ConceptPrescriptionAdministration conceptPrescriptionAdministration;
 
             /* Daily modifier is used as helper in the calculation when prescribing a medication.
              * It is how many times per day it should be taken. This modifier is then multiplied by
              * the amount of days the prescriber sets. The total can be adjusted */
 
-            if (!containMedicationAdministration(administrations, "alt")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("alt");
-                medicationAdministration.setDailyModifier(0.5f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "alt")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("alt");
+                conceptPrescriptionAdministration.setDailyModifier(0.5f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "BID")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("BID");
-                medicationAdministration.setDailyModifier(2f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "BID")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("BID");
+                conceptPrescriptionAdministration.setDailyModifier(2f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "BIW")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("BIW");
-                medicationAdministration.setDailyModifier(0.2857f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "BIW")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("BIW");
+                conceptPrescriptionAdministration.setDailyModifier(0.2857f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "CID")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("CID");
-                medicationAdministration.setDailyModifier(5f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "CID")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("CID");
+                conceptPrescriptionAdministration.setDailyModifier(5f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "HS")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("HS");
-                medicationAdministration.setDailyModifier(1f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "HS")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("HS");
+                conceptPrescriptionAdministration.setDailyModifier(1f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q12h")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q12h");
-                medicationAdministration.setDailyModifier(2f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q12h")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q12h");
+                conceptPrescriptionAdministration.setDailyModifier(2f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q24h")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q24h");
-                medicationAdministration.setDailyModifier(1f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q24h")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q24h");
+                conceptPrescriptionAdministration.setDailyModifier(1f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q4-6h")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q4-6h");
-                medicationAdministration.setDailyModifier(5f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q4-6h")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q4-6h");
+                conceptPrescriptionAdministration.setDailyModifier(5f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q4h")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q4h");
-                medicationAdministration.setDailyModifier(6f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q4h")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q4h");
+                conceptPrescriptionAdministration.setDailyModifier(6f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q6h")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q6h");
-                medicationAdministration.setDailyModifier(4f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q6h")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q6h");
+                conceptPrescriptionAdministration.setDailyModifier(4f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q8h")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q8h");
-                medicationAdministration.setDailyModifier(3f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q8h")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q8h");
+                conceptPrescriptionAdministration.setDailyModifier(3f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "qAM")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("qAM");
-                medicationAdministration.setDailyModifier(1f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "qAM")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("qAM");
+                conceptPrescriptionAdministration.setDailyModifier(1f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "qd")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("qd");
-                medicationAdministration.setDailyModifier(1f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "qd")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("qd");
+                conceptPrescriptionAdministration.setDailyModifier(1f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "qHS")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("qHS");
-                medicationAdministration.setDailyModifier(1f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "qHS")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("qHS");
+                conceptPrescriptionAdministration.setDailyModifier(1f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "QID")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("QID");
-                medicationAdministration.setDailyModifier(4f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "QID")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("QID");
+                conceptPrescriptionAdministration.setDailyModifier(4f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q5min")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q5min");
-                medicationAdministration.setDailyModifier(288f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q5min")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q5min");
+                conceptPrescriptionAdministration.setDailyModifier(288f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "qOd")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("qOd");
-                medicationAdministration.setDailyModifier(0.5f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "qOd")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("qOd");
+                conceptPrescriptionAdministration.setDailyModifier(0.5f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "qPM")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("qPM");
-                medicationAdministration.setDailyModifier(1f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "qPM")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("qPM");
+                conceptPrescriptionAdministration.setDailyModifier(1f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "q week")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("q week");
-                medicationAdministration.setDailyModifier(0.142857f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "q week")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("q week");
+                conceptPrescriptionAdministration.setDailyModifier(0.142857f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "TID")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("TID");
-                medicationAdministration.setDailyModifier(3f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "TID")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("TID");
+                conceptPrescriptionAdministration.setDailyModifier(3f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
-            if (!containMedicationAdministration(administrations, "TIW")) {
-                medicationAdministration = new MedicationAdministration();
-                medicationAdministration.setName("TIW");
-                medicationAdministration.setDailyModifier(0.42857f);
-                medicationAdministrationsToAdd.add(medicationAdministration);
+            if (!containConceptPrescriptionAdministration(administrations, "TIW")) {
+                conceptPrescriptionAdministration = new ConceptPrescriptionAdministration();
+                conceptPrescriptionAdministration.setName("TIW");
+                conceptPrescriptionAdministration.setDailyModifier(0.42857f);
+                conceptPrescriptionAdministrationsToAdd.add(conceptPrescriptionAdministration);
             }
 
 
             //a whole bunch of if statements to fix the problem with the daily modifier turning to 0 when navigating through evolutions
-            for (IMedicationAdministration existingMedicationAdministrations : administrations) {
+            for (IConceptPrescriptionAdministration existingConceptPrescriptionAdministrations : administrations) {
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "alt") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "alt") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(0.5f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(0.5f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "BID") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "BID") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(2f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(2f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "BIW") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "BIW") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(0.2857f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(0.2857f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "CID") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "CID") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(5f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(5f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "HS") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "HS") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(1f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(1f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q12h") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q12h") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(2f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(2f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q24h") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q24h") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(1f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(1f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q4-6h") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q4-6h") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(5f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(5f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q4h") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q4h") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(6f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(6f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q6h") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q6h") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(4f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(4f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q8h") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q8h") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(3f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(3f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qAM") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "qAM") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(1f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(1f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qd") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "qd") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(1f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(1f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qHS") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "qHS") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(1f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(1f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "QID") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "QID") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(4f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(4f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q5min") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q5min") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(288f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(288f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qOd") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "qOd") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(0.5f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(0.5f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "qPM") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "qPM") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(1f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(1f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "q week") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "q week") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(0.142857f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(0.142857f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "TID") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "TID") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(3f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(3f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
-                if (StringUtils.equals(existingMedicationAdministrations.getName(), "TIW") && existingMedicationAdministrations.getDailyModifier() == 0.00) {
+                if (StringUtils.equals(existingConceptPrescriptionAdministrations.getName(), "TIW") && existingConceptPrescriptionAdministrations.getDailyModifier() == 0.00) {
 
-                    existingMedicationAdministrations.setDailyModifier(0.42857f);
-                    medicationAdministrationRepository.update((MedicationAdministration) existingMedicationAdministrations);
+                    existingConceptPrescriptionAdministrations.setDailyModifier(0.42857f);
+                    conceptPrescriptionAdministrationRepository.update((ConceptPrescriptionAdministration) existingConceptPrescriptionAdministrations);
                 }
 
                 }
 
 
-            medicationAdministrationRepository.createAll(medicationAdministrationsToAdd);
+            conceptPrescriptionAdministrationRepository.createAll(conceptPrescriptionAdministrationsToAdd);
         }
     }
 
@@ -1468,8 +1467,8 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private static boolean containMedicationAdministration(List<? extends IMedicationAdministration> administrations, String administration) {
-        for(IMedicationAdministration a : administrations) {
+    private static boolean containConceptPrescriptionAdministration(List<? extends IConceptPrescriptionAdministration> administrations, String administration) {
+        for(IConceptPrescriptionAdministration a : administrations) {
             if (a.getName().equals(administration)) {
                 return true;
             }

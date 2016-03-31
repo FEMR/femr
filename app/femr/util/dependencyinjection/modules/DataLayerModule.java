@@ -38,7 +38,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
         bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
-        bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
+        bind(IConceptPrescriptionAdministration.class).toProvider(ConceptPrescriptionAdministrationProvider.class);
         bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
         bind(IMedicationInventory.class).toProvider(MedicationInventoryProvider.class);
         bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
@@ -75,7 +75,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<Repository<IMedicationAdministration>>() {});
+        bind(new TypeLiteral<IRepository<IConceptPrescriptionAdministration>>() {}).to(new TypeLiteral<Repository<IConceptPrescriptionAdministration>>() {});
         bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IMedicationInventory>>() {}).to(new TypeLiteral<Repository<IMedicationInventory>>() {});
         bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<Repository<IMedicationMeasurementUnit>>() {});

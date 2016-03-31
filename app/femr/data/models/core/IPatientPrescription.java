@@ -31,9 +31,9 @@ public interface IPatientPrescription {
 
     void setMedication(IMedication medication);
 
-    IMedicationAdministration getMedicationAdministration();
+    IConceptPrescriptionAdministration getConceptPrescriptionAdministration();
 
-    void setMedicationAdministration(IMedicationAdministration medicationAdministration);
+    void setConceptPrescriptionAdministration(IConceptPrescriptionAdministration conceptPrescriptionAdministration);
 
     IUser getPhysician();
 

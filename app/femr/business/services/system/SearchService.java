@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
-import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -320,7 +319,7 @@ public class SearchService implements ISearchService {
                             null,
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration(),
+                            pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
                             null,
@@ -360,7 +359,7 @@ public class SearchService implements ISearchService {
                             null,
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration(),
+                            pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
                             null,
@@ -375,7 +374,7 @@ public class SearchService implements ISearchService {
                             pp.getMedication().getName(),
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration(),
+                            pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
                             null,

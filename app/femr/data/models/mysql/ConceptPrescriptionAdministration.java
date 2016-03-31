@@ -18,7 +18,7 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IMedicationAdministration;
+import femr.data.models.core.IConceptPrescriptionAdministration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,8 +26,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "medication_administrations")
-public class MedicationAdministration implements IMedicationAdministration {
+@Table(name = "concept_prescription_administrations")
+public class ConceptPrescriptionAdministration implements IConceptPrescriptionAdministration {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;

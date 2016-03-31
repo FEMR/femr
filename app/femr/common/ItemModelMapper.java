@@ -283,7 +283,7 @@ public class ItemModelMapper implements IItemModelMapper {
      */
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication,
+                                                   IConceptPrescriptionAdministration medicationAdministration, Integer amount, IMedication medication,
                                                    Integer medicationRemaining, Boolean isCounseled) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -569,15 +569,15 @@ public class ItemModelMapper implements IItemModelMapper {
     /**
      * {@inheritDoc}
      */
-    public MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+    public MedicationAdministrationItem createMedicationAdministrationItem(IConceptPrescriptionAdministration conceptPrescriptionAdministration) {
 
-        if (medicationAdministration == null)
+        if (conceptPrescriptionAdministration == null)
             return null;
 
         MedicationAdministrationItem medicationAdministrationItem = new MedicationAdministrationItem(
-                medicationAdministration.getId(),
-                medicationAdministration.getName(),
-                medicationAdministration.getDailyModifier()
+                conceptPrescriptionAdministration.getId(),
+                conceptPrescriptionAdministration.getName(),
+                conceptPrescriptionAdministration.getDailyModifier()
         );
 
         return medicationAdministrationItem;

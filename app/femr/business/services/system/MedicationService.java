@@ -51,7 +51,7 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IMedicationForm> medicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private final IRepository<IMedicationAdministration> medicationAdministrationRepository;
+    private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
@@ -61,7 +61,7 @@ public class MedicationService implements IMedicationService {
     @Inject
     public MedicationService(IRepository<IMedication> medicationRepository,
                              IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
-                             IRepository<IMedicationAdministration> medicationAdministrationRepository,
+                             IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IMedicationForm> medicationFormRepository,
                              IRepository<IMedicationInventory> medicationInventoryRepository,
                              IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
@@ -76,7 +76,7 @@ public class MedicationService implements IMedicationService {
         this.medicationFormRepository = medicationFormRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
-        this.medicationAdministrationRepository = medicationAdministrationRepository;
+        this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
@@ -269,7 +269,7 @@ public class MedicationService implements IMedicationService {
                         null,
                         prescriptionReplacement.getReplacementPrescription().getPhysician().getFirstName(),
                         prescriptionReplacement.getReplacementPrescription().getPhysician().getLastName(),
-                        prescriptionReplacement.getReplacementPrescription().getMedicationAdministration(),
+                        prescriptionReplacement.getReplacementPrescription().getConceptPrescriptionAdministration(),
                         prescriptionReplacement.getReplacementPrescription().getAmount(),
                         prescriptionReplacement.getReplacementPrescription().getMedication(),
                         null,
@@ -320,7 +320,7 @@ public class MedicationService implements IMedicationService {
                         null,
                         prescription.getPhysician().getFirstName(),
                         prescription.getPhysician().getLastName(),
-                        prescription.getMedicationAdministration(),
+                        prescription.getConceptPrescriptionAdministration(),
                         prescription.getAmount(),
                         prescription.getMedication(),
                         null,
@@ -364,7 +364,7 @@ public class MedicationService implements IMedicationService {
                     null,
                     patientPrescription.getPhysician().getFirstName(),
                     patientPrescription.getPhysician().getLastName(),
-                    patientPrescription.getMedicationAdministration(),
+                    patientPrescription.getConceptPrescriptionAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
                     null,
@@ -415,7 +415,7 @@ public class MedicationService implements IMedicationService {
                     null,
                     patientPrescription.getPhysician().getFirstName(),
                     patientPrescription.getPhysician().getLastName(),
-                    patientPrescription.getMedicationAdministration(),
+                    patientPrescription.getConceptPrescriptionAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
                     null,
@@ -511,11 +511,11 @@ public class MedicationService implements IMedicationService {
         ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
         try {
             // Retrieve a list of all medicationAdministrations from the database
-            List<? extends IMedicationAdministration> medicationAdministrations = medicationAdministrationRepository.findAll(MedicationAdministration.class);
+            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = conceptPrescriptionAdministrationRepository.findAll(ConceptPrescriptionAdministration.class);
 
             // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
-            for (IMedicationAdministration ma : medicationAdministrations) {
+            for (IConceptPrescriptionAdministration ma : medicationAdministrations) {
                 availableAdministrations.add(itemModelMapper.createMedicationAdministrationItem(ma));
             }
 

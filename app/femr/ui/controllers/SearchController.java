@@ -169,7 +169,9 @@ public class SearchController extends Controller {
      */
     public Result typeaheadMedicationsJSONGet() {
 
-        ServiceResponse<List<String>> medicationServiceResponse = medicationService.retrieveAllMedications();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        ServiceResponse<List<String>> medicationServiceResponse = medicationService.retrieveAllMedications(currentUser.getTripId());
         if (medicationServiceResponse.hasErrors()) {
             return ok("");
         }
@@ -183,7 +185,10 @@ public class SearchController extends Controller {
      * @return JSON object of medications that exist int he medcations table
      */
     public Result typeaheadMedicationsWithIDJSONGet() {
-        ServiceResponse<ObjectNode> medicationServiceResponse = medicationService.retrieveAllMedicationsWithID();
+
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        ServiceResponse<ObjectNode> medicationServiceResponse = medicationService.retrieveAllMedicationsWithID(currentUser.getTripId());
         if (medicationServiceResponse.hasErrors()) {
             return ok("");
         }

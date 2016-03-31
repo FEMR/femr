@@ -464,7 +464,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> retrieveAllMedications() {
+    public ServiceResponse<List<String>> retrieveAllMedications(int tripId) {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
 
         try {
@@ -475,6 +475,7 @@ public class MedicationService implements IMedicationService {
                     .where()
                     .isNotNull("medicationForm")
                     .gt("medicationInventory.quantity_current", 0)
+                    .eq("medicationInventory.missionTrip.id", tripId)
                     .eq("isDeleted", false)
                     .orderBy("name");
 
@@ -580,7 +581,7 @@ public class MedicationService implements IMedicationService {
         return response;
     }
 
-    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID() {
+    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID(int tripId) {
         ServiceResponse<ObjectNode> response = new ServiceResponse<>();
         ObjectNode returnObject = Json.newObject();
         ArrayNode allMedications = returnObject.putArray("medication");
@@ -590,6 +591,7 @@ public class MedicationService implements IMedicationService {
                     .where()
                     .eq("isDeleted", false)
                     .isNotNull( "medicationForm" )
+                    .eq("medicationInventory.missionTrip.id", tripId)
                     .gt("medicationInventory.quantity_current", 0)
                     .orderBy("name");
 

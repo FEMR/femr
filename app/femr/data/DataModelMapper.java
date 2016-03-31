@@ -43,7 +43,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
     private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
     private final Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider;
-    private final Provider<IMedicationForm> medicationFormProvider;
+    private final Provider<IConceptMedicationForm> conceptMedicationFormProvider;
     private final Provider<IMedicationInventory> medicationInventoryProvider;
     private final Provider<IMissionCity> missionCityProvider;
     private final Provider<IMissionCountry> missionCountryProvider;
@@ -73,7 +73,7 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<ILoginAttempt> loginAttemptProvider,
                            Provider<IMedication> medicationProvider,
                            Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
-                           Provider<IMedicationForm> medicationFormProvider,
+                           Provider<IConceptMedicationForm> conceptMedicationFormProvider,
                            Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                            Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
                            Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider,
@@ -107,7 +107,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.medicationProvider = medicationProvider;
         this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
         this.conceptPrescriptionAdministrationProvider = conceptPrescriptionAdministrationProvider;
-        this.medicationFormProvider = medicationFormProvider;
+        this.conceptMedicationFormProvider = conceptMedicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
         this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
         this.medicationInventoryProvider = medicationInventoryProvider;
@@ -199,7 +199,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm) {
+    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IConceptMedicationForm medicationForm) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -254,19 +254,19 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedicationForm createMedicationForm(String name) {
+    public IConceptMedicationForm createMedicationForm(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
 
-        IMedicationForm medicationForm = medicationFormProvider.get();
+        IConceptMedicationForm conceptMedicationForm = conceptMedicationFormProvider.get();
 
-        medicationForm.setName(name);
-        medicationForm.setIsDeleted(false);
+        conceptMedicationForm.setName(name);
+        conceptMedicationForm.setIsDeleted(false);
 
-        return medicationForm;
+        return conceptMedicationForm;
     }
 
     /**

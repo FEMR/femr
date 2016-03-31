@@ -62,7 +62,7 @@ public interface IDataModelMapper {
      * @param medicationForm        the medications form e.g. cream/chewable/pill, may be null
      * @return an implementation of IMedication or null if processing fails
      */
-    IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IMedicationForm medicationForm);
+    IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IConceptMedicationForm medicationForm);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrug.
@@ -89,7 +89,7 @@ public interface IDataModelMapper {
      * @param name name of the form e.g. cream/chewable/pill, not null
      * @return an implementation of IMedicationForm or null if processing fails
      */
-    IMedicationForm createMedicationForm(String name);
+    IConceptMedicationForm createMedicationForm(String name);
 
     /**
      * Generate and provide an implementation of IMedicationInventory.

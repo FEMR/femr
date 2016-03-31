@@ -20,7 +20,6 @@ package util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import mock.femr.data.daos.MockRepository;
 import femr.data.models.core.*;
@@ -43,7 +42,7 @@ public class TestDataLayerModule extends AbstractModule {
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
         bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
         bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
-        bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
+        bind(IConceptMedicationForm.class).toProvider(ConceptMedicationFormProvider.class);
         bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
         bind(IMissionCity.class).toProvider(MissionCityProvider.class);
         bind(IMissionCountry.class).toProvider(MissionCountryProvider.class);
@@ -77,7 +76,7 @@ public class TestDataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<MockRepository<IMedicationActiveDrug>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<MockRepository<IMedicationActiveDrugName>>() {});
         bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<MockRepository<IMedicationAdministration>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<MockRepository<IMedicationForm>>() {});
+        bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<MockRepository<IConceptMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<MockRepository<IMedicationMeasurementUnit>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<MockRepository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<MockRepository<IMissionCountry>>() {});

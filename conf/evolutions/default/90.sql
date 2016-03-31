@@ -39,3 +39,4 @@ RENAME TO `medication_administrations`;
 
 ALTER TABLE `concept_diagnoses`
 RENAME TO  `diagnoses` ;
+

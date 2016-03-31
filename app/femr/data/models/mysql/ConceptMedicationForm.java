@@ -18,7 +18,7 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IMedicationForm;
+import femr.data.models.core.IConceptMedicationForm;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,8 +27,8 @@ import javax.persistence.Table;
 
 //example of medication form: name: caps, description: capsules (predefined in the table)
 @Entity
-@Table(name = "medication_forms")
-public class MedicationForm implements IMedicationForm {
+@Table(name = "concept_medication_forms")
+public class ConceptMedicationForm implements IConceptMedicationForm {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;

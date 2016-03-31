@@ -20,7 +20,7 @@ package femr.data.models.mysql;
 
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IMedicationActiveDrug;
-import femr.data.models.core.IMedicationForm;
+import femr.data.models.core.IConceptMedicationForm;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Medication implements IMedication {
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_forms_id")
-    private MedicationForm medicationForm;
+    private ConceptMedicationForm medicationForm;
     @ManyToMany(fetch = FetchType.EAGER,
             targetEntity = MedicationActiveDrug.class,
             cascade = CascadeType.ALL)
@@ -72,13 +72,13 @@ public class Medication implements IMedication {
     }
 
     @Override
-    public IMedicationForm getMedicationForm() {
+    public IConceptMedicationForm getMedicationForm() {
         return medicationForm;
     }
 
     @Override
-    public void setMedicationForm(IMedicationForm medicationForm) {
-        this.medicationForm = (MedicationForm) medicationForm;
+    public void setMedicationForm(IConceptMedicationForm medicationForm) {
+        this.medicationForm = (ConceptMedicationForm) medicationForm;
     }
 
     @Override

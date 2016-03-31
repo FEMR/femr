@@ -36,7 +36,7 @@ public class DatabaseSeeder {
 
     private final Repository<ConceptDiagnosis> diagnosisRepository;
     private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
-    private final Repository<MedicationForm> medicationFormRepository;
+    private final Repository<ConceptMedicationForm> conceptMedicationFormRepository;
     private final Repository<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<MissionCountry> missionCountryRepository;
     private final IRepository<MissionCity> missionCityRepository;
@@ -53,7 +53,7 @@ public class DatabaseSeeder {
     public DatabaseSeeder() {
         diagnosisRepository = new Repository<>();
         medicationMeasurementUnitRepository = new Repository<>();
-        medicationFormRepository = new Repository<>();
+        conceptMedicationFormRepository = new Repository<>();
         conceptPrescriptionAdministrationRepository = new Repository<>();
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
@@ -525,130 +525,130 @@ public class DatabaseSeeder {
 
     private void seedMedicationForms() {
 
-        List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);
+        List<? extends IConceptMedicationForm> conceptMedicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
 
-        List<MedicationForm> newMedicationForms = new ArrayList<>();
-        MedicationForm medicationForm;
-        if (medicationForms != null && !containForm(medicationForms, "B/S")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("B/S");
-            medicationForm.setDescription("bite and swallow");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        List<ConceptMedicationForm> newMedicationForms = new ArrayList<>();
+        ConceptMedicationForm conceptMedicationForm;
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "B/S")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("B/S");
+            conceptMedicationForm.setDescription("bite and swallow");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "caps")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("caps");
-            medicationForm.setDescription("capsules");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "caps")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("caps");
+            conceptMedicationForm.setDescription("capsules");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "crm")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("crm");
-            medicationForm.setDescription("cream");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "crm")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("crm");
+            conceptMedicationForm.setDescription("cream");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "elix")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("elix");
-            medicationForm.setDescription("elixir");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "elix")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("elix");
+            conceptMedicationForm.setDescription("elixir");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "gtts")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("gtts");
-            medicationForm.setDescription("drops");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "gtts")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("gtts");
+            conceptMedicationForm.setDescription("drops");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "MDI")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("MDI");
-            medicationForm.setDescription("metered dose inhaler");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "MDI")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("MDI");
+            conceptMedicationForm.setDescription("metered dose inhaler");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "nebs")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("nebs");
-            medicationForm.setDescription("solution for nebulization");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "nebs")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("nebs");
+            conceptMedicationForm.setDescription("solution for nebulization");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "NPO")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("NPO");
-            medicationForm.setDescription("nothing by mouth");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "NPO")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("NPO");
+            conceptMedicationForm.setDescription("nothing by mouth");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "PO")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("PO");
-            medicationForm.setDescription("by mouth, orally , or swallowed");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "PO")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("PO");
+            conceptMedicationForm.setDescription("by mouth, orally , or swallowed");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "PR")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("PR");
-            medicationForm.setDescription("suppository");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "PR")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("PR");
+            conceptMedicationForm.setDescription("suppository");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "SL")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("SL");
-            medicationForm.setDescription("sublingual form");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "SL")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("SL");
+            conceptMedicationForm.setDescription("sublingual form");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "soln")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("soln");
-            medicationForm.setDescription("solution");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "soln")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("soln");
+            conceptMedicationForm.setDescription("solution");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "supp")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("supp");
-            medicationForm.setDescription("suppository");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "supp")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("supp");
+            conceptMedicationForm.setDescription("suppository");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "susp")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("susp");
-            medicationForm.setDescription("suspension");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "susp")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("susp");
+            conceptMedicationForm.setDescription("suspension");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "syr")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("syr");
-            medicationForm.setDescription("syrup");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "syr")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("syr");
+            conceptMedicationForm.setDescription("syrup");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "tabs")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("tabs");
-            medicationForm.setDescription("tablets");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "tabs")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("tabs");
+            conceptMedicationForm.setDescription("tablets");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        if (medicationForms != null && !containForm(medicationForms, "ung")) {
-            medicationForm = new MedicationForm();
-            medicationForm.setName("ung");
-            medicationForm.setDescription("ointment");
-            medicationForm.setIsDeleted(false);
-            newMedicationForms.add(medicationForm);
+        if (conceptMedicationForms != null && !containForm(conceptMedicationForms, "ung")) {
+            conceptMedicationForm = new ConceptMedicationForm();
+            conceptMedicationForm.setName("ung");
+            conceptMedicationForm.setDescription("ointment");
+            conceptMedicationForm.setIsDeleted(false);
+            newMedicationForms.add(conceptMedicationForm);
         }
-        medicationFormRepository.createAll(newMedicationForms);
+        conceptMedicationFormRepository.createAll(newMedicationForms);
     }
 
     private void seedMedicationUnits() {
@@ -1404,8 +1404,8 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private static boolean containForm(List<? extends IMedicationForm> medicationForms, String form) {
-        for (IMedicationForm mf : medicationForms) {
+    private static boolean containForm(List<? extends IConceptMedicationForm> medicationForms, String form) {
+        for (IConceptMedicationForm mf : medicationForms) {
             if (mf.getName().equals(form)) {
                 return true;
             }

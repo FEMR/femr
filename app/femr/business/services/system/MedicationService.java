@@ -48,7 +48,7 @@ public class MedicationService implements IMedicationService {
 
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
-    private final IRepository<IMedicationForm> medicationFormRepository;
+    private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
     private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
@@ -62,7 +62,7 @@ public class MedicationService implements IMedicationService {
     public MedicationService(IRepository<IMedication> medicationRepository,
                              IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
-                             IRepository<IMedicationForm> medicationFormRepository,
+                             IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
                              IRepository<IMedicationInventory> medicationInventoryRepository,
                              IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
@@ -73,7 +73,7 @@ public class MedicationService implements IMedicationService {
 
         this.medicationRepository = medicationRepository;
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
-        this.medicationFormRepository = medicationFormRepository;
+        this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
         this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
         this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
@@ -127,12 +127,12 @@ public class MedicationService implements IMedicationService {
             }
 
             //set the form
-            ExpressionList<MedicationForm> medicationFormExpressionList;
+            ExpressionList<ConceptMedicationForm> medicationFormExpressionList;
 
             medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
                     .where()
                     .eq("name", form);
-            IMedicationForm medicationForm = medicationFormRepository.findOne(medicationFormExpressionList);
+            IConceptMedicationForm medicationForm = conceptMedicationFormRepository.findOne(medicationFormExpressionList);
             if (medicationForm == null) {
                 medicationForm = dataModelMapper.createMedicationForm(form);
             }
@@ -492,9 +492,9 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IMedicationForm> medicationForms = medicationFormRepository.findAll(MedicationForm.class);
+            List<? extends IConceptMedicationForm> medicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
             List<String> availableForms = new ArrayList<>();
-            for (IMedicationForm mf : medicationForms) {
+            for (IConceptMedicationForm mf : medicationForms) {
                 availableForms.add(mf.getName());
             }
             response.setResponseObject(availableForms);

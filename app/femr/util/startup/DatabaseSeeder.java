@@ -35,7 +35,7 @@ import java.util.List;
 public class DatabaseSeeder {
 
     private final Repository<ConceptDiagnosis> diagnosisRepository;
-    private final Repository<MedicationMeasurementUnit> medicationMeasurementUnitRepository;
+    private final Repository<ConceptMedicationUnit> medicationMeasurementUnitRepository;
     private final Repository<ConceptMedicationForm> conceptMedicationFormRepository;
     private final Repository<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<MissionCountry> missionCountryRepository;
@@ -652,47 +652,47 @@ public class DatabaseSeeder {
     }
 
     private void seedMedicationUnits() {
-        List<? extends IMedicationMeasurementUnit> medicationUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
+        List<? extends IConceptMedicationUnit> medicationUnits = medicationMeasurementUnitRepository.findAll(ConceptMedicationUnit.class);
 
-        List<MedicationMeasurementUnit> newMedicationMeasurementUnits = new ArrayList<>();
-        MedicationMeasurementUnit medicationMeasurementUnit;
+        List<ConceptMedicationUnit> newMedicationMeasurementUnits = new ArrayList<>();
+        ConceptMedicationUnit medicationMeasurementUnit;
         if (medicationUnits != null && !containUnit(medicationUnits, "%")) {
-            medicationMeasurementUnit = new MedicationMeasurementUnit();
+            medicationMeasurementUnit = new ConceptMedicationUnit();
             medicationMeasurementUnit.setName("%");
             medicationMeasurementUnit.setDescription("g/dL");
             medicationMeasurementUnit.setIsDeleted(false);
             newMedicationMeasurementUnits.add(medicationMeasurementUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "g")) {
-            medicationMeasurementUnit = new MedicationMeasurementUnit();
+            medicationMeasurementUnit = new ConceptMedicationUnit();
             medicationMeasurementUnit.setName("g");
             medicationMeasurementUnit.setDescription("gram");
             medicationMeasurementUnit.setIsDeleted(false);
             newMedicationMeasurementUnits.add(medicationMeasurementUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "gr")) {
-            medicationMeasurementUnit = new MedicationMeasurementUnit();
+            medicationMeasurementUnit = new ConceptMedicationUnit();
             medicationMeasurementUnit.setName("gr");
             medicationMeasurementUnit.setDescription("grain");
             medicationMeasurementUnit.setIsDeleted(false);
             newMedicationMeasurementUnits.add(medicationMeasurementUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "IU")) {
-            medicationMeasurementUnit = new MedicationMeasurementUnit();
+            medicationMeasurementUnit = new ConceptMedicationUnit();
             medicationMeasurementUnit.setName("IU");
             medicationMeasurementUnit.setDescription("international units");
             medicationMeasurementUnit.setIsDeleted(false);
             newMedicationMeasurementUnits.add(medicationMeasurementUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "mg")) {
-            medicationMeasurementUnit = new MedicationMeasurementUnit();
+            medicationMeasurementUnit = new ConceptMedicationUnit();
             medicationMeasurementUnit.setName("mg");
             medicationMeasurementUnit.setDescription("milligram");
             medicationMeasurementUnit.setIsDeleted(false);
             newMedicationMeasurementUnits.add(medicationMeasurementUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "U")) {
-            medicationMeasurementUnit = new MedicationMeasurementUnit();
+            medicationMeasurementUnit = new ConceptMedicationUnit();
             medicationMeasurementUnit.setName("U");
             medicationMeasurementUnit.setDescription("unit");
             medicationMeasurementUnit.setIsDeleted(false);
@@ -1413,8 +1413,8 @@ public class DatabaseSeeder {
         return false;
     }
 
-    private static boolean containUnit(List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits, String unit) {
-        for (IMedicationMeasurementUnit mmu : medicationMeasurementUnits) {
+    private static boolean containUnit(List<? extends IConceptMedicationUnit> conceptMedicationUnits, String unit) {
+        for (IConceptMedicationUnit mmu : conceptMedicationUnits) {
             if (mmu.getName().equals(unit)) {
                 return true;
             }

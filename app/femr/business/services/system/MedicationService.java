@@ -50,7 +50,7 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
-    private final IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository;
+    private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
     private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
@@ -64,7 +64,7 @@ public class MedicationService implements IMedicationService {
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
                              IRepository<IMedicationInventory> medicationInventoryRepository,
-                             IRepository<IMedicationMeasurementUnit> medicationMeasurementUnitRepository,
+                             IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
@@ -75,7 +75,7 @@ public class MedicationService implements IMedicationService {
         this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
-        this.medicationMeasurementUnitRepository = medicationMeasurementUnitRepository;
+        this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
         this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
@@ -99,7 +99,7 @@ public class MedicationService implements IMedicationService {
 
             //set each active drug
             List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
-            ExpressionList<MedicationMeasurementUnit> medicationMeasurementUnitExpressionList;
+            ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
             ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
             if (activeIngredients != null) {
 
@@ -112,14 +112,14 @@ public class MedicationService implements IMedicationService {
                             .eq("name", miac.getName());
 
                     //get the measurement unit ID (they are pre recorded)
-                    IMedicationMeasurementUnit medicationMeasurementUnit = medicationMeasurementUnitRepository.findOne(medicationMeasurementUnitExpressionList);
+                    IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
                     IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationActiveDrugName == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
                         medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
                     }
-                    if (medicationMeasurementUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, medicationMeasurementUnit.getId(), medicationActiveDrugName);
+                    if (conceptMedicationUnit != null) {
+                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, conceptMedicationUnit.getId(), medicationActiveDrugName);
                         medicationActiveDrugs.add(medicationActiveDrug);
                     }
 
@@ -162,7 +162,7 @@ public class MedicationService implements IMedicationService {
                     boolean drugMatch = false;
                     for (IMedicationActiveDrug drug : medication.getMedicationActiveDrugs()) {
                         if (newMedicationDrug.getMedicationActiveDrugName().getId() == drug.getMedicationActiveDrugName().getId()
-                                && newMedicationDrug.getMedicationMeasurementUnit().getId() == drug.getMedicationMeasurementUnit().getId()) {
+                                && newMedicationDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId()) {
                             drugMatch = true;
                         }
                         if (!drugMatch) allDrugsMatch = false;
@@ -533,9 +533,9 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationUnits() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IMedicationMeasurementUnit> medicationMeasurementUnits = medicationMeasurementUnitRepository.findAll(MedicationMeasurementUnit.class);
+            List<? extends IConceptMedicationUnit> conceptMedicationUnits = conceptMedicationUnitRepository.findAll(ConceptMedicationUnit.class);
             List<String> availableUnits = new ArrayList<>();
-            for (IMedicationMeasurementUnit mmu : medicationMeasurementUnits) {
+            for (IConceptMedicationUnit mmu : conceptMedicationUnits) {
                 availableUnits.add(mmu.getName());
             }
             response.setResponseObject(availableUnits);
@@ -597,7 +597,7 @@ public class MedicationService implements IMedicationService {
                 for (IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
                     formattedDrugNames.add(String.format("%s%s %s",
                                     drug.getValue(),
-                                    drug.getMedicationMeasurementUnit().getName(),
+                                    drug.getConceptMedicationUnit().getName(),
                                     drug.getMedicationActiveDrugName().getName())
                     );
                 }
@@ -626,8 +626,8 @@ public class MedicationService implements IMedicationService {
 
                         if (i.getMedicationActiveDrugName() != null)
                             ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
-                        if (i.getMedicationMeasurementUnit() != null)
-                            ingredientNode.put("unit", i.getMedicationMeasurementUnit().getName());
+                        if (i.getConceptMedicationUnit() != null)
+                            ingredientNode.put("unit", i.getConceptMedicationUnit().getName());
                         ingredientNode.put("value", i.getValue());
                     }
                 }

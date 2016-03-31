@@ -20,7 +20,7 @@ package femr.data.models.mysql;
 
 import femr.data.models.core.IMedicationActiveDrug;
 import femr.data.models.core.IMedicationActiveDrugName;
-import femr.data.models.core.IMedicationMeasurementUnit;
+import femr.data.models.core.IConceptMedicationUnit;
 
 import javax.persistence.*;
 
@@ -32,7 +32,7 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     private int id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_measurement_units_id")
-    private MedicationMeasurementUnit medicationMeasurementUnit;
+    private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_active_drug_names_id")
     private MedicationActiveDrugName medicationActiveDrugName;
@@ -47,13 +47,12 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     }
 
     @Override
-    public IMedicationMeasurementUnit getMedicationMeasurementUnit() {
-        return medicationMeasurementUnit;
+    public IConceptMedicationUnit getConceptMedicationUnit() {
+        return conceptMedicationUnit;
     }
 
-    @Override
-    public void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit) {
-        this.medicationMeasurementUnit = (MedicationMeasurementUnit) medicationMeasurementUnit;
+    public void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit) {
+        this.conceptMedicationUnit = (ConceptMedicationUnit) conceptMedicationUnit;
     }
 
     @Override

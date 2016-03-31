@@ -38,8 +38,8 @@ public class QueryProvider {
         return Ebean.find(Medication.class);
     }
 
-    public static Query<MedicationMeasurementUnit> getMedicationMeasurementUnitQuery() {
-        return Ebean.find(MedicationMeasurementUnit.class);
+    public static Query<ConceptMedicationUnit> getMedicationMeasurementUnitQuery() {
+        return Ebean.find(ConceptMedicationUnit.class);
     }
 
     public static Query<MedicationActiveDrugName> getMedicationActiveDrugNameQuery() {

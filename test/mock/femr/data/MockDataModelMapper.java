@@ -184,7 +184,7 @@
 //
 //        medicationActiveDrug.setValue(value);
 //        medicationActiveDrug.setDenominator(isDenominator);
-//        //medicationActiveDrug.setMedicationMeasurementUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
+//        //medicationActiveDrug.setConceptMedicationUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
 //        medicationActiveDrug.setMedicationActiveDrugName(medicationActiveDrugName);
 //
 //        return medicationActiveDrug;

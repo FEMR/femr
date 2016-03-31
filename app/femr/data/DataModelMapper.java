@@ -41,7 +41,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IMedication> medicationProvider;
     private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
-    private final Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider;
+    private final Provider<IConceptMedicationUnit> conceptMedicationUnitProvider;
     private final Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider;
     private final Provider<IConceptMedicationForm> conceptMedicationFormProvider;
     private final Provider<IMedicationInventory> medicationInventoryProvider;
@@ -75,7 +75,7 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
                            Provider<IConceptMedicationForm> conceptMedicationFormProvider,
                            Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
-                           Provider<IMedicationMeasurementUnit> medicationMeasurementUnitProvider,
+                           Provider<IConceptMedicationUnit> conceptMedicationUnitProvider,
                            Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider,
                            Provider<IMedicationInventory> medicationInventoryProvider,
                            Provider<IMissionCity> missionCityProvider,
@@ -109,7 +109,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.conceptPrescriptionAdministrationProvider = conceptPrescriptionAdministrationProvider;
         this.conceptMedicationFormProvider = conceptMedicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
-        this.medicationMeasurementUnitProvider = medicationMeasurementUnitProvider;
+        this.conceptMedicationUnitProvider = conceptMedicationUnitProvider;
         this.medicationInventoryProvider = medicationInventoryProvider;
         this.missionCityProvider = missionCityProvider;
         this.missionCountryProvider = missionCountryProvider;
@@ -226,7 +226,7 @@ public class DataModelMapper implements IDataModelMapper{
 
         medicationActiveDrug.setValue(value);
         medicationActiveDrug.setDenominator(isDenominator);
-        medicationActiveDrug.setMedicationMeasurementUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
+        medicationActiveDrug.setConceptMedicationUnit(Ebean.getReference(conceptMedicationUnitProvider.get().getClass(), activeDrugUnitId));
         medicationActiveDrug.setMedicationActiveDrugName(medicationActiveDrugName);
 
         return medicationActiveDrug;

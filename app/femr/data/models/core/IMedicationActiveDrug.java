@@ -25,9 +25,9 @@ package femr.data.models.core;
 public interface IMedicationActiveDrug {
     int getId();
 
-    IMedicationMeasurementUnit getMedicationMeasurementUnit();
+    IConceptMedicationUnit getConceptMedicationUnit();
 
-    void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit);
+    void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit);
 
     IMedicationActiveDrugName getMedicationActiveDrugName();
 

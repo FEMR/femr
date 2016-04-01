@@ -40,7 +40,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IMedication> medicationProvider;
     private final Provider<IMedicationGeneric> medicationGenericProvider;
-    private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
+    private final Provider<IMedicationGenericStrength> medicationGenericStrengthProvider;
     private final Provider<IConceptMedicationUnit> conceptMedicationUnitProvider;
     private final Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider;
     private final Provider<IConceptMedicationForm> conceptMedicationFormProvider;
@@ -74,7 +74,7 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IMedication> medicationProvider,
                            Provider<IMedicationGeneric> medicationGenericProvider,
                            Provider<IConceptMedicationForm> conceptMedicationFormProvider,
-                           Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
+                           Provider<IMedicationGenericStrength> medicationGenericStrengthProvider,
                            Provider<IConceptMedicationUnit> conceptMedicationUnitProvider,
                            Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider,
                            Provider<IMedicationInventory> medicationInventoryProvider,
@@ -108,7 +108,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.medicationGenericProvider = medicationGenericProvider;
         this.conceptPrescriptionAdministrationProvider = conceptPrescriptionAdministrationProvider;
         this.conceptMedicationFormProvider = conceptMedicationFormProvider;
-        this.medicationActiveDrugProvider = medicationActiveDrugProvider;
+        this.medicationGenericStrengthProvider = medicationGenericStrengthProvider;
         this.conceptMedicationUnitProvider = conceptMedicationUnitProvider;
         this.medicationInventoryProvider = medicationInventoryProvider;
         this.missionCityProvider = missionCityProvider;
@@ -199,7 +199,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IConceptMedicationForm conceptMedicationForm) {
+    public IMedication createMedication(String name, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -210,7 +210,7 @@ public class DataModelMapper implements IDataModelMapper{
 
         medication.setName(name);
         medication.setIsDeleted(false);
-        medication.setMedicationActiveDrugs(medicationActiveDrugs);
+        medication.setMedicationGenericStrengths(medicationGenericStrengths);
         medication.setConceptMedicationForm(conceptMedicationForm);
 
         return medication;
@@ -220,16 +220,16 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric) {
+    public IMedicationGenericStrength createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric) {
 
-        IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
+        IMedicationGenericStrength medicationGenericStrength = medicationGenericStrengthProvider.get();
 
-        medicationActiveDrug.setValue(value);
-        medicationActiveDrug.setDenominator(isDenominator);
-        medicationActiveDrug.setConceptMedicationUnit(Ebean.getReference(conceptMedicationUnitProvider.get().getClass(), activeDrugUnitId));
-        medicationActiveDrug.setMedicationGeneric(medicationGeneric);
+        medicationGenericStrength.setValue(value);
+        medicationGenericStrength.setDenominator(isDenominator);
+        medicationGenericStrength.setConceptMedicationUnit(Ebean.getReference(conceptMedicationUnitProvider.get().getClass(), activeDrugUnitId));
+        medicationGenericStrength.setMedicationGeneric(medicationGeneric);
 
-        return medicationActiveDrug;
+        return medicationGenericStrength;
     }
 
     /**

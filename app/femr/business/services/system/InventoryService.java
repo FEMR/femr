@@ -174,7 +174,7 @@ public class InventoryService implements IInventoryService {
             String medicationDisplayName = m.getName();
             //Create list of drug name/unit/values to append to the medication name
             List<String> formattedDrugNames = new ArrayList<String>();
-            for (IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+            for (IMedicationGenericStrength drug : m.getMedicationGenericStrengths()) {
                 formattedDrugNames.add(String.format("%s%s %s",
                                 drug.getValue(),
                                 drug.getConceptMedicationUnit().getName(),
@@ -210,9 +210,9 @@ public class InventoryService implements IInventoryService {
 
             ArrayNode ingredientsArray = js.putArray("ingredients");
             // Add all the important information about ingredients to the medications object node
-            if (m.getMedicationActiveDrugs() != null) {
-                List<IMedicationActiveDrug> ingredients = m.getMedicationActiveDrugs();
-                for (IMedicationActiveDrug i : ingredients) {
+            if (m.getMedicationGenericStrengths() != null) {
+                List<IMedicationGenericStrength> ingredients = m.getMedicationGenericStrengths();
+                for (IMedicationGenericStrength i : ingredients) {
                     ObjectNode ingredientNode = ingredientsArray.addObject();
 
                     if (i.getMedicationGeneric() != null)

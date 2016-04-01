@@ -16,14 +16,29 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.util.dependencyinjection.providers;
+package femr.data.models.core;
 
-import com.google.inject.Provider;
-import femr.data.models.mysql.MedicationActiveDrug;
+/**
+ * MedicationActiveDrug represents the amount and units of measurement
+ * inside of a generic drug.
+ * e.g. 500(amount) mg(unit) Acetominophen(generic drug)
+ */
+public interface IMedicationGenericStrength {
+    int getId();
 
-public class MedicationActiveDrugProvider implements Provider<MedicationActiveDrug> {
-    @Override
-    public MedicationActiveDrug get() {
-        return new MedicationActiveDrug();
-    }
+    IConceptMedicationUnit getConceptMedicationUnit();
+
+    void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit);
+
+    IMedicationGeneric getMedicationGeneric();
+
+    void setMedicationGeneric(IMedicationGeneric medicationGeneric);
+
+    boolean isDenominator();
+
+    void setDenominator(boolean isDenominator);
+
+    int getValue();
+
+    void setValue(int value);
 }

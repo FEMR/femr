@@ -19,7 +19,7 @@
 package femr.data.models.mysql;
 
 import femr.data.models.core.IMedication;
-import femr.data.models.core.IMedicationActiveDrug;
+import femr.data.models.core.IMedicationGenericStrength;
 import femr.data.models.core.IConceptMedicationForm;
 
 import javax.persistence.*;
@@ -39,12 +39,12 @@ public class Medication implements IMedication {
     @JoinColumn(name = "medication_forms_id")
     private ConceptMedicationForm medicationForm;
     @ManyToMany(fetch = FetchType.EAGER,
-            targetEntity = MedicationActiveDrug.class,
+            targetEntity = MedicationGenericStrength.class,
             cascade = CascadeType.ALL)
     @JoinTable(name = "medication_medication_active_drugs",
             joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
-    private List<IMedicationActiveDrug> medicationActiveDrugs;
+    private List<IMedicationGenericStrength> medicationGenericStrengths;
 
     @Override
     public int getId() {
@@ -81,13 +81,11 @@ public class Medication implements IMedication {
         this.medicationForm = (ConceptMedicationForm) conceptMedicationForm;
     }
 
-    @Override
-    public List<IMedicationActiveDrug> getMedicationActiveDrugs() {
-        return medicationActiveDrugs;
+    public List<IMedicationGenericStrength> getMedicationGenericStrengths() {
+        return medicationGenericStrengths;
     }
 
-    @Override
-    public void setMedicationActiveDrugs(List<IMedicationActiveDrug> medicationActiveDrugs) {
-        this.medicationActiveDrugs = medicationActiveDrugs;
+    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
+        this.medicationGenericStrengths = medicationGenericStrengths;
     }
 }

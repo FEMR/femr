@@ -168,7 +168,7 @@
 //        //medication.setQuantity_total(total);
 //        //medication.setQuantity_current(current);
 //        medication.setIsDeleted(false);
-//        medication.setMedicationActiveDrugs(medicationActiveDrugs);
+//        medication.setMedicationGenericStrengths(medicationActiveDrugs);
 //        medication.setConceptMedicationForm(medicationForm);
 //
 //        return medication;
@@ -178,7 +178,7 @@
 //     * {@inheritDoc}
 //     */
 //    @Override
-//    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
+//    public IMedicationActiveDrug createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
 //
 //        IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
 //

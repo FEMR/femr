@@ -38,7 +38,7 @@ public interface IMedication {
 
     void setConceptMedicationForm(IConceptMedicationForm conceptmedicationForm);
 
-    List<IMedicationActiveDrug> getMedicationActiveDrugs();
+    List<IMedicationGenericStrength> getMedicationGenericStrengths();
 
-    void setMedicationActiveDrugs(List<IMedicationActiveDrug> medicationActiveDrugs);
+    void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths);
 }

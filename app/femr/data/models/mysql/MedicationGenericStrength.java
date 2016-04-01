@@ -18,15 +18,15 @@
 */
 package femr.data.models.mysql;
 
-import femr.data.models.core.IMedicationActiveDrug;
+import femr.data.models.core.IMedicationGenericStrength;
 import femr.data.models.core.IMedicationGeneric;
 import femr.data.models.core.IConceptMedicationUnit;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medication_active_drugs")
-public class MedicationActiveDrug implements IMedicationActiveDrug {
+@Table(name = "medication_generic_strengths")
+public class MedicationGenericStrength implements IMedicationGenericStrength {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;

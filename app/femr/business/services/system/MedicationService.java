@@ -98,7 +98,7 @@ public class MedicationService implements IMedicationService {
         try {
 
             //set each active drug
-            List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
+            List<IMedicationGenericStrength> medicationActiveDrugs = new ArrayList<>();
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
             ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
             if (activeIngredients != null) {
@@ -119,8 +119,8 @@ public class MedicationService implements IMedicationService {
                         medicationGeneric = dataModelMapper.createMedicationActiveDrugName(miac.getName());
                     }
                     if (conceptMedicationUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, conceptMedicationUnit.getId(), medicationGeneric);
-                        medicationActiveDrugs.add(medicationActiveDrug);
+                        IMedicationGenericStrength medicationGenericStrength = dataModelMapper.createMedicationGenericStrength(miac.getValue(), false, conceptMedicationUnit.getId(), medicationGeneric);
+                        medicationActiveDrugs.add(medicationGenericStrength);
                     }
 
                 }
@@ -158,11 +158,11 @@ public class MedicationService implements IMedicationService {
 
                 // Check if the medication ingredients match
                 boolean allDrugsMatch = true;
-                for (IMedicationActiveDrug newMedicationDrug : medicationActiveDrugs) {
+                for (IMedicationGenericStrength newMedicationGenericDrug : medicationActiveDrugs) {
                     boolean drugMatch = false;
-                    for (IMedicationActiveDrug drug : medication.getMedicationActiveDrugs()) {
-                        if (newMedicationDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId()
-                                && newMedicationDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId()) {
+                    for (IMedicationGenericStrength drug : medication.getMedicationGenericStrengths()) {
+                        if (newMedicationGenericDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId()
+                                && newMedicationGenericDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId()) {
                             drugMatch = true;
                         }
                         if (!drugMatch) allDrugsMatch = false;
@@ -594,7 +594,7 @@ public class MedicationService implements IMedicationService {
                 String medicationDisplayName = m.getName();
                 //Create list of drug name/unit/values to append to the medication name
                 List<String> formattedDrugNames = new ArrayList<String>();
-                for (IMedicationActiveDrug drug : m.getMedicationActiveDrugs()) {
+                for (IMedicationGenericStrength drug : m.getMedicationGenericStrengths()) {
                     formattedDrugNames.add(String.format("%s%s %s",
                                     drug.getValue(),
                                     drug.getConceptMedicationUnit().getName(),
@@ -619,9 +619,9 @@ public class MedicationService implements IMedicationService {
 
                 ArrayNode ingredientsArray = medication.putArray("ingredients");
                 // Add all the important information about ingredients to the medications object node
-                if (m.getMedicationActiveDrugs() != null) {
-                    List<IMedicationActiveDrug> ingredients = m.getMedicationActiveDrugs();
-                    for (IMedicationActiveDrug i : ingredients) {
+                if (m.getMedicationGenericStrengths() != null) {
+                    List<IMedicationGenericStrength> ingredients = m.getMedicationGenericStrengths();
+                    for (IMedicationGenericStrength i : ingredients) {
                         ObjectNode ingredientNode = ingredientsArray.addObject();
 
                         if (i.getMedicationGeneric() != null)

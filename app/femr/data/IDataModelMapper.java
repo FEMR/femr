@@ -57,12 +57,12 @@ public interface IDataModelMapper {
     /**
      * Generate and provide an implementation of IMedication for use in adding to inventory.
      *
-     * @param name                  name of the medication, not null
-     * @param medicationActiveDrugs active drugs in the medication, may be null
-     * @param conceptMedicationForm        the medications form e.g. cream/chewable/pill, may be null
+     * @param name                          name of the medication, not null
+     * @param medicationGenericStrengths    generic drugs, may be null
+     * @param conceptMedicationForm         the medications form e.g. cream/chewable/pill, may be null
      * @return an implementation of IMedication or null if processing fails
      */
-    IMedication createMedication(String name, List<IMedicationActiveDrug> medicationActiveDrugs, IConceptMedicationForm conceptMedicationForm);
+    IMedication createMedication(String name, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrug.
@@ -73,7 +73,7 @@ public interface IDataModelMapper {
      * @param medicationGeneric the drug name, may be null
      * @return an implementation of IMedicationActiveDrug
      */
-    IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric);
+    IMedicationGenericStrength createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrugName.

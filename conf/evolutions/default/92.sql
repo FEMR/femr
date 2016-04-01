@@ -19,23 +19,18 @@ ADD CONSTRAINT `fk_medication_active_drugs_concept_medication_units`
 # --- !Downs
 
 ALTER TABLE `medication_active_drugs`
-DROP FOREIGN KEY `fk_medication_active_drugs_concept_medication_units`,
-DROP FOREIGN KEY `fk_medication_active_drugs_medication_active_drug_names`;
+DROP FOREIGN KEY `fk_medication_active_drugs_concept_medication_units`;
 
 ALTER TABLE `medication_active_drugs`
 CHANGE COLUMN `concept_medication_units_id` `medication_measurement_units_id` INT(11) UNSIGNED NOT NULL ;
 
 ALTER TABLE `medication_active_drugs`
-ADD CONSTRAINT `fk_medication_active_drugs_concept_medication_units`
+ADD CONSTRAINT `fk_medication_active_drugs_medication_measurement_units`
 FOREIGN KEY (`medication_measurement_units_id`)
 REFERENCES `concept_medication_units` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_medication_active_drugs_medication_measurement_units`
-FOREIGN KEY (`medication_active_drug_names_id`)
-REFERENCES `medication_active_drug_names` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 ALTER TABLE `concept_medication_units`
 RENAME TO  `medication_measurement_units` ;
+

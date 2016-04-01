@@ -41,9 +41,13 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         <tr id="temperature">
             <th>T</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td>
-                     @outputTemperatureOrNA(vitalMap.get("temperatureFahernheit", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                <td>@if(viewModel.getSettings.isMetric) {
+                    @outputTemperatureOrNA(vitalMap.get("temperatureCelsius", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
+                    /@outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
+                } else {
+                    @outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), viewModel.getSettings.isMetric, "")
                     /@outputTemperatureOrNA(vitalMap.get("temperatureCelsius", vitalMap.getDate(dateIndex - 1)), !viewModel.getSettings.isMetric, "")
+                }
                 </td>
             }
         </tr>

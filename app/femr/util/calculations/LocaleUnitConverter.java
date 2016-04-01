@@ -24,11 +24,10 @@ public class LocaleUnitConverter {
             // Get imperial temperature(F)
             String tempC = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
 
-            // If temp is not null convert to metric(C) and store in map as temperature
+            // If temp is not null convert to metric(C) and store in map as temperatureCelsius
             if (tempC != null) {
-                vitalMap.put("temperatureFahernheit", vitalMap.getDate(dateIndex), getCelcius(tempC));  // temperature is in Fahrenheit
-                vitalMap.put("temperatureCelsius", vitalMap.getDate(dateIndex), tempC);   // added for femr-136 - dual unit display, temperature is in Celsius
-            }
+                vitalMap.put("temperatureCelsius", vitalMap.getDate(dateIndex), getCelcius(tempC));  // temperature is in Fahrenheit
+             }
 
             // Get imperial height from Map
             String feetS = vitalMap.get("heightFeet", vitalMap.getDate(dateIndex));
@@ -56,50 +55,6 @@ public class LocaleUnitConverter {
         return vitalMap;
     }
 
-
-    /**
-     * added for femr-136 - Dual Unit display
-     * Converts all Metric values in a VitalMultiMap to Imperial values for Dual Unit Display
-     * @param vitalMap MultiMap to get imperial values from and store metric values into
-     * @return VitalMultiMap with metric values
-     */
-    public static VitalMultiMap forDualUnitDisplay(VitalMultiMap vitalMap) {
-        for (int dateIndex = 0; dateIndex < vitalMap.getDateListChronological().size(); dateIndex++) {
-
-            // Get imperial temperature(F)
-            String tempC = vitalMap.get("temperature", vitalMap.getDate(dateIndex));
-
-            // If temp is not null convert to Celcius(C) and store in map as temperatureCelcius
-            if (tempC != null) {
-                vitalMap.put("temperatureCelsius", vitalMap.getDate(dateIndex), getCelcius(tempC));
-                vitalMap.put("temperatureFahernheit", vitalMap.getDate(dateIndex), tempC);  // temperature is in Fahrenheit
-
-            }
-
-            // Get imperial height from Map
-            String feetS = vitalMap.get("heightFeet", vitalMap.getDate(dateIndex));
-            String inchesS = vitalMap.get("heightInches", vitalMap.getDate(dateIndex));
-
-            if (feetS != null && inchesS != null) {
-                // Convert Height to Metric
-                Integer meters = getMeters(feetS, inchesS);
-                Integer cm = getCentimetres(feetS, inchesS);
-
-                // Store metric height in multimap as heightMeters and heightCm
-                vitalMap.put("heightMeters", vitalMap.getDate(dateIndex), meters); // puts it back into map
-                vitalMap.put("heightCm", vitalMap.getDate(dateIndex), String.format("%02d", cm)); // puts it back into map
-            }
-
-            // Get the imperial weight
-            String lbs = vitalMap.get("weight", vitalMap.getDate(dateIndex));
-            if (lbs != null) {
-                // Convert to metric and store as weightKgs
-                vitalMap.put("weightKgs", vitalMap.getDate(dateIndex), getKgs(lbs)); // puts it back into map
-            }
-        }
-
-        return vitalMap;
-    }
 
     /**
      * Converts all imperial values in a PatientItem to metric values

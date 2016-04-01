@@ -202,13 +202,10 @@ public class VitalService implements IVitalService {
                 }
             }
 
-            // If metric convert the multimap to metric
-            if (isMetric()) {
+            // convert the multimap to metric - if condition removed and converting to metric for dual unit display
+         //   if (isMetric()) {
                 vitalMultiMap = LocaleUnitConverter.toMetric(vitalMultiMap);
-            } else {
-            // added for femr-136 - dual unit display
-                vitalMultiMap = LocaleUnitConverter.forDualUnitDisplay(vitalMultiMap);
-            }
+
 
         } catch (Exception ex) {
             response.addError("", "bad query");

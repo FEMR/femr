@@ -362,7 +362,7 @@ public class InventoryService implements IInventoryService {
                 totalQuantity = medicationInventory.getQuantity_total();
             }
 
-            medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity);
+            medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity, null);
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());

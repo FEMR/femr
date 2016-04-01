@@ -51,7 +51,7 @@ public interface IMissionTripService {
      *
      * @return the current trip or null if an error occurs
      */
-    Optional<IMissionTrip> retrieveCurrentMissionTrip(int userId);
+    Optional<IMissionTrip> retrieveMissionTripForUser(int userId);
 
     /**
      * Retrieve a list of all cities.

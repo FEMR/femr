@@ -22,6 +22,100 @@ $(document).ready(function () {
         columnDefs: [ { orderable: false, targets: [3] }]
     });
 
+    $(".currentQuantity").dblclick(function(){
+       $(this).find("span")[0].style.display="none";
+       $(this).find("input")[0].style.display="inline-block";
+        $(this).find("input")[0].style.display="inline-block";
+        $(this).find("button")[0].style.display="none";
+    });
+
+    $(".editQuantityBtn").click(function(){
+        var id = $(this).attr('value');
+        $('.currentQuantity[value="'+id+'"]').find("span")[0].style.display="none";
+        $('.currentQuantity[value="'+id+'"]').find("input")[0].style.display="inline-block";
+        $('.currentQuantity[value="'+id+'"]').find("input")[0].style.display="inline-block";
+        $('.currentQuantity[value="'+id+'"]').find("button")[0].style.display="none";
+    });
+
+
+
+
+    // AJAX STUFF
+    var manageUsers = {
+        toggleUser: function (object) {
+            var id = $(object).attr('data-id');
+            var value = $(object).attr('value');
+            var tripId = $(object).attr('tripid');
+            $.ajax({
+                url: '/admin/inventory/edit/' + id + "/" + tripId,
+                type: 'POST',
+                data: {
+                    quantity: value
+                },
+                dataType: 'text',
+                success: function () {
+                    //Currently left out to leave out editing Initial Quantity
+                    //var previousQuantity = $('.totalQuantity[data-id="'+id+'"]').attr('quantity');
+                    //var newTotal = $('.totalQuantity[data-id="'+id+'"]').attr('value');
+                    //newTotal = newTotal - (previousQuantity - value);
+
+
+                    //Need to update my quantity as well as my total
+                    // $('.totalQuantity[data-id="'+id+'"]').attr('value',newTotal);
+                    // $('.totalQuantity[data-id="'+id+'"]').attr('quantity', value);
+                    // $('.totalQuantity[data-id="'+id+'"]').html(newTotal);
+                },
+                error: function () {
+                    //don't change button - implies an error
+                }
+            });
+        },
+        toggleMedication: function (btn){
+            var id = $(btn).attr('data-id');
+            var tripId = $(btn).attr('tripid');
+            $.ajax({
+                url: '/admin/inventory/delete/' + id + "/" + tripId,
+                type: 'POST',
+                data: {},
+                dataType: 'text',
+                success: function () {
+
+                        if($(btn).hasClass("btn-danger")){
+                            $(btn).html("Undo");
+                            $(btn).removeClass("btn-danger");
+                            $(btn).addClass("btn-success");
+                        }
+                        else{
+                            $(btn).html("Remove");
+                            $(btn).removeClass("btn-success");
+                            $(btn).addClass("btn-danger");
+                        }
+
+                },
+                error: function () {
+                    //don't change button - implies an error
+                }
+            });
+        }
+    };
+    $(".editInput").keypress(function(e) {
+        if (e.which == 13) {
+            var id = $(this).attr('id');
+            $(this)[0].style.display = "none";
+            $('.currentQuantity[value="'+id+'"]').find("button")[0].style.display="inline-block";
+            $(this).prev()[0].innerText = $(this)[0].value;
+            var value = $(this)[0].value;
+            $(this).prev().attr({
+                "value" : value
+            })
+            $(this).prev().show();
+            manageUsers.toggleUser($(this).prev());
+            return false;
+        }
+    });
+    $('.toggleBtn').click(function () {
+        manageUsers.toggleMedication(this);
+    });
 });
 
 function bindRemoveAction(element){

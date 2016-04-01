@@ -117,26 +117,38 @@
             </fieldset>
         }
     }
-
-
-   <div id="currentMedication">
+    
+    <div id="currentMedication">
         <h3>Current Medications:</h3>
         <div id="currentMedicationsWrap">
-            <table id="inventoryTable">
+            <table id="inventoryTable" class="table">
                 <thead>
+                    <th>Edit</th>
                     <th>Medication</th>
-                    <th>Total Quantity</th>
                     <th>Current Quantity</th>
+                    <th>Initial Quantity</th>
                     <th>Remove</th>
                 </thead>
                 <tbody>
                 @for(m <- 1 to viewModel.getMedications.size) {
+                    @if(viewModel.getMedications.get(m - 1).getIsDeleted == null){
                     <tr>
+                        <td>@m</td>
                         <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
-                        <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
-                        <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
-                        <td class="remove">Remove</td>
+                        <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId()">
+                            <span class="editQuantity" style="display:inline-block;" value="@viewModel.getMedications.get(m - 1).getQuantity_current" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()">@viewModel.getMedications.get(m - 1).getQuantity_current</span>
+                            <input class="editInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantity_current" id="@viewModel.getMedications.get(m-1).getId()"/>
+                            <button type="button" class="btn btn-xs editQuantityBtn glyphicon glyphicon-edit pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId()">
+
+                            </button>
+
+                        </td>
+                        <td class="totalQuantity" quantity="@viewModel.getMedications.get(m - 1).getQuantity_current()" data-id="@viewModel.getMedications.get(m-1).getId()" value="@viewModel.getMedications.get(m - 1).getQuantity_total">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
+                        <td>
+                            <button type="button" class="btn btn-danger toggleBtn" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()">Remove</button>
+                            </td>
                     </tr>
+                    }
                 }
                 </tbody>
             </table>

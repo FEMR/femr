@@ -31,10 +31,10 @@ public class MedicationGenericStrength implements IMedicationGenericStrength {
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_measurement_units_id")
+    @JoinColumn(name = "concept_medication_units_id")
     private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_active_drug_names_id")
+    @JoinColumn(name = "medication_generics_id")
     private MedicationGeneric medicationGeneric;
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;

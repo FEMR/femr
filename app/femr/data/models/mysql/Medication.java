@@ -36,14 +36,14 @@ public class Medication implements IMedication {
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_forms_id")
-    private ConceptMedicationForm medicationForm;
+    @JoinColumn(name = "concept_medication_forms_id")
+    private ConceptMedicationForm conceptMedicationForm;
     @ManyToMany(fetch = FetchType.EAGER,
             targetEntity = MedicationGenericStrength.class,
             cascade = CascadeType.ALL)
-    @JoinTable(name = "medication_medication_active_drugs",
+    @JoinTable(name = "medication_medication_generic_strengths",
             joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
+            inverseJoinColumns = {@JoinColumn(name = "medication_generic_strength_id", referencedColumnName = "id")})
     private List<IMedicationGenericStrength> medicationGenericStrengths;
 
     @Override
@@ -73,12 +73,12 @@ public class Medication implements IMedication {
 
     @Override
     public IConceptMedicationForm getConceptMedicationForm() {
-        return medicationForm;
+        return conceptMedicationForm;
     }
 
     @Override
     public void setConceptMedicationForm(IConceptMedicationForm conceptMedicationForm) {
-        this.medicationForm = (ConceptMedicationForm) conceptMedicationForm;
+        this.conceptMedicationForm = (ConceptMedicationForm) conceptMedicationForm;
     }
 
     public List<IMedicationGenericStrength> getMedicationGenericStrengths() {

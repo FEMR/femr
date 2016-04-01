@@ -135,12 +135,12 @@
                     <tr>
                         <td><button type="button" class="btn btn-info-outline">@m</button></td>
                         <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
-                        <td class="currentQuantity">
-                            <p>
-                            <span class="editQuantity" style="display:block;" value="@viewModel.getMedications.get(m - 1).getQuantity_current" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()">@viewModel.getMedications.get(m - 1).getQuantity_current</span>
-                            <input class="editInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantity_current"/>
-                            <span class="glyphicon glyphicon-edit"></span>
-                        </p>
+                        <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId()">
+                            <span class="editQuantity" style="display:inline-block;" value="@viewModel.getMedications.get(m - 1).getQuantity_current" data-id="@viewModel.getMedications.get(m-1).getId()" tripId="@currentUser.getTripId()">@viewModel.getMedications.get(m - 1).getQuantity_current</span>
+                            <input class="editInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantity_current" id="@viewModel.getMedications.get(m-1).getId()"/>
+                            <button type="button" class="btn btn-xs editQuantityBtn glyphicon glyphicon-edit" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId()">
+
+                            </button>
                         </td>
                         <td class="totalQuantity" quantity="@viewModel.getMedications.get(m - 1).getQuantity_current()" data-id="@viewModel.getMedications.get(m-1).getId()" value="@viewModel.getMedications.get(m - 1).getQuantity_total">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
                         <td>

@@ -24,9 +24,21 @@ $(document).ready(function () {
 
     $(".currentQuantity").dblclick(function(){
        $(this).find("span")[0].style.display="none";
-       $(this).find("input")[0].style.display="block";
-        $(this).find("input")[0].style.display="block";
+       $(this).find("input")[0].style.display="inline-block";
+        $(this).find("input")[0].style.display="inline-block";
+        $(this).find("button")[0].style.display="none";
     });
+
+    $(".editQuantityBtn").click(function(){
+        var id = $(this).attr('value');
+        $('.currentQuantity[value="'+id+'"]').find("span")[0].style.display="none";
+        $('.currentQuantity[value="'+id+'"]').find("input")[0].style.display="inline-block";
+        $('.currentQuantity[value="'+id+'"]').find("input")[0].style.display="inline-block";
+        $('.currentQuantity[value="'+id+'"]').find("button")[0].style.display="none";
+    });
+
+
+
 
     // AJAX STUFF
     var manageUsers = {
@@ -88,7 +100,9 @@ $(document).ready(function () {
     };
     $(".editInput").keypress(function(e) {
         if (e.which == 13) {
+            var id = $(this).attr('id');
             $(this)[0].style.display = "none";
+            $('.currentQuantity[value="'+id+'"]').find("button")[0].style.display="inline-block";
             $(this).prev()[0].innerText = $(this)[0].value;
             var value = $(this)[0].value;
             $(this).prev().attr({

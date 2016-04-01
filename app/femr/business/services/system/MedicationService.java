@@ -47,7 +47,7 @@ import java.util.Map;
 public class MedicationService implements IMedicationService {
 
     private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository;
+    private final IRepository<IMedicationGeneric> medicationGenericRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
@@ -60,7 +60,7 @@ public class MedicationService implements IMedicationService {
 
     @Inject
     public MedicationService(IRepository<IMedication> medicationRepository,
-                             IRepository<IMedicationActiveDrugName> medicationActiveDrugNameRepository,
+                             IRepository<IMedicationGeneric> medicationGenericRepository,
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
                              IRepository<IMedicationInventory> medicationInventoryRepository,
@@ -72,7 +72,7 @@ public class MedicationService implements IMedicationService {
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationActiveDrugNameRepository = medicationActiveDrugNameRepository;
+        this.medicationGenericRepository = medicationGenericRepository;
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
         this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
@@ -100,7 +100,7 @@ public class MedicationService implements IMedicationService {
             //set each active drug
             List<IMedicationActiveDrug> medicationActiveDrugs = new ArrayList<>();
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
-            ExpressionList<MedicationActiveDrugName> medicationActiveDrugNameExpressionList;
+            ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
             if (activeIngredients != null) {
 
                 for (MedicationItem.ActiveIngredient miac : activeIngredients) {
@@ -113,13 +113,13 @@ public class MedicationService implements IMedicationService {
 
                     //get the measurement unit ID (they are pre recorded)
                     IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
-                    IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameRepository.findOne(medicationActiveDrugNameExpressionList);
-                    if (medicationActiveDrugName == null) {
+                    IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
+                    if (medicationGeneric == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
-                        medicationActiveDrugName = dataModelMapper.createMedicationActiveDrugName(miac.getName());
+                        medicationGeneric = dataModelMapper.createMedicationActiveDrugName(miac.getName());
                     }
                     if (conceptMedicationUnit != null) {
-                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, conceptMedicationUnit.getId(), medicationActiveDrugName);
+                        IMedicationActiveDrug medicationActiveDrug = dataModelMapper.createMedicationActiveDrug(miac.getValue(), false, conceptMedicationUnit.getId(), medicationGeneric);
                         medicationActiveDrugs.add(medicationActiveDrug);
                     }
 
@@ -161,7 +161,7 @@ public class MedicationService implements IMedicationService {
                 for (IMedicationActiveDrug newMedicationDrug : medicationActiveDrugs) {
                     boolean drugMatch = false;
                     for (IMedicationActiveDrug drug : medication.getMedicationActiveDrugs()) {
-                        if (newMedicationDrug.getMedicationActiveDrugName().getId() == drug.getMedicationActiveDrugName().getId()
+                        if (newMedicationDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId()
                                 && newMedicationDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId()) {
                             drugMatch = true;
                         }
@@ -598,7 +598,7 @@ public class MedicationService implements IMedicationService {
                     formattedDrugNames.add(String.format("%s%s %s",
                                     drug.getValue(),
                                     drug.getConceptMedicationUnit().getName(),
-                                    drug.getMedicationActiveDrugName().getName())
+                                    drug.getMedicationGeneric().getName())
                     );
                 }
                 if (formattedDrugNames.size() > 0)
@@ -624,8 +624,8 @@ public class MedicationService implements IMedicationService {
                     for (IMedicationActiveDrug i : ingredients) {
                         ObjectNode ingredientNode = ingredientsArray.addObject();
 
-                        if (i.getMedicationActiveDrugName() != null)
-                            ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
+                        if (i.getMedicationGeneric() != null)
+                            ingredientNode.put("name", i.getMedicationGeneric().getName());
                         if (i.getConceptMedicationUnit() != null)
                             ingredientNode.put("unit", i.getConceptMedicationUnit().getName());
                         ingredientNode.put("value", i.getValue());

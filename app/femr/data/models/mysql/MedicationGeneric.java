@@ -16,18 +16,41 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.core;
+package femr.data.models.mysql;
 
-/**
- * MedicationActiveDrugName is the name of the active drug inside
- * a medication. e.g. acetominophen/hydrocodone/etc
- */
-public interface IMedicationActiveDrugName {
-    int getId();
+import femr.data.models.core.IMedicationGeneric;
 
-    void setId(int id);
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-    String getName();
+@Entity
+@Table(name = "medication_generics")
+public class MedicationGeneric implements IMedicationGeneric {
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "name", unique = true, nullable = false)
+    private String name;
 
-    void setName(String name);
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -16,41 +16,15 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.util.dependencyinjection.providers;
 
-import femr.data.models.core.IMedicationActiveDrugName;
+import com.google.inject.Provider;
+import femr.data.models.core.IMedicationGeneric;
+import femr.data.models.mysql.MedicationGeneric;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "medication_active_drug_names")
-public class MedicationActiveDrugName implements IMedicationActiveDrugName {
-    @Id
-    @Column(name = "id", unique = true, nullable = false)
-    private int id;
-    @Column(name = "name", unique = true, nullable = false)
-    private String name;
-
+public class MedicationGenericProvider implements Provider<IMedicationGeneric> {
     @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
+    public IMedicationGeneric get() {
+        return new MedicationGeneric();
     }
 }

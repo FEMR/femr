@@ -76,12 +76,12 @@ public class ItemModelMapper implements IItemModelMapper {
 
         String fullActiveDrugName = "";
         for (IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()) {
-            medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
+            medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationGeneric().getName(),
                     medicationActiveDrug.getConceptMedicationUnit().getName(),
                     medicationActiveDrug.getValue(),
                     medicationActiveDrug.isDenominator()
             );
-            fullActiveDrugName = fullActiveDrugName.concat(medicationActiveDrug.getValue() + medicationActiveDrug.getConceptMedicationUnit().getName() + " " + medicationActiveDrug.getMedicationActiveDrugName().getName());
+            fullActiveDrugName = fullActiveDrugName.concat(medicationActiveDrug.getValue() + medicationActiveDrug.getConceptMedicationUnit().getName() + " " + medicationActiveDrug.getMedicationGeneric().getName());
         }
 
         medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));

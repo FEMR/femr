@@ -70,10 +70,10 @@ public interface IDataModelMapper {
      * @param value                    strength of the drug, not null
      * @param isDenominator            is the drug a denominator, not null
      * @param activeDrugUnitId         id of the unit for measurement of the drug, not null
-     * @param medicationActiveDrugName the drug name, may be null
+     * @param medicationGeneric the drug name, may be null
      * @return an implementation of IMedicationActiveDrug
      */
-    IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName);
+    IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrugName.
@@ -81,7 +81,7 @@ public interface IDataModelMapper {
      * @param name name of the drug, not null
      * @return an implementation of IMedicationActiveDrugName or null if processing fails
      */
-    IMedicationActiveDrugName createMedicationActiveDrugName(String name);
+    IMedicationGeneric createMedicationActiveDrugName(String name);
 
     /**
      * Generate and provide an implementation of IMedicationForm.

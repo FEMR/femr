@@ -29,9 +29,9 @@ public interface IMedicationActiveDrug {
 
     void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit);
 
-    IMedicationActiveDrugName getMedicationActiveDrugName();
+    IMedicationGeneric getMedicationGeneric();
 
-    void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName);
+    void setMedicationGeneric(IMedicationGeneric medicationGeneric);
 
     boolean isDenominator();
 

@@ -19,7 +19,7 @@
 package femr.data.models.mysql;
 
 import femr.data.models.core.IMedicationActiveDrug;
-import femr.data.models.core.IMedicationActiveDrugName;
+import femr.data.models.core.IMedicationGeneric;
 import femr.data.models.core.IConceptMedicationUnit;
 
 import javax.persistence.*;
@@ -35,7 +35,7 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_active_drug_names_id")
-    private MedicationActiveDrugName medicationActiveDrugName;
+    private MedicationGeneric medicationGeneric;
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;
     @Column(name = "value", unique = true, nullable = false)
@@ -55,14 +55,12 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
         this.conceptMedicationUnit = (ConceptMedicationUnit) conceptMedicationUnit;
     }
 
-    @Override
-    public IMedicationActiveDrugName getMedicationActiveDrugName() {
-        return medicationActiveDrugName;
+    public IMedicationGeneric getMedicationGeneric() {
+        return medicationGeneric;
     }
 
-    @Override
-    public void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName) {
-        this.medicationActiveDrugName = (MedicationActiveDrugName) medicationActiveDrugName;
+    public void setMedicationGeneric(IMedicationGeneric medicationGeneric) {
+        this.medicationGeneric = (MedicationGeneric) medicationGeneric;
     }
 
     @Override

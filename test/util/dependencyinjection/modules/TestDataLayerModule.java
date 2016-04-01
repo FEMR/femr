@@ -40,7 +40,7 @@ public class TestDataLayerModule extends AbstractModule {
         bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
-        bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
+        bind(IMedicationGeneric.class).toProvider(MedicationGenericProvider.class);
         bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
         bind(IConceptMedicationForm.class).toProvider(ConceptMedicationFormProvider.class);
         bind(IConceptMedicationUnit.class).toProvider(ConceptMedicationUnitProvider.class);
@@ -74,7 +74,7 @@ public class TestDataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<MockRepository<IDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<MockRepository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<MockRepository<IMedicationActiveDrug>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<MockRepository<IMedicationActiveDrugName>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<MockRepository<IMedicationGeneric>>() {});
         bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<MockRepository<IMedicationAdministration>>() {});
         bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<MockRepository<IConceptMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<MockRepository<IConceptMedicationUnit>>() {});

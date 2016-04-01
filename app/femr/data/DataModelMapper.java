@@ -39,7 +39,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IChiefComplaint> chiefComplaintProvider;
     private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IMedication> medicationProvider;
-    private final Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider;
+    private final Provider<IMedicationGeneric> medicationGenericProvider;
     private final Provider<IMedicationActiveDrug> medicationActiveDrugProvider;
     private final Provider<IConceptMedicationUnit> conceptMedicationUnitProvider;
     private final Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider;
@@ -72,7 +72,7 @@ public class DataModelMapper implements IDataModelMapper{
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
                            Provider<ILoginAttempt> loginAttemptProvider,
                            Provider<IMedication> medicationProvider,
-                           Provider<IMedicationActiveDrugName> medicationActiveDrugNameProvider,
+                           Provider<IMedicationGeneric> medicationGenericProvider,
                            Provider<IConceptMedicationForm> conceptMedicationFormProvider,
                            Provider<IMedicationActiveDrug> medicationActiveDrugProvider,
                            Provider<IConceptMedicationUnit> conceptMedicationUnitProvider,
@@ -105,7 +105,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.loginAttemptProvider = loginAttemptProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
-        this.medicationActiveDrugNameProvider = medicationActiveDrugNameProvider;
+        this.medicationGenericProvider = medicationGenericProvider;
         this.conceptPrescriptionAdministrationProvider = conceptPrescriptionAdministrationProvider;
         this.conceptMedicationFormProvider = conceptMedicationFormProvider;
         this.medicationActiveDrugProvider = medicationActiveDrugProvider;
@@ -220,14 +220,14 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
+    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric) {
 
         IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
 
         medicationActiveDrug.setValue(value);
         medicationActiveDrug.setDenominator(isDenominator);
         medicationActiveDrug.setConceptMedicationUnit(Ebean.getReference(conceptMedicationUnitProvider.get().getClass(), activeDrugUnitId));
-        medicationActiveDrug.setMedicationActiveDrugName(medicationActiveDrugName);
+        medicationActiveDrug.setMedicationGeneric(medicationGeneric);
 
         return medicationActiveDrug;
     }
@@ -236,18 +236,18 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedicationActiveDrugName createMedicationActiveDrugName(String name) {
+    public IMedicationGeneric createMedicationActiveDrugName(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
             return null;
         }
 
-        IMedicationActiveDrugName medicationActiveDrugName = medicationActiveDrugNameProvider.get();
+        IMedicationGeneric medicationGeneric = medicationGenericProvider.get();
 
-        medicationActiveDrugName.setName(name);
+        medicationGeneric.setName(name);
 
-        return medicationActiveDrugName;
+        return medicationGeneric;
     }
 
     /**

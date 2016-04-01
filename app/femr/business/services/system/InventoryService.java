@@ -178,7 +178,7 @@ public class InventoryService implements IInventoryService {
                 formattedDrugNames.add(String.format("%s%s %s",
                                 drug.getValue(),
                                 drug.getConceptMedicationUnit().getName(),
-                                drug.getMedicationActiveDrugName().getName())
+                                drug.getMedicationGeneric().getName())
                 );
             }
             if (formattedDrugNames.size() > 0)
@@ -215,8 +215,8 @@ public class InventoryService implements IInventoryService {
                 for (IMedicationActiveDrug i : ingredients) {
                     ObjectNode ingredientNode = ingredientsArray.addObject();
 
-                    if (i.getMedicationActiveDrugName() != null)
-                        ingredientNode.put("name", i.getMedicationActiveDrugName().getName());
+                    if (i.getMedicationGeneric() != null)
+                        ingredientNode.put("name", i.getMedicationGeneric().getName());
                     if (i.getConceptMedicationUnit() != null)
                         ingredientNode.put("unit", i.getConceptMedicationUnit().getName());
                     ingredientNode.put("value", i.getValue());

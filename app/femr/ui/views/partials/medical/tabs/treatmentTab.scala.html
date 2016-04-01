@@ -1,6 +1,6 @@
 @(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem], problems: List[femr.common.models.ProblemItem])
 
-@import femr.ui.views.html.partials.helpers.outputStringOrNA
+@import femr.ui.views.html.partials.medical.tabs.prescriptionRow
 
 <div class="controlWrap hidden" id="treatmentControl">
     <div class="form-group">
@@ -14,7 +14,7 @@
     <div class="form-group">
         <label for="problem">Diagnosis</label>
         <div class="row">
-            <div class="col-xs-9 col-sm-9 col-md-9 problemWrap">
+            <div class="col-xs-10 col-sm-10 col-md-10 problemWrap">
                 @for(problem <- problems) {
                     <div class="problem">
                         <input type="text" class="form-control input-sm oldProblems" value="@problem.getName" readonly/>
@@ -24,7 +24,7 @@
                     <input name="problems[0].name" type="text" class="form-control input-sm newProblems"/>
                 </div>
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="col-xs-2 col-sm-2 col-md-2">
                 <div class="row">
                     <button id="addProblemButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
                 </div>
@@ -35,41 +35,26 @@
         </div>
     </div>
     <div class="form-group">
-        <div>
-            <div class="prescriptionHeader">
-                <label class="prescriptionName" for="prescription">Prescriptions</label>
-                <label class="prescriptionAdministrationName">Administration</label>
-                <label class="prescriptionAmount">Amount</label>
-            </div>
-        </div>
         <div class="row">
-            <div class="col-xs-9 col-sm-9 col-md-9 prescriptionWrap">
-                @for(script <- prescriptions) {
-                    <div class="prescriptionRow">
-                        <input class='medicationID' value='@script.getMedicationID' type='hidden' />
-                        <input class='administrationID' value='@script.getAdministrationId' type='hidden' />
-                        <span class="prescriptionName">
-                            <input type="text" class="medicationName form-control input-sm" value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly/>
-                        </span
-                        ><span class="prescriptionAdministrationName">
-                            <input type="text" class="form-control input-sm" value="@script.getAdministrationName" readonly/>
-                        </span
-                        ><span class="prescriptionAmount">
-                            <input type="text" class="form-control input-sm" value="@script.getAmount" readonly />
-                        </span>
-                    </div>
-                }
-                <div class="prescriptionRow prescriptionInput">
-                    <input class='medicationID' name='prescriptions[0].medicationID' type='hidden' />
-                    <input class='administrationID' name="prescriptions[0].administrationID" type='hidden' />
-                    <span class="prescriptionName"><input type='text' name="prescriptions[0].medicationName" class='medicationName form-control input-sm'/></span
-                    ><span class="prescriptionAdministrationName"><input type="text" class="administrationName form-control input-sm"/></span
-                    ><span class="prescriptionAdministrationDays"><input type="number" placeholder="X"  class="form-control input-sm" />
-                    </span
-                    ><span class="prescriptionAmount"><input name="prescriptions[0].amount" type="number" class="form-control input-sm"/></span>
+            <div class="col-xs-10 col-sm-10 col-md-10 prescriptionWrap">
+                <div class="prescription-grid prescriptionHeader">
+                    <label class="prescription-field prescriptionName" for="prescription">Prescriptions</label>
+                    <label class="prescription-field prescriptionAdministration">Administration</label>
+                    <label class="prescription-field prescriptionAdministrationDays">Days</label>
+                    <label class="prescription-field prescriptionAmount">Amount</label>
                 </div>
+
+                @for(script <- prescriptions) {
+
+                    @prescriptionRow( medicationAdministrationItems, 0, script )
+                }
+
+                <div class="newPrescriptionsContainer">
+                @prescriptionRow( medicationAdministrationItems, 0, null )
+                </div>
+
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="col-xs-2 col-sm-2 col-md-2">
                 <div class="row">
                     <button id="addPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
                 </div>

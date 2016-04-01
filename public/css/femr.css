@@ -704,3 +704,49 @@ input[style] {
 
     text-align: center;
 }
+
+
+
+/** Prescription Fields **/
+
+.prescription-grid{
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 5px;
+}
+.prescription-grid .prescription-field{
+
+    margin-right: 5px;
+}
+.prescription-grid label.prescription-field{
+
+    margin: 0;
+}
+
+.prescription-grid .prescriptionName{
+
+    flex: 8;
+}
+
+.prescription-grid .prescriptionAdministration{
+
+    flex: 3;
+}
+
+.prescription-grid .prescriptionAdministration select{
+
+    height: 30px;
+}
+
+.prescription-grid .prescriptionAdministrationDays{
+
+    flex: 2;
+}
+
+.prescription-grid .prescriptionAmount{
+
+    flex: 2;
+    margin-right: 0;
+}

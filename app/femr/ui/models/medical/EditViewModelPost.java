@@ -28,8 +28,7 @@ public class EditViewModelPost {
     private int id;
 
     private List<TabFieldItem> tabFieldItems;
-    //private List<PrescriptionItem> prescriptions;
-    public List<PrescriptionItem> prescriptions;
+    private List<PrescriptionItem> prescriptions;
     private List<ProblemItem> problems;
 
     //Photo stuff

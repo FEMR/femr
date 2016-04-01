@@ -14,6 +14,7 @@ import femr.ui.views.html.medical.index;
 import femr.ui.views.html.medical.edit;
 import femr.ui.views.html.medical.newVitals;
 import femr.ui.views.html.medical.listVitals;
+import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
@@ -222,6 +223,26 @@ public class MedicalController extends Controller {
         return ok(edit.render(currentUserSession, vitalMultiMap, viewModelGet));
     }
 
+    /**
+     * Get the populated partial view that represents 1 row of new prescription fields
+     * - meant to be an AJAX call
+     *
+     * @param index
+     * @return
+     */
+    public Result prescriptionRowGet( int index )
+    {
+        //get MedicationAdministrationItems
+        ServiceResponse<List<MedicationAdministrationItem>> medicationAdministrationItemServiceResponse =
+                medicationService.retrieveAvailableMedicationAdministrations();
+        if (medicationAdministrationItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        List<MedicationAdministrationItem> items = medicationAdministrationItemServiceResponse.getResponseObject();
+
+        return ok( prescriptionRow.render( items, index, null ) );
+    }
+
     public Result editPost(int patientId) {
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
@@ -314,7 +335,7 @@ public class MedicalController extends Controller {
 
             createPrescriptionServiceResponse = medicationService.createPrescription(
                     prescriptionItem.getMedicationID(),
-                    prescriptionItem.getAdministrationId(),
+                    prescriptionItem.getAdministrationID(),
                     patientEncounterItem.getId(),
                     currentUserSession.getId(),
                     prescriptionItem.getAmount(),
@@ -326,10 +347,12 @@ public class MedicalController extends Controller {
             }
         }
 
-        //get the prescriptions that DO NOT have an ID (e.g. prescriptions that DO NOT exist in the dictionary).
+        // get the prescriptions that DO NOT have an ID (e.g. prescriptions that DO NOT exist in the dictionary).
+        // also ignore new new prescriptions that do not have a name
         List<PrescriptionItem> prescriptionItemsWithoutID = viewModelPost.getPrescriptions()
                 .stream()
-                .filter(prescription -> prescription.getMedicationID() == null)
+                .filter( prescription -> prescription.getMedicationID() == null )
+                .filter( prescription -> StringUtils.isNotNullOrWhiteSpace( prescription.getMedicationName() ) )
                 .collect(Collectors.toList());
 
 
@@ -342,7 +365,7 @@ public class MedicalController extends Controller {
 
             createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
                     prescriptionItem.getMedicationName(),
-                    prescriptionItem.getAdministrationId(),
+                    prescriptionItem.getAdministrationID(),
                     patientEncounterItem.getId(),
                     currentUserSession.getId(),
                     prescriptionItem.getAmount(),

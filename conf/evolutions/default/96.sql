@@ -6,6 +6,7 @@ CREATE TABLE `concept_medications` (
   `isDeleted` BIT(1) NULL DEFAULT b'0',
   `concept_medication_forms_id` INT(11) UNSIGNED NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_concept_medications_concept_medication_forms_idx` (`concept_medication_forms_id` ASC),
   CONSTRAINT `fk_concept_medications_concept_medication_forms`
     FOREIGN KEY (`concept_medication_forms_id`)

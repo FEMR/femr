@@ -81,10 +81,12 @@ public class Medication implements IMedication {
         this.conceptMedicationForm = (ConceptMedicationForm) conceptMedicationForm;
     }
 
+    @Override
     public List<IMedicationGenericStrength> getMedicationGenericStrengths() {
         return medicationGenericStrengths;
     }
 
+    @Override
     public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
         this.medicationGenericStrengths = medicationGenericStrengths;
     }

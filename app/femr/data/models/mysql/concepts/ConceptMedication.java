@@ -20,9 +20,11 @@ package femr.data.models.mysql.concepts;
 
 import femr.data.models.core.IConceptMedicationForm;
 import femr.data.models.core.IMedication;
+import femr.data.models.core.IMedicationGenericStrength;
 import femr.data.models.mysql.ConceptMedicationForm;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "concept_medications")
@@ -37,6 +39,10 @@ public class ConceptMedication implements IMedication {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "concept_medication_forms_id")
     private ConceptMedicationForm conceptMedicationForm;
+    @JoinTable(name = "concept_medication_generic_strengths",
+            joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "concept_medication_generics_id", referencedColumnName = "id")})
+    private List<IMedicationGenericStrength> medicationGenericStrengths;
 
     @Override
     public int getId() {
@@ -71,5 +77,15 @@ public class ConceptMedication implements IMedication {
     @Override
     public void setConceptMedicationForm(IConceptMedicationForm conceptMedicationForm) {
         this.conceptMedicationForm = (ConceptMedicationForm) conceptMedicationForm;
+    }
+
+    @Override
+    public List<IMedicationGenericStrength> getMedicationGenericStrengths() {
+        return null;
+    }
+
+    @Override
+    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
+
     }
 }

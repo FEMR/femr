@@ -23,22 +23,22 @@ CREATE TABLE `concept_medication_generics` (
 
 CREATE TABLE `concept_medication_generic_strengths` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `concept_medication_units_id` INT(11) UNSIGNED NOT NULL,
-  `concept_medication_generics_id` INT(11) NOT NULL,
+  `concept_medication_unit_id` INT(11) UNSIGNED NOT NULL,
+  `concept_medication_generic_id` INT(11) NOT NULL,
   `isDenominator` BIT(1) NOT NULL DEFAULT b'0',
   `value` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  INDEX `fk_concept_generic_strengths_concept_units_idx` (`concept_medication_units_id` ASC),
-  INDEX `fk_concept_generic_strengths_concept_generics_idx` (`concept_medication_generics_id` ASC),
+  INDEX `fk_concept_generic_strengths_concept_units_idx` (`concept_medication_unit_id` ASC),
+  INDEX `fk_concept_generic_strengths_concept_generics_idx` (`concept_medication_generic_id` ASC),
   CONSTRAINT `fk_concept_generic_strengths_concept_units`
-  FOREIGN KEY (`concept_medication_units_id`)
-  REFERENCES `concept_medication_units` (`id`)
+  FOREIGN KEY (`concept_medication_unit_id`)
+  REFERENCES `concept_medication_unit` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_concept_generic_strengths_concept_generics`
-  FOREIGN KEY (`concept_medication_generics_id`)
-  REFERENCES `concept_medication_generics` (`id`)
+  FOREIGN KEY (`concept_medication_generic_id`)
+  REFERENCES `concept_medication_generic` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 

@@ -35,7 +35,7 @@ public class ConceptMedicationGenericStrength implements IMedicationGenericStren
     @JoinColumn(name = "concept_medication_units_id")
     private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "concept_medication_generics_id")
+    @JoinColumn(name = "concept_medication_generic_id")
     private ConceptMedicationGeneric conceptMedicationGeneric;
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;

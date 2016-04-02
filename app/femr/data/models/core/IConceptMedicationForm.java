@@ -19,7 +19,7 @@
 package femr.data.models.core;
 
 /**
- * MedicationForm represents the form of the medication
+ * ConceptMedicationForm represents the form of the medication
  * being dispensed. e.g. cream/chewable/pill. This is a
  * pre-defined concept.
  */

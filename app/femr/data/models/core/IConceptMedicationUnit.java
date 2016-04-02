@@ -19,7 +19,7 @@
 package femr.data.models.core;
 
 /**
- * MedicationMeasurementUnit represents the unit of
+ * ConceptMedicationUnit represents the unit of
  * measurement for a medication. e.g. g/mg/mL. This
  * is a concept.
  */

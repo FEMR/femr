@@ -19,7 +19,7 @@
 package femr.data.models.core;
 
 /**
- * MedicationActiveDrug represents the amount and units of measurement
+ * MedicationGenericStrength represents the amount and units of measurement
  * inside of a generic drug.
  * e.g. 500(amount) mg(unit) Acetominophen(generic drug)
  */

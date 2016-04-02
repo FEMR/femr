@@ -1,7 +1,5 @@
 package femr.data.models.core;
 
-import femr.data.models.mysql.Medication;
-import femr.data.models.mysql.MissionTrip;
 import org.joda.time.DateTime;
 
 /**

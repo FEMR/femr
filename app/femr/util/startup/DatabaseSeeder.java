@@ -35,7 +35,7 @@ import java.util.List;
 public class DatabaseSeeder {
 
     private final Repository<ConceptDiagnosis> diagnosisRepository;
-    private final Repository<ConceptMedicationUnit> medicationMeasurementUnitRepository;
+    private final Repository<ConceptMedicationUnit> conceptMedicationUnitRepository;
     private final Repository<ConceptMedicationForm> conceptMedicationFormRepository;
     private final Repository<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<MissionCountry> missionCountryRepository;
@@ -52,7 +52,7 @@ public class DatabaseSeeder {
 
     public DatabaseSeeder() {
         diagnosisRepository = new Repository<>();
-        medicationMeasurementUnitRepository = new Repository<>();
+        conceptMedicationUnitRepository = new Repository<>();
         conceptMedicationFormRepository = new Repository<>();
         conceptPrescriptionAdministrationRepository = new Repository<>();
         userRepository = new Repository<>();
@@ -652,53 +652,53 @@ public class DatabaseSeeder {
     }
 
     private void seedMedicationUnits() {
-        List<? extends IConceptMedicationUnit> medicationUnits = medicationMeasurementUnitRepository.findAll(ConceptMedicationUnit.class);
+        List<? extends IConceptMedicationUnit> medicationUnits = conceptMedicationUnitRepository.findAll(ConceptMedicationUnit.class);
 
-        List<ConceptMedicationUnit> newMedicationMeasurementUnits = new ArrayList<>();
-        ConceptMedicationUnit medicationMeasurementUnit;
+        List<ConceptMedicationUnit> newconceptMedicationUnits = new ArrayList<>();
+        ConceptMedicationUnit conceptMedicationUnit;
         if (medicationUnits != null && !containUnit(medicationUnits, "%")) {
-            medicationMeasurementUnit = new ConceptMedicationUnit();
-            medicationMeasurementUnit.setName("%");
-            medicationMeasurementUnit.setDescription("g/dL");
-            medicationMeasurementUnit.setIsDeleted(false);
-            newMedicationMeasurementUnits.add(medicationMeasurementUnit);
+            conceptMedicationUnit = new ConceptMedicationUnit();
+            conceptMedicationUnit.setName("%");
+            conceptMedicationUnit.setDescription("g/dL");
+            conceptMedicationUnit.setIsDeleted(false);
+            newconceptMedicationUnits.add(conceptMedicationUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "g")) {
-            medicationMeasurementUnit = new ConceptMedicationUnit();
-            medicationMeasurementUnit.setName("g");
-            medicationMeasurementUnit.setDescription("gram");
-            medicationMeasurementUnit.setIsDeleted(false);
-            newMedicationMeasurementUnits.add(medicationMeasurementUnit);
+            conceptMedicationUnit = new ConceptMedicationUnit();
+            conceptMedicationUnit.setName("g");
+            conceptMedicationUnit.setDescription("gram");
+            conceptMedicationUnit.setIsDeleted(false);
+            newconceptMedicationUnits.add(conceptMedicationUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "gr")) {
-            medicationMeasurementUnit = new ConceptMedicationUnit();
-            medicationMeasurementUnit.setName("gr");
-            medicationMeasurementUnit.setDescription("grain");
-            medicationMeasurementUnit.setIsDeleted(false);
-            newMedicationMeasurementUnits.add(medicationMeasurementUnit);
+            conceptMedicationUnit = new ConceptMedicationUnit();
+            conceptMedicationUnit.setName("gr");
+            conceptMedicationUnit.setDescription("grain");
+            conceptMedicationUnit.setIsDeleted(false);
+            newconceptMedicationUnits.add(conceptMedicationUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "IU")) {
-            medicationMeasurementUnit = new ConceptMedicationUnit();
-            medicationMeasurementUnit.setName("IU");
-            medicationMeasurementUnit.setDescription("international units");
-            medicationMeasurementUnit.setIsDeleted(false);
-            newMedicationMeasurementUnits.add(medicationMeasurementUnit);
+            conceptMedicationUnit = new ConceptMedicationUnit();
+            conceptMedicationUnit.setName("IU");
+            conceptMedicationUnit.setDescription("international units");
+            conceptMedicationUnit.setIsDeleted(false);
+            newconceptMedicationUnits.add(conceptMedicationUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "mg")) {
-            medicationMeasurementUnit = new ConceptMedicationUnit();
-            medicationMeasurementUnit.setName("mg");
-            medicationMeasurementUnit.setDescription("milligram");
-            medicationMeasurementUnit.setIsDeleted(false);
-            newMedicationMeasurementUnits.add(medicationMeasurementUnit);
+            conceptMedicationUnit = new ConceptMedicationUnit();
+            conceptMedicationUnit.setName("mg");
+            conceptMedicationUnit.setDescription("milligram");
+            conceptMedicationUnit.setIsDeleted(false);
+            newconceptMedicationUnits.add(conceptMedicationUnit);
         }
         if (medicationUnits != null && !containUnit(medicationUnits, "U")) {
-            medicationMeasurementUnit = new ConceptMedicationUnit();
-            medicationMeasurementUnit.setName("U");
-            medicationMeasurementUnit.setDescription("unit");
-            medicationMeasurementUnit.setIsDeleted(false);
-            newMedicationMeasurementUnits.add(medicationMeasurementUnit);
+            conceptMedicationUnit = new ConceptMedicationUnit();
+            conceptMedicationUnit.setName("U");
+            conceptMedicationUnit.setDescription("unit");
+            conceptMedicationUnit.setIsDeleted(false);
+            newconceptMedicationUnits.add(conceptMedicationUnit);
         }
-        medicationMeasurementUnitRepository.createAll(newMedicationMeasurementUnits);
+        conceptMedicationUnitRepository.createAll(newconceptMedicationUnits);
     }
 
 

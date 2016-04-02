@@ -79,7 +79,7 @@ public class InventoryService implements IInventoryService {
         String orderBy = StringUtils.join(sorting, ", ").trim();
 
         ExpressionList<Medication> query = QueryProvider.getMedicationQuery()
-                .fetch("medicationForm").where();
+                .fetch("conceptMedicationForm").where();
         query.where().eq("isDeleted", false);
         if (orderBy != "")
             query.orderBy(orderBy);

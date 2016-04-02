@@ -98,16 +98,16 @@ public class MedicationService implements IMedicationService {
         try {
 
             //set each active drug
-            List<IMedicationGenericStrength> medicationActiveDrugs = new ArrayList<>();
+            List<IMedicationGenericStrength> medicationGenericStrengths = new ArrayList<>();
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
             ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
             if (activeIngredients != null) {
 
                 for (MedicationItem.ActiveIngredient miac : activeIngredients) {
-                    medicationMeasurementUnitExpressionList = QueryProvider.getMedicationMeasurementUnitQuery()
+                    medicationMeasurementUnitExpressionList = QueryProvider.getConceptMedicationUnitQuery()
                             .where()
                             .eq("name", miac.getUnit());
-                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationActiveDrugNameQuery()
+                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationGenericQuery()
                             .where()
                             .eq("name", miac.getName());
 
@@ -120,7 +120,7 @@ public class MedicationService implements IMedicationService {
                     }
                     if (conceptMedicationUnit != null) {
                         IMedicationGenericStrength medicationGenericStrength = dataModelMapper.createMedicationGenericStrength(miac.getValue(), false, conceptMedicationUnit.getId(), medicationGeneric);
-                        medicationActiveDrugs.add(medicationGenericStrength);
+                        medicationGenericStrengths.add(medicationGenericStrength);
                     }
 
                 }
@@ -129,7 +129,7 @@ public class MedicationService implements IMedicationService {
             //set the form
             ExpressionList<ConceptMedicationForm> medicationFormExpressionList;
 
-            medicationFormExpressionList = QueryProvider.getMedicationFormQuery()
+            medicationFormExpressionList = QueryProvider.getConceptMedicationFormQuery()
                     .where()
                     .eq("name", form);
             IConceptMedicationForm conceptMedicationForm = conceptMedicationFormRepository.findOne(medicationFormExpressionList);
@@ -141,7 +141,7 @@ public class MedicationService implements IMedicationService {
             // that did not require a medication form.
             Query<Medication> query = QueryProvider.getMedicationQuery()
                     .where()
-                    .ne("medication_forms_id", null)
+                    .ne("concept_medication_forms_id", null)
                     .orderBy("isDeleted asc");
 
             IMedication matchingMedication = null;
@@ -158,7 +158,7 @@ public class MedicationService implements IMedicationService {
 
                 // Check if the medication ingredients match
                 boolean allDrugsMatch = true;
-                for (IMedicationGenericStrength newMedicationGenericDrug : medicationActiveDrugs) {
+                for (IMedicationGenericStrength newMedicationGenericDrug : medicationGenericStrengths) {
                     boolean drugMatch = false;
                     for (IMedicationGenericStrength drug : medication.getMedicationGenericStrengths()) {
                         if (newMedicationGenericDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId()
@@ -188,7 +188,7 @@ public class MedicationService implements IMedicationService {
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
             } else {
                 // Create a new medication in the DB
-                IMedication medication = dataModelMapper.createMedication(name, medicationActiveDrugs, conceptMedicationForm);
+                IMedication medication = dataModelMapper.createMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 medication = medicationRepository.create(medication);
                 //creates the medication item - quantities are null because the medication was just created.
                 MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);

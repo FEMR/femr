@@ -31,7 +31,7 @@ public class MedicationGenericStrength implements IMedicationGenericStrength {
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "concept_medication_unit_id")
+    @JoinColumn(name = "concept_medication_units_id")
     private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "medication_generics_id")

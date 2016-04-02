@@ -16,29 +16,31 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.IConceptPrescriptionAdministration;
-
+import femr.data.models.core.IMedicationGeneric;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "concept_prescription_administrations")
-public class ConceptPrescriptionAdministration implements IConceptPrescriptionAdministration {
+@Table(name = "concept_medication_generics")
+public class ConceptMedicationGeneric implements IMedicationGeneric {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
-    @Column(name = "daily_modifier", unique = false, nullable = false)
-    private float dailyModifier;
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -50,10 +52,4 @@ public class ConceptPrescriptionAdministration implements IConceptPrescriptionAd
     public void setName(String name) {
         this.name = name;
     }
-
-    @Override
-    public float getDailyModifier() { return dailyModifier; };
-
-    @Override
-    public void setDailyModifier(float dailyModifier) { this.dailyModifier = dailyModifier; }
 }

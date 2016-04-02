@@ -141,18 +141,16 @@ public class InventoryController extends Controller {
         // assumes medication strength is a good indicator of how many
         // strength/unit/ingredients (active ingredietns) are involved
         // *denominator field not taken into consideration - always false
-        for (int activeIngredientIndex = 0;
-             activeIngredientIndex < inventoryViewModelPost.getMedicationStrength().size();
-             activeIngredientIndex++) {
+        for (int genericIndex = 0; genericIndex < inventoryViewModelPost.getMedicationStrength().size(); genericIndex++) {
 
-            if (inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex) != null &&
-                    inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex) != null &&
-                    inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex) != null) {
+            if (inventoryViewModelPost.getMedicationIngredient().get(genericIndex) != null &&
+                    inventoryViewModelPost.getMedicationUnit().get(genericIndex) != null &&
+                    inventoryViewModelPost.getMedicationStrength().get(genericIndex) != null) {
 
                 medicationItem.addActiveIngredient(
-                        inventoryViewModelPost.getMedicationIngredient().get(activeIngredientIndex),
-                        inventoryViewModelPost.getMedicationUnit().get(activeIngredientIndex),
-                        inventoryViewModelPost.getMedicationStrength().get(activeIngredientIndex),
+                        inventoryViewModelPost.getMedicationIngredient().get(genericIndex),
+                        inventoryViewModelPost.getMedicationUnit().get(genericIndex),
+                        inventoryViewModelPost.getMedicationStrength().get(genericIndex),
                         false
                 );
             }

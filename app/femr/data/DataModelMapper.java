@@ -220,7 +220,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IMedicationGenericStrength createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric) {
+    public IMedicationGenericStrength createMedicationGenericStrength(Double value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric) {
 
         IMedicationGenericStrength medicationGenericStrength = medicationGenericStrengthProvider.get();
 

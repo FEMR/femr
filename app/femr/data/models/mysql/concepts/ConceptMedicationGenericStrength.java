@@ -18,7 +18,72 @@
 */
 package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.concepts.IConceptMedicationGenericStrength;
+import femr.data.models.core.IConceptMedicationUnit;
+import femr.data.models.core.IMedicationGeneric;
+import femr.data.models.core.IMedicationGenericStrength;
+import femr.data.models.mysql.ConceptMedicationUnit;
 
-public class ConceptMedicationGenericStrength implements IConceptMedicationGenericStrength{
+import javax.persistence.*;
+
+@Entity
+@Table(name = "concept_medication_generic_strengths")
+public class ConceptMedicationGenericStrength implements IMedicationGenericStrength {
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "concept_medication_units_id")
+    private ConceptMedicationUnit conceptMedicationUnit;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "concept_medication_generics_id")
+    private ConceptMedicationGeneric conceptMedicationGeneric;
+    @Column(name = "isDenominator", nullable = false)
+    private boolean isDenominator;
+    @Column(name = "value", unique = true, nullable = false)
+    private int value;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public IConceptMedicationUnit getConceptMedicationUnit() {
+        return conceptMedicationUnit;
+    }
+
+    @Override
+    public void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit) {
+        this.conceptMedicationUnit = (ConceptMedicationUnit) conceptMedicationUnit;
+    }
+
+    @Override
+    public IMedicationGeneric getMedicationGeneric() {
+        return conceptMedicationGeneric;
+    }
+
+    @Override
+    public void setMedicationGeneric(IMedicationGeneric conceptMedicationGeneric) {
+        this.conceptMedicationGeneric = (ConceptMedicationGeneric) conceptMedicationGeneric;
+    }
+
+    @Override
+    public boolean isDenominator() {
+        return isDenominator;
+    }
+
+    @Override
+    public void setDenominator(boolean isDenominator) {
+        this.isDenominator = isDenominator;
+    }
+
+    @Override
+    public int getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(int value) {
+        this.value = value;
+    }
 }

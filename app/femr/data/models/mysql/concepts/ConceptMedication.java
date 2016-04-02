@@ -19,14 +19,14 @@
 package femr.data.models.mysql.concepts;
 
 import femr.data.models.core.IConceptMedicationForm;
-import femr.data.models.core.concepts.IConceptMedication;
+import femr.data.models.core.IMedication;
 import femr.data.models.mysql.ConceptMedicationForm;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "concept_medications")
-public class ConceptMedication implements IConceptMedication {
+public class ConceptMedication implements IMedication {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
@@ -54,13 +54,13 @@ public class ConceptMedication implements IConceptMedication {
     }
 
     @Override
-    public Boolean getDeleted() {
+    public Boolean getIsDeleted() {
         return isDeleted;
     }
 
     @Override
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override

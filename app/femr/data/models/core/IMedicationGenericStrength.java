@@ -30,6 +30,9 @@ public interface IMedicationGenericStrength {
 
     void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit);
 
+
+    //TODO: how to handle these when different implementations have different names for the method
+
     IMedicationGeneric getMedicationGeneric();
 
     void setMedicationGeneric(IMedicationGeneric medicationGeneric);

@@ -18,7 +18,38 @@
 */
 package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.concepts.IConceptMedicationGeneric;
+import femr.data.models.core.IMedicationGeneric;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-public class ConceptMedicationGeneric implements IConceptMedicationGeneric{
+@Entity
+@Table(name = "concept_medication_generic")
+public class ConceptMedicationGeneric implements IMedicationGeneric {
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "name", unique = true, nullable = false)
+    private String name;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

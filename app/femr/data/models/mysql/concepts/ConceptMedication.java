@@ -39,10 +39,10 @@ public class ConceptMedication implements IMedication {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "concept_medication_forms_id")
     private ConceptMedicationForm conceptMedicationForm;
-    @JoinTable(name = "concept_medication_generic_strengths",
-            joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "concept_medication_generics_id", referencedColumnName = "id")})
-    private List<IMedicationGenericStrength> medicationGenericStrengths;
+    @JoinTable(name = "concept_medication_concept_generic_strengths",
+            joinColumns = {@JoinColumn(name = "concept_medication_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "concept_medication_generic_strength_id", referencedColumnName = "id")})
+    private List<IMedicationGenericStrength> conceptMedicationGenericStrengths;
 
     @Override
     public int getId() {
@@ -81,11 +81,11 @@ public class ConceptMedication implements IMedication {
 
     @Override
     public List<IMedicationGenericStrength> getMedicationGenericStrengths() {
-        return null;
+        return conceptMedicationGenericStrengths;
     }
 
     @Override
-    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
-
+    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> conceptMedicationGenericStrengths) {
+        this.conceptMedicationGenericStrengths = conceptMedicationGenericStrengths;
     }
 }

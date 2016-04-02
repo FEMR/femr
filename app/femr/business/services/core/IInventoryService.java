@@ -32,18 +32,6 @@ import java.util.List;
 public interface IInventoryService {
 
     /**
-     * Creates a new medication in the inventory.
-     * Gets medicine that is currently not deleted, but paginated.
-     *
-     * @param pageNum     Page number to retrieve
-     * @param rowsPerPage Rows per page
-     * @param sorting     List of sorts to apply to query
-     * @param filters     List of filters to apply to query
-     * @return list of MedicationItems for use by controller
-     */
-    ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters);
-
-    /**
      * Sets the total number of a medication in the inventory. If the total number has not yet been set, then it will
      * also set the current quantity to the total quantity (assumes this is a new entry and all the medications are
      * available).

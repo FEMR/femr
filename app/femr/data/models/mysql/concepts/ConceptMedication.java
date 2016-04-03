@@ -39,6 +39,9 @@ public class ConceptMedication implements IMedication {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "concept_medication_form_id")
     private ConceptMedicationForm conceptMedicationForm;
+    @ManyToMany(fetch = FetchType.EAGER,
+            targetEntity = ConceptMedicationGenericStrength.class,
+            cascade = CascadeType.ALL)
     @JoinTable(name = "concept_medication_concept_generic_strengths",
             joinColumns = {@JoinColumn(name = "concept_medication_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "concept_medication_generic_strength_id", referencedColumnName = "id")})

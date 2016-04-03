@@ -25,7 +25,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "concept_medication_generic")
+@Table(name = "concept_medication_generics")
 public class ConceptMedicationGeneric implements IMedicationGeneric {
     @Id
     @Column(name = "id", unique = true, nullable = false)

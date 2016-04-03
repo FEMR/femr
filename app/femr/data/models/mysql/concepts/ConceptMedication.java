@@ -37,7 +37,7 @@ public class ConceptMedication implements IMedication {
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "concept_medication_forms_id")
+    @JoinColumn(name = "concept_medication_form_id")
     private ConceptMedicationForm conceptMedicationForm;
     @JoinTable(name = "concept_medication_concept_generic_strengths",
             joinColumns = {@JoinColumn(name = "concept_medication_id", referencedColumnName = "id")},

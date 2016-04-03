@@ -100,7 +100,7 @@ public class MedicationService implements IMedicationService {
 
         try {
 
-            //set each active drug
+            //set each generic drug
             List<IMedicationGenericStrength> medicationGenericStrengths = new ArrayList<>();
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
             ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
@@ -114,7 +114,7 @@ public class MedicationService implements IMedicationService {
                             .where()
                             .eq("name", miac.getName());
 
-                    //get the measurement unit ID (they are pre recorded)
+                    //get the measurement unit ID (they are concepts)
                     IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
                     IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationGeneric == null) {

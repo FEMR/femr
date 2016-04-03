@@ -33,6 +33,7 @@ public class Global extends GlobalSettings {
 
         super.onStart(app);
         new DatabaseSeeder().seed();
+        new MedicationDatabaseSeeder().seed();
     }
 
     /*

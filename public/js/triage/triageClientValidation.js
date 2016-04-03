@@ -22,7 +22,9 @@ var triageFieldValidator = {
             triageFieldValidator.isValid = false;
         }
         //Validate Age
-        if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
+        if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val()
+            && !patientInformation.months.val() && !patientInformation.years.val()
+            && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
             //nothing has been filled out
             $('#ageClassificationWrap').css('border', '1px solid red');
             triageFieldValidator.isValid = false;

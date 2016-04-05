@@ -23,6 +23,7 @@ import femr.common.models.*;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -56,7 +57,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted) {
 
         if (medication == null) {
 
@@ -69,21 +70,25 @@ public class ItemModelMapper implements IItemModelMapper {
         medicationItem.setName(medication.getName());
         medicationItem.setQuantity_current(quantityCurrent);
         medicationItem.setQuantity_total(quantityTotal);
-        if (medication.getMedicationForm() != null) {
-            medicationItem.setForm(medication.getMedicationForm().getName());
+        if (medication.getConceptMedicationForm() != null) {
+            medicationItem.setForm(medication.getConceptMedicationForm().getName());
         }
 
         String fullActiveDrugName = "";
-        for (IMedicationActiveDrug medicationActiveDrug : medication.getMedicationActiveDrugs()) {
-            medicationItem.addActiveIngredient(medicationActiveDrug.getMedicationActiveDrugName().getName(),
-                    medicationActiveDrug.getMedicationMeasurementUnit().getName(),
-                    medicationActiveDrug.getValue(),
-                    medicationActiveDrug.isDenominator()
+        for (IMedicationGenericStrength medicationGenericStrength : medication.getMedicationGenericStrengths()) {
+            medicationItem.addActiveIngredient(medicationGenericStrength.getMedicationGeneric().getName(),
+                    medicationGenericStrength.getConceptMedicationUnit().getName(),
+                    medicationGenericStrength.getValue(),
+                    medicationGenericStrength.isDenominator()
             );
-            fullActiveDrugName = fullActiveDrugName.concat(medicationActiveDrug.getValue() + medicationActiveDrug.getMedicationMeasurementUnit().getName() + " " + medicationActiveDrug.getMedicationActiveDrugName().getName());
+            fullActiveDrugName = fullActiveDrugName.concat(medicationGenericStrength.getValue() + medicationGenericStrength.getConceptMedicationUnit().getName() + " " + medicationGenericStrength.getMedicationGeneric().getName());
         }
 
         medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
+
+        //Check to see if medication is deleted.
+        if(isDeleted != null)
+            medicationItem.setIsDeleted(isDeleted);
 
         return medicationItem;
     }
@@ -278,7 +283,7 @@ public class ItemModelMapper implements IItemModelMapper {
      */
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
-                                                   IMedicationAdministration medicationAdministration, Integer amount, IMedication medication,
+                                                   IConceptPrescriptionAdministration medicationAdministration, Integer amount, IMedication medication,
                                                    Integer medicationRemaining, Boolean isCounseled) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
@@ -309,7 +314,7 @@ public class ItemModelMapper implements IItemModelMapper {
             prescriptionItem.setCounseled(isCounseled);
 
         if (medication != null) {
-            MedicationItem medicationItem = createMedicationItem(medication, null, null);
+            MedicationItem medicationItem = createMedicationItem(medication, null, null, null);
             prescriptionItem.setMedicationID(medicationItem.getId());
 
             if (medicationItem.getForm() != null)
@@ -564,15 +569,15 @@ public class ItemModelMapper implements IItemModelMapper {
     /**
      * {@inheritDoc}
      */
-    public MedicationAdministrationItem createMedicationAdministrationItem(IMedicationAdministration medicationAdministration) {
+    public MedicationAdministrationItem createMedicationAdministrationItem(IConceptPrescriptionAdministration conceptPrescriptionAdministration) {
 
-        if (medicationAdministration == null)
+        if (conceptPrescriptionAdministration == null)
             return null;
 
         MedicationAdministrationItem medicationAdministrationItem = new MedicationAdministrationItem(
-                medicationAdministration.getId(),
-                medicationAdministration.getName(),
-                medicationAdministration.getDailyModifier()
+                conceptPrescriptionAdministration.getId(),
+                conceptPrescriptionAdministration.getName(),
+                conceptPrescriptionAdministration.getDailyModifier()
         );
 
         return medicationAdministrationItem;

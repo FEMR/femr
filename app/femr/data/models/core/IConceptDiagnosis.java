@@ -18,22 +18,14 @@
 */
 package femr.data.models.core;
 
-/**
- * MedicationMeasurementUnit represents the unit of
- * measurement for a medication. e.g. g/mg/mL
- */
-public interface IMedicationMeasurementUnit {
+public interface IConceptDiagnosis {
+
+
     int getId();
+
+    void setId(int id);
 
     String getName();
 
     void setName(String name);
-
-    String getDescription();
-
-    void setDescription(String description);
-
-    Boolean getIsDeleted();
-
-    void setIsDeleted(Boolean isDeleted);
 }

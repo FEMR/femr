@@ -168,8 +168,8 @@
 //        //medication.setQuantity_total(total);
 //        //medication.setQuantity_current(current);
 //        medication.setIsDeleted(false);
-//        medication.setMedicationActiveDrugs(medicationActiveDrugs);
-//        medication.setMedicationForm(medicationForm);
+//        medication.setMedicationGenericStrengths(medicationActiveDrugs);
+//        medication.setConceptMedicationForm(medicationForm);
 //
 //        return medication;
 //    }
@@ -178,14 +178,14 @@
 //     * {@inheritDoc}
 //     */
 //    @Override
-//    public IMedicationActiveDrug createMedicationActiveDrug(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
+//    public IMedicationActiveDrug createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationActiveDrugName medicationActiveDrugName) {
 //
 //        IMedicationActiveDrug medicationActiveDrug = medicationActiveDrugProvider.get();
 //
 //        medicationActiveDrug.setValue(value);
 //        medicationActiveDrug.setDenominator(isDenominator);
-//        //medicationActiveDrug.setMedicationMeasurementUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
-//        medicationActiveDrug.setMedicationActiveDrugName(medicationActiveDrugName);
+//        //medicationActiveDrug.setConceptMedicationUnit(Ebean.getReference(medicationMeasurementUnitProvider.get().getClass(), activeDrugUnitId));
+//        medicationActiveDrug.setMedicationGeneric(medicationActiveDrugName);
 //
 //        return medicationActiveDrug;
 //    }
@@ -212,7 +212,7 @@
 //     * {@inheritDoc}
 //     */
 //    @Override
-//    public IMedicationForm createMedicationForm(String name) {
+//    public IMedicationForm createConceptMedicationForm(String name) {
 //
 //        if (StringUtils.isNullOrWhiteSpace(name)) {
 //

@@ -1,7 +1,6 @@
 package femr.data.models.core;
 
-import femr.data.models.mysql.Medication;
-import femr.data.models.mysql.MissionTrip;
+import org.joda.time.DateTime;
 
 /**
  * Keeps track of inventory for a target medication and trip.
@@ -24,5 +23,9 @@ public interface IMedicationInventory {
     IMissionTrip getMissionTrip();
 
     void setMissionTrip(IMissionTrip missionTrip);
+
+    DateTime getIsDeleted();
+
+    void setIsDeleted(DateTime isDeleted);
 
 }

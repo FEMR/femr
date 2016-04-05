@@ -18,12 +18,12 @@
 */
 package femr.util.dependencyinjection.providers;
 
-import femr.data.models.mysql.MedicationMeasurementUnit;
 import com.google.inject.Provider;
+import femr.data.models.mysql.MedicationGenericStrength;
 
-public class MedicationMeasurementUnitProvider implements Provider<MedicationMeasurementUnit> {
+public class MedicationGenericStrengthProvider implements Provider<MedicationGenericStrength> {
     @Override
-    public MedicationMeasurementUnit get() {
-        return new MedicationMeasurementUnit();
+    public MedicationGenericStrength get() {
+        return new MedicationGenericStrength();
     }
 }

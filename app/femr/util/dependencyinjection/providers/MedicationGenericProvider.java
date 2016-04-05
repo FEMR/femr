@@ -16,20 +16,15 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.core;
+package femr.util.dependencyinjection.providers;
 
-/**
- * MedicationAdministration represents the manner in which a medication
- * is administered to the patient. e.g. orally/into the eyeball/rectally
- */
-public interface IMedicationAdministration {
-    int getId();
+import com.google.inject.Provider;
+import femr.data.models.core.IMedicationGeneric;
+import femr.data.models.mysql.MedicationGeneric;
 
-    String getName();
-
-    void setName(String name);
-
-    float getDailyModifier();
-
-    void setDailyModifier(float modifier);
+public class MedicationGenericProvider implements Provider<IMedicationGeneric> {
+    @Override
+    public IMedicationGeneric get() {
+        return new MedicationGeneric();
+    }
 }

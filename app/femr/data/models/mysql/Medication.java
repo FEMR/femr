@@ -19,8 +19,8 @@
 package femr.data.models.mysql;
 
 import femr.data.models.core.IMedication;
-import femr.data.models.core.IMedicationActiveDrug;
-import femr.data.models.core.IMedicationForm;
+import femr.data.models.core.IMedicationGenericStrength;
+import femr.data.models.core.IConceptMedicationForm;
 
 import javax.persistence.*;
 import java.util.List;
@@ -36,15 +36,15 @@ public class Medication implements IMedication {
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_forms_id")
-    private MedicationForm medicationForm;
+    @JoinColumn(name = "concept_medication_forms_id")
+    private ConceptMedicationForm conceptMedicationForm;
     @ManyToMany(fetch = FetchType.EAGER,
-            targetEntity = MedicationActiveDrug.class,
+            targetEntity = MedicationGenericStrength.class,
             cascade = CascadeType.ALL)
-    @JoinTable(name = "medication_medication_active_drugs",
+    @JoinTable(name = "medication_medication_generic_strengths",
             joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "medication_active_drugs_id", referencedColumnName = "id")})
-    private List<IMedicationActiveDrug> medicationActiveDrugs;
+            inverseJoinColumns = {@JoinColumn(name = "medication_generic_strength_id", referencedColumnName = "id")})
+    private List<IMedicationGenericStrength> medicationGenericStrengths;
 
     @Override
     public int getId() {
@@ -72,22 +72,20 @@ public class Medication implements IMedication {
     }
 
     @Override
-    public IMedicationForm getMedicationForm() {
-        return medicationForm;
+    public IConceptMedicationForm getConceptMedicationForm() {
+        return conceptMedicationForm;
     }
 
     @Override
-    public void setMedicationForm(IMedicationForm medicationForm) {
-        this.medicationForm = (MedicationForm) medicationForm;
+    public void setConceptMedicationForm(IConceptMedicationForm conceptMedicationForm) {
+        this.conceptMedicationForm = (ConceptMedicationForm) conceptMedicationForm;
     }
 
-    @Override
-    public List<IMedicationActiveDrug> getMedicationActiveDrugs() {
-        return medicationActiveDrugs;
+    public List<IMedicationGenericStrength> getMedicationGenericStrengths() {
+        return medicationGenericStrengths;
     }
 
-    @Override
-    public void setMedicationActiveDrugs(List<IMedicationActiveDrug> medicationActiveDrugs) {
-        this.medicationActiveDrugs = medicationActiveDrugs;
+    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
+        this.medicationGenericStrengths = medicationGenericStrengths;
     }
 }

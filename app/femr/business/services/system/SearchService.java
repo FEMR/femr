@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
-import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class SearchService implements ISearchService {
 
-    private final IRepository<IDiagnosis> diagnosisRepository;
+    private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
     private final IRepository<IPatient> patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
@@ -52,7 +51,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IMissionCity> cityRepository;
 
     @Inject
-    public SearchService(IRepository<IDiagnosis> diagnosisRepository,
+    public SearchService(IRepository<IConceptDiagnosis> diagnosisRepository,
                          IRepository<IMissionTrip> missionTripRepository,
                          IRepository<IPatient> patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
@@ -85,8 +84,6 @@ public class SearchService implements ISearchService {
             response.addError("", "id can not be null or less than 1");
             return response;
         }
-
-
 
         //get patient encounters so we can use the newest one
         Query<PatientEncounter> peQuery = QueryProvider.getPatientEncounterQuery()
@@ -142,8 +139,12 @@ public class SearchService implements ISearchService {
             }
 
             // If metric setting enabled convert response patientItem to metric
-            if (isMetric())
+            if (isMetric()){
                 patientItem = LocaleUnitConverter.toMetric(patientItem);
+            }else {
+               //added for femr-136 - dual unit display
+                patientItem = LocaleUnitConverter.forDualUnitDisplay(patientItem);
+            }
 
             response.setResponseObject(patientItem);
         } catch (Exception ex) {
@@ -318,7 +319,7 @@ public class SearchService implements ISearchService {
                             null,
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration(),
+                            pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
                             null,
@@ -358,7 +359,7 @@ public class SearchService implements ISearchService {
                             null,
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration(),
+                            pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
                             null,
@@ -373,7 +374,7 @@ public class SearchService implements ISearchService {
                             pp.getMedication().getName(),
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
-                            pp.getMedicationAdministration(),
+                            pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
                             null,
@@ -654,10 +655,10 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
 
-            List<? extends IDiagnosis> allDiagnoses = diagnosisRepository.findAll(Diagnosis.class);
+            List<? extends IConceptDiagnosis> allDiagnoses = diagnosisRepository.findAll(ConceptDiagnosis.class);
             List<String> diagnoses = new ArrayList<>();
 
-            for (IDiagnosis d : allDiagnoses) {
+            for (IConceptDiagnosis d : allDiagnoses) {
                 if (StringUtils.isNotNullOrWhiteSpace(d.getName()))
                     diagnoses.add(d.getName());
             }

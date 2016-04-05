@@ -68,7 +68,7 @@
         <label for="treatment">Treatment Given</label>
         @defining(treatmentTab.getTabFieldItemByName(null, "treatment")) { treatment =>
             <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="treatment"/>
-            <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm">@treatment.getValue</textarea>
+            <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm" placeholder="Ex: Suturing, Ultrasound, Splint, etc...">@treatment.getValue</textarea>
         }
     </div>
 </div>

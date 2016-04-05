@@ -21,6 +21,7 @@ package femr.data.models.mysql;
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IMedicationGenericStrength;
 import femr.data.models.core.IConceptMedicationForm;
+import femr.data.models.mysql.concepts.ConceptMedicationForm;
 
 import javax.persistence.*;
 import java.util.List;

@@ -21,7 +21,6 @@ package femr.data.models.mysql.concepts;
 import femr.data.models.core.IConceptMedicationUnit;
 import femr.data.models.core.IMedicationGeneric;
 import femr.data.models.core.IMedicationGenericStrength;
-import femr.data.models.mysql.ConceptMedicationUnit;
 
 import javax.persistence.*;
 
@@ -40,7 +39,7 @@ public class ConceptMedicationGenericStrength implements IMedicationGenericStren
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;
     @Column(name = "value", unique = true, nullable = false)
-    private int value;
+    private Double value;
 
     @Override
     public int getId() {
@@ -78,12 +77,12 @@ public class ConceptMedicationGenericStrength implements IMedicationGenericStren
     }
 
     @Override
-    public int getValue() {
+    public Double getValue() {
         return value;
     }
 
     @Override
-    public void setValue(int value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 }

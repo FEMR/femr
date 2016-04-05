@@ -18,7 +18,7 @@
 */
 package femr.util.dependencyinjection.providers;
 
-import femr.data.models.mysql.ConceptMedicationUnit;
+import femr.data.models.mysql.concepts.ConceptMedicationUnit;
 import com.google.inject.Provider;
 
 public class ConceptMedicationUnitProvider implements Provider<ConceptMedicationUnit> {

@@ -4,6 +4,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.routes.HistoryController
 @import femr.ui.views.html.partials.triage._
 @import femr.ui.controllers.routes.SearchController
 @import femr.ui.views.html.partials.helpers.outputStringOrNA
@@ -254,11 +255,10 @@
             <button type="submit" id="triageSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
                 Submit Patient</button>
             <button type="button" class="fButton fOtherButton newPatientBtn pull-left">Reset Fields</button>
+
+
             @if(viewModel.getPatient.getId != 0) {
-                @helper.form(action = SearchController.handleSearch("history")) {
-                    <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatient.getId"/>
-                    <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
-                }
+                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left">Patient History</a>
             }
 
         </div>

@@ -350,31 +350,6 @@ public class SearchService implements ISearchService {
                 prescriptionItems.add(item);
             }
 
-//            List<PrescriptionItem> prescriptionItems = patientPrescriptions
-//                    .stream()
-//                    .filter(pp -> pp.getPatientPrescriptionReplacements() == null || pp.getPatientPrescriptionReplacements().size() == 0)
-//                    .map(pp -> itemModelMapper.createPrescriptionItem(
-//
-//                        pp.getId(),
-//                        pp.getMedication().getName(),
-//                        null,
-//                        pp.getPhysician().getFirstName(),
-//                        pp.getPhysician().getLastName(),
-//                        pp.getMedicationAdministration(),
-//                        pp.getAmount(),
-//                        pp.getMedication(),
-//
-//                        pp.getMedication()
-//                            .getMedicationInventory()
-//                            .stream()
-//                            .filter( i -> i.getMissionTrip().getId() == pp.getPatientEncounter().getMissionTrip().getId() )
-//                            .findFirst()
-//                            .get(),
-//
-//                        pp.isCounseled()
-//                    ))
-//                    .collect(Collectors.toList());
-
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

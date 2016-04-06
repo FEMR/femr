@@ -255,8 +255,8 @@ public class PharmaciesController extends Controller {
             if (dispensePrescriptionsServiceResponse.hasErrors()) {
 
                 throw new RuntimeException();
-            } else {
-                //inventory!
+            } else if( currentUserSession.getTripId() != null ) {
+                //inventory -- user must be assigned to a trip
                 for (PrescriptionItem prescriptionItem : dispensePrescriptionsServiceResponse.getResponseObject()) {
 
                     ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.subtractFromQuantityCurrent(prescriptionItem.getMedicationID(), currentUserSession.getTripId(), prescriptionItem.getAmount());

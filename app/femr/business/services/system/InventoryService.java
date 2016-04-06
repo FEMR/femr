@@ -18,12 +18,7 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Junction;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -35,15 +30,9 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.MedicationInventory;
-import femr.ui.models.admin.inventory.DataGridFilter;
-import femr.ui.models.admin.inventory.DataGridSorting;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import play.libs.Json;
 import femr.data.models.mysql.Medication;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class InventoryService implements IInventoryService {
 
@@ -124,11 +113,6 @@ public class InventoryService implements IInventoryService {
         try {
             //This should exist already, so no need to query for unique.
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            int medicationTotal = medicationInventory.getQuantityInitial();
-            int medicationCurrent = medicationInventory.getQuantityCurrent();
-
-            //Currently left out to leave out editing Initial Quantity
-            // medicationInventory.setQuantity_total(medicationTotal - (medicationCurrent - newQuantity));
 
             medicationInventory.setQuantityCurrent(newQuantity);
 

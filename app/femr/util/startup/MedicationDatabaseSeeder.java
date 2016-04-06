@@ -987,7 +987,7 @@ public class MedicationDatabaseSeeder {
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Diflucan", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "folic acid", 1.0, "mg"));
-        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "mg", "tabs"));
+        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, " ", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "glipizide", 10.0, "mg"));
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Glucotrol", "tabs"));
@@ -1230,6 +1230,7 @@ public class MedicationDatabaseSeeder {
         conceptMedication.setConceptMedicationForm(Ebean.getReference(ConceptMedicationForm.class, conceptMedicationFormMap.get(form)));
         conceptMedicationGenericStrengths.removeIf(Objects::isNull);
         conceptMedication.setMedicationGenericStrengths(conceptMedicationGenericStrengths);
+        conceptMedication.setIsDeleted(false);
         if (conceptMedication.getMedicationGenericStrengths().size() > 0)
             conceptMedication.setMedicationGenericStrengths(conceptMedicationGenericStrengths);
         else

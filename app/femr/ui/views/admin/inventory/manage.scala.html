@@ -8,12 +8,15 @@
 
     @additionalStyles = {
 
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/select2.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/inventory.css")">
     }
     @additionalScripts = {
 
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/select2.min.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
     }
 
@@ -36,12 +39,21 @@
         </span>
     }
 
-
     @helper.form(action = InventoryController.managePost()) {
 
         @if( currentUser.getTripId() == null ){
             <fieldset disabled="disabled">
         }
+        <h3>Add Existing Medicine To Formulary:</h3>
+        <select id="addConceptMedicineSelect2" multiple="multiple" name="newConceptMedicationsForInventory[]">
+        @defining(viewModel.getConceptMedications) { conceptMeds =>
+            @for(i <- 1 to conceptMeds.size) {
+                <option value="@conceptMeds.get(i - 1).getId">@conceptMeds.get(i - 1).getFullName</option>
+            }
+        }
+        </select>
+
+        <h3>Add Custom Medicine To Formulary:</h3>
 
         <div class="newMedicationWrap">
 
@@ -119,7 +131,7 @@
     }
     
     <div id="currentMedication">
-        <h3>Current Medications:</h3>
+        <h3>Current Formulary:</h3>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable" class="table">
                 <thead>

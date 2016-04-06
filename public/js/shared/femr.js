@@ -77,7 +77,7 @@ $(document).ready(function () {
         return isValid;
     });
 
-    /* Search typeahead */
+    /* Patient Search typeahead on the homepage*/
     if ($("#patientSearchContainer").length > 0) {
 
         var patient_data = [];

@@ -29,6 +29,7 @@ public class BusinessLayerModule extends AbstractModule {
     @Override
     protected void configure() {
         //Business Service Injection
+        bind(IConceptService.class).to(ConceptService.class);
         bind(IConfigureService.class).to(ConfigureService.class);
         bind(ITabService.class).to(TabService.class);
         bind(IEncounterService.class).to(EncounterService.class);

@@ -98,14 +98,6 @@ public interface IMedicationService {
     ServiceResponse<MedicationItem> deleteMedication(int medicationID);
 
     /**
-     * Retrieves a list of all medications in the system, excluding duplicates.
-     *
-     * @return a service response that contains a list of Strings
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<String>> retrieveAllMedications(Integer tripId);
-
-    /**
      * Retrieve a list of all available Administrations for medication
      *
      * @return a service response that contains a list of available Administrations that are available

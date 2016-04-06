@@ -464,15 +464,25 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> retrieveAllMedications() {
+    public ServiceResponse<List<String>> retrieveAllMedications(Integer tripId) {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
 
         try {
             List<String> medicationNames = new ArrayList<>();
 
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .fetch("medicationInventory")
                     .where()
-                    .eq("isDeleted", false).orderBy("name");
+                    .isNotNull("conceptMedicationForm")
+                    .gt("medicationInventory.quantity_current", 0)
+                    .eq("isDeleted", false)
+                    .orderBy("name");
+
+            if( tripId != null ){
+
+                medicationQuery.where().eq("medicationInventory.missionTrip.id", tripId);
+            }
+
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
             for (IMedication m : medications) {
@@ -575,7 +585,7 @@ public class MedicationService implements IMedicationService {
         return response;
     }
 
-    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID() {
+    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID(Integer tripId) {
         ServiceResponse<ObjectNode> response = new ServiceResponse<>();
         ObjectNode returnObject = Json.newObject();
         ArrayNode allMedications = returnObject.putArray("medication");
@@ -583,7 +593,16 @@ public class MedicationService implements IMedicationService {
         try {
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                     .where()
-                    .eq("isDeleted", false).orderBy("name");
+                    .eq("isDeleted", false)
+                    .isNotNull( "conceptMedicationForm" )
+                    .gt("medicationInventory.quantity_current", 0)
+                    .orderBy("name");
+
+            if( tripId != null ){
+
+                medicationQuery.where().eq("medicationInventory.missionTrip.id", tripId);
+            }
+
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
             for (IMedication m : medications) {

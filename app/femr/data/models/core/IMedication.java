@@ -18,6 +18,8 @@
 */
 package femr.data.models.core;
 
+import femr.data.models.mysql.MedicationInventory;
+
 import java.util.List;
 
 /**
@@ -43,4 +45,8 @@ public interface IMedication {
     List<IMedicationGenericStrength> getMedicationGenericStrengths();
 
     void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths);
+
+    public List<MedicationInventory> getMedicationInventory();
+
+    public void setMedicationInventory(List<MedicationInventory> medicationInventory);
 }

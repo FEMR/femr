@@ -3,7 +3,7 @@
 ALTER TABLE `patients`
 ADD COLUMN `deleted_by_user_id` INT(11) NULL DEFAULT NULL  AFTER `isDeleted`;
 ALTER TABLE `medication_inventories`
-ADD COLUMN `isDeleted` DATETIME NULL DEFAULT NULL AFTER `medication_id`
+ADD COLUMN `isDeleted` DATETIME NULL DEFAULT NULL AFTER `medication_id`;
 
 # --- !Downs
 

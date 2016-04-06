@@ -47,7 +47,6 @@ GET         /search/typeahead/patients                         @femr.ui.controll
 # AJ Saclayan!  Adding in typeahead
 GET         /search/typeahead/cities                           @femr.ui.controllers.SearchController.typeaheadCitiesJSONGet()
 GET         /search/typeahead/diagnoses                        @femr.ui.controllers.SearchController.typeaheadDiagnosisJSONGet()
-GET         /search/typeahead/medications                      @femr.ui.controllers.SearchController.typeaheadMedicationsJSONGet()
 GET         /search/typeahead/medicationsWithID                @femr.ui.controllers.SearchController.typeaheadMedicationsWithIDJSONGet()
 GET         /search/typeahead/medicationAdministrations        @femr.ui.controllers.SearchController.typeaheadMedicationAdministrationsJSONGet()
 #Photo

@@ -26,6 +26,7 @@ import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -75,17 +76,28 @@ public class ItemModelMapper implements IItemModelMapper {
             medicationItem.setForm(medication.getConceptMedicationForm().getName());
         }
 
+        DecimalFormat df = new DecimalFormat("######.####");
+        int count = 0;
         String fullActiveDrugName = "";
         for (IMedicationGenericStrength medicationGenericStrength : medication.getMedicationGenericStrengths()) {
+
             medicationItem.addActiveIngredient(medicationGenericStrength.getMedicationGeneric().getName(),
                     medicationGenericStrength.getConceptMedicationUnit().getName(),
                     medicationGenericStrength.getValue(),
                     medicationGenericStrength.isDenominator()
             );
-            fullActiveDrugName = fullActiveDrugName.concat(medicationGenericStrength.getValue() + medicationGenericStrength.getConceptMedicationUnit().getName() + " " + medicationGenericStrength.getMedicationGeneric().getName());
+            if (count == 0){
+                fullActiveDrugName = fullActiveDrugName.concat(df.format(medicationGenericStrength.getValue()) + " " + medicationGenericStrength.getConceptMedicationUnit().getName() + " " + medicationGenericStrength.getMedicationGeneric().getName());
+            }else{
+                fullActiveDrugName = fullActiveDrugName.concat(" / " + df.format(medicationGenericStrength.getValue()) + " " + medicationGenericStrength.getConceptMedicationUnit().getName() + " " + medicationGenericStrength.getMedicationGeneric().getName());
+            }
+
+            count++;
         }
 
         medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
+        if (StringUtils.isNotNullOrWhiteSpace(medicationItem.getForm()))
+            medicationItem.setFullName(medicationItem.getFullName().concat(" " + "(" + medicationItem.getForm() + ")"));
 
         //Check to see if medication is deleted.
         if(isDeleted != null)

@@ -108,6 +108,13 @@ $(document).ready(function () {
     $('.removeBtn').click(function () {
         manageInventory.toggleMedication(this);
     });
+
+    if ($('#addConceptMedicineSelect2').length > 0){
+
+        $('#addConceptMedicineSelect2').select2({
+            placeholder: "Search medicine:"
+        });
+    }
 });
 
 function bindRemoveAction(element){

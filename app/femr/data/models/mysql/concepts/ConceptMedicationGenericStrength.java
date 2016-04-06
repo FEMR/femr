@@ -16,27 +16,26 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.IMedicationGenericStrength;
-import femr.data.models.core.IMedicationGeneric;
 import femr.data.models.core.IConceptMedicationUnit;
-import femr.data.models.mysql.concepts.ConceptMedicationUnit;
+import femr.data.models.core.IMedicationGeneric;
+import femr.data.models.core.IMedicationGenericStrength;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medication_generic_strengths")
-public class MedicationGenericStrength implements IMedicationGenericStrength {
+@Table(name = "concept_medication_generic_strengths")
+public class ConceptMedicationGenericStrength implements IMedicationGenericStrength {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "concept_medication_units_id")
+    @JoinColumn(name = "concept_medication_unit_id")
     private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_generics_id")
-    private MedicationGeneric medicationGeneric;
+    @JoinColumn(name = "concept_medication_generic_id")
+    private ConceptMedicationGeneric conceptMedicationGeneric;
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;
     @Column(name = "value", unique = true, nullable = false)
@@ -52,16 +51,19 @@ public class MedicationGenericStrength implements IMedicationGenericStrength {
         return conceptMedicationUnit;
     }
 
+    @Override
     public void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit) {
         this.conceptMedicationUnit = (ConceptMedicationUnit) conceptMedicationUnit;
     }
 
+    @Override
     public IMedicationGeneric getMedicationGeneric() {
-        return medicationGeneric;
+        return conceptMedicationGeneric;
     }
 
-    public void setMedicationGeneric(IMedicationGeneric medicationGeneric) {
-        this.medicationGeneric = (MedicationGeneric) medicationGeneric;
+    @Override
+    public void setMedicationGeneric(IMedicationGeneric conceptMedicationGeneric) {
+        this.conceptMedicationGeneric = (ConceptMedicationGeneric) conceptMedicationGeneric;
     }
 
     @Override

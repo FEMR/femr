@@ -53,7 +53,7 @@ public class MedicationItem {
      * @param value         strength of the active ingredient
      * @param isDenominator is the active ingredient a denominator when displayed to the user?
      */
-    public void addActiveIngredient(String name, String unit, int value, boolean isDenominator) {
+    public void addActiveIngredient(String name, String unit, Double value, boolean isDenominator) {
 
         ActiveIngredient activeIngredient = new ActiveIngredient();
         activeIngredient.setDenominator(isDenominator);
@@ -122,7 +122,7 @@ public class MedicationItem {
     public class ActiveIngredient {
         private String name;
         private String unit;
-        private int value;
+        private Double value;
         private boolean isDenominator;
 
         public String getName() {
@@ -141,11 +141,11 @@ public class MedicationItem {
             this.unit = unit;
         }
 
-        public int getValue() {
+        public Double getValue() {
             return value;
         }
 
-        public void setValue(int value) {
+        public void setValue(Double value) {
             this.value = value;
         }
 

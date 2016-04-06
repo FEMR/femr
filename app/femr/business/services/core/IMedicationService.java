@@ -103,7 +103,7 @@ public interface IMedicationService {
      * @return a service response that contains a list of Strings
      * and/or errors if they exist.
      */
-    ServiceResponse<List<String>> retrieveAllMedications(int tripId);
+    ServiceResponse<List<String>> retrieveAllMedications(Integer tripId);
 
     /**
      * Retrieve a list of all available Administrations for medication
@@ -143,5 +143,5 @@ public interface IMedicationService {
      * @return a service response that contains a list of ObjectNode's
      * and/or errors if they exist
      */
-    ServiceResponse<ObjectNode> retrieveAllMedicationsWithID(int tripId);
+    ServiceResponse<ObjectNode> retrieveAllMedicationsWithID(Integer tripId);
 }

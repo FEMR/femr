@@ -369,6 +369,11 @@ public class MedicalController extends Controller {
 
         for (PrescriptionItem prescriptionItem : prescriptionItemsWithoutID){
 
+            //The POST data sends -1 if an administration ID is not set. Null is more appropriate for the
+            //service layer
+            if (prescriptionItem.getAdministrationID() == -1)
+                prescriptionItem.setAdministrationID(null);
+
             createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
                     prescriptionItem.getMedicationName(),
                     prescriptionItem.getAdministrationID(),

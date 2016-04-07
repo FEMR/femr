@@ -20,7 +20,7 @@ package femr.util.dependencyinjection.providers;
 
 import com.google.inject.Provider;
 import femr.data.models.core.IConceptPrescriptionAdministration;
-import femr.data.models.mysql.ConceptPrescriptionAdministration;
+import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 
 public class ConceptPrescriptionAdministrationProvider implements Provider<IConceptPrescriptionAdministration> {
     @Override

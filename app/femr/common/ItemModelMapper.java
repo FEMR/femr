@@ -21,6 +21,7 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.MedicationInventory;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -68,8 +69,8 @@ public class ItemModelMapper implements IItemModelMapper {
 
         medicationItem.setId(medication.getId());
         medicationItem.setName(medication.getName());
-        medicationItem.setQuantity_current(quantityCurrent);
-        medicationItem.setQuantity_total(quantityTotal);
+        medicationItem.setQuantityCurrent(quantityCurrent);
+        medicationItem.setQuantityTotal(quantityTotal);
         if (medication.getConceptMedicationForm() != null) {
             medicationItem.setForm(medication.getConceptMedicationForm().getName());
         }
@@ -229,6 +230,11 @@ public class ItemModelMapper implements IItemModelMapper {
         }
         patientEncounterItem.setId(patientEncounter.getId());
         patientEncounterItem.setPatientId(patientEncounter.getPatient().getId());
+
+        if( patientEncounter.getMissionTrip() != null ) {
+            patientEncounterItem.setMissionTripId(patientEncounter.getMissionTrip().getId());
+        }
+
         patientEncounterItem.setTriageDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfTriageVisit()));
         if (patientEncounter.getDateOfMedicalVisit() != null)
             patientEncounterItem.setMedicalDateOfVisit(dateUtils.getFriendlyDate(patientEncounter.getDateOfMedicalVisit()));
@@ -284,7 +290,9 @@ public class ItemModelMapper implements IItemModelMapper {
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
                                                    IConceptPrescriptionAdministration medicationAdministration, Integer amount, IMedication medication,
-                                                   Integer medicationRemaining, Boolean isCounseled) {
+                                                   MedicationInventory medicationInventory, Boolean isCounseled) {
+
+
 
         if (StringUtils.isNullOrWhiteSpace(name)) {
 
@@ -307,21 +315,27 @@ public class ItemModelMapper implements IItemModelMapper {
             prescriptionItem.setAdministrationName(medicationAdministration.getName());
             prescriptionItem.setAdministrationModifier(medicationAdministration.getDailyModifier());
         }
-        if (amount != null)
-            prescriptionItem.setAmount(amount);
+        prescriptionItem.setAmount(amount);
 
         if (isCounseled != null)
             prescriptionItem.setCounseled(isCounseled);
 
         if (medication != null) {
-            MedicationItem medicationItem = createMedicationItem(medication, null, null, null);
+
+            MedicationItem medicationItem;
+            if( medicationInventory != null ){
+
+                medicationItem = createMedicationItem(medication, medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
+                prescriptionItem.setMedicationRemaining( medicationInventory.getQuantityCurrent() );
+            }
+            else{
+                medicationItem = createMedicationItem(medication, null, null, null);
+            }
+
             prescriptionItem.setMedicationID(medicationItem.getId());
 
             if (medicationItem.getForm() != null)
                 prescriptionItem.setMedicationForm(medicationItem.getForm());
-
-            prescriptionItem.setMedicationRemaining(medicationRemaining);
-
 
             if (medicationItem.getActiveIngredients() != null)
                 prescriptionItem.setMedicationActiveDrugs(medicationItem.getActiveIngredients());

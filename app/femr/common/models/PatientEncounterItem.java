@@ -24,6 +24,8 @@ import java.util.List;
 public class PatientEncounterItem {
     private int id;
     private int patientId;
+    private Integer missionTripId;
+
     //age classification is not part of the patient because it doesn't change with time
     //i.e. when you save the birth date of a patient, you can always tell how old the patient is,
     //it is part of a patient
@@ -63,6 +65,14 @@ public class PatientEncounterItem {
 
     public void setPatientId(int patientId) {
         this.patientId = patientId;
+    }
+
+    public Integer getMissionTripId() {
+        return missionTripId;
+    }
+
+    public void setMissionTripId(Integer missionTripId) {
+        this.missionTripId = missionTripId;
     }
 
     public List<String> getChiefComplaints() {

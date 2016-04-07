@@ -19,6 +19,7 @@
 package femr.data.models.mysql;
 
 import femr.data.models.core.*;
+import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 import org.joda.time.DateTime;
 import javax.persistence.*;
 import java.util.List;

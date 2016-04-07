@@ -16,19 +16,19 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.mysql.concepts;
 
+import femr.data.models.core.IConceptMedicationForm;
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IMedicationGenericStrength;
-import femr.data.models.core.IConceptMedicationForm;
-import femr.data.models.mysql.concepts.ConceptMedicationForm;
+import femr.data.models.mysql.MedicationInventory;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "medications")
-public class Medication implements IMedication {
+@Table(name = "concept_medications")
+public class ConceptMedication implements IMedication {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
@@ -37,18 +37,15 @@ public class Medication implements IMedication {
     @Column(name = "isDeleted", nullable = false)
     private Boolean isDeleted;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "concept_medication_forms_id")
+    @JoinColumn(name = "concept_medication_form_id")
     private ConceptMedicationForm conceptMedicationForm;
     @ManyToMany(fetch = FetchType.EAGER,
-            targetEntity = MedicationGenericStrength.class,
+            targetEntity = ConceptMedicationGenericStrength.class,
             cascade = CascadeType.ALL)
-    @JoinTable(name = "medication_medication_generic_strengths",
-            joinColumns = {@JoinColumn(name = "medications_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "medication_generic_strength_id", referencedColumnName = "id")})
-    private List<IMedicationGenericStrength> medicationGenericStrengths;
-
-    @OneToMany( mappedBy = "medication" )
-    private List<MedicationInventory> medicationInventory;
+    @JoinTable(name = "concept_medication_concept_generic_strengths",
+            joinColumns = {@JoinColumn(name = "concept_medication_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "concept_medication_generic_strength_id", referencedColumnName = "id")})
+    private List<IMedicationGenericStrength> conceptMedicationGenericStrengths;
 
     @Override
     public int getId() {
@@ -87,21 +84,24 @@ public class Medication implements IMedication {
 
     @Override
     public List<IMedicationGenericStrength> getMedicationGenericStrengths() {
-        return medicationGenericStrengths;
+        return conceptMedicationGenericStrengths;
     }
 
     @Override
-    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths) {
-        this.medicationGenericStrengths = medicationGenericStrengths;
+    public void setMedicationGenericStrengths(List<IMedicationGenericStrength> conceptMedicationGenericStrengths) {
+        this.conceptMedicationGenericStrengths = conceptMedicationGenericStrengths;
     }
 
     @Override
-    public List<MedicationInventory> getMedicationInventory() {
-        return medicationInventory;
+    public List<MedicationInventory> getMedicationInventory(){
+
+        // Medication Concepts do not have an inventory, so emulate a Medication without inventory
+        return null;
     }
 
     @Override
-    public void setMedicationInventory(List<MedicationInventory> medicationInventory) {
-        this.medicationInventory = medicationInventory;
+    public void setMedicationInventory(List<MedicationInventory> medicationInventory){
+
+        // Medication Concepts do not have an inventory, so nothing to return
     }
 }

@@ -16,19 +16,18 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.IConceptMedicationForm;
+import femr.data.models.core.IConceptMedicationUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-//example of medication form: name: caps, description: capsules (predefined in the table)
 @Entity
-@Table(name = "concept_medication_forms")
-public class ConceptMedicationForm implements IConceptMedicationForm {
+@Table(name = "concept_medication_units")
+public class ConceptMedicationUnit implements IConceptMedicationUnit {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;

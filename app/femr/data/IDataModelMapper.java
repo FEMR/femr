@@ -73,7 +73,7 @@ public interface IDataModelMapper {
      * @param medicationGeneric the drug name, may be null
      * @return an implementation of IMedicationActiveDrug
      */
-    IMedicationGenericStrength createMedicationGenericStrength(int value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric);
+    IMedicationGenericStrength createMedicationGenericStrength(Double value, boolean isDenominator, int activeDrugUnitId, IMedicationGeneric medicationGeneric);
 
     /**
      * Generate and provide an implementation of IMedicationActiveDrugName.

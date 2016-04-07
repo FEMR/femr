@@ -22,6 +22,8 @@ package femr.business.helpers;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Query;
 import femr.data.models.mysql.*;
+import femr.data.models.mysql.concepts.ConceptMedicationForm;
+import femr.data.models.mysql.concepts.ConceptMedicationUnit;
 import femr.data.models.mysql.research.ResearchEncounter;
 import femr.data.models.mysql.research.ResearchEncounterVital;
 

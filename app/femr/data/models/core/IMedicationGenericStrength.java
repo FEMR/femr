@@ -38,7 +38,7 @@ public interface IMedicationGenericStrength {
 
     void setDenominator(boolean isDenominator);
 
-    int getValue();
+    Double getValue();
 
-    void setValue(int value);
+    void setValue(Double value);
 }

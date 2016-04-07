@@ -35,6 +35,9 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.data.models.mysql.concepts.ConceptMedicationForm;
+import femr.data.models.mysql.concepts.ConceptMedicationUnit;
+import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -186,12 +189,14 @@ public class MedicationService implements IMedicationService {
 
                 medicationRepository.update(matchingMedication);
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
+
             } else {
                 // Create a new medication in the DB
                 IMedication medication = dataModelMapper.createMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 medication = medicationRepository.create(medication);
                 //creates the medication item - quantities are null because the medication was just created.
                 MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
+
                 response.setResponseObject(newMedicationItem);
             }
 
@@ -464,15 +469,25 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<String>> retrieveAllMedications() {
+    public ServiceResponse<List<String>> retrieveAllMedications(Integer tripId) {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
 
         try {
             List<String> medicationNames = new ArrayList<>();
 
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .fetch("medicationInventory")
                     .where()
-                    .eq("isDeleted", false).orderBy("name");
+                    .isNotNull("conceptMedicationForm")
+                    .gt("medicationInventory.quantity_current", 0)
+                    .eq("isDeleted", false)
+                    .orderBy("name");
+
+            if( tripId != null ){
+
+                medicationQuery.where().eq("medicationInventory.missionTrip.id", tripId);
+            }
+
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
             for (IMedication m : medications) {
@@ -568,14 +583,15 @@ public class MedicationService implements IMedicationService {
         List<MedicationItem> medicationItems = new ArrayList<>();
 
         for (IMedicationInventory m : medicationsInventory) {
-            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantity_current(), m.getQuantity_total(), m.getIsDeleted()));
+
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(), m.getQuantityInitial(), m.getIsDeleted()));
         }
         response.setResponseObject(medicationItems);
 
         return response;
     }
 
-    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID() {
+    public ServiceResponse<ObjectNode> retrieveAllMedicationsWithID(Integer tripId) {
         ServiceResponse<ObjectNode> response = new ServiceResponse<>();
         ObjectNode returnObject = Json.newObject();
         ArrayNode allMedications = returnObject.putArray("medication");
@@ -583,7 +599,17 @@ public class MedicationService implements IMedicationService {
         try {
             Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                     .where()
-                    .eq("isDeleted", false).orderBy("name");
+                    .eq("isDeleted", false)
+                    .eq("medicationInventory.missionTrip.id", tripId)
+                    .isNotNull( "conceptMedicationForm" )
+                    .gt("medicationInventory.quantity_current", 0)
+                    .orderBy("name");
+
+            if( tripId != null ){
+
+            //    medicationQuery.where().eq("medicationInventory.missionTrip.id", tripId);
+            }
+
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
 
             for (IMedication m : medications) {
@@ -606,8 +632,8 @@ public class MedicationService implements IMedicationService {
                 medication.put("name", medicationDisplayName);
 
                 /*  //not including medication quantities right now
-                if (m.getQuantity_current() != null) {
-                    medication.put("quantityCurrent", m.getQuantity_current());
+                if (m.getQuantityCurrent() != null) {
+                    medication.put("quantityCurrent", m.getQuantityCurrent());
                 } else {
                     medication.put("quantityCurrent", 0);
                 } */

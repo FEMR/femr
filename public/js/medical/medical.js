@@ -146,8 +146,10 @@ var prescriptionFeature = {
 
                 prescriptionFeature.setupNewPrescriptionRow();
             }
-        });
-
+        })
+            .done(function () {
+                $('.medicationName:last').focus();
+            });
     },
     removePrescriptionField: function () {
         prescriptionFeature.refreshSelectors();

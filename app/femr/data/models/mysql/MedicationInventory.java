@@ -2,8 +2,8 @@ package femr.data.models.mysql;
 
 import femr.data.models.core.IMedicationInventory;
 import femr.data.models.core.IMedication;
-import femr.data.models.core.IMedicationInventory;
 import femr.data.models.core.IMissionTrip;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 
@@ -14,10 +14,10 @@ public class MedicationInventory implements IMedicationInventory{
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "quantity_current", unique = false, nullable = true)
-    private Integer quantity_current;
-    @Column(name = "quantity_initial", unique = false, nullable = true)
-    private Integer quantity_initial;
+    @Column(name = "quantity_current", unique = false, nullable = false)
+    private Integer quantityCurrent;
+    @Column(name = "quantity_initial", unique = false, nullable = false)
+    private Integer quantityInitial;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "medication_id")
@@ -27,29 +27,30 @@ public class MedicationInventory implements IMedicationInventory{
     @JoinColumn(name = "mission_trip_id")
     private MissionTrip missionTrip;
 
+    @Column(name = "isDeleted", nullable = true)
+    private DateTime isDeleted;
+
     @Override
     public int getId() {
         return id;
     }
 
-    @Override
-    public Integer getQuantity_current() {
-        return quantity_current;
+    public Integer getQuantityCurrent() {
+        return quantityCurrent;
+    }
+
+    public void setQuantityCurrent(Integer quantityCurrent) {
+        this.quantityCurrent = quantityCurrent;
     }
 
     @Override
-    public void setQuantity_current(Integer quantity_current) {
-        this.quantity_current = quantity_current;
+    public Integer getQuantityInitial() {
+        return quantityInitial;
     }
 
     @Override
-    public Integer getQuantity_total() {
-        return quantity_initial;
-    }
-
-    @Override
-    public void setQuantity_total(Integer quantity_initial) {
-        this.quantity_initial = quantity_initial;
+    public void setQuantityInitial(Integer quantityInitial) {
+        this.quantityInitial = quantityInitial;
     }
 
     @Override
@@ -71,4 +72,14 @@ public class MedicationInventory implements IMedicationInventory{
 
     @Override
     public void setMissionTrip(IMissionTrip missionTrip) { this.missionTrip = (MissionTrip) missionTrip; }
+
+    @Override
+    public DateTime getIsDeleted() {
+        return isDeleted;
+    }
+
+    @Override
+    public void setIsDeleted(DateTime isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

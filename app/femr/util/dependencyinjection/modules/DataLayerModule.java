@@ -33,15 +33,15 @@ public class DataLayerModule extends AbstractModule {
     protected void configure() {
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
-        bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
+        bind(IConceptDiagnosis.class).toProvider(ConceptDiagnosisProvider.class);
         bind(ILoginAttempt.class).toProvider(LoginAttemptProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
-        bind(IMedicationActiveDrug.class).toProvider(MedicationActiveDrugProvider.class);
-        bind(IMedicationActiveDrugName.class).toProvider(MedicationActiveDrugNameProvider.class);
-        bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
-        bind(IMedicationForm.class).toProvider(MedicationFormProvider.class);
+        bind(IMedicationGenericStrength.class).toProvider(MedicationGenericStrengthProvider.class);
+        bind(IMedicationGeneric.class).toProvider(MedicationGenericProvider.class);
+        bind(IConceptPrescriptionAdministration.class).toProvider(ConceptPrescriptionAdministrationProvider.class);
+        bind(IConceptMedicationForm.class).toProvider(ConceptMedicationFormProvider.class);
         bind(IMedicationInventory.class).toProvider(MedicationInventoryProvider.class);
-        bind(IMedicationMeasurementUnit.class).toProvider(MedicationMeasurementUnitProvider.class);
+        bind(IConceptMedicationUnit.class).toProvider(ConceptMedicationUnitProvider.class);
         bind(IMissionCity.class).toProvider(MissionCityProvider.class);
         bind(IMissionCountry.class).toProvider(MissionCountryProvider.class);
         bind(IMissionTeam.class).toProvider(MissionTeamProvider.class);
@@ -70,15 +70,15 @@ public class DataLayerModule extends AbstractModule {
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
-        bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<Repository<IDiagnosis>>() {});
+        bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<ILoginAttempt>>() {}).to(new TypeLiteral<Repository<ILoginAttempt>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationActiveDrug>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrug>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationActiveDrugName>>() {}).to(new TypeLiteral<Repository<IMedicationActiveDrugName>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<Repository<IMedicationAdministration>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationForm>>() {}).to(new TypeLiteral<Repository<IMedicationForm>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationGenericStrength>>() {}).to(new TypeLiteral<Repository<IMedicationGenericStrength>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<Repository<IMedicationGeneric>>() {});
+        bind(new TypeLiteral<IRepository<IConceptPrescriptionAdministration>>() {}).to(new TypeLiteral<Repository<IConceptPrescriptionAdministration>>() {});
+        bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<Repository<IConceptMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IMedicationInventory>>() {}).to(new TypeLiteral<Repository<IMedicationInventory>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationMeasurementUnit>>() {}).to(new TypeLiteral<Repository<IMedicationMeasurementUnit>>() {});
+        bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<Repository<IConceptMedicationUnit>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});

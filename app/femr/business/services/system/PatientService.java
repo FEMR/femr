@@ -103,6 +103,7 @@ public class PatientService implements IPatientService {
                 .where()
                 .eq("id", id);
 
+
         try {
 
             IPatient savedPatient = patientRepository.findOne(query);

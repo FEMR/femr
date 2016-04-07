@@ -16,28 +16,39 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.core;
+package femr.data.models.mysql.concepts;
 
-/**
- * MedicationActiveDrug represents the active ingredient inside a medication,
- * e.g. 500mg Acetominophen
- */
-public interface IMedicationActiveDrug {
-    int getId();
+import femr.data.models.core.IConceptDiagnosis;
 
-    IMedicationMeasurementUnit getMedicationMeasurementUnit();
+import javax.persistence.*;
 
-    void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit);
+@Entity
+@Table(name = "concept_diagnoses")
+public class ConceptDiagnosis implements IConceptDiagnosis {
 
-    IMedicationActiveDrugName getMedicationActiveDrugName();
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName);
+    @Override
+    public int getId() {
+        return id;
+    }
 
-    boolean isDenominator();
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    void setDenominator(boolean isDenominator);
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    int getValue();
-
-    void setValue(int value);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 }

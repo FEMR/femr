@@ -19,21 +19,19 @@
 package femr.data.models.core;
 
 /**
- * MedicationMeasurementUnit represents the unit of
- * measurement for a medication. e.g. g/mg/mL
+ * ConceptPrescriptionAdministration represents the manner in which a medication
+ * is administered to the patient. e.g. orally/into the eyeball/rectally. This is
+ * part of a prescription and is in the database as a concept dictionary to be
+ * referenced.
  */
-public interface IMedicationMeasurementUnit {
+public interface IConceptPrescriptionAdministration {
     int getId();
 
     String getName();
 
     void setName(String name);
 
-    String getDescription();
+    float getDailyModifier();
 
-    void setDescription(String description);
-
-    Boolean getIsDeleted();
-
-    void setIsDeleted(Boolean isDeleted);
+    void setDailyModifier(float modifier);
 }

@@ -125,6 +125,7 @@
     border: 1px solid #cccccc;
     background-color: #ffffff;
     padding: 5px 10px;
+    vertical-align: middle;
 }
 
 #inventoryTable td.name{

@@ -19,22 +19,15 @@
 package femr.data.models.core;
 
 /**
- * MedicationForm represents the form of the medication
- * being dispensed. e.g. cream/chewable/pill
+ * MedicationGeneric is the name of the generic drug inside
+ * a medication. e.g. acetominophen/hydrocodone/etc
  */
-public interface IMedicationForm {
-
+public interface IMedicationGeneric {
     int getId();
+
+    void setId(int id);
 
     String getName();
 
     void setName(String name);
-
-    String getDescription();
-
-    void setDescription(String description);
-
-    Boolean getIsDeleted();
-
-    void setIsDeleted(Boolean isDeleted);
 }

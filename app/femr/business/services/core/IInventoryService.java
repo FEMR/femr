@@ -32,18 +32,6 @@ import java.util.List;
 public interface IInventoryService {
 
     /**
-     * Creates a new medication in the inventory.
-     * Gets medicine that is currently not deleted, but paginated.
-     *
-     * @param pageNum     Page number to retrieve
-     * @param rowsPerPage Rows per page
-     * @param sorting     List of sorts to apply to query
-     * @param filters     List of filters to apply to query
-     * @return list of MedicationItems for use by controller
-     */
-    ServiceResponse<ObjectNode> getPaginatedMedicationInventory(int pageNum, int rowsPerPage, List<DataGridSorting> sorting, List<DataGridFilter> filters);
-
-    /**
      * Sets the total number of a medication in the inventory. If the total number has not yet been set, then it will
      * also set the current quantity to the total quantity (assumes this is a new entry and all the medications are
      * available).
@@ -63,11 +51,19 @@ public interface IInventoryService {
      * @param tripId id of the trip that has the medication.
      * @param quantityCurrent amount of the medication currently in the inventory.
      * @return a medication item that contains quantity information.
-
+**/
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
-    */
 
     /**
+     * Deletes inventory medication by medication/tripId.
+     *
+     * @param medicationId id of the medication.
+     * @param tripId id of the trip that has the medication.
+     * @return
+     **/
+    ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId);
+    /**
+     * Subtracts quantity from the current quantity when someone dispenses medication.
      * Subtracts amount dispensed from the current quantity of a medication when someone dispenses a prescription. This
      * will also make sure inventory exists for the medication in a trip before trying to subtract the quantity.
      *

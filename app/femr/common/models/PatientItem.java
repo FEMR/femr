@@ -38,7 +38,13 @@ public class PatientItem {
     private Integer weeksPregnant;
     private Integer heightFeet;
     private Integer heightInches;
+   //added for femr-136 - dual unit display
+    private Integer heightFeetDual;
+    private Integer heightInchesDual;
+
     private Float weight;
+    //added for femr-136 - dual unit display
+    private Float weightDual;
 
     public PatientItem(){
         //default empty values
@@ -158,12 +164,37 @@ public class PatientItem {
         this.heightInches = heightInches;
     }
 
+    public Integer getHeightFeetDual() {
+        return heightFeetDual;
+    }
+
+    public void setHeightFeetDual(Integer heightFeetDual) {
+        this.heightFeetDual = heightFeetDual;
+    }
+
+    public Integer getHeightInchesDual() {
+        return heightInchesDual;
+    }
+
+    public void setHeightInchesDual(Integer heightInchesDual) {
+        this.heightInchesDual = heightInchesDual;
+    }
+
+
     public Float getWeight() {
         return weight;
     }
 
     public void setWeight(Float weight) {
         this.weight = weight;
+    }
+
+    public Float getWeightDual() {
+        return weightDual;
+    }
+
+    public void setWeightDual(Float weightDual) {
+        this.weightDual = weightDual;
     }
 
     public String getFriendlyDateOfBirth() {

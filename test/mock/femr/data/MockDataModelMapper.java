@@ -165,8 +165,8 @@
 //        IMedication medication = medicationProvider.get();
 //
 //        medication.setName(name);
-//        //medication.setQuantity_total(total);
-//        //medication.setQuantity_current(current);
+//        //medication.setQuantityInitial(total);
+//        //medication.setQuantityCurrent(current);
 //        medication.setIsDeleted(false);
 //        medication.setMedicationGenericStrengths(medicationActiveDrugs);
 //        medication.setConceptMedicationForm(medicationForm);

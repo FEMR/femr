@@ -66,8 +66,8 @@
                                 <span id="prescriber">
                                     Prescriber: @prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
                             </div>
+                            <div class="medicationRemaining">Current Quantity: @prescription.getMedicationRemaining</div>
                             @if(prescription.getAmount > prescription.getMedicationRemaining) {
-                                <div class="medicationRemaining">Current Quantity: @prescription.getMedicationRemaining</div>
                                 <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
                             }
                             <div class="replacement hidden">

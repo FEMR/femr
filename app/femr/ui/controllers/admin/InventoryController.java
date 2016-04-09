@@ -73,13 +73,6 @@ public class InventoryController extends Controller {
         // since they are tied to a trip
         if( currentUser.getTripId() != null ){
 
-            ServiceResponse<List<MedicationItem>> conceptMedicationServiceResponse = conceptService.retrieveAllMedicationConcepts();
-            if (conceptMedicationServiceResponse.hasErrors()) {
-                throw new RuntimeException();
-            } else {
-                viewModel.setConceptMedications(conceptMedicationServiceResponse.getResponseObject());
-            }
-
             ServiceResponse<List<MedicationItem>> medicationServiceResponse = medicationService.retrieveMedicationInventory(currentUser.getTripId());
             if (medicationServiceResponse.hasErrors()) {
                 throw new RuntimeException();
@@ -100,6 +93,13 @@ public class InventoryController extends Controller {
         else{
 
             viewModel.setMedications( new ArrayList<>() );
+        }
+
+        ServiceResponse<List<MedicationItem>> conceptMedicationServiceResponse = conceptService.retrieveAllMedicationConcepts();
+        if (conceptMedicationServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else {
+            viewModel.setConceptMedications(conceptMedicationServiceResponse.getResponseObject());
         }
 
         ServiceResponse<List<String>> availableMedicationUnitsResponse = medicationService.retrieveAvailableMedicationUnits();
@@ -243,12 +243,27 @@ public class InventoryController extends Controller {
     /**
      * Alters medication based on submit.
      */
-    public Result ajaxEdit(int medicationID, int tripId) {
+    public Result ajaxEditCurrent(int medicationID, int tripId) {
         // Get POST data
         DynamicForm df = play.data.Form.form().bindFromRequest();
         int quantity = Integer.parseInt(df.get("quantity"));
 
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityCurrent(medicationID, tripId, quantity);
+        if (inventoryServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        return ok("true");
+    }
+
+    /**
+     * Alters medication based on submit.
+     */
+    public Result ajaxEditTotal(int medicationID, int tripId) {
+        // Get POST data
+        DynamicForm df = play.data.Form.form().bindFromRequest();
+        int quantity = Integer.parseInt(df.get("quantity"));
+
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityTotal(medicationID, tripId, quantity);
         if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }

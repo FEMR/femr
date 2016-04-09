@@ -65,7 +65,6 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        //does this work without fetching? it should.
         ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
                 .where()
                 .eq("medication.id", medicationId)

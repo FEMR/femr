@@ -81,7 +81,7 @@ public interface IMedicationService {
     /**
      * Adds a new medication to the system. Does NOT update inventory quantities.
      *
-     * @param name name of the medication, not null
+     * @param name name of the medication, may be null
      * @param form form of the medication (e.g. caps/capsules), may be null
      * @param activeIngredients active ingredients in the medication, may be null
      * @return a service response that contains a MedicationItem representing the medication that was just created

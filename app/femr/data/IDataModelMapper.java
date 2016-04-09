@@ -49,7 +49,7 @@ public interface IDataModelMapper {
     /**
      * Generate and provide an implementation of IMedication.
      *
-     * @param name name of the medication, not null
+     * @param name name of the medication, may be null
      * @return an implementation of IMedication or null if processing fails
      */
     IMedication createMedication(String name);

@@ -201,11 +201,6 @@ public class DataModelMapper implements IDataModelMapper{
     @Override
     public IMedication createMedication(String name, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm) {
 
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-
-            return null;
-        }
-
         IMedication medication = medicationProvider.get();
 
         medication.setName(name);

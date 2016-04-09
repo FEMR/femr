@@ -1,6 +1,10 @@
 // AJAX STUFF
 var manageInventoryFeature = {
 
+    /**
+     * Set click event for when a user clicks the Remove button in the
+     * 'Remove' column of the inventory table.
+     */
     bindRemoveButtonClick: function(){
 
         $(".removeBtn").unbind("click");
@@ -9,20 +13,39 @@ var manageInventoryFeature = {
 
         });
     },
+    /**
+     * Set click event for when a user clicks the edit current quantity
+     * button. Event opens a textbox to alter the quantity.
+     */
     bindEditCurrentQuantityButtonClick: function(){
 
-        $(".editQuantityBtn").unbind("click");
-        $(".editQuantityBtn").click(function(){
-            $(this).siblings(".editQuantity").first().hide();
-            $(this).siblings(".editInput").first().show();
+        $(".editCurrentQuantityBtn").unbind("click");
+        $(".editCurrentQuantityBtn").click(function(){
+            $(this).siblings(".editCurrentQuantity").first().hide();
+            $(this).siblings(".editCurrentInput").first().show();
             $(this).hide();
         });
     },
+    /**
+     * Set click event for when a user clicks the edit initial quantity
+     * button. Event opens a textbox to alter the quantity.
+     */
+    bindEditTotalQuantityButtonClick: function(){
+        $(".editTotalQuantityBtn").unbind("click");
+        $(".editTotalQuantityBtn").click(function(){
+            $(this).siblings(".editTotalQuantity").first().hide();
+            $(this).siblings(".editTotalInput").first().show();
+            $(this).hide();
+        });
+    },
+    /**
+     * Set click event for when a user presses enter after they are done editing
+     * the current quantity.
+     */
     bindEditCurrentQuantityEnterKey: function(){
 
-        $(".editInput").unbind("keypress");
-        $(".editInput").keypress(function(e) {
-            console.log("keypress");
+        $(".editCurrentInput").unbind("keypress");
+        $(".editCurrentInput").keypress(function(e) {
             if (e.which == 13) {
 
                 manageInventoryFeature.editCurrentQuantity( this );
@@ -30,6 +53,25 @@ var manageInventoryFeature = {
             }
         });
     },
+    /**
+     * Set click event for when a user presses enter after they are done editing
+     * the initial quantity.
+     */
+    bindEditTotalQuantityEnterKey: function(){
+
+        $(".editTotalInput").unbind("keypress");
+        $(".editTotalInput").keypress(function(e) {
+            if (e.which == 13) {
+
+                manageInventoryFeature.editTotalQuantity( this );
+                e.preventDefault();
+            }
+        });
+    },
+    /**
+     * AJAX call that gets triggered after a user clicks enter for a new
+     * current quantity value.
+     */
     editCurrentQuantity: function ( inputField ) {
 
         var value = $(inputField).val();
@@ -38,7 +80,7 @@ var manageInventoryFeature = {
 
 
         $.ajax({
-            url: '/admin/inventory/edit/' + id + "/" + tripId,
+            url: '/admin/inventory/editCurrent/' + id + "/" + tripId,
             type: 'POST',
             data: {
                 quantity: value
@@ -50,11 +92,11 @@ var manageInventoryFeature = {
                 $(inputField).hide();
 
                 // Show edit button
-                $(inputField).siblings(".editQuantityBtn").show();
+                $(inputField).siblings(".editCurrentQuantityBtn").show();
 
                 // Update text quantity value and show
-                $(inputField).siblings(".editQuantity").text(value);
-                $(inputField).siblings(".editQuantity").show();
+                $(inputField).siblings(".editCurrentQuantity").text(value);
+                $(inputField).siblings(".editCurrentQuantity").show();
             },
             error: function () {
 
@@ -62,6 +104,46 @@ var manageInventoryFeature = {
             }
         });
     },
+    /**
+     * AJAX call that gets triggered after a user clicks enter for a new
+     * initial quantity value.
+     */
+    editTotalQuantity: function ( inputField ) {
+
+        var value = $(inputField).val();
+        var id = $(inputField).siblings('input.medication_id').first().val();
+        var tripId = $(inputField).siblings('input.trip_id').first().val();
+
+
+        $.ajax({
+            url: '/admin/inventory/editTotal/' + id + "/" + tripId,
+            type: 'POST',
+            data: {
+                quantity: value
+            },
+            dataType: 'text',
+            success: function () {
+
+                // Hide edit field
+                $(inputField).hide();
+
+                // Show edit button
+                $(inputField).siblings(".editTotalQuantityBtn").show();
+
+                // Update text quantity value and show
+                $(inputField).siblings(".editTotalQuantity").text(value);
+                $(inputField).siblings(".editTotalQuantity").show();
+            },
+            error: function () {
+
+                //don't change button - implies an error
+            }
+        });
+    },
+    /**
+     * AJAX call that gets triggered after a user clicks remove for any medication
+     * in the inventory.
+     */
     toggleMedication: function ( btn ){
 
         var editCell = $(btn).parents("td").siblings("td.currentQuantity").first();
@@ -116,17 +198,21 @@ $(document).ready(function () {
 
 
     $("#inventoryTable").DataTable({
-        columnDefs: [ { orderable: false, targets: [3] }]
+        columnDefs: [ { orderable: false, targets: [4] }]
     });
 
     $("#inventoryTable").on("draw.dt", function() {
 
         manageInventoryFeature.bindEditCurrentQuantityButtonClick();
+        manageInventoryFeature.bindEditTotalQuantityButtonClick();
         manageInventoryFeature.bindEditCurrentQuantityEnterKey();
+        manageInventoryFeature.bindEditTotalQuantityEnterKey();
         manageInventoryFeature.bindRemoveButtonClick();
     });
     manageInventoryFeature.bindEditCurrentQuantityButtonClick();
+    manageInventoryFeature.bindEditTotalQuantityButtonClick();
     manageInventoryFeature.bindEditCurrentQuantityEnterKey();
+    manageInventoryFeature.bindEditTotalQuantityEnterKey();
     manageInventoryFeature.bindRemoveButtonClick();
 
 

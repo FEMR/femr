@@ -1,3 +1,100 @@
+// AJAX STUFF
+var manageInventoryFeature = {
+
+    bindRemoveButtonClick: function(){
+
+        $(".removeBtn").unbind("click");
+        $('.removeBtn').click(function () {
+            manageInventoryFeature.toggleMedication(this);
+
+        });
+    },
+    bindEditCurrentQuantityButtonClick: function(){
+
+        $(".editQuantityBtn").unbind("click");
+        $(".editQuantityBtn").click(function(){
+            $(this).siblings(".editQuantity").first().hide();
+            $(this).siblings(".editInput").first().show();
+            $(this).hide();
+        });
+    },
+    bindEditCurrentQuantityEnterKey: function(){
+
+        $(".editInput").unbind("keypress");
+        $(".editInput").keypress(function(e) {
+            console.log("keypress");
+            if (e.which == 13) {
+
+                manageInventoryFeature.editCurrentQuantity( this );
+                e.preventDefault();
+            }
+        });
+    },
+    editCurrentQuantity: function ( inputField ) {
+
+        var value = $(inputField).val();
+        var id = $(inputField).siblings('input.medication_id').first().val();
+        var tripId = $(inputField).siblings('input.trip_id').first().val();
+
+
+        $.ajax({
+            url: '/admin/inventory/edit/' + id + "/" + tripId,
+            type: 'POST',
+            data: {
+                quantity: value
+            },
+            dataType: 'text',
+            success: function () {
+
+                // Hide edit field
+                $(inputField).hide();
+
+                // Show edit button
+                $(inputField).siblings(".editQuantityBtn").show();
+
+                // Update text quantity value and show
+                $(inputField).siblings(".editQuantity").text(value);
+                $(inputField).siblings(".editQuantity").show();
+            },
+            error: function () {
+
+                //don't change button - implies an error
+            }
+        });
+    },
+    toggleMedication: function ( btn ){
+
+        var editCell = $(btn).parents("td").siblings("td.currentQuantity").first();
+
+        var id = $(editCell).find('input.medication_id').val();
+        var tripId = $(editCell).find('input.trip_id').val();
+
+        $.ajax({
+
+            url: '/admin/inventory/delete/' + id + "/" + tripId,
+            type: 'POST',
+            data: {},
+            dataType: 'text',
+            success: function () {
+
+                if($(btn).hasClass("btn-danger")){
+                    $(btn).html("Undo");
+                    $(btn).removeClass("btn-danger");
+                    $(btn).addClass("btn-success");
+                }
+                else{
+                    $(btn).html("Remove");
+                    $(btn).removeClass("btn-success");
+                    $(btn).addClass("btn-danger");
+                }
+            },
+            error: function () {
+                //don't change button - implies an error
+            }
+        });
+    }
+};
+
 $(document).ready(function () {
 
     $("#addNewIngredient").click(function(){
@@ -18,96 +115,20 @@ $(document).ready(function () {
     });
 
 
-    $('#inventoryTable').DataTable({
+    $("#inventoryTable").DataTable({
         columnDefs: [ { orderable: false, targets: [3] }]
     });
 
-    $(".editQuantityBtn").click(function(){
+    $("#inventoryTable").on("draw.dt", function() {
 
-        $(this).siblings(".editQuantity").first().hide();
-        $(this).siblings(".editInput").first().show();
-        $(this).hide();
+        manageInventoryFeature.bindEditCurrentQuantityButtonClick();
+        manageInventoryFeature.bindEditCurrentQuantityEnterKey();
+        manageInventoryFeature.bindRemoveButtonClick();
     });
+    manageInventoryFeature.bindEditCurrentQuantityButtonClick();
+    manageInventoryFeature.bindEditCurrentQuantityEnterKey();
+    manageInventoryFeature.bindRemoveButtonClick();
 
-
-    // AJAX STUFF
-    var manageInventory = {
-
-        editCurrentQuantity: function ( inputField ) {
-
-            var value = $(inputField).val();
-            var id = $(inputField).siblings('input.medication_id').first().val();
-            var tripId = $(inputField).siblings('input.trip_id').first().val();
-
-
-            $.ajax({
-                url: '/admin/inventory/edit/' + id + "/" + tripId,
-                type: 'POST',
-                data: {
-                    quantity: value
-                },
-                dataType: 'text',
-                success: function () {
-
-                    // Hide edit field
-                    $(inputField).hide();
-
-                    // Show edit button
-                    $(inputField).siblings(".editQuantityBtn").show();
-
-                    // Update text quantity value and show
-                    $(inputField).siblings(".editQuantity").text(value);
-                    $(inputField).siblings(".editQuantity").show();
-                },
-                error: function () {
-
-                    //don't change button - implies an error
-                }
-            });
-        },
-        toggleMedication: function ( btn ){
-
-            var editCell = $(btn).parents("td").siblings("td.currentQuantity").first();
-
-            var id = $(editCell).find('input.medication_id').val();
-            var tripId = $(editCell).find('input.trip_id').val();
-
-            $.ajax({
-
-                url: '/admin/inventory/delete/' + id + "/" + tripId,
-                type: 'POST',
-                data: {},
-                dataType: 'text',
-                success: function () {
-
-                    if($(btn).hasClass("btn-danger")){
-                        $(btn).html("Undo");
-                        $(btn).removeClass("btn-danger");
-                        $(btn).addClass("btn-success");
-                    }
-                    else{
-                        $(btn).html("Remove");
-                        $(btn).removeClass("btn-success");
-                        $(btn).addClass("btn-danger");
-                    }
-                },
-                error: function () {
-                    //don't change button - implies an error
-                }
-            });
-        }
-    };
-    $(".editInput").keypress(function(e) {
-
-        if (e.which == 13) {
-
-            manageInventory.editCurrentQuantity( this );
-            e.preventDefault();
-        }
-    });
-    $('.removeBtn').click(function () {
-        manageInventory.toggleMedication(this);
-    });
 
     if ($('#addConceptMedicineSelect2').length > 0){
 

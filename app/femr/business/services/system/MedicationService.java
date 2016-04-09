@@ -94,10 +94,6 @@ public class MedicationService implements IMedicationService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-            response.addError("name", "name field was empty");
-        }
-
         try {
 
             //set each generic drug

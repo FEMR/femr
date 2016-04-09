@@ -305,12 +305,6 @@ public class ItemModelMapper implements IItemModelMapper {
                                                    MedicationInventory medicationInventory, Boolean isCounseled) {
 
 
-
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-
-            return null;
-        }
-
         PrescriptionItem prescriptionItem = new PrescriptionItem();
 
         prescriptionItem.setId(id);

@@ -41,10 +41,11 @@
 
     @helper.form(action = InventoryController.managePost()) {
 
-        @if( currentUser.getTripId() == null ){
+        @if( currentUser.getTripId == null ){
             <fieldset disabled="disabled">
         }
         <h3>Add Existing Medicine To Formulary:</h3>
+        <p>-Add medication(s) from the concept dictionary. Adjust current/initial quantity in the Current Formulary section after clicking Submit.</p>
         <select id="addConceptMedicineSelect2" multiple="multiple" name="newConceptMedicationsForInventory[]">
         @defining(viewModel.getConceptMedications) { conceptMeds =>
             @for(i <- 1 to conceptMeds.size) {
@@ -54,7 +55,7 @@
         </select>
 
         <h3>Add Custom Medicine To Formulary:</h3>
-
+        <p>-Add a new medication that does not exist in the concept dictionary.</p>
         <div class="newMedicationWrap">
 
             <div class="row">
@@ -132,6 +133,7 @@
     
     <div id="currentMedication">
         <h3>Current Formulary:</h3>
+        <p>-As medications are dispensed, quantity will be subtracted from the Current Quantity column.</p>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable" class="table">
                 <thead>
@@ -147,19 +149,31 @@
                     <tr>
                         <td>@m</td>
                         <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
-                        <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId()">
 
-                            <span class="editQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityCurrent</span>
-                            <input class="editInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityCurrent" />
 
-                            <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId()" />
-                            <input type="hidden" class="trip_id" value="@currentUser.getTripId()" />
-                            <button type="button" class="btn btn-xs editQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId()"><i class="glyphicon glyphicon-edit"></i></button>
+                        <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId">
+
+                            <span class="editCurrentQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityCurrent</span>
+                            <input class="editCurrentInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityCurrent" />
+                            <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
+                            <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
+                            <button type="button" class="btn btn-xs editCurrentQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
 
                         </td>
-                        <td class="totalQuantity" quantity="@viewModel.getMedications.get(m - 1).getQuantityCurrent()" data-id="@viewModel.getMedications.get(m-1).getId()" value="@viewModel.getMedications.get(m - 1).getQuantityTotal">@viewModel.getMedications.get(m - 1).getQuantityTotal</td>
+
+                        <td class="totalQuantity" value="@viewModel.getMedications.get(m-1).getId" >
+
+                            <span class="editTotalQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityTotal</span>
+                            <input class="editTotalInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityTotal" />
+                            <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
+                            <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
+                            <button type="button" class="btn btn-xs editTotalQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
+
+                        </td>
                         <td>
-                            <button type="button" class="btn btn-danger removeBtn" data-medicationid="@viewModel.getMedications.get(m-1).getId()" data-tripid="@currentUser.getTripId()">Remove</button>
+
+                            <button type="button" class="btn btn-danger removeBtn" data-medicationid="@viewModel.getMedications.get(m-1).getId" data-tripid="@currentUser.getTripId">Remove</button>
+
                         </td>
                     </tr>
                     }

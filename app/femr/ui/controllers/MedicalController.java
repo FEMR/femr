@@ -140,6 +140,7 @@ public class MedicalController extends Controller {
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
 
         //get prescriptions
+
         ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId());
         if (prescriptionItemServiceResponse.hasErrors()) {
 
@@ -327,12 +328,12 @@ public class MedicalController extends Controller {
         List<PrescriptionItem> prescriptionItemsWithID = viewModelPost.getPrescriptions()
                 .stream()
                 .filter(prescription -> prescription.getMedicationID() != null)
-                .collect(Collectors.toList());
+                .filter(prescription -> StringUtils.isNullOrWhiteSpace(prescription.getOriginalMedicationName()))
+        .collect(Collectors.toList());
 
         //create the prescriptions that already have an ID
         ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
         for (PrescriptionItem prescriptionItem : prescriptionItemsWithID){
-
             createPrescriptionServiceResponse = medicationService.createPrescription(
                     prescriptionItem.getMedicationID(),
                     prescriptionItem.getAdministrationID(),
@@ -353,6 +354,7 @@ public class MedicalController extends Controller {
                 .stream()
                 .filter( prescription -> prescription.getMedicationID() == null )
                 .filter( prescription -> StringUtils.isNotNullOrWhiteSpace( prescription.getMedicationName() ) )
+               .filter(prescription -> StringUtils.isNullOrWhiteSpace(prescription.getOriginalMedicationName()))
                 .collect(Collectors.toList());
 
 

@@ -332,20 +332,8 @@ public class MedicalController extends Controller {
         .collect(Collectors.toList());
 
         //create the prescriptions that already have an ID
-        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
         for (PrescriptionItem prescriptionItem : prescriptionItemsWithID){
-            createPrescriptionServiceResponse = medicationService.createPrescription(
-                    prescriptionItem.getMedicationID(),
-                    prescriptionItem.getAdministrationID(),
-                    patientEncounterItem.getId(),
-                    currentUserSession.getId(),
-                    prescriptionItem.getAmount(),
-                    null);
-
-            if (createPrescriptionServiceResponse.hasErrors()){
-
-                throw new RuntimeException();
-            }
+            createPrescriptionItemsWithID(prescriptionItem, patientEncounterItem);
         }
 
         // get the prescriptions that DO NOT have an ID (e.g. prescriptions that DO NOT exist in the dictionary).
@@ -357,35 +345,95 @@ public class MedicalController extends Controller {
                .filter(prescription -> StringUtils.isNullOrWhiteSpace(prescription.getOriginalMedicationName()))
                 .collect(Collectors.toList());
 
+        for(PrescriptionItem prescription : prescriptionItemsWithoutID)
+        {
+            createPrescriptionItemsWithoutID(prescription, patientEncounterItem);
+        }
+        //Get updates to patient prescription
+        //Get Patient Encounter -- for index map of original values to updated values
+        PatientEncounterItem patientEncounter;
+        ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if (patientEncounterItemServiceResponse.hasErrors()) {
 
-
-        for (PrescriptionItem prescriptionItem : prescriptionItemsWithoutID){
-
-            if (StringUtils.isNullOrWhiteSpace(prescriptionItem.getMedicationName())) {
-                continue;
+            throw new RuntimeException();
+        }
+        //get existing prescription list
+        patientEncounter = patientEncounterItemServiceResponse.getResponseObject();
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId());
+        List<PrescriptionItem> oldPrescriptionItems = prescriptionItemServiceResponse.getResponseObject();
+        //get updated Prescription items
+        List<PrescriptionItem> updatedPrescriptionItems = viewModelPost.getPrescriptions()
+                .stream()
+                .filter( prescription -> StringUtils.isNotNullOrWhiteSpace( prescription.getMedicationName() ) )
+                .filter(prescription -> StringUtils.isNotNullOrWhiteSpace(prescription.getOriginalMedicationName()))
+                .collect(Collectors.toList());
+        Map<Integer, Integer> prescriptionsToReplace = new HashMap();
+        int i =0;
+        //map updated fields to original fields.  In current state this will fuck up if medicationName is null or whitespace
+        //its also fucked because ID's don't update
+        for(PrescriptionItem prescriptions : updatedPrescriptionItems)
+        {
+            if(prescriptions.getMedicationID() == null)
+            {
+                prescriptionsToReplace.put(createPrescriptionItemsWithoutID(prescriptions, patientEncounterItem).getId(), oldPrescriptionItems.get(i).getId());
             }
+            else
+            {
+                prescriptionsToReplace.put(createPrescriptionItemsWithID(prescriptions, patientEncounterItem).getId(), oldPrescriptionItems.get(i).getId());
+            }
+            i++;
+        }
+        // replace the prescriptions!
+        if (prescriptionsToReplace.size() > 0){
+            ServiceResponse<List<PrescriptionItem>> replacePrescriptionsServiceResponse = medicationService.replacePrescriptions(prescriptionsToReplace);
+            if (replacePrescriptionsServiceResponse.hasErrors()){
+                throw new RuntimeException();
+            }
+        }
 
+        String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
+
+        return ok(index.render(currentUserSession, message, 0));
+    }
+    public PrescriptionItem createPrescriptionItemsWithoutID(PrescriptionItem prescription,  PatientEncounterItem encounter)
+    {
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
+            if (StringUtils.isNullOrWhiteSpace(prescription.getMedicationName())) {
+                return null;
+            }
             createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
-                    prescriptionItem.getMedicationName(),
-                    prescriptionItem.getAdministrationID(),
-                    patientEncounterItem.getId(),
+                    prescription.getMedicationName(),
+                    prescription.getAdministrationID(),
+                    encounter.getId(),
                     currentUserSession.getId(),
-                    prescriptionItem.getAmount(),
+                    prescription.getAmount(),
                     null);
 
             if (createPrescriptionServiceResponse.hasErrors()){
 
                 throw new RuntimeException();
             }
-        }
-
-
-
-        String message = "Patient information for " + patientItem.getFirstName() + " " + patientItem.getLastName() + " (id: " + patientItem.getId() + ") was saved successfully.";
-
-        return ok(index.render(currentUserSession, message, 0));
+        return createPrescriptionServiceResponse.getResponseObject();
     }
+    public PrescriptionItem createPrescriptionItemsWithID(PrescriptionItem prescription,  PatientEncounterItem encounter)
+    {
+        CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+        ServiceResponse<PrescriptionItem> createPrescriptionServiceResponse;
+        createPrescriptionServiceResponse = medicationService.createPrescription(
+                prescription.getMedicationID(),
+                prescription.getAdministrationID(),
+                encounter.getId(),
+                currentUserSession.getId(),
+                prescription.getAmount(),
+                null);
 
+        if (createPrescriptionServiceResponse.hasErrors()){
+
+            throw new RuntimeException();
+        }
+        return createPrescriptionServiceResponse.getResponseObject();
+    }
     public Result updateVitalsPost(int id) {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();

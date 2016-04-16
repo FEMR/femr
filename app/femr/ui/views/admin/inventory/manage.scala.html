@@ -47,7 +47,7 @@
 
             <div class="row">
                 <div class="fieldMedication" >
-                    <label for="medicationName">Name</label>
+                    <label for="medicationName">Brand</label>
                     <input type="text" class="fInput" id="medicationName" name="medicationName"  placeholder="" />
                 </div>
 
@@ -75,7 +75,7 @@
                     <div class="ingredientFields first">
 
                         <div class="fieldMedication">
-                            <label for="medicationIngredient">Ingredient</label>
+                            <label for="medicationIngredient">Generic</label>
                             <input type="text" name="medicationIngredient[]" class="fInput medicationIngredient" placeholder="" />
                         </div>
 
@@ -117,26 +117,40 @@
             </fieldset>
         }
     }
-
-
-   <div id="currentMedication">
+    
+    <div id="currentMedication">
         <h3>Current Medications:</h3>
         <div id="currentMedicationsWrap">
-            <table id="inventoryTable">
+            <table id="inventoryTable" class="table">
                 <thead>
+                    <th>#</th>
                     <th>Medication</th>
-                    <th>Total Quantity</th>
                     <th>Current Quantity</th>
+                    <th>Initial Quantity</th>
                     <th>Remove</th>
                 </thead>
                 <tbody>
                 @for(m <- 1 to viewModel.getMedications.size) {
+                    @if(viewModel.getMedications.get(m - 1).getIsDeleted == null){
                     <tr>
+                        <td>@m</td>
                         <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
-                        <td class="totalQuantity">@viewModel.getMedications.get(m - 1).getQuantity_total</td>
-                        <td class="currentQuantity">@viewModel.getMedications.get(m - 1).getQuantity_current</td>
-                        <td class="remove">Remove</td>
+                        <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId()">
+
+                            <span class="editQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityCurrent</span>
+                            <input class="editInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityCurrent" />
+
+                            <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId()" />
+                            <input type="hidden" class="trip_id" value="@currentUser.getTripId()" />
+                            <button type="button" class="btn btn-xs editQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId()"><i class="glyphicon glyphicon-edit"></i></button>
+
+                        </td>
+                        <td class="totalQuantity" quantity="@viewModel.getMedications.get(m - 1).getQuantityCurrent()" data-id="@viewModel.getMedications.get(m-1).getId()" value="@viewModel.getMedications.get(m - 1).getQuantityTotal">@viewModel.getMedications.get(m - 1).getQuantityTotal</td>
+                        <td>
+                            <button type="button" class="btn btn-danger removeBtn" data-medicationid="@viewModel.getMedications.get(m-1).getId()" data-tripid="@currentUser.getTripId()">Remove</button>
+                        </td>
                     </tr>
+                    }
                 }
                 </tbody>
             </table>

@@ -16,39 +16,29 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.core;
 
-import femr.data.models.core.IDiagnosis;
+/**
+ * MedicationGenericStrength represents the amount and units of measurement
+ * inside of a generic drug.
+ * e.g. 500(amount) mg(unit) Acetominophen(generic drug)
+ */
+public interface IMedicationGenericStrength {
+    int getId();
 
-import javax.persistence.*;
+    IConceptMedicationUnit getConceptMedicationUnit();
 
-@Entity
-@Table(name = "diagnoses")
-public class Diagnosis implements IDiagnosis {
+    void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit);
 
-    @Id
-    @Column(name = "id", unique = true, nullable = false)
-    private int id;
-    @Column(name = "name", nullable = false)
-    private String name;
+    IMedicationGeneric getMedicationGeneric();
 
-    @Override
-    public int getId() {
-        return id;
-    }
+    void setMedicationGeneric(IMedicationGeneric medicationGeneric);
 
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
+    boolean isDenominator();
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    void setDenominator(boolean isDenominator);
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+    Double getValue();
+
+    void setValue(Double value);
 }

@@ -16,9 +16,9 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.IMedicationAdministration;
+import femr.data.models.core.IConceptMedicationUnit;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,15 +26,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "medication_administrations")
-public class MedicationAdministration implements IMedicationAdministration {
+@Table(name = "concept_medication_units")
+public class ConceptMedicationUnit implements IConceptMedicationUnit {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @Column(name = "name", unique = true, nullable = false)
     private String name;
-    @Column(name = "daily_modifier", unique = false, nullable = false)
-    private float dailyModifier;
+    @Column(name="description")
+    private String description;
+    @Column(name="isDeleted")
+    private Boolean isDeleted;
 
     @Override
     public int getId() {
@@ -52,8 +54,22 @@ public class MedicationAdministration implements IMedicationAdministration {
     }
 
     @Override
-    public float getDailyModifier() { return dailyModifier; };
+    public String getDescription() {
+        return description;
+    }
 
     @Override
-    public void setDailyModifier(float dailyModifier) { this.dailyModifier = dailyModifier; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    @Override
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

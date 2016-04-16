@@ -16,15 +16,16 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.util.dependencyinjection.providers;
+package femr.data.models.core;
 
-import com.google.inject.Provider;
-import femr.data.models.core.IDiagnosis;
-import femr.data.models.mysql.Diagnosis;
+public interface IConceptDiagnosis {
 
-public class DiagnosisProvider implements Provider<IDiagnosis> {
-    @Override
-    public IDiagnosis get() {
-        return new Diagnosis();
-    }
+
+    int getId();
+
+    void setId(int id);
+
+    String getName();
+
+    void setName(String name);
 }

@@ -22,13 +22,97 @@ $(document).ready(function () {
         columnDefs: [ { orderable: false, targets: [3] }]
     });
 
+    $(".editQuantityBtn").click(function(){
+
+        $(this).siblings(".editQuantity").first().hide();
+        $(this).siblings(".editInput").first().show();
+        $(this).hide();
+    });
+
+
+    // AJAX STUFF
+    var manageInventory = {
+
+        editCurrentQuantity: function ( inputField ) {
+
+            var value = $(inputField).val();
+            var id = $(inputField).siblings('input.medication_id').first().val();
+            var tripId = $(inputField).siblings('input.trip_id').first().val();
+
+
+            $.ajax({
+                url: '/admin/inventory/edit/' + id + "/" + tripId,
+                type: 'POST',
+                data: {
+                    quantity: value
+                },
+                dataType: 'text',
+                success: function () {
+
+                    // Hide edit field
+                    $(inputField).hide();
+
+                    // Show edit button
+                    $(inputField).siblings(".editQuantityBtn").show();
+
+                    // Update text quantity value and show
+                    $(inputField).siblings(".editQuantity").text(value);
+                    $(inputField).siblings(".editQuantity").show();
+                },
+                error: function () {
+
+                    //don't change button - implies an error
+                }
+            });
+        },
+        toggleMedication: function ( btn ){
+
+            var editCell = $(btn).parents("td").siblings("td.currentQuantity").first();
+
+            var id = $(editCell).find('input.medication_id').val();
+            var tripId = $(editCell).find('input.trip_id').val();
+
+            $.ajax({
+
+                url: '/admin/inventory/delete/' + id + "/" + tripId,
+                type: 'POST',
+                data: {},
+                dataType: 'text',
+                success: function () {
+
+                    if($(btn).hasClass("btn-danger")){
+                        $(btn).html("Undo");
+                        $(btn).removeClass("btn-danger");
+                        $(btn).addClass("btn-success");
+                    }
+                    else{
+                        $(btn).html("Remove");
+                        $(btn).removeClass("btn-success");
+                        $(btn).addClass("btn-danger");
+                    }
+                },
+                error: function () {
+                    //don't change button - implies an error
+                }
+            });
+        }
+    };
+    $(".editInput").keypress(function(e) {
+
+        if (e.which == 13) {
+
+            manageInventory.editCurrentQuantity( this );
+            e.preventDefault();
+        }
+    });
+    $('.removeBtn').click(function () {
+        manageInventory.toggleMedication(this);
+    });
 });
 
 function bindRemoveAction(element){
 
     $(element).click(function(){
-
-        console.log( $(this).parents(".ingredientFields").index() );
 
         // don't let the first row get removed
         if( $(this).parents(".ingredientFields").index() > 0 ) {

@@ -153,7 +153,10 @@ public class MissionTripService implements IMissionTripService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<IMissionTrip> retrieveCurrentMissionTrip(int userId) {
+    public Optional<IMissionTrip> retrieveCurrentMissionTripForUser(int userId) {
+
+        //TODO should this be moved to just be identified whenever a CurrentUser is retrieved?
+        // This should be contained in the session service??
 
         ExpressionList<User> userQuery = QueryProvider.getUserQuery()
                 .where()

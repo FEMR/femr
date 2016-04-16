@@ -16,30 +16,30 @@
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
      you have any questions, contact <info@teamfemr.org>.
 */
-package femr.data.models.mysql;
+package femr.data.models.mysql.concepts;
 
-import femr.data.models.core.IMedicationActiveDrug;
-import femr.data.models.core.IMedicationActiveDrugName;
-import femr.data.models.core.IMedicationMeasurementUnit;
+import femr.data.models.core.IConceptMedicationUnit;
+import femr.data.models.core.IMedicationGeneric;
+import femr.data.models.core.IMedicationGenericStrength;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medication_active_drugs")
-public class MedicationActiveDrug implements IMedicationActiveDrug {
+@Table(name = "concept_medication_generic_strengths")
+public class ConceptMedicationGenericStrength implements IMedicationGenericStrength {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_measurement_units_id")
-    private MedicationMeasurementUnit medicationMeasurementUnit;
+    @JoinColumn(name = "concept_medication_unit_id")
+    private ConceptMedicationUnit conceptMedicationUnit;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "medication_active_drug_names_id")
-    private MedicationActiveDrugName medicationActiveDrugName;
+    @JoinColumn(name = "concept_medication_generic_id")
+    private ConceptMedicationGeneric conceptMedicationGeneric;
     @Column(name = "isDenominator", nullable = false)
     private boolean isDenominator;
     @Column(name = "value", unique = true, nullable = false)
-    private int value;
+    private Double value;
 
     @Override
     public int getId() {
@@ -47,23 +47,23 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     }
 
     @Override
-    public IMedicationMeasurementUnit getMedicationMeasurementUnit() {
-        return medicationMeasurementUnit;
+    public IConceptMedicationUnit getConceptMedicationUnit() {
+        return conceptMedicationUnit;
     }
 
     @Override
-    public void setMedicationMeasurementUnit(IMedicationMeasurementUnit medicationMeasurementUnit) {
-        this.medicationMeasurementUnit = (MedicationMeasurementUnit) medicationMeasurementUnit;
+    public void setConceptMedicationUnit(IConceptMedicationUnit conceptMedicationUnit) {
+        this.conceptMedicationUnit = (ConceptMedicationUnit) conceptMedicationUnit;
     }
 
     @Override
-    public IMedicationActiveDrugName getMedicationActiveDrugName() {
-        return medicationActiveDrugName;
+    public IMedicationGeneric getMedicationGeneric() {
+        return conceptMedicationGeneric;
     }
 
     @Override
-    public void setMedicationActiveDrugName(IMedicationActiveDrugName medicationActiveDrugName) {
-        this.medicationActiveDrugName = (MedicationActiveDrugName) medicationActiveDrugName;
+    public void setMedicationGeneric(IMedicationGeneric conceptMedicationGeneric) {
+        this.conceptMedicationGeneric = (ConceptMedicationGeneric) conceptMedicationGeneric;
     }
 
     @Override
@@ -77,12 +77,12 @@ public class MedicationActiveDrug implements IMedicationActiveDrug {
     }
 
     @Override
-    public int getValue() {
+    public Double getValue() {
         return value;
     }
 
     @Override
-    public void setValue(int value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 }

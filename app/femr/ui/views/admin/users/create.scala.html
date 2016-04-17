@@ -38,6 +38,13 @@
             '_isRequired -> true
         )
 
+        @helper.inputPassword(form("confirmPassword"),
+            'class -> "fInput",
+            'placeholder -> "Confirm Password",
+            '_label -> "Confirm Password",
+            '_isRequired -> true
+        )
+
         @helper.inputText(form("firstName"),
             'class -> "fInput",
             'placeholder -> "First Name",

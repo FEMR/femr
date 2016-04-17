@@ -33,7 +33,7 @@ var triageFieldValidator = {
 
         //Validate Age and Age Classification
         // Compares the differences in months in the current Date and input Age
-        var d = new Date;
+        /*var d = new Date;
         var inputYears = patientInformation.age.val().split('-')[0];
         var inputMonths = patientInformation.age.val().split('-')[1]-1;
         var months = inputMonths + inputYears * 12;
@@ -73,7 +73,7 @@ var triageFieldValidator = {
             default:
                 triageFieldValidator.isValid = false;
                 break;
-        }
+        }*/
         
     },
     validatePatientVitals: function () {

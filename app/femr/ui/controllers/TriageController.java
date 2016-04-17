@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.DoubleAccumulator;
 import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -169,6 +170,20 @@ public class TriageController extends Controller {
         }
         patientItem = patientServiceResponse.getResponseObject();
 
+        // Check if patient's numerical age is within range of age classification
+        int totalMonths = (int)Math.floor(patientItem.getMonthsOld() / 12);
+
+        if (totalMonths >= 0 && totalMonths <= 1 && !viewModel.getAgeClassification().toLowerCase().equals("infant")) {
+            throw new RuntimeException("Invalid age classification");
+        } else if (totalMonths >= 2 && totalMonths <= 12 && !viewModel.getAgeClassification().toLowerCase().equals("child")) {
+            throw new RuntimeException("Invalid age classification");
+        } else if (totalMonths >= 13 && totalMonths <= 17 && !viewModel.getAgeClassification().toLowerCase().equals("teen")) {
+            throw new RuntimeException("Invalid age classification");
+        } else if (totalMonths >= 18 && totalMonths <= 64 && !viewModel.getAgeClassification().toLowerCase().equals("adult")) {
+            throw new RuntimeException("Invalid age classification");
+        } else if (totalMonths >= 64 && !viewModel.getAgeClassification().toLowerCase().equals("elder")) {
+            throw new RuntimeException("Invalid age classification");
+        }
 
         photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
         //V code for saving photo without javascript

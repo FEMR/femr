@@ -37,6 +37,14 @@
             '_label -> "Password",
             '_isRequired -> true
         )
+<!-- added for FEMR-159 added by Vivek-->
+
+        @helper.inputPassword(form("passwordVerify"),
+            'class -> "fInput",
+            'placeholder -> "Verify Password",
+            '_label -> null,
+            'type -> "password"
+        )
 
         @helper.inputText(form("firstName"),
             'class -> "fInput",

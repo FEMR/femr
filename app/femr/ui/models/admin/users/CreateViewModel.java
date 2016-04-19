@@ -94,7 +94,6 @@ public class CreateViewModel {
     }
 
     public void setPasswordVerify(String passwordVerify) {
-        System.out.println("-----> " + passwordVerify );
         this.passwordVerify = passwordVerify;
     }
 

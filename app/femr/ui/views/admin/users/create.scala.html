@@ -28,7 +28,7 @@
             'class -> "fInput",
             'placeholder -> "Email Address",
             '_label -> "Email Address",
-            '_isRequired -> true
+            '_isequired -> true
         )
 
         @helper.inputPassword(form("password"),
@@ -36,6 +36,14 @@
             'placeholder -> "Password",
             '_label -> "Password",
             '_isRequired -> true
+        )
+<!-- added for FEMR-159 -->
+
+        @helper.inputPassword(form("passwordVerify"),
+            'class -> "fInput",
+            'placeholder -> "Verify Password",
+            '_label -> null,
+            'type -> "password"
         )
 
         @helper.inputText(form("firstName"),

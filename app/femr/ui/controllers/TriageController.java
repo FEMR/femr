@@ -15,13 +15,12 @@ import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import play.data.Form;
 import play.mvc.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Period;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -248,16 +247,27 @@ public class TriageController extends Controller {
             newVitals.put("weeksPregnant", viewModel.getWeeksPregnant().floatValue());
         }
 
-         if (viewModel.getAge().getYear() >= 65 && viewModel.getAgeClassification() != "elder")
-             return null;
-         else if (viewModel.getAge().getYear() >= 18 && viewModel.getAgeClassification() != "adult")
-             return null;
-         else if (viewModel.getAge().getYear() >= 13 && viewModel.getAgeClassification() != "teen")
-             return null;
-         else if (viewModel.getAge().getYear() >= 2 && viewModel.getAgeClassification() != "child")
-             return null;
-         else if (viewModel.getAge().getYear() >= 0 && viewModel.getAgeClassification() != "infant")
-             return null;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(viewModel.getAge());
+        int myAge = cal.get(Calendar.YEAR);
+        String classif = viewModel.getAgeClassification();
+
+        if (myAge <= 1951)
+                if (classif != "elder")
+                     return null;
+        else if (myAge <= 1998)
+                if (classif != "adult")
+                     return null;
+        else if (myAge <= 2003)
+                if (classif != "teen")
+                    return null;
+        else if (myAge <= 2005)
+                if (classif != "child")
+                    return null;
+        else if (myAge <= 2015)
+                if (classif != "infant")
+                    return null;
+
 		
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
@@ -333,6 +343,7 @@ public class TriageController extends Controller {
 
         return chiefComplaints;
     }
+
 
 //    //AJ Saclayan Cities
 //    public void editPost()

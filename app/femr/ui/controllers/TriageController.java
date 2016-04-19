@@ -88,6 +88,8 @@ public class TriageController extends Controller {
         return ok(index.render(currentUser, viewModelGet));
     }
 
+
+
     /*
     Used when user has searched for an existing patient
     and wants to create a new encounter
@@ -129,6 +131,10 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
+
+
+
+
         IndexViewModelGet viewModelGet = new IndexViewModelGet();
         viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
         viewModelGet.setPatient(patient);
@@ -168,6 +174,7 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
         patientItem = patientServiceResponse.getResponseObject();
+
 
 
         photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
@@ -240,6 +247,17 @@ public class TriageController extends Controller {
 		 if (viewModel.getWeeksPregnant() != null) { /*Sam Zanni*/
             newVitals.put("weeksPregnant", viewModel.getWeeksPregnant().floatValue());
         }
+
+         if (viewModel.getAge().getYear() >= 65 && viewModel.getAgeClassification() != "elder")
+             return null;
+         else if (viewModel.getAge().getYear() >= 18 && viewModel.getAgeClassification() != "adult")
+             return null;
+         else if (viewModel.getAge().getYear() >= 13 && viewModel.getAgeClassification() != "teen")
+             return null;
+         else if (viewModel.getAge().getYear() >= 2 && viewModel.getAgeClassification() != "child")
+             return null;
+         else if (viewModel.getAge().getYear() >= 0 && viewModel.getAgeClassification() != "infant")
+             return null;
 		
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
@@ -287,6 +305,8 @@ public class TriageController extends Controller {
         if (viewModelPost.getAge() != null) {
             patient.setBirth(viewModelPost.getAge());
         }
+
+
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());

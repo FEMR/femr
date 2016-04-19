@@ -28,8 +28,15 @@ var triageFieldValidator = {
             triageFieldValidator.isValid = false;
         } else {
             //something has been filled out
+            var age = patientInformation.years.val();
+            if (age >= 65){patientInformation.ageClassification.filter('elder:checked');}
+            else if (age >= 18){patientInformation.ageClassification.filter('adult:checked');}
+            else if (age >= 13){patientInformation.ageClassification.filter('teen:checked');}
+            else if (age >= 2) {patientInformation.ageClassification.filter('child:checked');}
+            else{patientInformation.ageClassification.filter('infant:checked');}
             $('#ageClassificationWrap').css('border', 'none');
         }
+        
 
     },
     validatePatientVitals: function () {

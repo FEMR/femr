@@ -198,7 +198,7 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID){
+    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID, String reason){
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -207,10 +207,10 @@ public class PatientService implements IPatientService {
                 .eq("id", id);
 
         try {
-
             IPatient savedPatient = patientRepository.findOne(query);
             savedPatient.setIsDeleted(DateTime.now());
             savedPatient.setDeletedByUserId(deleteByUserID);
+            savedPatient.setReasonDeleted(reason);
             patientRepository.update(savedPatient);
 
         } catch (Exception ex) {

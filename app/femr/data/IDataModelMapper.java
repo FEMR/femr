@@ -283,6 +283,6 @@ public interface IDataModelMapper {
      * @param diabetesScreenerId the id of the physician that screened the patient for diabetes, not null
      * @return a PatientEncounter ready to be updated with the date of screening and the physician that did the screening
      */
-    IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId);
+    IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId, Boolean isDiabetesScreened);
 
 }

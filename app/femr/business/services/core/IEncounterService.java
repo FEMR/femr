@@ -116,7 +116,7 @@ public interface IEncounterService {
      * @param userId id of the physician that screened the patient for diabetes, not null
      * @return updated patient encounter item and/or errors if they exist, or null if errors
      */
-    ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId);
+    ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId, Boolean isScreened);
 }
 
 

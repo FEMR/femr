@@ -63,6 +63,8 @@ public class PatientEncounter implements IPatientEncounter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_diabetes_screen", nullable = true)
     private User diabetesScreener;
+    @Column(name="is_diabetes_screened", nullable = true)
+    private Boolean isDiabetesScreened;
 
     @Override
     public int getId() {
@@ -194,4 +196,10 @@ public class PatientEncounter implements IPatientEncounter {
     public void setDiabetesScreener(IUser diabetesScreener) {
         this.diabetesScreener = (User) diabetesScreener;
     }
+
+    @Override
+    public Boolean getIsDiabetesScreened() {return isDiabetesScreened;}
+
+    @Override
+    public void setIsDiabetesScreened(Boolean isDiabetesScreened) {this.isDiabetesScreened = isDiabetesScreened;}
 }

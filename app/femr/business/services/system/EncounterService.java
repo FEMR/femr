@@ -457,7 +457,7 @@ public class EncounterService implements IEncounterService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId) {
+    public ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId, Boolean isScreened) {
 
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
 
@@ -467,7 +467,7 @@ public class EncounterService implements IEncounterService {
         try {
 
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
-            dataModelMapper.updatePatientEncounterWithDiabetesScreening(patientEncounter, userId);
+            dataModelMapper.updatePatientEncounterWithDiabetesScreening(patientEncounter, userId, isScreened);
 
             patientEncounter = patientEncounterRepository.update(patientEncounter);
 

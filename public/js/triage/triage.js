@@ -519,6 +519,9 @@ $(document).ready(function () {
         $('#weeksPregnant').val('');
         $('#weeksPregnant').attr('disabled', true);
     });
+    $('#noDiabetesScreen').click(function(){
+        $('input[name=isDiabetesScreenPerformed]').val("false");
+    });
     $('#yesDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("true");
     });

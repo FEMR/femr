@@ -14,7 +14,7 @@ GET         /admin/users/create                                @femr.ui.controll
 POST        /admin/users/edit                                  @femr.ui.controllers.admin.UsersController.editPost(id: Integer)
 GET         /admin/users/edit/:id                              @femr.ui.controllers.admin.UsersController.editGet(id: Integer)
 POST        /admin/users/toggle/:id                            @femr.ui.controllers.admin.UsersController.toggleUser(id: Integer)
-GET         /admin/users                                       @femr.ui.controllers.admin.UsersController.manageGet()
+GET         /admin/users/:page                                 @femr.ui.controllers.admin.UsersController.manageGet(page: Integer)
 GET         /admin/inventory                                   @femr.ui.controllers.admin.InventoryController.manageGet()
 POST        /admin/inventory                                   @femr.ui.controllers.admin.InventoryController.managePost()
 POST        /admin/inventory/delete/:id/:tripId                @femr.ui.controllers.admin.InventoryController.ajaxDelete(id: Integer, tripId: Integer)

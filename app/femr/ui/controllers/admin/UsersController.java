@@ -67,18 +67,28 @@ public class UsersController extends Controller {
     }
 
     //Manage all users
-    public Result manageGet() {
+    public Result manageGet(Integer currPage) {
+        Integer totalPages;
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ServiceResponse<List<UserItem>> userServiceResponse = userService.retrieveAllUsers();
+        List<UserItem> smallUserItems = new ArrayList<>();
+        for (int i=currPage*5;i<(currPage+1)*5 && i<userServiceResponse.getResponseObject().size();i++)
+            smallUserItems.add(userServiceResponse.getResponseObject().get(i));
+
+        if(userServiceResponse.getResponseObject().size()%5==0)
+            totalPages=userServiceResponse.getResponseObject().size()/5;
+        else
+            totalPages=userServiceResponse.getResponseObject().size()/5 + 1;
         if (userServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
 
         ManageViewModelGet viewModelGet = new ManageViewModelGet();
-        viewModelGet.setUsers(userServiceResponse.getResponseObject());
+        viewModelGet.setUsers(smallUserItems);
 
-        return ok(manage.render(currentUser, viewModelGet));
+
+        return ok(manage.render(currentUser, viewModelGet, currPage, totalPages));
     }
 
     //Create a new User
@@ -223,7 +233,7 @@ public class UsersController extends Controller {
             } else {
 
                 //return to manage user homepage
-                return redirect(routes.UsersController.manageGet());
+                return redirect(routes.UsersController.manageGet(0));
             }
         }
     }

@@ -19,4 +19,3 @@ DROP COLUMN `isDeleted`;
 ALTER TABLE `patients`
 DROP COLUMN `phone_no`;
 
-

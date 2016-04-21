@@ -252,6 +252,7 @@ public class TriageController extends Controller {
         int myAge = cal.get(Calendar.YEAR);
         String classif = viewModel.getAgeClassification();
 
+<<<<<<< HEAD
         if (myAge <= 1951 && classif != null && classif != "elder")
                      return null;
         else if (myAge <= 1998 && classif != null && classif != "adult" )
@@ -261,6 +262,17 @@ public class TriageController extends Controller {
         else if (myAge <= 2005  && classif != null && classif != "child")
                     return null;
         else if (myAge <= 2015  && classif != null && classif != "infant")
+=======
+        if (myAge <= 1951 && classif != "elder")
+                     return null;
+        else if (myAge <= 1998 && classif != "adult")
+                     return null;
+        else if (myAge <= 2003 && classif != "teen")
+                    return null;
+        else if (myAge <= 2005 && classif != "child")
+                    return null;
+        else if (myAge <= 2015 && classif != "infant")
+>>>>>>> 8ff4ea478e5b11d482ba79daa1b386b755767875
                     return null;
 
 		

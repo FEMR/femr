@@ -260,7 +260,8 @@ public class TriageController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId());
+        String reason = "test reason";
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reason);
 
         if(patientItemResponse.hasErrors())
             throw new RuntimeException();

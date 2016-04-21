@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModelGet: femr.ui.models.admin.users.ManageViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModelGet: femr.ui.models.admin.users.ManageViewModelGet, currPage: Integer, totalPages: Integer)
 
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.views.html.layouts.admin
@@ -66,6 +66,11 @@
         }
         </tbody>
     </table>
+    <ul class="pagination">
+        @for(i <- 0 until totalPages){
+            <li><a  href="/admin/users/@i">@(i+1)</a></li>
+        }
+    </ul>
     <div id="editDialog" title="Edit User">
         <div id="editPartial">
             @*load partial view for editing a user via admin.js*@

@@ -20,6 +20,7 @@ package femr.data.models.core;
 
 import femr.data.models.mysql.PatientEncounter;
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,10 @@ public interface IPatient {
     String getFirstName();
 
     void setFirstName(String firstName);
+
+    void setPhoneNo(String phoneNo);
+
+    String getPhoneNo();
 
     String getLastName();
 

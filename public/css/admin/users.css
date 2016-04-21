@@ -87,6 +87,12 @@ label[for=newPassword], label[for=newPasswordVerify]{
     padding: 0;
 }
 
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
 @media (max-width: 665px) {
     #addUserSubmitBtn{
         float: left !important;

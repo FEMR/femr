@@ -20,7 +20,6 @@ package femr.business.services.system;
 
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.FetchConfig;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -36,8 +35,9 @@ import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchService implements ISearchService {
 
@@ -367,17 +367,15 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
-                .fetch("patientEncounter")
                 .where()
-                .eq("encounter_id", encounterId)
-                .ne("user_id_pharmacy", null);
+                .eq("encounter_id", encounterId);
 
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-            List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
-                    .filter(pp -> pp.getDateDispensed() != null)
-                    .map(pp -> itemModelMapper.createPrescriptionItem(
-                            pp.getId(),
+            List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+            for( IPatientPrescription pp : patientPrescriptions ) {
+                if(pp.getPatientPrescriptionReplacements().isEmpty()) {
+                    prescriptionItems.add(itemModelMapper.createPrescriptionItem(pp.getId(),
                             pp.getMedication().getName(),
                             null,
                             pp.getPhysician().getFirstName(),
@@ -387,12 +385,11 @@ public class SearchService implements ISearchService {
                             pp.getMedication(),
                             null,
                             pp.isCounseled()
-                    ))
-                    .collect(Collectors.toList());
-            List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
-                    .filter(pp -> pp.getPatientPrescriptionReplacements().size() > 0)
-                    .map(pp -> itemModelMapper.createPrescriptionItem(
-                            pp.getId(),
+                    ));
+                }
+                else
+                {
+                    prescriptionItems.add(itemModelMapper.createPrescriptionItem(pp.getId(),
                             pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
                             pp.getMedication().getName(),
                             pp.getPhysician().getFirstName(),
@@ -402,10 +399,9 @@ public class SearchService implements ISearchService {
                             pp.getMedication(),
                             null,
                             pp.isCounseled()
-                    ))
-                    .collect(Collectors.toList());
-            prescriptionItems.addAll(replacedPrescriptions);
-
+                    ));
+                }
+            }
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

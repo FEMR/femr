@@ -104,7 +104,8 @@ $(document).ready(function () {
     });
 
     $('#deletePatientBtn').click(function () {
-        if (confirm("Are you sure you want to delete this patient?")) {
+        var reason;
+        if (reason = prompt("Are you sure you want to delete this patient?")) {
             $("#deletePatient").click();
         }
     });

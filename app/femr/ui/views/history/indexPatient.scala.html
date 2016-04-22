@@ -65,6 +65,7 @@
 
                     @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
                         @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
+                            <input type="hidden" name="reasonDeleted" value="test reason form congratulations" id="reasonDeleted" />
                             <button hidden="true" type="submit"  id="deletePatient"></button>
                         }
                         <span>

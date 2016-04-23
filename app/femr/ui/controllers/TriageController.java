@@ -260,10 +260,8 @@ public class TriageController extends Controller {
     public Result deletePatientPost(int patientId){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        //Getting UserItem
-        //String reason = "test reason";
         DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
-        //String reason = reasonDeleted.getReasonDeleted();
+        //Getting UserItem
         ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
 
         if(patientItemResponse.hasErrors())

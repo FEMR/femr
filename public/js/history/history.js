@@ -115,12 +115,5 @@ $(document).ready(function () {
                 msg += "\n\n***A reason must be provided in order to delete a patient record***";
             }
         } while (reason === "");
-
-        /*
-        var reason;
-        if (reason = prompt("Are you sure you want to delete this patient?")) {
-            $("#deletePatient").click();
-        }
-        */
     });
 });

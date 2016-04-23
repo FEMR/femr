@@ -58,11 +58,6 @@ public class Patient implements IPatient {
     @Column(name = "reason_deleted", nullable = true)
     private String reasonDeleted;
 
-    @Override
-    public String getReasonDeleted() { return reasonDeleted; }
-    @Override
-    public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
-
 
     @Override
     public int getId() {
@@ -183,9 +178,12 @@ public class Patient implements IPatient {
     public void setDeletedByUserId(Integer userId) {
         this.deletedByUserId= userId;
     }
-  
-    
-    
+
+    @Override
+    public String getReasonDeleted() { return reasonDeleted; }
+
+    @Override
+    public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
     
     
 

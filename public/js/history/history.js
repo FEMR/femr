@@ -104,8 +104,23 @@ $(document).ready(function () {
     });
 
     $('#deletePatientBtn').click(function () {
-        if (confirm("Are you sure you want to delete this patient?")) {
+        var msg = "Please enter the reason for deleting this record below:";
+        var reason;
+
+        do {
+            if (reason = prompt(msg)) {
+                $('#reasonDeleted').val(reason);
+                $("#deletePatient").click();
+            } else if (!msg.includes('***')) {
+                msg += "\n\n***A reason must be provided in order to delete a patient record***";
+            }
+        } while (reason === "");
+
+        /*
+        var reason;
+        if (reason = prompt("Are you sure you want to delete this patient?")) {
             $("#deletePatient").click();
         }
+        */
     });
 });

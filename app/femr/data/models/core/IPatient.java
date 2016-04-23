@@ -74,5 +74,9 @@ public interface IPatient {
 
     void setDeletedByUserId(Integer userId) ;
 
+    String getReasonDeleted() ;
+
+    void setReasonDeleted(String reason) ;
+
     
 }

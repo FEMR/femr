@@ -19,17 +19,12 @@
 package femr.ui.models.admin.inventory;
 
 import femr.common.models.MedicationItem;
-import femr.common.models.MissionTripItem;
-
 import java.util.List;
 
 public class InventoryViewModelGet {
     private List<MedicationItem> medications;
     private List<String> availableUnits;
     private List<String> availableForms;
-    //trip information
-    private MissionTripItem missionTripItem;
-
 
     public List<MedicationItem> getMedications() {
         return medications;
@@ -53,13 +48,5 @@ public class InventoryViewModelGet {
 
     public void setAvailableForms(List<String> availableForms) {
         this.availableForms = availableForms;
-    }
-
-    public MissionTripItem getMissionTripItem() {
-        return missionTripItem;
-    }
-
-    public void setMissionTripItem(MissionTripItem missionTripItem) {
-        this.missionTripItem = missionTripItem;
     }
 }

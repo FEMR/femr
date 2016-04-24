@@ -1,14 +1,21 @@
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
     newProblems: $('input[name].newProblems'),
+    oldProblems: $('.oldProblems'),
     refreshSelectors: function () {
         problemFeature.allProblems = $(problemFeature.allProblems.selector);
         problemFeature.newProblems = $(problemFeature.newProblems.selector);
+        problemFeature.oldProblems = $(problemFeature.oldProblems.selector);
     },
     getNumberOfNonReadonlyProblemFields: function () {
         problemFeature.refreshSelectors();
         return problemFeature.newProblems.length;
     },
+    getNumberOfOldProblemFields: function () {
+        problemFeature.refreshSelectors();
+        return problemFeature.oldProblems.length;
+    },
+
     addProblemField: function () {
         var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
         $('.problem')
@@ -34,6 +41,18 @@ var problemFeature = {
                 $(lastProblem).val('');
             }
         }
+
+        //$('.problem').last().remove();
+        //"<div class='problem'>" + "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" + "</div>");
+    },
+    editProblemField: function () {
+        problemFeature.refreshSelectors();
+        problemFeature.allProblems.removeAttr("readonly");
+
+        var problemInputElement = $(problemFeature.allProblems);
+        //data for typeahead already exists on the page from loading the diagnoses input box
+        typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
+        $(problemInputElement).focus();
     }
 };
 var prescriptionFeature = {
@@ -323,6 +342,11 @@ $(document).ready(function () {
 
     $('#subtractProblemButton').click(function () {
         problemFeature.removeProblemField();
+    });
+
+    //edit problems
+    $('#editProblemButton').click(function () {
+       problemFeature.editProblemField();
     });
 
     $('#medicalTabs li').click(function () {

@@ -11,11 +11,6 @@ var problemFeature = {
         problemFeature.refreshSelectors();
         return problemFeature.newProblems.length;
     },
-    getNumberOfOldProblemFields: function () {
-        problemFeature.refreshSelectors();
-        return problemFeature.oldProblems.length;
-    },
-
     addProblemField: function () {
         var problemIndex = problemFeature.getNumberOfNonReadonlyProblemFields();
         $('.problem')
@@ -41,9 +36,6 @@ var problemFeature = {
                 $(lastProblem).val('');
             }
         }
-
-        //$('.problem').last().remove();
-        //"<div class='problem'>" + "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" + "</div>");
     },
     editProblemField: function () {
         problemFeature.refreshSelectors();
@@ -346,7 +338,8 @@ $(document).ready(function () {
 
     //edit problems
     $('#editProblemButton').click(function () {
-       problemFeature.editProblemField();
+        problemFeature.editProblemField();
+        document.getElementById('editProblemButton').disabled = true;
     });
 
     $('#medicalTabs li').click(function () {

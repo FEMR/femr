@@ -19,7 +19,7 @@
 
 @admin("Inventory", currentUser, styles = additionalStyles, scripts = additionalScripts) {
 
-    @if( viewModel.getMissionTripItem == null ){
+    @if( currentUser.getTripId() == null ){
         <div class="alert warning">
 
             <h3>Your account is not assigned to a trip</h3>
@@ -28,12 +28,6 @@
 
             <a class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
         </div>
-    } else {
-        <span>
-        @defining(viewModel.getMissionTripItem) { trip =>
-            <p>You are viewing the formulary for <b>@trip.getTeamName, @trip.getTripCountry, @trip.getFriendlyTripStartDate - @trip.getFriendlyTripEndDate</b></p>
-        }
-        </span>
     }
 
 

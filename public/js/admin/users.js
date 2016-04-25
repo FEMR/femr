@@ -168,9 +168,10 @@ var editUsers = {
             }else{
                 editUsers.elements.passwordTextBox.next(".errors").text("");
             }
-        } else {
-            editUsers.elements.passwordTextBox.next(".errors").text("");
-        }
+        } 
+        // else {
+        //     editUsers.elements.passwordTextBox.next(".errors").text("");
+        // }
         //validate roles
         if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
             pass = false;

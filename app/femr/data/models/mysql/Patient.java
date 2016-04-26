@@ -55,6 +55,8 @@ public class Patient implements IPatient {
     private DateTime isDeleted;
     @Column(name = "deleted_by_user_id", unique = false, nullable = true)
     private Integer deletedByUserId;
+    @Column(name = "reason_deleted", nullable = true)
+    private String reasonDeleted;
 
 
     @Override
@@ -176,9 +178,12 @@ public class Patient implements IPatient {
     public void setDeletedByUserId(Integer userId) {
         this.deletedByUserId= userId;
     }
-  
-    
-    
+
+    @Override
+    public String getReasonDeleted() { return reasonDeleted; }
+
+    @Override
+    public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
     
     
 

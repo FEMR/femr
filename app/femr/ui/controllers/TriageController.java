@@ -30,6 +30,7 @@ public class TriageController extends Controller {
     //AJ Saclayan Cities
     private final Form<EditViewModelPost> createViewModelPostForm = Form.form(EditViewModelPost.class);
     private final Form<IndexViewModelPost> IndexViewModelForm = Form.form(IndexViewModelPost.class);
+    private final Form<DeleteViewModelPost> DeleteViewModelForm = Form.form(DeleteViewModelPost.class);
     private final IEncounterService encounterService;
     private final IPatientService patientService;
     private final ISessionService sessionService;
@@ -259,8 +260,9 @@ public class TriageController extends Controller {
     public Result deletePatientPost(int patientId){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
         //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId());
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
 
         if(patientItemResponse.hasErrors())
             throw new RuntimeException();

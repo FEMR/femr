@@ -371,37 +371,41 @@ public class SearchService implements ISearchService {
                 .eq("encounter_id", encounterId);
 
         try {
-            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
-            for( IPatientPrescription pp : patientPrescriptions ) {
-                if(pp.getPatientPrescriptionReplacements().isEmpty()) {
-                    prescriptionItems.add(itemModelMapper.createPrescriptionItem(pp.getId(),
-                            pp.getMedication().getName(),
-                            null,
-                            pp.getPhysician().getFirstName(),
-                            pp.getPhysician().getLastName(),
-                            pp.getConceptPrescriptionAdministration(),
-                            pp.getAmount(),
-                            pp.getMedication(),
-                            null,
-                            pp.isCounseled()
-                    ));
-                }
-                else
-                {
-                    prescriptionItems.add(itemModelMapper.createPrescriptionItem(pp.getId(),
-                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
-                            pp.getMedication().getName(),
-                            pp.getPhysician().getFirstName(),
-                            pp.getPhysician().getLastName(),
-                            pp.getConceptPrescriptionAdministration(),
-                            pp.getAmount(),
-                            pp.getMedication(),
-                            null,
-                            pp.isCounseled()
-                    ));
-                }
+
+            IPatientPrescription prescription = patientPrescriptionRepository.findOne(query);
+            prescription = patientPrescriptionRepository.update(prescription);
+
+
+
+            if(prescription.getPatientPrescriptionReplacements().isEmpty()) {
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
+                        prescription.getMedication().getName(),
+                        null,
+                        prescription.getPhysician().getFirstName(),
+                        prescription.getPhysician().getLastName(),
+                        prescription.getConceptPrescriptionAdministration(),
+                        prescription.getAmount(),
+                        prescription.getMedication(),
+                        null,
+                        prescription.isCounseled())
+                );
             }
+            else
+            {
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
+                        prescription.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
+                        prescription.getMedication().getName(),
+                        prescription.getPhysician().getFirstName(),
+                        prescription.getPhysician().getLastName(),
+                        prescription.getConceptPrescriptionAdministration(),
+                        prescription.getAmount(),
+                        prescription.getMedication(),
+                        null,
+                        prescription.isCounseled())
+                );
+            }
+
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

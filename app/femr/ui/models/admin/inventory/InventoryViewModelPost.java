@@ -32,6 +32,9 @@ public class InventoryViewModelPost {
     private List<Double> medicationStrength;
     private List<String> medicationUnit;
     private List<String> medicationIngredient;
+    //this is a list of IDs that come out of the select2 textbox for adding
+    //existing medicine.
+    private List<Integer> newConceptMedicationsForInventory;
 
     public List<ValidationError> validate(){
 
@@ -43,7 +46,7 @@ public class InventoryViewModelPost {
             //errors.add(new ValidationError("medicationQuantity", "quantity is a required field"));
         }
         // Based on fEMR-95 in JIRA.  medicationForm is used to be able to add medication to inventory.
-        if (StringUtils.isNullOrWhiteSpace(medicationName))
+        if (StringUtils.isNullOrWhiteSpace(medicationName) && newConceptMedicationsForInventory == null)
             errors.add(new ValidationError("medicationName", "name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(medicationForm))
             errors.add(new ValidationError("medicationForm", "a form is required"));
@@ -111,5 +114,13 @@ public class InventoryViewModelPost {
 
     public void setMedicationIngredient(List<String> medicationIngredient) {
         this.medicationIngredient = medicationIngredient;
+    }
+
+    public List<Integer> getNewConceptMedicationsForInventory() {
+        return newConceptMedicationsForInventory;
+    }
+
+    public void setNewConceptMedicationsForInventory(List<Integer> newConceptMedicationsForInventory) {
+        this.newConceptMedicationsForInventory = newConceptMedicationsForInventory;
     }
 }

@@ -201,11 +201,6 @@ public class DataModelMapper implements IDataModelMapper{
     @Override
     public IMedication createMedication(String name, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm) {
 
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-
-            return null;
-        }
-
         IMedication medication = medicationProvider.get();
 
         medication.setName(name);
@@ -608,13 +603,18 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId){
+    public IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId, Boolean isDiabetesScreened){
 
         if (patientEncounter == null){
             return null;
         }
-        patientEncounter.setDateOfDiabeteseScreen(dateUtils.getCurrentDateTime());
-        patientEncounter.setDiabetesScreener(Ebean.getReference(userProvider.get().getClass(), diabetesScreenerId));
+        //if screening was performed, set date and screener
+        else if (isDiabetesScreened) {
+            patientEncounter.setDateOfDiabeteseScreen(dateUtils.getCurrentDateTime());
+            patientEncounter.setDiabetesScreener(Ebean.getReference(userProvider.get().getClass(), diabetesScreenerId));
+        }
+        //note whether screening was performed or not
+        patientEncounter.setIsDiabetesScreened(isDiabetesScreened);
         return patientEncounter;
     }
 }

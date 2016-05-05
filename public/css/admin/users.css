@@ -70,6 +70,11 @@ label[for=newPassword], label[for=newPasswordVerify]{
     display: none;
 }
 
+label[for=passwordVerify]{
+    display: none;
+}
+
+
 #userInfoWrap input[type=checkbox]{
     padding: 10px;
     margin-left: 15px;
@@ -86,6 +91,7 @@ label[for=newPassword], label[for=newPasswordVerify]{
     margin: 0;
     padding: 0;
 }
+
 
 @media (max-width: 665px) {
     #addUserSubmitBtn{

@@ -14,7 +14,7 @@ var prescriptionFeature = {
             //Iterate through medication and find matches
             $.each(strs.medication, function (i, med) {
                 if (substrRegex.test(med.name)) {
-                    med.value = med.name + " (" + med.form + ")";
+                    med.value = med.name;
                     matches.push(
                         med
                     );

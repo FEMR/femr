@@ -18,7 +18,8 @@ GET         /admin/users                                       @femr.ui.controll
 GET         /admin/inventory                                   @femr.ui.controllers.admin.InventoryController.manageGet()
 POST        /admin/inventory                                   @femr.ui.controllers.admin.InventoryController.managePost()
 POST        /admin/inventory/delete/:id/:tripId                @femr.ui.controllers.admin.InventoryController.ajaxDelete(id: Integer, tripId: Integer)
-POST        /admin/inventory/edit/:id/:tripId                  @femr.ui.controllers.admin.InventoryController.ajaxEdit(id: Integer, tripId: Integer)
+POST        /admin/inventory/editCurrent/:id/:tripId           @femr.ui.controllers.admin.InventoryController.ajaxEditCurrent(id: Integer, tripId: Integer)
+POST        /admin/inventory/editTotal/:id/:tripId             @femr.ui.controllers.admin.InventoryController.ajaxEditTotal(id: Integer, tripId: Integer)
 GET         /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.manageGet()
 POST        /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.managePost()
 GET         /admin/trips                                       @femr.ui.controllers.admin.TripController.manageGet()
@@ -47,7 +48,6 @@ GET         /search/typeahead/patients                         @femr.ui.controll
 # AJ Saclayan!  Adding in typeahead
 GET         /search/typeahead/cities                           @femr.ui.controllers.SearchController.typeaheadCitiesJSONGet()
 GET         /search/typeahead/diagnoses                        @femr.ui.controllers.SearchController.typeaheadDiagnosisJSONGet()
-GET         /search/typeahead/medications                      @femr.ui.controllers.SearchController.typeaheadMedicationsJSONGet()
 GET         /search/typeahead/medicationsWithID                @femr.ui.controllers.SearchController.typeaheadMedicationsWithIDJSONGet()
 GET         /search/typeahead/medicationAdministrations        @femr.ui.controllers.SearchController.typeaheadMedicationAdministrationsJSONGet()
 #Photo

@@ -260,9 +260,10 @@ public class TriageController extends Controller {
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
-
-        if (isDiabetesPromptTurnedOn() && viewModel.getIsDiabetesScreenPerformed().equals("true")){
-            ServiceResponse<PatientEncounterItem> diabetesScreenServiceResponse = encounterService.screenPatientForDiabetes(patientEncounterItem.getId(), currentUser.getId());
+                //getIsDiabetesScreenPerformed is empty if user was not prompted to screen,
+               // otherwise its boolean indicating whether screening occurred or not
+        if (isDiabetesPromptTurnedOn() && !(viewModel.getIsDiabetesScreenPerformed().isEmpty())){
+            ServiceResponse<PatientEncounterItem> diabetesScreenServiceResponse = encounterService.screenPatientForDiabetes(patientEncounterItem.getId(), currentUser.getId(), Boolean.valueOf(viewModel.getIsDiabetesScreenPerformed().toString()));
             if (diabetesScreenServiceResponse.hasErrors()){
                 throw new RuntimeException();
             }

@@ -21,7 +21,6 @@ package femr.business.services.system;
 import com.avaje.ebean.*;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -35,6 +34,7 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
+import femr.data.models.mysql.concepts.ConceptMedication;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;
 import femr.data.models.mysql.concepts.ConceptMedicationUnit;
 import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
@@ -94,13 +94,9 @@ public class MedicationService implements IMedicationService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        if (StringUtils.isNullOrWhiteSpace(name)) {
-            response.addError("name", "name field was empty");
-        }
-
         try {
 
-            //set each active drug
+            //set each generic drug
             List<IMedicationGenericStrength> medicationGenericStrengths = new ArrayList<>();
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
             ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
@@ -114,7 +110,7 @@ public class MedicationService implements IMedicationService {
                             .where()
                             .eq("name", miac.getName());
 
-                    //get the measurement unit ID (they are pre recorded)
+                    //get the measurement unit ID (they are concepts)
                     IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
                     IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationGeneric == null) {
@@ -164,8 +160,9 @@ public class MedicationService implements IMedicationService {
                 for (IMedicationGenericStrength newMedicationGenericDrug : medicationGenericStrengths) {
                     boolean drugMatch = false;
                     for (IMedicationGenericStrength drug : medication.getMedicationGenericStrengths()) {
-                        if (newMedicationGenericDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId()
-                                && newMedicationGenericDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId()) {
+                        if (newMedicationGenericDrug.getMedicationGeneric().getId() == drug.getMedicationGeneric().getId() //generic name match
+                                && newMedicationGenericDrug.getConceptMedicationUnit().getId() == drug.getConceptMedicationUnit().getId() //unit match
+                                && newMedicationGenericDrug.getValue().equals(drug.getValue())) { //value match
                             drugMatch = true;
                         }
                         if (!drugMatch) allDrugsMatch = false;
@@ -349,6 +346,8 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
 
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
+        if (administrationId == -1)
+            administrationId = null;
 
         try {
             IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
@@ -464,43 +463,6 @@ public class MedicationService implements IMedicationService {
 
         return response;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<List<String>> retrieveAllMedications(Integer tripId) {
-        ServiceResponse<List<String>> response = new ServiceResponse<>();
-
-        try {
-            List<String> medicationNames = new ArrayList<>();
-
-            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                    .fetch("medicationInventory")
-                    .where()
-                    .isNotNull("conceptMedicationForm")
-                    .gt("medicationInventory.quantity_current", 0)
-                    .eq("isDeleted", false)
-                    .orderBy("name");
-
-            if( tripId != null ){
-
-                medicationQuery.where().eq("medicationInventory.missionTrip.id", tripId);
-            }
-
-            List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
-
-            for (IMedication m : medications) {
-                medicationNames.add(m.getName());
-            }
-            response.setResponseObject(medicationNames);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-        }
-
-        return response;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -602,61 +564,20 @@ public class MedicationService implements IMedicationService {
                     .eq("isDeleted", false)
                     .eq("medicationInventory.missionTrip.id", tripId)
                     .isNotNull( "conceptMedicationForm" )
-                    .gt("medicationInventory.quantity_current", 0)
+                    .gt("medicationInventory.quantityCurrent", 0)
                     .orderBy("name");
 
-            if( tripId != null ){
-
-            //    medicationQuery.where().eq("medicationInventory.missionTrip.id", tripId);
-            }
-
             List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
+            MedicationItem medicationItem;
 
             for (IMedication m : medications) {
+                //use the item model mapper to generate the MedicationItem which contains
+                //the standard full name for a medication everywhere
+                medicationItem = itemModelMapper.createMedicationItem(m, null, null, null);
                 ObjectNode medication = Json.newObject();
 
                 medication.put("id", m.getId());
-                //medication.put("name", m.getName());
-                String medicationDisplayName = m.getName();
-                //Create list of drug name/unit/values to append to the medication name
-                List<String> formattedDrugNames = new ArrayList<String>();
-                for (IMedicationGenericStrength drug : m.getMedicationGenericStrengths()) {
-                    formattedDrugNames.add(String.format("%s%s %s",
-                                    drug.getValue(),
-                                    drug.getConceptMedicationUnit().getName(),
-                                    drug.getMedicationGeneric().getName())
-                    );
-                }
-                if (formattedDrugNames.size() > 0)
-                    medicationDisplayName += " " + Joiner.on("/").join(formattedDrugNames);
-                medication.put("name", medicationDisplayName);
-
-                /*  //not including medication quantities right now
-                if (m.getQuantityCurrent() != null) {
-                    medication.put("quantityCurrent", m.getQuantityCurrent());
-                } else {
-                    medication.put("quantityCurrent", 0);
-                } */
-
-                if (m.getConceptMedicationForm() != null)
-                    medication.put("form", m.getConceptMedicationForm().getName());
-                else
-                    medication.put("form", "N/A");
-
-                ArrayNode ingredientsArray = medication.putArray("ingredients");
-                // Add all the important information about ingredients to the medications object node
-                if (m.getMedicationGenericStrengths() != null) {
-                    List<IMedicationGenericStrength> ingredients = m.getMedicationGenericStrengths();
-                    for (IMedicationGenericStrength i : ingredients) {
-                        ObjectNode ingredientNode = ingredientsArray.addObject();
-
-                        if (i.getMedicationGeneric() != null)
-                            ingredientNode.put("name", i.getMedicationGeneric().getName());
-                        if (i.getConceptMedicationUnit() != null)
-                            ingredientNode.put("unit", i.getConceptMedicationUnit().getName());
-                        ingredientNode.put("value", i.getValue());
-                    }
-                }
+                medication.put("name", medicationItem.getFullName());
 
                 allMedications.add(medication);
             }
@@ -668,4 +589,5 @@ public class MedicationService implements IMedicationService {
 
         return response;
     }
+
 }

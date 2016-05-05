@@ -24,6 +24,7 @@ import java.util.List;
 
 public class InventoryViewModelGet {
     private List<MedicationItem> medications;
+    private List<MedicationItem> conceptMedications;
     private List<String> availableUnits;
     private List<String> availableForms;
     //trip information
@@ -59,5 +60,13 @@ public class InventoryViewModelGet {
 
     public void setMissionTripItem(MissionTripItem missionTripItem) {
         this.missionTripItem = missionTripItem;
+    }
+
+    public List<MedicationItem> getConceptMedications() {
+        return conceptMedications;
+    }
+
+    public void setConceptMedications(List<MedicationItem> conceptMedications) {
+        this.conceptMedications = conceptMedications;
     }
 }

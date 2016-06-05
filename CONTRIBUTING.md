@@ -46,7 +46,7 @@
 
 # General workflow information (Git, Pull Requests, branching, etc..):
 
-### -Do not commit to the master branch or any of the release branches. Each JIRA issue should have its own branch. [JIRA](https://teamfemr.atlassian.net) issues have 4 categories. To create a working branch before starting on a [JIRA](https://teamfemr.atlassian.net) issue:
+### -Do not commit to the master branch or any of the release branches. Each JIRA issue should have its own branch. [JIRA](https://teamfemr.atlassian.net) issues have 4 categories. To create a working branch before working on an issue:
 
 #####1. features:
     git checkout master

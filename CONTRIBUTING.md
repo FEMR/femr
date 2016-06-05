@@ -46,6 +46,8 @@
 
 # General workflow information (Git, Pull Requests, branching, etc..):
 
+######If you have not used Git before, please join us in [Slack](http://teamfemr.org/slack.html) and ask questions as you learn.
+
 ### -Do not commit to the master branch or any of the release branches. Each JIRA issue should have its own branch. [JIRA](https://teamfemr.atlassian.net) issues have 4 categories. To create a working branch before working on an issue:
 
 #####1. features:
@@ -66,20 +68,22 @@
 
 ######Example: git checkout -b feature-FEMR832-fixingEverythingEverywhere
 
-### -Always sync your fork's (username/femr) master branch with the project's (femr/femr) master branch. If your working branch deviates too far from master, merging will be hard. This ensures your code is always up to date with everyone else:
+### -Always sync your fork's (username/femr) master branch with the project's (femr/femr) master branch. If your working branch begins to deviate too far from master, merging will becoming increasingly difficult. This ensures that your work remains in sync with everyone else's work:
 
-#####1. make sure you have a remote pointing upstream to the main project repository (femr/femr):
+#####1. List your current remotes to see if you have one pointing upstream to the main project repository (femr/femr):
     git remote -v
 
-#####2. if you don't, add one:
+#####2. If you do not, add one:
     git remote add upstream https://github.com/femr/femr.git
 
-#####3. sync updated master with your fork:
+#####3. Sync your updated local master branch with your fork's master branch:
     git checkout master
     git pull upstream master
     git push origin master
 
-#####4. This step requires rebasing. Rebasing can be daunting at first. Find us in [Slack](http://teamfemr.org/slack.html) if you have questions. Sync your working branch with your fork and rebase new code into your issue branch. :
+######If you have committed your work to master, you will run into issues here. Move your work to a separate working branch and get a fresh copy of the master branch.
+
+#####4. This step requires rebasing. Sync your working branch with your fork and rebase new code into your issue branch:
 	git checkout [issueBranchName]
 	git rebase master
 

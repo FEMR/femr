@@ -83,28 +83,35 @@
 
 ######If you have committed your work to master, you will run into issues here. Move your work to a separate working branch and get a fresh copy of the master branch.
 
-#####4. This step requires rebasing. Sync your working branch with your fork and rebase new code into your issue branch:
+#####4. This step requires [rebasing](https://git-scm.com/docs/git-rebase). Sync your working branch with your fork and rebase new code into your working branch:
 	git checkout [issueBranchName]
+    git push origin [issueBranchName]
 	git rebase master
 
-
-### -Submit your code for review to be accepted into the main project repository (femr/femr) by sending a pull request:
-
-#####1. update your branch with the newest code by syncing master and then rebasing your issue branch
-    git checkout master
-    git pull upstream master
+#####5. After confirming your code was properly merged and that the rebase was successful, sync the new branch with your fork:
     git checkout [issueBranchName]
-    git rebase master
+    git push -f origin [issueBranchName]
 
-#####2. initiate a pull request:
+######Note the '-f' option for push in Step 5. This forces a push because the rebase has altered your commit history. Anyone else that was using your branch will need to delete it and pull down a fresh copy.
 
-Initiate a pull request from your fork's (username/femr) issue branch into the main repository's (femr/femr) master branch. Information on initating pull requests can be found [here](https://help.github.com/articles/using-pull-requests).
+### -Submit your code for review to be accepted into the main project repository (femr/femr) by sending a Pull Request from your fork on GitHub:
 
-#####3. if your Pull Request is Accepted
+#####1. Update your branch with the newest code by syncing master and then rebasing your working branch. See Step 4 and Step 5 in the previous section to complete this.
+
+#####2. Initiating a pull request:
+
+Initiate a pull request from your fork's (username/femr) working branch into the main repository's (femr/femr) master branch.
+
+#####1. If your Pull Request is Accepted
 	git checkout master
-	git pull upstream master
+	git pull upstream master   
 
-#####4. if your Pull Request is Rejected
+#####2. If your Pull Request requires additional commits you can add them to your branch and push to your fork. They will automatically be updated in the Pull Request.
+    git checkout [issueBranchName]
+    ~~~make changes, commit them~~~
+    git push origin [issueBranchName]
+
+#####3. If your Pull Request is Rejected
     git checkout master
     git pull upstream master
     git checkout [issueBranchName]
@@ -116,8 +123,8 @@ Initiate a pull request from your fork's (username/femr) issue branch into the m
     git rebase master
     git push -f origin [issueBranchName]
 
-#####5. delete your branch locally:
+#####4. Delete your branch locally:
     git branch -d [issueBranchName]
 
-#####6. delete your branch from your fork:
+#####5. Delete your branch from your fork:
 	git push origin :[issueBranchName]

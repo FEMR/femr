@@ -44,9 +44,9 @@
 14. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
 
 
-# Important workflow information and common Git commands:
+# General workflow information (Git, Pull Requests, branching, etc..):
 
-### -Each JIRA issue (e.g. bug, feature, improvement) should be developed in a separate branch. To create a branch after selecting a JIRA(https://teamfemr.atlassian.net) issue:
+### -Do not commit to the master branch or any of the release branches. Each JIRA issue should have its own branch. JIRA(https://teamfemr.atlassian.net) issues have 4 categories. To create a working branch before starting on a JIRA(https://teamfemr.atlassian.net) issue:
 
 #####1. features:
     git checkout master
@@ -64,7 +64,9 @@
     git checkout master
     git checkout -b task-[JIRA_ID]-[briefDescriptionOfTask]
 
-### -Always sync your fork's (username/femr) master branch with the project's (femr/femr) master branch. This ensures your code is always up to date:
+######Example: git checkout -b feature-FEMR832-fixingEverythingEverywhere
+
+### -Always sync your fork's (username/femr) master branch with the project's (femr/femr) master branch. If your working branch deviates too far from master, merging will be hard. This ensures your code is always up to date with everyone else:
 
 #####1. make sure you have a remote pointing upstream to the main project repository (femr/femr):
     git remote -v
@@ -72,12 +74,12 @@
 #####2. if you don't, add one:
     git remote add upstream https://github.com/femr/femr.git
 
-#####3. sync:
+#####3. sync updated master with your fork:
     git checkout master
     git pull upstream master
     git push origin master
 
-#####4. if needed, move new code into your issue branch. Note that rebasing rewrites history and should be used with caution:
+#####4. This step requires rebasing. Rebasing can be daunting at first. Find us in [Slack](http://teamfemr.org/slack.html) if you have questions. Sync your working branch with your fork and rebase new code into your issue branch. :
 	git checkout [issueBranchName]
 	git rebase master
 

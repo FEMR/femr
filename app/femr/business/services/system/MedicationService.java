@@ -346,7 +346,7 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
 
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
-        if (administrationId == -1)
+        if (administrationId !=null && administrationId <= 0)
             administrationId = null;
 
         try {
@@ -395,6 +395,9 @@ public class MedicationService implements IMedicationService {
             response.addError("", "medicationName can't be null or empty");
             return response;
         }
+
+        if (administrationId !=null && administrationId <= 0)
+            administrationId = null;
 
         try {
 

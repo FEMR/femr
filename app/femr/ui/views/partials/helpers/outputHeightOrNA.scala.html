@@ -1,8 +1,6 @@
 @(feet: java.lang.String, inches: java.lang.String, isMetric: java.lang.Boolean = false, emptyValue: java.lang.String = "N/A")
 
-@if((feet == null && inches == null) || (feet.equals("0") && inches.equals("0"))){
-    @emptyValue
-} else {
+
     @if(isMetric) {
         @if(feet == null || inches == null || feet.equals("null") || inches.equals("null")) {
             @emptyValue
@@ -16,7 +14,7 @@
             @* Truncate feet at period so feet is a whole value *@
             @feet.replaceAll("\\..*", "")'
         }
-        @if(inches != null && !feet.equals("null")) {
+        @if(inches != null && !inches.equals("null")) {
             @* Truncate inches at period so inches is a whole value *@
             @inches.replaceAll("\\..*", "")"
         }
@@ -26,4 +24,4 @@
             @emptyValue
         }
     }
-}
+

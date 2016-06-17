@@ -11,7 +11,7 @@ import sbt._
 object ApplicationBuild extends Build {
 
   val appName = "fEMR"
-  val appVersion = "2.2"
+  val appVersion = "2.2.1"
   val currentScalaVersion = "2.11.7"
 
   val appDependencies = Seq(

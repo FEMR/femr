@@ -32,6 +32,7 @@ import femr.common.models.MedicationItem;
 import femr.common.models.PrescriptionItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.*;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptMedication;
@@ -49,7 +50,7 @@ import java.util.Map;
 
 public class MedicationService implements IMedicationService {
 
-    private final IRepository<IMedication> medicationRepository;
+    private final IMedicationRepository medicationRepository;
     private final IRepository<IMedicationGeneric> medicationGenericRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
@@ -62,7 +63,7 @@ public class MedicationService implements IMedicationService {
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public MedicationService(IRepository<IMedication> medicationRepository,
+    public MedicationService(IMedicationRepository medicationRepository,
                              IRepository<IMedicationGeneric> medicationGenericRepository,
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
@@ -98,21 +99,14 @@ public class MedicationService implements IMedicationService {
 
             //set each generic drug
             List<IMedicationGenericStrength> medicationGenericStrengths = new ArrayList<>();
-            ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList;
-            ExpressionList<MedicationGeneric> medicationActiveDrugNameExpressionList;
+
             if (activeIngredients != null) {
 
                 for (MedicationItem.ActiveIngredient miac : activeIngredients) {
-                    medicationMeasurementUnitExpressionList = QueryProvider.getConceptMedicationUnitQuery()
-                            .where()
-                            .eq("name", miac.getUnit());
-                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationGenericQuery()
-                            .where()
-                            .eq("name", miac.getName());
-
                     //get the measurement unit ID (they are concepts)
-                    IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
-                    IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
+                    IConceptMedicationUnit conceptMedicationUnit = medicationRepository.retrieveMedicationUnitByUnitName(miac.getUnit());
+                    IMedicationGeneric medicationGeneric = medicationRepository.retrieveMedicationGenericByName(miac.getName());
+
                     if (medicationGeneric == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
                         medicationGeneric = dataModelMapper.createMedicationActiveDrugName(miac.getName());
@@ -125,27 +119,14 @@ public class MedicationService implements IMedicationService {
                 }
             }
 
-            //set the form
-            ExpressionList<ConceptMedicationForm> medicationFormExpressionList;
-
-            medicationFormExpressionList = QueryProvider.getConceptMedicationFormQuery()
-                    .where()
-                    .eq("name", form);
-            IConceptMedicationForm conceptMedicationForm = conceptMedicationFormRepository.findOne(medicationFormExpressionList);
+            IConceptMedicationForm conceptMedicationForm = medicationRepository.retrieveConceptMedicationFormByFormName(form);
             if (conceptMedicationForm == null) {
                 conceptMedicationForm = dataModelMapper.createConceptMedicationForm(form);
             }
 
-            // Based on fEMR-95.  Retrieve all medication with the same name AND not an old medication from previous trips
-            // that did not require a medication form.
-            Query<Medication> query = QueryProvider.getMedicationQuery()
-                    .where()
-                    .ne("concept_medication_forms_id", null)
-                    .orderBy("isDeleted asc");
-
             IMedication matchingMedication = null;
             List<? extends IMedication> medications;
-            medications = medicationRepository.find(query);
+            medications = medicationRepository.retrieveAllPreInventoryMedications();
 
             // Attempt to find a matching medication
             for (IMedication medication : medications) {
@@ -180,17 +161,11 @@ public class MedicationService implements IMedicationService {
 
             // There exist a matching medication in the database, so update that one rather then create new one
             if (matchingMedication != null) {
-
-                // Update isDeleted to false
-                matchingMedication.setIsDeleted(false);
-
-                medicationRepository.update(matchingMedication);
+                medicationRepository.deleteMedication(matchingMedication.getId(), false);
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
 
             } else {
-                // Create a new medication in the DB
-                IMedication medication = dataModelMapper.createMedication(name, medicationGenericStrengths, conceptMedicationForm);
-                medication = medicationRepository.create(medication);
+                IMedication medication = medicationRepository.createNewMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 //creates the medication item - quantities are null because the medication was just created.
                 MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
 
@@ -402,7 +377,7 @@ public class MedicationService implements IMedicationService {
         try {
 
             IMedication medication = dataModelMapper.createMedication(medicationName);
-            medication = medicationRepository.create(medication);
+            medication = medicationRepository.createNewMedication(medicationName, null, null);
 
             IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
                     amount,
@@ -450,19 +425,11 @@ public class MedicationService implements IMedicationService {
 
         try {
             // Find one medication (should only be 1 with the ID) from the database
-            medication = medicationRepository.findOne(medicationQuery);
+            medication = medicationRepository.deleteMedication(medicationID, true);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
             return response;
         }
-
-        //V kevin takes no responsibility for this comment V
-        // Set the isDeleted column of the medication to true
-        medication.setIsDeleted(true);
-
-        // Update the medication item in the database
-        medicationRepository.update(medication);
-
 
         return response;
     }
@@ -562,15 +529,7 @@ public class MedicationService implements IMedicationService {
         ArrayNode allMedications = returnObject.putArray("medication");
 
         try {
-            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                    .where()
-                    .eq("isDeleted", false)
-                    .eq("medicationInventory.missionTrip.id", tripId)
-                    .isNotNull( "conceptMedicationForm" )
-                    .gt("medicationInventory.quantityCurrent", 0)
-                    .orderBy("name");
-
-            List<? extends IMedication> medications = medicationRepository.find(medicationQuery);
+            List<? extends IMedication> medications = medicationRepository.retrieveAllMedicationByTripId(tripId);
             MedicationItem medicationItem;
 
             for (IMedication m : medications) {

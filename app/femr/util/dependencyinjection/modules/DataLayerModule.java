@@ -23,6 +23,8 @@ import com.google.inject.TypeLiteral;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
+import femr.data.daos.core.IMedicationRepository;
+import femr.data.daos.system.MedicationRepository;
 import femr.data.models.core.research.IResearchEncounter;
 import femr.data.models.core.research.IResearchEncounterVital;
 import femr.util.dependencyinjection.providers.*;
@@ -64,6 +66,8 @@ public class DataLayerModule extends AbstractModule {
         bind(ITabFieldSize.class).toProvider(TabFieldSizeProvider.class);
         bind(IUser.class).toProvider(UserProvider.class);
         bind(IVital.class).toProvider(VitalProvider.class);
+
+        bind(IMedicationRepository.class).to(MedicationRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);

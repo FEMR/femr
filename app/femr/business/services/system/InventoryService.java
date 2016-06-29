@@ -28,6 +28,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IInventoryRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.MedicationInventory;
 import org.joda.time.DateTime;
@@ -38,17 +39,20 @@ public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
+    private final IInventoryRepository inventoryRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationInventory> medicationInventoryRepository,
+                            IInventoryRepository inventoryRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
+        this.inventoryRepository = inventoryRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -74,7 +78,8 @@ public class InventoryService implements IInventoryService {
         MedicationItem medicationItem;
         try {
 
-            medicationInventory = medicationInventoryExpressionList.findUnique();
+            medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
+            
             if (medicationInventory == null) {
                 //it doesn't yet exist, create a new one
                 medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);

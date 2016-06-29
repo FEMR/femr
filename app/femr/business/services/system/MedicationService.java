@@ -32,7 +32,10 @@ import femr.common.models.MedicationItem;
 import femr.common.models.PrescriptionItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.models.core.*;
+import femr.data.daos.core.*;
+import femr.data.models.core.IConceptMedicationUnit;
+import femr.data.models.core.IMedication;
+import femr.data.models.core.IMedicationGenericStrength;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptMedication;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;
@@ -49,7 +52,7 @@ import java.util.Map;
 
 public class MedicationService implements IMedicationService {
 
-    private final IRepository<IMedication> medicationRepository;
+    private final IMedicationRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationGeneric> medicationGenericRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
@@ -103,16 +106,17 @@ public class MedicationService implements IMedicationService {
             if (activeIngredients != null) {
 
                 for (MedicationItem.ActiveIngredient miac : activeIngredients) {
-                    medicationMeasurementUnitExpressionList = QueryProvider.getConceptMedicationUnitQuery()
-                            .where()
-                            .eq("name", miac.getUnit());
-                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationGenericQuery()
-                            .where()
-                            .eq("name", miac.getName());
-
+//                    medicationMeasurementUnitExpressionList = QueryProvider.getConceptMedicationUnitQuery()
+//                            .where()
+//                            .eq("name", miac.getUnit());
+//                    medicationActiveDrugNameExpressionList = QueryProvider.getMedicationGenericQuery()
+//                            .where()
+//                            .eq("name", miac.getName());
+                    IConceptMedicationUnit conceptMedicationUnit = medicationRepository.retrieveMedicationUnitByUnitName(miac.getUnit());
+                    IMedication medicationGeneric = medicationRepository.retrieveMedicationGenericByName(miac.getName());
                     //get the measurement unit ID (they are concepts)
-                    IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
-                    IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
+                    //IConceptMedicationUnit conceptMedicationUnit = conceptMedicationUnitRepository.findOne(medicationMeasurementUnitExpressionList);
+                    //IMedicationGeneric medicationGeneric = medicationGenericRepository.findOne(medicationActiveDrugNameExpressionList);
                     if (medicationGeneric == null) {
                         //it's a new active drug name, were going to cascade(save) the bean
                         medicationGeneric = dataModelMapper.createMedicationActiveDrugName(miac.getName());

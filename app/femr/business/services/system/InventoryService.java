@@ -69,24 +69,17 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
-
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
 
             medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
-            
+
             if (medicationInventory == null) {
                 //it doesn't yet exist, create a new one
-                medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
-                medicationInventory = medicationInventoryRepository.create(medicationInventory);
+                medicationInventory = inventoryRepository.createInventoryWithMedicationIdAndTripIdAndQuantity(medicationId, tripId, quantityTotal);
             } else {
-
-
+                //it already exists, update it
                 medicationInventory.setQuantityInitial(quantityTotal);
                 medicationInventory = medicationInventoryRepository.update(medicationInventory);
             }

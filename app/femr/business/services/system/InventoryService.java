@@ -26,12 +26,9 @@ import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
-import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IInventoryRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.MedicationInventory;
-import org.joda.time.DateTime;
 import femr.data.models.mysql.Medication;
 
 
@@ -113,20 +110,14 @@ public class InventoryService implements IInventoryService {
      **/
     @Override
     public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
+
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
-            //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            //Checks to see if medication was already deleted, then user wanted to undo delete
-            if(medicationInventory.getIsDeleted() != null)
-                medicationInventory.setIsDeleted(null);
-            else
-                medicationInventory.setIsDeleted(DateTime.now());
-            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+
+            medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
+            medicationInventory = inventoryRepository.deleteInventory(medicationInventory.getId());
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted());
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
@@ -158,7 +149,7 @@ public class InventoryService implements IInventoryService {
             int totalQuantity = 0;
 
             if (medicationInventory != null) {
-                
+
                 medicationInventory = inventoryRepository.updateInventoryQuantityCurrent(medicationInventory.getId(), medicationInventory.getQuantityCurrent() - quantityToSubtract);
                 currentQuantity = medicationInventory.getQuantityCurrent();
                 totalQuantity = medicationInventory.getQuantityInitial();

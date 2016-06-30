@@ -8,6 +8,7 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IInventoryRepository;
 import femr.data.models.core.IMedicationInventory;
 import femr.data.models.mysql.MedicationInventory;
+import org.joda.time.DateTime;
 import play.Logger;
 
 public class InventoryRepository implements IInventoryRepository {
@@ -46,6 +47,38 @@ public class InventoryRepository implements IInventoryRepository {
         }
 
         return newMedicationInventory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    //public IMedicationInventory deleteInventory(int inventoryId, boolean isDeleted){//TODO: make this work in a non-shitty way
+    public IMedicationInventory deleteInventory(int inventoryId){
+
+        IMedicationInventory medicationInventory;
+        try {
+
+            medicationInventory = findInventory(inventoryId);
+            if (medicationInventory == null) {
+                //there's nothing to be done here
+            } else {
+                //there's something to be done here
+                //Checks to see if medication was already deleted, then user wanted to undo delete
+                if(medicationInventory.getIsDeleted() != null)
+                    medicationInventory.setIsDeleted(null);
+                else
+                    medicationInventory.setIsDeleted(DateTime.now());
+
+                Ebean.save(medicationInventory);
+            }
+        } catch (Exception ex) {
+
+            Logger.error("InventoryRepository-deleteInventory", ex.getMessage(), "inventoryId=" + inventoryId);
+            throw ex;
+        }
+
+        return medicationInventory;
     }
 
     /**

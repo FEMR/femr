@@ -17,6 +17,14 @@ public interface IInventoryRepository {
     IMedicationInventory createInventoryWithMedicationIdAndTripIdAndQuantity(int medicationId, int tripId, int quantity);
 
     /**
+     * Toggles the deleted status of an inventory item.
+     *
+     * @param inventoryId id of the inventory entry, not null
+     * @return the updated MedicationInventory object or null if an error occurred
+     */
+    IMedicationInventory deleteInventory(int inventoryId);
+
+    /**
      * Retrieve one inventory entry for a specific trip and medication. There will never be more than one
      * inventory entry for the same trip/medication id combination.
      *

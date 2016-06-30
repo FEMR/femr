@@ -51,10 +51,6 @@ public class InventoryService implements IInventoryService {
         this.itemModelMapper = itemModelMapper;
     }
 
-
-
-
-
     /**
      * {@inheritDoc}
      */
@@ -105,7 +101,7 @@ public class InventoryService implements IInventoryService {
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
-            
+
             response.addError("", ex.getMessage());
         }
 
@@ -152,23 +148,18 @@ public class InventoryService implements IInventoryService {
         ExpressionList<Medication> medicationExpressionList = QueryProvider.getMedicationQuery()
                 .where()
                 .eq("id", medicationId);
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication_id", medicationId)
-                .eq("mission_trip_id", tripId);
 
         try {
 
 
             IMedication medication = medicationRepository.findOne(medicationExpressionList);
-            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            IMedicationInventory medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
             int currentQuantity = 0;
             int totalQuantity = 0;
 
             if (medicationInventory != null) {
-
-                medicationInventory.setQuantityCurrent(medicationInventory.getQuantityCurrent() - quantityToSubtract);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                
+                medicationInventory = inventoryRepository.updateInventoryQuantityCurrent(medicationInventory.getId(), medicationInventory.getQuantityCurrent() - quantityToSubtract);
                 currentQuantity = medicationInventory.getQuantityCurrent();
                 totalQuantity = medicationInventory.getQuantityInitial();
             }

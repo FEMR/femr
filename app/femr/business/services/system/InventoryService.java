@@ -38,22 +38,16 @@ import femr.data.models.mysql.Medication;
 public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IInventoryRepository inventoryRepository;
-    private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
-                            IRepository<IMedicationInventory> medicationInventoryRepository,
                             IInventoryRepository inventoryRepository,
-                            IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
         this.inventoryRepository = inventoryRepository;
-        this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
 
@@ -102,25 +96,20 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
             //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-
-            medicationInventory.setQuantityCurrent(newQuantity);
-
-            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+            medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
+            medicationInventory = inventoryRepository.updateInventoryQuantityCurrent(medicationInventory.getId(), newQuantity);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
+            
             response.addError("", ex.getMessage());
         }
 
         return response;
-
     }
 
     /**

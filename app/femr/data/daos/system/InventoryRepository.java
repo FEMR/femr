@@ -71,6 +71,33 @@ public class InventoryRepository implements IInventoryRepository {
      * {@inheritDoc}
      */
     @Override
+    public IMedicationInventory updateInventoryQuantityCurrent(int inventoryId, int quantityCurrent){
+
+        IMedicationInventory medicationInventory;
+        try {
+
+            medicationInventory = findInventory(inventoryId);
+
+            if (medicationInventory == null) {
+                //there's nothing here to be done
+            } else {
+                //there's something here to be done
+                medicationInventory.setQuantityCurrent(quantityCurrent);
+                Ebean.save(medicationInventory);
+            }
+        } catch (Exception ex) {
+
+            Logger.error("InventoryRepository-updateInventoryQuantityCurrent", ex.getMessage(), "inventoryId=" + inventoryId, "quantityCurrent=" + quantityCurrent);
+            throw ex;
+        }
+
+        return medicationInventory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IMedicationInventory updateInventoryQuantityInitial(int inventoryId, int quantityInitial){
 
         IMedicationInventory medicationInventory;

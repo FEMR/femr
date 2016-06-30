@@ -27,12 +27,23 @@ public interface IInventoryRepository {
     IMedicationInventory retrieveInventoryByMedicationIdAndTripId(int medicationId, int tripId);
 
     /**
+     * Updates the current quantity of the medication in the inventory. This does not make any changes
+     * to the initial quantity.
+     *
+     * @param inventoryId id of the inventory entry, not null
+     * @param quantityCurrent current quantity to update the inventory with, not null
+     * @return the updated MedicationInventory object or null if an error occurred
+     */
+    IMedicationInventory updateInventoryQuantityCurrent(int inventoryId, int quantityCurrent);
+
+    /**
      * Updates the initial quantity of the medication in the inventory. This does not make any changes
      * to the current quantity.
      *
      * @param inventoryId id of the inventory entry, not null
-     * @param quantityInitial quantity to update the inventory with, not null
+     * @param quantityInitial initial quantity to update the inventory with, not null
      * @return the updated MedicationInventory object or null if an error occurred
      */
     IMedicationInventory updateInventoryQuantityInitial(int inventoryId, int quantityInitial);
+
 }

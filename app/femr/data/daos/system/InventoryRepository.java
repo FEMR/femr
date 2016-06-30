@@ -26,7 +26,7 @@ public class InventoryRepository implements IInventoryRepository {
     @Override
     public IMedicationInventory createInventoryWithMedicationIdAndTripIdAndQuantity(int medicationId, int tripId, int quantity) {
 
-        IMedicationInventory newMedicationInventory = null;
+        IMedicationInventory newMedicationInventory;
         try {
 
             newMedicationInventory = findInventory(medicationId, tripId);
@@ -42,6 +42,7 @@ public class InventoryRepository implements IInventoryRepository {
         } catch (Exception ex) {
 
             Logger.error("InventoryRepository-createInventoryWithMedicationIdAndTripIdAndQuantity", ex.getMessage(), "medicationId=" + medicationId, "tripId=" + tripId, "quantity=" + quantity);
+            throw ex;
         }
 
         return newMedicationInventory;
@@ -53,13 +54,14 @@ public class InventoryRepository implements IInventoryRepository {
     @Override
     public IMedicationInventory retrieveInventoryByMedicationIdAndTripId(int medicationId, int tripId){
 
-        IMedicationInventory medicationInventory = null;
+        IMedicationInventory medicationInventory;
         try{
 
             medicationInventory = findInventory(medicationId, tripId);
         } catch (Exception ex){
 
             Logger.error("InventoryRepository-retrieveInventoryByMedicationIdAndTripId", ex.getMessage(), "medicationId=" + medicationId, "tripId=" + tripId);
+            throw ex;
         }
 
         return medicationInventory;
@@ -71,7 +73,7 @@ public class InventoryRepository implements IInventoryRepository {
     @Override
     public IMedicationInventory updateInventoryQuantityInitial(int inventoryId, int quantityInitial){
 
-        IMedicationInventory medicationInventory = null;
+        IMedicationInventory medicationInventory;
         try {
 
             medicationInventory = findInventory(inventoryId);
@@ -86,6 +88,7 @@ public class InventoryRepository implements IInventoryRepository {
         } catch (Exception ex) {
 
             Logger.error("InventoryRepository-updateInventoryQuantityInitial", ex.getMessage(), "inventoryId=" + inventoryId, "quantityInitial=" + quantityInitial);
+            throw ex;
         }
 
         return medicationInventory;
@@ -100,7 +103,7 @@ public class InventoryRepository implements IInventoryRepository {
      */
     private IMedicationInventory findInventory(int inventoryId){
 
-        IMedicationInventory medicationInventory = null;
+        IMedicationInventory medicationInventory;
         try {
 
             ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
@@ -111,6 +114,7 @@ public class InventoryRepository implements IInventoryRepository {
         } catch (Exception ex) {
 
             Logger.error("InventoryRepository-findInventory", ex.getMessage(), "inventoryId=" + inventoryId);
+            throw ex;
         }
 
         return medicationInventory;
@@ -125,7 +129,7 @@ public class InventoryRepository implements IInventoryRepository {
      */
     private IMedicationInventory findInventory(int medicationId, int tripId){
 
-        IMedicationInventory medicationInventory = null;
+        IMedicationInventory medicationInventory;
         try {
             ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
                     .where()
@@ -136,8 +140,9 @@ public class InventoryRepository implements IInventoryRepository {
         } catch (Exception ex) {
 
             Logger.error("InventoryRepository-findInventory", ex.getMessage(), "medicationId=" + medicationId, "tripId" + tripId);
+            throw ex;
         }
-        
+
         return medicationInventory;
     }
 }

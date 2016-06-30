@@ -8,6 +8,7 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IInventoryRepository;
 import femr.data.models.core.IMedicationInventory;
 import femr.data.models.mysql.MedicationInventory;
+import play.Logger;
 
 public class InventoryRepository implements IInventoryRepository {
 
@@ -25,14 +26,22 @@ public class InventoryRepository implements IInventoryRepository {
     @Override
     public IMedicationInventory createInventoryWithMedicationIdAndTripIdAndQuantity(int medicationId, int tripId, int quantity) {
 
-        IMedicationInventory newMedicationInventory = findInventory(medicationId, tripId);
-        if (newMedicationInventory != null) {
-            //the inventory already exists, don't create a new one.
-            newMedicationInventory = null;
-        } else {
-            //the inventory does not exist, create a new one!
-            newMedicationInventory = dataModelMapper.createMedicationInventory(quantity, quantity, medicationId, tripId);
-            Ebean.save(newMedicationInventory);
+        IMedicationInventory newMedicationInventory = null;
+        try {
+
+            newMedicationInventory = findInventory(medicationId, tripId);
+
+            if (newMedicationInventory != null) {
+                //the inventory already exists, don't create a new one.
+                newMedicationInventory = null;
+            } else {
+                //the inventory does not exist, create a new one!
+                newMedicationInventory = dataModelMapper.createMedicationInventory(quantity, quantity, medicationId, tripId);
+                Ebean.save(newMedicationInventory);
+            }
+        } catch (Exception ex) {
+
+            Logger.error("InventoryRepository-createInventoryWithMedicationIdAndTripIdAndQuantity", ex.getMessage(), "medicationId=" + medicationId, "tripId=" + tripId, "quantity=" + quantity);
         }
 
         return newMedicationInventory;
@@ -44,7 +53,16 @@ public class InventoryRepository implements IInventoryRepository {
     @Override
     public IMedicationInventory retrieveInventoryByMedicationIdAndTripId(int medicationId, int tripId){
 
-        return findInventory(medicationId, tripId);
+        IMedicationInventory medicationInventory = null;
+        try{
+
+            medicationInventory = findInventory(medicationId, tripId);
+        } catch (Exception ex){
+
+            Logger.error("InventoryRepository-retrieveInventoryByMedicationIdAndTripId", ex.getMessage(), "medicationId=" + medicationId, "tripId=" + tripId);
+        }
+
+        return medicationInventory;
     }
 
     /**
@@ -53,13 +71,21 @@ public class InventoryRepository implements IInventoryRepository {
     @Override
     public IMedicationInventory updateInventoryQuantityInitial(int inventoryId, int quantityInitial){
 
-        IMedicationInventory medicationInventory = findInventory(inventoryId);
-        if (medicationInventory == null){
-            //there's nothing here to be done
-        }else{
-            //there's something here to be done
-            medicationInventory.setQuantityInitial(quantityInitial);
-            Ebean.save(medicationInventory);
+        IMedicationInventory medicationInventory = null;
+        try {
+
+            medicationInventory = findInventory(inventoryId);
+
+            if (medicationInventory == null) {
+                //there's nothing here to be done
+            } else {
+                //there's something here to be done
+                medicationInventory.setQuantityInitial(quantityInitial);
+                Ebean.save(medicationInventory);
+            }
+        } catch (Exception ex) {
+
+            Logger.error("InventoryRepository-updateInventoryQuantityInitial", ex.getMessage(), "inventoryId=" + inventoryId, "quantityInitial=" + quantityInitial);
         }
 
         return medicationInventory;
@@ -74,11 +100,18 @@ public class InventoryRepository implements IInventoryRepository {
      */
     private IMedicationInventory findInventory(int inventoryId){
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("id", inventoryId);
+        IMedicationInventory medicationInventory = null;
+        try {
 
-        IMedicationInventory medicationInventory = medicationInventoryExpressionList.findUnique();
+            ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                    .where()
+                    .eq("id", inventoryId);
+
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+        } catch (Exception ex) {
+
+            Logger.error("InventoryRepository-findInventory", ex.getMessage(), "inventoryId=" + inventoryId);
+        }
 
         return medicationInventory;
     }
@@ -92,13 +125,19 @@ public class InventoryRepository implements IInventoryRepository {
      */
     private IMedicationInventory findInventory(int medicationId, int tripId){
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
+        IMedicationInventory medicationInventory = null;
+        try {
+            ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                    .where()
+                    .eq("medication.id", medicationId)
+                    .eq("missionTrip.id", tripId);
 
-        IMedicationInventory medicationInventory = medicationInventoryExpressionList.findUnique();
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+        } catch (Exception ex) {
 
+            Logger.error("InventoryRepository-findInventory", ex.getMessage(), "medicationId=" + medicationId, "tripId" + tripId);
+        }
+        
         return medicationInventory;
     }
 }

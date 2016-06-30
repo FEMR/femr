@@ -20,6 +20,8 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import femr.data.daos.core.IInventoryRepository;
+import femr.data.daos.system.InventoryRepository;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -65,6 +67,9 @@ public class DataLayerModule extends AbstractModule {
         bind(IUser.class).toProvider(UserProvider.class);
         bind(IVital.class).toProvider(VitalProvider.class);
 
+        //Better Repository Injection
+        bind(IInventoryRepository.class).to(InventoryRepository.class);
+
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
 
@@ -77,7 +82,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<Repository<IMedicationGeneric>>() {});
         bind(new TypeLiteral<IRepository<IConceptPrescriptionAdministration>>() {}).to(new TypeLiteral<Repository<IConceptPrescriptionAdministration>>() {});
         bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<Repository<IConceptMedicationForm>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationInventory>>() {}).to(new TypeLiteral<Repository<IMedicationInventory>>() {});
         bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<Repository<IConceptMedicationUnit>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});

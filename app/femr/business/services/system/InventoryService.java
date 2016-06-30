@@ -26,36 +26,27 @@ import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
-import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IInventoryRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.MedicationInventory;
-import org.joda.time.DateTime;
 import femr.data.models.mysql.Medication;
 
 
 public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
-    private IDataModelMapper dataModelMapper;
+    private final IInventoryRepository inventoryRepository;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
-                            IRepository<IMedicationInventory> medicationInventoryRepository,
-                            IDataModelMapper dataModelMapper,
+                            IInventoryRepository inventoryRepository,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
-        this.dataModelMapper = dataModelMapper;
+        this.inventoryRepository = inventoryRepository;
         this.itemModelMapper = itemModelMapper;
     }
-
-
-
-
 
     /**
      * {@inheritDoc}
@@ -65,25 +56,18 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
-
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
 
-            medicationInventory = medicationInventoryExpressionList.findUnique();
+            medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
+
             if (medicationInventory == null) {
                 //it doesn't yet exist, create a new one
-                medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
-                medicationInventory = medicationInventoryRepository.create(medicationInventory);
+                medicationInventory = inventoryRepository.createInventoryWithMedicationIdAndTripIdAndQuantity(medicationId, tripId, quantityTotal);
             } else {
-
-
-                medicationInventory.setQuantityInitial(quantityTotal);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                //it already exists, update it
+                medicationInventory = inventoryRepository.updateInventoryQuantityInitial(medicationInventory.getId(), quantityTotal);
             }
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null);
 
@@ -105,25 +89,20 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
             //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-
-            medicationInventory.setQuantityCurrent(newQuantity);
-
-            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+            medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
+            medicationInventory = inventoryRepository.updateInventoryQuantityCurrent(medicationInventory.getId(), newQuantity);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
 
         return response;
-
     }
 
     /**
@@ -131,20 +110,14 @@ public class InventoryService implements IInventoryService {
      **/
     @Override
     public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
+
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
-            //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            //Checks to see if medication was already deleted, then user wanted to undo delete
-            if(medicationInventory.getIsDeleted() != null)
-                medicationInventory.setIsDeleted(null);
-            else
-                medicationInventory.setIsDeleted(DateTime.now());
-            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+
+            medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
+            medicationInventory = inventoryRepository.deleteInventory(medicationInventory.getId());
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted());
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
@@ -166,23 +139,18 @@ public class InventoryService implements IInventoryService {
         ExpressionList<Medication> medicationExpressionList = QueryProvider.getMedicationQuery()
                 .where()
                 .eq("id", medicationId);
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication_id", medicationId)
-                .eq("mission_trip_id", tripId);
 
         try {
 
 
             IMedication medication = medicationRepository.findOne(medicationExpressionList);
-            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            IMedicationInventory medicationInventory = inventoryRepository.retrieveInventoryByMedicationIdAndTripId(medicationId, tripId);
             int currentQuantity = 0;
             int totalQuantity = 0;
 
             if (medicationInventory != null) {
 
-                medicationInventory.setQuantityCurrent(medicationInventory.getQuantityCurrent() - quantityToSubtract);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                medicationInventory = inventoryRepository.updateInventoryQuantityCurrent(medicationInventory.getId(), medicationInventory.getQuantityCurrent() - quantityToSubtract);
                 currentQuantity = medicationInventory.getQuantityCurrent();
                 totalQuantity = medicationInventory.getQuantityInitial();
             }

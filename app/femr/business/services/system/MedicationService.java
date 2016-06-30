@@ -32,6 +32,7 @@ import femr.common.models.MedicationItem;
 import femr.common.models.PrescriptionItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IInventoryRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptMedication;
@@ -52,7 +53,7 @@ public class MedicationService implements IMedicationService {
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationGeneric> medicationGenericRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
+    private final IInventoryRepository inventoryRepository;
     private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
     private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
@@ -66,7 +67,7 @@ public class MedicationService implements IMedicationService {
                              IRepository<IMedicationGeneric> medicationGenericRepository,
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
-                             IRepository<IMedicationInventory> medicationInventoryRepository,
+                             IInventoryRepository inventoryRepository,
                              IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
@@ -77,7 +78,7 @@ public class MedicationService implements IMedicationService {
         this.medicationRepository = medicationRepository;
         this.medicationGenericRepository = medicationGenericRepository;
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
+        this.inventoryRepository = inventoryRepository;
         this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
         this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
@@ -530,17 +531,17 @@ public class MedicationService implements IMedicationService {
      */
     @Override
     public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId) {
-        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
-        //Querying based on the trip id.  Each trip will have its own inventory.
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("missionTrip.id", tripId);
+        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
         List<? extends IMedicationInventory> medicationsInventory;
         try {
-            medicationsInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
+
+            medicationsInventory = inventoryRepository.retrieveAllInventoriesByTripId(tripId);
+
+
         } catch (Exception ex) {
+            
             response.addError("exception", ex.getMessage());
             return response;
         }

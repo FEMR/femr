@@ -11,6 +11,8 @@ import femr.data.models.mysql.MedicationInventory;
 import org.joda.time.DateTime;
 import play.Logger;
 
+import java.util.List;
+
 public class InventoryRepository implements IInventoryRepository {
 
     private IDataModelMapper dataModelMapper;
@@ -79,6 +81,30 @@ public class InventoryRepository implements IInventoryRepository {
         }
 
         return medicationInventory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IMedicationInventory> retrieveAllInventoriesByTripId(int tripId){
+
+        List<? extends IMedicationInventory> medicationInventories;
+
+        try {
+            //Querying based on the trip id.  Each trip will have its own inventory.
+            ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                    .where()
+                    .eq("missionTrip.id", tripId);
+
+            medicationInventories = medicationInventoryExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("InventoryRepository-retrieveAllInventoriesByTripId", ex.getMessage(), "tripId=" + tripId);
+            throw ex;
+        }
+
+        return medicationInventories;
     }
 
     /**

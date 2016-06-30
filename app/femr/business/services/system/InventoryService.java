@@ -80,8 +80,7 @@ public class InventoryService implements IInventoryService {
                 medicationInventory = inventoryRepository.createInventoryWithMedicationIdAndTripIdAndQuantity(medicationId, tripId, quantityTotal);
             } else {
                 //it already exists, update it
-                medicationInventory.setQuantityInitial(quantityTotal);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                medicationInventory = inventoryRepository.updateInventoryQuantityInitial(medicationInventory.getId(), quantityTotal);
             }
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null);
 

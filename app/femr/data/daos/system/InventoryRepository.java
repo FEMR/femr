@@ -47,9 +47,44 @@ public class InventoryRepository implements IInventoryRepository {
         return findInventory(medicationId, tripId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedicationInventory updateInventoryQuantityInitial(int inventoryId, int quantityInitial){
+
+        IMedicationInventory medicationInventory = findInventory(inventoryId);
+        if (medicationInventory == null){
+            //there's nothing here to be done
+        }else{
+            //there's something here to be done
+            medicationInventory.setQuantityInitial(quantityInitial);
+            Ebean.save(medicationInventory);
+        }
+
+        return medicationInventory;
+    }
+
 
     /**
-     * Searches for inventory. Returns null if it doesn't exist.
+     * Searches for inventory by inventory id. Returns null if it doesn't exist.
+     *
+     * @param inventoryId id of the inventory, not null
+     * @return the MedicationInventory object if it exists, otherwise null
+     */
+    private IMedicationInventory findInventory(int inventoryId){
+
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("id", inventoryId);
+
+        IMedicationInventory medicationInventory = medicationInventoryExpressionList.findUnique();
+
+        return medicationInventory;
+    }
+
+    /**
+     * Searches for inventory by medicationId/tripId. Returns null if it doesn't exist.
      *
      * @param medicationId id of the medication
      * @param tripId id of the trip

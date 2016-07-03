@@ -153,7 +153,7 @@
                                             @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
                                                 @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
                                                     @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
-                                                        <option value = "@missionTrip.getId()"> @missionItem.getTeamName - @missionTrip.getTripCountry - @missionTrip.getTripCity </option>
+                                                        <option value = "@missionTrip.getId()"> @missionItem.getMissionTrips.get(tripIndex - 1).getFriendlyTripTitle </option>
                                                     }
                                                 }
                                             }

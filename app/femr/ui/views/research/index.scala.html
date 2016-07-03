@@ -22,7 +22,7 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/stacked-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/grouped-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/table-chart.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/research.js")"></script>
     }
 
@@ -114,6 +114,7 @@
                                 <li><a data-gtype="table" href="#">Table</a></li>
                             </ul>
                         </li>
+
                         <li id="gfilter-menu" class="menu-item">
                             <a class="opt-link">Filter Date</a>
                             <span class="val">
@@ -127,6 +128,8 @@
                                 <li>End Date <input type="date" id="endDate" name="endDate" value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" /></li>
                             </ul>
                         </li>
+
+
                         <li class="controls">
 
                             <input type="hidden" id="primaryDataset" name="primaryDataset" value="" />

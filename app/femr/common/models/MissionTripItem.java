@@ -30,6 +30,7 @@ public class MissionTripItem {
     private Date tripEndDate;
     private String friendlyTripEndDate;
     private String teamName; //name of the team running the trip (duplicated in MissionItem)
+    private String friendlyTripTitle;
 
     public int getId() {
         return id;
@@ -93,5 +94,13 @@ public class MissionTripItem {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public String getFriendlyTripTitle() {
+        return friendlyTripTitle;
+    }
+
+    public void setFriendlyTripTitle(String friendlyTripTitle) {
+        this.friendlyTripTitle = friendlyTripTitle;
     }
 }

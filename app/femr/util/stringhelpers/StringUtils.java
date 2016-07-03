@@ -18,6 +18,8 @@
 */
 package femr.util.stringhelpers;
 
+import femr.util.calculations.dateUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -189,6 +191,28 @@ public class StringUtils {
     public static String outputBloodPressureOrNA(String systolic, String diastolic) {
         if (systolic == null && diastolic == null) return "N/A";
         else return systolic + " / " + diastolic;
+    }
+
+    /**
+     * Generates a user friendly string that displays the title of a mission trip. This title includes
+     * the name of the team, country, start date, and end date of the trip. All dates are formatted
+     * for international interpretation (e.g. 08-Aug-1989).
+     *
+     * @param teamName name of the mission team, not null
+     * @param country country the team travels to, not null
+     * @param startDate approximate start date of the trip, not null
+     * @param endDate approximate end date of the trip, not null
+     * @return The user friendly trip title or null if parameters were null
+     */
+    public static String generateMissionTripTitle(String teamName, String country, Date startDate, Date endDate){
+
+        if (StringUtils.isNullOrWhiteSpace(teamName) || StringUtils.isNullOrWhiteSpace(country) || startDate == null || endDate == null){
+
+            return null;
+        }
+
+        String tripTitle = teamName + "-" + country + "-(" + dateUtils.getFriendlyInternationalDate(startDate) + "-" + dateUtils.getFriendlyInternationalDate(endDate) + ")";
+        return tripTitle;
     }
 
 }

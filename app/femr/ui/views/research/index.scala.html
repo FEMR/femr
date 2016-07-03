@@ -136,12 +136,7 @@
                             <input type="hidden" id="secondaryDataset" name="secondaryDataset" value="" />
                             <input type="hidden" id="graphType" name="graphType" value="" />
 
-                            <span class="filter">
-                                <label>Filter Primary Dataset</label>
-                                <input type="text" id="filterRangeStart" name="filterRangeStart" placeholder="Start" value="" /> &ndash;
-                                <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
-                                <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
-                            </span>
+
                             @*
                             <span class="medication">
                                 <label>Filter Medication</label>
@@ -150,7 +145,7 @@
                             </span>
                                 *@
                                 <span class="medication">
-                                <label>Filter Mission Trip City</label>
+                                <label>Filter Trip</label>
                                     <select id="MissionTripId" name="MissionTripId" class="medication">
                                         <option selected id="default" value="">-- Select Trip --</option> @*Andrew Trip Filter*@
                                         @for(i <- 1 to viewModel.getMissionTrips.size) {
@@ -164,6 +159,15 @@
                                         }
                                     </select>
                                 </span>
+
+                            <span class="filter">
+                                <label>Filter Primary Dataset</label>
+                                <input type="text" id="filterRangeStart" name="filterRangeStart" placeholder="Start" value="" /> &ndash;
+                                <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
+                                <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
+                            </span>
+
+
 
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>

@@ -37,11 +37,11 @@ public class TestDataLayerModule extends AbstractModule {
 
         //Provider Injection
         bind(IChiefComplaint.class).toProvider(ChiefComplaintProvider.class);
-        bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
+        //bind(IDiagnosis.class).toProvider(DiagnosisProvider.class);
         bind(IMedication.class).toProvider(MedicationProvider.class);
         bind(IMedicationGenericStrength.class).toProvider(MedicationGenericStrengthProvider.class);
         bind(IMedicationGeneric.class).toProvider(MedicationGenericProvider.class);
-        bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
+        //bind(IMedicationAdministration.class).toProvider(MedicationAdministrationProvider.class);
         bind(IConceptMedicationForm.class).toProvider(ConceptMedicationFormProvider.class);
         bind(IConceptMedicationUnit.class).toProvider(ConceptMedicationUnitProvider.class);
         bind(IMissionCity.class).toProvider(MissionCityProvider.class);
@@ -71,11 +71,11 @@ public class TestDataLayerModule extends AbstractModule {
 
         //Repository Injection
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<MockRepository<IChiefComplaint>>() {});
-        bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<MockRepository<IDiagnosis>>() {});
+        //bind(new TypeLiteral<IRepository<IDiagnosis>>() {}).to(new TypeLiteral<MockRepository<IDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<MockRepository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationGenericStrength>>() {}).to(new TypeLiteral<MockRepository<IMedicationGenericStrength>>() {});
         bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<MockRepository<IMedicationGeneric>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<MockRepository<IMedicationAdministration>>() {});
+        //bind(new TypeLiteral<IRepository<IMedicationAdministration>>() {}).to(new TypeLiteral<MockRepository<IMedicationAdministration>>() {});
         bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<MockRepository<IConceptMedicationForm>>() {});
         bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<MockRepository<IConceptMedicationUnit>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<MockRepository<IMissionCity>>() {});

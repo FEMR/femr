@@ -59,6 +59,8 @@ public class Patient implements IPatient {
     private Integer deletedByUserId;
     @Column(name = "reason_deleted", nullable = true)
     private String reasonDeleted;
+    @Column(name = "birthday_is_fake", nullable = true)
+    private boolean birthdayIsFake;
 
 
     @Override
@@ -198,5 +200,12 @@ public class Patient implements IPatient {
     public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
     
     
+
+    @Override
+    public void setBirthdayIsFake(boolean isFake) { this.birthdayIsFake = isFake; }
+
+    @Override
+    public boolean getBirthdayIsFake() { return birthdayIsFake; }
+
 
 }

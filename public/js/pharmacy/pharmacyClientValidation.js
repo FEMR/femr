@@ -6,6 +6,11 @@ $(document).ready(function () {
             event.preventDefault();
         }
 
+        if (!$("input[name=disclaimer]").is(':checked')) {
+            alert("Patients must be counseled before medications can be dispensed.");
+            event.preventDefault();
+        }
+
         return pass;
     })
 });

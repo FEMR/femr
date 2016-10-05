@@ -19,8 +19,12 @@
 package femr.ui.models.triage;
 
 import femr.common.models.PatientItem;
+import play.data.validation.ValidationError;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class IndexViewModelPost {
 
@@ -56,6 +60,26 @@ public class IndexViewModelPost {
 
 
     private String patientPhotoCropped;
+
+    public List<ValidationError> validate(){
+        HashMap<String, ArrayList<Integer>> ageMap = new HashMap<String, ArrayList<Integer>>();
+        ageMap.put("infant", new ArrayList<Integer>() {{add(0); add(1);}});
+        ageMap.put("child", new ArrayList<Integer>() {{add(2); add(12);}});
+        ageMap.put("teen", new ArrayList<Integer>() {{add(13); add(17);}});
+        ageMap.put("adult", new ArrayList<Integer>() {{add(18); add(64);}});
+        ageMap.put("elder", new ArrayList<Integer>() {{add(65); add(150);}});
+        Date now = new Date();
+        long deltaTime = now.getTime() - age.getTime();
+        double deltaYears = deltaTime / 3.156e+10;
+        int currAge = (int) Math.floor(deltaYears);
+        List<ValidationError> errors = new ArrayList<>();
+        if (ageClassification != null) {
+            if (currAge < ageMap.get(ageClassification).get(0) || currAge > ageMap.get(ageClassification).get(1)) {
+                errors.add(new ValidationError("ageClassification", String.format("age: %d does not match age classification: %s", currAge, ageClassification)));
+            }
+        }
+        return errors.isEmpty() ? null : errors;
+    }
 
     public String getPatientPhotoCropped() {
         return patientPhotoCropped;

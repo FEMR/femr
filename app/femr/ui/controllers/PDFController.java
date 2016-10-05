@@ -349,6 +349,38 @@ public class PDFController extends Controller {
         return table;
     }
 
+
+
+
+    /**
+     * Build the prescription cell content
+     * @param prescriptionItem
+     * @return
+     */
+    private String getPrescriptionDetails(PrescriptionItem prescriptionItem){
+        Integer amount = prescriptionItem.getAmount();
+        String name;
+        if (prescriptionItem.getOriginalMedicationName() != null){
+            name = prescriptionItem.getOriginalMedicationName();
+        }
+        else{
+            name = prescriptionItem.getName();
+        }
+        String medicineForm = prescriptionItem.getMedicationForm();
+        String prescriptionFullName= amount + " " + name +"(" +medicineForm+")";
+        String activedrugs="";
+
+        for (MedicationItem.ActiveIngredient AD : prescriptionItem.getMedicationActiveDrugs()){
+            String ADName = AD.getName();
+            Double ADValue = AD.getValue();
+            String ADUnit = AD.getUnit();
+            String ADDetail = "\n*"+ADName + "\n" +ADValue.toString()+" "+ADUnit;
+            activedrugs += ADDetail;
+        }
+
+        return prescriptionFullName+activedrugs;
+    }
+
     /**
      * Builds the Assessments Table - The assessment fields for the encounter
      *
@@ -443,7 +475,7 @@ public class PDFController extends Controller {
                 if (prescription.getOriginalMedicationName() != null) {
 
                     //jank way to strikethrough
-                    Chunk strikeThrough = new Chunk(prescription.getOriginalMedicationName(), getValueFont());
+                    Chunk strikeThrough = new Chunk(getPrescriptionDetails(prescription), getValueFont());
                     strikeThrough.setUnderline(0.1f, 3f);   // Thickness, the y axis location of
                     Paragraph originalMedName = new Paragraph(strikeThrough);
                     cell = new PdfPCell(originalMedName);
@@ -454,7 +486,7 @@ public class PDFController extends Controller {
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {
-                    Paragraph medName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph medName = new Paragraph(getPrescriptionDetails(prescription), getValueFont());
                     cell = new PdfPCell(medName);
                     table.addCell(cell);
 

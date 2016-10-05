@@ -19,7 +19,7 @@
 package femr.ui.models.pharmacy;
 
 import femr.common.models.PrescriptionItem;
-import play.data.validation.Constraints;
+//import play.data.validation.Constraints;
 
 import java.util.List;
 
@@ -46,13 +46,13 @@ public class EditViewModelPost {
     }
 
 
+    // Possible correct implementation. Still encounter Execution exception regardless of disclaimer result
+    public String validate() {
 
-    /*public String validate() {
-
-        if( ! disclaimer ) {
+        if( disclaimer == 0 ) {
             return "Patients must be counseled before medications can be dispensed";
         }
         return null;
-    }  */
+    }
 
 }

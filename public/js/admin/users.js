@@ -82,14 +82,19 @@ var createAndEditUsers = {
 
 var createUsers = {
     elements: {
-        password: $("#password")
+        password: $("#password"),
+        confirmPassword: $("#confirmPassword")
     },
     validateRolesAndPassword: function () {
         var pass = true;
         // Adding password constraint!
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
+<<<<<<< HEAD
+        var confirmPassword = $.trim(document.forms["createForm"]["confirmPassword"].value);
+=======
         createUsers.elements.passwordTextBox.next(".errors").text(passwordVerify);
+>>>>>>> 5bb025957311c49993ce9100b6e613e5af1ba60f
         if(password.length < 6){
            pass = false;
         }
@@ -105,14 +110,17 @@ var createUsers = {
         }
         else if(!re.test(password)) {
             pass = false;
+            passwordErrors = "password must have at least 6 characters with at least one upper case letter and number";
+        }
+        else if(password != confirmPassword) {
+            pass = false;
         }
 
-        if(pass === false)
-        {
+        if(pass === false) {
             if (passwordErrors != "")
-                createUsers.elements.password.next (".errors").text(passwordErrors);
+                createUsers.elements.password.next(".errors").text(passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least 6 characters with at least one upper case letter and number");
+                createUsers.elements.password.next(".errors").text("passwords do not match");
         }
         else{
             createUsers.elements.password.next(".errors").text("");
@@ -165,9 +173,10 @@ var editUsers = {
             }else{
                 editUsers.elements.passwordTextBox.next(".errors").text("");
             }
-        } else {
-            editUsers.elements.passwordTextBox.next(".errors").text("");
-        }
+        } 
+        // else {
+        //     editUsers.elements.passwordTextBox.next(".errors").text("");
+        // }
         //validate roles
         if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
             pass = false;

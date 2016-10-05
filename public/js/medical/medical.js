@@ -1,9 +1,11 @@
 var problemFeature = {
     allProblems: $('.newProblems, .oldProblems'),
     newProblems: $('input[name].newProblems'),
+    oldProblems: $('.oldProblems'),
     refreshSelectors: function () {
         problemFeature.allProblems = $(problemFeature.allProblems.selector);
         problemFeature.newProblems = $(problemFeature.newProblems.selector);
+        problemFeature.oldProblems = $(problemFeature.oldProblems.selector);
     },
     getNumberOfNonReadonlyProblemFields: function () {
         problemFeature.refreshSelectors();
@@ -34,6 +36,15 @@ var problemFeature = {
                 $(lastProblem).val('');
             }
         }
+    },
+    editProblemField: function () {
+        problemFeature.refreshSelectors();
+        problemFeature.allProblems.removeAttr("readonly");
+
+        var problemInputElement = $(problemFeature.allProblems);
+        //data for typeahead already exists on the page from loading the diagnoses input box
+        typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
+        $(problemInputElement).focus();
     }
 };
 var prescriptionFeature = {
@@ -325,6 +336,12 @@ $(document).ready(function () {
 
     $('#subtractProblemButton').click(function () {
         problemFeature.removeProblemField();
+    });
+
+    //edit problems
+    $('#editProblemButton').click(function () {
+        problemFeature.editProblemField();
+        document.getElementById('editProblemButton').disabled = true;
     });
 
     $('#medicalTabs li').click(function () {

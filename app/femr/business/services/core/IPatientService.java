@@ -51,7 +51,7 @@ public interface IPatientService {
      * @return a service response that contains a PatientItem representing the patient that was created
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> createPatient(PatientItem patient);
+    ServiceResponse<PatientItem> createPatient(PatientItem patient, ISearchService searchService);
 
     /**
      * Soft deletes a patient

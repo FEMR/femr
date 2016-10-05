@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet, message: String)
 
 @import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
@@ -25,6 +25,10 @@
     @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.versioned("css/triage.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/datepicker.css")">
+
+    }
+    @additionalMessage = {
+        <h5>@message</h5>
     }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
 
@@ -37,6 +41,7 @@
            <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()">Go To Medical</a></p>
         }
         <h2 class="text-center">Check In - Triage</h2>
+        @additionalMessage
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">

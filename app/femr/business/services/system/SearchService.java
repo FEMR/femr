@@ -36,7 +36,10 @@ import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SearchService implements ISearchService {
@@ -804,5 +807,23 @@ public class SearchService implements ISearchService {
             response.addError("exception", ex.getMessage());
         }
         return response;
+    }
+
+    /**
+     *
+     * @param first_name
+     * @param last_name
+     * @return true if the patient exists and false if not
+     */
+    @Override
+    public boolean checkExistingPatients(String first_name, String last_name, Date age,String city){
+        List<? extends IPatient> allPatients;
+        allPatients = QueryHelper.retrievePatients(patientRepository);
+        for (IPatient patient : allPatients) {
+        if ((patient.getFirstName().equals(first_name)) && (patient.getLastName().equals(last_name)) && (patient.getAge().equals(age)) && (patient.getCity().equals(city))) {
+            return true;
+        }
+        }
+        return false;
     }
 }

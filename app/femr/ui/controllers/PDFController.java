@@ -359,13 +359,7 @@ public class PDFController extends Controller {
      */
     private String getPrescriptionDetails(PrescriptionItem prescriptionItem){
         Integer amount = prescriptionItem.getAmount();
-        String name;
-        if (prescriptionItem.getOriginalMedicationName() != null){
-            name = prescriptionItem.getOriginalMedicationName();
-        }
-        else{
-            name = prescriptionItem.getName();
-        }
+        String name = prescriptionItem.getName();
         String medicineForm = prescriptionItem.getMedicationForm();
         String prescriptionFullName= amount + " " + name +"(" +medicineForm+")";
         String activedrugs="";
@@ -475,14 +469,14 @@ public class PDFController extends Controller {
                 if (prescription.getOriginalMedicationName() != null) {
 
                     //jank way to strikethrough
-                    Chunk strikeThrough = new Chunk(getPrescriptionDetails(prescription), getValueFont());
+                    Chunk strikeThrough = new Chunk(prescription.getOriginalMedicationName(), getValueFont());
                     strikeThrough.setUnderline(0.1f, 3f);   // Thickness, the y axis location of
                     Paragraph originalMedName = new Paragraph(strikeThrough);
                     cell = new PdfPCell(originalMedName);
 
                     table.addCell(cell);
 
-                    Paragraph replacedMedName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph replacedMedName = new Paragraph(getPrescriptionDetails(prescription), getValueFont());
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {

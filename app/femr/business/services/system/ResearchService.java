@@ -247,6 +247,10 @@ public class ResearchService implements IResearchService {
         Integer age = (int)Math.floor(dateUtils.getAgeAsOfDateFloat(patient.getAge(), encounter.getDateOfTriageVisit()));
         exportitem.setAge(age);
 
+        // BirthdayIsFake
+        if ( patient.getBirthdayIsFake() ) { exportitem.setBirthday( dateUtils.getFriendlyDate(patient.getAge()) + " (fake)"); }
+        else { exportitem.setBirthday(dateUtils.getFriendlyDate(patient.getAge())); }
+
         // Gender
         String gender = StringUtils.outputStringOrNA(patient.getSex());
         exportitem.setGender(gender);

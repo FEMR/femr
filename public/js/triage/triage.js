@@ -372,6 +372,7 @@ var triageFields = {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
         age: $('#age'),//doesn't work for an existing patient
+        isDobEstimated: $('#isDobEstimated'),//probably also doesn't work for an existing patient
         years: $('#years'),
         months: $('#months'),
         ageClassification: $('[name=ageClassification]'),
@@ -549,6 +550,7 @@ $(document).ready(function () {
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
+                $('#isDobEstimated').prop('checked', false);
             }
             else {
                 $('#age').css('border-color', 'red');
@@ -572,6 +574,7 @@ $(document).ready(function () {
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
+                $('#isDobEstimated').prop('checked', true);
             }
         }
     });
@@ -585,6 +588,7 @@ $(document).ready(function () {
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
+                $('#isDobEstimated').prop('checked', true);
             }
         }
     });

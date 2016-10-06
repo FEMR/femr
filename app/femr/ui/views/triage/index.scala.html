@@ -62,6 +62,10 @@
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     <span class="orSpan">OR</span>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <div class="generalInfoInput">
+                        <label>Is DOB Estimated?</label>
+                        <input type="checkbox" class="fCheckbox" name="isDobEstimated" id="isDobEstimated" disabled="disabled">
+                    </div>
                     <span class="orSpan">OR</span>
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">

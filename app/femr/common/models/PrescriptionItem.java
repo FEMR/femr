@@ -171,4 +171,14 @@ public class PrescriptionItem {
     public void setCounseled(Boolean counseled) {
         isCounseled = counseled;
     }
+
+    public String getPrescriptionDetail(){
+
+        String ingredients ="";
+        for (MedicationItem.ActiveIngredient AD : medicationActiveDrugs) {
+            ingredients+= System.getProperty("line.separator") + AD.getActiveIngredientDetails();
+        }
+        return amount + " " + name + "(" +medicationForm+ ")"+  ingredients;
+    }
+
 }

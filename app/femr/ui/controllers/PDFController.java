@@ -353,29 +353,6 @@ public class PDFController extends Controller {
 
 
     /**
-     * Build the prescription cell content
-     * @param prescriptionItem
-     * @return
-     */
-    private String getPrescriptionDetails(PrescriptionItem prescriptionItem){
-        Integer amount = prescriptionItem.getAmount();
-        String name = prescriptionItem.getName();
-        String medicineForm = prescriptionItem.getMedicationForm();
-        String prescriptionFullName= amount + " " + name +"(" +medicineForm+")";
-        String activedrugs="";
-
-        for (MedicationItem.ActiveIngredient AD : prescriptionItem.getMedicationActiveDrugs()){
-            String ADName = AD.getName();
-            Double ADValue = AD.getValue();
-            String ADUnit = AD.getUnit();
-            String ADDetail = "\n*"+ADName + "\n" +ADValue.toString()+" "+ADUnit;
-            activedrugs += ADDetail;
-        }
-
-        return prescriptionFullName+activedrugs;
-    }
-
-    /**
      * Builds the Assessments Table - The assessment fields for the encounter
      *
      * @param tabFieldMultiMap multimap of the encounter's tab fields
@@ -476,11 +453,12 @@ public class PDFController extends Controller {
 
                     table.addCell(cell);
 
-                    Paragraph replacedMedName = new Paragraph(getPrescriptionDetails(prescription), getValueFont());
+                    Paragraph replacedMedName = new Paragraph(prescription.getPrescriptionDetail(), getValueFont());
+
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {
-                    Paragraph medName = new Paragraph(getPrescriptionDetails(prescription), getValueFont());
+                    Paragraph medName = new Paragraph(prescription.getPrescriptionDetail(), getValueFont());
                     cell = new PdfPCell(medName);
                     table.addCell(cell);
 

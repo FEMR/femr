@@ -248,8 +248,10 @@ public class ResearchService implements IResearchService {
         exportitem.setAge(age);
 
         // BirthdayIsFake
-        if ( patient.getBirthdayIsFake() ) { exportitem.setBirthday( dateUtils.getFriendlyDate(patient.getAge()) + " (fake)"); }
-        else { exportitem.setBirthday(dateUtils.getFriendlyDate(patient.getAge())); }
+        String birthdayColumnText = dateUtils.getFriendlyDate(patient.getAge());
+        if ( patient.getBirthdayIsFake() == null )  { birthdayColumnText += "(unknown)"; }
+        else if ( patient.getBirthdayIsFake() ) { birthdayColumnText += "(fake)"; }
+        exportitem.setBirthday(birthdayColumnText);
 
         // Gender
         String gender = StringUtils.outputStringOrNA(patient.getSex());

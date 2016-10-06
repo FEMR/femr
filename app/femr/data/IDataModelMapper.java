@@ -135,17 +135,18 @@ public interface IDataModelMapper {
     /**
      * Generate and provide an implementation of IPatient.
      *
-     * @param userID    id of the user creating the patient, not null
-     * @param firstName first name of the patient, not null
-     * @param lastName  last name of the patient, not null
-     * @param birthday  the patients birthday, may be null
-     * @param sex       the sex of the patient, may be null
-     * @param address   the address of the patients residence, may be null
-     * @param city      the city of the patient, may be null
-     * @param photoID   the id of a photo of the patient, may be null
+     * @param userID         id of the user creating the patient, not null
+     * @param firstName      first name of the patient, not null
+     * @param lastName       last name of the patient, not null
+     * @param birthday       the patients birthday, may be null
+     * @param isDobEstimated whether or not the patient's birthday is estimated, may be null
+     * @param sex            the sex of the patient, may be null
+     * @param address        the address of the patients residence, may be null
+     * @param city           the city of the patient, may be null
+     * @param photoID        the id of a photo of the patient, may be null
      * @return an implementation of IPatient or null if processing fails
      */
-    IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID);
+    IPatient createPatient(int userID, String firstName, String lastName, Date birthday, Boolean isDobEstimated, String sex, String address, String city, Integer photoID);
 
     /**
      * Generate and provide an implementation of IPatientEncounter.

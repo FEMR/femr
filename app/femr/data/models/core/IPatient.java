@@ -44,6 +44,10 @@ public interface IPatient {
 
     void setAge(Date age);
 
+    Boolean getIsDobEstimated();
+
+    void setIsDobEstimated(Boolean isDobEstimated);
+
     String getSex();
 
     void setSex(String sex);

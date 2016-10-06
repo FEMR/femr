@@ -159,7 +159,7 @@ public class MedicationItem {
 
         public String getActiveIngredientDetails(){
 
-            return "        *" + name + System.getProperty("line.separator") +"         "+value.toString()+" "+unit;
+            return "        • " + name + System.getProperty("line.separator") +"          "+value.toString()+" "+unit;
 
         }
     }

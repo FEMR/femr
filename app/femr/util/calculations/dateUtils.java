@@ -160,10 +160,39 @@ public class dateUtils {
         return dtStr;
     }
 
+    /**
+     * Takes a date object and formats it into a user friendly string
+     *
+     * Format: (MM/dd/yyyy)
+     * Format: (08/02/1989)
+     *
+     * @param date the date you would like to format, not null
+     * @return the sexy looking date string or null if errors
+     */
     public static String getFriendlyDate(Date date){
+
         if (date == null)
             return null;
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        String dStr = df.format(date);
+        return dStr;
+    }
+
+    /**
+     * Takes a date object and formats it into a user friendly string of which
+     * can be recognized internationally
+     *
+     * Format: (dd/MMMM/yyyy)
+     * Format: 02-Aug-1989
+     *
+     * @param date the date you would like to format, not null
+     * @return the sexy looking date string or null if errors
+     */
+    public static String getFriendlyInternationalDate(Date date){
+
+        if (date == null)
+            return null;
+        DateFormat df = new SimpleDateFormat("dd/MMMM/yyyy");
         String dStr = df.format(date);
         return dStr;
     }

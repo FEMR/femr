@@ -631,9 +631,10 @@ var filterMenuModule = (function () {
         return false;
     };
 
+    
     var registerTypeahead = function () {
 
-        typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/medications", filterFields.medicationName, "medication", true, true);
+        typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/medicationsWithID", filterFields.medicationName, "medication", true, true);
     };
 
     var publicObject = {};

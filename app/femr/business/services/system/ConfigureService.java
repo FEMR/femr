@@ -65,6 +65,7 @@ public class ConfigureService implements IConfigureService {
                 if (systemSettings.contains(ss.getName())) {
                     ss.setActive(true);
                     systemSettingRepository.update(ss);
+
                 } else {
                     ss.setActive(false);
                     systemSettingRepository.update(ss);

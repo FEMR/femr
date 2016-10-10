@@ -48,10 +48,11 @@ public interface IPatientService {
      * Creates a new patient.
      *
      * @param patient patient to be created. TODO: separate this into parameters
+     * @param check input 1 if the triage page contains the message that the patient might exist, input 0 otherwise
      * @return a service response that contains a PatientItem representing the patient that was created
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> createPatient(PatientItem patient);
+    ServiceResponse<PatientItem> createPatient(PatientItem patient, ISearchService searchService, int check);
 
     /**
      * Soft deletes a patient

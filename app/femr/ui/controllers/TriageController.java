@@ -3,26 +3,30 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import femr.business.helpers.LogicDoer;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.*;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.PatientItem;
+import femr.common.models.SettingItem;
+import femr.common.models.VitalItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.triage.*;
+import femr.ui.models.triage.EditViewModelPost;
+import femr.ui.models.triage.IndexViewModelGet;
+import femr.ui.models.triage.IndexViewModelPost;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 import play.data.Form;
-import play.mvc.*;
+import play.mvc.Controller;
+import play.mvc.Result;
+import play.mvc.Security;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -54,8 +58,7 @@ public class TriageController extends Controller {
         this.vitalService = vitalService;
     }
 
-    public Result indexGet() {
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+    public void indexGetInitialize(CurrentUser currentUser,PatientItem patientItem,IndexViewModelGet viewModelGet){
 
         //retrieve all the vitals in the database so we can dynamically name
         //the vitals in the view
@@ -64,8 +67,7 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        //initalize an empty patient
-        PatientItem patientItem = new PatientItem();
+
 
         //get settings
         ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
@@ -79,14 +81,21 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPatient(patientItem);
         viewModelGet.setSearchError(false);
         viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
         viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
+    }
 
-        return ok(index.render(currentUser, viewModelGet));
+    public Result indexGet() {
+        //initalize an empty patient
+        PatientItem patientItem = new PatientItem();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        IndexViewModelGet viewModelGet = new IndexViewModelGet();
+        indexGetInitialize(currentUser,patientItem,viewModelGet);
+        return ok(index.render(currentUser, viewModelGet,""));
     }
 
     /*
@@ -143,14 +152,14 @@ public class TriageController extends Controller {
             viewModelGet.setLinkToMedical(false);
         }
 
-        return ok(index.render(currentUser, viewModelGet));
+        return ok(index.render(currentUser, viewModelGet,""));
     }
 
     /*
    *if id is 0 then it is a new patient and a new encounter
    * if id is > 0 then it is only a new encounter
     */
-    public Result indexPost(int id) {
+    public Result indexPost(int id, String message) {
 
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
@@ -161,12 +170,27 @@ public class TriageController extends Controller {
         PatientItem patientItem;
         if (id == 0) {
             patientItem = populatePatientItem(viewModel, currentUser);
-            patientServiceResponse = patientService.createPatient(patientItem);
+                if(message.equals("")) {
+                    patientServiceResponse = patientService.createPatient(patientItem, searchService,0);
+                }
+            else
+                {
+                    patientServiceResponse = patientService.createPatient(patientItem, searchService,1);
+                }
         } else {
-            patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
+                patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
         }
         if (patientServiceResponse.hasErrors()) {
-            throw new RuntimeException();
+            if(patientServiceResponse.getErrors().get("").equals("patient already exists")) {
+                //initalize an empty patient
+                patientItem = populatePatientItem(viewModel, currentUser);
+                IndexViewModelGet viewModelGet = new IndexViewModelGet();
+                indexGetInitialize(currentUser, patientItem, viewModelGet);
+                return ok(index.render(currentUser, viewModelGet, "The patient might already exist, please submit again to confirm adding this patient!"));
+            }
+            else {
+                throw new RuntimeException();
+            }
         }
         patientItem = patientServiceResponse.getResponseObject();
 

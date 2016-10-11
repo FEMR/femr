@@ -2,8 +2,9 @@
         vitals: femr.util.DataStructure.Mapping.VitalMultiMap,
         viewModel: femr.ui.models.medical.EditViewModelGet)
 
+@import femr.ui.controllers.routes.HistoryController
 @import femr.ui.controllers.routes.MedicalController
-@import femr.ui.controllers.routes.SearchController
+@import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
 @import femr.ui.views.html.partials.medical.tabs._
@@ -104,13 +105,11 @@
                                 Submit Patient</button>
                             }
 
-                            @helper.form(action = SearchController.handleSearch("history")) {
-                                <input type="text" class="hidden" name="patientSearchQuery" value="@viewModel.getPatientItem.getId"/>
-                                <button type="submit" id="historyButton" class="fButton fOtherButton pull-left">Patient History</button>
-                            }
+                            <a href="@{HistoryController.indexPatientGet(
+                                Integer.toString(viewModel.getPatientItem.getId)).url}" class="fButton fOtherButton pull-left">Patient History</a>
+                            <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="fButton fOtherButton pull-left">View in Pharmacy</a>
                         </div>
 
-                
                     </div>
 
             </div>

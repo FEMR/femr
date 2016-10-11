@@ -3,7 +3,14 @@
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
+@import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.controllers.routes.TriageController
+@import femr.data.models.mysql.Roles
+
+@* List of currentUser roles to use with the Roles class *@
+@roles = @{currentUser.getRoles().map(r => r.getId())}
+
 @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
 }
@@ -61,21 +68,20 @@
             </div>
             <div id="patientInformation">
                 <h1 class="bold margin-top-zero">Patient Id: @viewModel.getPatientItem.getId</h1>
-                @for(roles <- currentUser.getRoles()) {
 
-                    @if(roles.getId().equals(1) || roles.getId().equals(6) ) {
-                        @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
-                            <input type="hidden" name="reasonDeleted" id="reasonDeleted" />
-                            <button hidden="true" type="submit"  id="deletePatient"></button>
-                        }
-                        <span>
-                            <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
-                        </span>
+                @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
+                    @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
+                        <input type="hidden" name="reasonDeleted" id="reasonDeleted" />
+                        <button hidden="true" type="submit"  id="deletePatient"></button>
                     }
+                    <span>
+                        <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
+                    </span>
                 }
-                @helper.form(action = TriageController.indexPopulatedGet(viewModel.getPatientItem.getId)) {
-                    <button type="submit" class="btn btn-default pull-right">See This Patient In Triage</button>
-                }
+
+                <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Medical</a>
+                <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Pharmacy</a>
+                <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">See This Patient In Triage</a>
 
                 <br/><br/>
             </div>

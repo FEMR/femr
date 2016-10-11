@@ -53,8 +53,8 @@ public interface IMedicationRepository {
     /**
      *  Create new medication in the database
      * @param medicationName of the medication, not null
-     * @param medicationGenericStrengths of list of generic strengths, not null
-     * @param conceptMedicationForm of form of concept medication, not null
+     * @param medicationGenericStrengths of list of generic strengths, may be null
+     * @param conceptMedicationForm of form of concept medication, may be null
      */
     IMedication createNewMedication(String medicationName, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm);
 

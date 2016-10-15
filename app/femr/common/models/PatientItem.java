@@ -28,6 +28,7 @@ public class PatientItem {
     private String address;
     private String city;
     private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
+    private String ageCalculated; // FEMR-137 Represents YES or NO if the age was calculated by the system or not.
     private Integer yearsOld;//the age of the patient as an integer. 0 if the patient is less than a year old
     private Integer monthsOld;
     private Date birth;
@@ -224,5 +225,13 @@ public class PatientItem {
 
     public void setMonthsOld(Integer monthsOld) {
         this.monthsOld = monthsOld;
+    }
+
+    public String getAgeCalculated() {
+        return ageCalculated;
+    }
+
+    public void setAgeCalculated(String ageCalculated) {
+        this.ageCalculated = ageCalculated;
     }
 }

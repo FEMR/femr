@@ -374,6 +374,7 @@ var triageFields = {
         lastName: $('#lastName'),
         phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient
+        ageCalculated: $('#ageCalculated'),
         years: $('#years'),
         months: $('#months'),
         ageClassification: $('[name=ageClassification]'),
@@ -411,6 +412,7 @@ var birthdayAgeAutoCalculateFeature = {
 
         if (!patientInfo.years.val() && !patientInfo.months.val()) {
             patientInfo.age.val(null);
+            patientInfo.ageCalculated.val("Unknown");
             patientInfo.years.css('border', '');
             patientInfo.months.css('border', '');
             return false;
@@ -439,6 +441,7 @@ var birthdayAgeAutoCalculateFeature = {
                 pass = false;
             }
             else {
+
                 patientInfo.months.val(checkMonths);
                 patientInfo.months.css('border', '');
             }
@@ -557,17 +560,21 @@ $(document).ready(function () {
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
+                $('#ageCalculated').val("No")
             }
             else {
                 $('#age').css('border-color', 'red');
                 $('#years').val(null);
                 $('#months').val(null);
+                $('#ageCalculated').val("Unknown")
             }
         }
         else {
             $('#age').css('border', '');
             $('#years').val(null);
             $('#months').val(null);
+            $('#ageCalculated').val("Unknown")
+
         }
     });
     $('#years').change(function () {
@@ -580,6 +587,7 @@ $(document).ready(function () {
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
+                $('#ageCalculated').val("Yes")
             }
         }
     });
@@ -593,6 +601,7 @@ $(document).ready(function () {
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
+                $('#ageCalculated').val("Yes")
             }
         }
     });

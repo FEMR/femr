@@ -48,6 +48,10 @@ public interface IPatient {
 
     void setAge(Date age);
 
+    String getAgeCalculated();
+
+    void setAgeCalculated(String ageCalculated);
+
     String getSex();
 
     void setSex(String sex);

@@ -133,7 +133,8 @@ public class SearchService implements ISearchService {
                     patientWeight,
                     pathToPhoto,
                     photoId,
-                    ageClassification
+                    ageClassification,
+                    savedPatient.getAgeCalculated()
             );
 
             //TODO: why is this being repeated?
@@ -207,7 +208,8 @@ public class SearchService implements ISearchService {
                     patientWeight,
                     pathToPhoto,
                     photoId,
-                    ageClassification
+                    ageClassification,
+                    patient.getAgeCalculated()
             );
 
             // If metric setting enabled convert response patientItem to metric
@@ -518,7 +520,8 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
-                        null
+                        null,
+                        patient.getAgeCalculated()
                 ));
             }
             response.setResponseObject(patientItems);
@@ -625,7 +628,8 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
-                        null
+                        null,
+                        patient.getAgeCalculated()
                 );
 
                 if (patient.getPhoto() != null) {

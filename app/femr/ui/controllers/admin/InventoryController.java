@@ -37,6 +37,8 @@ import play.mvc.Security;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
@@ -229,6 +231,23 @@ public class InventoryController extends Controller {
         return redirect("/admin/inventory");
     }
 
+    /**
+     * Called when a user wants to export the data to a CSV file.
+     */
+    public Result exportGet(int tripId) {
+      CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+      ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
+
+      response().setContentType("application/x-download");
+
+      SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
+      String timestamp = format.format(new Date());
+      String csvFileName = "inventory-"+timestamp+".csv";
+      response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
+
+      return ok(exportServiceResponse.getResponseObject());
+    }
 
     public Result ajaxDelete(int medicationID, int tripId) {
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);

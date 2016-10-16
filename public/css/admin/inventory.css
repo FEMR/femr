@@ -158,8 +158,14 @@
     display: inline-block;
 }
 
+#fExportCSVButton {
+  padding: 2px 5px 2px 5px;
+  width: 120px;
+}
 
-
+#currentMedicationHeader {
+  margin-bottom: 5px;
+}
 
 @media only screen  and (max-width : 1200px) {
 

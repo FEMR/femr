@@ -133,7 +133,14 @@
     
     <div id="currentMedication">
         <h3>Current Formulary:</h3>
-        <p>-As medications are dispensed, quantity will be subtracted from the Current Quantity column.</p>
+        <div class="row" id="currentMedicationHeader">
+          <div class="col-xs-9">
+            -As medications are dispensed, quantity will be subtracted from the Current Quantity column.
+          </div>
+          <div class="col-xs-3">
+            <a class="fButton fOtherButton pull-right" id="fExportCSVButton" href="@{InventoryController.exportGet(currentUser.getTripId).url}">Export as CSV</a>
+          </div>
+        </div>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable" class="table">
                 <thead>

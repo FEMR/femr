@@ -63,24 +63,29 @@ import java.util.*;
 
 public class CSVWriterGson {
 
+    public String getAsCSV(List<Map<String, String>> flatJson) {
+      List<String> headers = new ArrayList<String>();
+      headers.addAll(collectHeaders(flatJson));
+      return getAsCSV(flatJson, headers);
+    }
+
+    public String getAsCSV(List<Map<String, String>> flatJson, List<String> headers) {
+      StringBuilder output = new StringBuilder();
+
+      for (int i = 0; i < headers.size(); i++) {
+          output.append(headers.get(i));
+          if (i < headers.size() - 1) output.append(',');
+      }
+      output.append("\n");
+
+      for (Map<String, String> map : flatJson) {
+          output.append(getCommaSeperatedRow(headers, map));
+      }
+      return output.toString();
+    }
+
     public void writeAsCSV(List<Map<String, String>> flatJson, String fileName) throws FileNotFoundException {
-        Set<String> headers = collectHeaders(flatJson);
-
-        String output = "";
-
-        String headerStr[] = new String[headers.size()];
-        headerStr = headers.toArray(headerStr);
-        for (int i = 0; i < headerStr.length; i++) {
-
-            output += headerStr[i];
-            if (i < headerStr.length - 1) output += ',';
-        }
-        output += "\n";
-
-        for (Map<String, String> map : flatJson) {
-            output = output + getCommaSeperatedRow(headers, map);
-        }
-        writeToFile(output, fileName);
+        writeToFile(getAsCSV(flatJson), fileName);
     }
 
     private void writeToFile(String output, String fileName) throws FileNotFoundException {
@@ -105,23 +110,21 @@ public class CSVWriterGson {
         }
     }
 
-    private String getCommaSeperatedRow(Set<String> headers, Map<String, String> map) {
+    private String getCommaSeperatedRow(List<String> headers, Map<String, String> map) {
         List<String> items = new ArrayList<String>();
         for (String header : headers) {
             String value = map.get(header) == null ? "" : map.get(header).replace(",", "");
             items.add(value);
         }
 
-        String output = "";
-        String itemStr[] = new String[items.size()];
-        itemStr = items.toArray(itemStr);
-        for (int i = 0; i < itemStr.length; i++) {
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
 
-            String current = itemStr[i];
+            // Can't use Stringbuilder here because we have to use replaceAll and contains
+            String current = items.get(i);
 
             // escape double quotes with double quotes
             if (current.contains("\"")) {
-
                 current = current.replaceAll("\"", "\"\"");
             }
 
@@ -130,14 +133,12 @@ public class CSVWriterGson {
                 current = '"' + current + '"';
             }
 
-
-
-            output += current;
-            if (i < itemStr.length - 1) output += ',';
+            output.append(current);
+            if (i < items.size() - 1) output.append(',');
         }
-        output += "\n";
+        output.append("\n");
 
-        return output;
+        return output.toString();
     }
 
     private Set<String> collectHeaders(List<Map<String, String>> flatJson) {

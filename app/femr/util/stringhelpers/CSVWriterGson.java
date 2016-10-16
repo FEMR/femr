@@ -63,24 +63,28 @@ import java.util.*;
 
 public class CSVWriterGson {
 
+    public String getAsCSV(List<Map<String, String>> flatJson) {
+      Set<String> headers = collectHeaders(flatJson);
+
+      StringBuilder output = new StringBuilder();
+
+      String headerStr[] = new String[headers.size()];
+      headerStr = headers.toArray(headerStr);
+      for (int i = 0; i < headerStr.length; i++) {
+
+          output.append(headerStr[i]);
+          if (i < headerStr.length - 1) output.append(',');
+      }
+      output.append("\n");
+
+      for (Map<String, String> map : flatJson) {
+          output.append(getCommaSeperatedRow(headers, map));
+      }
+      return output.toString();
+    }
+
     public void writeAsCSV(List<Map<String, String>> flatJson, String fileName) throws FileNotFoundException {
-        Set<String> headers = collectHeaders(flatJson);
-
-        String output = "";
-
-        String headerStr[] = new String[headers.size()];
-        headerStr = headers.toArray(headerStr);
-        for (int i = 0; i < headerStr.length; i++) {
-
-            output += headerStr[i];
-            if (i < headerStr.length - 1) output += ',';
-        }
-        output += "\n";
-
-        for (Map<String, String> map : flatJson) {
-            output = output + getCommaSeperatedRow(headers, map);
-        }
-        writeToFile(output, fileName);
+        writeToFile(getAsCSV(flatJson), fileName);
     }
 
     private void writeToFile(String output, String fileName) throws FileNotFoundException {

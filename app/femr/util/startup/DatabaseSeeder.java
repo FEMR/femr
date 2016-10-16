@@ -827,10 +827,10 @@ public class DatabaseSeeder {
                 tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));
                 tabFieldsToAdd.add(tabField);
             }
-            if (!containTabField(tabFields, "treatment")) {
+            if (!containTabField(tabFields, "procedure_counseling")) {
 
                 tabField = new TabField();
-                tabField.setName("treatment");
+                tabField.setName("procedure_counseling");
                 tabField.setIsDeleted(false);
                 tabField.setTab(Ebean.getReference(Tab.class, treatmentId));
                 tabField.setTabFieldType(Ebean.getReference(TabFieldType.class, textId));

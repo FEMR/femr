@@ -180,8 +180,8 @@
                         <p><a  class="infoLabel @editClass"> Assessment: </a>
                             @dynamicTabSpan(treatmentFieldMap.get("assessment"))
 
-                        <p><a class="infoLabel @editClass">Treatment:</a>
-                            @dynamicTabSpan(treatmentFieldMap.get("treatment"))
+                        <p><a class="infoLabel @editClass">Procedure/Counseling:</a>
+                            @dynamicTabSpan(treatmentFieldMap.get("procedure_counseling"))
                     }
                     @for(problemIterator <- 1 to viewModelPharmacy.getProblems.size){
                         <p><a class="infoLabel nonEditable">Diagnosis:</a>

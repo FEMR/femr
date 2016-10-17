@@ -19,6 +19,7 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.PatientEncounterItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 import java.util.List;
@@ -119,6 +120,11 @@ public interface IEncounterService {
      * @return updated patient encounter item and/or errors if they exist, or null if errors
      */
     ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId, Boolean isScreened);
+
+    /**
+     * Returns a list of PatientEncounters of the current day
+     *
+     * @return List of PatientEncounterItems who were checked in on the current Day
+     */
+    ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters();
 }
-
-

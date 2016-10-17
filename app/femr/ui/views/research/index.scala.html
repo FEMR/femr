@@ -1,4 +1,3 @@
-@import java.util
 @(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel)
 
 @import femr.ui.views.html.layouts.main
@@ -23,7 +22,7 @@
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/stacked-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/grouped-bar.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/table-chart.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/research.js")"></script>
     }
 
@@ -115,6 +114,7 @@
                                 <li><a data-gtype="table" href="#">Table</a></li>
                             </ul>
                         </li>
+
                         <li id="gfilter-menu" class="menu-item">
                             <a class="opt-link">Filter Date</a>
                             <span class="val">
@@ -128,11 +128,37 @@
                                 <li>End Date <input type="date" id="endDate" name="endDate" value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" /></li>
                             </ul>
                         </li>
+
+
                         <li class="controls">
 
                             <input type="hidden" id="primaryDataset" name="primaryDataset" value="" />
                             <input type="hidden" id="secondaryDataset" name="secondaryDataset" value="" />
                             <input type="hidden" id="graphType" name="graphType" value="" />
+
+
+                            @*
+                            <span class="medication">
+                                <label>Filter Medication</label>
+                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name"/>
+
+                            </span>
+                                *@
+                                <span class="medication">
+                                <label>Filter Trip</label>
+                                    <select id="MissionTripId" name="MissionTripId" class="medication">
+                                        <option selected id="default" value="-1">-- Select Trip --</option> @*Andrew Trip Filter*@
+                                        @for(i <- 1 to viewModel.getMissionTrips.size) {
+                                            @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
+                                                @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                                                    @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+                                                        <option value = "@missionTrip.getId()"> @missionItem.getMissionTrips.get(tripIndex - 1).getFriendlyTripTitle </option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </span>
 
                             <span class="filter">
                                 <label>Filter Primary Dataset</label>
@@ -140,26 +166,8 @@
                                 <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
                                 <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
                             </span>
-                            <span class="medication">
-                                <label>Filter Medication</label>
-                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name"/>
 
-                            </span>
-                                <span class="medication">
-                                <label>Filter Mission Trip City</label>
-                                    <select id="MissionTripId" name="MissionTripId" class="medication">
-                                        <option selected id="default" value="">-- Select Trip --</option> @*Andrew Trip Filter*@
-                                        @for(i <- 1 to viewModel.getMissionTrips.size) {
-                                            @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
-                                                @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
-                                                    @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
-                                                        <option value = "@missionTrip.getId()"> @missionItem.getTeamName - @missionTrip.getTripCountry - @missionTrip.getTripCity </option>
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    </select>
-                                </span>
+
 
                             <span class="group">
                                 <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>

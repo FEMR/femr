@@ -395,6 +395,16 @@ jQuery(document).ready(function(){
     filterMenuModule.init();
     graphLoaderModule.init();
 
+    $('#MissionTripId').change(function () {
+        var value = $('#MissionTripId option:selected').val();
+
+        if (value != -1 && $('#gfilter-menu').is(':visible')) {
+            $('#gfilter-menu').hide();
+        } else {
+            $('#gfilter-menu').show();
+        }
+    });
+
     // Detect changes in main container width, redraw chart
     var lastChartWidth = $(".main").width();
     $(window).on("resize", function() {

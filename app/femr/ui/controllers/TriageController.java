@@ -283,6 +283,7 @@ public class TriageController extends Controller {
     }
 
     private PatientItem populatePatientItem(IndexViewModelPost viewModelPost, CurrentUser currentUser) {
+        //changes should be made here
         PatientItem patient = new PatientItem();
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModelPost.getFirstName());

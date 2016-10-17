@@ -28,6 +28,7 @@ public class IndexViewModelPost {
     private String firstName;
     private String lastName;
     private String address;
+    private String phoneNumber;
     private String city;
     private Date age;
     private String ageClassification;
@@ -85,6 +86,14 @@ public class IndexViewModelPost {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getAddress() {

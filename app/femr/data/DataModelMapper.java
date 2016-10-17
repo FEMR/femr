@@ -350,8 +350,9 @@ public class DataModelMapper implements IDataModelMapper{
     /**
      * {@inheritDoc}
      */
+    // FEMR-157 - Added String phoneNumber to createPatient
     @Override
-    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID) {
+    public IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, Integer photoID) {
 
         if (userID < 0 || StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName)) {
 
@@ -363,6 +364,7 @@ public class DataModelMapper implements IDataModelMapper{
         patient.setUserId(userID);
         patient.setFirstName(firstName);
         patient.setLastName(lastName);
+        patient.setPhoneNumber(phoneNumber);
         if (birthday != null)
             patient.setAge(birthday);
         patient.setSex(sex);

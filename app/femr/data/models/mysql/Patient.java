@@ -38,6 +38,9 @@ public class Patient implements IPatient {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
+    // Added for FEMR-157 - Optional Phone Number record
+    @Column(name = "phone_number", nullable = true)
+    private String phoneNumber;
     @Column(name = "age")
     private Date age;
     @Column(name = "sex", nullable = true)
@@ -93,6 +96,14 @@ public class Patient implements IPatient {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    // Added for FEMR-157 - Optional Phone Number record
+    @Override
+    public String getPhoneNumber() { return phoneNumber; }
+
+    // Added for FEMR-157 - Optional Phone Number record
+    @Override
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     @Override
     public Date getAge() {

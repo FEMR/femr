@@ -45,6 +45,7 @@
 
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
+                @inputText("Phone Number", "phoneNumber", false, if(viewModel != null) viewModel.getPatient.getPhoneNumber else null, "text")
                 @inputText("Address", "address", false, if(viewModel != null) viewModel.getPatient.getAddress else null, "text")
                 <div class="generalInfoInput" id="citySearchContainer">
                     <label for="city">City<span class="red bold">*</span></label>

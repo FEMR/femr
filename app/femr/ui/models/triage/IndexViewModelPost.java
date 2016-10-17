@@ -18,8 +18,6 @@
 */
 package femr.ui.models.triage;
 
-import femr.common.models.PatientItem;
-
 import java.util.Date;
 
 public class IndexViewModelPost {

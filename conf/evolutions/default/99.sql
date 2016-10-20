@@ -1,7 +1,7 @@
 # --- !Ups
 
 UPDATE `tab_fields`
-SET name="procedure/counseling"
+SET name="procedure_counseling"
 WHERE name="treatment"
 
 
@@ -9,4 +9,4 @@ WHERE name="treatment"
 
 UPDATE `tab_fields`
 SET name="treatment"
-WHERE name="procedure/counseling"
+WHERE name="procedure_counseling"

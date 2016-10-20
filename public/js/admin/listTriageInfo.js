@@ -3,6 +3,6 @@
  */
 //lists current triage patient information
 
-function printTriageInfo() {
-    var firstName = patientInformation.firstName.val();
-}
+//function printTriageInfo() {
+   // var firstName = patientInformation.firstName.val();
+//}

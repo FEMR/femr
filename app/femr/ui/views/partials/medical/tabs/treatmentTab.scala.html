@@ -66,8 +66,8 @@
     </div>
     <div class="form-group">
         <label for="treatment">Procedure/Counseling</label>
-        @defining(treatmentTab.getTabFieldItemByName(null, "procedure/counseling")) { treatment =>
-            <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="procedure/counseling"/>
+        @defining(treatmentTab.getTabFieldItemByName(null, "procedure_counseling")) { treatment =>
+            <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="procedure_counseling"/>
             <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm" placeholder="Ex: Suturing, Ultrasound, Splint, etc...">@treatment.getValue</textarea>
         }
     </div>

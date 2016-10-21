@@ -52,7 +52,7 @@ public class ConceptPrescriptionAdministration implements IConceptPrescriptionAd
     }
 
     @Override
-    public float getDailyModifier() { return dailyModifier; };
+    public float getDailyModifier() { return dailyModifier; }
 
     @Override
     public void setDailyModifier(float dailyModifier) { this.dailyModifier = dailyModifier; }

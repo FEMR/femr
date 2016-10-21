@@ -608,7 +608,7 @@ function photoNameFixup() {
         //Now loop through all of the data elements
         dataList.children().each(function () {
             var oldName = $(this).attr('name');
-            var name = new String(oldName);
+            var name = String(oldName);
             if (name.indexOf('[') >= 0)
                 name = name.substr(0, name.indexOf('['));
             name = name + '[' + i + ']';

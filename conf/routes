@@ -30,8 +30,9 @@ GET         /admin/trips/teams                                 @femr.ui.controll
 POST        /admin/trips/teams                                 @femr.ui.controllers.admin.TripController.teamsPost()
 GET         /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesGet()
 #add test (Hello World)
-GET         /admin/triagePatients/triagePaitent                @femr.ui.controllers.admin.TriagePatientController.triagePatient()
+GET         /admin/triagePatients/triagePaitent                 @femr.ui.controllers.admin.TriagePatientController.triagePatient()
 POST        /admin/triagePatients/triagePaitent                 @femr.ui.controllers.admin.TriagePatientController.triagePatient()
+
 
 POST        /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesPost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()

@@ -38,11 +38,11 @@ public interface IResearchEncounter {
 
     void setChiefComplaints(List<IChiefComplaint> chiefComplaints);
 
-    public Map<Integer, ResearchEncounterVital> getEncounterVitals();
-    public void setEncounterVitals(Map<Integer, ResearchEncounterVital> encounterVitals);
+    Map<Integer, ResearchEncounterVital> getEncounterVitals();
+    void setEncounterVitals(Map<Integer, ResearchEncounterVital> encounterVitals);
 
-    public List<PatientPrescription> getPatientPrescriptions();
-    public void setPatientPrescriptions(List<PatientPrescription> patientPrescriptions);
+    List<PatientPrescription> getPatientPrescriptions();
+    void setPatientPrescriptions(List<PatientPrescription> patientPrescriptions);
 
     DateTime getDateOfTriageVisit();
 

@@ -46,7 +46,7 @@ public interface IMedication {
 
     void setMedicationGenericStrengths(List<IMedicationGenericStrength> medicationGenericStrengths);
 
-    public List<MedicationInventory> getMedicationInventory();
+    List<MedicationInventory> getMedicationInventory();
 
-    public void setMedicationInventory(List<MedicationInventory> medicationInventory);
+    void setMedicationInventory(List<MedicationInventory> medicationInventory);
 }

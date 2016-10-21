@@ -113,7 +113,7 @@
 		function focusOnCenter() {
 			var left = fillContainer((Math.round((base.focalPoint.x*base.workingPercent) - base.options.targetWidth/2)*-1), base.$image.width(), base.options.targetWidth);
 			var top = fillContainer((Math.round((base.focalPoint.y*base.workingPercent) - base.options.targetHeight/2)*-1), base.$image.height(), base.options.targetHeight);
-			base.$image.css({'left': (left.toString()+'px'), 'top': (top.toString()+'px')})
+			base.$image.css({'left': (left.toString()+'px'), 'top': (top.toString()+'px')});
 			storeFocalPoint();
 		}
 		function updateResult() {
@@ -135,7 +135,7 @@
                 base.isDragging = true;
             }
 			base.dragMouseCoords = {x: event.pageX, y: event.pageY};
-			base.dragImageCoords = {x: parseInt(base.$image.css('left')), y: parseInt(base.$image.css('top'))}
+			base.dragImageCoords = {x: parseInt(base.$image.css('left')), y: parseInt(base.$image.css('top'))};
             if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeIn('fast');
 		}
 		function handleMouseUp() {

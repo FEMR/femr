@@ -143,9 +143,10 @@ public interface IDataModelMapper {
      * @param address   the address of the patients residence, may be null
      * @param city      the city of the patient, may be null
      * @param photoID   the id of a photo of the patient, may be null
+     * @param  isBirthDateCorrect FEMR-137 Flag birthdays as being accurate or a guess
      * @return an implementation of IPatient or null if processing fails
      */
-    IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID);
+    IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID, Integer isBirthDateCorrect);
 
     /**
      * Generate and provide an implementation of IPatientEncounter.

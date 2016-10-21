@@ -293,6 +293,7 @@ var diabeticScreeningFeature = {
         triageFields.patientInformation.firstName.prop('readonly', true);
         triageFields.patientInformation.lastName.prop('readonly', true);
         triageFields.patientInformation.age.prop('readonly', true);
+        triageFields.patientInformation.IsBirthDateCorrect.prop('readonly', true);
         triageFields.patientInformation.years.prop('readonly', true);
         triageFields.patientInformation.months.prop('readonly', true);
         triageFields.patientInformation.city.prop('readonly', true);
@@ -372,6 +373,7 @@ var triageFields = {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
         age: $('#age'),//doesn't work for an existing patient
+        IsBirthDateCorrect: $('#IsBirthDateCorrect'),
         years: $('#years'),
         months: $('#months'),
         ageClassification: $('[name=ageClassification]'),

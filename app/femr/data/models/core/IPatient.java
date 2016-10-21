@@ -78,5 +78,9 @@ public interface IPatient {
 
     void setReasonDeleted(String reason) ;
 
+    Integer getIsBirthDateCorrect() ;
+
+    void setIsBirthDateCorrect(Integer IsBirthDateCorrect) ;
+
     
 }

@@ -239,4 +239,12 @@ public class IndexViewModelPost {
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;
     }
+    //FEMR-137 Flag birthdays as being accurate or a guess
+    private Integer IsBirthDateCorrect;
+    public Integer getIsBirthDateCorrect() {
+        return IsBirthDateCorrect;
+    }
+    public void setIsBirthDateCorrect(Integer IsBirthDateCorrect) {
+        this.IsBirthDateCorrect = IsBirthDateCorrect;
+    }
 }

@@ -14,7 +14,7 @@
 
      You should have received a copy of the GNU General Public License
      along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
-     you have any questions, contact <info@teamfemr.org>.
+     you have any questions, contact <info@teamfemr.org>
 */
 package femr.common.models;
 

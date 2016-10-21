@@ -1,3 +1,4 @@
+@(currentUser: femr.common.dtos.CurrentUser)
 <!--(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)-->
 
 @import femr.ui.controllers.admin.routes.TriagePatientController
@@ -10,17 +11,7 @@
     </head>
 <body>
     <ol class="triagePatientsNames">
-    {
-        <!--for loop to print out patients name->
-  <!--  @if(viewModel.getPatient != null) {-->
-           <!-- if(viewModel.getPatient date of triage visit== current date-->
-            {
-               <!--print out elements-->
-                <li>@viewModel.getPatient.getFirstName  @viewModel.getPatient.getLastName</li>
 
-            }
-        }
-    }
 
     </ol>
 

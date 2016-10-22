@@ -13,12 +13,8 @@ $(document).ready(function () {
     }
 
     $("#userTable").DataTable({
-        columnDefs: [ { orderable: false, targets: [0] },
-                    { orderable: false, targets: [1] },
-                    { orderable: false, targets: [2] },
+        columnDefs: [
                     { orderable: false, targets: [4] },
-                    { orderable: false, targets: [5] },
-                    { orderable: false, targets: [6] },
                     { orderable: false, targets: [7] }]
     });
 });

@@ -18,11 +18,7 @@
 */
 package femr.ui.models.triage;
 
-import femr.common.models.PatientItem;
-
-
 import java.util.Date;
-import java.util.List;
 
 public class IndexViewModelPost {
 
@@ -49,7 +45,7 @@ public class IndexViewModelPost {
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
-    private List<PatientItem> triagePatients;
+
 
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
@@ -238,18 +234,7 @@ public class IndexViewModelPost {
     public String getIsDiabetesScreenPerformed() {
         return isDiabetesScreenPerformed;
     }
-    // sets array list of Patient Items
-    public void setTriagePatients(List<PatientItem> patient) {
-        this.triagePatients = patient;
-    }
-    // gets array list item of Patient Items
-        public PatientItem getTriagePatient(int i){
-            return triagePatients.get(i);
-        }
-    // gets array list of Patient Items
-        public List<PatientItem> getTriagePatients() {
-            return triagePatients;
-        }
+
 
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {

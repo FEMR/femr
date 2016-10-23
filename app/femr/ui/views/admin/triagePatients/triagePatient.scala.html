@@ -1,5 +1,6 @@
 @import femr.common.models.PatientItem
-@(currentUser: femr.common.dtos.CurrentUser, indexViewModelPost: femr.ui.models.triage.IndexViewModelPost);
+@import femr.ui.controllers.admin.TriagePatientController
+@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.triage.ManageViewModelPost);
 <!--(currentUser: femr.common.dtos.CurrentUser,patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem,currentTriagePatients: java.util.List[_ <: PatientItem]);-->
 
 
@@ -11,8 +12,8 @@
     </head>
 <body>
     <ol class="triagePatientsNames">
-    @for(y <- 1 to indexViewModelPost.) {
-            <li>@viewModelGet.(y - 1).getFirstName @viewModelGet.getTriagePatients(y - 1).getFirstName</li>
+    @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
+            <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
         }
     </ol>
 

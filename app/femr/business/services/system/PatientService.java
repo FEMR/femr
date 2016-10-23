@@ -17,33 +17,45 @@
      you have any questions, contact <info@teamfemr.org>.
 */
 package femr.business.services.system;
+
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.core.IPatientRepository;
-import femr.data.models.core.*;
+import femr.data.daos.IRepository;
+import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientAgeClassification;
+import femr.data.models.mysql.Patient;
+import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PatientService implements IPatientService {
 
-    private final IPatientRepository patientRepository;
+    private final IRepository<IPatient> patientRepository;
+    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public PatientService(IPatientRepository patientRepository,
+    public PatientService(IRepository<IPatient> patientRepository,
+                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientRepository = patientRepository;
+        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -58,8 +70,12 @@ public class PatientService implements IPatientService {
         Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
 
-
-            List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
+            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("isDeleted", false)
+                    .order()
+                    .asc("sortOrder");
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
 
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
@@ -80,9 +96,14 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                .where()
+                .eq("id", id);
+
+
         try {
 
-            IPatient savedPatient = patientRepository.retrievePatientById(id);
+            IPatient savedPatient = patientRepository.findOne(query);
 
             if( savedPatient == null ){
 
@@ -93,7 +114,7 @@ public class PatientService implements IPatientService {
             // sex can be changed, but not set to null
             if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
-                savedPatient = patientRepository.savePatient(savedPatient);
+                savedPatient = patientRepository.update(savedPatient);
             }
 
             String photoPath = null;
@@ -139,7 +160,7 @@ public class PatientService implements IPatientService {
 
         try {
             IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
-            newPatient = patientRepository.savePatient(newPatient);
+            newPatient = patientRepository.create(newPatient);
             String photoPath = null;
             Integer photoId = null;
             if (newPatient.getPhoto() != null) {
@@ -178,12 +199,16 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                .where()
+                .eq("id", id);
+
         try {
-            IPatient savedPatient = patientRepository.retrievePatientById(id);
+            IPatient savedPatient = patientRepository.findOne(query);
             savedPatient.setIsDeleted(DateTime.now());
             savedPatient.setDeletedByUserId(deleteByUserID);
             savedPatient.setReasonDeleted(reason);
-            patientRepository.savePatient(savedPatient);
+            patientRepository.update(savedPatient);
 
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
@@ -191,4 +216,30 @@ public class PatientService implements IPatientService {
 
         return response;
     }
+
+
+
+    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(){
+    ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
+    List<PatientItem> patientItems = new ArrayList<>();
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+        .where()
+        .eq("date_Of_triage_visit", DateTime.now());
+
+        try{
+
+            List<? extends IPatient> patient = patientRepository.find(query);
+
+            for (IPatient patient1 : patient) {
+
+            patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),patient1.getFirstName(),patient1.getLastName(),null,null,patient1.getUserId(),
+            null,null,null,null,null,null,null,null,null));
+        }
+        response.setResponseObject(patientItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
 }

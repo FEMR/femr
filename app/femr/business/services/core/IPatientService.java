@@ -21,6 +21,7 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IPatientService {
@@ -59,4 +60,11 @@ public interface IPatientService {
      * and/or errors if they exist.
      */
     ServiceResponse<PatientItem> deletePatient(int patientId, int deleteByUserID, String reason);
+
+    /**
+     * Returns a list of current Triage Patients-checked into Triage the current day
+     * @return a list of current Triage Patients
+     *
+     */
+    ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients();
 }

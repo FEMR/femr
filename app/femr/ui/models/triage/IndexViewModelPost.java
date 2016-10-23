@@ -238,10 +238,19 @@ public class IndexViewModelPost {
     public String getIsDiabetesScreenPerformed() {
         return isDiabetesScreenPerformed;
     }
-    // returns array list of Patient Items
-    public void getTriagePatients(List<PatientItem> patient) {
+    // sets array list of Patient Items
+    public void setTriagePatients(List<PatientItem> patient) {
         this.triagePatients = patient;
     }
+    // gets array list item of Patient Items
+        public PatientItem getTriagePatient(int i){
+            return triagePatients.get(i);
+        }
+    // gets array list of Patient Items
+        public List<PatientItem> getTriagePatients() {
+            return triagePatients;
+        }
+
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;

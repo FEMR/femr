@@ -33,6 +33,7 @@ import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
+import femr.data.models.mysql.PatientEncounter;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -219,16 +220,23 @@ public class PatientService implements IPatientService {
 
 
 
-    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(){
+    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime date,DateTime date2){
     ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
     List<PatientItem> patientItems = new ArrayList<>();
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .between("date_of_triage_visit", date,date2);
+
+
+        ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
         .where()
-        .eq("date_Of_triage_visit", DateTime.now());
+                .eq("id",query.findIds());
 
         try{
 
-            List<? extends IPatient> patient = patientRepository.find(query);
+            List<? extends IPatient> patient = patientRepository.find(query1);
+
 
             for (IPatient patient1 : patient) {
 

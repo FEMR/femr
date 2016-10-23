@@ -17,6 +17,9 @@ import femr.ui.models.triage.IndexViewModelPost;
 import femr.ui.models.triage.ManageViewModelPost;
 import femr.ui.views.html.admin.triagePatients.triagePatient;
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -62,7 +65,18 @@ public class TriagePatientController extends Controller {
      //   PatientItem patientItem=new PatientItem();
    //    ManageViewModelGet viewModelGet = new ManageViewModelGet();
       //  viewModelGet.setUsers(userServiceResponse.getResponseObject());
-        ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients();
+
+        DateTimeFormatter dateFormat = DateTimeFormat
+                .forPattern("yyyy/mm/dd HH:mm:ss");
+        DateTime today=DateTime.now();
+        DateTime date = new DateTime();
+        DateTime date2 = new DateTime();
+        date.withDate(today.getYear(),today.getMonthOfYear(),today.getDayOfMonth());
+        date2.withDate(today.getYear(),today.getMonthOfYear(),today.getDayOfMonth());
+        date.withTime(0,0,0,0);
+        date2.withTime(24,0,0,0);
+
+        ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients(date,date2);
         ManageViewModelPost viewModel = new ManageViewModelPost();
         viewModel.setTriagePatients(patientServiceResponse.getResponseObject());
 

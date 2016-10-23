@@ -14,6 +14,7 @@ import femr.ui.models.admin.configure.IndexViewModelGet;
 import femr.ui.models.admin.users.ManageViewModelGet;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.models.triage.IndexViewModelPost;
+import femr.ui.models.triage.ManageViewModelPost;
 import femr.ui.views.html.admin.triagePatients.triagePatient;
 import org.apache.commons.lang3.time.DateUtils;
 import play.data.Form;
@@ -55,14 +56,14 @@ public class TriagePatientController extends Controller {
     public  Result triagePatient()
     {
 
-        IndexViewModelPost viewModel = new IndexViewModelPost();
+     //   IndexViewModelPost viewModel = new IndexViewModelPost();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        PatientEncounterItem patientEncounterItem= new PatientEncounterItem();
-        PatientItem patientItem=new PatientItem();
-      //  ManageViewModelGet viewModelGet = new ManageViewModelGet();
-       // viewModelGet.setUsers(userServiceResponse.getResponseObject());
+      //  PatientEncounterItem patientEncounterItem= new PatientEncounterItem();
+     //   PatientItem patientItem=new PatientItem();
+   //    ManageViewModelGet viewModelGet = new ManageViewModelGet();
+      //  viewModelGet.setUsers(userServiceResponse.getResponseObject());
         ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients();
-        ManageViewModelGet viewModelGet = new ManageViewModelGet();
+        ManageViewModelPost viewModel = new ManageViewModelPost();
         viewModel.setTriagePatients(patientServiceResponse.getResponseObject());
 
 

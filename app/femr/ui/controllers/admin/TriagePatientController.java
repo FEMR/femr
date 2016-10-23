@@ -48,9 +48,7 @@ public class TriagePatientController extends Controller {
 //        if (userServiceResponse.hasErrors()) {
 //        throw new RuntimeException();
 //    }
-//
-//    ManageViewModelGet viewModelGet = new ManageViewModelGet();
-//        viewModelGet.setUsers(userServiceResponse.getResponseObject());
+
 //
 //        return ok(manage.render(currentUser, viewModelGet));
 
@@ -61,10 +59,11 @@ public class TriagePatientController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         PatientEncounterItem patientEncounterItem= new PatientEncounterItem();
         PatientItem patientItem=new PatientItem();
-
-        ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.;
+      //  ManageViewModelGet viewModelGet = new ManageViewModelGet();
+       // viewModelGet.setUsers(userServiceResponse.getResponseObject());
+        ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients();
         ManageViewModelGet viewModelGet = new ManageViewModelGet();
-        viewModel.getTriagePatients(patientServiceResponse.getResponseObject());
+        viewModel.setTriagePatients(patientServiceResponse.getResponseObject());
 
 
         return ok(triagePatient.render(currentUser,viewModel));

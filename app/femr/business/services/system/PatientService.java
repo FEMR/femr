@@ -20,11 +20,6 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
-
-
-
-
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -34,12 +29,14 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.models.core.*;
+import femr.data.models.core.IPatient;
+import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -219,4 +216,30 @@ public class PatientService implements IPatientService {
 
         return response;
     }
+
+
+
+    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(){
+    ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
+    List<PatientItem> patientItems = new ArrayList<>();
+        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+        .where()
+        .eq("date_Of_triage_visit", DateTime.now());
+
+        try{
+
+            List<? extends IPatient> patient = patientRepository.find(query);
+
+            for (IPatient patient1 : patient) {
+
+            patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),patient1.getFirstName(),patient1.getLastName(),null,null,patient1.getUserId(),
+            null,null,null,null,null,null,null,null,null));
+        }
+        response.setResponseObject(patientItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
 }

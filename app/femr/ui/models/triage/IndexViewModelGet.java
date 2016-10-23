@@ -90,4 +90,5 @@ public class IndexViewModelGet {
     public void setPossibleAgeClassifications(Map<String, String> possibleAgeClassifications) {
         this.possibleAgeClassifications = possibleAgeClassifications;
     }
+
 }

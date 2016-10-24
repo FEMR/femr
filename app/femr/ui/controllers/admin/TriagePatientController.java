@@ -1,5 +1,5 @@
 package femr.ui.controllers.admin;
-
+import sun.util.calendar.Gregorian;
 import com.google.inject.Inject;
 import femr.business.services.core.IPatientService;
 import femr.business.services.core.ISessionService;
@@ -68,13 +68,11 @@ public class TriagePatientController extends Controller {
 
         DateTimeFormatter dateFormat = DateTimeFormat
                 .forPattern("yyyy/mm/dd HH:mm:ss");
-        DateTime today=DateTime.now();
-        DateTime date = new DateTime();
-        DateTime date2 = new DateTime();
-        date.withDate(today.getYear(),today.getMonthOfYear(),today.getDayOfMonth());
-        date2.withDate(today.getYear(),today.getMonthOfYear(),today.getDayOfMonth());
-        date.withTime(0,0,0,0);
-        date2.withTime(24,0,0,0);
+       // DateTime today=DateTime.now();
+        DateTime date = new DateTime("2015-12-13T00:00:00.618-08:00");
+        DateTime date2 = new DateTime("2016-12-13T23:59:59.618-08:00");
+      // date=dateFormat( )
+        date.minusDays(100);
 
         ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients(date,date2);
         ManageViewModelPost viewModel = new ManageViewModelPost();

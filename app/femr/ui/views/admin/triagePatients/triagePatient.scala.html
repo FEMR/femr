@@ -12,9 +12,13 @@
     </head>
 <body>
     <ol class="triagePatientsNames">
-    @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-            <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
+        <p>@ManageViewModelPost.getTriagePatients.size()</p>
+        @if(ManageViewModelPost.getTriagePatients.size!= 0){
+            @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
+                <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
+            }
         }
+        <p>END OF LIST</p>
     </ol>
 
 </body>

@@ -230,7 +230,7 @@ public class PatientService implements IPatientService {
 
 
         ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
-        .where()
+                .where()
                 .eq("id",query.findIds());
 
         try{

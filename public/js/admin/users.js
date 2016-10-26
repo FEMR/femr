@@ -15,6 +15,7 @@ $(document).ready(function () {
     $("#userTable").DataTable({
         columnDefs: [
                     { orderable: false, targets: [4] },
+                    { orderable: false, targets: [6] },
                     { orderable: false, targets: [7] }]
     });
 });

@@ -72,6 +72,7 @@ public class DatabaseSeeder {
         seedDefaultTabFields();
         seedPatientAgeClassification();
         seedDiagnosis();
+        seedUserRoles();
     }
 
     private void seedDiagnosis() {
@@ -995,6 +996,15 @@ public class DatabaseSeeder {
         return false;
     }
 
+    private static boolean containRole(List<? extends IRole> roles, String roleName) {
+      for (IRole role : roles) {
+        if (role.getName().equals(roleName)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
 
     /**
      * Seed the admin user from the configuration file
@@ -1047,5 +1057,17 @@ public class DatabaseSeeder {
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
             userRepository.create(superUser);
         }
+    }
+
+    private void seedUserRoles() {
+      // Other roles are in database from early evolutions
+      List<? extends IRole> roles = roleRepository.findAll(Role.class);
+      if (!containRole(roles, "Manager")) {
+        // Manager role doesn't exist, add it
+        Role newRole = new Role();
+        newRole.setId(Roles.MANAGER);
+        newRole.setName("Manager");
+        roleRepository.create(newRole);
+      }
     }
 }

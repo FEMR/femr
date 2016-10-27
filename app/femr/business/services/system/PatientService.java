@@ -33,7 +33,6 @@ import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
-import femr.data.models.mysql.PatientEncounter;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -203,7 +202,6 @@ public class PatientService implements IPatientService {
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", id);
-
         try {
             IPatient savedPatient = patientRepository.findOne(query);
             savedPatient.setIsDeleted(DateTime.now());
@@ -219,32 +217,45 @@ public class PatientService implements IPatientService {
     }
 
 
-
     public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime date,DateTime date2){
     ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
-    List<PatientItem> patientItems = new ArrayList<>();
 
-        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .between("date_of_triage_visit", date,date2);
+            List<PatientItem> patientItems = new ArrayList<>();
+//QueryProvider.getUserQuery().fetch("roles").where().eq("id", userId);
+        //  IUser user = userRepository.findOne(query);
+        //ExpressionList<PatientItem> query =QueryProvider.getUserQuery().fetch("first_Name, Last_Name").where().eq("id", userId);
 
-
+       // ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+        //        .where()
+         //       .between("date_of_triage_visit", date,date2);
         ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
                 .where()
-                .eq("id",query.findIds());
+                .eq("id", 1);
+               // .where()
+               // .eq("id",query.findIds());
 
         try{
-
             List<? extends IPatient> patient = patientRepository.find(query1);
+            for (IPatient patient1 : patient)
+                patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),
+                        patient1.getFirstName(),
+                        patient1.getLastName(),
+                        patient1.getCity(),
+                        patient1.getAddress(),
+                        patient1.getUserId(),
+                        patient1.getAge(),
+                        patient1.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null));
 
-
-            for (IPatient patient1 : patient) {
-
-            patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),patient1.getFirstName(),patient1.getLastName(),null,null,patient1.getUserId(),
-            null,null,null,null,null,null,null,null,null));
-        }
         response.setResponseObject(patientItems);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
         return response;

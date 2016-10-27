@@ -41,76 +41,35 @@ public class TriagePatientController extends Controller {
     private final IPatientService patientService;
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
 
-   @Inject
-    public TriagePatientController(ISessionService sessionService, IPatientService patientService){
+    @Inject
+    public TriagePatientController(ISessionService sessionService, IPatientService patientService) {
         this.sessionService = sessionService;
-       this.patientService = patientService;
+        this.patientService = patientService;
     }
-//    CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-//
-//    ServiceResponse<List<UserItem>> userServiceResponse = userService.retrieveAllUsers();
-//        if (userServiceResponse.hasErrors()) {
-//        throw new RuntimeException();
-//    }
 
-//
-//        return ok(manage.render(currentUser, viewModelGet));
+    public Result triagePatient() {
 
-    public  Result triagePatient()
-    {
 
-     //   IndexViewModelPost viewModel = new IndexViewModelPost();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-      //  PatientEncounterItem patientEncounterItem= new PatientEncounterItem();
-     //   PatientItem patientItem=new PatientItem();
-   //    ManageViewModelGet viewModelGet = new ManageViewModelGet();
-      //  viewModelGet.setUsers(userServiceResponse.getResponseObject());
+
 
         DateTimeFormatter dateFormat = DateTimeFormat
                 .forPattern("yyyy/mm/dd HH:mm:ss");
-       // DateTime today=DateTime.now();
         DateTime date = new DateTime("2015-12-13T00:00:00.618-08:00");
         DateTime date2 = new DateTime("2016-12-13T23:59:59.618-08:00");
-      // date=dateFormat( )
-        date.minusDays(100);
 
-        ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients(date,date2);
+        date.minusDays(100);
+        String sql = "Select patients.first_Name, patients.last_Name As newlist\n" +
+                "From patients\n" +
+                "Left Outer JOIN patient_encounters ON (patient_encounters.patient_id= patients.id)\n" +
+                "where current_date()+ \"00:00:00\" < patient_encounters.date_of_triage_visit;";
+        ServiceResponse<List<PatientItem>> patientServiceResponse = patientService.retrieveCurrentTriagePatients(date, date2);
         ManageViewModelPost viewModel = new ManageViewModelPost();
         viewModel.setTriagePatients(patientServiceResponse.getResponseObject());
 
 
-        return ok(triagePatient.render(currentUser,viewModel));
+        return ok(triagePatient.render(currentUser, viewModel));
     }
-
-
-
-
-//    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients{)
-//
-//        ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
-//        List<PatientItem> patientItems = new ArrayList<>();
-//        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-//                .where()
-//                .eq("date_Of_triage_visit", DateTime.now());
-//
-//        try{
-//
-//            List<? extends IPatient> patient = patientRepository.find(query);
-//
-//            for (IPatient patient1 : patient) {
-//
-//                patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),patient1.getFirstName(),patient1.getLastName(),null,null,patient1.getUserId(),
-//                        null,null,null,null,null,null,null,null,null));
-//            }
-//
-//            response.setResponseObject(patientItems);
-//
-//        } catch (Exception ex) {
-//
-//            response.addError("", ex.getMessage());
-//        }
-//
-//        return response;
-//    }
-    //public static String findPatientFirstName(IRepository
 }
+
+

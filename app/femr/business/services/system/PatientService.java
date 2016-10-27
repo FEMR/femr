@@ -230,7 +230,7 @@ public class PatientService implements IPatientService {
          //       .between("date_of_triage_visit", date,date2);
         ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
                 .where()
-                .eq("id", 1);
+                .gt("id", 1);
                // .where()
                // .eq("id",query.findIds());
 

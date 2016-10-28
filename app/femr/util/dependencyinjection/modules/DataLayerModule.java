@@ -25,6 +25,8 @@ import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.daos.core.IMedicationRepository;
 import femr.data.daos.system.MedicationRepository;
+import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.system.PatientRepository;
 import femr.data.models.core.research.IResearchEncounter;
 import femr.data.models.core.research.IResearchEncounterVital;
 import femr.util.dependencyinjection.providers.*;
@@ -68,6 +70,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IVital.class).toProvider(VitalProvider.class);
 
         bind(IMedicationRepository.class).to(MedicationRepository.class);
+        bind(IPatientRepository.class).to(PatientRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);

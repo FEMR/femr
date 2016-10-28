@@ -1,5 +1,7 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean )
 
+@import femr.ui.controllers.routes.HistoryController
+@import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
@@ -88,18 +90,21 @@
                 }
                 </ol>
 
-            </div>
+                <div id="disclaimerWrap">
+                    <label for="disclaimer">
+                        The patient was counseled on the risks and side effects of the medications dispensed.</label>
+                    <input type="checkbox" name="disclaimer" value="1" />
+                    <input type="hidden" name="disclaimer" value="0" />
+                </div>
+                <div id="submitWrap">
+                    <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                        Submit</button>
 
+                    <a href="@{HistoryController.indexPatientGet(
+                        Integer.toString(viewModel.getPatient.getId)).url}" class="fButton fOtherButton pull-left">Patient History</a>
+                    <a href="@{MedicalController.editGet(viewModel.getPatient.getId).url}" class="fButton fOtherButton pull-left">View in Medical</a>
+                </div>
 
-            <div id="disclaimerWrap">
-                <label for="disclaimer">
-                    The patient was counseled on the risks and side effects of the medications dispensed.</label>
-                <input type="checkbox" name="disclaimer" value="1" />
-                <input type="hidden" name="disclaimer" value="0" />
-            </div>
-            <div id="submitWrap">
-                <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
-                    Submit</button>
             </div>
 
         </div>

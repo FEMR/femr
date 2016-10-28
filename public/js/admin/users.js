@@ -1,6 +1,7 @@
 $(document).ready(function () {
     var urlPieces = window.location.href.split('/');
 
+
     if ($.inArray("edit", urlPieces) !== -1) {
         editUsers.bindRoleDropDownClick();
         editUsers.bindRoleBadge();
@@ -11,7 +12,12 @@ $(document).ready(function () {
         manageUsers.bindUserToggleButtons();
     }
 
-
+    $("#userTable").DataTable({
+        columnDefs: [
+                    { orderable: false, targets: [4] },
+                    { orderable: false, targets: [6] },
+                    { orderable: false, targets: [7] }]
+    });
 });
 
 var manageUsers = {
@@ -49,7 +55,9 @@ var manageUsers = {
                 //don't change button - implies an error
             }
         });
-    }
+    },
+
+
 };
 
 //validates firstname, email, and password for both create and edit user pages
@@ -214,3 +222,7 @@ var editUsers = {
         });
     }
 };
+
+
+
+

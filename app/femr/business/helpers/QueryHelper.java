@@ -93,37 +93,6 @@ public class QueryHelper {
     }
 
     /**
-     * finds all patients with a country filter
-     */
-    public static List<? extends IPatient> findPatients(IRepository<IPatient> patientRepository, String country){
-
-        ExpressionList<Patient> patientExpressionList = QueryProvider.getPatientQuery()
-                .select("*")
-                .fetch("patientEncounters")
-                .fetch("patientEncounters.missionTrip")
-                .fetch("patientEncounters.missionTrip.missionCity")
-                .fetch("patientEncounters.missionTrip.missionCity.missionCountry")
-                .where()
-                .isNull("isDeleted")
-                .eq("patientEncounters.missionTrip.missionCity.missionCountry.name", country);
-
-        return patientExpressionList.findList();
-    }
-
-    /**
-     * finds all patients without a country filter
-     */
-    public static List<? extends IPatient> findPatients(IRepository<IPatient> patientRepository){
-
-        ExpressionList<Patient> patientExpressionList = QueryProvider.getPatientQuery()
-                .select("*")
-                .where()
-                .isNull("isDeleted");
-
-        return patientExpressionList.findList();
-    }
-
-    /**
      * AJ Saclayan
      * Finds all cities*
      */

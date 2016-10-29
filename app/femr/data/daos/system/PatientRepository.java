@@ -16,12 +16,6 @@ import java.util.List;
 
 public class PatientRepository implements IPatientRepository {
 
-    private final IDataModelMapper dataModelMapper;
-    @Inject
-    public PatientRepository(IDataModelMapper dataModelMapper){
-        this.dataModelMapper = dataModelMapper;
-    }
-
     /**
      * {@inheritDoc}
      */

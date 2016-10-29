@@ -44,6 +44,6 @@ public interface IPatientRepository {
      *  @param  patient to save
      *  @return the provided patient
      **/
-    public IPatient save(IPatient patient);
+    IPatient save(IPatient patient);
 }
 

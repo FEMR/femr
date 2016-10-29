@@ -450,7 +450,6 @@ public class SearchService implements ISearchService {
         Integer id = null;
         String firstName = null;
         String lastName = null;
-        String firstOrLastName = null;
         if (words.length == 0) {
             //nothing was in the query
             response.addError("", "query string empty");

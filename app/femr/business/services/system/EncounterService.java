@@ -474,6 +474,7 @@ public class EncounterService implements IEncounterService {
             PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
 
+
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());
@@ -535,4 +536,43 @@ public class EncounterService implements IEncounterService {
 
         return tabFieldId;
     }
+//troubleshooting
+    public ServiceResponse<List<PatientEncounterItem>> returnTriagePatients(DateTime date, DateTime date2, List<PatientItem> p)
+    {
+        ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
+        List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
+        //gets all paitents
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+              .where()
+                .gt("id",0);
+
+
+        try{
+            List<PatientItem> patientItems=null;
+            List<? extends IPatientEncounter> patient = patientEncounterRepository.find(query);
+            for (IPatientEncounter patient1 : patient) {
+               DateTime triageDate= patient1.getDateOfTriageVisit();
+
+                Date tDate=triageDate.toDate();
+                String fDate=dateUtils.getFriendlyDate(tDate);
+                Date todayDate=DateTime.now().toDate();
+                String kDate=dateUtils.getFriendlyDate(todayDate);
+                if(fDate.equalsIgnoreCase(kDate))
+                {
+                    patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));
+                   // patientItems.add(itemModelMapper.createPatientItem(patient1.getPatient().getId(),
+                          //  patient1.getPatient().getFirstName(), patient1.getPatient().getLastName(),patient1.getPatient().getCity(),patient1.getPatient().getAddress(),
+                            //patient1.getPatient().getUserId(),patient1.getPatient().getAge(),patient1.getPatient().getSex(),null,null,null,null,null,null,null));
+                }
+            }
+                        response.setResponseObject(patientEncounterItems);
+        }
+        catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+
+
+    }
+
 }

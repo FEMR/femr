@@ -573,6 +573,7 @@ public class EncounterService implements IEncounterService {
         return tabFieldId;
     }
 //troubleshooting
+
     public ServiceResponse<List<PatientEncounterItem>> returnTriagePatients(DateTime date, DateTime date2, List<PatientItem> p)
     {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
@@ -596,6 +597,8 @@ public class EncounterService implements IEncounterService {
                 if(fDate.equalsIgnoreCase(kDate))
                 {
                     patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));
+                   // ServiceResponse<PatientItem> translate= searchService.retrievePatientItemByEncounterId(patientEncounterServices.getResponseObject().);
+ //                   p.add(patient1.getPatient());
                    // patientItems.add(itemModelMapper.createPatientItem(patient1.getPatient().getId(),
                           //  patient1.getPatient().getFirstName(), patient1.getPatient().getLastName(),patient1.getPatient().getCity(),patient1.getPatient().getAddress(),
                             //patient1.getPatient().getUserId(),patient1.getPatient().getAge(),patient1.getPatient().getSex(),null,null,null,null,null,null,null));

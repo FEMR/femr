@@ -19,9 +19,11 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.*;
+import femr.common.models.PatientEncounterItem;
+import femr.common.models.ProblemItem;
+import femr.common.models.TabFieldItem;
+import femr.common.models.UserItem;
 import femr.data.models.core.IPatientEncounter;
-import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
@@ -122,7 +124,10 @@ public interface IEncounterService {
      */
     ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId, Boolean isScreened);
 
-//My addition
-
-    public ServiceResponse<List<PatientEncounterItem>> returnTriagePatients(DateTime date, DateTime date2, List<PatientItem> patientItems);
+    /**
+     * Returns a list of PatientEncounters of the current day
+     *
+     * @return List of PatientEncounterItems who were checked in on the current Day
+     */
+    public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters();
 }

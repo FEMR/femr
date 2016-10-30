@@ -538,14 +538,14 @@ public class EncounterService implements IEncounterService {
     }
 //troubleshooting
 
-    public ServiceResponse<List<PatientEncounterItem>> returnTriagePatients(DateTime date, DateTime date2, List<PatientItem> p)
+    public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters()
     {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
         //gets all paitents
         ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
               .where()
-                .gt("id",0);
+                .ge("id",0);
 
 
         try{

@@ -26,7 +26,6 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
@@ -37,7 +36,6 @@ import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -222,43 +220,6 @@ public class PatientService implements IPatientService {
     }
 
 
-    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime date,DateTime date2,List<PatientEncounterItem> items){
-    ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
-            List<PatientItem> patientItems = new ArrayList<>();
-
-        ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
-                .where()
-                .gt("id",0);
-        // .where()
-        //.gt("id", 1);
-
-        try{
-            List<? extends IPatient> patient = patientRepository.find(query1);
-        for (IPatient patient1 : patient)
-
-            patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),
-                    patient1.getFirstName(),
-                    patient1.getLastName(),
-                    patient1.getCity(),
-                    patient1.getAddress(),
-                    patient1.getUserId(),
-                    patient1.getAge(),
-                    patient1.getSex(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null));
-
-        response.setResponseObject(patientItems);
-    }
-        catch (Exception ex) {
-        response.addError("", ex.getMessage());
-    }
-        return response;
-    }
 
 }

@@ -19,11 +19,8 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
-import org.joda.time.DateTime;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IPatientService {
@@ -63,10 +60,5 @@ public interface IPatientService {
      */
     ServiceResponse<PatientItem> deletePatient(int patientId, int deleteByUserID, String reason);
 
-    /**
-     * Returns a list of current Triage Patients-checked into Triage the current day
-     * @return a list of current Triage Patients
-     *
-     */
-    ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime Date, DateTime Date2,List<PatientEncounterItem> items);
+
 }

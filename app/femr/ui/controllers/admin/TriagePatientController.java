@@ -50,15 +50,10 @@ public class TriagePatientController extends Controller {
 
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        String sql = "Select patients.first_Name, patients.last_Name As newlist\n" +
-                "From patients\n" +
-                "JOIN patient_encounters ON (patient_encounters.patient_id= patients.id)\n" +
-                "where current_date()+ \"00:00:00\" < patient_encounters.date_of_triage_visit;";
-
         List<PatientItem> p=new ArrayList<PatientItem>();
 
         ServiceResponse<List<PatientItem>> allPatients= searchService.retrievePatientsForSearch(null);
-        ServiceResponse<List<PatientEncounterItem>> patientEncounterServices=encounterService.returnTriagePatients(null,null,p);
+        ServiceResponse<List<PatientEncounterItem>> patientEncounterServices=encounterService.returnCurrentDayPatientEncounters();
         for(int i=0;i<patientEncounterServices.getResponseObject().size();i++) {
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounterServices.getResponseObject().get(i).getPatientId());
            PatientItem e=translate.getResponseObject();

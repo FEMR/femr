@@ -33,6 +33,7 @@ import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
+import femr.data.models.mysql.PatientEncounter;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -47,17 +48,21 @@ public class PatientService implements IPatientService {
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
-
+    //added to file Patient Encounter Reposioty item to access triage date
+    //private final IRepository<IPatientEncounter> patientEncounterRepository;
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
-                          @Named("identified") IItemModelMapper itemModelMapper) {
+                          @Named("identified") IItemModelMapper itemModelMapper
+                         // IRepository<IPatientEncounter> patientEncounterRepository
+                           ) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
+      //  this.patientEncounterRepository = patientEncounterRepository;
     }
 
     /**
@@ -224,40 +229,42 @@ public class PatientService implements IPatientService {
 //QueryProvider.getUserQuery().fetch("roles").where().eq("id", userId);
         //  IUser user = userRepository.findOne(query);
         //ExpressionList<PatientItem> query =QueryProvider.getUserQuery().fetch("first_Name, Last_Name").where().eq("id", userId);
-
-       // ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-        //        .where()
-         //       .between("date_of_triage_visit", date,date2);
+        //ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+          //      .where()
+            //    .between("date_of_triage_visit", date,date2);
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .gt("id",0);
         ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
                 .where()
-                .gt("id", 1);
-               // .where()
-               // .eq("id",query.findIds());
+                .gt("id",0);
+        // .where()
+        //.gt("id", 1);
 
         try{
             List<? extends IPatient> patient = patientRepository.find(query1);
-            for (IPatient patient1 : patient)
-                patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),
-                        patient1.getFirstName(),
-                        patient1.getLastName(),
-                        patient1.getCity(),
-                        patient1.getAddress(),
-                        patient1.getUserId(),
-                        patient1.getAge(),
-                        patient1.getSex(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null));
+        for (IPatient patient1 : patient)
+            patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),
+                    patient1.getFirstName(),
+                    patient1.getLastName(),
+                    patient1.getCity(),
+                    patient1.getAddress(),
+                    patient1.getUserId(),
+                    patient1.getAge(),
+                    patient1.getSex(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null));
 
         response.setResponseObject(patientItems);
-        }
+    }
         catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
+        response.addError("", ex.getMessage());
+    }
         return response;
     }
 

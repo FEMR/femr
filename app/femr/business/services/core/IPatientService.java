@@ -19,6 +19,7 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
 import org.joda.time.DateTime;
 
@@ -67,5 +68,5 @@ public interface IPatientService {
      * @return a list of current Triage Patients
      *
      */
-    ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime Date,DateTime Date2);
+    ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime Date, DateTime Date2,List<PatientEncounterItem> items);
 }

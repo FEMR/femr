@@ -15,14 +15,12 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.models.triage.ManageViewModelPost;
 import femr.ui.views.html.admin.triagePatients.triagePatient;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,39 +50,30 @@ public class TriagePatientController extends Controller {
 
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
-
-        DateTimeFormatter dateFormat = DateTimeFormat
-                .forPattern("yyyy/mm/dd HH:mm:ss");
-        LocalDateTime dat= LocalDateTime.now();
-        String date;
-
-
-//        DateTime date = new DateTime(T00:00:00");
-  //      DateTime date2 = new DateTime("2016-12-13 23:59:59");
-    //    date.minusDays(100);
         String sql = "Select patients.first_Name, patients.last_Name As newlist\n" +
                 "From patients\n" +
                 "JOIN patient_encounters ON (patient_encounters.patient_id= patients.id)\n" +
                 "where current_date()+ \"00:00:00\" < patient_encounters.date_of_triage_visit;";
-     //   ServiceResponse<List<PatientEncounterItem>> patientEnounterServiceResponse=encounterService.
-      // ServiceResponse<List<PatientItem>> SearchServiceResponse = searchService.retrievePatientsFromQueryString(sql);
-      //  ServiceResponse<List<PatientItem>> SearchServiceResponse2 = searchService.retrievePatientsForSearch(null);
-        List<PatientItem> p=null;
-        ServiceResponse<List<PatientEncounterItem>> patientServices=encounterService.returnTriagePatients(null,null,p);
-        //List<IPatient> t=null;
-        //for (PatientEncounterItem patient1 : patientEncounterService.getResponseObject()) {
-          // t.add(patient1.getPa
-        //}
-        ManageViewModelPost viewModel = new ManageViewModelPost();
-        viewModel.setEncounterItems(patientServices.getResponseObject());
 
-       // ManageViewModelPost viewModel2 = new ManageViewModelPost();
-        //viewModel.setTriagePatients(SearchServiceResponse2.getResponseObject());
+        List<PatientItem> p=new ArrayList<PatientItem>();
+
+        ServiceResponse<List<PatientItem>> allPatients= searchService.retrievePatientsForSearch(null);
+        ServiceResponse<List<PatientEncounterItem>> patientEncounterServices=encounterService.returnTriagePatients(null,null,p);
+        for(int i=0;i<patientEncounterServices.getResponseObject().size();i++) {
+            ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounterServices.getResponseObject().get(i).getPatientId());
+           PatientItem e=translate.getResponseObject();
+            p.add(e);
+        }
+
+
+        ManageViewModelPost viewModel = new ManageViewModelPost();
+        viewModel.setTriagePatients(p);
 
 
         return ok(triagePatient.render(currentUser, viewModel));
     }
+
+
 }
 
 

@@ -26,6 +26,7 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
@@ -33,7 +34,6 @@ import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientAgeClassification;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
-import femr.data.models.mysql.PatientEncounter;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 
@@ -222,19 +222,11 @@ public class PatientService implements IPatientService {
     }
 
 
-    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime date,DateTime date2){
+    public ServiceResponse<List<PatientItem>> retrieveCurrentTriagePatients(DateTime date,DateTime date2,List<PatientEncounterItem> items){
     ServiceResponse<List<PatientItem>> response = new ServiceResponse<>();
 
             List<PatientItem> patientItems = new ArrayList<>();
-//QueryProvider.getUserQuery().fetch("roles").where().eq("id", userId);
-        //  IUser user = userRepository.findOne(query);
-        //ExpressionList<PatientItem> query =QueryProvider.getUserQuery().fetch("first_Name, Last_Name").where().eq("id", userId);
-        //ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-          //      .where()
-            //    .between("date_of_triage_visit", date,date2);
-        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .gt("id",0);
+
         ExpressionList<Patient> query1 = QueryProvider.getPatientQuery()
                 .where()
                 .gt("id",0);
@@ -244,6 +236,7 @@ public class PatientService implements IPatientService {
         try{
             List<? extends IPatient> patient = patientRepository.find(query1);
         for (IPatient patient1 : patient)
+
             patientItems.add(itemModelMapper.createPatientItem(patient1.getId(),
                     patient1.getFirstName(),
                     patient1.getLastName(),

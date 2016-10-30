@@ -10,10 +10,10 @@
     </head>
 <body>
     <ol class="triagePatientsNames">
-        <p>@ManageViewModelPost.getTriagePatients.size()</p>
-        @if(ManageViewModelPost.getTriagePatients.size!= 0){
-            @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-                <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
+        <p>@ManageViewModelPost.getEncounterItems.size()</p>
+        @if(ManageViewModelPost.getEncounterItems.size!= 0){
+            @for(y <- 1 to ManageViewModelPost.getPatients.size) {
+                <li>@ManageViewModelPost.getPatients(y - 1).getFirstName @ManageViewModelPost.getPatients(y - 1).getLastName</li>
             }
         }
         <p>END OF LIST</p>

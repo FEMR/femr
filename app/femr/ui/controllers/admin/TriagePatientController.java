@@ -15,12 +15,15 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.models.triage.ManageViewModelPost;
 import femr.ui.views.html.admin.triagePatients.triagePatient;
+import femr.util.calculations.dateUtils;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,16 +54,18 @@ public class TriagePatientController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         List<PatientItem> p=new ArrayList<PatientItem>();
-
+        //returns a list of all triage patients
         ServiceResponse<List<PatientItem>> allPatients= searchService.retrievePatientsForSearch(null);
+        //returns list of triage Patients on the current Day
         ServiceResponse<List<PatientEncounterItem>> patientEncounterServices=encounterService.returnCurrentDayPatientEncounters();
+        //converts patient encounter Items to patient Items
         for(int i=0;i<patientEncounterServices.getResponseObject().size();i++) {
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounterServices.getResponseObject().get(i).getPatientId());
            PatientItem e=translate.getResponseObject();
             p.add(e);
         }
 
-
+        //sets Patients Items in view model used
         ManageViewModelPost viewModel = new ManageViewModelPost();
         viewModel.setTriagePatients(p);
 

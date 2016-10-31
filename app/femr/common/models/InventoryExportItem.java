@@ -18,13 +18,20 @@
 */
 package femr.common.models;
 
+import java.util.*;
+import com.google.gson.annotations.SerializedName;
+
 //One InventoryExportItem per line in the research CSV export
 public class InventoryExportItem {
 
-    private Integer medicationId;
-    private String name;
-    private Integer quantityCurrent;
-    private Integer quantityInitial;
+    @SerializedName("ID")               private Integer medicationId;
+    @SerializedName("Medication")       private String name;
+    @SerializedName("Current Quantity") private Integer quantityCurrent;
+    @SerializedName("Initial Quantity") private Integer quantityInitial;
+
+    static public List<String> getFieldOrder() {
+      return Arrays.asList("ID", "Medication", "Current Quantity", "Initial Quantity");
+    }
 
     public InventoryExportItem(MedicationItem med) {
       medicationId = med.getId();

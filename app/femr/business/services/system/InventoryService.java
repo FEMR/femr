@@ -225,7 +225,7 @@ public class InventoryService implements IInventoryService {
 
       // Convert json to CSV
       CSVWriterGson writer = new CSVWriterGson();
-      String csvString = writer.getAsCSV(flatJson);
+      String csvString = writer.getAsCSV(flatJson, InventoryExportItem.getFieldOrder());
 
       ServiceResponse<String> response = new ServiceResponse<>();
       response.setResponseObject(csvString.toString());

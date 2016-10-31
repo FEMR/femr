@@ -589,12 +589,11 @@ public class EncounterService implements IEncounterService {
             List<? extends IPatientEncounter> patient = patientEncounterRepository.find(query);
             for (IPatientEncounter patient1 : patient) {
                DateTime triageDate= patient1.getDateOfTriageVisit();
-
                 Date tDate=triageDate.toDate();
-                String fDate=dateUtils.getFriendlyDate(tDate);
+                String triagePatientDate=dateUtils.getFriendlyDate(tDate);
                 Date todayDate=DateTime.now().toDate();
-                String kDate=dateUtils.getFriendlyDate(todayDate);
-                if(fDate.equalsIgnoreCase(kDate))
+                String currentDate=dateUtils.getFriendlyDate(todayDate);
+                if(triagePatientDate.equalsIgnoreCase(currentDate))
                 {
                     patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));
                    // ServiceResponse<PatientItem> translate= searchService.retrievePatientItemByEncounterId(patientEncounterServices.getResponseObject().);

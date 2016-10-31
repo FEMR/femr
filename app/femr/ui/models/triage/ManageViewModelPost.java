@@ -1,12 +1,13 @@
 package femr.ui.models.triage;
 
 import femr.common.models.PatientItem;
+import femr.util.calculations.dateUtils;
+import org.joda.time.DateTime;
 
+import java.util.Date;
 import java.util.List;
 
-/**
- * Created by fq251 on 10/22/2016.
- */
+//Manages Triage Patient Controller
 public class ManageViewModelPost{
 
     // sets array list of Patient Items
@@ -26,7 +27,12 @@ public class ManageViewModelPost{
         return triagePatients;
     }
 
-
+    public String getToday()
+    {
+        Date todayDate= DateTime.now().toDate();
+        String currentDate= dateUtils.getFriendlyDate(todayDate);
+        return currentDate;
+    }
 //    private List<PatientEncounterItem> encounterItems;
 //
 //    public void setEncounterItems(List<PatientEncounterItem> encounterItems) {

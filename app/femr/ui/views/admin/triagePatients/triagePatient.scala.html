@@ -1,20 +1,42 @@
 @import femr.common.models.PatientItem
 @import femr.ui.controllers.admin.TriagePatientController
-@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.triage.ManageViewModelPost)
+@import femr.ui.views.html.layouts.main
+@import collection.JavaConversions._
+
+@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.triage.ManageViewModelPost )
+@additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
+
+}
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
+}
 
 <!doctype html>
-    <head>
+@main("Triage Patients Checked in Today", currentUser, scripts = additionalScripts, styles = additionalStyles){
 
-<h1>List Of Triage Patients Checked In Today</h1>
+<head>
 
-    </head>
-<body>
-    <ol class="triagePatientsNames">
+    <header class="h1" >List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday
+
+    </header>
+
+</head>
+    <body>
+
+        <div class=backgroundForWrap id="center-content-area" >
+     <ol>
             @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
                 <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
 
         }
-        <p>END OF LIST</p>
-    </ol>
+       </ol>
+        </div>
 
-</body>
+    </body>
+
+
+}

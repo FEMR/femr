@@ -18,16 +18,12 @@
 <!doctype html>
 @main("Triage Patients Checked in Today", currentUser, scripts = additionalScripts, styles = additionalStyles){
 
-<head>
+<body>
 
-    <header class="h1" >List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday
-
-    </header>
-
-</head>
-    <body>
-
-        <div class=backgroundForWrap id="center-content-area" >
+    <div id="center-panel">
+<div class="backgroundForWrap">
+    <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday</div>
+        <div  id="content-pane" >
      <ol>
             @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
                 <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
@@ -35,8 +31,10 @@
         }
        </ol>
         </div>
+</div>
+    </div>
 
-    </body>
+</body>
 
 
 }

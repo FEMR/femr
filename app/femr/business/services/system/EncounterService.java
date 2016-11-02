@@ -542,7 +542,7 @@ public class EncounterService implements IEncounterService {
     {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
-        //gets all paitents
+        //gets all patients encounters
         ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
               .where()
                 .ge("id",0);
@@ -552,11 +552,13 @@ public class EncounterService implements IEncounterService {
             List<PatientItem> patientItems=null;
             List<? extends IPatientEncounter> patient = patientEncounterRepository.find(query);
             for (IPatientEncounter patient1 : patient) {
+                //converts dateTIme objects to Dates to Strings for comparison
                DateTime triageDate= patient1.getDateOfTriageVisit();
                 Date tDate=triageDate.toDate();
                 String triagePatientDate=dateUtils.getFriendlyDate(tDate);
                 Date todayDate=DateTime.now().toDate();
                 String currentDate=dateUtils.getFriendlyDate(todayDate);
+                //if triage check in date equals current date
                 if(triagePatientDate.equalsIgnoreCase(currentDate))
                 {
                     patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));

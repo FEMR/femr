@@ -26,13 +26,17 @@ import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
+import femr.common.models.InventoryExportItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.MedicationInventory;
 import org.joda.time.DateTime;
 import femr.data.models.mysql.Medication;
-
+import femr.util.stringhelpers.CSVWriterGson;
+import femr.util.stringhelpers.GsonFlattener;
+import com.google.gson.Gson;
+import java.util.*;
 
 public class InventoryService implements IInventoryService {
 
@@ -195,5 +199,37 @@ public class InventoryService implements IInventoryService {
         response.setResponseObject(medicationItem);
 
         return response;
+    }
+
+    @Override
+    public ServiceResponse<String> exportCSV(int tripId) {
+
+      // We want the inventory from the current trip that has not been deleted
+      // Which is the same as from the table on the inventory page
+      ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where()
+              .eq("missionTrip.id", tripId).eq("isDeleted", null);
+
+      List<? extends IMedicationInventory> medicationInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
+
+      // Convert result of query to a list to export
+      List<InventoryExportItem> inventoryExport = new ArrayList<>();
+      for (IMedicationInventory med : medicationInventory) {
+        inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
+                med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted())));
+      }
+
+      // Convert export list to json
+      Gson gson = new Gson();
+      GsonFlattener parser = new GsonFlattener();
+      List<Map<String, String>> flatJson = parser.parse(gson.toJsonTree(inventoryExport).getAsJsonArray());
+
+      // Convert json to CSV
+      CSVWriterGson writer = new CSVWriterGson();
+      String csvString = writer.getAsCSV(flatJson, InventoryExportItem.getFieldOrder());
+
+      ServiceResponse<String> response = new ServiceResponse<>();
+      response.setResponseObject(csvString.toString());
+
+      return response;
     }
 }

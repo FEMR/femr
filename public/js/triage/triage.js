@@ -610,34 +610,33 @@ $(document).ready(function () {
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
         if (pass === true){
+                //get the base64 URI string from the canvas
+                patientPhotoFeature.prepareForPOST();
+                //make sure the feature is turned on before JSONifying
+                if (multipleChiefComplaintFeature.isActive === true) {
+                    multipleChiefComplaintFeature.JSONifyChiefComplaints();
+                }
+
+                var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+                if (isDiabeticScreeningPromptNecessary){
+                    var diabetesDialog = $('.submitResetWrap.hidden');
+                    var submitMenu = $('.submitResetWrap').not('.hidden');
+                    $(submitMenu).addClass('hidden');
+                    $(diabetesDialog).removeClass('hidden');
+                    diabeticScreeningFeature.readonlyEverything();
+                }
+                pass = !isDiabeticScreeningPromptNecessary;
+
             var patientInfo = triageFields.patientInformation;
             var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
             var url = "/search/check/" + query;
 
             $.getJSON(url, function (result) {
                 if (result === true) {
-                    if(confirm("A patient by this name already exists in the database. Would you like to view the matching patient information?")) {
+                    if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
                         var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
                         window.location.replace(duplicatePatientUrl);
-                        return;
                     }
-                } else{
-                    //get the base64 URI string from the canvas
-                    patientPhotoFeature.prepareForPOST();
-                    //make sure the feature is turned on before JSONifying
-                    if (multipleChiefComplaintFeature.isActive === true) {
-                        multipleChiefComplaintFeature.JSONifyChiefComplaints();
-                    }
-
-                    var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
-                    if (isDiabeticScreeningPromptNecessary){
-                        var diabetesDialog = $('.submitResetWrap.hidden');
-                        var submitMenu = $('.submitResetWrap').not('.hidden');
-                        $(submitMenu).addClass('hidden');
-                        $(diabetesDialog).removeClass('hidden');
-                        diabeticScreeningFeature.readonlyEverything();
-                    }
-                    pass = !isDiabeticScreeningPromptNecessary;
                 }
             })
         }

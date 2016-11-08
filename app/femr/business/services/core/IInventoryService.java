@@ -70,4 +70,12 @@ public interface IInventoryService {
      */
     ServiceResponse<MedicationItem> subtractFromQuantityCurrent(int medicationId, int tripId, int quantityToSubtract);
 
+    /**
+     * Returns a string containing CSV data with the current inventory for the provided trip
+     *
+     * @param tripId id of the trip
+     * @return a string containing the inventory for the trip in CSV form
+     */
+    ServiceResponse<String> exportCSV(int tripId);
+
 }

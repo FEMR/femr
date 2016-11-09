@@ -56,9 +56,13 @@ public interface IPatientService {
     ServiceResponse<PatientItem> createPatient(PatientItem patient);
 
     /**
-     * Soft deletes a patient
-     * @return a service response that contains a PatientItem representing that the patient was deleted
-     * and/or errors if they exist.
+     * Deletes a patient from the system. This doesn't actually remove the patient from the database,
+     * just flags them as deleted.
+     *
+     * @param patientId id of the patient to delete, not null
+     * @param deleteByUserID id of the user that is deleting the patient, not null
+     * @param reason the reason for deleting the patient, may be null
+     * @return the deleted patient and/or errors if they exist
      */
     ServiceResponse<PatientItem> deletePatient(int patientId, int deleteByUserID, String reason);
 }

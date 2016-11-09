@@ -178,22 +178,35 @@ public class PatientService implements IPatientService {
         return response;
     }
 
+
+    //Expected behavior:
+    //1) Flags patient w/ id as deleted with a timestamp
+    //2) Flags user w/ deleteByUserID as being the person who deleted it
+    //3) Reason must be provided for why the user is deleted
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID, String reason){
+    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID, String reason) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
+        if (StringUtils.isNullOrWhiteSpace(reason)) {
+
+            response.addError("", "reason not provided");
+            return response;
+        }
+
         try {
+
             IPatient savedPatient = patientRepository.retrievePatientById(id);
             savedPatient.setIsDeleted(DateTime.now());
             savedPatient.setDeletedByUserId(deleteByUserID);
             savedPatient.setReasonDeleted(reason);
             patientRepository.savePatient(savedPatient);
-
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
 

@@ -182,18 +182,25 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID, String reason){
+    public ServiceResponse<PatientItem> deletePatient(int id, int deleteByUserID, String reason) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
+        if (StringUtils.isNullOrWhiteSpace(reason)) {
+
+            response.addError("", "reason not provided");
+            return response;
+        }
+
         try {
+
             IPatient savedPatient = patientRepository.retrievePatientById(id);
             savedPatient.setIsDeleted(DateTime.now());
             savedPatient.setDeletedByUserId(deleteByUserID);
             savedPatient.setReasonDeleted(reason);
             patientRepository.savePatient(savedPatient);
-
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
 

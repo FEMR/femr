@@ -606,6 +606,9 @@ $(document).ready(function () {
 
     $('#triageSubmitBtn').click(function () {
         var pass = validate();
+        var patientInfo = triageFields.patientInformation;
+        var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
+        var url = "/search/check/" + query;
 
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
@@ -624,24 +627,37 @@ $(document).ready(function () {
                     $(submitMenu).addClass('hidden');
                     $(diabetesDialog).removeClass('hidden');
                     diabeticScreeningFeature.readonlyEverything();
+                } else {
+                    checkIfDuplicatePatient();
                 }
+
                 pass = !isDiabeticScreeningPromptNecessary;
 
-            var patientInfo = triageFields.patientInformation;
-            var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
-            var url = "/search/check/" + query;
-
-            $.getJSON(url, function (result) {
-                if (result === true) {
-                    if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
-                        var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
-                        window.location.replace(duplicatePatientUrl);
-                    }
-                }
-            })
         }
         return pass; //located in triageClientValidation.js
     });
+
+    $('#noDiabetesScreen').click(function () {
+        checkIfDuplicatePatient();
+    });
+
+    $('#yesDiabetesScreen').click(function () {
+        checkIfDuplicatePatient();
+    });
+
+    function checkIfDuplicatePatient () {
+    var patientInfo = triageFields.patientInformation;
+    var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
+    var url = "/search/check/" + query;
+        $.getJSON(url, function (result) {
+        if (result === true) {
+            if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
+                var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
+                window.location.replace(duplicatePatientUrl);
+            }
+        }
+    })
+    };
 
     patientPhotoFeature.init();
 

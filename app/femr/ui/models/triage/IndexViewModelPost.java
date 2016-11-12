@@ -59,10 +59,10 @@ public class IndexViewModelPost {
     private String isDiabetesScreenPerformed;
 
     public List<ValidationError> validate(){
-        Pattern hasLetters = Pattern.compile("[a-zA-Z]");
+        Pattern hasLetters = Pattern.compile("[\\D]");
         List<ValidationError> errors = new ArrayList<>();
         if (hasLetters.matcher(phoneNumber).find())
-            errors.add(new ValidationError("phoneNumber", "The Phone Number must NOT contain letters"));
+            errors.add(new ValidationError("phoneNumber", "The Phone Number must ONLY contain numbers"));
         return errors.isEmpty() ? null : errors;
     }
 

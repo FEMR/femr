@@ -503,7 +503,6 @@ var birthdayAgeAutoCalculateFeature = {
     }
 };
 
-
 $(document).ready(function () {
     $('.newPatientBtn').click(function () {
         if (confirm("Are you sure you want to reset the fields?")) {
@@ -516,7 +515,7 @@ $(document).ready(function () {
 
     $('#phoneNumber').keyup(function() {
         var numbers = $(this).val();
-        $(this).val(numbers.replace(/\D/, ''));
+        $(this).val(numbers.replace(/\D/g, ''));
     });
 
     //gen info and vitals shit

@@ -19,8 +19,11 @@
 package femr.ui.models.triage;
 
 import femr.common.models.PatientItem;
-
+import play.data.validation.ValidationError;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class IndexViewModelPost {
 
@@ -55,6 +58,13 @@ public class IndexViewModelPost {
     //indicates if the "yes" button was clicked for the diabetes screening prompt
     private String isDiabetesScreenPerformed;
 
+    public List<ValidationError> validate(){
+        Pattern hasLetters = Pattern.compile("[a-zA-Z]");
+        List<ValidationError> errors = new ArrayList<>();
+        if (hasLetters.matcher(phoneNumber).find())
+            errors.add(new ValidationError("phoneNumber", "The Phone Number must NOT contain letters"));
+        return errors.isEmpty() ? null : errors;
+    }
 
     private String patientPhotoCropped;
 

@@ -132,6 +132,7 @@ public class SearchController extends Controller {
         return ok(new Gson().toJson(patientSearches));
     }
 
+
     public Result typeaheadCitiesJSONGet(){
 
         ServiceResponse<List<CityItem>> cityItemsServiceResponse = searchService.retrieveCitiesForSearch();
@@ -187,5 +188,13 @@ public class SearchController extends Controller {
         }
 
         return ok(new Gson().toJson(administrationsServiceResponse.getResponseObject()));
+    }
+
+    public Result getMatchingPatients (String query) {
+        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
+        if (patientResponse.hasErrors() || patientResponse.getResponseObject().size() == 0) {
+            return ok("");
+        }
+        return ok(new Gson().toJson(patientResponse.getResponseObject()));
     }
 }

@@ -508,7 +508,7 @@ $(document).ready(function () {
             window.location = "/triage";
         }
         else {
-
+            return;
         }
     });
     //gen info and vitals shit

@@ -95,7 +95,7 @@
                 cb(uri);
             }
         });
-    };
+    }
 
     out$.saveSvgAsPng = function(el, name, scaleFactor) {
         out$.svgAsDataUri(el, scaleFactor, function(uri) {

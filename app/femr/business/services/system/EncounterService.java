@@ -572,7 +572,6 @@ public class EncounterService implements IEncounterService {
 
         return tabFieldId;
     }
-//troubleshooting
 
     public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters()
     {

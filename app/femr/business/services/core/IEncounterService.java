@@ -24,7 +24,6 @@ import femr.common.models.ProblemItem;
 import femr.common.models.TabFieldItem;
 import femr.common.models.UserItem;
 import femr.data.models.core.IPatientEncounter;
-
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +33,11 @@ public interface IEncounterService {
      * Create a new patient encounter. Chief complaint sort order is the same as
      * the order they exist in the list.
      *
-     * @param patientId         id of the patient to create a new encounter for, not null
-     * @param userId            id of the user creating the new encounter, not null
-     * @param tripId            id of the current mission trip if it exists, may be null
+     * @param patientId id of the patient to create a new encounter for, not null
+     * @param userId id of the user creating the new encounter, not null
+     * @param tripId id of the current mission trip if it exists, may be null
      * @param ageClassification age classification of the patient if it exists (child, adult, etc), may be null
-     * @param chiefComplaints   a list of chief complaints that were entered for this patient, may be null or empty
+     * @param chiefComplaints  a list of chief complaints that were entered for this patient, may be null or empty
      * @return a service response that contains a PatientEncounterItem representing the patient encounter that was created
      * and/or errors if they exist.
      */
@@ -76,9 +75,9 @@ public interface IEncounterService {
      * Creates a bunch of tab fields that belong to a chief complaint
      *
      * @param tabFieldNameValues a mapping of tab field names to their respective values, not null/empty
-     * @param encounterId        the id of the encounter, not null
-     * @param userId             the id of the user creating the tab fields, not null
-     * @param chiefComplaint     the chief complaint name that the tab fields belong to, not null
+     * @param encounterId the id of the encounter, not null
+     * @param userId the id of the user creating the tab fields, not null
+     * @param chiefComplaint the chief complaint name that the tab fields belong to, not null
      * @return a list of created tabfielditems
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String, String> tabFieldNameValues, int encounterId, int userId, String chiefComplaint);
@@ -87,8 +86,8 @@ public interface IEncounterService {
      * Creates a bunch of tab fields
      *
      * @param tabFieldNameValues a mapping of tab field names to their respective values, not null/empty
-     * @param encounterId        the id of the encounter, not null
-     * @param userId             the id of the user creating the tab fields, not null
+     * @param encounterId the id of the encounter, not null
+     * @param userId the id of the user creating the tab fields, not null
      * @return a list of created tabfielditems
      */
     ServiceResponse<List<TabFieldItem>> createPatientEncounterTabFields(Map<String, String> tabFieldNameValues, int encounterId, int userId);
@@ -97,8 +96,8 @@ public interface IEncounterService {
      * Create a list of problems.
      *
      * @param problemValues each problem TODO: filter out empty/null values
-     * @param encounterId   id of the current encounter, not null
-     * @param userId        id of the user saving the problems, not null
+     * @param encounterId id of the current encounter, not null
+     * @param userId id of the user saving the problems, not null
      * @return a service response that contains a list of ProblemItems representing the problems that were created
      * and/or errors if they exist.
      */
@@ -117,9 +116,9 @@ public interface IEncounterService {
      * Marks that a patient was screened for diabetes during an encounter
      *
      * @param encounterId id of the encounter for the patient, not null
-     * @param userId      id of the physician that screened the patient for diabetes, not null
-     * @param isScreened  true if patient was screened for diabetes, false if user opted not to screen patient,
-     *                    null if user was never prompted to screen patient for diabetes
+     * @param userId id of the physician that screened the patient for diabetes, not null
+     * @param isScreened true if patient was screened for diabetes, false if user opted not to screen patient,
+     * null if user was never prompted to screen patient for diabetes
      * @return updated patient encounter item and/or errors if they exist, or null if errors
      */
     ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId, Boolean isScreened);

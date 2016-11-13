@@ -46,7 +46,6 @@ public class IndexViewModelPost {
     private String chiefComplaint;
     private Integer weeksPregnant;
 
-
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
 
@@ -234,8 +233,6 @@ public class IndexViewModelPost {
     public String getIsDiabetesScreenPerformed() {
         return isDiabetesScreenPerformed;
     }
-
-
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;

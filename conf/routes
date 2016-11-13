@@ -17,6 +17,7 @@ POST        /admin/users/toggle/:id                            @femr.ui.controll
 GET         /admin/users                                       @femr.ui.controllers.admin.UsersController.manageGet()
 GET         /admin/inventory                                   @femr.ui.controllers.admin.InventoryController.manageGet()
 POST        /admin/inventory                                   @femr.ui.controllers.admin.InventoryController.managePost()
+GET         /admin/inventory/export/:tripId                    @femr.ui.controllers.admin.InventoryController.exportGet(tripId: Integer)
 POST        /admin/inventory/delete/:id/:tripId                @femr.ui.controllers.admin.InventoryController.ajaxDelete(id: Integer, tripId: Integer)
 POST        /admin/inventory/editCurrent/:id/:tripId           @femr.ui.controllers.admin.InventoryController.ajaxEditCurrent(id: Integer, tripId: Integer)
 POST        /admin/inventory/editTotal/:id/:tripId             @femr.ui.controllers.admin.InventoryController.ajaxEditTotal(id: Integer, tripId: Integer)

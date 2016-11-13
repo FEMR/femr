@@ -33,36 +33,5 @@ public class ManageViewModelPost{
         String currentDate= dateUtils.getFriendlyDate(todayDate);
         return currentDate;
     }
-//    private List<PatientEncounterItem> encounterItems;
-//
-//    public void setEncounterItems(List<PatientEncounterItem> encounterItems) {
-//        this.encounterItems = encounterItems;
-//    }
-//    // gets array list item of Patient Items
-//
-//    public PatientEncounterItem getEncounterItems (int i){
-//        return encounterItems.get(i);
-//    }
-//
-//    // gets array list of Patient Items
-//    public List<PatientEncounterItem> getEncounterItems() {
-//        return encounterItems;
-//    }
-//
-//    private List<IPatient> patients;
-//
-//
-//    public void setPatients(List<IPatient> patients) {
-//        this.patients = patients;
-//    }
-//    // gets array list item of Patient Items
-//
-//    public IPatient getPatients (int i){
-//        return patients.get(i);
-//    }
-//
-//    // gets array list of Patient Items
-//    public List<IPatient> getPatients() {
-//        return patients;
-//    }
+
 }

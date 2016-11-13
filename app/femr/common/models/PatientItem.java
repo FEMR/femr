@@ -31,6 +31,7 @@ public class PatientItem {
     private Integer monthsOld;
     private Date birth;
     private String friendlyDateOfBirth;
+
     private String sex;
     private Integer photoId;
     private String pathToPhoto;
@@ -45,6 +46,8 @@ public class PatientItem {
     private Float weight;
     //added for femr-136 - dual unit display
     private Float weightDual;
+
+
 
     public PatientItem(){
         //default empty values
@@ -220,4 +223,15 @@ public class PatientItem {
     public void setMonthsOld(Integer monthsOld) {
         this.monthsOld = monthsOld;
     }
+
+    //FEMR-137 Flag birthdays as being accurate or a guess
+    private Integer IsBirthDateCorrect;
+    public Integer getIsBirthDateCorrect() {
+        return IsBirthDateCorrect;
+    }
+    public void setIsBirthDateCorrect(Integer IsBirthDateCorrect)
+    {
+        this.IsBirthDateCorrect = IsBirthDateCorrect;
+    }
+
 }

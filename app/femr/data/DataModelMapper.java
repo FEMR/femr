@@ -349,9 +349,11 @@ public class DataModelMapper implements IDataModelMapper{
 
     /**
      * {@inheritDoc}
+     * * @param  added isBirthDateCorrect FEMR-137 Flag birthdays as being accurate or a guess
      */
     @Override
-    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex, String address, String city, Integer photoID) {
+    public IPatient createPatient(int userID, String firstName, String lastName, Date birthday, String sex,
+                                  String address, String city, Integer photoID, Integer isBirthDateCorrect) {
 
         if (userID < 0 || StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName)) {
 
@@ -371,7 +373,9 @@ public class DataModelMapper implements IDataModelMapper{
         if (photoID != null)
             patient.setPhoto(Ebean.getReference(photoProvider.get().getClass(), photoID));
 
+        patient.setIsBirthDateCorrect(isBirthDateCorrect);
         return patient;
+
     }
 
     /**

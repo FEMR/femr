@@ -107,7 +107,8 @@ public interface IItemModelMapper {
                                   Float weight,
                                   String pathToPatientPhoto,
                                   Integer photoId,
-                                  String ageClassification);
+                                  String ageClassification,
+                                  Integer isBirthDateCorrect); //FEMR-137 Flag birthdays as being accurate or a guess
 
     /**
      * Generate and provide an instance of PatientEncounterItem

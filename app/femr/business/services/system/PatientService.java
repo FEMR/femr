@@ -140,7 +140,8 @@ public class PatientService implements IPatientService {
                     null,
                     photoPath,
                     photoId,
-                    null);
+                    null,
+                    savedPatient.getIsBirthDateCorrect());
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -162,7 +163,11 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
+            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(),
+                    patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(),
+                    patient.getCity(), patient.getPhotoId(), patient.getIsBirthDateCorrect());
+            //* * @param  added isBirthDateCorrect FEMR-137 Flag birthdays as being accurate or a guess
+
             newPatient = patientRepository.create(newPatient);
             String photoPath = null;
             Integer photoId = null;
@@ -185,7 +190,9 @@ public class PatientService implements IPatientService {
                             null,
                             photoPath,
                             photoId,
-                            null)
+                            null,
+                            newPatient.getIsBirthDateCorrect()
+                    )
             );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

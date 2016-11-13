@@ -71,6 +71,19 @@
 
                         </div>
                     </div>
+                    <div id="IsBirthDateCorrectWrap">
+                        <label for="IsBirthDateCorrect">Check Only If Patient Specified Accurate BirthDate:</label>
+
+                        <input type="checkbox" name="IsBirthDateCorrect", if(viewModel.getPatient.getIsBirthDateCorrect != null) value="1"  else value="0" />
+                        <input type="hidden" name="IsBirthDateCorrect" value="0" />
+                        @*
+                        @if(viewModel.getPatient.getIsBirthDateCorrect() == null) {*@
+                            @*<input type="checkbox" name="IsBirthDateCorrect" value="1" />*@
+                            @*<input type="hidden" name="IsBirthDateCorrect" value="0" />*@
+                        @*} else {*@
+                            @*<input  type="checkbox"  name="IsBirthDateCorrect" value="@viewModel.getPatient.getIsBirthDateCorrect" readonly>*@
+                        @*}*@
+                    </div>
 
                 </div>
 

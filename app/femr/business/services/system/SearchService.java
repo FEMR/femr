@@ -132,7 +132,8 @@ public class SearchService implements ISearchService {
                     patientWeight,
                     pathToPhoto,
                     photoId,
-                    ageClassification
+                    ageClassification,
+                    savedPatient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
             );
 
             //TODO: why is this being repeated?
@@ -205,7 +206,8 @@ public class SearchService implements ISearchService {
                     patientWeight,
                     pathToPhoto,
                     photoId,
-                    ageClassification
+                    ageClassification,
+                    patient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
             );
 
             // If metric setting enabled convert response patientItem to metric
@@ -539,7 +541,8 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
-                        null
+                        null,
+                        patient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
                 ));
             }
             response.setResponseObject(patientItems);
@@ -646,7 +649,8 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
-                        null
+                        null,
+                        patient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
                 );
 
                 if (patient.getPhoto() != null) {

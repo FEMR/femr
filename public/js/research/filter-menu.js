@@ -187,7 +187,7 @@ var filterMenuModule = (function () {
         var currWidth = $(".main").width();
 
         var graphType = graphLoaderModule.getGraphType();
-        var imageName = graphType + "-chart-" + imageSize + ".png";
+        var imageName = graphType + "-chart-" + imageSize + ".png"
 
         // figure out scaleFactor
         if (imageSize == "small") {
@@ -677,7 +677,7 @@ var filterMenuModule = (function () {
         $("#save-button").click(showImageOptions);
         $("#export-button").click(exportData);
         $(".save-image-cont").find(".options").find(".image-size-selection").click(chooseImageSize);
-        $(".save-image-cont").find(".options").find(".close").click(hideImageOptions);
+        $(".save-image-cont").find(".options").find(".close").click(hideImageOptions)
 
         // register typeahead on medication names field
         registerTypeahead();

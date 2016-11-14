@@ -52,9 +52,7 @@ public class PatientService implements IPatientService {
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
-                          @Named("identified") IItemModelMapper itemModelMapper
-                         // IRepository<IPatientEncounter> patientEncounterRepository
-                           ) {
+                          @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
@@ -205,6 +203,7 @@ public class PatientService implements IPatientService {
         ExpressionList<Patient> query = QueryProvider.getPatientQuery()
                 .where()
                 .eq("id", id);
+
         try {
             IPatient savedPatient = patientRepository.findOne(query);
             savedPatient.setIsDeleted(DateTime.now());
@@ -218,8 +217,4 @@ public class PatientService implements IPatientService {
 
         return response;
     }
-
-
-
-
 }

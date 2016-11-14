@@ -71,7 +71,7 @@
         // Returns a tip
         tip.hide = function() {
             var nodel = d3.select(node);
-            nodel.style({ opacity: 0, 'pointer-events': 'none' });
+            nodel.style({ opacity: 0, 'pointer-events': 'none' })
             return tip
         }
 
@@ -144,7 +144,7 @@
             html = v == null ? v : d3.functor(v)
 
             return tip
-        };
+        }
 
         function d3_tip_direction() { return 'n' }
         function d3_tip_offset() { return [0, 0] }
@@ -274,7 +274,7 @@
                 width      = tbbox.width,
                 height     = tbbox.height,
                 x          = tbbox.x,
-                y          = tbbox.y;
+                y          = tbbox.y
 
             point.x = x
             point.y = y

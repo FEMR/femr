@@ -59,6 +59,4 @@ public interface IPatientService {
      * and/or errors if they exist.
      */
     ServiceResponse<PatientItem> deletePatient(int patientId, int deleteByUserID, String reason);
-
-
 }

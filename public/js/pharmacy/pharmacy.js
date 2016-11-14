@@ -85,7 +85,7 @@ function replaceClick() {
     var $container = $(this).closest("li");
     var $replacementDiv = $container.find(".replacement");
     if ($replacementDiv.hasClass("hidden"))
-        $replacementDiv.removeClass("hidden");
+        $replacementDiv.removeClass("hidden")
     else {
         $replacementDiv.addClass("hidden");
         // Reset input's to defaults

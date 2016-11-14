@@ -30,9 +30,6 @@ GET         /admin/trips/teams                                 @femr.ui.controll
 POST        /admin/trips/teams                                 @femr.ui.controllers.admin.TripController.teamsPost()
 GET         /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesGet()
 GET         /admin/triagePatients/triagePatient                 @femr.ui.controllers.admin.TriagePatientController.triagePatient()
-
-
-
 POST        /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesPost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
 #Pharmacy

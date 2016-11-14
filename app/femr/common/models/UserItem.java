@@ -137,7 +137,9 @@ public class UserItem {
         UserItem otherUserItem = (UserItem) obj;
 
         if (!otherUserItem.getEmail().equals(this.getEmail())) return false;
-        return otherUserItem.getId() == this.getId();
+        if (otherUserItem.getId() != this.getId()) return false;
+
+               return true;
 
     }
 

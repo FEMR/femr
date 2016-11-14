@@ -70,7 +70,7 @@
         //
         // Returns a tip
         tip.hide = function() {
-            var nodel = d3.select(node);
+            var nodel = d3.select(node)
             nodel.style({ opacity: 0, 'pointer-events': 'none' })
             return tip
         }

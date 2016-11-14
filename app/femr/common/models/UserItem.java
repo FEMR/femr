@@ -139,7 +139,7 @@ public class UserItem {
         if (!otherUserItem.getEmail().equals(this.getEmail())) return false;
         if (otherUserItem.getId() != this.getId()) return false;
 
-               return true;
+        return true;
     }
 
     public String getDateCreated() {return DateCreated; } //Sam Zanni

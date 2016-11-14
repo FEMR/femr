@@ -61,7 +61,6 @@ public class PatientService implements IPatientService {
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
-      //  this.patientEncounterRepository = patientEncounterRepository;
     }
 
     /**

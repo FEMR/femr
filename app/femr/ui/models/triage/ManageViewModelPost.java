@@ -33,5 +33,4 @@ public class ManageViewModelPost{
         String currentDate= dateUtils.getFriendlyDate(todayDate);
         return currentDate;
     }
-
 }

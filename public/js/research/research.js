@@ -83,7 +83,7 @@ var allowedFilterValues = (function(){
                 if( val === graphType ){
 
                     found = true;
-                    return;
+
                 }
             });
             return found;
@@ -98,7 +98,7 @@ var allowedFilterValues = (function(){
                 if( val === secondaryData ){
 
                     found = true;
-                    return;
+
                 }
             });
             return found;
@@ -112,7 +112,7 @@ var allowedFilterValues = (function(){
             if( val == graphType ){
 
                 found = true;
-                return;
+
             }
         });
         return found;
@@ -484,5 +484,5 @@ function mapGraphData(name, datamap){
         }
     }
     return toRet;
-};
+}
 

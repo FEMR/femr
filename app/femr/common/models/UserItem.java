@@ -140,7 +140,6 @@ public class UserItem {
         if (otherUserItem.getId() != this.getId()) return false;
 
                return true;
-
     }
 
     public String getDateCreated() {return DateCreated; } //Sam Zanni

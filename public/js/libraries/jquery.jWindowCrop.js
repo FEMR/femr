@@ -136,7 +136,6 @@
             }
 			base.dragMouseCoords = {x: event.pageX, y: event.pageY};
 			base.dragImageCoords = {x: parseInt(base.$image.css('left')), y: parseInt(base.$image.css('top'))}
-
             if(base.options.smartControls) base.$frame.find('.jwc_controls').fadeIn('fast');
 		}
 		function handleMouseUp() {

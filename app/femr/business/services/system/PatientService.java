@@ -20,6 +20,11 @@ package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
+
+
+
+
+
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -29,8 +34,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
-import femr.data.models.core.IPatient;
-import femr.data.models.core.IPatientAgeClassification;
+import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
@@ -46,8 +50,7 @@ public class PatientService implements IPatientService {
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
-    //added to file Patient Encounter Reposioty item to access triage date
-    //private final IRepository<IPatientEncounter> patientEncounterRepository;
+
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,

@@ -261,7 +261,7 @@ var pieGraphModule = (function(){
             .attr("y", "0")
             .attr("width", "1")
             .attr("height", "1")
-            .attr("id", "bg-color");
+            .attr("id", "bg-color")
 
         filter.append("feFlood")
             .attr("flood-color", "#333333");

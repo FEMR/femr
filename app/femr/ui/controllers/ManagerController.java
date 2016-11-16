@@ -1,4 +1,4 @@
-package femr.ui.controllers.admin;
+package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
@@ -14,7 +14,7 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.models.triage.ManageViewModelPost;
-import femr.ui.views.html.admin.triagePatients.triagePatient;
+import femr.ui.views.html.manager.index;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 import play.data.Form;
@@ -32,7 +32,7 @@ import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE, Roles.ADMINISTRATOR})
-public class TriagePatientController extends Controller {
+public class ManagerController extends Controller {
 
     private final ISessionService sessionService;
     private final IPatientService patientService;
@@ -41,15 +41,15 @@ public class TriagePatientController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
 
     @Inject
-    public TriagePatientController(ISessionService sessionService, IPatientService patientService,
-                                   IEncounterService encounterService,ISearchService searchService) {
+    public ManagerController(ISessionService sessionService, IPatientService patientService,
+                             IEncounterService encounterService, ISearchService searchService) {
         this.sessionService = sessionService;
         this.patientService = patientService;
         this.encounterService=encounterService;
         this.searchService=searchService;
     }
 
-    public Result triagePatient() {
+    public Result indexGet() {
 
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
@@ -70,7 +70,7 @@ public class TriagePatientController extends Controller {
         viewModel.setTriagePatients(p);
 
 
-        return ok(triagePatient.render(currentUser, viewModel));
+        return ok(index.render(currentUser, viewModel));
     }
 
 

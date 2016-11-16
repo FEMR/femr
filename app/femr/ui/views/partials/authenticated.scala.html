@@ -6,6 +6,7 @@
 @import femr.ui.controllers.routes.TriageController
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.controllers.routes.ManagerController
 @import femr.ui.controllers.superuser.routes.SuperuserController
 @import femr.ui.controllers.admin.routes.AdminController
 @import femr.ui.controllers.routes.ResearchController
@@ -33,6 +34,7 @@
             <li><a href="@TriageController.indexGet()">Triage</a></li>
             <li><a href="@MedicalController.indexGet()">Medical</a></li>
             <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
+            <li><a href="@ManagerController.indexGet()">Manager</a></li>
         }
         @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
             <li><a href="@ResearchController.indexGet()">Research</a></li>

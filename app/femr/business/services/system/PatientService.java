@@ -46,21 +46,19 @@ public class PatientService implements IPatientService {
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
-    //added to file Patient Encounter Reposioty item to access triage date
-    //private final IRepository<IPatientEncounter> patientEncounterRepository;
+
     @Inject
     public PatientService(IRepository<IPatient> patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper
-                         // IRepository<IPatientEncounter> patientEncounterRepository
+
                            ) {
 
         this.patientRepository = patientRepository;
         this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
-      //  this.patientEncounterRepository = patientEncounterRepository;
     }
 
     /**

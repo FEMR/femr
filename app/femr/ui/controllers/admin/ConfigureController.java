@@ -62,6 +62,7 @@ public class ConfigureController extends Controller {
         }
         for (ISystemSetting ss : systemSettingsResponse.getResponseObject()) {
             indexViewModel.setSetting(ss.getName(), ss.isActive());
+            indexViewModel.setDescription(ss.getName(), ss.getDescription());
         }
 
 

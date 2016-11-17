@@ -12,12 +12,14 @@
         <table id="configurationTable">
             <tr>
                 <th>Feature</th>
+                <th>Description</th>
                 <th>Toggle</th>
             </tr>
 
             @for((key, valyew) <- viewModel.getSettings) {
                 <tr>
                     <td class="name">@key</td>
+                        @defining(viewModel.getDescriptions.get(key)) { description => <td class="description">@description</td>}
                     <td class="isActive">
                         <input type="checkbox" name="settings[]" value="@key" @if(valyew) { checked="checked"} />
                     </td>
@@ -25,7 +27,7 @@
             }
 
         </table>
-
+        
         <input type="submit" class="fButton" value="Save"/>
     }
 

@@ -1,10 +1,10 @@
 @import femr.common.models.PatientItem
 @import femr.ui.controllers.ManagerController
+@import femr.ui.models.manager.EditViewModelGet
 @import femr.ui.views.html.layouts.main
 
 @import collection.JavaConversions._
-
-@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.triage.ManageViewModelPost,viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel )
+@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: EditViewModelGet,viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel )
 @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
@@ -32,23 +32,33 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Name</th>
                     <th>HPI</th>
-                    <th>Turn Around Time</th>
+                    <th>Triage Check-In Time</th>
+                    <th>Medical Check-In Time</th>
+                    <th>Pharmacy Check-In Time</th>
+                    <th>Total Time Spent</th>
                 </tr>
             </thead>
             <tbody>
             @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
                 @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
+                    @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter=>
+                        <tr>
+                            <td>@item.getId</td>
+                            <td>@item.getFirstName @item.getLastName</td>
+                            <td>  </td>
+                            @if(encounter.getTriageDateOfVisit != null) {
+                            <td>@encounter.getTriageDateOfVisit.substring(19)</td>}
+                            @if(encounter.getMedicalDateOfVisit!=null){
+                            <td>@encounter.getMedicalDateOfVisit.substring(19)</td>
+                            }
+                            @if(encounter.getPharmacyDateOfVisit != null) {
+                                <td>@encounter.getPharmacyDateOfVisit.substring(19)</td>
+                            }
 
-                    <tr>
-                        <td>@item.getId</td>
-                        <td>@item.getFirstName</td>
-                        <td>@item.getLastName</td>
-                        <td></td>
-
-                    </tr>
+                        </tr>
+                    }
                 }
             }
 

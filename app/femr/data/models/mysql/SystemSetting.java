@@ -35,6 +35,8 @@ public class SystemSetting implements ISystemSetting {
     private String name;
     @Column(name = "isActive")
     private boolean isActive;
+    @Column(name = "description")
+    private String description;
 
     @Override
     public int getId() {
@@ -64,5 +66,15 @@ public class SystemSetting implements ISystemSetting {
     @Override
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -572,7 +572,7 @@ public class EncounterService implements IEncounterService {
         return tabFieldId;
     }
 
-    public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters()
+    public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters(int tripID)
     {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
@@ -585,7 +585,8 @@ public class EncounterService implements IEncounterService {
         ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
         .where()
                 .ge("date_of_triage_visit", today)
-                .le("date_of_triage_visit", tommorrow);
+                .le("date_of_triage_visit", tommorrow)
+                .eq("mission_trip_id",tripID);
 
 
         try{

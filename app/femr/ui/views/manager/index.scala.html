@@ -23,38 +23,38 @@
 
     <div id="center-panel">
 <div class="backgroundForWrap">
-    <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday</div>
+    <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday TripID: @currentUser.getTripId</div>
 
 
-    <div id="tableWrap">
+    <div >
 
-        <table id="TriagePatients" class="table-bordered">
+        <table  id="medTable"  >
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>HPI</th>
-                    <th>Triage Check-In Time</th>
-                    <th>Medical Check-In Time</th>
-                    <th>Pharmacy Check-In Time</th>
-                    <th>Total Time Spent</th>
+                <tr >
+                    <th> Patient ID </th>
+                    <th> Name </th>
+                    <th> HPI </th>
+                    <th> Triage Check-In Time </th>
+                    <th> Medical Check-In Time </th>
+                    <th> Pharmacy Check-In Time </th>
+                    <th> Total Time Spent </th>
                 </tr>
             </thead>
             <tbody>
             @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
                 @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
                     @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter=>
-                        <tr>
+                        <tr class="form-history">
                             <td>@item.getId</td>
                             <td>@item.getFirstName @item.getLastName</td>
                             <td>@encounter.getChiefComplaints  </td>
                             @if(encounter.getTriageDateOfVisit != null) {
-                            <td>@encounter.getTriageDateOfVisit.substring(19)</td>}
+                            <td>@ManageViewModelPost.getTriageTime(encounter)</td>}
                             @if(encounter.getMedicalDateOfVisit!=null){
-                            <td>@encounter.getMedicalDateOfVisit.substring(19)</td>
+                            <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
                             }
                             @if(encounter.getPharmacyDateOfVisit != null) {
-                                <td>@encounter.getPharmacyDateOfVisit.substring(19)</td>
+                                <td>@ManageViewModelPost.getPharmTime(encounter)</td>
                             }
                                 <td>@ManageViewModelPost.turnAroundTime(encounter)</td>
 
@@ -67,7 +67,7 @@
             </tbody>
         </table>
 
-
+    </div>
     </div>
 
 </div>

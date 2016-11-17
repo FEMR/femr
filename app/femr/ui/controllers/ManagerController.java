@@ -9,6 +9,7 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
+import femr.data.models.mysql.PatientEncounter;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 
 @Security.Authenticated(FEMRAuthenticated.class)
-@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE, Roles.ADMINISTRATOR})
+@AllowedRoles({Roles.MANAGER})
 public class ManagerController extends Controller {
 
     private final ISessionService sessionService;
@@ -52,11 +53,10 @@ public class ManagerController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         List<PatientItem> p=new ArrayList<PatientItem>();
+
         List<PatientEncounterItem> encounter=new ArrayList<PatientEncounterItem>();
-        //returns a list of all triage patients
-       // ServiceResponse<List<PatientItem>> allPatients= searchService.retrievePatientsForSearch(null);
-        //returns list of triage Patients on the current Day
-        ServiceResponse<List<PatientEncounterItem>> patientEncounter=encounterService.returnCurrentDayPatientEncounters();
+
+        ServiceResponse<List<PatientEncounterItem>> patientEncounter=encounterService.returnCurrentDayPatientEncounters(currentUser.getTripId());
         //converts patient encounter Items to patient Items
         for(int i=0;i<patientEncounter.getResponseObject().size();i++) {
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject().get(i).getPatientId());

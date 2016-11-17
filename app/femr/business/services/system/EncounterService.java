@@ -587,6 +587,7 @@ public class EncounterService implements IEncounterService {
                 .ge("date_of_triage_visit", today)
                 .le("date_of_triage_visit", tommorrow);
 
+
         try{
             List<PatientItem> patientItems=null;
             List<? extends IPatientEncounter> patient = patientEncounterRepository.find(query);

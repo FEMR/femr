@@ -52,5 +52,22 @@ public class EditViewModelGet {
         String currentDate= dateUtils.getFriendlyDate(todayDate);
         return currentDate;
     }
+    public String turnAroundTime(PatientEncounterItem item){
+
+        if(item.getPharmacyDateOfVisit()!= null &&item.getTriageDateOfVisit()!=null) {
+            String pharmacyDateOfVisit = item.getPharmacyDateOfVisit();
+           String triageDateOfVisit = item.getTriageDateOfVisit();
+          String time=" ";
+           //DateTime a = DateTime.parse(pharmacyDateOfVisit);
+            //DateTime b = DateTime.parse(triageDateOfVisit);
+            //int diffH = a.getHourOfDay() - b.getHourOfDay();
+            //int diffM= a.getMinuteOfDay() - b.getMinuteOfDay();
+            //String time= Integer.toString(diffM);
+            return time;
+        }
+        else {
+            return " ";
+        }
+    }
 
 }

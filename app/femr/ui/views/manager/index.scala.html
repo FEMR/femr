@@ -56,6 +56,8 @@
                             @if(encounter.getPharmacyDateOfVisit != null) {
                                 <td>@encounter.getPharmacyDateOfVisit.substring(19)</td>
                             }
+                                <td>@ManageViewModelPost.turnAroundTime(encounter)</td>
+
 
                         </tr>
                     }

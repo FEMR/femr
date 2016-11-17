@@ -90,32 +90,28 @@ public class EditViewModelGet {
         String currentDate= dateUtils.getFriendlyDate(todayDate);
         return currentDate;
     }
-    public long turnAroundTime(PatientEncounterItem item){
+
+    public String turnAroundTime(PatientEncounterItem item){
         PatientEncounter patientEncounter = new PatientEncounter();
-        long diffSeconds=0;
-
+        String time=" ";
         if(item.getPharmacyDateOfVisit()!= null &&item.getTriageDateOfVisit()!=null) {
-            String time=" ";
-
             SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
-            Date td;
-            String t=getTriageTime(item);
-            Date pd;
-            String p=getPharmTime(item);
             try {
-                td = ft.parse(t);
-                pd= ft.parse(p);
+                Date td,pd;
+                td = ft.parse(getTriageTime(item));
+                pd= ft.parse(getPharmTime(item));
                 long diff = pd.getTime() - td.getTime();
-                diffSeconds = diff / 1000 % 60;
-                long diffMinutes = diff / (60 * 1000) % 60;
-                long diffHours = diff / (60 * 60 * 1000);
+                String ss = String.valueOf(diff / 1000 % 60);
+                String sm = String.valueOf(diff / (60 * 1000) % 60);
+                String sh = String.valueOf(diff / (60 * 60 * 1000));
+                time="Hours: "+sh+" Minutes: " +sm+"  Seconds: "+ss;
             }catch (ParseException e) {
                 System.out.println("Unparseable using " + ft);
             }
-            return diffSeconds;
+            return time;
         }
         else {
-            return diffSeconds;
+            return time;
         }
     }
 

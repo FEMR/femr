@@ -23,10 +23,12 @@
 
     <div id="center-panel">
 <div class="backgroundForWrap">
-    <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday TripID: @currentUser.getTripId</div>
+    <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: </div>
+    @if(currentUser.getTripId!=null){<div class="h2" id="title">TripID: @currentUser.getTripId</div>}
+    @if(currentUser.getTripId==null){<div class="h2" id="title">TripID: Manager is not currently assigned to a trip</div>}
 
 
-    <div >
+    <div id="table-container center-panel-grid" >
 
         <table  id="medTable"  >
             <thead>
@@ -41,29 +43,29 @@
                 </tr>
             </thead>
             <tbody>
-            @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-                @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
-                    @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter=>
-                        <tr class="form-history">
-                            <td>@item.getId</td>
-                            <td>@item.getFirstName @item.getLastName</td>
-                            <td>@encounter.getChiefComplaints  </td>
-                            @if(encounter.getTriageDateOfVisit != null) {
-                            <td>@ManageViewModelPost.getTriageTime(encounter)</td>}
-                            @if(encounter.getMedicalDateOfVisit!=null){
-                            <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
-                            }
-                            @if(encounter.getPharmacyDateOfVisit != null) {
-                                <td>@ManageViewModelPost.getPharmTime(encounter)</td>
-                            }
+            @if(ManageViewModelPost.getTriagePatients!=null) {
+                @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
+                    @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
+                        @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter =>
+                            <tr class="form-history">
+                                <td>@item.getId</td>
+                                <td>@item.getFirstName @item.getLastName</td>
+                                <td>@encounter.getChiefComplaints  </td>
+                                @if(encounter.getTriageDateOfVisit != null) {
+                                    <td>@ManageViewModelPost.getTriageTime(encounter)</td>
+                                }
+                                @if(encounter.getMedicalDateOfVisit != null) {
+                                    <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
+                                }
+                                @if(encounter.getPharmacyDateOfVisit != null) {
+                                    <td>@ManageViewModelPost.getPharmTime(encounter)</td>
+                                }
                                 <td>@ManageViewModelPost.turnAroundTime(encounter)</td>
-
-
-                        </tr>
+                            </tr>
+                        }
                     }
                 }
             }
-
             </tbody>
         </table>
 

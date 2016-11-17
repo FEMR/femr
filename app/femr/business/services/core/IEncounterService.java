@@ -123,7 +123,7 @@ public interface IEncounterService {
 
     /**
      * Returns a list of PatientEncounters of the current day
-     * @param tripID id of trip of current user
+     * @param tripID id of trip of current user, not null
      * @return List of PatientEncounterItems who were checked in on the current Day
      */
     public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters(int tripID);

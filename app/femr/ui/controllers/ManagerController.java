@@ -55,8 +55,14 @@ public class ManagerController extends Controller {
         List<PatientItem> p=new ArrayList<PatientItem>();
 
         List<PatientEncounterItem> encounter=new ArrayList<PatientEncounterItem>();
+        EditViewModelGet viewModel = new EditViewModelGet();
+        IndexEncounterMedicalViewModel hpimodel= new IndexEncounterMedicalViewModel();
+        if (currentUser.getTripId()==null) {
 
+            return ok(index.render(currentUser, viewModel,hpimodel));
+        }
         ServiceResponse<List<PatientEncounterItem>> patientEncounter=encounterService.returnCurrentDayPatientEncounters(currentUser.getTripId());
+
         //converts patient encounter Items to patient Items
         for(int i=0;i<patientEncounter.getResponseObject().size();i++) {
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject().get(i).getPatientId());
@@ -65,10 +71,10 @@ public class ManagerController extends Controller {
         }
 
         //sets Patients Items in view model used
-        EditViewModelGet viewModel = new EditViewModelGet();
+
         viewModel.setTriagePatients(p);
        viewModel.setPatientEncounter(patientEncounter.getResponseObject());
-        IndexEncounterMedicalViewModel hpimodel= new IndexEncounterMedicalViewModel();
+
 
 
         return ok(index.render(currentUser, viewModel,hpimodel));

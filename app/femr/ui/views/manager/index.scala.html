@@ -47,7 +47,7 @@
                         <tr>
                             <td>@item.getId</td>
                             <td>@item.getFirstName @item.getLastName</td>
-                            <td>  </td>
+                            <td>@encounter.getChiefComplaints  </td>
                             @if(encounter.getTriageDateOfVisit != null) {
                             <td>@encounter.getTriageDateOfVisit.substring(19)</td>}
                             @if(encounter.getMedicalDateOfVisit!=null){

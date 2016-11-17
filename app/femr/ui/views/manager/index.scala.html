@@ -4,7 +4,7 @@
 
 @import collection.JavaConversions._
 
-@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.triage.ManageViewModelPost )
+@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.triage.ManageViewModelPost,viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel )
 @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
@@ -24,14 +24,40 @@
     <div id="center-panel">
 <div class="backgroundForWrap">
     <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday</div>
-        <div  id="content-pane" >
-     <ol>
-            @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-                <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
 
-        }
-       </ol>
-        </div>
+
+    <div id="tableWrap">
+
+        <table id="TriagePatients" class="table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>HPI</th>
+                    <th>Turn Around Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
+                @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
+
+                    <tr>
+                        <td>@item.getId</td>
+                        <td>@item.getFirstName</td>
+                        <td>@item.getLastName</td>
+                        <td></td>
+
+                    </tr>
+                }
+            }
+
+            </tbody>
+        </table>
+
+
+    </div>
+
 </div>
     </div>
 

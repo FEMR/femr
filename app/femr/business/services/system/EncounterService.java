@@ -26,6 +26,7 @@ import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.IMissionTripService;
 import femr.common.IItemModelMapper;
+import femr.common.InputTabFieldItem;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
@@ -500,15 +501,7 @@ public class EncounterService implements IEncounterService {
                 size = petf.getTabField().getTabFieldSize().getName();
 
             tabFieldItems.add(itemModelMapper.createTabFieldItem(
-                            petf.getTabField().getName(),
-                            petf.getTabField().getTabFieldType().getName(),
-                            size,
-                            petf.getTabField().getOrder(),
-                            petf.getTabField().getPlaceholder(),
-                            petf.getTabFieldValue(),
-                            chiefComplaint,
-                            isCustom
-                    )
+                    new InputTabFieldItem(petf.getTabField().getName(), petf.getTabField().getTabFieldType().getName(), size, petf.getTabField().getOrder(), petf.getTabField().getPlaceholder(), petf.getTabFieldValue(), chiefComplaint, isCustom))
             );
         }
         return tabFieldItems;

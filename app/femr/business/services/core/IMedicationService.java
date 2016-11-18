@@ -37,28 +37,18 @@ public interface IMedicationService {
     /**
      * Creates a new prescription. It is assumed the prescription is not yet dispensed.
      *
-     * @param medicationId id of the medication. If the medication is not in the concept dictionary, then it should be added prior to calling this. not null.
-     * @param administrationId how the medication is administered (BID, etc), may be null.
-     * @param encounterId id of the patient encounter, not null.
-     * @param userId id of the user dispensing the medication, not null.
-     * @param amount how much of the medication is dispensed, not null.
-     * @param specialInstructions any special instructions for the prescription, may be null.
-     * @return a PrescriptionItem representing the prescription that was just created and/or errors if they exist.
+     *
+     * @param inputPrescription@return a PrescriptionItem representing the prescription that was just created and/or errors if they exist.
      */
-    ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
+    ServiceResponse<PrescriptionItem> createPrescription(InputPrescription inputPrescription);
 
     /**
      * Creates a new prescription when the medication doesn't already exist in the inventory. It is assumed the prescription is not yet dispensed.
      *
-     * @param medicationName name of the medication being prescribed, not null
-     * @param administrationId how the medication is administered (BID, etc), may be null.
-     * @param encounterId id of the patient encounter, not null.
-     * @param userId id of the user dispensing the medication, not null.
-     * @param amount how much of the medication is dispensed, not null.
-     * @param specialInstructions any special instructions for the prescription, may be null.
-     * @return a PrescriptionItem representing the prescription that was just created and/or errors if they exist.
+     *
+     * @param inputPrescriptionForNewMedication@return a PrescriptionItem representing the prescription that was just created and/or errors if they exist.
      */
-    ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
+    ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(InputPrescriptionForNewMedication inputPrescriptionForNewMedication);
 
     /**
      * Replace an existing prescription with an existing prescription. This will not update the inventory. This will not dispense the prescription.
@@ -136,4 +126,10 @@ public interface IMedicationService {
      * and/or errors if they exist
      */
     ServiceResponse<ObjectNode> retrieveAllMedicationsWithID(Integer tripId);
+    //SE 6356 Software Maintenance, Evolution and Re-Engineering - Fall 2016 Assignment #2 - Due date: 11/17/2016
+    //Testing fEMR using JUnit
+    //START
+    ServiceResponse<List<String>> retrieveAllMedications();
+    ServiceResponse<MedicationItem> removeMedication(int id);
+    //END
 }

@@ -45,5 +45,6 @@ public class BusinessLayerModule extends AbstractModule {
         bind(ISessionService.class).to(SessionService.class);
         bind(IUserService.class).to(UserService.class);
         bind(IVitalService.class).to(VitalService.class);
+
     }
 }

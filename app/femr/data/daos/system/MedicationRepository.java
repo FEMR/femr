@@ -5,6 +5,7 @@ import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.data.IDataModelMapper;
+import femr.data.daos.Repository;
 import femr.data.daos.core.IMedicationRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Medication;
@@ -178,5 +179,29 @@ public class MedicationRepository implements IMedicationRepository {
 
         return medications;
     }
+    //SE 6356 Software Maintenance, Evolution and Re-Engineering - Fall 2016 Assignment #2 - Due date: 11/17/2016
+    //Testing fEMR using JUnit
+    //START
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedication findOne(int medicationID) {
+        ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                .where()
+                .eq("id", medicationID);
 
+        IMedication medication = medicationQuery.findUnique();
+
+        return medication;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(IMedication medication) {
+        Repository<IMedication> rep =new Repository<>();
+        rep.delete(medication);
+    }
+    //END
 }

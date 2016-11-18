@@ -20,7 +20,6 @@ package femr.business.services.system;
 
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.FetchConfig;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -28,6 +27,7 @@ import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
+import femr.common.InputPatientItem;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
@@ -118,23 +118,8 @@ public class SearchService implements ISearchService {
                 photoId = savedPatient.getPhoto().getId();
             }
             PatientItem patientItem = itemModelMapper.createPatientItem(
-                    savedPatient.getId(),
-                    savedPatient.getFirstName(),
-                    savedPatient.getLastName(),
-                    savedPatient.getCity(),
-                    savedPatient.getAddress(),
-                    savedPatient.getUserId(),
-                    savedPatient.getAge(),
-                    savedPatient.getSex(),
-                    weeksPregnant,
-                    patientHeightFeet,
-                    patientHeightInches,
-                    patientWeight,
-                    pathToPhoto,
-                    photoId,
-                    ageClassification,
-                    savedPatient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
-            );
+                    //FEMR-137 Flag birthdays as being accurate or a guess
+                    new InputPatientItem(savedPatient.getId(), savedPatient.getFirstName(), savedPatient.getLastName(), savedPatient.getCity(), savedPatient.getAddress(), savedPatient.getUserId(), savedPatient.getAge(), savedPatient.getSex(), weeksPregnant, patientHeightFeet, patientHeightInches, patientWeight, pathToPhoto, photoId, ageClassification, savedPatient.getIsBirthDateCorrect()));
 
             //TODO: why is this being repeated?
             if (savedPatient.getPhoto() != null) {
@@ -192,23 +177,8 @@ public class SearchService implements ISearchService {
                 photoId = patient.getPhoto().getId();
             }
             PatientItem patientItem = itemModelMapper.createPatientItem(
-                    patient.getId(),
-                    patient.getFirstName(),
-                    patient.getLastName(),
-                    patient.getCity(),
-                    patient.getAddress(),
-                    patient.getUserId(),
-                    patient.getAge(),
-                    patient.getSex(),
-                    weeksPregnant,
-                    patientHeightFeet,
-                    patientHeightInches,
-                    patientWeight,
-                    pathToPhoto,
-                    photoId,
-                    ageClassification,
-                    patient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
-            );
+                    //FEMR-137 Flag birthdays as being accurate or a guess
+                    new InputPatientItem(patient.getId(), patient.getFirstName(), patient.getLastName(), patient.getCity(), patient.getAddress(), patient.getUserId(), patient.getAge(), patient.getSex(), weeksPregnant, patientHeightFeet, patientHeightInches, patientWeight, pathToPhoto, photoId, ageClassification, patient.getIsBirthDateCorrect()));
 
             // If metric setting enabled convert response patientItem to metric
             if (isMetric())
@@ -527,23 +497,8 @@ public class SearchService implements ISearchService {
                     photoId = patient.getPhoto().getId();
                 }
                 patientItems.add(itemModelMapper.createPatientItem(
-                        patient.getId(),
-                        patient.getFirstName(),
-                        patient.getLastName(),
-                        patient.getCity(),
-                        patient.getAddress(),
-                        patient.getUserId(),
-                        patient.getAge(),
-                        patient.getSex(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        pathToPhoto,
-                        photoId,
-                        null,
-                        patient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
-                ));
+                        //FEMR-137 Flag birthdays as being accurate or a guess
+                        new InputPatientItem(patient.getId(), patient.getFirstName(), patient.getLastName(), patient.getCity(), patient.getAddress(), patient.getUserId(), patient.getAge(), patient.getSex(), null, null, null, null, pathToPhoto, photoId, null, patient.getIsBirthDateCorrect())));
             }
             response.setResponseObject(patientItems);
         } catch (Exception ex) {
@@ -635,23 +590,8 @@ public class SearchService implements ISearchService {
                     photoId = patient.getPhoto().getId();
                 }
                 PatientItem currPatient = itemModelMapper.createPatientItem(
-                        patient.getId(),
-                        patient.getFirstName(),
-                        patient.getLastName(),
-                        patient.getCity(),
-                        patient.getAddress(),
-                        patient.getUserId(),
-                        patient.getAge(),
-                        patient.getSex(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        pathToPhoto,
-                        photoId,
-                        null,
-                        patient.getIsBirthDateCorrect() //FEMR-137 Flag birthdays as being accurate or a guess
-                );
+                        //FEMR-137 Flag birthdays as being accurate or a guess
+                        new InputPatientItem(patient.getId(), patient.getFirstName(), patient.getLastName(), patient.getCity(), patient.getAddress(), patient.getUserId(), patient.getAge(), patient.getSex(), null, null, null, null, pathToPhoto, photoId, null, patient.getIsBirthDateCorrect()));
 
                 if (patient.getPhoto() != null) {
                     currPatient.setPathToPhoto("/photo/patient/" + currPatient.getId() + "?showDefault=false");

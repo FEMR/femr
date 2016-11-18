@@ -20,6 +20,10 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import femr.business.services.core.ISearchService;
+import femr.common.IItemModelMapper;
+import femr.common.ItemModelMapper;
+import femr.common.models.PatientItem;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -105,7 +109,7 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<ITabFieldSize>>(){}).to(new TypeLiteral<Repository<ITabFieldSize>>(){});
         bind(new TypeLiteral<IRepository<IUser>>() {}).to(new TypeLiteral<Repository<IUser>>() {});
         bind(new TypeLiteral<IRepository<IVital>>() {}).to(new TypeLiteral<Repository<IVital>>() {});
-
+        bind(new TypeLiteral<IRepository<IItemModelMapper>>() {}).to(new TypeLiteral<Repository<IItemModelMapper>>() {});
         // Research
         bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});
         bind(new TypeLiteral<IRepository<IResearchEncounterVital>>() {}).to(new TypeLiteral<Repository<IResearchEncounterVital>>() {});

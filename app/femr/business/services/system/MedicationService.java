@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
+import femr.business.services.core.InputPrescription;
+import femr.business.services.core.InputPrescriptionForNewMedication;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationAdministrationItem;
@@ -35,7 +37,6 @@ import femr.data.daos.IRepository;
 import femr.data.daos.core.*;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
-import femr.data.models.mysql.concepts.ConceptMedication;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;
 import femr.data.models.mysql.concepts.ConceptMedicationUnit;
 import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
@@ -316,21 +317,22 @@ public class MedicationService implements IMedicationService {
 
     /**
      * {@inheritDoc}
+     * @param inputPrescription
      */
     @Override
-    public ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
+    public ServiceResponse<PrescriptionItem> createPrescription(InputPrescription inputPrescription) {
 
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
-        if (administrationId !=null && administrationId <= 0)
-            administrationId = null;
+        if (inputPrescription.getAdministrationId() !=null && inputPrescription.getAdministrationId() <= 0)
+            inputPrescription.setAdministrationId(null);
 
         try {
             IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
-                    medicationId,
-                    administrationId,
-                    userId,
-                    encounterId,
+                    inputPrescription.getAmount(),
+                    inputPrescription.getMedicationId(),
+                    inputPrescription.getAdministrationId(),
+                    inputPrescription.getUserId(),
+                    inputPrescription.getEncounterId(),
                     null,
                     false);
 
@@ -359,32 +361,33 @@ public class MedicationService implements IMedicationService {
 
     /**
      * {@inheritDoc}
+     * @param inputPrescriptionForNewMedication
      */
     @Override
-    public ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
+    public ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(InputPrescriptionForNewMedication inputPrescriptionForNewMedication) {
 
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
 
-        if (StringUtils.isNullOrWhiteSpace(medicationName)) {
+        if (StringUtils.isNullOrWhiteSpace(inputPrescriptionForNewMedication.getMedicationName())) {
 
             response.addError("", "medicationName can't be null or empty");
             return response;
         }
 
-        if (administrationId !=null && administrationId <= 0)
-            administrationId = null;
+        if (inputPrescriptionForNewMedication.getAdministrationId() !=null && inputPrescriptionForNewMedication.getAdministrationId() <= 0)
+            inputPrescriptionForNewMedication.setAdministrationId(null);
 
         try {
 
-            IMedication medication = dataModelMapper.createMedication(medicationName);
-            medication = medicationRepository.createNewMedication(medicationName, null, null);
+            IMedication medication = dataModelMapper.createMedication(inputPrescriptionForNewMedication.getMedicationName());
+            medication = medicationRepository.createNewMedication(inputPrescriptionForNewMedication.getMedicationName(), null, null);
 
             IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
+                    inputPrescriptionForNewMedication.getAmount(),
                     medication.getId(),
-                    administrationId,
-                    userId,
-                    encounterId,
+                    inputPrescriptionForNewMedication.getAdministrationId(),
+                    inputPrescriptionForNewMedication.getUserId(),
+                    inputPrescriptionForNewMedication.getEncounterId(),
                     null,
                     false);
 
@@ -551,5 +554,48 @@ public class MedicationService implements IMedicationService {
 
         return response;
     }
+    //SE 6356 Software Maintenance, Evolution and Re-Engineering - Fall 2016 Assignment #2 - Due date: 11/17/2016
+    //Testing fEMR using JUnit
+    //START
+    @Override
+    public ServiceResponse<List<String>> retrieveAllMedications() {
+        ServiceResponse<List<String>> response = new ServiceResponse<>();
 
+        try {
+            List<String> medicationNames = new ArrayList<>();
+
+            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("isDeleted", false).orderBy("name");
+            List<? extends IMedication> medications = medicationQuery.findList();
+
+            for (IMedication m : medications) {
+                medicationNames.add(m.getName());
+            }
+            response.setResponseObject(medicationNames);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<MedicationItem> removeMedication(int medicationID) {
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+        try{
+
+            // Find one medication (should only be 1 with the ID) from the database
+            IMedication  medication = medicationRepository.findOne(medicationID);
+
+            medicationRepository.delete(medication);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+//END
 }

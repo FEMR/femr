@@ -192,17 +192,6 @@ public class LocaleUnitConverter {
      * Converts a height from Feet & inches into meters portion of a height (2.43)
      * @param Feet Height in feet
      * @param Inches Height in inches
-     * @return Height in meters (ie 2.43 returns 2))
-     */
-    public static Integer getMeters(Float Feet, Float Inches) {
-        return getMeters(Math.round(Feet), Math.round(Inches));
-    }
-
-    /**
-     * Overload method for getMeters(Integer, Integer).
-     * Converts a height from Feet & inches into meters portion of a height (2.43)
-     * @param Feet Height in feet
-     * @param Inches Height in inches
      * @return Height in meters (ie 2.43 returns 2)
      */
     public static Integer getMeters(String Feet, String Inches) {

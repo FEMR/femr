@@ -13,6 +13,7 @@
             <tr>
                 <th>Feature</th>
                 <th>Toggle</th>
+                <th>Description</th>
             </tr>
 
             @for((key, valyew) <- viewModel.getSettings) {
@@ -21,6 +22,7 @@
                     <td class="isActive">
                         <input type="checkbox" name="settings[]" value="@key" @if(valyew) { checked="checked"} />
                     </td>
+
                 </tr>
             }
 

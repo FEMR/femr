@@ -9,6 +9,7 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
+import femr.common.models.TabItem;
 import femr.data.models.mysql.PatientEncounter;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
@@ -21,9 +22,9 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Filter;
 
 /**
  * Created by fq251 on 10/20/2016.
@@ -50,34 +51,39 @@ public class ManagerController extends Controller {
 
     public Result indexGet() {
 
-
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         List<PatientItem> p=new ArrayList<PatientItem>();
-
         List<PatientEncounterItem> encounter=new ArrayList<PatientEncounterItem>();
         EditViewModelGet viewModel = new EditViewModelGet();
         IndexEncounterMedicalViewModel hpimodel= new IndexEncounterMedicalViewModel();
-        if (currentUser.getTripId()==null) {
 
-            return ok(index.render(currentUser, viewModel,hpimodel));
+
+
+        if (currentUser.getTripId()==null) {
+            return ok(index.render(currentUser, viewModel,hpimodel,false));
         }
         ServiceResponse<List<PatientEncounterItem>> patientEncounter=encounterService.returnCurrentDayPatientEncounters(currentUser.getTripId());
-
         //converts patient encounter Items to patient Items
         for(int i=0;i<patientEncounter.getResponseObject().size();i++) {
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject().get(i).getPatientId());
            PatientItem e=translate.getResponseObject();
+       ///     TabItem m= hpimodel.getHpiFieldsWithMultipleChiefComplaints().get().get("narrative");
             p.add(e);
         }
-
-        //sets Patients Items in view model used
-
+      //  viewModel.setFilter();
+        //sets Patients Items in view model use
         viewModel.setTriagePatients(p);
        viewModel.setPatientEncounter(patientEncounter.getResponseObject());
 
+            return ok(index.render(currentUser, viewModel, hpimodel, false));
 
+    }
 
-        return ok(index.render(currentUser, viewModel,hpimodel));
+    public Result editPost()
+    {
+
+        return redirect(routes.ManagerController.indexGet());
+
     }
 
 

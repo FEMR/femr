@@ -1,10 +1,11 @@
 @import femr.common.models.PatientItem
-@import femr.ui.controllers.ManagerController
 @import femr.ui.models.manager.EditViewModelGet
+@import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
+@import femr.ui.controllers.ManagerController
 @import femr.ui.views.html.layouts.main
-
 @import collection.JavaConversions._
-@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: EditViewModelGet,viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel )
+@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: EditViewModelGet,viewModelMedical:
+femr.ui.models.history.IndexEncounterMedicalViewModel,filter:Boolean )
 @additionalScripts = {
     <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
     <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
@@ -13,24 +14,25 @@
 }
 @additionalStyles = {
     <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/manager.css")">
 }
-
+@import femr.ui.controllers.routes.ManagerController
 <!doctype html>
 @main("Triage Patients Checked in Today", currentUser, scripts = additionalScripts, styles = additionalStyles){
 
 <body>
 
-    <div id="center-panel">
+
 <div class="backgroundForWrap">
-    <div  class ="h1" id="title"> List Of Triage Patients Checked In Today: </div>
+    <div  class ="h1" id="title">  List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday </div>
     @if(currentUser.getTripId!=null){<div class="h2" id="title">TripID: @currentUser.getTripId</div>}
-    @if(currentUser.getTripId==null){<div class="h2" id="title">TripID: Manager is not currently assigned to a trip</div>}
-
-
+    @if(currentUser.getTripId==null){<div class="h2" id="title">TripID: Manager  @currentUser.getFirstName @currentUser.getLastName is not currently assigned to a trip</div>}
     <div id="table-container center-panel-grid" >
+        <div class="managerWrap">
+         <!-----   <button><a href="@ManagerController.editPost()">Manager Filter</a></button>-->
 
-        <table  id="medTable"  >
+
+        <table  id="managersTable">
             <thead>
                 <tr >
                     <th> Patient ID </th>
@@ -47,21 +49,23 @@
                 @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
                     @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
                         @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter =>
-                            <tr class="form-history">
-                                <td>@item.getId</td>
-                                <td>@item.getFirstName @item.getLastName</td>
-                                <td>@encounter.getChiefComplaints  </td>
-                                @if(encounter.getTriageDateOfVisit != null) {
-                                    <td>@ManageViewModelPost.getTriageTime(encounter)</td>
-                                }
-                                @if(encounter.getMedicalDateOfVisit != null) {
-                                    <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
-                                }
-                                @if(encounter.getPharmacyDateOfVisit != null) {
-                                    <td>@ManageViewModelPost.getPharmTime(encounter)</td>
-                                }
-                                <td>@ManageViewModelPost.turnAroundTime(encounter)</td>
-                            </tr>
+                            @if(!encounter.getIsClosed ) {
+                                <tr class="form-history">
+                                    <td>@item.getId</td>
+                                    <td>@item.getFirstName @item.getLastName</td>
+                                    <td>@encounter.getChiefComplaints </td>
+                                    @if(encounter.getTriageDateOfVisit!= null) {
+                                        <td>@ManageViewModelPost.getTriageTime(encounter)</td>
+                                    }
+                                    @if(encounter.getMedicalDateOfVisit != null) {
+                                        <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
+                                    }
+                                    @if(encounter.getPharmacyDateOfVisit != null) {
+                                        <td>@ManageViewModelPost.getPharmTime(encounter)</td>
+                                    }
+                                    <td>@ManageViewModelPost.turnAroundTime(encounter)</td>
+                                </tr>
+                            }
                         }
                     }
                 }
@@ -72,8 +76,6 @@
     </div>
     </div>
 
-</div>
-    </div>
 
 </body>
 

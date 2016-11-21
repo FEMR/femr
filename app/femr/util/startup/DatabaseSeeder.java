@@ -531,13 +531,21 @@ public class DatabaseSeeder {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
         SystemSetting systemSetting;
-        if (systemSettings != null && !containSetting(systemSettings, "Multiple chief complaints") && systemSetting.getDescription() == null) {
+        if (systemSettings != null && !containSetting(systemSettings, "Multiple chief complaints")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Multiple chief complaints");
             systemSetting.setActive(false);
             systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
             systemSettingRepository.create(systemSetting);
         }
+        if (systemSettings != null && containSetting(systemSettings, "Multiple chief complaints")){
+            systemSetting = new SystemSetting();
+            systemSetting.setName("Multiple chief complaints");
+            systemSetting.setActive(false);
+            systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
+            systemSettingRepository.update(systemSetting);
+        }
+
         if (systemSettings != null && !containSetting(systemSettings, "Medical PMH Tab")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical PMH Tab");

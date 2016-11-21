@@ -531,7 +531,7 @@ public class DatabaseSeeder {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
         SystemSetting systemSetting;
-        if (systemSettings != null && !containSetting(systemSettings, "Multiple chief complaints")) {
+        if (systemSettings != null && !containSetting(systemSettings, "Multiple chief complaints") && systemSetting.getDescription() == null) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Multiple chief complaints");
             systemSetting.setActive(false);

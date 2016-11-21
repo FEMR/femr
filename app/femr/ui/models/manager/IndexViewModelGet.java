@@ -1,4 +1,4 @@
-package femr.ui.models.triage;
+package femr.ui.models.manager;
 
 import femr.common.models.PatientItem;
 import femr.util.calculations.dateUtils;
@@ -7,8 +7,8 @@ import org.joda.time.DateTime;
 import java.util.Date;
 import java.util.List;
 
-//Manages Triage Patient Controller
-public class ManageViewModelPost{
+//Manages Manger Controller
+public class IndexViewModelGet {
 
     // sets array list of Patient Items
     private List<PatientItem> triagePatients;

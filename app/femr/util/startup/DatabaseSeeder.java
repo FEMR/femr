@@ -65,6 +65,7 @@ public class DatabaseSeeder {
 
         seedMissionTripInformation();
         seedSystemSettings();
+        seedSystemSettingsDescriptions();
         seedAdminUser();
         seedDefaultTabNames();
         seedDefaultTabFieldSizes();
@@ -535,36 +536,28 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Multiple chief complaints");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
+            //systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
             systemSettingRepository.create(systemSetting);
         }
-        if (systemSettings != null && containSetting(systemSettings, "Multiple chief complaints")){
-            systemSetting = new SystemSetting();
-            systemSetting.setName("Multiple chief complaints");
-            systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
-            systemSettingRepository.update(systemSetting);
-        }
-
         if (systemSettings != null && !containSetting(systemSettings, "Medical PMH Tab")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical PMH Tab");
             systemSetting.setActive(true);
-            systemSetting.setDescription("When checked, the Past Medical History tab on medical appears");
+            //systemSetting.setDescription("When checked, the Past Medical History tab on medical appears");
             systemSettingRepository.create(systemSetting);
         }
         if (systemSettings != null && !containSetting(systemSettings, "Medical Photo Tab")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical Photo Tab");
             systemSetting.setActive(true);
-            systemSetting.setDescription("When checked, the Photo tab on medical appears");
+            //systemSetting.setDescription("When checked, the Photo tab on medical appears");
             systemSettingRepository.create(systemSetting);
         }
         if (systemSettings != null && !containSetting(systemSettings, "Medical HPI Consolidate")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical HPI Consolidate");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, the HPI tab on medical is consolidated into one Narrative text field");
+            //systemSetting.setDescription("When checked, the HPI tab on medical is consolidated into one Narrative text field");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -572,7 +565,7 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Metric System Option");
             systemSetting.setActive(true);
-            systemSetting.setDescription("When checked, the entire system becomes metric");
+            //systemSetting.setDescription("When checked, the entire system becomes metric");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -581,7 +574,7 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Country Filter");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, patients from other countries will not show up in a search");
+            //systemSetting.setDescription("When checked, patients from other countries will not show up in a search");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -589,7 +582,7 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Research Only");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
+            //systemSetting.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
             systemSettingRepository.create(systemSetting);
         }
         //Asks a physician in medical if they screened the patient for diabetes based on
@@ -598,11 +591,23 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Diabetes Prompt");
             systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
+            //systemSetting.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
             systemSettingRepository.create(systemSetting);
         }
 
     }
+    private void seedSystemSettingsDescriptions() {
+        List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
+
+        SystemSetting systemSetting;
+        if (systemSettings != null && containSetting(systemSettings, "Multiple chief complaints")) {
+            systemSetting = new SystemSetting();
+            if (systemSetting.getDescription() == null) {
+                systemSettingRepository.update(systemSetting);
+            }
+        }
+    }
+
 
     /**
      * Uses references to HPI, PMH, and Treatment Tabs

@@ -603,6 +603,8 @@ public class DatabaseSeeder {
         if (systemSettings != null && containSetting(systemSettings, "Multiple chief complaints")) {
             systemSetting = new SystemSetting();
             if (systemSetting.getDescription() == null) {
+                systemSetting.setName("Multiple chief complaints");
+                systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
                 systemSettingRepository.update(systemSetting);
             }
         }

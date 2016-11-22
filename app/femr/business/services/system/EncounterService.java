@@ -535,4 +535,38 @@ public class EncounterService implements IEncounterService {
 
         return tabFieldId;
     }
+
+    public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters()
+    {
+        ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
+        List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
+        //gets dates for today and tommorrow
+        DateTime today= DateTime.now();
+        today=today.withTimeAtStartOfDay();
+        DateTime tommorrow=today;
+        tommorrow=tommorrow.plusDays(1);
+        //query todays patients
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+        .where()
+                .ge("date_of_triage_visit", today)
+                .le("date_of_triage_visit", tommorrow);
+
+        try{
+            List<PatientItem> patientItems=null;
+            List<? extends IPatientEncounter> patient = patientEncounterRepository.find(query);
+          for (IPatientEncounter patient1 : patient) {
+
+                    patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));
+
+           }
+                        response.setResponseObject(patientEncounterItems);
+        }
+        catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+
+
+    }
+
 }

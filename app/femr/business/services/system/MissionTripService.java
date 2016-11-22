@@ -29,6 +29,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.stringhelpers.StringUtils;
@@ -45,7 +46,7 @@ public class MissionTripService implements IMissionTripService {
     private final IRepository<IMissionCountry> missionCountryRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
-    private final IRepository<IUser> userRepository;
+    private final IUserRepository userRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -54,7 +55,7 @@ public class MissionTripService implements IMissionTripService {
                               IRepository<IMissionCountry> missionCountryRepository,
                               IRepository<IMissionTeam> missionTeamRepository,
                               IRepository<IMissionTrip> missionTripRepository,
-                              IRepository<IUser> userRepository,
+                              IUserRepository userRepository,
                               IDataModelMapper dataModelMapper,
                               @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -157,16 +158,12 @@ public class MissionTripService implements IMissionTripService {
 
         //TODO should this be moved to just be identified whenever a CurrentUser is retrieved?
         // This should be contained in the session service??
-
-        ExpressionList<User> userQuery = QueryProvider.getUserQuery()
-                .where()
-                .eq("id", userId);
         IUser user;
 
         Optional<IMissionTrip> newestTrip = Optional.empty();
         try {
 
-            user = userRepository.findOne(userQuery);
+            user = userRepository.retrieveUserById(userId);
 
             newestTrip = user.getMissionTrips()
                     .stream()
@@ -298,9 +295,7 @@ public class MissionTripService implements IMissionTripService {
 
         try {
 
-            ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", userId);
-
-            IUser user = userRepository.findOne(query);
+            IUser user = userRepository.retrieveUserById(userId);
 
 
             //start by getting all available mission teams. If you start by getting all the trips then

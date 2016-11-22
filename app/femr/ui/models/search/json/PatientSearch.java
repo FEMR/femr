@@ -5,6 +5,7 @@ public class PatientSearch {
     String id;
     String firstName;
     String lastName;
+    String phoneNumber;
     String age;
     String photo;//the file location
 
@@ -16,6 +17,9 @@ public class PatientSearch {
     }
     public void setLastName(String lastName){
         this.lastName = lastName;
+    }
+    public void setPhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
     }
     public void setAge(String age){
         this.age = age;

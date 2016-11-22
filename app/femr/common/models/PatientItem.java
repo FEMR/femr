@@ -24,6 +24,8 @@ public class PatientItem {
     private int Id;
     private String firstName;
     private String lastName;
+    // Added for FEMR-157 - Optional Phone Number record
+    private String phoneNumber;
     private String address;
     private String city;
     private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
@@ -75,6 +77,12 @@ public class PatientItem {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    // Added for FEMR-157 - Optional Phone Number record
+    public String getPhoneNumber() { return phoneNumber; }
+
+    // Added for FEMR-157 - Optional Phone Number record
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public String getAddress() {
         return address;

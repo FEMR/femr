@@ -292,6 +292,7 @@ var diabeticScreeningFeature = {
         //because they are stupid
         triageFields.patientInformation.firstName.prop('readonly', true);
         triageFields.patientInformation.lastName.prop('readonly', true);
+        triageFields.patientInformation.phoneNumber.prop('readonly', true);
         triageFields.patientInformation.age.prop('readonly', true);
         triageFields.patientInformation.years.prop('readonly', true);
         triageFields.patientInformation.months.prop('readonly', true);
@@ -371,6 +372,7 @@ var triageFields = {
     patientInformation: {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
+        phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient
         years: $('#years'),
         months: $('#months'),
@@ -501,7 +503,6 @@ var birthdayAgeAutoCalculateFeature = {
     }
 };
 
-
 $(document).ready(function () {
     $('.newPatientBtn').click(function () {
         if (confirm("Are you sure you want to reset the fields?")) {
@@ -511,6 +512,12 @@ $(document).ready(function () {
             return;
         }
     });
+
+    $('#phoneNumber').keyup(function() {
+        var numbers = $(this).val();
+        $(this).val(numbers.replace(/\D/g, ''));
+    });
+
     //gen info and vitals shit
     $('#femaleBtn').change(function () {
         $('#weeksPregnant').attr('disabled', false);

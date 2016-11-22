@@ -10,7 +10,7 @@
 @import femr.ui.views.html.partials.helpers.outputStringOrNA
 
 
-    @additionalScripts = {
+    @additionalScripts = {z
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/touchit-1.0.0.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.jWindowCrop.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triage.js")"></script>
@@ -108,10 +108,7 @@
                         </div>
                     </div>
                     <input class="hidden" type="checkbox" name="deletePhoto" value="true" id="deletePhoto">
-
-
                 </div>
-
             </div>
 
             <div id="vitalsWrap" class="sectionBackground backgroundForWrap">
@@ -264,12 +261,23 @@
             }
 
         </div>
-
-
-
-
     </div>
-
+    </div>
+    <div id="matchingPatientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="closeBtn" class="close">×</span>
+                <h2>Modal Header</h2>
+            </div>
+            <div class="modal-body">
+                <div id="modalPhotoWrap">
+                    <img id="modalPatientPhoto" src="" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <h3>Modal Footer</h3>
+            </div>
+        </div>
 
     </div>
 }

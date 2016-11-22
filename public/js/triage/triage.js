@@ -648,12 +648,17 @@ $(document).ready(function () {
     function checkIfDuplicatePatient () {
     var patientInfo = triageFields.patientInformation;
     var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
-    var url = "/search/check/" + query;
+    var url = "/search/matchingPatients/" + query;
         $.getJSON(url, function (result) {
-        if (result === true) {
+        /*if (result === true) {
             if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
                 var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
                 window.location.replace(duplicatePatientUrl);
+            }
+        }*/
+        if(result.size > 0){
+            if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
+
             }
         }
     })
@@ -815,3 +820,9 @@ window.setInterval(function () {
 
 }, 500);
 
+var matchingPatientModal = document.getElementById('matchingPatientModal');
+var closeBtn = document.getElementsByClassName("close")[0];
+closeBtn.onclick = function() {
+    matchingPatientModal.style.display = "none";
+}
+//document.getElementById('modalPatientPhoto').src = **set to photo path of returned patient**

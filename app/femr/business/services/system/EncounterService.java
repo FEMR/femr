@@ -30,6 +30,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
@@ -46,7 +47,7 @@ public class EncounterService implements IEncounterService {
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
-    private final IRepository<IUser> userRepository;
+    private final IUserRepository userRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -57,7 +58,7 @@ public class EncounterService implements IEncounterService {
                             IRepository<IPatientEncounter> patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
-                            IRepository<IUser> userRepository,
+                            IUserRepository userRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -82,11 +83,7 @@ public class EncounterService implements IEncounterService {
 
         try {
             //find the nurse that checked in the patient
-            ExpressionList<User> nurseQuery = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("id", userId);
-
-            IUser nurseUser = userRepository.findOne(nurseQuery);
+            IUser nurseUser = userRepository.retrieveUserById(userId);
 
             //find the age classification of the patient, if it exists
             ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
@@ -139,10 +136,7 @@ public class EncounterService implements IEncounterService {
         try {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
             patientEncounter.setDateOfMedicalVisit(DateTime.now());
-            ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("id", userId);
-            IUser user = userRepository.findOne(getUserQuery);
+            IUser user = userRepository.retrieveUserById(userId);
             patientEncounter.setDoctor(user);
 
             patientEncounter = patientEncounterRepository.update(patientEncounter);
@@ -171,10 +165,7 @@ public class EncounterService implements IEncounterService {
             ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().eq("id", encounterId);
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
             patientEncounter.setDateOfPharmacyVisit(DateTime.now());
-            ExpressionList<User> getUserQuery = QueryProvider.getUserQuery()
-                    .where()
-                    .eq("id", userId);
-            IUser user = userRepository.findOne(getUserQuery);
+            IUser user = userRepository.retrieveUserById(userId);
             patientEncounter.setPharmacist(user);
             patientEncounter = patientEncounterRepository.update(patientEncounter);
             response.setResponseObject(patientEncounter);

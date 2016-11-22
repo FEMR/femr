@@ -29,6 +29,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import femr.data.models.mysql.Role;
@@ -44,14 +45,14 @@ import java.util.stream.Collectors;
 
 public class UserService implements IUserService {
 
-    private final IRepository<IUser> userRepository;
+    private final IUserRepository userRepository;
     private final IPasswordEncryptor passwordEncryptor;
     private final IRepository<IRole> roleRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public UserService(IRepository<IUser> userRepository,
+    public UserService(IUserRepository userRepository,
                        IPasswordEncryptor passwordEncryptor,
                        IRepository<IRole> roleRepository,
                        IDataModelMapper dataModelMapper,
@@ -106,15 +107,10 @@ public class UserService implements IUserService {
         ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
         List<UserItem> userItems = new ArrayList<>();
 
-        Query<User> query = QueryProvider.getUserQuery()
-                .where()
-                .ne("email", "superuser")
-                .ne("email", "admin")
-                .orderBy("lastName");
 
         try{
 
-            List<? extends IUser> users = userRepository.find(query);
+            List<? extends IUser> users = userRepository.retrieveAllUsers();
 
             for (IUser user : users) {
 
@@ -140,14 +136,11 @@ public class UserService implements IUserService {
         ServiceResponse<List<UserItem>> response = new ServiceResponse<>();
         List<UserItem> userItems = new ArrayList<>();
 
-        ExpressionList<User> query = QueryProvider.getUserQuery()
-                .fetch("missionTrips")
-                .where()
-                .eq("missionTrips.id", tripId);
+
 
         try {
 
-            List<? extends IUser> users = userRepository.find(query);
+            List<? extends IUser> users = userRepository.retrieveUsersByTripId(tripId);
 
             userItems.addAll(users.stream()
                             .map(itemModelMapper::createUserItem)
@@ -169,9 +162,9 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<UserItem> toggleUser(int id) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
-        ExpressionList<User> query = QueryProvider.getUserQuery().where().eq("id", id);
+
         try {
-            IUser user = userRepository.findOne(query);
+            IUser user = userRepository.retrieveUserById(id);
             user.setDeleted(!user.getDeleted());
             user = userRepository.update(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
@@ -189,9 +182,9 @@ public class UserService implements IUserService {
     @Override
     public ServiceResponse<UserItem> retrieveUser(int id) {
         ServiceResponse<UserItem> response = new ServiceResponse<>();
-        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
+
         try {
-            IUser user = userRepository.findOne(query);
+            IUser user = userRepository.retrieveUserById(id);
             UserItem userItem;
             userItem = itemModelMapper.createUserItem(user);
             response.setResponseObject(userItem);
@@ -211,7 +204,6 @@ public class UserService implements IUserService {
             response.addError("", "send a user");
             return response;
         }
-        ExpressionList<User> query = QueryProvider.getUserQuery().where().eq("id", userItem.getId());
         ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
                 .where()
                 .ne("name", "SuperUser");
@@ -219,7 +211,7 @@ public class UserService implements IUserService {
         List<? extends IRole> allRoles = roleRepository.find(roleQuery);
 
         try {
-            IUser user = userRepository.findOne(query);
+            IUser user = userRepository.retrieveUserById(userItem.getId());
             if (StringUtils.isNotNullOrWhiteSpace(newPassword)) {
                 user.setPassword(newPassword);
                 encryptAndSetUserPassword(user);
@@ -248,9 +240,7 @@ public class UserService implements IUserService {
      */
     @Override
     public IUser retrieveByEmail(String email) {
-        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("email", email);
-
-        return userRepository.findOne(query);
+        return userRepository.retrieveUserByEmail(email);
     }
 
     /**
@@ -258,9 +248,7 @@ public class UserService implements IUserService {
      */
     @Override
     public IUser retrieveById(int id) {
-        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
-
-        return userRepository.findOne(query);
+        return userRepository.retrieveUserById(id);
     }
 
     /**
@@ -268,9 +256,7 @@ public class UserService implements IUserService {
      */
     @Override
     public List<? extends IRole> retrieveRolesForUser(int id) {
-        ExpressionList<User> query = QueryProvider.getUserQuery().fetch("roles").where().eq("id", id);
-        IUser user = userRepository.findOne(query);
-        return user.getRoles();
+        return userRepository.retrieveUserById(id).getRoles();
     }
 
     /**

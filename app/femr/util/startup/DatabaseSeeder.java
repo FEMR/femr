@@ -27,6 +27,7 @@ import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
+import femr.util.stringhelpers.StringUtils;
 import play.Play;
 import java.util.ArrayList;
 import java.util.List;
@@ -599,7 +600,15 @@ public class DatabaseSeeder {
     private void seedSystemSettingsDescriptions() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
-        SystemSetting systemSetting;
+        for (int i = 0; i < systemSettings.size(); i++)
+        {
+            if (systemSettings.get(i).getName() == "Multiple chief complaints"){
+                if (StringUtils.isNullOrWhiteSpace(systemSettings.get(i).getDescription())){
+                    systemSettings.get(i).setDescription("When checked, a user can add multiple chief complaints for a patient");
+                }
+            }
+        }
+        /*SystemSetting systemSetting;
         if (systemSettings != null && containSetting(systemSettings, "Multiple chief complaints")) {
             systemSetting = new SystemSetting();
             if (systemSetting.getDescription() == null) {
@@ -607,7 +616,7 @@ public class DatabaseSeeder {
                 systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
                 systemSettingRepository.update(systemSetting);
             }
-        }
+        }*/
     }
 
 

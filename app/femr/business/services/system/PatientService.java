@@ -34,6 +34,7 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Patient;
 import femr.data.models.mysql.PatientAgeClassification;
@@ -46,13 +47,13 @@ import java.util.Map;
 
 public class PatientService implements IPatientService {
 
-    private final IRepository<IPatient> patientRepository;
+    private final IPatientRepository patientRepository;
     private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public PatientService(IRepository<IPatient> patientRepository,
+    public PatientService(IPatientRepository patientRepository,
                           IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
@@ -99,14 +100,9 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", id);
-
-
         try {
 
-            IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.findPatientById(id);
 
             if( savedPatient == null ){
 
@@ -117,7 +113,7 @@ public class PatientService implements IPatientService {
             // sex can be changed, but not set to null
             if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
-                savedPatient = patientRepository.update(savedPatient);
+                savedPatient = patientRepository.save(savedPatient);
             }
 
             String photoPath = null;
@@ -163,7 +159,7 @@ public class PatientService implements IPatientService {
 
         try {
             IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
-            newPatient = patientRepository.create(newPatient);
+            newPatient = patientRepository.save(newPatient);
             String photoPath = null;
             Integer photoId = null;
             if (newPatient.getPhoto() != null) {
@@ -202,16 +198,12 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", id);
-
         try {
-            IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.findPatientById(id);
             savedPatient.setIsDeleted(DateTime.now());
             savedPatient.setDeletedByUserId(deleteByUserID);
             savedPatient.setReasonDeleted(reason);
-            patientRepository.update(savedPatient);
+            patientRepository.save(savedPatient);
 
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

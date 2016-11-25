@@ -40,6 +40,8 @@ public class Patient implements IPatient {
     private String lastName;
     @Column(name = "age")
     private Date age;
+    @Column(name = "is_dob_estimated", nullable = true)
+    private Boolean isDobEstimated;
     @Column(name = "sex", nullable = true)
     private String sex;
     @Column(name = "address", nullable = true)
@@ -102,6 +104,16 @@ public class Patient implements IPatient {
     @Override
     public void setAge(Date age) {
         this.age = age;
+    }
+
+    @Override
+    public Boolean getIsDobEstimated() {
+        return isDobEstimated;
+    }
+
+    @Override
+    public void setIsDobEstimated(Boolean isDobEstimated) {
+        this.isDobEstimated = isDobEstimated;
     }
 
     @Override

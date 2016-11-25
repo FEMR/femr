@@ -165,6 +165,7 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 String address,
                                                 int userId,
                                                 Date age,
+                                                Boolean isDobEstimated,
                                                 String sex,
                                                 Integer weeksPregnant,
                                                 Integer heightFeet,
@@ -201,6 +202,7 @@ public class ItemModelMapper implements IItemModelMapper {
             patientItem.setAge(dateUtils.getAge(age));//age (int)
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
+            patientItem.setIsDobEstimated(isDobEstimated);
 
         }
         if (StringUtils.isNotNullOrWhiteSpace(pathToPatientPhoto) && photoId != null) {

@@ -29,6 +29,7 @@ public class IndexViewModelPost {
     private String city;
     private Date age;
     private String ageClassification;
+    private Boolean isDobEstimated;
     private String sex;
     public Boolean deletePhoto; //flag to determine if user would like to delete image file
     //begin vitals
@@ -107,6 +108,14 @@ public class IndexViewModelPost {
 
     public void setAge(Date age) {
         this.age = age;
+    }
+
+    public Boolean getIsDobEstimated() {
+        return isDobEstimated;
+    }
+
+    public void setIsDobEstimated(Boolean isDobEstimated) {
+        this.isDobEstimated = isDobEstimated;
     }
 
     public String getSex() {

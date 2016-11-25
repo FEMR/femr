@@ -30,7 +30,12 @@ var triageFieldValidator = {
             //something has been filled out
             $('#ageClassificationWrap').css('border', 'none');
         }
-
+         /*//Validate Birthdate
+        //FEMR-137- Flag birthdays as being accurate or a guess
+        if (! $("input:checkbox[name='IsBirthDateCorrect']").is(':checked')) {
+           alert("To proceed with the submission, please check if the Birthdate was accurate.");
+           event.preventDefault();
+           }*/
     },
     validatePatientVitals: function () {
         var patientVitals = triageFields.patientVitals;//located in triage.js

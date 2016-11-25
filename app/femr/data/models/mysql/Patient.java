@@ -58,6 +58,8 @@ public class Patient implements IPatient {
     @Column(name = "reason_deleted", nullable = true)
     private String reasonDeleted;
 
+    @Column(name = "IsBirthDateCorrect", nullable = true)
+    private Integer isBirthDateCorrect;
 
     @Override
     public int getId() {
@@ -184,7 +186,11 @@ public class Patient implements IPatient {
 
     @Override
     public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
-    
-    
+
+    @Override
+    public Integer getIsBirthDateCorrect() { return isBirthDateCorrect; }
+
+    @Override
+    public void setIsBirthDateCorrect(Integer IsBirthDateCorrect){ this.isBirthDateCorrect = IsBirthDateCorrect; }
 
 }

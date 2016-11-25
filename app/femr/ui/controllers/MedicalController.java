@@ -351,12 +351,7 @@ public class MedicalController extends Controller {
                 prescriptionItem.setAdministrationID(null);
 
             createPrescriptionServiceResponse = medicationService.createPrescription(
-                    prescriptionItem.getMedicationID(),
-                    prescriptionItem.getAdministrationID(),
-                    patientEncounterItem.getId(),
-                    currentUserSession.getId(),
-                    prescriptionItem.getAmount(),
-                    null);
+                    new InputPrescription(prescriptionItem.getMedicationID(), prescriptionItem.getAdministrationID(), patientEncounterItem.getId(), currentUserSession.getId(), prescriptionItem.getAmount(), null));
 
             if (createPrescriptionServiceResponse.hasErrors()){
 
@@ -380,12 +375,7 @@ public class MedicalController extends Controller {
                 prescriptionItem.setAdministrationID(null);
 
             createPrescriptionServiceResponse = medicationService.createPrescriptionWithNewMedication(
-                    prescriptionItem.getMedicationName(),
-                    prescriptionItem.getAdministrationID(),
-                    patientEncounterItem.getId(),
-                    currentUserSession.getId(),
-                    prescriptionItem.getAmount(),
-                    null);
+                    new InputPrescriptionForNewMedication(prescriptionItem.getMedicationName(), prescriptionItem.getAdministrationID(), patientEncounterItem.getId(), currentUserSession.getId(), prescriptionItem.getAmount(), null));
 
             if (createPrescriptionServiceResponse.hasErrors()){
 

@@ -5,7 +5,10 @@ $(document).ready(function () {
             alert("Duplicate prescriptions can not be submitted.");
             event.preventDefault();
         }
-
+if(! $("input:checkbox[name='disclaimer']").is(':checked')){
+    alert("Please sign the Disclaimer to Proceed!");
+    event.preventDefault();
+}
         return pass;
     })
 });

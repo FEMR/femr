@@ -209,12 +209,8 @@ public class PharmaciesController extends Controller {
                 if (script.getMedicationID() != null){
                     //the medication has already been entered into the medications table (through admin inventory?)
 
-                    ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
-                            script.getAdministrationID(),
-                            patientEncounterItem.getId(),
-                            currentUserSession.getId(),
-                            script.getAmount(),
-                            null);
+                    ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(
+                            new InputPrescription(script.getMedicationID(), script.getAdministrationID(), patientEncounterItem.getId(), currentUserSession.getId(), script.getAmount(), null));
                     PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
                     //mark the prescription for replacing
                     prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());
@@ -222,12 +218,7 @@ public class PharmaciesController extends Controller {
                 }else{
                     //the medication has not already been entered into the medications table
                     ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescriptionWithNewMedication(
-                            script.getMedicationName(),
-                            script.getAdministrationID(),
-                            patientEncounterItem.getId(),
-                            currentUserSession.getId(),
-                            script.getAmount(),
-                            null);
+                            new InputPrescriptionForNewMedication(script.getMedicationName(), script.getAdministrationID(), patientEncounterItem.getId(), currentUserSession.getId(), script.getAmount(), null));
                     PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
                     //mark the prescription for replacing
                     prescriptionsToReplace.put(newPrescriptionItem.getId(), script.getId());

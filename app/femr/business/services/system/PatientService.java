@@ -30,6 +30,7 @@ import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
+import femr.common.InputPatientItem;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
@@ -126,21 +127,8 @@ public class PatientService implements IPatientService {
                 photoPath = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
             }
-            PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
-                    savedPatient.getFirstName(),
-                    savedPatient.getLastName(),
-                    savedPatient.getCity(),
-                    savedPatient.getAddress(),
-                    savedPatient.getUserId(),
-                    savedPatient.getAge(),
-                    savedPatient.getSex(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    photoPath,
-                    photoId,
-                    null);
+            PatientItem patientItem = itemModelMapper.createPatientItem(
+                    new InputPatientItem(savedPatient.getId(), savedPatient.getFirstName(), savedPatient.getLastName(), savedPatient.getCity(), savedPatient.getAddress(), savedPatient.getUserId(), savedPatient.getAge(), savedPatient.getSex(), null, null, null, null, photoPath, photoId, null, savedPatient.getIsBirthDateCorrect()));
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -162,7 +150,11 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
+            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(),
+                    patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(),
+                    patient.getCity(), patient.getPhotoId(), patient.getIsBirthDateCorrect());
+            //* * @param  added isBirthDateCorrect FEMR-137 Flag birthdays as being accurate or a guess
+
             newPatient = patientRepository.create(newPatient);
             String photoPath = null;
             Integer photoId = null;
@@ -171,21 +163,8 @@ public class PatientService implements IPatientService {
                 photoId = newPatient.getPhoto().getId();
             }
             response.setResponseObject(
-                    itemModelMapper.createPatientItem(newPatient.getId(),
-                            newPatient.getFirstName(),
-                            newPatient.getLastName(),
-                            newPatient.getCity(),
-                            newPatient.getAddress(),
-                            newPatient.getUserId(),
-                            newPatient.getAge(),
-                            newPatient.getSex(),
-                            null,
-                            null,
-                            null,
-                            null,
-                            photoPath,
-                            photoId,
-                            null)
+                    itemModelMapper.createPatientItem(
+                            new InputPatientItem(newPatient.getId(), newPatient.getFirstName(), newPatient.getLastName(), newPatient.getCity(), newPatient.getAddress(), newPatient.getUserId(), newPatient.getAge(), newPatient.getSex(), null, null, null, null, photoPath, photoId, null, newPatient.getIsBirthDateCorrect()))
             );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

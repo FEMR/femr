@@ -76,38 +76,10 @@ public interface IItemModelMapper {
     /**
      * Generate and provide an instance of PatientItem. See parameter descriptions for which fields must be filled out.
      *
-     * @param id                 id of the patient, not null
-     * @param firstName          first name of the patient, not null
-     * @param lastName           last name of the patient, not null
-     * @param city               city that the patient lives in, not null
-     * @param address            address of the patient, may be null
-     * @param userId             id of the user that checked in the patient in triage, not null
-     * @param age                age of the patient, may be null
-     * @param sex                sex of the patient, may be null
-     * @param weeksPregnant      how many weeks pregnant the patient is, may be null
-     * @param heightFeet         how tall the patient is, may be null
-     * @param heightInches       how tall the patient is, may be null
-     * @param weight             how much the patient weighs, may be null
-     * @param pathToPatientPhoto filepath to the patient photo, may be null
-     * @param photoId            id of the patients photo, may be null
-     * @param ageClassification  age classification of the patient (adult,child, etc), may be null
-     * @return a new PatientItem or null if processing fails, may be null
+     *
+     * @param inputPatientItem@return a new PatientItem or null if processing fails, may be null
      */
-    PatientItem createPatientItem(int id,
-                                  String firstName,
-                                  String lastName,
-                                  String city,
-                                  String address,
-                                  int userId,
-                                  Date age,
-                                  String sex,
-                                  Integer weeksPregnant,
-                                  Integer heightFeet,
-                                  Integer heightInches,
-                                  Float weight,
-                                  String pathToPatientPhoto,
-                                  Integer photoId,
-                                  String ageClassification);
+    PatientItem createPatientItem(InputPatientItem inputPatientItem); //FEMR-137 Flag birthdays as being accurate or a guess
 
     /**
      * Generate and provide an instance of PatientEncounterItem
@@ -177,24 +149,10 @@ public interface IItemModelMapper {
     /**
      * Generate and provide an instance of TabFieldItem.
      *
-     * @param name           the name of the field, not null
-     * @param type           the fields type e.g. number, text, may be null
-     * @param size           the size of the field e.g. small, med, large, may be null
-     * @param order          sorting order for the field, may be null
-     * @param placeholder    placeholder text for the field, may be null
-     * @param value          current value of the field, may be null
-     * @param chiefComplaint what chief complaint the field belongs to,, may be null
-     * @param isCustom       identifies if the tabfielditem is custom made, not null
-     * @return a new TabFieldItem or null if processing fails
+     *
+     * @param inputTabFieldItem@return a new TabFieldItem or null if processing fails
      */
-    TabFieldItem createTabFieldItem(String name,
-                                    String type,
-                                    String size,
-                                    Integer order,
-                                    String placeholder,
-                                    String value,
-                                    String chiefComplaint,
-                                    boolean isCustom);
+    TabFieldItem createTabFieldItem(InputTabFieldItem inputTabFieldItem);
 
     /**
      * Generate and provide an instance of TabFieldItem overloaded to include userName

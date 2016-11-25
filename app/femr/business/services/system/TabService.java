@@ -25,6 +25,7 @@ import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
 import femr.business.services.core.ITabService;
 import femr.common.IItemModelMapper;
+import femr.common.InputTabFieldItem;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.TabFieldItem;
 import femr.common.models.TabItem;
@@ -198,14 +199,8 @@ public class TabService implements ITabService {
                 if (tf.getTabFieldSize() != null)
                     size = tf.getTabFieldSize().getName();
 
-                customFieldItems.add(itemModelMapper.createTabFieldItem(tf.getName(),
-                        tf.getTabFieldType().getName(),
-                        size,
-                        tf.getOrder(),
-                        tf.getPlaceholder(),
-                        null,
-                        null,
-                        true));
+                customFieldItems.add(itemModelMapper.createTabFieldItem(
+                        new InputTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), size, tf.getOrder(), tf.getPlaceholder(), null, null, true)));
             }
             response.setResponseObject(customFieldItems);
         } catch (Exception ex) {
@@ -243,14 +238,8 @@ public class TabService implements ITabService {
             if (tabField.getTabFieldSize() != null)
                 size = tabField.getTabFieldSize().getName();
 
-            TabFieldItem tabFieldItem = itemModelMapper.createTabFieldItem(tabField.getName(),
-                    tabField.getTabFieldType().getName(),
-                    size,
-                    tabField.getOrder(),
-                    tabField.getPlaceholder(),
-                    null,
-                    null,
-                    true);
+            TabFieldItem tabFieldItem = itemModelMapper.createTabFieldItem(
+                    new InputTabFieldItem(tabField.getName(), tabField.getTabFieldType().getName(), size, tabField.getOrder(), tabField.getPlaceholder(), null, null, true));
             response.setResponseObject(tabFieldItem);
 
         } catch (Exception ex) {
@@ -332,14 +321,8 @@ public class TabService implements ITabService {
             if (tabField.getTabFieldSize() != null)
                 size = tabField.getTabFieldSize().getName();
 
-            TabFieldItem newTabFieldItem = itemModelMapper.createTabFieldItem(tabField.getName(),
-                    tabField.getTabFieldType().getName(),
-                    size,
-                    tabField.getOrder(),
-                    tabField.getPlaceholder(),
-                    null,
-                    null,
-                    true);
+            TabFieldItem newTabFieldItem = itemModelMapper.createTabFieldItem(
+                    new InputTabFieldItem(tabField.getName(), tabField.getTabFieldType().getName(), size, tabField.getOrder(), tabField.getPlaceholder(), null, null, true));
 
             response.setResponseObject(newTabFieldItem);
 
@@ -416,14 +399,8 @@ public class TabService implements ITabService {
             if (customField.getTabFieldSize() != null)
                 size = customField.getTabFieldSize().getName();
 
-            TabFieldItem newTabFieldItem = itemModelMapper.createTabFieldItem(customField.getName(),
-                    customField.getTabFieldType().getName(),
-                    size,
-                    customField.getOrder(),
-                    customField.getPlaceholder(),
-                    null,
-                    null,
-                    true);
+            TabFieldItem newTabFieldItem = itemModelMapper.createTabFieldItem(
+                    new InputTabFieldItem(customField.getName(), customField.getTabFieldType().getName(), size, customField.getOrder(), customField.getPlaceholder(), null, null, true));
 
             response.setResponseObject(newTabFieldItem);
         } catch (Exception ex) {
@@ -678,16 +655,16 @@ public class TabService implements ITabService {
                     if (chiefComplaints != null && chiefComplaints.size() > 0) {
                         for (IChiefComplaint cc : chiefComplaints) {
                             if (!tabFieldMultiMap.containsTabField(tf.getName(), cc.getValue())) {
-                                tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), itemModelMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom));
+                                tabFieldMultiMap.put(tf.getName(), null, cc.getValue(), itemModelMapper.createTabFieldItem(new InputTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom)));
                             }
                         }
                     } else {
-                        tabFieldMultiMap.put(tf.getName(), null, null, itemModelMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom));
+                        tabFieldMultiMap.put(tf.getName(), null, null, itemModelMapper.createTabFieldItem(new InputTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom)));
                     }
 
                 } else {
                     if (!tabFieldMultiMap.containsTabField(tf.getName())) {
-                        tabFieldMultiMap.put(tf.getName(), null, null, itemModelMapper.createTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom));
+                        tabFieldMultiMap.put(tf.getName(), null, null, itemModelMapper.createTabFieldItem(new InputTabFieldItem(tf.getName(), tf.getTabFieldType().getName(), tabFieldSize, tf.getOrder(), tf.getPlaceholder(), null, null, isCustom)));
                     }
                 }
             }

@@ -20,8 +20,6 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import femr.common.IItemModelMapper;
-import femr.common.ItemModelMapper;
 import femr.data.DataModelMapper;
 import femr.data.IDataModelMapper;
 
@@ -31,6 +29,5 @@ public class MapperModule extends AbstractModule {
     protected void configure() {
 
         bind(IDataModelMapper.class).to(DataModelMapper.class);
-        bind(IItemModelMapper.class).annotatedWith(Names.named("identified")).to(ItemModelMapper.class);
     }
 }

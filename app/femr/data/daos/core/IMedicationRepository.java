@@ -56,5 +56,23 @@ public interface IMedicationRepository {
      * @return
      */
     List<? extends IMedication> retrieveAllMedicationByTripId(Integer tripId);
+
+    //SE 6356 Software Maintenance, Evolution and Re-Engineering - Fall 2016 Assignment #2 - Due date: 11/17/2016
+    //Testing fEMR using JUnit
+    //START
+
+    /**
+     * Search for the medication based on medication ID provided
+     * @param medicationID
+     * @return
+     */
+    IMedication findOne(int medicationID);
+
+    /**
+     * Delete the medication
+     * @param medication
+     */
+    void delete(IMedication medication);
+    //END
 }
 

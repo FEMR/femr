@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="-239.00000000000068" y="-350.6666666666671">femr.business.services.core.ISearchService</node>
+    <node x="-797.9166666666667" y="-1012.6666666666664">femr.data.daos.system.MedicationRepository</node>
+    <node x="-23.988095238095184" y="110.1190476190477">femr.data.models.mysql.Patient</node>
+    <node x="-1482.3333333333335" y="-437.3333333333336">femr.common.IItemModelMapper</node>
+    <node x="-1372.3333333333333" y="169.33333333333258">femr.ui.models.triage.IndexViewModelPost</node>
+    <node x="-797.4999999999998" y="-754.1666666666665">femr.data.daos.core.IMedicationRepository</node>
+    <node x="-799.0000000000005" y="-37.33333333333405">femr.ui.controllers.TriageController</node>
+    <node x="686.0833333333328" y="103.49999999999977">femr.data.models.core.IPatient</node>
+    <node x="860.9999999999989" y="-997.3333333333335">femr.business.services.system.SearchService</node>
+    <node x="-1452.3333333333335" y="-920.6666666666666">femr.common.ItemModelMapper</node>
+    <node x="580.6547619047614" y="-490.05952380952374">femr.data.DataModelMapper</node>
+    <node x="-835.6666666666667" y="-260.66666666666697">femr.business.services.core.IPatientService</node>
+    <node x="-765.6666666666669" y="-457.3333333333337">femr.business.services.system.PatientService</node>
+    <node x="-48.333333333333826" y="-1073.3333333333328">femr.data.IDataModelMapper</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="femr.data.daos.system.MedicationRepository" target="femr.data.IDataModelMapper">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.SearchService" target="femr.data.models.core.IPatient">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.PatientService" target="femr.data.IDataModelMapper">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.data.daos.system.MedicationRepository" target="femr.data.daos.core.IMedicationRepository">
+      <point x="0.0" y="-92.0" />
+      <point x="0.0" y="92.0" />
+    </edge>
+    <edge source="femr.data.models.mysql.Patient" target="femr.data.models.core.IPatient">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.PatientService" target="femr.business.services.core.IPatientService">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.SearchService" target="femr.common.IItemModelMapper">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.data.DataModelMapper" target="femr.data.models.core.IPatient">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.ui.controllers.TriageController" target="femr.ui.models.triage.IndexViewModelPost">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.SearchService" target="femr.business.services.core.ISearchService">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.PatientService" target="femr.data.models.core.IPatient">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.business.services.system.PatientService" target="femr.common.IItemModelMapper">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.common.ItemModelMapper" target="femr.common.IItemModelMapper">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.data.DataModelMapper" target="femr.data.IDataModelMapper">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.ui.controllers.TriageController" target="femr.business.services.core.ISearchService">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="femr.ui.controllers.TriageController" target="femr.business.services.core.IPatientService">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.30000000000000016" x="0.9999999999990905" y="-180.6666666666672" />
+  <SelectedNodes>
+    <node>femr.data.DataModelMapper</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

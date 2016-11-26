@@ -32,6 +32,8 @@ POST        /admin/trips/teams                                 @femr.ui.controll
 GET         /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesGet()
 POST        /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesPost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
+#Manager
+GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet()
 #Pharmacy
 GET         /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editGet(id: Integer)
 POST        /pharmacy/edit/:id                                 @femr.ui.controllers.PharmaciesController.editPost(id: Integer)

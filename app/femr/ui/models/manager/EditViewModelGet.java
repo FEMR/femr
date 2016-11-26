@@ -2,14 +2,18 @@ package femr.ui.models.manager;
 
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
+import femr.common.models.TabFieldItem;
 import femr.data.models.mysql.PatientEncounter;
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public class EditViewModelGet {
@@ -17,8 +21,38 @@ public class EditViewModelGet {
     // sets array list of Patient Items
     private List<PatientItem> triagePatients;
     private List<PatientEncounter> encounter;
+    private List<VitalMultiMap> vitalItems;
+    private List<PatientEncounterItem> encounterItem;
+    List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
 
 
+    public void setHPI(List<Map<String, TabFieldItem>> tab) {
+        this.tab = tab;
+    }
+    // gets array list item of HPI Tab Mapped Items
+
+    public Map<String, TabFieldItem>  getHPI(int i){
+        return tab.get(i);
+    }
+
+    // gets array list of HPI Items
+    public List<Map<String, TabFieldItem>> getHpi() {
+        return tab;
+    }
+
+    public void setVitals(List<VitalMultiMap> vital) {
+        this.vitalItems = vital;
+    }
+    // gets array list item of vital Items
+
+    public VitalMultiMap getVitals (int i){
+        return vitalItems.get(i);
+    }
+
+    // gets array list of Vital Items
+    public List<VitalMultiMap> getVital() {
+        return vitalItems;
+    }
     PatientEncounter patientEncounter = new PatientEncounter();
     public String getPharmTime(PatientEncounterItem item) {
         String pharmTime;
@@ -68,7 +102,6 @@ public class EditViewModelGet {
 
 
 
-    private List<PatientEncounterItem> encounterItem;
 
     public void setPatientEncounter(List<PatientEncounterItem> patientEncounter) {
         this.encounterItem = patientEncounter;
@@ -89,6 +122,11 @@ public class EditViewModelGet {
         Date todayDate= DateTime.now().toDate();
         String currentDate= dateUtils.getFriendlyDate(todayDate);
         return currentDate;
+    }
+    public DateTime getTodayDate()
+    {
+        return  DateTime.now();
+
     }
 
     public String turnAroundTime(PatientEncounterItem item){

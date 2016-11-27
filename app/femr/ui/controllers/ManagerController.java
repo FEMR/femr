@@ -108,14 +108,6 @@ public class ManagerController extends Controller {
 
     }
 
-    public Result editPost( )
-    {
-
-
-        return redirect(routes.ManagerController.indexGet());
-
-    }
-
 
 }
 

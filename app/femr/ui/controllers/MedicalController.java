@@ -73,7 +73,6 @@ public class MedicalController extends Controller {
 
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
-
         if (idQueryStringResponse.hasErrors()) {
 
             return ok(index.render(currentUserSession, idQueryStringResponse.getErrors().get(""), 0));

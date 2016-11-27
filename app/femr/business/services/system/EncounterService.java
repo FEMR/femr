@@ -473,7 +473,6 @@ public class EncounterService implements IEncounterService {
 
             PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
-            
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());

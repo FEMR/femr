@@ -102,12 +102,12 @@
             if (arguments.length < 2 && typeof n === 'string') {
                 return d3.select(node).style(n)
             } else {
-                var args =  Array.prototype.slice.call(arguments);
+                var args =  Array.prototype.slice.call(arguments)
                 d3.selection.prototype.style.apply(d3.select(node), args)
             }
 
             return tip
-        };
+        }
 
         // Public: Set or get the direction of the tooltip
         //
@@ -228,7 +228,7 @@
         }
 
         function initNode() {
-            var node = d3.select(document.createElement('div'));
+            var node = d3.select(document.createElement('div'))
             node.style({
                 position: 'absolute',
                 top: 0,

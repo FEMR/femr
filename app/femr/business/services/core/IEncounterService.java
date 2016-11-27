@@ -21,7 +21,6 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
-
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public interface IEncounterService {
      * @param userId id of the user creating the new encounter, not null
      * @param tripId id of the current mission trip if it exists, may be null
      * @param ageClassification age classification of the patient if it exists (child, adult, etc), may be null
-     * @param chiefComplaints   a list of chief complaints that were entered for this patient, may be null or empty
+     * @param chiefComplaints a list of chief complaints that were entered for this patient, may be null or empty
      * @return a service response that contains a PatientEncounterItem representing the patient encounter that was created
      * and/or errors if they exist.
      */

@@ -32,6 +32,7 @@ public class PatientRepository implements IPatientRepository {
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrieveAllPatientAgeClassifications", ex.getMessage());
+            throw ex;
         }
 
         return response;
@@ -55,6 +56,7 @@ public class PatientRepository implements IPatientRepository {
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrieveAllPatients", ex.getMessage());
+            throw ex;
         }
 
         return response;
@@ -83,6 +85,7 @@ public class PatientRepository implements IPatientRepository {
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrievePatientsInCountry", ex.getMessage(), "country: " + country);
+            throw ex;
         }
 
         return response;
@@ -106,6 +109,7 @@ public class PatientRepository implements IPatientRepository {
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrievePatientById", ex.getMessage(), "id: " + id);
+            throw ex;
         }
 
         return response;
@@ -153,6 +157,7 @@ public class PatientRepository implements IPatientRepository {
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrievePatientsByName", ex.getMessage(), "firstName & lastName: " + firstName + "&" + lastName);
+            throw ex;
         }
 
         return response;
@@ -172,6 +177,7 @@ public class PatientRepository implements IPatientRepository {
 
             //is it necessary to pass all details about object in log?
             Logger.error("PatientRepository-savePatient", ex.getMessage());
+            throw ex;
         }
 
         return patient;

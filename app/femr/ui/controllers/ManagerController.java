@@ -90,7 +90,6 @@ public class ManagerController extends Controller {
                 for (String cc : patientEncounter.getResponseObject().get(i).getChiefComplaints()) {
                     Map<String, TabFieldItem> hpiFieldsUnderChiefComplaint = new HashMap<>();
                     hpiFieldsUnderChiefComplaint.put("narrative", tabFieldMultiMap.getMostRecentOrEmpty("narrative", cc.trim()));
-
                     hpimodel.setHpiFieldsWithoutMultipleChiefComplaints(hpiFieldsUnderChiefComplaint);
                     hpiFields.putAll(hpiFieldsUnderChiefComplaint);
                 }

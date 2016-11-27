@@ -600,11 +600,11 @@ public class DatabaseSeeder {
     private void seedSystemSettingsDescriptions() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
-        for (int i = 0; i < systemSettings.size(); i++)
+        for (ISystemSetting ss : systemSettings)
         {
-            if (systemSettings.get(i).getName() == "Multiple chief complaints"){
-                if (StringUtils.isNullOrWhiteSpace(systemSettings.get(i).getDescription())){
-                    systemSettings.get(i).setDescription("When checked, a user can add multiple chief complaints for a patient");
+            if (ss.getName().equals("Multiple chief complaints")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, a user can add multiple chief complaints for a patient");
                 }
             }
         }

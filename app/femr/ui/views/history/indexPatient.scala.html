@@ -29,6 +29,7 @@
                             <th>Photo</th>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Phone Number</th>
                             <th>Gender</th>
                             <th>Age</th>
                             <th>City</th>
@@ -41,6 +42,7 @@
                                     <td class="vert-align"><img class="thumbnail searchThumb" src="@patient.getPathToPhoto" width="90" height="90"/></td>
                                     <td class="vert-align patientId">@patient.getId</td>
                                     <td class="vert-align">@patient.getFirstName @patient.getLastName</td>
+                                    <td class="vert-align">@patient.getPhoneNumber</td>
                                     <td class="vert-align">@patient.getSex</td>
                                     <td class="vert-align">@patient.getAge</td>
                                     <td class="vert-align">@patient.getCity</td>
@@ -97,6 +99,8 @@
                     <input type="text" class="form-control input-sm pull-left" name="firstName" value="@viewModel.getPatientItem.getFirstName" readonly/>
                     <label class="inputLabel">Last Name:</label>
                     <input type="text" class="form-control input-sm pull-left" name="lastName" value="@viewModel.getPatientItem.getLastName" readonly/>
+                    <label class="inputLabel">Phone Number:</label>
+                    <input type="tel" class="form-control input-sm pull-left" name="phoneNumber" value="@viewModel.getPatientItem.getPhoneNumber" readonly/>
                     <label class="inputLabel">Address:</label>
                     <input type="text" class="form-control input-sm pull-left" name="address" value="@viewModel.getPatientItem.getAddress" readonly/>
                     <label class="inputLabel">City:</label>

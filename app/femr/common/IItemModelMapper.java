@@ -79,6 +79,7 @@ public interface IItemModelMapper {
      * @param id                 id of the patient, not null
      * @param firstName          first name of the patient, not null
      * @param lastName           last name of the patient, not null
+     * @param phoneNumber        the patients phone number, may be null
      * @param city               city that the patient lives in, not null
      * @param address            address of the patient, may be null
      * @param userId             id of the user that checked in the patient in triage, not null
@@ -96,6 +97,7 @@ public interface IItemModelMapper {
     PatientItem createPatientItem(int id,
                                   String firstName,
                                   String lastName,
+                                  String phoneNumber,
                                   String city,
                                   String address,
                                   int userId,

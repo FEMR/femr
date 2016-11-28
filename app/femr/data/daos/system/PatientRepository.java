@@ -119,6 +119,32 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
+    public List<? extends IPatient> retrievePatientsByPhoneNumber(String phoneNumber) {
+
+        List<? extends IPatient> response = null;
+        try {
+            Query<Patient> query;
+            if(StringUtils.isNotNullOrWhiteSpace(phoneNumber)) {
+                query = QueryProvider.getPatientQuery()
+                        .where()
+                        .eq("phone_number", phoneNumber)
+                        .isNull("isDeleted")
+                        .order()
+                        .desc("id");
+                response = query.findList();
+            }
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrievePatientByPhoneNumber", ex.getMessage(), "phone number: " + phoneNumber);
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IPatient> retrievePatientsByName(String firstName, String lastName) {
 
         List<? extends IPatient> response = null;

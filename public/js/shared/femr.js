@@ -92,7 +92,7 @@ $(document).ready(function () {
                 datumTokenizer: function (d) {
 
                     // break apart first/last name into separate words
-                    var words = Bloodhound.tokenizers.whitespace(d.id + " " + d.firstName + " " + d.lastName);
+                    var words = Bloodhound.tokenizers.whitespace(d.id + " " + d.firstName + " " + d.lastName + " " + d.phoneNumber);
 
                     // make all possible substring words
                     // Original Word: Name
@@ -136,7 +136,7 @@ $(document).ready(function () {
                     ].join('\n'),
                     suggestion: Handlebars.compile('<p class="patientResult"><a href="/triage/{{id}}">' +
                         '<img class="photo" src="{{photo}}" height="80" width="80">' +
-                        '<span class="name">({{id}}) {{firstName}} {{lastName}}</span>' +
+                        '<span class="name">({{id}}) {{firstName}} {{lastName}} {{phoneNumber}}</span>' +
                         '<span class="age">{{age}}</span>' +
                         '</a></p>')
                 }
@@ -145,7 +145,7 @@ $(document).ready(function () {
             // Reenable search input field
             $("input.patientSearch").removeClass("loading")
                 .removeAttr("disabled")
-                .attr("placeholder", "Patient ID or Name");
+                .attr("placeholder", "ID, Name, or Phone #");
 
         });
     }

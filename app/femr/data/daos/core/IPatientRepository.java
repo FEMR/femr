@@ -47,6 +47,15 @@ public interface IPatientRepository {
     List<? extends IPatient> retrievePatientsByName(String firstName, String lastName);
 
     /**
+     *  Retrieve list of patients with the given first AND last name. Will also
+     *  try to match firstName to all available first names & last names
+     *
+     *  @param  phoneNumber of the patient
+     *  @return the patient with the given Phone Number
+     **/
+    List<? extends IPatient> retrievePatientsByPhoneNumber(String phoneNumber);
+
+    /**
      *  Creates OR Updates a patient. If you send an existing patient, this will update their
      *  record. (existing = available id)
      *

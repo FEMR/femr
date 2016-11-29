@@ -145,7 +145,7 @@ $(document).ready(function () {
             // Reenable search input field
             $("input.patientSearch").removeClass("loading")
                 .removeAttr("disabled")
-                .attr("placeholder", "Patient ID or Name");
+                .attr("placeholder", "ID, Name, or Phone #");
 
         });
     }

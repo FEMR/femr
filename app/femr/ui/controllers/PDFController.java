@@ -18,26 +18,30 @@
 */
 package femr.ui.controllers;
 
-import femr.business.services.core.*;
-import femr.common.models.*;
-import femr.data.models.mysql.*;
+import com.google.inject.Inject;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import femr.business.services.core.IEncounterService;
+import femr.business.services.core.ISearchService;
+import femr.business.services.core.ITabService;
+import femr.business.services.core.IVitalService;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.*;
+import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
-import static femr.util.stringhelpers.StringUtils.*;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
-import com.google.inject.Inject;
-
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
-
+import femr.util.DataStructure.Mapping.VitalMultiMap;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+
+import static femr.util.stringhelpers.StringUtils.*;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
@@ -449,11 +453,11 @@ public class PDFController extends Controller {
 
                     table.addCell(cell);
 
-                    Paragraph replacedMedName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph replacedMedName = new Paragraph(prescription.getAmount()+ " " + prescription.getName() + " " + prescription.getMedicationForm(), getValueFont());
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {
-                    Paragraph medName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph medName = new Paragraph(prescription.getAmount()+ " " + prescription.getName()+ " " + prescription.getMedicationForm(), getValueFont());
                     cell = new PdfPCell(medName);
                     table.addCell(cell);
 

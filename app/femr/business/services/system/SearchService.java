@@ -19,7 +19,6 @@
 package femr.business.services.system;
 
 import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.FetchConfig;
 import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -36,8 +35,9 @@ import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchService implements ISearchService {
 
@@ -367,44 +367,44 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
-                .fetch("patientEncounter")
                 .where()
-                .eq("encounter_id", encounterId)
-                .ne("user_id_pharmacy", null);
+                .eq("encounter_id", encounterId);
 
         try {
-            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
-            List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
-                    .filter(pp -> pp.getDateDispensed() != null)
-                    .map(pp -> itemModelMapper.createPrescriptionItem(
-                            pp.getId(),
-                            pp.getMedication().getName(),
-                            null,
-                            pp.getPhysician().getFirstName(),
-                            pp.getPhysician().getLastName(),
-                            pp.getConceptPrescriptionAdministration(),
-                            pp.getAmount(),
-                            pp.getMedication(),
-                            null,
-                            pp.isCounseled()
-                    ))
-                    .collect(Collectors.toList());
-            List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
-                    .filter(pp -> pp.getPatientPrescriptionReplacements().size() > 0)
-                    .map(pp -> itemModelMapper.createPrescriptionItem(
-                            pp.getId(),
-                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
-                            pp.getMedication().getName(),
-                            pp.getPhysician().getFirstName(),
-                            pp.getPhysician().getLastName(),
-                            pp.getConceptPrescriptionAdministration(),
-                            pp.getAmount(),
-                            pp.getMedication(),
-                            null,
-                            pp.isCounseled()
-                    ))
-                    .collect(Collectors.toList());
-            prescriptionItems.addAll(replacedPrescriptions);
+            List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+
+            IPatientPrescription prescription = patientPrescriptionRepository.findOne(query);
+            prescription = patientPrescriptionRepository.update(prescription);
+
+
+
+            if(prescription.getPatientPrescriptionReplacements().isEmpty()) {
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
+                        prescription.getMedication().getName(),
+                        null,
+                        prescription.getPhysician().getFirstName(),
+                        prescription.getPhysician().getLastName(),
+                        prescription.getConceptPrescriptionAdministration(),
+                        prescription.getAmount(),
+                        prescription.getMedication(),
+                        null,
+                        prescription.isCounseled())
+                );
+            }
+            else
+            {
+                prescriptionItems.add(itemModelMapper.createPrescriptionItem(prescription.getId(),
+                        prescription.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
+                        prescription.getMedication().getName(),
+                        prescription.getPhysician().getFirstName(),
+                        prescription.getPhysician().getLastName(),
+                        prescription.getConceptPrescriptionAdministration(),
+                        prescription.getAmount(),
+                        prescription.getMedication(),
+                        null,
+                        prescription.isCounseled())
+                );
+            }
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {

@@ -19,7 +19,6 @@
 package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.PatientEncounterItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
 import java.util.List;
@@ -45,7 +44,7 @@ public interface IEncounterService {
      * Checks a patient into medical by updating the time of their visit and the user who saw them.
      *
      * @param encounterId current encounter id, not null
-     * @param userId      id of the physician, not null
+     * @param userId id of the physician, not null
      * @return a service response that contains a PatientEncounterItem representing the patient encounter that was updated
      * and/or errors if they exist.
      */
@@ -55,7 +54,7 @@ public interface IEncounterService {
      * Checks a patient into pharmacy by updating the time of their visit and the user who saw them.
      *
      * @param encounterId current encounter id, not null
-     * @param userId      id of the pharmacist, not null
+     * @param userId id of the pharmacist, not null
      * @return a service response that contains an IPatientEncounter representing the patient encounter that was updated
      * and/or errors if they exist. TODO: remove the data model here
      */
@@ -123,8 +122,8 @@ public interface IEncounterService {
 
     /**
      * Returns a list of PatientEncounters of the current day
-     *
+     * @param tripID id of trip of current user, not null
      * @return List of PatientEncounterItems who were checked in on the current Day
      */
-    ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters();
+    public ServiceResponse<List<PatientEncounterItem>> returnCurrentDayPatientEncounters(int tripID);
 }

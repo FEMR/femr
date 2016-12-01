@@ -13,7 +13,6 @@
             <tr>
                 <th>Feature</th>
                 <th>Toggle</th>
-                <th>Description</th>
             </tr>
 
             @for((key, valyew) <- viewModel.getSettings) {
@@ -22,10 +21,21 @@
                     <td class="isActive">
                         <input type="checkbox" name="settings[]" value="@key" @if(valyew) { checked="checked"} />
                     </td>
-                    <td class="description"></td>
                 </tr>
             }
 
+        </table>
+
+        <table id="descriptionTable">
+            <tr>
+                <th>Description</th>
+            </tr>
+
+            @for((key2, valyew2) <- viewModel.getDescriptions){
+                <tr>
+                    <td class = "description">@key2</td>
+                </tr>
+            }
         </table>
 
         <input type="submit" class="fButton" value="Save"/>

@@ -18,7 +18,6 @@
 */
 package femr.common;
 
-import com.avaje.ebeaninternal.server.lib.util.Str;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
@@ -189,13 +188,12 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setId(id);
         patientItem.setFirstName(firstName);
         patientItem.setLastName(lastName);
-        patientItem.setPhoneNumber(phoneNumber);
         patientItem.setYearsOld(dateUtils.getYearsInteger(age));
         patientItem.setMonthsOld(dateUtils.getMonthsInteger(age));
         patientItem.setCity(city);
         patientItem.setUserId(userId);
         //optional fields
-        if(StringUtils.isNotNullOrWhiteSpace(phoneNumber))
+        if (StringUtils.isNotNullOrWhiteSpace(phoneNumber))
             patientItem.setPhoneNumber(phoneNumber);
         if (StringUtils.isNotNullOrWhiteSpace(address))
             patientItem.setAddress(address);

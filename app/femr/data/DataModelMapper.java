@@ -363,7 +363,8 @@ public class DataModelMapper implements IDataModelMapper{
         patient.setUserId(userID);
         patient.setFirstName(firstName);
         patient.setLastName(lastName);
-        patient.setPhoneNumber(phoneNumber);
+        if (StringUtils.isNotNullOrWhiteSpace(phoneNumber))
+            patient.setPhoneNumber(phoneNumber);
         if (birthday != null)
             patient.setAge(birthday);
         patient.setSex(sex);

@@ -31,7 +31,8 @@ public class PatientRepository implements IPatientRepository {
             response = patientAgeClassificationExpressionList.findList();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-retrieveAllPatientAgeClassifications", ex.getMessage());
+            Logger.error("PatientRepository-retrieveAllPatientAgeClassifications", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -55,7 +56,8 @@ public class PatientRepository implements IPatientRepository {
             response = patientExpressionList.findList();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-retrieveAllPatients", ex.getMessage());
+            Logger.error("PatientRepository-retrieveAllPatients", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -84,7 +86,9 @@ public class PatientRepository implements IPatientRepository {
             response = patientExpressionList.findList();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-retrievePatientsInCountry", ex.getMessage(), "country: " + country);
+            Logger.error("country: " + country);
+            Logger.error("PatientRepository-retrievePatientsInCountry", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -108,7 +112,9 @@ public class PatientRepository implements IPatientRepository {
             response = query.findUnique();
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-retrievePatientById", ex.getMessage(), "id: " + id);
+            Logger.error("id: " + id);
+            Logger.error("PatientRepository-retrievePatientById", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -156,7 +162,9 @@ public class PatientRepository implements IPatientRepository {
             }
         } catch (Exception ex) {
 
-            Logger.error("PatientRepository-retrievePatientsByName", ex.getMessage(), "firstName & lastName: " + firstName + "&" + lastName);
+            Logger.error("firstName & lastName: " + firstName + "&" + lastName);
+            Logger.error("PatientRepository-retrievePatientsByName", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -175,8 +183,8 @@ public class PatientRepository implements IPatientRepository {
             Ebean.save(patient);
         } catch (Exception ex) {
 
-            //is it necessary to pass all details about object in log?
-            Logger.error("PatientRepository-savePatient", ex.getMessage());
+            Logger.error("PatientRepository-savePatient", ex);
+            ex.printStackTrace();
             throw ex;
         }
 

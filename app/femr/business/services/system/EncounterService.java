@@ -35,7 +35,6 @@ import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
-
 import java.util.*;
 
 public class EncounterService implements IEncounterService {
@@ -47,6 +46,7 @@ public class EncounterService implements IEncounterService {
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<IUser> userRepository;
+    private final IRepository<IPatient> patientRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
@@ -58,6 +58,7 @@ public class EncounterService implements IEncounterService {
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IRepository<IUser> userRepository,
+                            IRepository<IPatient> patientRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -68,6 +69,7 @@ public class EncounterService implements IEncounterService {
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.userRepository = userRepository;
+        this.patientRepository = patientRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -92,10 +94,50 @@ public class EncounterService implements IEncounterService {
             ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
                     .eq("name", ageClassification);
+
             IPatientAgeClassification patientAgeClassification = patientAgeClassificationRepository.findOne(patientAgeClassificationExpressionList);
             Integer patientAgeClassificationId = null;
-            if (patientAgeClassification != null)
-                patientAgeClassificationId = patientAgeClassification.getId();
+
+            // get instance of patient being added
+            ExpressionList<Patient> ageQuery = QueryProvider.getPatientQuery()
+                    .select("age")
+                    .where()
+                    .eq("id", patientId);
+
+            IPatient patient = patientRepository.findOne(ageQuery);
+
+            // determine the age of the patient
+            Date age = patient.getAge();
+            Calendar dob = Calendar.getInstance();
+            dob.setTime(age);
+            Calendar today = Calendar.getInstance();
+
+            int curr_age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+            if (today.get(Calendar.DAY_OF_YEAR) <= dob.get(Calendar.DAY_OF_YEAR))
+                curr_age--;
+
+            // set patient's age classification
+            if (curr_age >= 0 && curr_age <= 1) {
+                //infant
+                patientAgeClassificationId = 1;
+            }
+            else if(curr_age >= 2 && curr_age <= 12){
+                //child
+                patientAgeClassificationId = 2;
+            }
+            else if(curr_age >= 13 && curr_age <= 17){
+                //teen
+                patientAgeClassificationId = 3;
+            }
+            else if(curr_age >= 18 && curr_age <= 64){
+                //adult
+                patientAgeClassificationId = 4;
+            }
+            else if (curr_age >= 65){
+                //elder
+                patientAgeClassificationId = 5;
+            }
 
             IPatientEncounter newPatientEncounter = dataModelMapper.createPatientEncounter(patientId, dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, tripId);
             newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);

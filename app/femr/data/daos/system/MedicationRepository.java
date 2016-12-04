@@ -37,7 +37,7 @@ public class MedicationRepository implements IMedicationRepository {
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList
                     = QueryProvider.getConceptMedicationUnitQuery()
                     .where()
-                    .eq("name", 12);
+                    .eq("name", unitName);
 
             medicationUnit = medicationMeasurementUnitExpressionList.findUnique();
             medicationUnit.getDescription();

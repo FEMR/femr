@@ -122,9 +122,10 @@ public interface IEncounterService {
     ServiceResponse<PatientEncounterItem> screenPatientForDiabetes(int encounterId, int userId, Boolean isScreened);
 
     /**
-     * Returns a list of PatientEncounters of the current day
-     *
-     * @return List of PatientEncounterItems who were checked in on the current Day
+     *Returns a list of PatientEncounters of the current day
+     *@param tripID id of trip of current user, not null
+     *@return List of PatientEncounterItems who were checked in on the current Day
      */
-    ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters();
+    ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters(int tripID);
+
 }

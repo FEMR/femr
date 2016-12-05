@@ -32,4 +32,5 @@ public class IndexViewModelGet {
     public void setDescriptions(Map<String, String> descriptions) {
         this.descriptions = descriptions;
     }
+
 }

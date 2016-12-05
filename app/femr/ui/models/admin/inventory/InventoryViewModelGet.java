@@ -31,7 +31,6 @@ public class InventoryViewModelGet {
     //trip information
     private MissionTripItem missionTripItem;
 
-
     public List<MedicationItem> getMedications() {
         return medications;
     }

@@ -18,12 +18,14 @@
 */
 package femr.util.calculations;
 
+import femr.common.models.PatientEncounterItem;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import play.Logger;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -196,5 +198,63 @@ public class dateUtils {
         String dStr = df.format(date);
         return dStr;
     }
+
+    /**
+     * Takes a String and composed of the date and time and converts
+     * to a string of just the time
+     * Return Format: (HH:MM:SS)
+     *
+     *
+     * @param String of the complete date and time
+     * @return String of just the time or " " if string is null
+     */
+
+    public static String getDisplayTime(String completeTime)
+    {
+        String time;
+        if(completeTime!=null) {
+            String[] parts = completeTime.split("-");
+            time = parts[1];
+            return time;
+        }
+        else
+            return " ";
+
+    }
+
+    /**
+     * Takes a PatientEncounter Time and returns
+     * a string of just the turn around time (time elasped between the Triage Check in
+     * and Pharmacy Check out
+     * Return Format: (HH:MM:SS)
+     *
+     *
+     * @param item the patient encounter item
+     * @return String of just the time or " " if string is null
+     */
+    public static String getTurnAroundTime(PatientEncounterItem item){
+
+        String time=" ";
+        if(item.getPharmacyDateOfVisit()!= null &&item.getTriageDateOfVisit()!=null) {
+            SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
+            try {
+                Date td,pd;
+                td = ft.parse(getDisplayTime(item.getTriageDateOfVisit()));
+                pd= ft.parse(getDisplayTime(item.getPharmacyDateOfVisit()));
+                long diff = pd.getTime() - td.getTime();
+                String ss = String.valueOf(diff / 1000 % 60);
+                String sm = String.valueOf(diff / (60 * 1000) % 60);
+                String sh = String.valueOf(diff / (60 * 60 * 1000));
+                time="Hours: "+sh+" Minutes: " +sm+"  Seconds: "+ss;
+            }catch (ParseException e) {
+                System.out.println("Unparseable using " + ft);
+            }
+            return time;
+        }
+        else {
+            return time;
+        }
+    }
+
 }
 

@@ -279,7 +279,7 @@ public class PhotoService implements IPhotoService {
             IPhoto editPhoto = photoRepository.retrievePhotoById(pPhoto.getId());
 
             //Build the filepath for the image
-            imageFileName = "Patient_" + patientEncounter.getPatientId()
+            imageFileName = "Patient_" + patientEncounter.getPatientItem().getId()
                     + "_Enc_" + patientEncounter.getId() + "_Photo_" + editPhoto.getId();
 
             //Since the photo ID is part of the file name

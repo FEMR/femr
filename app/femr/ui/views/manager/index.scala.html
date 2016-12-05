@@ -2,9 +2,11 @@
 @import femr.common.models.PatientItem
 @import femr.ui.controllers.manager.ManagerController
 @import femr.ui.views.html.layouts.main
+
 @import collection.JavaConversions._
 
-@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.manager.IndexViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.manager.IndexViewModelGet,
+        viewModelMedical:femr.ui.models.history.IndexEncounterMedicalViewModel)
 @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
@@ -13,23 +15,111 @@
     }
 @additionalStyles = {
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/manager/manager.css")">
     }
 
-@main("Triage Patients Checked in Today", currentUser, scripts = additionalScripts, styles = additionalStyles){
+@main("ManagerTab", currentUser, scripts = additionalScripts, styles = additionalStyles){
+    <body>
 
-    <div id="center-panel">
+
         <div class="backgroundForWrap">
-            <div class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday</div>
-            <div id="content-pane" >
-                <ol>
-                @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-                    <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
+            <div  class ="h1" id="title">  List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday </div>
+            @if(currentUser.getTripId!=null){<div class="h2" id="title">TripID: @currentUser.getTripId</div>}
+            @if(currentUser.getTripId==null){<div class="h2" id="title">TripID: Manager  @currentUser.getFirstName @currentUser.getLastName is not currently assigned to a trip</div>}
+            <div id="table-container center-panel-grid" >
+                <div class="managerWrap">
 
-                }
-                </ol>
+
+
+                    <table  id="managersTable">
+                        <thead>
+                            <tr >
+                                <th> Patient ID </th>
+                                <th> Name </th>
+                                <th> Patient Information </th>
+                                <th> Chief Complaint </th>
+                                <th> Vitals </th>
+                                <th>Narrative </th>
+                                <th> Triage Check-In Time </th>
+                                <th> Medical Check-In Time </th>
+                                <th> Pharmacy Check-In Time </th>
+                                <th> Total Time Spent </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @if(ManageViewModelPost.getTriagePatients!=null) {
+                            @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
+                                @defining( ManageViewModelPost.getVitals(y- 1)) { vital =>
+                                    @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
+                                        @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter =>
+                                            @if(!encounter.getIsClosed) {
+                                                <tr class="form-history">
+                                                    <td>@item.getId</td>
+                                                    <td>@item.getFirstName @item.getLastName</td>
+                                                    <td>
+                                                        Gender:@item.getSex<br>
+                                                        Age: @item.getAge<br>
+                                                        Date Of Birth: @item.getBirth<br>
+                                                        Height: @item.getHeightFeetDual<br>
+                                                        City: @item.getCity <br>
+                                                    </td>
+                                                    <td>@encounter.getChiefComplaints </td>
+
+                                                    <td > <div class="scrollable">
+                                                    @for(dateIndex <- 1 to vital.getDateListChronological.size) {
+                                                        Date: @vital.getDate(dateIndex - 1)
+                                                        <br>
+                                                        Heart Rate @vital.get("heartRate", vital.getDate(dateIndex - 1))
+                                                        <br>
+                                                        Weight:@vital.get("weight", vital.getDate(y - 1))
+                                                        <br>
+                                                        Temperature: @vital.get("temperature", vital.getDate(y - 1))
+                                                        <br>
+                                                        Blood Pressure: @vital.get("bloodPressureSystolic", vital.getDate(y - 1))
+                                                        <br>
+                                                        HeartRate:@vital.get("heartRate", vital.getDate(y - 1))
+                                                        <br>
+                                                        Respiratory Rate: @vital.get("respiratoryRate", vital.getDate(y - 1))
+                                                        <br>
+                                                        Oxygen: @vital.get("oxygenSaturation", vital.getDate(y - 1))
+                                                        <br>
+                                                        Glucose: @vital.get("glucose", vital.getDate(y - 1))
+                                                        <br>
+                                                        Respiratory Rate @vital.get("respiratoryRate", vital.getDate(y - 1))
+                                                        <br>
+                                                        <br>
+                                                        }
+                                                    </div> </td>
+
+                                                    <td>@ManageViewModelPost.getHPI(y-1).get("narrative").getValue()</td>
+                                                    @if(encounter.getTriageDateOfVisit != null) {
+                                                        <td>@ManageViewModelPost.getTriageTime(encounter)</td>
+                                                    }
+                                                    @if(encounter.getMedicalDateOfVisit != null) {
+                                                        <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
+                                                    }
+                                                    @if(encounter.getPharmacyDateOfVisit != null) {
+                                                        <td>@ManageViewModelPost.getPharmTime(encounter)</td>
+                                                    }
+                                                    <td>@ManageViewModelPost.turnAroundTime(encounter)</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
-        </div>
-    </div>
 
-    }
+            </div>
+
+    </body>
+
+
+
+
+}

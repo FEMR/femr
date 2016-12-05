@@ -1,35 +1,83 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModelGet: femr.ui.models.manager.IndexViewModelGet)
 
-@import femr.common.models.PatientItem
-@import femr.ui.controllers.manager.ManagerController
 @import femr.ui.views.html.layouts.main
-@import collection.JavaConversions._
+@import femr.ui.controllers.admin.routes.TripController
+@import femr.ui.controllers.routes.HistoryController
 
-@(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.manager.IndexViewModelGet)
-@additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
-
-    }
 @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
-    }
 
-@main("Triage Patients Checked in Today", currentUser, scripts = additionalScripts, styles = additionalStyles){
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/manager/manager.css")">
+}
 
-    <div id="center-panel">
-        <div class="backgroundForWrap">
-            <div class ="h1" id="title"> List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday</div>
-            <div id="content-pane" >
-                <ol>
-                @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-                    <li>@ManageViewModelPost.getTriagePatients(y - 1).getFirstName @ManageViewModelPost.getTriagePatients(y - 1).getLastName</li>
+@main("ManagerTab", currentUser, styles = additionalStyles) {
+    <div class="backgroundForWrap">
 
-                }
-                </ol>
+
+        <h3>Overview of patients checked in today: @viewModelGet.getUserFriendlyDate </h3>
+
+        @if(currentUser.getTripId != null) {
+            <p>Current Trip: @viewModelGet.getUserFriendlyTrip</p>
+
+
+        <div id="table-container center-panel-grid" >
+            <div class="managerWrap">
+
+
+                <table id="managersTable">
+                    <thead>
+                        <tr>
+                            <th> Patient ID </th>
+                            <th> Name </th>
+                            <th> Patient Information </th>
+                            <th> Chief Complaint </th>
+                            <th> Triage Check-In Time </th>
+                            <th> Medical Check-In Time </th>
+                            <th> Pharmacy Check-In Time </th>
+                            <th> Total Time Spent </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @for(encounterItem <- viewModelGet.getEncounter) {
+
+                            <tr class="form-history">
+                                <td><a href="@HistoryController.indexEncounterGet(encounterItem.getId)">@encounterItem.getPatientItem.getId</a></td>
+                                <td>@encounterItem.getPatientItem.getFirstName @encounterItem.getPatientItem.getLastName</td>
+                                <td>
+                                    @if(encounterItem.getPatientItem.getSex != null) {
+                                        <strong>Gender: </strong>
+                                        @encounterItem.getPatientItem.getSex <br>
+                                    }
+                                    @if(encounterItem.getPatientItem.getAge() != null) {
+                                        <strong>Age: </strong>
+                                        @encounterItem.getPatientItem.getAge <br>
+                                    }
+                                    @if(encounterItem.getPatientItem.getCity() != null) {
+                                        <strong>City: </strong>
+                                        @encounterItem.getPatientItem.getCity <br>
+                                        }
+                                </td>
+                                <td>@encounterItem.getChiefComplaints </td>
+
+                                @if(encounterItem.getTriageDateOfVisit != null) {
+                                    <td>@encounterItem.getTriageDateOfVisit</td>
+                                }
+                                @if(encounterItem.getMedicalDateOfVisit != null) {
+                                    <td>@encounterItem.getMedicalDateOfVisit</td>
+                                }
+                                @if(encounterItem.getPharmacyDateOfVisit != null) {
+                                    <td>@encounterItem.getPharmacyDateOfVisit</td>
+                                }
+                                <td>@viewModelGet.getTurnAroundT(encounterItem)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
+        } else {
+            <h4>@currentUser.getFirstName @currentUser.getLastName
+                is not currently assigned to a trip. To manage trips please have an Admin visit the <a href="@TripController.manageGet()">Trip page</a></h4>
+        }
     </div>
-
-    }
+}

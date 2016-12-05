@@ -23,7 +23,7 @@ import java.util.List;
 
 public class PatientEncounterItem {
     private int id;
-    private int patientId;
+    private PatientItem patientItem;
     private Integer missionTripId;
 
     //age classification is not part of the patient because it doesn't change with time
@@ -46,6 +46,9 @@ public class PatientEncounterItem {
     private String pharmacistFullName; //Andrew Display Username instead of Email Address Fix
     private Boolean screenedForDiabetes;
 
+    //amount of time it took the patient to complete the encounter
+    private String turnAroundTime;
+
     public PatientEncounterItem(){
         this.chiefComplaints = new ArrayList<>();
     }
@@ -59,12 +62,12 @@ public class PatientEncounterItem {
         this.id = id;
     }
 
-    public int getPatientId() {
-        return patientId;
+    public PatientItem getPatientItem() {
+        return patientItem;
     }
 
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public void setPatientItem(PatientItem patientItem) {
+        this.patientItem = patientItem;
     }
 
     public Integer getMissionTripId() {
@@ -171,5 +174,13 @@ public class PatientEncounterItem {
 
     public void setScreenedForDiabetes(Boolean screenedForDiabetes) {
         this.screenedForDiabetes = screenedForDiabetes;
+    }
+
+    public String getTurnAroundTime() {
+        return turnAroundTime;
+    }
+
+    public void setTurnAroundTime(String turnAroundTime) {
+        this.turnAroundTime = turnAroundTime;
     }
 }

@@ -36,12 +36,16 @@ public class MedicationRepository implements IMedicationRepository {
 
             ExpressionList<ConceptMedicationUnit> medicationMeasurementUnitExpressionList
                     = QueryProvider.getConceptMedicationUnitQuery()
-                                .where()
-                                .eq("name", unitName);
+                    .where()
+                    .eq("name", unitName);
 
             medicationUnit = medicationMeasurementUnitExpressionList.findUnique();
-        }catch (Exception ex) {
-            Logger.error("MedicationRepository-retrieveMedicationUnitByUnitName", ex.getMessage(), "unitName: " + unitName);
+            medicationUnit.getDescription();
+        } catch (Exception ex) {
+
+            Logger.error("unitName: " + unitName);
+            Logger.error("MedicationRepository-retrieveMedicationUnitByUnitName", ex);
+            ex.printStackTrace();
             throw ex;
         }
         return medicationUnit;
@@ -65,7 +69,10 @@ public class MedicationRepository implements IMedicationRepository {
 
             medicationGeneric = medicationActiveDrugNameExpressionList.findUnique();
         } catch(Exception ex){
-            Logger.error("MedicationRepository-retrieveMedicationGenericByName", ex.getMessage(), "genericName: " + genericName);
+
+            Logger.error("genericName: " + genericName);
+            Logger.error("MedicationRepository-retrieveMedicationGenericByName", ex);
+            ex.printStackTrace();
             throw ex;
         }
         return medicationGeneric;
@@ -87,7 +94,10 @@ public class MedicationRepository implements IMedicationRepository {
         try {
             conceptMedicationForm = medicationFormExpressionList.findUnique();
         } catch(Exception ex){
-            Logger.error("MedicationRepository-retrieveConceptMedicationFormByFormName", ex.getMessage(), "formName: " + formName);
+
+            Logger.error("formName: " + formName);
+            Logger.error("MedicationRepository-retrieveConceptMedicationFormByFormName", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -110,7 +120,9 @@ public class MedicationRepository implements IMedicationRepository {
         try {
             medications = query.findList();
         } catch(Exception ex){
-            Logger.error("MedicationRepository-retrieveAllPreInventoryMedications", ex.getMessage());
+
+            Logger.error("MedicationRepository-retrieveAllPreInventoryMedications", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -132,7 +144,10 @@ public class MedicationRepository implements IMedicationRepository {
         try {
             Ebean.save(medication);
         } catch (Exception ex) {
-            Logger.error("UserRepository-saveUser", ex.getMessage(), "medicationId: " + medicationId, "isDeleted: " + isDeleted);
+
+            Logger.error("medicationId: " + medicationId + "isDeleted: " + isDeleted);
+            Logger.error("MedicationRepository-deleteMedication", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -145,16 +160,21 @@ public class MedicationRepository implements IMedicationRepository {
     @Override
     public IMedication createNewMedication (String medicationName, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm){
         IMedication medication = null;
-        try {
+
         if (medicationName == null || medicationGenericStrengths == null || conceptMedicationForm == null) {
             return null;
         }
 
-        // Create a new medication in the DB
-        medication = dataModelMapper.createMedication(medicationName, medicationGenericStrengths, conceptMedicationForm);
-        Ebean.save(medication);
+        try {
+
+            // Create a new medication in the DB
+            medication = dataModelMapper.createMedication(medicationName, medicationGenericStrengths, conceptMedicationForm);
+            Ebean.save(medication);
         } catch (Exception ex) {
-            Logger.error("UserRepository-createNewMedication", ex.getMessage(), "medicationName: " + medicationName, "medicationGenericStrengths: " + medicationGenericStrengths, "conceptMedicationForm: " + conceptMedicationForm);
+
+            Logger.error("medicationName: " + medicationName + "medicationGenericStrengths object, conceptMedicationForm object");
+            Logger.error("MedicationRepository-createNewMedication", ex);
+            ex.printStackTrace();
             throw ex;
         }
 
@@ -166,17 +186,27 @@ public class MedicationRepository implements IMedicationRepository {
      */
     @Override
     public List<? extends IMedication> retrieveAllMedicationByTripId(Integer tripId){
-        Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("medicationInventory.missionTrip.id", tripId)
-                .isNotNull( "conceptMedicationForm" )
-                .gt("medicationInventory.quantityCurrent", 0)
-                .orderBy("name");
 
+        List<? extends IMedication> response = null;
+        try {
 
-        List<? extends IMedication> medications = medicationQuery.findList();
+            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("medicationInventory.missionTrip.id", tripId)
+                    .isNotNull("conceptMedicationForm")
+                    .gt("medicationInventory.quantityCurrent", 0)
+                    .orderBy("name");
 
-        return medications;
+            response = medicationQuery.findList();
+        } catch (Exception ex) {
+
+            Logger.error("tripId: " + tripId);
+            Logger.error("MedicationRepository-retrieveAllMedicationByTripId", ex);
+            ex.printStackTrace();
+            throw ex;
+        }
+
+        return response;
     }
 
 }

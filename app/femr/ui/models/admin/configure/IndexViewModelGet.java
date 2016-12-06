@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IndexViewModelGet {
+    //First map contains Name and isActive pair, second contains Name and description pair
     private Map<String, Boolean> settings;;
     private Map<String, String> descriptions;;
 

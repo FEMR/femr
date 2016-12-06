@@ -18,13 +18,13 @@ import java.util.Map;
 //Manages Manger Controller
 public class IndexViewModelGet {
 
-    // sets array list of Patient Items
+
     private List<PatientItem> triagePatients;
     private List<PatientEncounter> encounter;
     private List<VitalMultiMap> vitalItems;
     private List<PatientEncounterItem> encounterItem;
     List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
-
+    // sets array list of Patient Items
     public void setTriagePatients(List<PatientItem> patient) {
         this.triagePatients = patient;
     }
@@ -50,22 +50,22 @@ public class IndexViewModelGet {
         return  DateTime.now();
 
     }
-    //patient encounter items
+    // Sets patient encounter items
     public void setPatientEncounter(List<PatientEncounterItem> patientEncounter) {
         this.encounterItem = patientEncounter;
     }
-    // gets array list item of Patient Items
+    // gets array list item of Patient Encounter Items
 
     public PatientEncounterItem getEncounter (int i){
         return encounterItem.get(i);
     }
 
-    // gets array list of Patient Items
+    // gets array list of Patient Encounter Items
     public List<PatientEncounterItem> getEncounter() {
         return encounterItem;
     }
 
-
+//returns turn around time in the form of a String
     public String turnAroundTime(PatientEncounterItem item){
         PatientEncounter patientEncounter = new PatientEncounter();
         String time=" ";

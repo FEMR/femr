@@ -14,4 +14,7 @@ public class IndexViewModelPost {
         return descriptions;
     }
 
+    public void setSettings(List<String> settings) {
+        this.settings = settings;
+    }
 }

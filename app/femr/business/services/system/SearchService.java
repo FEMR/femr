@@ -18,7 +18,6 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.FetchConfig;
 import com.avaje.ebean.Query;
@@ -31,6 +30,7 @@ import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
@@ -43,7 +43,7 @@ public class SearchService implements ISearchService {
 
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
-    private final IRepository<IPatient> patientRepository;
+    private final IPatientRepository patientRepository;
     private final IRepository<IPatientEncounter> patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
@@ -55,7 +55,7 @@ public class SearchService implements ISearchService {
     @Inject
     public SearchService(IRepository<IConceptDiagnosis> diagnosisRepository,
                          IRepository<IMissionTrip> missionTripRepository,
-                         IRepository<IPatient> patientRepository,
+                         IPatientRepository patientRepository,
                          IRepository<IPatientEncounter> patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
@@ -450,7 +450,6 @@ public class SearchService implements ISearchService {
         Integer id = null;
         String firstName = null;
         String lastName = null;
-        String firstOrLastName = null;
         if (words.length == 0) {
             //nothing was in the query
             response.addError("", "query string empty");
@@ -462,7 +461,7 @@ public class SearchService implements ISearchService {
                 id = Integer.parseInt(words[0]);
             } catch (NumberFormatException ex) {
                 //see if it it a string
-                firstOrLastName = words[0];
+                firstName = words[0];
             }
         } else if (words.length == 2) {
             firstName = words[0];
@@ -472,49 +471,24 @@ public class SearchService implements ISearchService {
             return response;
         }
 
+        List<? extends IPatient> patients;
 
         //Build the Query
         //TODO: filter these by the current country of the team
-        Query<Patient> query = null;
         if (id != null) {
             //if we have an id, that is all we need.
             //this is the most ideal scenario
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("id", id)
-                    .isNull("isDeleted")
-                    .order()
-                    .desc("id");
-
-        } else if (StringUtils.isNotNullOrWhiteSpace(firstName) && StringUtils.isNotNullOrWhiteSpace(lastName)) {
-            //if we have a first and last name
-            //this is the second most ideal scenario
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("first_name", firstName)
-                    .eq("last_name", lastName)
-                    .isNull("isDeleted")
-                    .order()
-                    .desc("id");
-
-        } else if (StringUtils.isNotNullOrWhiteSpace(firstOrLastName)) {
-            //if we have a word that could either be a first name or a last name
-            query = QueryProvider.getPatientQuery()
-                    .where()
-                    .or(
-                            Expr.eq("first_name", firstOrLastName),
-                            Expr.eq("last_name", firstOrLastName))
-                    .isNull("isDeleted")
-                    .order()
-                    .desc("id");
+            IPatient patient = patientRepository.retrievePatientById(id);
+            List<IPatient> iPatients = new ArrayList<>();
+            iPatients.add(patient);
+            patients = iPatients;
 
         } else {
-            response.addError("", "too many parameters in query");
+            patients = patientRepository.retrievePatientsByName(firstName, lastName);
         }
 
         //Execute the query
         try {
-            List<? extends IPatient> patients = patientRepository.find(query);
             List<PatientItem> patientItems = new ArrayList<>();
             for (IPatient patient : patients) {
                 //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
@@ -611,14 +585,13 @@ public class SearchService implements ISearchService {
                     missionTrip.getMissionCity() != null &&
                     missionTrip.getMissionCity().getMissionCountry() != null &&
                     StringUtils.isNotNullOrWhiteSpace(missionTrip.getMissionCity().getMissionCountry().getName())) {
-                allPatients = QueryHelper.findPatients(
-                        patientRepository,
+                allPatients = patientRepository.retrievePatientsInCountry(
                         missionTrip.getMissionCity().getMissionCountry().getName()
                 );
             } else {
 
                 //Otherwise we can just get ALL OF THE PATIENTS EVER MADE
-                allPatients = QueryHelper.findPatients(patientRepository);
+                allPatients = patientRepository.retrieveAllPatients();
             }
 
             List<PatientItem> patientItems = new ArrayList<>();

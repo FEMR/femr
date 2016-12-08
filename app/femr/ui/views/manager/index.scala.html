@@ -67,7 +67,9 @@
                                                         Height: @item.getHeightFeetDual<br>}
                                                         @if(item.getCity()!=0){
                                                         City: @item.getCity <br>}
-                                                        @item.getWeight)
+                                                        @if(item.getCity()!=0){
+                                                        Weight: @item.getWeight
+                                                        }
                                                     </td>
                                                     <td>@encounter.getChiefComplaints </td>
 
@@ -103,7 +105,7 @@
                                                     @if(ManageViewModelPost.getHPI(y-1).get("narrative")!=null) {
                                                         <td>@ManageViewModelPost.getHPI(y - 1).get("narrative").getValue()</td>
                                                     } else{
-
+                                                        <td>  </td>
                                                     }
                                                     @if(encounter.getTriageDateOfVisit != null) {
                                                         <td>@ManageViewModelPost.getIriageTime(encounter)</td>

@@ -36,4 +36,5 @@ div.scrollable {
     margin-top: 15px;
     margin-bottom: 5px;
     overflow: hidden;
+    align-content: center;
 }

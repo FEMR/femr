@@ -55,9 +55,9 @@ public class ManagerController extends Controller {
 
 //declares empty array lists and view models
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        List<PatientItem> p=new ArrayList<PatientItem>();
+        List<PatientItem> patientList=new ArrayList<PatientItem>();
         List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
-        List<VitalMultiMap> vital = new ArrayList<VitalMultiMap>();
+        List<VitalMultiMap> vitalList = new ArrayList<VitalMultiMap>();
         List<PatientEncounterItem> encounter = new ArrayList<PatientEncounterItem>();
         IndexViewModelGet viewModel = new  IndexViewModelGet();
         IndexEncounterMedicalViewModel hpimodel = new IndexEncounterMedicalViewModel();
@@ -70,19 +70,17 @@ public class ManagerController extends Controller {
         ServiceResponse<List<PatientEncounterItem>> patientEncounter = encounterService.retrieveCurrentDayPatientEncounters(currentUser.getTripId());
         //sets items for display
         for (int i = 0; i < patientEncounter.getResponseObject().size(); i++) {
-            ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject()
-                    .get(i).getPatientId());
+            ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject().get(i).getPatientId());
             PatientItem e = translate.getResponseObject();
             //gets patients vitals
             ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.retrieveVitalMultiMap
                     (patientEncounter.getResponseObject().get(i).getId());
-            VitalMultiMap v = patientEncounterVitalMapResponse.getResponseObject();
-            ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap
-                    (patientEncounter.getResponseObject().get(i).getId());
+            VitalMultiMap vitals = patientEncounterVitalMapResponse.getResponseObject();
+            ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(patientEncounter.getResponseObject().get(i).getId());
             TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
-            //gets hpi feilds
+            //gets hpi fields
             Map<String, TabFieldItem> hpiFields = new HashMap<>();
-            if (patientEncounter.getResponseObject().get(i).getChiefComplaints().size() >= 1) {
+            if (patientEncounter.getResponseObject().get(i).getChiefComplaints().size() >= 0) {
 
                 for (String cc : patientEncounter.getResponseObject().get(i).getChiefComplaints()) {
                     Map<String, TabFieldItem> hpiFieldsUnderChiefComplaint = new HashMap<>();
@@ -92,14 +90,16 @@ public class ManagerController extends Controller {
                 }
 
                 tab.add(hpiFields);
-                vital.add(v);
-                p.add(e);
+                vitalList.add(vitals);
+                patientList.add(e);
             }
         }
+
+
         //set view model values
-        viewModel.setTriagePatients(p);
+        viewModel.setTriagePatients(patientList);
         viewModel.setPatientEncounter(patientEncounter.getResponseObject());
-        viewModel.setVitals(vital);
+        viewModel.setVitals(vitalList);
         viewModel.setHPI(tab);
 
 

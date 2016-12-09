@@ -10,10 +10,6 @@ public class IndexViewModelPost {
         return settings;
     }
 
-    public List<String> getDescriptions() {
-        return descriptions;
-    }
-
     public void setSettings(List<String> settings) {
         this.settings = settings;
     }

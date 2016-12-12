@@ -1,4 +1,3 @@
-
 @import femr.common.models.PatientItem
 @import femr.ui.controllers.manager.ManagerController
 @import femr.ui.views.html.layouts.main
@@ -6,32 +5,36 @@
 @import collection.JavaConversions._
 
 @(currentUser: femr.common.dtos.CurrentUser, ManageViewModelPost: femr.ui.models.manager.IndexViewModelGet,
-        viewModelMedical:femr.ui.models.history.IndexEncounterMedicalViewModel)
+        viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel)
 @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
 
-    }
+}
 @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/manager/manager.css")">
-    }
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/manager/manager.css")">
+}
 
-@main("ManagerTab", currentUser, scripts = additionalScripts, styles = additionalStyles){
+@main("ManagerTab", currentUser, scripts = additionalScripts, styles = additionalStyles) {
     <body>
 
 
         <div class="backgroundForWrap">
-            <div  class ="h1" id="title">  List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday </div>
-            @if(currentUser.getTripId!=null){<div class="h2" id="title">TripID: @currentUser.getTripId</div>}
-            @if(currentUser.getTripId==null){<div class="h2" id="title">TripID: Manager  @currentUser.getFirstName @currentUser.getLastName is not currently assigned to a trip</div>}
+            <div class ="h1" id="title">  List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday </div>
+            @if(currentUser.getTripId != null) {
+                <div class="h2" id="title">TripID: @currentUser.getTripId</div>
+            }
+            @if(currentUser.getTripId == null) {
+                <div class="h2" id="title">
+                    TripID: Manager  @currentUser.getFirstName @currentUser.getLastName is not currently assigned to a trip</div>
+            }
             <div id="table-container center-panel-grid" >
                 <div class="managerWrap">
 
 
-
-                    <table  id="managersTable">
+                    <table id="managersTable">
                         <thead>
                             <tr >
                                 <th> Patient ID </th>
@@ -47,9 +50,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @if(ManageViewModelPost.getTriagePatients!=null) {
+                        @if(ManageViewModelPost.getTriagePatients != null) {
                             @for(y <- 1 to ManageViewModelPost.getTriagePatients.size) {
-                                @defining( ManageViewModelPost.getVitals(y- 1)) { vital =>
+                                @defining(ManageViewModelPost.getVitals(y - 1)) { vital =>
                                     @defining(ManageViewModelPost.getTriagePatients.get(y - 1)) { item =>
                                         @defining(ManageViewModelPost.getEncounter.get(y - 1)) { encounter =>
                                             @if(!encounter.getIsClosed) {
@@ -57,64 +60,82 @@
                                                     <td>@item.getId</td>
                                                     <td>@item.getFirstName @item.getLastName</td>
                                                     <td>
-                                                        @if(item.getSex()!=null){
-                                                        Gender:@item.getSex<br>}
-                                                        @if(item.getAge()!=null){
-                                                        Age: @item.getAge<br>}
-                                                        @if(item.getBirth()!=null){
-                                                        Date Of Birth: @item.getBirth<br>}
-                                                        @if(item.getHeightFeetDual !=0){
-                                                        Height: @item.getHeightFeetDual<br>}
-                                                        @if(item.getCity()!=0){
-                                                        City: @item.getCity <br>}
-                                                        @if(item.getCity()!=0){
-                                                        Weight: @item.getWeight
+                                                        @if(item.getSex() != null) {
+                                                            Gender:@item.getSex <br>
+                                                        }
+                                                        @if(item.getAge() != null) {
+                                                            Age: @item.getAge <br>
+                                                        }
+                                                        @if(item.getBirth() != null) {
+                                                            Date Of Birth: @item.getBirth <br>
+                                                        }
+                                                        @if(item.getHeightFeetDual != 0) {
+                                                            Height: @item.getHeightFeetDual <br>
+                                                        }
+                                                        @if(item.getCity() != 0) {
+                                                            City: @item.getCity <br>
+                                                        }
+                                                        @if(item.getCity() != 0) {
+                                                            Weight: @item.getWeight
                                                         }
                                                     </td>
                                                     <td>@encounter.getChiefComplaints </td>
 
                                                     <td > <div class="scrollable">
                                                     @for(dateIndex <- 1 to vital.getDateListChronological.size) {
-                                                       <strong>Date:</strong> @vital.getDate(dateIndex - 1)
+                                                        <strong>Date:</strong> @vital.getDate(dateIndex - 1)
                                                         <br>
-                                                        @if(vital.get("heartRate",vital.getDate(dateIndex-1))){
-                                                        <strong>Heart Rate</strong> @vital.get("heartRate", vital.getDate(dateIndex - 1))
+                                                        @if(vital.get("heartRate", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Heart Rate</strong> @vital.get("heartRate", vital.getDate(dateIndex - 1))
                                                         }
                                                         <br>
-                                                        @if(vital.get("weight",vital.getDate(dateIndex-1))){
-                                                       <strong> Weight:</strong>@vital.get("weight", vital.getDate(y - 1))}
+                                                        @if(vital.get("weight", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Weight:</strong> @vital.get("weight", vital.getDate(y - 1))
+                                                        }
                                                         <br>
-                                                        @if(vital.get("tempreture",vital.getDate(dateIndex-1))){
-                                                        <strong>Temperature:</strong>@vital.get("temperature", vital.getDate(y - 1))}
+                                                        @if(vital.get("tempreture", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Temperature:</strong> @vital.get("temperature", vital.getDate(y - 1))
+                                                        }
                                                         <br>
-                                                        @if(vital.get("bloodPressureSystolic",vital.getDate(dateIndex-1))){
-                                                        <strong>Blood Pressure:</strong> @vital.get("bloodPressureSystolic", vital.getDate(y - 1))}
+                                                        @if(vital.get("bloodPressureSystolic", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Blood Pressure:</strong> @vital.get("bloodPressureSystolic", vital.getDate(y - 1))
+                                                        }
                                                         <br>
-                                                        @if(vital.get("respiratoryRate",vital.getDate(dateIndex-1))){
-                                                        <strong>Respiratory Rate:</strong> @vital.get("respiratoryRate", vital.getDate(y - 1))}
+                                                        @if(vital.get("respiratoryRate", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Respiratory Rate:</strong> @vital.get("respiratoryRate", vital.getDate(y - 1))
+                                                        }
                                                         <br>
-                                                        @if(vital.get("oxygenSaturation",vital.getDate(dateIndex-1))){
-                                                        <strong>Oxygen:</strong> @vital.get("oxygenSaturation", vital.getDate(y - 1))}
+                                                        @if(vital.get("oxygenSaturation", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Oxygen:</strong> @vital.get("oxygenSaturation", vital.getDate(y - 1))
+                                                        }
                                                         <br>
-                                                        @if(vital.get("glucose",vital.getDate(dateIndex-1))){
-                                                        <strong>Glucose:</strong> @vital.get("glucose", vital.getDate(y - 1))}
+                                                        @if(vital.get("glucose", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Glucose:</strong> @vital.get("glucose", vital.getDate(y - 1))
+                                                        }
                                                         <br>
                                                         <br>
                                                         }
                                                     </div> </td>
-                                                    @if(ManageViewModelPost.getHPI(y-1).get("narrative")!=null) {
+                                                    @if(ManageViewModelPost.getHPI(y - 1).get("narrative") != null) {
                                                         <td>@ManageViewModelPost.getHPI(y - 1).get("narrative").getValue()</td>
-                                                    } else{
+                                                    } else {
                                                         <td>  </td>
                                                     }
                                                     @if(encounter.getTriageDateOfVisit != null) {
-                                                        <td>@ManageViewModelPost.getIriageTime(encounter)</td>
+                                                        <td>@ManageViewModelPost.getTimeOfTriageVisit(y - 1)</td>
                                                     }
                                                     @if(encounter.getMedicalDateOfVisit != null) {
-                                                        <td>@ManageViewModelPost.getMedicalTime(encounter)</td>
+                                                        <td>@ManageViewModelPost.getTimeOfMedicalVisit(y - 1)</td>
                                                     }
                                                     @if(encounter.getPharmacyDateOfVisit != null) {
-                                                        <td>@ManageViewModelPost.getPharmTime(encounter)</td>
+                                                        <td>@ManageViewModelPost.getTimeOfPharmVisit(y - 1)</td>
                                                     }
                                                     <td>@ManageViewModelPost.getTurnAroundT(encounter)</td>
                                                 </tr>
@@ -130,7 +151,7 @@
                 </div>
             </div>
 
-            </div>
+        </div>
 
     </body>
 

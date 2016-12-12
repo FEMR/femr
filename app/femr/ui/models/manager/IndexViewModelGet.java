@@ -1,4 +1,5 @@
 package femr.ui.models.manager;
+
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
 import femr.common.models.TabFieldItem;
@@ -11,81 +12,119 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static femr.util.calculations.dateUtils.getDisplayTime;
-
 //Manages Manger Controller
 public class IndexViewModelGet {
 
-    //private String TriageTime=getDisplayTime(item.getTriageDateOfVisit());
+    //stores list of triage CheckIn Time
+    private List<String> timeOfTriageVisit;
+    //stores list of pharmacy CheckIn Time
+    private List<String> timeOfPharmVisit;
+    //stores list of medical CheckIn Time
+    private List<String> timeOfMedicalVisit;
+    //stores list of triage patients
     private List<PatientItem> triagePatients;
+    //stores list of patient encounters
     private List<PatientEncounter> encounter;
+    //stores list of vital maps
     private List<VitalMultiMap> vitalItems;
+    //store list of patient encounter itesm
     private List<PatientEncounterItem> encounterItem;
     List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
+
+
+    public void setTimeOfTriageVisit(List<String> dateOfTriageVisit) {
+
+        this.timeOfTriageVisit = dateOfTriageVisit;
+    }
+
+    public String getTimeOfTriageVisit(int i) {
+
+        return timeOfTriageVisit.get(i);
+    }
+
+    public void setTimeOfPharmVisit(List<String> dateOfTPharmVisit) {
+
+        this.timeOfPharmVisit = dateOfTPharmVisit;
+    }
+
+    public String getTimeOfPharmVisit(int i) {
+
+        return timeOfPharmVisit.get(i);
+    }
+
+    public String getTimeOfMedicalVisit(int i) {
+
+        return timeOfMedicalVisit.get(i);
+    }
+
+    public void setTimeOfMedicalVisit(List<String> dateOfMedicalVisit) {
+
+        this.timeOfMedicalVisit = dateOfMedicalVisit;
+    }
+
     public void setTriagePatients(List<PatientItem> patient) {
+
         this.triagePatients = patient;
     }
-    public PatientItem getTriagePatients (int i){
+
+    public PatientItem getTriagePatients(int i) {
         return triagePatients.get(i);
     }
+
     public List<PatientItem> getTriagePatients() {
         return triagePatients;
     }
+
     // Sets patient encounter items
-    public void setPatientEncounter(List<PatientEncounterItem> patientEncounter) {this.encounterItem = patientEncounter;}
+    public void setPatientEncounter(List<PatientEncounterItem> patientEncounter) {
+        this.encounterItem = patientEncounter;
+    }
+
     // gets array list item of Patient Encounter Items
-    public PatientEncounterItem getEncounter (int i){
+    public PatientEncounterItem getEncounter(int i) {
         return encounterItem.get(i);
     }
+
     // gets array list of Patient Encounter Items
     public List<PatientEncounterItem> getEncounter() {
         return encounterItem;
     }
+
     public void setHPI(List<Map<String, TabFieldItem>> tab) {
         this.tab = tab;
     }
+
     // gets array list item of HPI Tab Mapped Items
-    public Map<String, TabFieldItem>  getHPI(int i){
+    public Map<String, TabFieldItem> getHPI(int i) {
         return tab.get(i);
     }
+
     // gets array list of HPI Items
     public List<Map<String, TabFieldItem>> getHpi() {
         return tab;
     }
+
     public void setVitals(List<VitalMultiMap> vital) {
         this.vitalItems = vital;
     }
+
     // gets array list item of vital Items
-    public VitalMultiMap getVitals (int i){
+    public VitalMultiMap getVitals(int i) {
         return vitalItems.get(i);
     }
+
     // gets array list of Vital Items
     public List<VitalMultiMap> getVital() {
         return vitalItems;
     }
-    public String getIriageTime(PatientEncounterItem item)
-    {
-        return getDisplayTime(item.getTriageDateOfVisit());
-    }
-    public String getMedicalTime(PatientEncounterItem item)
-    {
-        return getDisplayTime(item.getMedicalDateOfVisit());
-    }
-    public String getPharmTime(PatientEncounterItem item)
-    {
-        return getDisplayTime(item.getPharmacyDateOfVisit());
-    }
-    public String getTurnAroundT(PatientEncounterItem item)
-    {
+
+    public String getTurnAroundT(PatientEncounterItem item) {
         return dateUtils.getTurnAroundTime(item);
     }
-    public String getToday()
-    {
+
+    public String getToday() {
         return dateUtils.getFriendlyDate(DateTime.now().toDate());
 
     }
-    public DateTime getTodayDate()
-    {
-        return  DateTime.now();
-    }
+
 }

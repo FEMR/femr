@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
+import femr.util.calculations.dateUtils;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
 import femr.data.models.mysql.Roles;
@@ -15,8 +16,10 @@ import femr.common.models.TabFieldItem;
 import femr.ui.models.history.IndexEncounterMedicalViewModel;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import femr.ui.views.html.manager.index;
 import play.data.Form;
 import play.mvc.Controller;
@@ -25,6 +28,8 @@ import play.mvc.Security;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static femr.util.calculations.dateUtils.getDisplayTime;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.MANAGER})
@@ -39,14 +44,13 @@ public class ManagerController extends Controller {
     private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
 
 
-
     @Inject
     public ManagerController(ISessionService sessionService, IPatientService patientService,
-                             IEncounterService encounterService, ISearchService searchService,ITabService tabService, IVitalService vitalService) {
+                             IEncounterService encounterService, ISearchService searchService, ITabService tabService, IVitalService vitalService) {
         this.sessionService = sessionService;
         this.patientService = patientService;
-        this.encounterService=encounterService;
-        this.searchService=searchService;
+        this.encounterService = encounterService;
+        this.searchService = searchService;
         this.tabService = tabService;
         this.vitalService = vitalService;
     }
@@ -55,30 +59,35 @@ public class ManagerController extends Controller {
 
 //declares empty array lists and view models
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        List<PatientItem> patientList=new ArrayList<PatientItem>();
+        List<PatientItem> patientList = new ArrayList<PatientItem>();
         List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
         List<VitalMultiMap> vitalList = new ArrayList<VitalMultiMap>();
         List<PatientEncounterItem> encounter = new ArrayList<PatientEncounterItem>();
-        IndexViewModelGet viewModel = new  IndexViewModelGet();
+        IndexViewModelGet viewModel = new IndexViewModelGet();
         IndexEncounterMedicalViewModel hpimodel = new IndexEncounterMedicalViewModel();
-
-//if the user is not assigned to a trip
+        List<String> triageCheckInTime = new ArrayList<String>();
+        List<String> medicalCheckInTime = new ArrayList<String>();
+        List<String> pharmCheckInTime = new ArrayList<String>();
+//if the user is not assigned to a trip renders outpage, with message to user
         if (currentUser.getTripId() == null) {
+
             return ok(index.render(currentUser, viewModel, hpimodel));
         }
         //returns a list of Patient encounter items of patients checked in Triage on the current day
         ServiceResponse<List<PatientEncounterItem>> patientEncounter = encounterService.retrieveCurrentDayPatientEncounters(currentUser.getTripId());
-        //sets items for display
+        //sets items for display in the table on the manager tab
         for (int i = 0; i < patientEncounter.getResponseObject().size(); i++) {
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject().get(i).getPatientId());
-            PatientItem e = translate.getResponseObject();
+            PatientItem patientItem = translate.getResponseObject();
             //gets patients vitals
             ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.retrieveVitalMultiMap
                     (patientEncounter.getResponseObject().get(i).getId());
             VitalMultiMap vitals = patientEncounterVitalMapResponse.getResponseObject();
             ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(patientEncounter.getResponseObject().get(i).getId());
             TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
-            //gets hpi fields
+            triageCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getTriageDateOfVisit()));
+            medicalCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getMedicalDateOfVisit()));
+            pharmCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getPharmacyDateOfVisit()));
             Map<String, TabFieldItem> hpiFields = new HashMap<>();
             if (patientEncounter.getResponseObject().get(i).getChiefComplaints().size() >= 0) {
 
@@ -91,7 +100,7 @@ public class ManagerController extends Controller {
 
                 tab.add(hpiFields);
                 vitalList.add(vitals);
-                patientList.add(e);
+                patientList.add(patientItem);
             }
         }
 
@@ -102,8 +111,14 @@ public class ManagerController extends Controller {
         viewModel.setVitals(vitalList);
         viewModel.setHPI(tab);
 
-
-        return ok(index.render(currentUser, viewModel,hpimodel));
+//sets the time the patients were checked into Triage
+        viewModel.setTimeOfTriageVisit(triageCheckInTime);
+        //sets the time the patients were checked into Medical
+        viewModel.setTimeOfMedicalVisit(medicalCheckInTime);
+        //sets the time the patients were checked out of Pharmacy
+        viewModel.setTimeOfPharmVisit(pharmCheckInTime);
+        //gets hpi fields
+        return ok(index.render(currentUser, viewModel, hpimodel));
 
     }
 

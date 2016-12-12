@@ -31,46 +31,54 @@ public class IndexViewModelGet {
     private List<PatientEncounterItem> encounterItem;
     List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
 
-
+    //sets a list of triage visit times
     public void setTimeOfTriageVisit(List<String> dateOfTriageVisit) {
 
         this.timeOfTriageVisit = dateOfTriageVisit;
     }
 
+    //returns a specific String from timeOfTriagePatient array
     public String getTimeOfTriageVisit(int i) {
 
         return timeOfTriageVisit.get(i);
     }
 
+    //sets list of pharmacy visit times
     public void setTimeOfPharmVisit(List<String> dateOfTPharmVisit) {
 
         this.timeOfPharmVisit = dateOfTPharmVisit;
     }
 
+    //returns a specific String from time of pharmacy visit array list
     public String getTimeOfPharmVisit(int i) {
 
         return timeOfPharmVisit.get(i);
     }
 
+    //returns a specific time of medical visit
     public String getTimeOfMedicalVisit(int i) {
 
         return timeOfMedicalVisit.get(i);
     }
 
-    public void setTimeOfMedicalVisit(List<String> dateOfMedicalVisit) {
+    //sets list of time of medical visit
+    public void setTimeOfMedicalVisit(List<String> timeOfMedicalVisit) {
 
-        this.timeOfMedicalVisit = dateOfMedicalVisit;
+        this.timeOfMedicalVisit = timeOfMedicalVisit;
     }
 
+    //sets List of Triage Patients
     public void setTriagePatients(List<PatientItem> patient) {
 
         this.triagePatients = patient;
     }
 
+    //gets a specific PatientItem in triagePatient List
     public PatientItem getTriagePatients(int i) {
         return triagePatients.get(i);
     }
 
+    //returns a list of PatientItem
     public List<PatientItem> getTriagePatients() {
         return triagePatients;
     }
@@ -90,6 +98,7 @@ public class IndexViewModelGet {
         return encounterItem;
     }
 
+    //sets a list of HPI Items
     public void setHPI(List<Map<String, TabFieldItem>> tab) {
         this.tab = tab;
     }
@@ -104,6 +113,7 @@ public class IndexViewModelGet {
         return tab;
     }
 
+    //set Vital Multimap List
     public void setVitals(List<VitalMultiMap> vital) {
         this.vitalItems = vital;
     }
@@ -118,10 +128,12 @@ public class IndexViewModelGet {
         return vitalItems;
     }
 
+    //returns the turnAroundTime for each patient encounter
     public String getTurnAroundT(PatientEncounterItem item) {
         return dateUtils.getTurnAroundTime(item);
     }
 
+    //returns date in friendly format
     public String getToday() {
         return dateUtils.getFriendlyDate(DateTime.now().toDate());
 

@@ -57,14 +57,14 @@ public class ManagerController extends Controller {
 
     public Result indexGet() {
 
-//declares empty array lists and view models
+//declares empty array lists  view model
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        IndexViewModelGet viewModel = new IndexViewModelGet();
+        IndexEncounterMedicalViewModel hpimodel = new IndexEncounterMedicalViewModel();
         List<PatientItem> patientList = new ArrayList<PatientItem>();
         List<Map<String, TabFieldItem>> tab = new ArrayList<Map<String, TabFieldItem>>();
         List<VitalMultiMap> vitalList = new ArrayList<VitalMultiMap>();
         List<PatientEncounterItem> encounter = new ArrayList<PatientEncounterItem>();
-        IndexViewModelGet viewModel = new IndexViewModelGet();
-        IndexEncounterMedicalViewModel hpimodel = new IndexEncounterMedicalViewModel();
         List<String> triageCheckInTime = new ArrayList<String>();
         List<String> medicalCheckInTime = new ArrayList<String>();
         List<String> pharmCheckInTime = new ArrayList<String>();
@@ -75,19 +75,19 @@ public class ManagerController extends Controller {
         }
         //returns a list of Patient encounter items of patients checked in Triage on the current day
         ServiceResponse<List<PatientEncounterItem>> patientEncounter = encounterService.retrieveCurrentDayPatientEncounters(currentUser.getTripId());
-        //sets items for display in the table on the manager tab
+
+        //loops through patient encounters found in patientEncounter above and consolidates data for those patient encounters in arrays declared above
         for (int i = 0; i < patientEncounter.getResponseObject().size(); i++) {
+            //gets a PatientItem from the Patient Encounter Item
             ServiceResponse<PatientItem> translate = searchService.retrievePatientItemByPatientId(patientEncounter.getResponseObject().get(i).getPatientId());
             PatientItem patientItem = translate.getResponseObject();
-            //gets patients vitals
-            ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.retrieveVitalMultiMap
-                    (patientEncounter.getResponseObject().get(i).getId());
+            //gets patients vitalsmultimap from the Patient Encounter Item
+            ServiceResponse<VitalMultiMap> patientEncounterVitalMapResponse = vitalService.retrieveVitalMultiMap(patientEncounter.getResponseObject().get(i).getId());
             VitalMultiMap vitals = patientEncounterVitalMapResponse.getResponseObject();
+            //gets the a TabFeildMultimap from the Patient Encounter Item
             ServiceResponse<TabFieldMultiMap> patientEncounterTabFieldResponse = tabService.retrieveTabFieldMultiMap(patientEncounter.getResponseObject().get(i).getId());
             TabFieldMultiMap tabFieldMultiMap = patientEncounterTabFieldResponse.getResponseObject();
-            triageCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getTriageDateOfVisit()));
-            medicalCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getMedicalDateOfVisit()));
-            pharmCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getPharmacyDateOfVisit()));
+            //gets the HPI feilds for the patients
             Map<String, TabFieldItem> hpiFields = new HashMap<>();
             if (patientEncounter.getResponseObject().get(i).getChiefComplaints().size() >= 0) {
 
@@ -97,7 +97,11 @@ public class ManagerController extends Controller {
                     hpimodel.setHpiFieldsWithoutMultipleChiefComplaints(hpiFieldsUnderChiefComplaint);
                     hpiFields.putAll(hpiFieldsUnderChiefComplaint);
                 }
-
+                //adds the time the patient in that patient encounter was checked into triage, medical, and pharmacy respectively
+                triageCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getTriageDateOfVisit()));
+                medicalCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getMedicalDateOfVisit()));
+                pharmCheckInTime.add(getDisplayTime(patientEncounter.getResponseObject().get(i).getPharmacyDateOfVisit()));
+                //adds the tabFeildMultimap, the vital map, and the patientItem to their respective arrays
                 tab.add(hpiFields);
                 vitalList.add(vitals);
                 patientList.add(patientItem);
@@ -105,13 +109,16 @@ public class ManagerController extends Controller {
         }
 
 
-        //set view model values
+        //set viewmodel values for manager tab
+        //sets list of triagePatients
         viewModel.setTriagePatients(patientList);
+        //sets list of Patient Encounters
         viewModel.setPatientEncounter(patientEncounter.getResponseObject());
+        //sets vitals (if found) for each patient
         viewModel.setVitals(vitalList);
+        //sets HPI items found
         viewModel.setHPI(tab);
-
-//sets the time the patients were checked into Triage
+        //sets the time the patients were checked into Triage
         viewModel.setTimeOfTriageVisit(triageCheckInTime);
         //sets the time the patients were checked into Medical
         viewModel.setTimeOfMedicalVisit(medicalCheckInTime);

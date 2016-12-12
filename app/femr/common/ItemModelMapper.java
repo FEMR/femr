@@ -161,6 +161,7 @@ public class ItemModelMapper implements IItemModelMapper {
     public PatientItem createPatientItem(int id,
                                                 String firstName,
                                                 String lastName,
+                                                String phoneNumber,
                                                 String city,
                                                 String address,
                                                 int userId,
@@ -192,6 +193,8 @@ public class ItemModelMapper implements IItemModelMapper {
         patientItem.setCity(city);
         patientItem.setUserId(userId);
         //optional fields
+        if (StringUtils.isNotNullOrWhiteSpace(phoneNumber))
+            patientItem.setPhoneNumber(phoneNumber);
         if (StringUtils.isNotNullOrWhiteSpace(address))
             patientItem.setAddress(address);
         if (StringUtils.isNotNullOrWhiteSpace(sex))

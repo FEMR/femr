@@ -121,6 +121,7 @@ public class SearchService implements ISearchService {
                     savedPatient.getId(),
                     savedPatient.getFirstName(),
                     savedPatient.getLastName(),
+                    savedPatient.getPhoneNumber(),
                     savedPatient.getCity(),
                     savedPatient.getAddress(),
                     savedPatient.getUserId(),
@@ -194,6 +195,7 @@ public class SearchService implements ISearchService {
                     patient.getId(),
                     patient.getFirstName(),
                     patient.getLastName(),
+                    patient.getPhoneNumber(),
                     patient.getCity(),
                     patient.getAddress(),
                     patient.getUserId(),
@@ -473,22 +475,24 @@ public class SearchService implements ISearchService {
 
         List<? extends IPatient> patients;
 
-        //Build the Query
-        //TODO: filter these by the current country of the team
-        if (id != null) {
-            //if we have an id, that is all we need.
-            //this is the most ideal scenario
-            IPatient patient = patientRepository.retrievePatientById(id);
-            List<IPatient> iPatients = new ArrayList<>();
-            iPatients.add(patient);
-            patients = iPatients;
 
-        } else {
-            patients = patientRepository.retrievePatientsByName(firstName, lastName);
-        }
-
-        //Execute the query
         try {
+            //Build the Query
+            //TODO: filter these by the current country of the team
+            if (id != null) {
+                //if we have an id, that is all we need.
+                //this is the most ideal scenario
+                IPatient patient = patientRepository.retrievePatientById(id);
+                List<IPatient> iPatients = new ArrayList<>();
+                iPatients.add(patient);
+                patients = iPatients;
+
+            } else {
+                patients = patientRepository.retrievePatientsByName(firstName, lastName);
+            }
+
+            //Execute the query
+
             List<PatientItem> patientItems = new ArrayList<>();
             for (IPatient patient : patients) {
                 //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
@@ -502,6 +506,7 @@ public class SearchService implements ISearchService {
                         patient.getId(),
                         patient.getFirstName(),
                         patient.getLastName(),
+                        patient.getPhoneNumber(),
                         patient.getCity(),
                         patient.getAddress(),
                         patient.getUserId(),
@@ -608,6 +613,7 @@ public class SearchService implements ISearchService {
                         patient.getId(),
                         patient.getFirstName(),
                         patient.getLastName(),
+                        patient.getPhoneNumber(),
                         patient.getCity(),
                         patient.getAddress(),
                         patient.getUserId(),

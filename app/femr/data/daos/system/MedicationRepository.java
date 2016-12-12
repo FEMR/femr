@@ -132,7 +132,7 @@ public class MedicationRepository implements IMedicationRepository {
         try {
             Ebean.save(medication);
         } catch (Exception ex) {
-            Logger.error("UserRepository-saveUser", ex.getMessage(), "medicationId: " + medicationId, "isDeleted: " + isDeleted);
+            Logger.error("MedicationRepository-deleteMedication", ex.getMessage(), "medicationId: " + medicationId, "isDeleted: " + isDeleted);
             throw ex;
         }
 
@@ -145,16 +145,19 @@ public class MedicationRepository implements IMedicationRepository {
     @Override
     public IMedication createNewMedication (String medicationName, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm){
         IMedication medication = null;
-        try {
+
         if (medicationName == null || medicationGenericStrengths == null || conceptMedicationForm == null) {
             return null;
         }
 
-        // Create a new medication in the DB
-        medication = dataModelMapper.createMedication(medicationName, medicationGenericStrengths, conceptMedicationForm);
-        Ebean.save(medication);
+        try {
+
+            // Create a new medication in the DB
+            medication = dataModelMapper.createMedication(medicationName, medicationGenericStrengths, conceptMedicationForm);
+            Ebean.save(medication);
         } catch (Exception ex) {
-            Logger.error("UserRepository-createNewMedication", ex.getMessage(), "medicationName: " + medicationName, "medicationGenericStrengths: " + medicationGenericStrengths, "conceptMedicationForm: " + conceptMedicationForm);
+
+            Logger.error("MedicationRepository-createNewMedication", ex.getMessage(), "medicationName: " + medicationName, "medicationGenericStrengths: " + medicationGenericStrengths, "conceptMedicationForm: " + conceptMedicationForm);
             throw ex;
         }
 
@@ -166,17 +169,25 @@ public class MedicationRepository implements IMedicationRepository {
      */
     @Override
     public List<? extends IMedication> retrieveAllMedicationByTripId(Integer tripId){
-        Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("medicationInventory.missionTrip.id", tripId)
-                .isNotNull( "conceptMedicationForm" )
-                .gt("medicationInventory.quantityCurrent", 0)
-                .orderBy("name");
 
+        List<? extends IMedication> response = null;
+        try {
 
-        List<? extends IMedication> medications = medicationQuery.findList();
+            Query<Medication> medicationQuery = QueryProvider.getMedicationQuery()
+                    .where()
+                    .eq("medicationInventory.missionTrip.id", tripId)
+                    .isNotNull("conceptMedicationForm")
+                    .gt("medicationInventory.quantityCurrent", 0)
+                    .orderBy("name");
 
-        return medications;
+            response = medicationQuery.findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllMedicationByTripId", ex.getMessage(), "tripId: " + tripId);
+            throw ex;
+        }
+
+        return response;
     }
 
 }

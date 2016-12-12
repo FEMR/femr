@@ -289,6 +289,7 @@ public class TriageController extends Controller {
         patient.setUserId(currentUser.getId());
         patient.setFirstName(viewModelPost.getFirstName());
         patient.setLastName(viewModelPost.getLastName());
+        patient.setPhoneNumber(viewModelPost.getPhoneNumber());
         if (viewModelPost.getAge() != null) {
             patient.setBirth(viewModelPost.getAge());
         }

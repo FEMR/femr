@@ -40,6 +40,10 @@ public interface IPatient {
 
     void setLastName(String lastName);
 
+    String getPhoneNumber();
+
+    void setPhoneNumber(String phoneNumber);
+
     Date getAge();
 
     void setAge(Date age);

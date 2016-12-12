@@ -129,7 +129,7 @@
     overflow: hidden;
 }
 
-.generalInfoInput input[type="text"], .generalInfoInput input[type="date"] {
+.generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"] {
     float: right;
     margin-right: 120px;
     width: 180px;
@@ -220,7 +220,7 @@
         margin-right: 0px;
     }
 
-    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select {
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select {
         margin-right: 0px;
     }
 
@@ -235,7 +235,7 @@
         padding: 0px;
     }
 
-    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select {
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select {
         width: 175px;
     }
 }
@@ -254,7 +254,7 @@
         display: block;
     }
 
-    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select {
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select {
         float: left;
         display: block;
     }
@@ -299,7 +299,7 @@
     #genderBtns{
         float: none;
     }
-    .generalInfoInput input[type="text"], .generalInfoInput input[type="date"], .generalInfoInput select{
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select{
         float: none;
         display: inline;
 

@@ -267,17 +267,51 @@
         <div class="modal-content">
             <div class="modal-header">
                 <span id="closeBtn" class="close">×</span>
-                <h2>Modal Header</h2>
+                <h2>
+                    <b>There are currently <span id="numberOfMatches1">X</span> patient(s) with this name in the database.</b>
+                </h2>
             </div>
             <div class="modal-body">
-                <div id="modalPhotoWrap">
-                    <img id="modalPatientPhoto" src="" />
+                <div id="patientMessage">
+                    <h3>Is this your patient?</h3>
+                </div>
+                <div id="patientInfoModalWrap">
+                    <div id="modalPhotoWrap">
+                        <img id="patientPhotoModal" height="200" width="200" src="" />
+                    </div>
+                    <div id="patientInfoContainer">
+                        <div id="patientInfoWrapLeft">
+                            <div class="patientInfoModal">
+                                Name: <div id="firstNameModal"></div>
+                            </div>
+                            <div class="patientInfoModal">
+                                Date of Birth: <div id="dobModal"></div>
+                            </div>
+                            <div class="patientInfoModal">
+                                Gender: <div id="genderModal"></div>
+                            </div>
+                        </div>
+                        <div id="patientInfoWrapRight">
+                            <div class="patientInfoModal">
+                                City: <div id="cityModal"></div>
+                            </div>
+                            <div class="patientInfoModal">
+                                Height: <div id="heightModal"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttonModalWrap">
+                    <div id="leftBtnWrap"><button type="button" id="matchingPatientBtn" class="fButton fRedButton">YES</button></div>
+                    <div id="rightBtnWrap"><button type="button" id="notMatchingPatientBtn" class="fButton fRedButton">NO</button></div>
                 </div>
             </div>
             <div class="modal-footer">
-                <h3>Modal Footer</h3>
+                <h3>
+                    Viewing <span id="matchingPatientCounter">Y</span> of <span id="numberOfMatches2">X</span>
+                    matching patients.
+                </h3>
             </div>
         </div>
-
     </div>
 }

@@ -368,7 +368,7 @@
 }
 
 .modal {
-    display: block; /* Hidden by default */
+    display: none; /* Hidden by default */
     position: fixed;
     z-index: 1; /* Sit on top */
     padding-top: 100px; /* Location of the box */
@@ -389,8 +389,8 @@
     padding: 0;
     border: 1px solid #888;
     width: 60%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
-
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    overflow: hidden;
 }
 
 /* The Close Button */
@@ -410,22 +410,88 @@
 
 .modal-header {
     padding: 2px 16px;
-    background-color: #5cb85c;
     color: white;
+    background-color: #9e9e9e;
+    text-align: center;
+    border-bottom: solid;
+    border-width: 2px;
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {
+    padding: 2px 16px;
+    min-height: 250px;
+}
 
 .modal-footer {
     padding: 2px 16px;
-    background-color: #5cb85c;
+    background-color: #9e9e9e;
     color: white;
+    text-align: center;
+    border-top: solid;
+    border-width: 2px;
 }
 
-#modalPhotoWrap {
-    padding: 10px;
+#patientPhotoModal {
+    padding: 20px 20px 20px 20px;
     float: left;
     width: 200px;
     height: 200px;
-    background-color: #0c0c0c;
+    max-width: 200px;
+    //background-color: #0c0c0c;
+}
+
+#patientInfoWrapLeft {
+    width: 50%;
+    float: left;
+}
+
+#patientInfoWrapRight {
+    width: 50%;
+    float: left;
+}
+
+#patientInfoModalWrap {
+    padding-bottom: 50px;
+}
+
+.patientInfoModal {
+    font-weight: bold;
+    padding: 15px;
+    font-size: 150%;
+
+}
+
+#patientMessage {
+    text-align: center;
+}
+
+#patientInfoContainer {
+    overflow: hidden;
+}
+
+.buttonModalWrap {
+    padding-top: 20px;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+#matchingPatientBtn {
+    float: left;
+    font-size: 125%;
+    width: 115px;
+}
+
+#notMatchingPatientBtn {
+    float: right;
+    font-size: 125%;
+    width: 115px;
+}
+
+#leftBtnWrap {
+    padding-left: 200px;
+}
+
+#rightBtnWrap {
+    padding-right: 200px;
 }

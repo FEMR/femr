@@ -524,6 +524,7 @@ $(document).ready(function () {
     });
     $('#yesDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("true");
+        //checkIfDuplicatePatient();
     });
     //birthday shit
     $('#age').change(function () {
@@ -606,9 +607,6 @@ $(document).ready(function () {
 
     $('#triageSubmitBtn').click(function () {
         var pass = validate();
-        var patientInfo = triageFields.patientInformation;
-        var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
-        var url = "/search/check/" + query;
 
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
@@ -628,41 +626,84 @@ $(document).ready(function () {
                     $(diabetesDialog).removeClass('hidden');
                     diabeticScreeningFeature.readonlyEverything();
                 } else {
-                    checkIfDuplicatePatient();
+                    var pause = checkIfDuplicatePatient();
                 }
 
-                pass = !isDiabeticScreeningPromptNecessary;
-
+                //pass = !isDiabeticScreeningPromptNecessary;
+                pass = !pause;
         }
         return pass; //located in triageClientValidation.js
     });
 
-    $('#noDiabetesScreen').click(function () {
-        checkIfDuplicatePatient();
-    });
-
-    $('#yesDiabetesScreen').click(function () {
-        checkIfDuplicatePatient();
-    });
-
-    function checkIfDuplicatePatient () {
+    var checkIfDuplicatePatient = function() {
     var patientInfo = triageFields.patientInformation;
     var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
     var url = "/search/matchingPatients/" + query;
+    var patientCounter = 0;
         $.getJSON(url, function (result) {
-        /*if (result === true) {
-            if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
-                var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
-                window.location.replace(duplicatePatientUrl);
-            }
-        }*/
-        if(result.size > 0){
-            if(confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
+            var length = Object.keys(result).length;
+            var displayPatientCounter = patientCounter + 1;
+            $('#numberOfMatches1').text(length.toString());
+            $('#numberOfMatches2').text(length.toString());
+            $('#matchingPatientCounter').text(displayPatientCounter.toString());
 
-            }
-        }
-    })
-    };
+            if(length > 0) {
+                var i = 0;
+                $('.modal').css("display", "block");
+                var display = $('.modal').css("display");
+                var photoRouteBase = "/photo/patient/";
+                var photoRouteEnd = "?showDefault=true";
+                var photoRoute = photoRouteBase + result[i].Id + photoRouteEnd;
+
+                var name = result[i].firstName + " " + result[i].lastName;
+                var dob = result[i].friendlyDateOfBirth;
+                var gender = result[i].sex;
+                var city = result[i].city;
+                var height = result[i].heightFeet + "' " + result[i].heightInches + "''";
+
+                $('#patientPhotoModal').attr('src', photoRoute);
+                $('#firstNameModal').text(name);
+                $('#dobModal').text(dob);
+                $('#genderModal').text(gender);
+                $('#cityModal').text(city);
+                $('#heightModal').text(height);
+
+                $('#matchingPatientBtn').click(function () {
+                    //
+                });
+
+                $('#notMatchingPatientBtn').click(function () {
+                    patientCounter++;
+                    i++;
+                    var photoPath = photoRouteBase + result[i].Id + photoRouteEnd;
+                    var name = result[i].firstName + " " + result[i].lastName;
+                    var dob = result[i].friendlyDateOfBirth;
+                    var gender = result[i].sex;
+                    var city = result[i].city;
+                    var height = result[i].heightFeet + "' " + result[i].heightInches + "''";
+
+                    $('#patientPhotoModal').attr('src', photoPath);
+                    $('#firstNameModal').text(name);
+                    $('#dobModal').text(dob);
+                    $('#genderModal').text(gender);
+                    $('#cityModal').text(city);
+                    $('#heightModal').text(height);
+
+                    displayPatientCounter += 1;
+                    $('#matchingPatientCounter').text(displayPatientCounter.toString());
+
+                });
+
+                closeBtn.onclick = function() {
+                    matchingPatientModal.style.display = "none";
+                    return false;
+                };
+                return true;
+            } else
+                return false;
+        })
+        return true;
+    };//TODO: modify return values and figure out what to call on 'yes'
 
     patientPhotoFeature.init();
 
@@ -825,4 +866,3 @@ var closeBtn = document.getElementsByClassName("close")[0];
 closeBtn.onclick = function() {
     matchingPatientModal.style.display = "none";
 }
-//document.getElementById('modalPatientPhoto').src = **set to photo path of returned patient**

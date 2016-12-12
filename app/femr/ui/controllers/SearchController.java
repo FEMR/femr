@@ -193,7 +193,7 @@ public class SearchController extends Controller {
     public Result getMatchingPatients (String query) {
         ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
         if (patientResponse.hasErrors() || patientResponse.getResponseObject().size() == 0) {
-            return ok("");
+            return ok("No matching patients found.");
         }
         return ok(new Gson().toJson(patientResponse.getResponseObject()));
     }

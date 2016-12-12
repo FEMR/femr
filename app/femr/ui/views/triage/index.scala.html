@@ -38,7 +38,7 @@
         }
         <h2 class="text-center">Check In - Triage</h2>
 
-        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'id -> "patientPostForm", 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
                 <h2>General Info</h2>
@@ -239,15 +239,66 @@
 
                 <div class="submitResetWrap hidden">
                     <h3>Did you screen this patient for Diabetes?</h3>
-                    <button type="submit" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">
+                    <button type="button" id="noDiabetesScreen" class="fButton fSubmitButton pull-right">
                         No</button>
-                    <button type="submit" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
+                    <button type="button" id="yesDiabetesScreen" class="fButton fSubmitButton pull-left">
                         Yes</button>
                         <!-- Data elements for server-side logic, Diabetes Screen
                              Initial value for isDiabetesScreenPerformed set to empty string, only if
                              prompted will it receive a true/false value -->
                     <input type="hidden" id="isDiabetesScreenSettingEnabled" value="@viewModel.getSettings.isDiabetesPrompt"/>
                     <input type="hidden" name="isDiabetesScreenPerformed" value="" />
+                </div>
+                <div id="matchingPatientModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span id="closeBtn" class="close">×</span>
+                            <h2>
+                                <b>There are currently <span id="numberOfMatches1">X</span> patient(s) with this name in the database.</b>
+                            </h2>
+                        </div>
+                        <div class="modal-body">
+                            <div id="patientMessage">
+                                <h3>Is this your patient?</h3>
+                            </div>
+                            <div id="patientInfoModalWrap">
+                                <div id="modalPhotoWrap">
+                                    <img id="patientPhotoModal" height="200" width="200" src="" />
+                                </div>
+                                <div id="patientInfoContainer">
+                                    <div id="patientInfoWrapLeft">
+                                        <div class="patientInfoModal">
+                                            Name: <div id="firstNameModal"></div>
+                                        </div>
+                                        <div class="patientInfoModal">
+                                            Date of Birth: <div id="dobModal"></div>
+                                        </div>
+                                        <div class="patientInfoModal">
+                                            Gender: <div id="genderModal"></div>
+                                        </div>
+                                    </div>
+                                    <div id="patientInfoWrapRight">
+                                        <div class="patientInfoModal">
+                                            City: <div id="cityModal"></div>
+                                        </div>
+                                        <div class="patientInfoModal">
+                                            Height: <div id="heightModal"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="buttonModalWrap">
+                                <div id="leftBtnWrap"><button type="button" id="matchingPatientBtn" class="fButton fRedButton">YES</button></div>
+                                <div id="rightBtnWrap"><button type="button" id="notMatchingPatientBtn" class="fButton fRedButton">NO</button></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <h3>
+                                Viewing <span id="matchingPatientCounter">Y</span> of <span id="numberOfMatches2">X</span>
+                                matching patients.
+                            </h3>
+                        </div>
+                    </div>
                 </div>
                 }
         <div class="submitResetWrap">
@@ -262,56 +313,5 @@
 
         </div>
     </div>
-    </div>
-    <div id="matchingPatientModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span id="closeBtn" class="close">×</span>
-                <h2>
-                    <b>There are currently <span id="numberOfMatches1">X</span> patient(s) with this name in the database.</b>
-                </h2>
-            </div>
-            <div class="modal-body">
-                <div id="patientMessage">
-                    <h3>Is this your patient?</h3>
-                </div>
-                <div id="patientInfoModalWrap">
-                    <div id="modalPhotoWrap">
-                        <img id="patientPhotoModal" height="200" width="200" src="" />
-                    </div>
-                    <div id="patientInfoContainer">
-                        <div id="patientInfoWrapLeft">
-                            <div class="patientInfoModal">
-                                Name: <div id="firstNameModal"></div>
-                            </div>
-                            <div class="patientInfoModal">
-                                Date of Birth: <div id="dobModal"></div>
-                            </div>
-                            <div class="patientInfoModal">
-                                Gender: <div id="genderModal"></div>
-                            </div>
-                        </div>
-                        <div id="patientInfoWrapRight">
-                            <div class="patientInfoModal">
-                                City: <div id="cityModal"></div>
-                            </div>
-                            <div class="patientInfoModal">
-                                Height: <div id="heightModal"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="buttonModalWrap">
-                    <div id="leftBtnWrap"><button type="button" id="matchingPatientBtn" class="fButton fRedButton">YES</button></div>
-                    <div id="rightBtnWrap"><button type="button" id="notMatchingPatientBtn" class="fButton fRedButton">NO</button></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <h3>
-                    Viewing <span id="matchingPatientCounter">Y</span> of <span id="numberOfMatches2">X</span>
-                    matching patients.
-                </h3>
-            </div>
-        </div>
     </div>
 }

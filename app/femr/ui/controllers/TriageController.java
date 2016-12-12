@@ -163,7 +163,9 @@ public class TriageController extends Controller {
             patientItem = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = patientService.createPatient(patientItem);
         } else {
-            patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
+           // patientServiceResponse = patientService.updateSex(id, viewModel.getSex());
+            patientItem = populatePatientItem(viewModel, currentUser);
+            patientServiceResponse = patientService.updatePatient(id, patientItem);
         }
         if (patientServiceResponse.hasErrors()) {
             throw new RuntimeException();

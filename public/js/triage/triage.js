@@ -521,10 +521,11 @@ $(document).ready(function () {
     });
     $('#noDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("false");
+        var temp = checkIfDuplicatePatient(); //var is not important, just necessary because the function returns true value which isn't applicable here
     });
     $('#yesDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("true");
-        //checkIfDuplicatePatient();
+        var temp = checkIfDuplicatePatient(); //var is not important, just necessary because the function returns true value which isn't applicable here
     });
     //birthday shit
     $('#age').change(function () {
@@ -625,12 +626,12 @@ $(document).ready(function () {
                     $(submitMenu).addClass('hidden');
                     $(diabetesDialog).removeClass('hidden');
                     diabeticScreeningFeature.readonlyEverything();
+                    pass = !isDiabeticScreeningPromptNecessary;
                 } else {
                     var pause = checkIfDuplicatePatient();
+                    pass = !pause;
                 }
 
-                //pass = !isDiabeticScreeningPromptNecessary;
-                pass = !pause;
         }
         return pass; //located in triageClientValidation.js
     });
@@ -669,12 +670,19 @@ $(document).ready(function () {
                 $('#heightModal').text(height);
 
                 $('#matchingPatientBtn').click(function () {
-                    //
+                    var id = result[i].Id;
+                    var actionUrl = '/triage?id=' + id;
+                    //TriageController.indexPost()
+                    $('#patientPostForm').attr('action', actionUrl);
+                    $('#matchingPatientBtn').attr('type', 'submit');
                 });
 
                 $('#notMatchingPatientBtn').click(function () {
                     patientCounter++;
                     i++;
+                    if(patientCounter === length) //if viewing last matching patient, change button type so submit will occur
+                        $('#notMatchingPatientBtn').attr('type', 'submit');
+
                     var photoPath = photoRouteBase + result[i].Id + photoRouteEnd;
                     var name = result[i].firstName + " " + result[i].lastName;
                     var dob = result[i].friendlyDateOfBirth;
@@ -691,19 +699,19 @@ $(document).ready(function () {
 
                     displayPatientCounter += 1;
                     $('#matchingPatientCounter').text(displayPatientCounter.toString());
-
                 });
 
                 closeBtn.onclick = function() {
                     matchingPatientModal.style.display = "none";
-                    return false;
+                    $('#patientPostForm').submit(); //if modal is closed, continue with post submission
                 };
-                return true;
-            } else
-                return false;
-        })
-        return true;
-    };//TODO: modify return values and figure out what to call on 'yes'
+            }
+        }).fail(function(response){
+            if(response.responseText === "No matching patients found.")
+                $('#patientPostForm').submit(); //if no matching patients, carry on with patient submission
+        });
+       return true; // return true to freeze posting until possible getJSON returns possible matching patients
+    };
 
     patientPhotoFeature.init();
 

@@ -26,8 +26,11 @@ import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +79,7 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> updateSex(int id, String sex) {
+    public ServiceResponse<PatientItem> updatePatient(int id, PatientItem patient) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -85,22 +88,34 @@ public class PatientService implements IPatientService {
             IPatient savedPatient = patientRepository.retrievePatientById(id);
 
             if( savedPatient == null ){
-
                 response.addError("exception", "Patient Not Found");
                 return response;
             }
+            if (StringUtils.isNullOrWhiteSpace(patient.getFirstName()) ||
+                    StringUtils.isNullOrWhiteSpace(patient.getLastName()) ||
+                    StringUtils.isNullOrWhiteSpace(patient.getCity())) {
 
-            // sex can be changed, but not set to null
-            if(StringUtils.isNotNullOrWhiteSpace(sex)) {
-                savedPatient.setSex(sex);
-                savedPatient = patientRepository.savePatient(savedPatient);
+                return null;
             }
+
+            savedPatient.setFirstName(patient.getFirstName());
+            savedPatient.setLastName(patient.getLastName());
+            savedPatient.setCity(patient.getCity());
+            if(StringUtils.isNotNullOrWhiteSpace(patient.getSex()))
+                savedPatient.setSex(patient.getSex());
+            if(StringUtils.isNotNullOrWhiteSpace(patient.getAddress()))
+                savedPatient.setAddress(patient.getAddress());
+            savedPatient.setId(id);
+            if (patient.getBirth() != null)
+                savedPatient.setAge(patient.getBirth());
+
+            savedPatient = patientRepository.savePatient(savedPatient);
 
             String photoPath = null;
             Integer photoId = null;
-            if (savedPatient.getPhoto() != null) {
-                photoPath = savedPatient.getPhoto().getFilePath();
-                photoId = savedPatient.getPhoto().getId();
+            if (patient.getPathToPhoto() != null) {
+                photoPath = patient.getPathToPhoto();
+                photoId = patient.getPhotoId();
             }
             PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
                     savedPatient.getFirstName(),

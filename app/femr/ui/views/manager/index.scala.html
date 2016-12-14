@@ -61,22 +61,23 @@
                                                     <td>@item.getFirstName @item.getLastName</td>
                                                     <td>
                                                         @if(item.getSex() != null) {
-                                                            Gender:@item.getSex <br>
+                                                            <strong>Gender: </strong> @item.getSex <br>
                                                         }
                                                         @if(item.getAge() != null) {
-                                                            Age: @item.getAge <br>
+                                                            <strong>Age: </strong> @item.getAge <br>
                                                         }
                                                         @if(item.getBirth() != null) {
-                                                            Date Of Birth: @item.getBirth <br>
+                                                            <strong>Date Of Birth:</strong> @item.getBirth <br>
                                                         }
-                                                        @if(item.getHeightFeetDual != 0) {
-                                                            Height: @item.getHeightFeetDual <br>
+                                                        @if(item.getHeightFeet != null) {
+                                                            <strong>
+                                                                Height(m): </strong> @item.getHeightFeet.@item.getHeightInches <br>
                                                         }
-                                                        @if(item.getCity() != 0) {
-                                                            City: @item.getCity <br>
+                                                        @if(item.getCity() != null) {
+                                                            <strong>City: </strong> @item.getCity <br>
                                                         }
-                                                        @if(item.getCity() != 0) {
-                                                            Weight: @item.getWeight
+                                                        @if(item.getWeight() != null) {
+                                                            <strong> Weight(kg): </strong> @item.getWeight
                                                         }
                                                     </td>
                                                     <td>@encounter.getChiefComplaints </td>
@@ -88,36 +89,42 @@
                                                         @if(vital.get("heartRate", vital.getDate(dateIndex - 1))) {
                                                             <strong>
                                                                 Heart Rate</strong> @vital.get("heartRate", vital.getDate(dateIndex - 1))
+                                                            bpm
                                                         }
                                                         <br>
-                                                        @if(vital.get("weight", vital.getDate(dateIndex - 1))) {
+
+                                                        @if(vital.get("temperature", vital.getDate(dateIndex - 1))) {
                                                             <strong>
-                                                                Weight:</strong> @vital.get("weight", vital.getDate(y - 1))
-                                                        }
-                                                        <br>
-                                                        @if(vital.get("tempreture", vital.getDate(dateIndex - 1))) {
-                                                            <strong>
-                                                                Temperature:</strong> @vital.get("temperature", vital.getDate(y - 1))
+                                                                Temperature:</strong> @vital.get("temperature", vital.getDate(dateIndex - 1))
+                                                            F
                                                         }
                                                         <br>
                                                         @if(vital.get("bloodPressureSystolic", vital.getDate(dateIndex - 1))) {
                                                             <strong>
-                                                                Blood Pressure:</strong> @vital.get("bloodPressureSystolic", vital.getDate(y - 1))
+                                                                Blood Pressure Systolic:</strong> @vital.get("bloodPressureSystolic", vital.getDate(dateIndex - 1))
+                                                        }
+                                                        <br>
+                                                        @if(vital.get("bloodPressureDiastolic", vital.getDate(dateIndex - 1))) {
+                                                            <strong>
+                                                                Blood Pressure Diastolic:</strong> @vital.get("bloodPressureDiastolic", vital.getDate(dateIndex - 1))
                                                         }
                                                         <br>
                                                         @if(vital.get("respiratoryRate", vital.getDate(dateIndex - 1))) {
                                                             <strong>
-                                                                Respiratory Rate:</strong> @vital.get("respiratoryRate", vital.getDate(y - 1))
+                                                                Respiratory Rate:</strong> @vital.get("respiratoryRate", vital.getDate(dateIndex - 1))
+                                                            bpm
                                                         }
                                                         <br>
                                                         @if(vital.get("oxygenSaturation", vital.getDate(dateIndex - 1))) {
                                                             <strong>
-                                                                Oxygen:</strong> @vital.get("oxygenSaturation", vital.getDate(y - 1))
+                                                                Oxygen Saturation:</strong> @vital.get("oxygenSaturation", vital.getDate(dateIndex - 1))
+                                                            %
                                                         }
                                                         <br>
                                                         @if(vital.get("glucose", vital.getDate(dateIndex - 1))) {
                                                             <strong>
-                                                                Glucose:</strong> @vital.get("glucose", vital.getDate(y - 1))
+                                                                Glucose:</strong> @vital.get("glucose", vital.getDate(dateIndex - 1))
+                                                            mg/dl
                                                         }
                                                         <br>
                                                         <br>

@@ -7,34 +7,39 @@ div.scrollable {
     overflow: auto;
 }
 
-#managersTable{
+#managersTable {
     border: 1px solid #1f1f1f;
     width: 95%;
 }
-#managersTable ul{
+
+#managersTable ul {
     list-style-type: none;
 }
-#managersTable th{
+
+#managersTable th {
     border: 1px solid #1f1f1f;
     font-size: 14px;
     text-align: center;
     padding: 5px;
     background-color: #357ebd;
 }
-#managersTable td{
+
+#managersTable td {
     padding: 5px;
     border: 1px solid #1f1f1f;
     font-size: 11px;
     background-color: #e1edf7;
 }
-#managersTable ul{
+
+#managersTable ul {
     padding: 0;
 }
 
-
-.managerWrap{
+.managerWrap {
     margin-top: 15px;
-    margin-bottom: 5px;
+    padding-right: 15px;
+    padding-left: 20px;
+    padding-bottom: 5px;
     overflow: hidden;
     align-content: center;
 }

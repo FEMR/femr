@@ -22,7 +22,9 @@
 
 
         <div class="backgroundForWrap">
-            <div class ="h1" id="title">  List Of Triage Patients Checked In Today: @ManageViewModelPost.getToday </div>
+
+            <div class ="h1" id="title">
+                Manager Table: <br>Information about Triage Patients Checked In Today: @ManageViewModelPost.getToday </div>
             @if(currentUser.getTripId != null) {
                 <div class="h2" id="title">TripID: @currentUser.getTripId</div>
             }
@@ -30,6 +32,7 @@
                 <div class="h2" id="title">
                     TripID: Manager  @currentUser.getFirstName @currentUser.getLastName is not currently assigned to a trip</div>
             }
+
             <div id="table-container center-panel-grid" >
                 <div class="managerWrap">
 
@@ -71,7 +74,8 @@
                                                         }
                                                         @if(item.getHeightFeet != null) {
                                                             <strong>
-                                                                Height(m): </strong> @item.getHeightFeet.@item.getHeightInches <br>
+                                                                Height(m): </strong> @item.getHeightFeet
+                                                            .@item.getHeightInches <br>
                                                         }
                                                         @if(item.getCity() != null) {
                                                             <strong>City: </strong> @item.getCity <br>

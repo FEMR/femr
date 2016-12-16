@@ -51,7 +51,6 @@ import java.util.Map;
 public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
-    private final IRepository<IMedicationGeneric> medicationGenericRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
@@ -64,7 +63,6 @@ public class MedicationService implements IMedicationService {
 
     @Inject
     public MedicationService(IMedicationRepository medicationRepository,
-                             IRepository<IMedicationGeneric> medicationGenericRepository,
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
                              IRepository<IMedicationInventory> medicationInventoryRepository,
@@ -76,7 +74,6 @@ public class MedicationService implements IMedicationService {
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationGenericRepository = medicationGenericRepository;
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
         this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;

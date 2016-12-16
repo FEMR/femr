@@ -1,9 +1,5 @@
 # --- !Ups
-
-INSERT INTO `roles` (`name`) VALUES ('Manager');
+ALTER TABLE patients ADD COLUMN phone_number VARCHAR(20) NULL DEFAULT NULL AFTER last_name;
 
 # --- !Downs
-
-DELETE FROM `roles`
-WHERE `name` = "Manager";
-
+ALTER TABLE patients DROP COLUMN phone_number;

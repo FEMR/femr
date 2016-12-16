@@ -33,4 +33,8 @@ public interface ISystemSetting {
     boolean isActive();
 
     void setActive(boolean isActive);
+
+    String getDescription();
+
+    void setDescription(String description);
 }

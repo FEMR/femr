@@ -27,6 +27,7 @@ import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
+import femr.util.stringhelpers.StringUtils;
 import play.Play;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,7 @@ public class DatabaseSeeder {
 
         seedMissionTripInformation();
         seedSystemSettings();
+        seedSystemSettingsDescriptions();
         seedAdminUser();
         seedDefaultTabNames();
         seedDefaultTabFieldSizes();
@@ -72,6 +74,7 @@ public class DatabaseSeeder {
         seedDefaultTabFields();
         seedPatientAgeClassification();
         seedDiagnosis();
+        seedUserRoles();
     }
 
     private void seedDiagnosis() {
@@ -534,24 +537,28 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Multiple chief complaints");
             systemSetting.setActive(false);
+            systemSetting.setDescription("When checked, a user can add multiple chief complaints for a patient");
             systemSettingRepository.create(systemSetting);
         }
         if (systemSettings != null && !containSetting(systemSettings, "Medical PMH Tab")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical PMH Tab");
             systemSetting.setActive(true);
+            systemSetting.setDescription("When checked, the Past Medical History tab on medical appears");
             systemSettingRepository.create(systemSetting);
         }
         if (systemSettings != null && !containSetting(systemSettings, "Medical Photo Tab")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical Photo Tab");
             systemSetting.setActive(true);
+            systemSetting.setDescription("When checked, the Photo tab on medical appears");
             systemSettingRepository.create(systemSetting);
         }
         if (systemSettings != null && !containSetting(systemSettings, "Medical HPI Consolidate")) {
             systemSetting = new SystemSetting();
             systemSetting.setName("Medical HPI Consolidate");
             systemSetting.setActive(false);
+            systemSetting.setDescription("When checked, the HPI tab on medical is consolidated into one Narrative text field");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -559,6 +566,7 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Metric System Option");
             systemSetting.setActive(true);
+            systemSetting.setDescription("When checked, the entire system becomes metric");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -567,6 +575,7 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Country Filter");
             systemSetting.setActive(false);
+            systemSetting.setDescription("When checked, patients from other countries will not show up in a search");
             systemSettingRepository.create(systemSetting);
         }
 
@@ -574,6 +583,7 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Research Only");
             systemSetting.setActive(false);
+            systemSetting.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
             systemSettingRepository.create(systemSetting);
         }
         //Asks a physician in medical if they screened the patient for diabetes based on
@@ -582,10 +592,67 @@ public class DatabaseSeeder {
             systemSetting = new SystemSetting();
             systemSetting.setName("Diabetes Prompt");
             systemSetting.setActive(false);
+            systemSetting.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
             systemSettingRepository.create(systemSetting);
         }
 
     }
+    private void seedSystemSettingsDescriptions() {
+        List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
+
+        for (ISystemSetting ss : systemSettings)
+        {
+            if (ss.getName().equals("Multiple chief complaints")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, a user can add multiple chief complaints for a patient");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Medical PMH Tab")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, the Past Medical History tab on medical appears");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Medical Photo Tab")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, the Photo tab on medical appears");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Medical HPI Consolidate")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, the HPI tab on medical is consolidated into one Narrative text field");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Metric System Option")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, the entire system becomes metric");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Country Filter")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, patients from other countries will not show up in a search");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Research Only")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+            if (ss.getName().equals("Diabetes Prompt")){
+                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
+                    ss.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");
+                    systemSettingRepository.update((SystemSetting)ss);
+                }
+            }
+        }
+    }
+
 
     /**
      * Uses references to HPI, PMH, and Treatment Tabs
@@ -995,6 +1062,15 @@ public class DatabaseSeeder {
         return false;
     }
 
+    private static boolean containRole(List<? extends IRole> roles, String roleName) {
+      for (IRole role : roles) {
+        if (role.getName().equals(roleName)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
 
     /**
      * Seed the admin user from the configuration file
@@ -1047,5 +1123,17 @@ public class DatabaseSeeder {
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
             userRepository.create(superUser);
         }
+    }
+
+    private void seedUserRoles() {
+      // Other roles are in database from early evolutions
+      List<? extends IRole> roles = roleRepository.findAll(Role.class);
+      if (!containRole(roles, "Manager")) {
+        // Manager role doesn't exist, add it
+        Role newRole = new Role();
+        newRole.setId(Roles.MANAGER);
+        newRole.setName("Manager");
+        roleRepository.create(newRole);
+      }
     }
 }

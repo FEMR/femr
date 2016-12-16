@@ -17,48 +17,33 @@
      you have any questions, contact <info@teamfemr.org>.
 */
 package femr.business.services.system;
-
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
-
-
-
-
-
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.Patient;
-import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PatientService implements IPatientService {
 
-    private final IRepository<IPatient> patientRepository;
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
+    private final IPatientRepository patientRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public PatientService(IRepository<IPatient> patientRepository,
-                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
+    public PatientService(IPatientRepository patientRepository,
                           IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientRepository = patientRepository;
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -73,12 +58,8 @@ public class PatientService implements IPatientService {
         Map<String, String> patientAgeClassificationStrings = new LinkedHashMap<>();
         try {
 
-            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
-                    .where()
-                    .eq("isDeleted", false)
-                    .order()
-                    .asc("sortOrder");
-            List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.find(patientAgeClassificationExpressionList);
+
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
             for (IPatientAgeClassification pac : patientAgeClassifications) {
 
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());
@@ -99,14 +80,9 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", id);
-
-
         try {
 
-            IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
 
             if( savedPatient == null ){
 
@@ -117,7 +93,7 @@ public class PatientService implements IPatientService {
             // sex can be changed, but not set to null
             if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
-                savedPatient = patientRepository.update(savedPatient);
+                savedPatient = patientRepository.savePatient(savedPatient);
             }
 
             String photoPath = null;
@@ -129,6 +105,7 @@ public class PatientService implements IPatientService {
             PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
                     savedPatient.getFirstName(),
                     savedPatient.getLastName(),
+                    savedPatient.getPhoneNumber(),
                     savedPatient.getCity(),
                     savedPatient.getAddress(),
                     savedPatient.getUserId(),
@@ -162,8 +139,9 @@ public class PatientService implements IPatientService {
         }
 
         try {
-            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
-            newPatient = patientRepository.create(newPatient);
+            IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getPhoneNumber(),
+                    patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
+            newPatient = patientRepository.savePatient(newPatient);
             String photoPath = null;
             Integer photoId = null;
             if (newPatient.getPhoto() != null) {
@@ -174,6 +152,7 @@ public class PatientService implements IPatientService {
                     itemModelMapper.createPatientItem(newPatient.getId(),
                             newPatient.getFirstName(),
                             newPatient.getLastName(),
+                            newPatient.getPhoneNumber(),
                             newPatient.getCity(),
                             newPatient.getAddress(),
                             newPatient.getUserId(),
@@ -202,16 +181,12 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                .where()
-                .eq("id", id);
-
         try {
-            IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
             savedPatient.setIsDeleted(DateTime.now());
             savedPatient.setDeletedByUserId(deleteByUserID);
             savedPatient.setReasonDeleted(reason);
-            patientRepository.update(savedPatient);
+            patientRepository.savePatient(savedPatient);
 
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

@@ -349,9 +349,6 @@ public class PDFController extends Controller {
         return table;
     }
 
-
-
-
     /**
      * Builds the Assessments Table - The assessment fields for the encounter
      *

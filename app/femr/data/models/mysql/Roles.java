@@ -25,4 +25,5 @@ public class Roles {
     public static final int RESEARCHER = 4;
     public static final int NURSE = 5;
     public static final int SUPERUSER = 6;
+    public static final int MANAGER = 7;
 }

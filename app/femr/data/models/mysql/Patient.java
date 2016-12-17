@@ -38,6 +38,8 @@ public class Patient implements IPatient {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "phone_number", nullable = true)
+    private String phoneNumber;
     @Column(name = "age")
     private Date age;
     @Column(name = "sex", nullable = true)
@@ -92,6 +94,16 @@ public class Patient implements IPatient {
     @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @Override
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

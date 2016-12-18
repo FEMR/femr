@@ -131,7 +131,8 @@ public interface IItemModelMapper {
     PhotoItem createPhotoItem(int id, String description, Date insertTimeStamp, String imageURL);
 
     /**
-     * Generate and provide an instance of PrescriptionItem
+     * Generate and provide an instance of PrescriptionItem. quantityCurrent and quantityInitial will be null if the
+     * Inventory feature is not being used
      *
      * @param id            id of the prescription, not null
      * @param name          name of the prescription, not null
@@ -141,13 +142,14 @@ public interface IItemModelMapper {
      * @param conceptPrescriptionAdministration
      * @param amount
      * @param medication
-     * @param medicationInventory the inventory of the medication, may be null
+     * @param quantityCurrent current quantity of the medication in Inventory, may be null
+     * @param quantityInitial initial quantity of the medicatoin in inventory, may be null
      * @param isCounseled indicates whether or not the pharmacist checked the checkbox indicating that they counseled the patient on this prescription, may be null
      * @return a new PrescriptionItem or null if processing fails
      */
     PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
                                             IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
-                                            IMedication medication, MedicationInventory medicationInventory, Boolean isCounseled);
+                                            IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled);
 
     /**
      * Generate and provide an instance of ProblemItem.

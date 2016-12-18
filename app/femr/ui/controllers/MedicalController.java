@@ -140,7 +140,7 @@ public class MedicalController extends Controller {
         viewModelGet.setPatientItem(patientItemServiceResponse.getResponseObject());
 
         //get prescriptions
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounter.getId(), currentUserSession.getTripId());
         if (prescriptionItemServiceResponse.hasErrors()) {
 
             throw new RuntimeException();

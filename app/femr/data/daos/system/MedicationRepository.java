@@ -143,10 +143,36 @@ public class MedicationRepository implements IMedicationRepository {
      * {@inheritDoc}
      */
     @Override
+    public IMedication createNewMedication(String medicationName) {
+        IMedication medication = null;
+
+        if (StringUtils.isNullOrWhiteSpace(medicationName)){
+
+            return null;
+        }
+        try{
+
+            medication = dataModelMapper.createMedication(medicationName);
+            Ebean.save(medication);
+        } catch (Exception ex){
+
+            Logger.error("Attempted and failed to execute createNewMedication("+medicationName+") in MedicationRepository. Stack trace to follow.");
+            ex.printStackTrace();
+            throw ex;
+        }
+
+        return medication;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IMedication createNewMedication (String medicationName, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm){
         IMedication medication = null;
 
         if (medicationName == null || medicationGenericStrengths == null || conceptMedicationForm == null) {
+
             return null;
         }
 
@@ -157,7 +183,8 @@ public class MedicationRepository implements IMedicationRepository {
             Ebean.save(medication);
         } catch (Exception ex) {
 
-            Logger.error("MedicationRepository-createNewMedication", ex.getMessage(), "medicationName: " + medicationName, "medicationGenericStrengths: " + medicationGenericStrengths, "conceptMedicationForm: " + conceptMedicationForm);
+            Logger.error("Attempted and failed to execute createNewMedication() in MedicationRepository. Stack trace to follow.");
+            ex.printStackTrace();
             throw ex;
         }
 

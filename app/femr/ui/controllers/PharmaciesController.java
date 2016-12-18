@@ -78,7 +78,7 @@ public class PharmaciesController extends Controller {
         }
 
         //ensure prescriptions exist for that patient
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId(), currentUserSession.getTripId());
         if (prescriptionItemsResponse.hasErrors()) {
             throw new RuntimeException();
 
@@ -126,7 +126,7 @@ public class PharmaciesController extends Controller {
 
 
         //find patient prescriptions, they do have to exist
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId());
+        ServiceResponse<List<PrescriptionItem>> prescriptionItemServiceResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId(), currentUserSession.getTripId());
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {

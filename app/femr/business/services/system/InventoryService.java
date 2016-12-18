@@ -36,6 +36,8 @@ import femr.data.models.mysql.Medication;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import com.google.gson.Gson;
+import play.Logger;
+
 import java.util.*;
 
 public class InventoryService implements IInventoryService {
@@ -57,9 +59,63 @@ public class InventoryService implements IInventoryService {
         this.itemModelMapper = itemModelMapper;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventorysByTripId(int tripId) {
+        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
+        //Querying based on the trip id.  Each trip will have its own inventory.
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("missionTrip.id", tripId);
 
+        List<? extends IMedicationInventory> medicationsInventory;
+        try {
+            medicationsInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+            return response;
+        }
 
+        List<MedicationItem> medicationItems = new ArrayList<>();
+
+        for (IMedicationInventory m : medicationsInventory) {
+
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(), m.getQuantityInitial(), m.getIsDeleted()));
+        }
+        response.setResponseObject(medicationItems);
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<MedicationItem> retrieveMedicationInventoryByMedicationIdAndTripId(int medicationId, int tripId){
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("missionTrip.id", tripId)
+                .eq("medication.id", medicationId);
+
+        try{
+
+            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            MedicationItem medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted());
+            response.setResponseObject(medicationItem);
+        } catch (Exception ex){
+
+            Logger.error("Attempted and failed to execute retrieveMedicationInventoryByMedicationIdAndTripId(" + medicationId + "," + tripId + ") in InventoryService. Stack trace to follow.");
+            ex.printStackTrace();
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
 
     /**
      * {@inheritDoc}

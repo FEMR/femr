@@ -36,6 +36,8 @@ import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
+import play.Logger;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -357,6 +359,9 @@ public class SearchService implements ISearchService {
 
             response.setResponseObject(prescriptionItems);
         } catch (Exception ex) {
+
+            Logger.error("Attempted and failed to execute retrieveUnreplacedPrescriptionItems(" + encounterId + ") in SearchService. Stack trace to follow.");
+            ex.printStackTrace();
             response.addError("exception", ex.getMessage());
         }
 

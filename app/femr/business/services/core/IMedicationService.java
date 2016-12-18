@@ -122,14 +122,6 @@ public interface IMedicationService {
     ServiceResponse<List<String>> retrieveAvailableMedicationUnits();
 
     /**
-     * Retrieves a list of all medications in the system, including duplicates.
-     *
-     * @return a service response that contains a list of MedicationItems
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId);
-
-    /**
      * Retrieves a ObjectNode of all medications in the system
      *
      * @return a service response that contains a list of ObjectNode's

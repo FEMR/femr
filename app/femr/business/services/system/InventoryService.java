@@ -57,9 +57,36 @@ public class InventoryService implements IInventoryService {
         this.itemModelMapper = itemModelMapper;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId) {
+        ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
+        //Querying based on the trip id.  Each trip will have its own inventory.
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("missionTrip.id", tripId);
 
+        List<? extends IMedicationInventory> medicationsInventory;
+        try {
+            medicationsInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
+        } catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+            return response;
+        }
 
+        List<MedicationItem> medicationItems = new ArrayList<>();
+
+        for (IMedicationInventory m : medicationsInventory) {
+
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(), m.getQuantityInitial(), m.getIsDeleted()));
+        }
+        response.setResponseObject(medicationItems);
+
+        return response;
+    }
 
     /**
      * {@inheritDoc}

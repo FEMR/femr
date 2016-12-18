@@ -73,7 +73,8 @@ public interface ISearchService {
      * Find all prescriptions that have not been replaced. This does not imply they have been dispensed.
      *
      * @param encounterId id of the encounter
-     * @param tripId id of the trip that the user is on , can be null
+     * @param tripId id of the trip that the user is on. This is used for managing inventory if the user
+     *               is assigned to a trip, can be null
      * @return a service response that contains a list of PrescriptionItems
      * and/or errors if they exist.
      */

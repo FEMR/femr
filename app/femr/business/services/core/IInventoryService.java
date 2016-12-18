@@ -21,10 +21,21 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
 
+import java.util.List;
+
 /**
  * Inventory service is responsible for maintaining and tracking the medication inventory for a team.
  */
 public interface IInventoryService {
+
+
+    /**
+     * Retrieves a list of all medications in the system, including duplicates.
+     *
+     * @return a service response that contains a list of MedicationItems
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId);
 
     /**
      * Sets the total number of a medication in the inventory. If the total number has not yet been set, then it will

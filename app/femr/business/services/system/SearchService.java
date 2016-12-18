@@ -333,6 +333,8 @@ public class SearchService implements ISearchService {
                 MedicationInventory inventory = null;
 
                 //if the medication resides in inventory and the user is on the trip using that inventory
+                //this will make sure that information about the current state of inventory is included
+                //in the PrescriptionItem being created below.
                 if( pp.getMedication().getMedicationInventory().size() > 0 && tripId != null) {
 
                     inventory = pp.getMedication()

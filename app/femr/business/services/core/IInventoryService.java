@@ -35,7 +35,7 @@ public interface IInventoryService {
      * @return a service response that contains a list of MedicationItems
      * and/or errors if they exist.
      */
-    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId);
+    ServiceResponse<List<MedicationItem>> retrieveMedicationInventorysByTripId(int tripId);
 
     /**
      * Sets the total number of a medication in the inventory. If the total number has not yet been set, then it will

@@ -75,7 +75,7 @@ public class InventoryController extends Controller {
         // since they are tied to a trip
         if( currentUser.getTripId() != null ){
 
-            ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventory(currentUser.getTripId());
+            ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventorysByTripId(currentUser.getTripId());
             if (medicationServiceResponse.hasErrors()) {
                 throw new RuntimeException();
             } else {

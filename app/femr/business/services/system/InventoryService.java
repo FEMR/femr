@@ -61,7 +61,7 @@ public class InventoryService implements IInventoryService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId) {
+    public ServiceResponse<List<MedicationItem>> retrieveMedicationInventorysByTripId(int tripId) {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
         //Querying based on the trip id.  Each trip will have its own inventory.

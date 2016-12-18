@@ -39,6 +39,8 @@ import femr.util.stringhelpers.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+
 public class SearchService implements ISearchService {
 
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
@@ -452,15 +454,19 @@ public class SearchService implements ISearchService {
         Integer id = null;
         String firstName = null;
         String lastName = null;
+        String phoneNumber = null;
         if (words.length == 0) {
             //nothing was in the query
             response.addError("", "query string empty");
             return response;
         } else if (words.length == 1) {
-            //could be an ID or a name
+            //could be an ID, name, or phone number
             try {
                 //see if it is a number
-                id = Integer.parseInt(words[0]);
+                if(isNumeric(words[0]) && words[0].length() > 5)
+                    phoneNumber = words[0];
+                else
+                    id = Integer.parseInt(words[0]);
             } catch (NumberFormatException ex) {
                 //see if it it a string
                 firstName = words[0];
@@ -475,6 +481,20 @@ public class SearchService implements ISearchService {
 
         List<? extends IPatient> patients;
 
+        //Build the Query
+        //TODO: filter these by the current country of the team
+        if (id != null) {
+            //if we have an id, that is all we need.
+            //this is the most ideal scenario
+            IPatient patient = patientRepository.retrievePatientById(id);
+            List<IPatient> iPatients = new ArrayList<>();
+            iPatients.add(patient);
+            patients = iPatients;
+        } else if (phoneNumber != null) {
+            patients = patientRepository.retrievePatientsByPhoneNumber(phoneNumber);
+        } else {
+            patients = patientRepository.retrievePatientsByName(firstName, lastName);
+        }
 
         try {
             //Build the Query

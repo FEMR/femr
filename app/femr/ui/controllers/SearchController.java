@@ -122,6 +122,8 @@ public class SearchController extends Controller {
             patientSearch.setId(Integer.toString(patientItem.getId()));
             patientSearch.setFirstName(patientItem.getFirstName());
             patientSearch.setLastName(patientItem.getLastName());
+            if (patientItem.getPhoneNumber() != null)
+                patientSearch.setPhoneNumber(patientItem.getPhoneNumber());
             if (patientItem.getAge() != null)
                 patientSearch.setAge(patientItem.getAge());
             if (patientItem.getPathToPhoto() != null)

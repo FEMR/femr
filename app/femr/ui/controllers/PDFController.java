@@ -225,6 +225,7 @@ public class PDFController extends Controller {
         // Row 3
         table.addCell(getStyledPhrase("City: ", outputStringOrNA(patientItem.getCity())));
         table.addCell(getStyledPhrase("Address: ", outputStringOrNA(patientItem.getAddress())));
+        table.addCell(getStyledPhrase("Phone Number: ", outputStringOrNA(patientItem.getPhoneNumber())));
         table.completeRow();
 
         return table;

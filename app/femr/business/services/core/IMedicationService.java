@@ -48,7 +48,9 @@ public interface IMedicationService {
     ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions);
 
     /**
-     * Creates a new prescription when the medication doesn't already exist in the inventory. It is assumed the prescription is not yet dispensed.
+     * Creates a new prescription when the medication doesn't already exist in the inventory.
+     * It is assumed the prescription is not yet dispensed. This will also create the medication so
+     * there is no need to call createMedication() first.
      *
      * @param medicationName name of the medication being prescribed, not null
      * @param administrationId how the medication is administered (BID, etc), may be null.
@@ -120,14 +122,6 @@ public interface IMedicationService {
      * and/or errors if they exist.
      */
     ServiceResponse<List<String>> retrieveAvailableMedicationUnits();
-
-    /**
-     * Retrieves a list of all medications in the system, including duplicates.
-     *
-     * @return a service response that contains a list of MedicationItems
-     * and/or errors if they exist.
-     */
-    ServiceResponse<List<MedicationItem>> retrieveMedicationInventory(int tripId);
 
     /**
      * Retrieves a ObjectNode of all medications in the system

@@ -311,7 +311,7 @@ public class SearchService implements ISearchService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId) {
+    public ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId, Integer tripId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
@@ -331,12 +331,14 @@ public class SearchService implements ISearchService {
                     continue;
 
                 MedicationInventory inventory = null;
-                if( pp.getMedication().getMedicationInventory().size() > 0 ) {
+
+                //if the medication resides in inventory and the user is on the trip using that inventory
+                if( pp.getMedication().getMedicationInventory().size() > 0 && tripId != null) {
 
                     inventory = pp.getMedication()
                             .getMedicationInventory()
                             .stream()
-                            .filter(i -> i.getMissionTrip().getId() == pp.getPatientEncounter().getMissionTrip().getId())
+                            .filter(i -> i.getMissionTrip().getId() == tripId)
                             .findFirst()
                             .get();
                 }

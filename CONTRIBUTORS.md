@@ -28,3 +28,9 @@ These people have contributed to fEMR's design and implementation:
 * [Kratika Swami](https://github.com/kratikaswami)
 * [Jeff Simonitto](https://github.com/ec0629)
 * [Vivek Vadivel](https://github.com/ao3742)
+* [Jessica Creighton](https://github.com/jcreigh)
+* [Judy Baxter](https://github.com/judyvbaxter)
+* [Melissa Heredia](https://github.com/mtwins)
+* [Christopher Richmond](https://github.com/C-RICHMOND)
+* [Martin Van Well](https://github.com/thraxus)
+

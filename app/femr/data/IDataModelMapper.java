@@ -190,7 +190,7 @@ public interface IDataModelMapper {
      *
      * @param amount        amount of medication dispensed, not null
      * @param medicationId    the id of the dispensed medication, not null
-     * @param medicationAdministrationId  ID of Administration type of the prescription
+     * @param medicationAdministrationId  ID of Administration type of the prescription, may be null
      * @param userId        id of the user creating the prescription, not null
      * @param encounterId   encounter id of the prescription, not null
      * @param dateDispensed   date and time the patient prescription dispensed to the patient, can be null

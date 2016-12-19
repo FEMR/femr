@@ -43,6 +43,14 @@ public interface IMedicationRepository {
     IMedication deleteMedication (Integer medicationId, boolean isDeleted);
 
     /**
+     * Creates new medication in the database given only the name of the medicine.
+     *
+     * @param medicationName name of the medicine
+     * @return the new Medication
+     */
+    IMedication createNewMedication(String medicationName);
+
+    /**
      *  Create new medication in the database
      * @param medicationName of the medication, not null
      * @param medicationGenericStrengths of list of generic strengths, not null

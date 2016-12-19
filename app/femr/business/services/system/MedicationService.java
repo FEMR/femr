@@ -376,8 +376,7 @@ public class MedicationService implements IMedicationService {
 
         try {
 
-            IMedication medication = dataModelMapper.createMedication(medicationName);
-            medication = medicationRepository.createNewMedication(medicationName, null, null);
+            IMedication medication = medicationRepository.createNewMedication(medicationName);
 
             IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
                     amount,

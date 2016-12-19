@@ -309,7 +309,7 @@ public class ItemModelMapper implements IItemModelMapper {
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
                                                    IConceptPrescriptionAdministration medicationAdministration, Integer amount, IMedication medication,
-                                                   MedicationInventory medicationInventory, Boolean isCounseled) {
+                                                   Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled) {
 
 
         PrescriptionItem prescriptionItem = new PrescriptionItem();
@@ -336,10 +336,11 @@ public class ItemModelMapper implements IItemModelMapper {
         if (medication != null) {
 
             MedicationItem medicationItem;
-            if( medicationInventory != null ){
+            //Inventory isn't coming through
+            if(quantityCurrent != null && quantityInitial != null){
 
-                medicationItem = createMedicationItem(medication, medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
-                prescriptionItem.setMedicationRemaining( medicationInventory.getQuantityCurrent() );
+                medicationItem = createMedicationItem(medication, quantityCurrent, quantityInitial, null);
+                prescriptionItem.setMedicationRemaining( quantityCurrent );
             }
             else{
                 medicationItem = createMedicationItem(medication, null, null, null);

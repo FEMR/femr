@@ -247,6 +247,7 @@ public class MedicationService implements IMedicationService {
                         prescriptionReplacement.getReplacementPrescription().getAmount(),
                         prescriptionReplacement.getReplacementPrescription().getMedication(),
                         null,
+                        null,
                         prescriptionReplacement.getReplacementPrescription().isCounseled())
                 );
             }
@@ -298,6 +299,7 @@ public class MedicationService implements IMedicationService {
                         prescription.getAmount(),
                         prescription.getMedication(),
                         null,
+                        null,
                         prescription.isCounseled())
                 );
 
@@ -343,6 +345,7 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.getConceptPrescriptionAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
+                    null,
                     null,
                     patientPrescription.isCounseled());
             response.setResponseObject(prescriptionItem);
@@ -397,6 +400,7 @@ public class MedicationService implements IMedicationService {
                     patientPrescription.getConceptPrescriptionAdministration(),
                     patientPrescription.getAmount(),
                     patientPrescription.getMedication(),
+                    null,
                     null,
                     patientPrescription.isCounseled());
             response.setResponseObject(prescriptionItem);

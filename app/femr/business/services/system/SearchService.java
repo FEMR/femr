@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryHelper;
 import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IInventoryService;
 import femr.business.services.core.ISearchService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -53,6 +54,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
+    private final IInventoryService inventoryService;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IMissionCity> cityRepository;
 
@@ -64,6 +66,7 @@ public class SearchService implements ISearchService {
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
+                         IInventoryService inventoryService,
                          IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                          IRepository<IMissionCity> cityRepository,
                          @Named("identified") IItemModelMapper itemModelMapper) {
@@ -76,6 +79,7 @@ public class SearchService implements ISearchService {
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.itemModelMapper = itemModelMapper;
+        this.inventoryService = inventoryService;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.cityRepository = cityRepository;
     }
@@ -324,25 +328,34 @@ public class SearchService implements ISearchService {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
 
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
+
+
+
             for( IPatientPrescription pp : patientPrescriptions )
             {
                 // Don't get prescriptions with a replacement
                 if( pp.getPatientPrescriptionReplacements() != null && pp.getPatientPrescriptionReplacements().size() > 0 )
                     continue;
 
-                MedicationInventory inventory = null;
+                Integer quantityCurrent = null;
+                Integer quantityInitial = null;
 
                 //if the medication resides in inventory and the user is on the trip using that inventory
                 //this will make sure that information about the current state of inventory is included
                 //in the PrescriptionItem being created below.
                 if( pp.getMedication().getMedicationInventory().size() > 0 && tripId != null) {
 
-                    inventory = pp.getMedication()
-                            .getMedicationInventory()
-                            .stream()
-                            .filter(i -> i.getMissionTrip().getId() == tripId)
-                            .findFirst()
-                            .get();
+
+                    //need to get the specific inventory for this medication (a medication can have multiple inventories if diferent trips are using it)
+                    ServiceResponse<MedicationItem> inventoryResponse = inventoryService.retrieveMedicationInventoryByMedicationIdAndTripId(pp.getMedication().getId(), tripId);
+
+                    //if this trip has an inventory for this medication
+                    if (inventoryResponse.getResponseObject() != null){
+
+                        quantityCurrent = inventoryResponse.getResponseObject().getQuantityCurrent();
+                        quantityInitial = inventoryResponse.getResponseObject().getQuantityTotal();
+                    }
+
                 }
 
                 PrescriptionItem item = itemModelMapper.createPrescriptionItem(
@@ -355,7 +368,8 @@ public class SearchService implements ISearchService {
                         pp.getConceptPrescriptionAdministration(),
                         pp.getAmount(),
                         pp.getMedication(),
-                        inventory,
+                        quantityCurrent,
+                        quantityInitial,
                         pp.isCounseled()
                 );
                 prescriptionItems.add(item);
@@ -399,6 +413,7 @@ public class SearchService implements ISearchService {
                             pp.getAmount(),
                             pp.getMedication(),
                             null,
+                            null,
                             pp.isCounseled()
                     ))
                     .collect(Collectors.toList());
@@ -413,6 +428,7 @@ public class SearchService implements ISearchService {
                             pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
                             pp.getMedication(),
+                            null,
                             null,
                             pp.isCounseled()
                     ))

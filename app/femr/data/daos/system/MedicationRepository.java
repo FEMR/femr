@@ -145,8 +145,17 @@ public class MedicationRepository implements IMedicationRepository {
     @Override
     public IMedication createNewMedication (String medicationName, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm){
         IMedication medication = null;
-
-        if (medicationName == null || medicationGenericStrengths == null || conceptMedicationForm == null) {
+            /**
+             * @todo Analysis needed on condition based issue found during FEMR-268 (details below)
+             *
+             * Found issue while working FEMR-208 that a prescription being created under Medical could not be
+             * saved as the code always passed in a null medicationGenericStrengths and conceptMedicationForm.
+             *
+             * Given that the database allows for nulls without issue, this condition check was replaced temporarily with
+             * only verifying the medicationName was not null.
+             */
+//        if (medicationName == null || medicationGenericStrengths == null || conceptMedicationForm == null) {
+          if (medicationName == null) {
             return null;
         }
 

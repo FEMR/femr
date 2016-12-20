@@ -29,6 +29,7 @@ public class IndexViewModelPost {
     private String address;
     private String city;
     private Date age;
+    private boolean birthdayIsFake;
     private String ageClassification;
     private String sex;
     public Boolean deletePhoto; //flag to determine if user would like to delete image file
@@ -117,6 +118,10 @@ public class IndexViewModelPost {
     public void setAge(Date age) {
         this.age = age;
     }
+
+    public boolean getBirthdayIsFake() { return birthdayIsFake; }
+
+    public void setBirthdayIsFake(boolean isFake) { this.birthdayIsFake = isFake; }
 
     public String getSex() {
         return sex;

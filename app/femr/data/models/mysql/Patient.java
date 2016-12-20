@@ -62,6 +62,8 @@ public class Patient implements IPatient {
     @Column(name = "birthday_is_fake", nullable = true)
     private boolean birthdayIsFake;
 
+    @Column(name = "birthday_is_fake", nullable = true)
+    private boolean birthdayIsFake;
 
     @Override
     public int getId() {

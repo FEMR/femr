@@ -20,7 +20,6 @@ package femr.ui.controllers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import femr.business.services.core.IMedicationService;
 import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -37,6 +36,7 @@ import femr.ui.models.research.FilterViewModel;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -49,10 +49,8 @@ import java.util.*;
 @AllowedRoles({Roles.RESEARCHER})
 public class ResearchController extends Controller {
 
-    private final Form<FilterViewModel> FilterViewModelForm = Form.form(FilterViewModel.class);
-
+    private final FormFactory formFactory;
     private IResearchService researchService;
-    private IMedicationService medicationService;
     private ISessionService sessionService;
     private IMissionTripService missionTripService; //Andrew Trip Filter
 
@@ -61,12 +59,12 @@ public class ResearchController extends Controller {
      *
      * @param sessionService    {@link ISessionService}
      * @param researchService   {@link IResearchService}
-     * @param medicationService {@link IMedicationService}
      */
     @Inject
-    public ResearchController(ISessionService sessionService, IResearchService researchService, IMedicationService medicationService, IMissionTripService missionTripService) {
+    public ResearchController(FormFactory formFactory, ISessionService sessionService, IResearchService researchService, IMissionTripService missionTripService) {
+
+        this.formFactory = formFactory;
         this.researchService = researchService;
-        this.medicationService = medicationService;
         this.sessionService = sessionService;
         this.missionTripService = missionTripService; //Andrew Trip Filter
     }
@@ -99,6 +97,7 @@ public class ResearchController extends Controller {
      */
     public Result indexPost() {
 
+        final Form<FilterViewModel> FilterViewModelForm = formFactory.form(FilterViewModel.class);
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
         ResearchFilterItem researchFilterItem = createResearchFilterItem(filterViewModel);
 
@@ -120,6 +119,7 @@ public class ResearchController extends Controller {
      */
     public Result exportPost() {
 
+        final Form<FilterViewModel> FilterViewModelForm = formFactory.form(FilterViewModel.class);
         FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
 
         ResearchFilterItem filterItem = createResearchFilterItem(filterViewModel);
@@ -127,10 +127,9 @@ public class ResearchController extends Controller {
         ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
         File csvFile = exportServiceResponse.getResponseObject();
 
-        response().setContentType("application/x-download");
         response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
 
-        return ok(csvFile);
+        return ok(csvFile).as("application/x-download");
     }
 
     /**

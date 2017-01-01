@@ -13,9 +13,7 @@ import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.manager.IndexViewModelGet;
-import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.manager.index;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -35,11 +33,11 @@ public class ManagerController extends Controller {
     private final IPatientService patientService;
     private final IEncounterService encounterService;
     private final ISearchService searchService;
-    private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
 
     @Inject
     public ManagerController(ISessionService sessionService, IPatientService patientService,
                              IEncounterService encounterService, ISearchService searchService) {
+
         this.sessionService = sessionService;
         this.patientService = patientService;
         this.encounterService=encounterService;

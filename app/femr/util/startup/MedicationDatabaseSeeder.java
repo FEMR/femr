@@ -19,7 +19,8 @@
 package femr.util.startup;
 
 import com.avaje.ebean.Ebean;
-import femr.data.daos.Repository;
+import com.google.inject.Inject;
+import femr.data.daos.IRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;
 import femr.data.models.mysql.concepts.ConceptMedicationUnit;
@@ -34,24 +35,32 @@ import java.util.stream.Collectors;
 
 public class MedicationDatabaseSeeder {
 
-    private final Repository<ConceptMedication> conceptMedicationRepository;
-    private final Repository<ConceptMedicationGeneric> conceptMedicationGenericRepository;
-    private final Repository<ConceptMedicationGenericStrength> conceptMedicationGenericStrengthRepository;
-    private final Repository<ConceptMedicationUnit> conceptMedicationUnitRepository;
-    private final Repository<ConceptMedicationForm> conceptMedicationFormRepository;
-    private final Repository<ConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
+    private final IRepository<IMedication> conceptMedicationRepository;
+    private final IRepository<IMedicationGeneric> conceptMedicationGenericRepository;
+    private final IRepository<IMedicationGenericStrength> conceptMedicationGenericStrengthRepository;
+    private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
+    private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
+    private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
 
-    public MedicationDatabaseSeeder() {
+    @Inject
+    public MedicationDatabaseSeeder(IRepository<IMedication> conceptMedicationRepository,
+                                    IRepository<IMedicationGeneric> conceptMedicationGenericRepository,
+                                    IRepository<IMedicationGenericStrength> conceptMedicationGenericStrengthRepository,
+                                    IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
+                                    IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
+                                    IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository) {
 
-        conceptMedicationRepository = new Repository<>();
-        conceptMedicationGenericRepository = new Repository<>();
-        conceptMedicationGenericStrengthRepository = new Repository<>();
-        conceptMedicationUnitRepository = new Repository<>();
-        conceptMedicationFormRepository = new Repository<>();
-        conceptPrescriptionAdministrationRepository = new Repository<>();
+        this.conceptMedicationRepository = conceptMedicationRepository;
+        this.conceptMedicationGenericRepository = conceptMedicationGenericRepository;
+        this.conceptMedicationGenericStrengthRepository = conceptMedicationGenericStrengthRepository;
+        this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
+        this.conceptMedicationFormRepository = conceptMedicationFormRepository;
+        this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
+
+        this.seed();
     }
 
-    public void seed() {
+    private void seed() {
 
         //prescription concepts
         seedConceptPrescriptionAdministrations();
@@ -333,7 +342,6 @@ public class MedicationDatabaseSeeder {
 
             }
 
-
             conceptPrescriptionAdministrationRepository.createAll(conceptPrescriptionAdministrationsToAdd);
         }
     }
@@ -406,6 +414,7 @@ public class MedicationDatabaseSeeder {
             conceptMedicationUnit.setIsDeleted(false);
             newconceptMedicationUnits.add(conceptMedicationUnit);
         }
+
         conceptMedicationUnitRepository.createAll(newconceptMedicationUnits);
     }
 
@@ -555,6 +564,7 @@ public class MedicationDatabaseSeeder {
             conceptMedicationForm.setIsDeleted(false);
             newMedicationForms.add(conceptMedicationForm);
         }
+
         conceptMedicationFormRepository.createAll(newMedicationForms);
     }
 

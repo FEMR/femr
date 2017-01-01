@@ -28,7 +28,7 @@ public class Repository<T> implements IRepository<T> {
 
     @Override
     public int count(Class<? extends T> clazz) {
-        return Ebean.find(clazz).findRowCount();
+        return Ebean.find(clazz).findCount();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Repository<T> implements IRepository<T> {
 
     @Override
     public void delete(List<? extends T> entities){
-        Ebean.delete(entities);
+        Ebean.deleteAll(entities);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Repository<T> implements IRepository<T> {
     }
     @Override
     public List<? extends T> createAll(List<? extends T> entities){
-        Ebean.save(entities);
+        Ebean.saveAll(entities);
         return entities;
     }
 

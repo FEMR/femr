@@ -14,6 +14,7 @@ import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -21,18 +22,23 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class SessionsController extends Controller {
-    private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
+
+    private final FormFactory formFactory;
     private final ISessionService sessionsService;
     private final IUserService userService;
 
     @Inject
-    public SessionsController(ISessionService sessionsService, IUserService userService) {
+    public SessionsController(FormFactory formFactory, ISessionService sessionsService, IUserService userService) {
+
+        this.formFactory = formFactory;
         this.sessionsService = sessionsService;
         this.userService = userService;
     }
 
     public Result createGet() {
         CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
+
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
 
         if (currentUser != null) {
             return redirect(routes.HomeController.index());
@@ -42,6 +48,8 @@ public class SessionsController extends Controller {
     }
 
     public Result createPost() {
+
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
         ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
@@ -74,10 +82,14 @@ public class SessionsController extends Controller {
 
     public Result editPasswordGet(IUser user){
 
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
+
         return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>()));
     }
 
     public Result editPasswordPost(){
+
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionsService.retrieveCurrentUserSession();
         IUser user = userService.retrieveById(currentUser.getId());

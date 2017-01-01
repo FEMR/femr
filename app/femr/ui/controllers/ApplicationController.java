@@ -4,7 +4,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class ApplicationController extends Controller {
-    public static Result removeTrailingSlash(String path) {
+    public Result removeTrailingSlash(String path) {
         return movedPermanently("/" + path);
     }
 }

@@ -3,12 +3,14 @@ package femr.ui.helpers.security;
 import com.google.inject.Inject;
 import femr.business.services.core.IUserService;
 import femr.data.models.core.IRole;
-import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
+import play.mvc.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class AllowedRolesAction extends Action<AllowedRoles> {
 
@@ -20,7 +22,7 @@ public class AllowedRolesAction extends Action<AllowedRoles> {
     }
 
     @Override
-    public F.Promise<play.mvc.Result> call(Http.Context context) throws Throwable {
+    public CompletionStage<Result> call(Http.Context context) {
         String currentUser = context.session().get("currentUser");
         int currentUserId = Integer.parseInt(currentUser);
         int[] roleIds = configuration.value();
@@ -38,7 +40,7 @@ public class AllowedRolesAction extends Action<AllowedRoles> {
         }
 
         if (!isUserInAuthorizedRoleGroup) {
-            return F.Promise.pure(redirect("/"));
+            return CompletableFuture.completedFuture(redirect("/"));
         }
 
         return delegate.call(context);

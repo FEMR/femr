@@ -16,6 +16,7 @@ import femr.ui.models.admin.trips.TripViewModelGet;
 import femr.ui.models.admin.trips.TripViewModelPost;
 import femr.ui.views.html.admin.trips.*;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -28,17 +29,18 @@ import java.util.stream.Collectors;
 @AllowedRoles({Roles.ADMINISTRATOR})
 public class TripController extends Controller {
 
-    private Form<TripViewModelPost> tripViewModelPostForm = Form.form(TripViewModelPost.class);
-    private Form<EditViewModelPost> editViewModelPostForm = Form.form(EditViewModelPost.class);
+    private final FormFactory formFactory;
     private final IMissionTripService missionTripService;
     private final ISessionService sessionService;
     private final IUserService userService;
 
     @Inject
-    public TripController(IMissionTripService missionTripService,
+    public TripController(FormFactory formFactory,
+                          IMissionTripService missionTripService,
                           ISessionService sessionService,
                           IUserService userService) {
 
+        this.formFactory = formFactory;
         this.missionTripService = missionTripService;
         this.sessionService = sessionService;
         this.userService = userService;
@@ -56,6 +58,8 @@ public class TripController extends Controller {
     public Result managePost(){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        Form<TripViewModelPost> tripViewModelPostForm = formFactory.form(TripViewModelPost.class);
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
         List<String> messages = new ArrayList<>();
 
@@ -132,6 +136,7 @@ public class TripController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        Form<EditViewModelPost> editViewModelPostForm = formFactory.form(EditViewModelPost.class);
         EditViewModelPost editViewModelPost = editViewModelPostForm.bindFromRequest().get();
 
         if (id != null && editViewModelPost.getNewUsersForTrip() != null){
@@ -167,6 +172,7 @@ public class TripController extends Controller {
     public Result citiesPost(){
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        Form<TripViewModelPost> tripViewModelPostForm = formFactory.form(TripViewModelPost.class);
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
         List<String> messages = new ArrayList<>();
 
@@ -199,6 +205,7 @@ public class TripController extends Controller {
     public Result teamsPost() {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        Form<TripViewModelPost> tripViewModelPostForm = formFactory.form(TripViewModelPost.class);
         TripViewModelPost tripViewModelPost = tripViewModelPostForm.bindFromRequest().get();
         List<String> messages = new ArrayList<>();
 

@@ -18,13 +18,24 @@
 */
 package femr.util.encryptions;
 
+import com.google.inject.Inject;
 import org.mindrot.jbcrypt.BCrypt;
-import play.Play;
+import play.Configuration;
 
 public class BCryptPasswordEncryptor implements IPasswordEncryptor {
+
+    private final Configuration configuration;
+
+    @Inject
+    public BCryptPasswordEncryptor(Configuration configuration){
+
+        this.configuration = configuration;
+    }
+
+
     @Override
     public String encryptPassword(String password) {
-        return this.encryptPassword(password, Play.application().configuration().getInt("bcrypt.workFactor"));
+        return this.encryptPassword(password, configuration.getInt("bcrypt.workFactor"));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package femr.ui.helpers.security;
 
-import play.Play;
+import com.google.inject.Inject;
+import play.Configuration;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -12,6 +13,14 @@ import static play.mvc.Controller.session;
 
 public class FEMRAuthenticated extends Security.Authenticator {
 
+    private final Configuration configuration;
+
+    @Inject
+    public FEMRAuthenticated(Configuration configuration){
+
+        this.configuration = configuration;
+    }
+
     @Override
     public String getUsername(Http.Context ctx) {
         //check for user logged on
@@ -22,7 +31,7 @@ public class FEMRAuthenticated extends Security.Authenticator {
         if (previousTick != null && !previousTick.equals("")) {
             long previousT = Long.valueOf(previousTick);
             long currentT = new Date().getTime();
-            long timeout = Long.valueOf(Play.application().configuration().getString("sessionTimeout")) * 1000 * 60;
+            long timeout = Long.valueOf(configuration.getString("sessionTimeout")) * 1000 * 60;
             if ((currentT - previousT) > timeout) {
                 // session expired
                 session().clear();

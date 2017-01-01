@@ -13,6 +13,7 @@ import femr.ui.views.html.pharmacies.index;
 import femr.ui.views.html.pharmacies.edit;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -25,7 +26,7 @@ import java.util.Map;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PharmaciesController extends Controller {
 
-    private final Form<EditViewModelPost> populatedViewModelPostForm = Form.form(EditViewModelPost.class);
+    private final FormFactory formFactory;
     private final IEncounterService encounterService;
     private final IMedicationService medicationService;
     private final ISessionService sessionService;
@@ -33,11 +34,14 @@ public class PharmaciesController extends Controller {
     private final IInventoryService inventoryService;
 
     @Inject
-    public PharmaciesController(IEncounterService encounterService,
+    public PharmaciesController(FormFactory formFactory,
+                                IEncounterService encounterService,
                                 IMedicationService medicationService,
                                 ISessionService sessionService,
                                 ISearchService searchService,
                                 IInventoryService inventoryService) {
+
+        this.formFactory = formFactory;
         this.encounterService = encounterService;
         this.medicationService = medicationService;
         this.sessionService = sessionService;
@@ -163,6 +167,7 @@ public class PharmaciesController extends Controller {
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
         // If form errors exist
+        final Form<EditViewModelPost> populatedViewModelPostForm = formFactory.form(EditViewModelPost.class);
         EditViewModelPost createViewModelPost = populatedViewModelPostForm.bindFromRequest().get();
 
         // @TODO -- Do validation on  the counseled flag

@@ -64,8 +64,7 @@ public class PDFController extends Controller {
 
     public Result index(int encounterId) {
 
-        response().setContentType("application/pdf");
-        return ok(buildPDF(encounterId));
+        return ok(buildPDF(encounterId)).as("application/pdf");
     }
 
     /**

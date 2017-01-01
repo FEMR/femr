@@ -31,6 +31,7 @@ import femr.common.models.MedicationItem;
 import femr.ui.views.html.admin.inventory.manage;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -44,7 +45,7 @@ import java.util.Date;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
 
-    private final Form<InventoryViewModelPost> inventoryViewModelPostForm = Form.form(InventoryViewModelPost.class);
+    private final FormFactory formFactory;
     private final IConceptService conceptService;
     private final IInventoryService inventoryService;
     private final IMedicationService medicationService;
@@ -52,12 +53,14 @@ public class InventoryController extends Controller {
     private final ISessionService sessionService;
 
     @Inject
-    public InventoryController(IConceptService conceptService,
+    public InventoryController(FormFactory formFactory,
+                               IConceptService conceptService,
                                IInventoryService inventoryService,
                                IMedicationService medicationService,
                                IMissionTripService missionTripService,
                                ISessionService sessionService) {
 
+        this.formFactory = formFactory;
         this.conceptService = conceptService;
         this.inventoryService = inventoryService;
         this.medicationService = medicationService;
@@ -128,6 +131,7 @@ public class InventoryController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        final Form<InventoryViewModelPost> inventoryViewModelPostForm = formFactory.form(InventoryViewModelPost.class);
         Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
         if (form.hasErrors()) {
             return redirect("/admin/inventory");
@@ -239,14 +243,12 @@ public class InventoryController extends Controller {
 
       ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
 
-      response().setContentType("application/x-download");
-
       SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
       String timestamp = format.format(new Date());
       String csvFileName = "inventory-"+timestamp+".csv";
       response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
 
-      return ok(exportServiceResponse.getResponseObject());
+      return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
     public Result ajaxDelete(int medicationID, int tripId) {
@@ -264,7 +266,7 @@ public class InventoryController extends Controller {
      */
     public Result ajaxEditCurrent(int medicationID, int tripId) {
         // Get POST data
-        DynamicForm df = play.data.Form.form().bindFromRequest();
+        DynamicForm df = formFactory.form().bindFromRequest();
         int quantity = Integer.parseInt(df.get("quantity"));
 
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityCurrent(medicationID, tripId, quantity);
@@ -279,7 +281,7 @@ public class InventoryController extends Controller {
      */
     public Result ajaxEditTotal(int medicationID, int tripId) {
         // Get POST data
-        DynamicForm df = play.data.Form.form().bindFromRequest();
+        DynamicForm df = formFactory.form().bindFromRequest();
         int quantity = Integer.parseInt(df.get("quantity"));
 
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.setQuantityTotal(medicationID, tripId, quantity);

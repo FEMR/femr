@@ -19,50 +19,73 @@
 package femr.util.startup;
 
 import com.avaje.ebean.Ebean;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import femr.data.daos.IRepository;
-import femr.data.daos.Repository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.dateUtils;
-import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
-import play.Play;
+import play.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class DatabaseSeeder {
 
-    private final Repository<ConceptDiagnosis> diagnosisRepository;
-    private final IRepository<MissionCountry> missionCountryRepository;
-    private final IRepository<MissionCity> missionCityRepository;
-    private final IRepository<MissionTeam> missionTeamRepository;
-    private final IRepository<User> userRepository;
-    private final Repository<Role> roleRepository;
-    private final Repository<SystemSetting> systemSettingRepository;
-    private final Repository<TabField> tabFieldRepository;
-    private final Repository<TabFieldSize> tabFieldSizeRepository;
-    private final Repository<TabFieldType> tabFieldTypeRepository;
-    private final Repository<Tab> tabRepository;
-    private final Repository<PatientAgeClassification> patientAgeClassificationRepository;
+    private final IRepository<IConceptDiagnosis> diagnosisRepository;
+    private final IRepository<IMissionCountry> missionCountryRepository;
+    private final IRepository<IMissionCity> missionCityRepository;
+    private final IRepository<IMissionTeam> missionTeamRepository;
+    private final IRepository<IUser> userRepository;
+    private final IRepository<IRole> roleRepository;
+    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IRepository<ITabField> tabFieldRepository;
+    private final IRepository<ITabFieldSize> tabFieldSizeRepository;
+    private final IRepository<ITabFieldType> tabFieldTypeRepository;
+    private final IRepository<ITab> tabRepository;
+    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
 
-    public DatabaseSeeder() {
-        diagnosisRepository = new Repository<>();
-        userRepository = new Repository<>();
-        roleRepository = new Repository<>();
-        systemSettingRepository = new Repository<>();
-        tabFieldRepository = new Repository<>();
-        tabFieldSizeRepository = new Repository<>();
-        tabFieldTypeRepository = new Repository<>();
-        tabRepository = new Repository<>();
-        patientAgeClassificationRepository = new Repository<>();
-        missionCountryRepository = new Repository<>();
-        missionTeamRepository = new Repository<>();
-        missionCityRepository = new Repository<>();
+    private final Configuration configuration;
+    private final IPasswordEncryptor passwordEncryptor;
+
+    @Inject
+    public DatabaseSeeder(IRepository<IConceptDiagnosis> diagnosisRepository,
+                          IRepository<IMissionCountry> missionCountryRepository,
+                          IRepository<IMissionCity> missionCityRepository,
+                          IRepository<IMissionTeam> missionTeamRepository,
+                          IRepository<IUser> userRepository,
+                          IRepository<IRole> roleRepository,
+                          IRepository<ISystemSetting> systemSettingRepository,
+                          IRepository<ITabField> tabFieldRepository,
+                          IRepository<ITabFieldSize> tabFieldSizeRepository,
+                          IRepository<ITabFieldType> tabFieldTypeRepository,
+                          IRepository<ITab> tabRepository,
+                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
+                          Configuration configuration,
+                          IPasswordEncryptor passwordEncryptor) {
+
+        this.configuration = configuration;
+        this.passwordEncryptor = passwordEncryptor;
+        this.diagnosisRepository = diagnosisRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.systemSettingRepository = systemSettingRepository;
+        this.tabFieldRepository = tabFieldRepository;
+        this.tabFieldSizeRepository = tabFieldSizeRepository;
+        this.tabFieldTypeRepository = tabFieldTypeRepository;
+        this.tabRepository = tabRepository;
+        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
+        this.missionCountryRepository = missionCountryRepository;
+        this.missionTeamRepository = missionTeamRepository;
+        this.missionCityRepository = missionCityRepository;
+
+        this.seed();
     }
 
-    public void seed() {
+    private void seed() {
 
         seedMissionTripInformation();
         seedSystemSettings();
@@ -76,7 +99,7 @@ public class DatabaseSeeder {
         seedDiagnosis();
         seedUserRoles();
     }
-
+    
     private void seedDiagnosis() {
         List<? extends IConceptDiagnosis> diagnosis_but_plural = diagnosisRepository.findAll(ConceptDiagnosis.class);
         List<String> availableDiagnosis = new ArrayList<>();
@@ -202,7 +225,7 @@ public class DatabaseSeeder {
             }
         diagnosisRepository.createAll(newDiagnosis);
     }
-
+    
     private void seedMissionTripInformation() {
         //mission countries
         List<? extends IMissionCountry> missionCountries = missionCountryRepository.findAll(MissionCountry.class);
@@ -513,6 +536,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setSortOrder(5);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
+
         patientAgeClassificationRepository.createAll(newPatientAgeClassifications);
     }
 
@@ -529,6 +553,7 @@ public class DatabaseSeeder {
     /**
      * Seed available system settings
      */
+
     private void seedSystemSettings() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
@@ -597,6 +622,7 @@ public class DatabaseSeeder {
         }
 
     }
+    
     private void seedSystemSettingsDescriptions() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
@@ -912,6 +938,7 @@ public class DatabaseSeeder {
         tabRepository.createAll(tabsToAdd);
     }
 
+    
     private void seedDefaultTabFieldTypes() {
 
         List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
@@ -937,6 +964,7 @@ public class DatabaseSeeder {
         }
     }
 
+    
     private void seedDefaultTabFieldSizes() {
 
         List<? extends ITabFieldSize> tabFieldSizes = tabFieldSizeRepository.findAll(TabFieldSize.class);
@@ -1080,18 +1108,18 @@ public class DatabaseSeeder {
         int userCount = userRepository.count(User.class);
 
         if (userCount == 0) {
-            String defaultAdminUsername = Play.application().configuration().getString("default.admin.username");
-            String defaultAdminPassword = Play.application().configuration().getString("default.admin.password");
-            String defaultSuperuserUsername = Play.application().configuration().getString("default.superuser.username");
-            String defaultSuperuserPassword = Play.application().configuration().getString("default.superuser.password");
+            String defaultAdminUsername = configuration.getString("default.admin.username");
+            String defaultAdminPassword = configuration.getString("default.admin.password");
+            String defaultSuperuserUsername = configuration.getString("default.superuser.username");
+            String defaultSuperuserPassword = configuration.getString("default.superuser.password");
 
-            IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
+
 
             //create the Admin user
             //Admin is used for managing users, creating users, managing inventory, etc
             //Admin information is given to the manager/group leader/whoever is in charge
             User adminUser = new User();
-            String encryptedAdminPassword = encryptor.encryptPassword(defaultAdminPassword);
+            String encryptedAdminPassword = passwordEncryptor.encryptPassword(defaultAdminPassword);
             adminUser.setFirstName("Administrator");
             adminUser.setLastName("");
             adminUser.setEmail(defaultAdminUsername);
@@ -1099,7 +1127,7 @@ public class DatabaseSeeder {
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
             adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
             adminUser.setDeleted(false);
-            Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
+            IRole role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
             adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
@@ -1109,7 +1137,7 @@ public class DatabaseSeeder {
             //SuperUser is an account that gives access to important configuration
             //settings
             User superUser = new User();
-            String encryptedSuperuserPassword = encryptor.encryptPassword(defaultSuperuserPassword);
+            String encryptedSuperuserPassword = passwordEncryptor.encryptPassword(defaultSuperuserPassword);
             superUser.setFirstName("SuperUser");
             superUser.setLastName("");
             superUser.setEmail(defaultSuperuserUsername);
@@ -1117,7 +1145,7 @@ public class DatabaseSeeder {
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
             superUser.setDateCreated( dateUtils.getCurrentDateTime() );
             superUser.setDeleted(false);
-            Role role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
+            IRole role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );

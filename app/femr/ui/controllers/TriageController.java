@@ -3,7 +3,6 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import femr.business.helpers.LogicDoer;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -14,23 +13,20 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class TriageController extends Controller {
-    //AJ Saclayan Cities
-    private final Form<EditViewModelPost> createViewModelPostForm = Form.form(EditViewModelPost.class);
-    private final Form<IndexViewModelPost> IndexViewModelForm = Form.form(IndexViewModelPost.class);
-    private final Form<DeleteViewModelPost> DeleteViewModelForm = Form.form(DeleteViewModelPost.class);
+
+    private final FormFactory formFactory;
     private final IEncounterService encounterService;
     private final IPatientService patientService;
     private final ISessionService sessionService;
@@ -39,13 +35,15 @@ public class TriageController extends Controller {
     private final IVitalService vitalService;
 
     @Inject
-    public TriageController(IEncounterService encounterService,
+    public TriageController(FormFactory formFactory,
+                            IEncounterService encounterService,
                             ISessionService sessionService,
                             ISearchService searchService,
                             IPatientService patientService,
                             IPhotoService photoService,
                             IVitalService vitalService) {
 
+        this.formFactory = formFactory;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;
@@ -152,6 +150,7 @@ public class TriageController extends Controller {
     */
     public Result indexPost(int id) {
 
+        final Form<IndexViewModelPost> IndexViewModelForm = formFactory.form(IndexViewModelPost.class);
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
@@ -261,6 +260,7 @@ public class TriageController extends Controller {
     public Result deletePatientPost(int patientId){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
         DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
         //Getting UserItem
         ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());

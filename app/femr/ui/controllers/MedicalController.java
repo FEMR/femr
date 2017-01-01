@@ -19,10 +19,13 @@ import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,8 +33,7 @@ import java.util.stream.Collectors;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class MedicalController extends Controller {
 
-    private final Form<EditViewModelPost> createViewModelPostForm = Form.form(EditViewModelPost.class);
-    private final Form<UpdateVitalsModel> updateVitalsModelForm = Form.form(UpdateVitalsModel.class);
+    private final FormFactory formFactory;
     private final ITabService tabService;
     private final IEncounterService encounterService;
     private final IMedicationService medicationService;
@@ -40,17 +42,18 @@ public class MedicalController extends Controller {
     private final ISearchService searchService;
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
-    private final IInventoryService inventoryService;
 
     @Inject
-    public MedicalController(ITabService tabService,
+    public MedicalController(FormFactory formFactory,
+                             ITabService tabService,
                              IEncounterService encounterService,
                              IMedicationService medicationService,
                              IPhotoService photoService,
                              ISessionService sessionService,
                              ISearchService searchService,
-                             IVitalService vitalService,
-                             IInventoryService inventoryService) {
+                             IVitalService vitalService) {
+
+        this.formFactory = formFactory;
         this.tabService = tabService;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -59,7 +62,6 @@ public class MedicalController extends Controller {
         this.photoService = photoService;
         this.vitalService = vitalService;
         this.fieldHelper = new FieldHelper();
-        this.inventoryService = inventoryService;
     }
 
     public Result indexGet() {
@@ -259,6 +261,7 @@ public class MedicalController extends Controller {
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
+        final Form<EditViewModelPost> createViewModelPostForm = formFactory.form(EditViewModelPost.class);
         EditViewModelPost viewModelPost = createViewModelPostForm.bindFromRequest().get();
 
         //get current patient
@@ -333,7 +336,9 @@ public class MedicalController extends Controller {
         }
 
         //create patient encounter photos
-        photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
+        Http.MultipartFormData<File> body = request().body().asMultipartFormData();
+        List<Http.MultipartFormData.FilePart<File>> files = body.getFiles();
+        photoService.createEncounterPhotos(files, patientEncounterItem, viewModelPost);
 
         //get the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
         List<PrescriptionItem> prescriptionItemsWithID = viewModelPost.getPrescriptions()
@@ -421,6 +426,7 @@ public class MedicalController extends Controller {
         //update date_of_medical_visit when a vital is updated
         encounterService.checkPatientInToMedical(currentEncounterByPatientId.getResponseObject().getId(), currentUser.getId());
 
+        final Form<UpdateVitalsModel> updateVitalsModelForm = formFactory.form(UpdateVitalsModel.class);
         UpdateVitalsModel updateVitalsModel = updateVitalsModelForm.bindFromRequest().get();
 
         Map<String, Float> patientEncounterVitals = getPatientEncounterVitals(updateVitalsModel);

@@ -24,7 +24,7 @@ import play.api.mvc._
 import scala.concurrent.Future
 
 //As of version 2.4, play framework recommends using Scala to implement HttpFilters.
-class ResearchFilter extends Filter {
+abstract class ResearchFilter extends Filter {
 
   override def apply(f: (RequestHeader) => Future[Result])
                     (rh: RequestHeader): Future[Result] = {

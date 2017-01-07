@@ -490,7 +490,10 @@ public class DataModelMapper implements IDataModelMapper{
 
         if (StringUtils.isNullOrWhiteSpace(filePath)) {
 
-            return null;
+            //this happens when defining the photo name
+            //because you have to create the photo before
+            //defining the file path
+            filePath = "";
         }
 
         IPhoto photo = photoProvider.get();

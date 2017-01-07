@@ -20,6 +20,8 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import femr.data.daos.core.IPhotoRepository;
+import femr.data.daos.system.PhotoRepository;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
@@ -73,6 +75,7 @@ public class DataLayerModule extends AbstractModule {
 
         bind(IMedicationRepository.class).to(MedicationRepository.class);
         bind(IPatientRepository.class).to(PatientRepository.class);
+        bind(IPhotoRepository.class).to(PhotoRepository.class);
         bind(IUserRepository.class).to(UserRepository.class);
 
         // Research

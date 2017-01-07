@@ -11,8 +11,17 @@ import femr.data.models.core.IPatientEncounterPhoto;
 import femr.data.models.core.IPhoto;
 import femr.data.models.mysql.PatientEncounterPhoto;
 import femr.data.models.mysql.Photo;
+import femr.util.stringhelpers.StringUtils;
 import play.Logger;
+import play.mvc.Http.MultipartFormData.FilePart;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 public class PhotoRepository implements IPhotoRepository {
@@ -56,6 +65,58 @@ public class PhotoRepository implements IPhotoRepository {
         }
 
         return photo;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean createPhotoOnFilesystem(FilePart image, String filePath){
+
+        if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
+
+            return false;
+        }
+
+        try {
+
+            //find out where the file is being stored on the filesystem (usually in /tmp)
+            Path src = FileSystems.getDefault().getPath(image.getFile().getAbsolutePath());
+            //identify where fEMR wants to store the file
+            Path dest = FileSystems.getDefault().getPath(filePath);
+            //move the file from a temporary to a permanent location
+            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath){
+
+        if (bufferedImage == null || StringUtils.isNullOrWhiteSpace(filePath)){
+
+            return false;
+        }
+
+        try {
+
+            File photo = new File(filePath);
+            ImageIO.write(bufferedImage, "jpg", photo);
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -212,6 +273,34 @@ public class PhotoRepository implements IPhotoRepository {
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean deletePhotoFromFilesystemById(String filePath){
+
+        //track if the photo located @ filePath actually gets deleted
+        boolean isDeleted;
+
+        if (StringUtils.isNullOrWhiteSpace(filePath)){
+
+            Logger.error("PhotoRepository-deletePhotoFromFilesystemById: no filePath to delete");
+            return false;
+        }
+
+        try {
+
+            File photoToDelete = new File(filePath);
+            isDeleted = photoToDelete.delete();
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-deletePhotoFromFilesystemById", ex);
+            return false;
+        }
+
+        return isDeleted;
     }
 
     /**

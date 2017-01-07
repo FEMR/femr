@@ -18,26 +18,19 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.name.Named;
 import femr.business.helpers.LogicDoer;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPhotoService;
 import femr.common.IItemModelMapper;
 import femr.common.models.PatientEncounterItem;
 import femr.common.dtos.ServiceResponse;
 import com.google.inject.Inject;
 import femr.common.models.PhotoItem;
-import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IPhotoRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterPhoto;
 import femr.data.models.core.IPhoto;
-import femr.data.models.mysql.Patient;
-import femr.data.models.mysql.PatientEncounterPhoto;
-import femr.data.models.mysql.Photo;
 import femr.ui.models.medical.EditViewModelPost;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.codec.binary.Base64;
@@ -47,7 +40,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,24 +49,21 @@ public class PhotoService implements IPhotoService {
     private String _encounterPhotoPath;
     private IPhotoRepository photoRepository;
     private IPatientRepository patientRepository;
-    private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public PhotoService(IPatientRepository patientRepository,
                         IPhotoRepository photoRepository,
-                        IDataModelMapper dataModelMapper,
                         @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.photoRepository = photoRepository;
         this.patientRepository = patientRepository;
-        this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
 
         this.Init();
     }
 
-    protected void Init() {
+    private void Init() {
         File f;
         _profilePhotoPath = LogicDoer.getPatientPhotoPath();
 
@@ -116,9 +105,8 @@ public class PhotoService implements IPhotoService {
                 //save image to disk
                 String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
                 BufferedImage bufferedImage = decodeToImage(parsedImage);
-                File photoFile = new File(_profilePhotoPath + imageFileName);
-                ImageIO.write(bufferedImage, "jpg", photoFile);
-
+                String filePathTarget = _profilePhotoPath + imageFileName;
+                photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
             } else {
                 if (deleteFlag != null)
                     if (deleteFlag && patient.getPhoto() != null) {
@@ -298,30 +286,35 @@ public class PhotoService implements IPhotoService {
             //  I am setting the filePath field after the record is created
             photoRepository.updatePhotoFilePath(editPhoto.getId(), imageFileName);
 
-
             //Link photo record in photoEncounter table
             photoRepository.createEncounterPhoto(editPhoto.getId(), patientEncounter.getId());
 
-            //Save image to disk
-            Path src = FileSystems.getDefault().getPath(image.getFile().getAbsolutePath());
-            Path dest = FileSystems.getDefault().getPath(this._encounterPhotoPath + imageFileName);
-            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
-        } catch (Exception ex) {
-            String test = "uh oh";
 
+            photoRepository.createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
+
+
+        } catch (Exception ex) {
+
+            String test = "uh oh";
         }
     }
 
 
-    private ServiceResponse<IPhoto> deletePhotoById(int id, String imagePath) {
+    /**
+     * Deletes a photo from the filesystem.
+     *
+     * @param id id of the photo
+     * @param filePath directory the photo is in
+     * @return
+     */
+    private ServiceResponse<IPhoto> deletePhotoById(int id, String filePath) {
 
         IPhoto savedPhoto = photoRepository.retrievePhotoById(id);
         if (savedPhoto != null) {
 
-            photoRepository.deleteEncounterPhotosByPhotoId(id);
+            photoRepository.deleteEncounterPhotosByPhotoId(savedPhoto.getId());
 
-            File photo = new File(imagePath + savedPhoto.getFilePath());
-            photo.delete();
+            photoRepository.deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
 
             photoRepository.deletePhotoById(savedPhoto.getId());
         }

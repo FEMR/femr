@@ -287,11 +287,11 @@ public class PhotoService implements IPhotoService {
             photoRepository.updatePhotoFilePath(editPhoto.getId(), imageFileName);
 
             //Link photo record in photoEncounter table
+
             photoRepository.createEncounterPhoto(editPhoto.getId(), patientEncounter.getId());
 
 
             photoRepository.createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
-
 
         } catch (Exception ex) {
 

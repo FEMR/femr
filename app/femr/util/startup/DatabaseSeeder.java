@@ -200,7 +200,7 @@ public class DatabaseSeeder {
                 diagnosis.setName(diag);
                 newDiagnosis.add(diagnosis);
             }
-        diagnosisRepository.createAll(newDiagnosis);
+//        diagnosisRepository.createAll(newDiagnosis);
     }
 
     private void seedMissionTripInformation() {
@@ -416,7 +416,7 @@ public class DatabaseSeeder {
             }
         }
 
-        missionCountryRepository.createAll(newMissionCountries);
+//        missionCountryRepository.createAll(newMissionCountries);
         missionCountries = missionCountryRepository.findAll(MissionCountry.class);
 
         //mission teams
@@ -444,7 +444,7 @@ public class DatabaseSeeder {
             missionTeam.setDescription("Dr. Parson's group - primarily operates in Port Au Prince");
             newMissionTeams.add(missionTeam);
         }
-        missionTeamRepository.createAll(newMissionTeams);
+//        missionTeamRepository.createAll(newMissionTeams);
 
         //countries
         List<? extends IMissionCity> missionCities = missionCityRepository.findAll(MissionCity.class);
@@ -463,7 +463,7 @@ public class DatabaseSeeder {
             missionCity.setMissionCountry(getMissionCountry(missionCountries, "Haiti"));
             newMissionCities.add(missionCity);
         }
-        missionCityRepository.createAll(newMissionCities);
+    //    missionCityRepository.createAll(newMissionCities);
 
     }
 
@@ -513,7 +513,7 @@ public class DatabaseSeeder {
             patientAgeClassification.setSortOrder(5);
             newPatientAgeClassifications.add(patientAgeClassification);
         }
-        patientAgeClassificationRepository.createAll(newPatientAgeClassifications);
+   //     patientAgeClassificationRepository.createAll(newPatientAgeClassifications);
     }
 
 
@@ -848,7 +848,7 @@ public class DatabaseSeeder {
             }
         }
 
-        tabFieldRepository.createAll(tabFieldsToAdd);
+    //    tabFieldRepository.createAll(tabFieldsToAdd);
     }
 
     private void seedDefaultTabNames() {
@@ -909,7 +909,7 @@ public class DatabaseSeeder {
             }
         }
 
-        tabRepository.createAll(tabsToAdd);
+   //     tabRepository.createAll(tabsToAdd);
     }
 
     private void seedDefaultTabFieldTypes() {
@@ -933,7 +933,7 @@ public class DatabaseSeeder {
                 tabFieldTypesToAdd.add(tabFieldType);
             }
 
-            tabFieldTypeRepository.createAll(tabFieldTypesToAdd);
+      //      tabFieldTypeRepository.createAll(tabFieldTypesToAdd);
         }
     }
 
@@ -960,7 +960,7 @@ public class DatabaseSeeder {
             }
         }
 
-        tabFieldSizeRepository.createAll(tabFieldSizesToAdd);
+    //    tabFieldSizeRepository.createAll(tabFieldSizesToAdd);
     }
 
     private static IMissionCountry getMissionCountry(List<? extends IMissionCountry> missionCountries, String countryName) {

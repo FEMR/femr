@@ -21,9 +21,11 @@ package femr.util.filters
 import com.google.inject.Inject
 import play.api.http.HttpFilters
 
+/*
 class Filters @Inject()(
                          research: ResearchFilter
                          ) extends HttpFilters {
 
   val filters = Seq(research)
 }
+*/

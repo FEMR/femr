@@ -28,20 +28,6 @@ import femr.ui.views.html.errors.global;
 
 public class Global extends GlobalSettings {
 
-    @Override
-    public void onStart(Application app) {
-
-        super.onStart(app);
-        new DatabaseSeeder().seed();
-        new MedicationDatabaseSeeder().seed();
-    }
-
-    /*
-    @Override
-    public <A> A getControllerInstance(Class<A> controllerClass) throws Exception {
-        return INJECTOR.getInstance(controllerClass);
-    } */
-
     /*
     //it is called when throwing a runtime exception....
     @Override

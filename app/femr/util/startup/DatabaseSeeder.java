@@ -19,6 +19,8 @@
 package femr.util.startup;
 
 import com.avaje.ebean.Ebean;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.core.*;
@@ -27,11 +29,14 @@ import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
+import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
+import play.Configuration;
 import play.Play;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class DatabaseSeeder {
 
     private final Repository<ConceptDiagnosis> diagnosisRepository;
@@ -47,7 +52,14 @@ public class DatabaseSeeder {
     private final Repository<Tab> tabRepository;
     private final Repository<PatientAgeClassification> patientAgeClassificationRepository;
 
-    public DatabaseSeeder() {
+    private final Configuration configuration;
+    private final IPasswordEncryptor passwordEncryptor;
+
+    @Inject
+    public DatabaseSeeder(Configuration configuration, IPasswordEncryptor passwordEncryptor) {
+
+        this.configuration = configuration;
+        this.passwordEncryptor = passwordEncryptor;
         diagnosisRepository = new Repository<>();
         userRepository = new Repository<>();
         roleRepository = new Repository<>();
@@ -60,9 +72,11 @@ public class DatabaseSeeder {
         missionCountryRepository = new Repository<>();
         missionTeamRepository = new Repository<>();
         missionCityRepository = new Repository<>();
+
+        seed();
     }
 
-    public void seed() {
+    private void seed() {
 
         seedMissionTripInformation();
         seedSystemSettings();
@@ -76,7 +90,7 @@ public class DatabaseSeeder {
         seedDiagnosis();
         seedUserRoles();
     }
-
+    
     private void seedDiagnosis() {
         List<? extends IConceptDiagnosis> diagnosis_but_plural = diagnosisRepository.findAll(ConceptDiagnosis.class);
         List<String> availableDiagnosis = new ArrayList<>();
@@ -202,7 +216,7 @@ public class DatabaseSeeder {
             }
 //        diagnosisRepository.createAll(newDiagnosis);
     }
-
+    
     private void seedMissionTripInformation() {
         //mission countries
         List<? extends IMissionCountry> missionCountries = missionCountryRepository.findAll(MissionCountry.class);
@@ -529,6 +543,7 @@ public class DatabaseSeeder {
     /**
      * Seed available system settings
      */
+
     private void seedSystemSettings() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
@@ -597,6 +612,7 @@ public class DatabaseSeeder {
         }
 
     }
+    
     private void seedSystemSettingsDescriptions() {
         List<? extends ISystemSetting> systemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
@@ -658,6 +674,7 @@ public class DatabaseSeeder {
      * Uses references to HPI, PMH, and Treatment Tabs
      * Uses references to both number and text TabFieldTypes
      */
+
     private void seedDefaultTabFields() {
         List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
 
@@ -912,6 +929,7 @@ public class DatabaseSeeder {
    //     tabRepository.createAll(tabsToAdd);
     }
 
+    
     private void seedDefaultTabFieldTypes() {
 
         List<? extends ITabFieldType> tabFieldTypes = tabFieldTypeRepository.findAll(TabFieldType.class);
@@ -937,6 +955,7 @@ public class DatabaseSeeder {
         }
     }
 
+    
     private void seedDefaultTabFieldSizes() {
 
         List<? extends ITabFieldSize> tabFieldSizes = tabFieldSizeRepository.findAll(TabFieldSize.class);
@@ -1080,18 +1099,18 @@ public class DatabaseSeeder {
         int userCount = userRepository.count(User.class);
 
         if (userCount == 0) {
-            String defaultAdminUsername = Play.application().configuration().getString("default.admin.username");
-            String defaultAdminPassword = Play.application().configuration().getString("default.admin.password");
-            String defaultSuperuserUsername = Play.application().configuration().getString("default.superuser.username");
-            String defaultSuperuserPassword = Play.application().configuration().getString("default.superuser.password");
+            String defaultAdminUsername = configuration.getString("default.admin.username");
+            String defaultAdminPassword = configuration.getString("default.admin.password");
+            String defaultSuperuserUsername = configuration.getString("default.superuser.username");
+            String defaultSuperuserPassword = configuration.getString("default.superuser.password");
 
-            IPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
+
 
             //create the Admin user
             //Admin is used for managing users, creating users, managing inventory, etc
             //Admin information is given to the manager/group leader/whoever is in charge
             User adminUser = new User();
-            String encryptedAdminPassword = encryptor.encryptPassword(defaultAdminPassword);
+            String encryptedAdminPassword = passwordEncryptor.encryptPassword(defaultAdminPassword);
             adminUser.setFirstName("Administrator");
             adminUser.setLastName("");
             adminUser.setEmail(defaultAdminUsername);
@@ -1109,7 +1128,7 @@ public class DatabaseSeeder {
             //SuperUser is an account that gives access to important configuration
             //settings
             User superUser = new User();
-            String encryptedSuperuserPassword = encryptor.encryptPassword(defaultSuperuserPassword);
+            String encryptedSuperuserPassword = passwordEncryptor.encryptPassword(defaultSuperuserPassword);
             superUser.setFirstName("SuperUser");
             superUser.setLastName("");
             superUser.setEmail(defaultSuperuserUsername);

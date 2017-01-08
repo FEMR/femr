@@ -20,9 +20,11 @@ import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -332,8 +334,22 @@ public class MedicalController extends Controller {
             }
         }
 
+
+        Http.MultipartFormData<File> body = request().body().asMultipartFormData();
+
+
+
+
+
+
         //create patient encounter photos
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
+
+
+
+
+
+
 
         //get the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
         List<PrescriptionItem> prescriptionItemsWithID = viewModelPost.getPrescriptions()

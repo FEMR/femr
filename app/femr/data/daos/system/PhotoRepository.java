@@ -71,7 +71,7 @@ public class PhotoRepository implements IPhotoRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean createPhotoOnFilesystem(FilePart image, String filePath){
+    public boolean createPhotoOnFilesystem(FilePart<Object> image, String filePath){
 
         if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
 
@@ -81,7 +81,7 @@ public class PhotoRepository implements IPhotoRepository {
         try {
 
             //find out where the file is being stored on the filesystem (usually in /tmp)
-            Path src = FileSystems.getDefault().getPath(image.getFile().getAbsolutePath());
+            Path src = FileSystems.getDefault().getPath(image.getFilename());
             //identify where fEMR wants to store the file
             Path dest = FileSystems.getDefault().getPath(filePath);
             //move the file from a temporary to a permanent location

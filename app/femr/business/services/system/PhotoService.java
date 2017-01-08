@@ -167,7 +167,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
+    public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart<Object>> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try {
             int count = mod.getPhotoId().size();

@@ -27,12 +27,9 @@ import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.dateUtils;
-import femr.util.encryptions.BCryptPasswordEncryptor;
-import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
 import play.Configuration;
-import play.Play;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -82,7 +82,7 @@ public class DatabaseSeeder {
         this.missionTeamRepository = missionTeamRepository;
         this.missionCityRepository = missionCityRepository;
 
-        seed();
+        this.seed();
     }
 
     private void seed() {

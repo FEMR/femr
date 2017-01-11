@@ -22,7 +22,6 @@ import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import femr.data.daos.IRepository;
-import femr.data.daos.Repository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
@@ -36,39 +35,52 @@ import java.util.List;
 @Singleton
 public class DatabaseSeeder {
 
-    private final Repository<ConceptDiagnosis> diagnosisRepository;
-    private final IRepository<MissionCountry> missionCountryRepository;
-    private final IRepository<MissionCity> missionCityRepository;
-    private final IRepository<MissionTeam> missionTeamRepository;
-    private final IRepository<User> userRepository;
-    private final Repository<Role> roleRepository;
-    private final Repository<SystemSetting> systemSettingRepository;
-    private final Repository<TabField> tabFieldRepository;
-    private final Repository<TabFieldSize> tabFieldSizeRepository;
-    private final Repository<TabFieldType> tabFieldTypeRepository;
-    private final Repository<Tab> tabRepository;
-    private final Repository<PatientAgeClassification> patientAgeClassificationRepository;
+    private final IRepository<IConceptDiagnosis> diagnosisRepository;
+    private final IRepository<IMissionCountry> missionCountryRepository;
+    private final IRepository<IMissionCity> missionCityRepository;
+    private final IRepository<IMissionTeam> missionTeamRepository;
+    private final IRepository<IUser> userRepository;
+    private final IRepository<IRole> roleRepository;
+    private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IRepository<ITabField> tabFieldRepository;
+    private final IRepository<ITabFieldSize> tabFieldSizeRepository;
+    private final IRepository<ITabFieldType> tabFieldTypeRepository;
+    private final IRepository<ITab> tabRepository;
+    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
 
     private final Configuration configuration;
     private final IPasswordEncryptor passwordEncryptor;
 
     @Inject
-    public DatabaseSeeder(Configuration configuration, IPasswordEncryptor passwordEncryptor) {
+    public DatabaseSeeder(IRepository<IConceptDiagnosis> diagnosisRepository,
+                          IRepository<IMissionCountry> missionCountryRepository,
+                          IRepository<IMissionCity> missionCityRepository,
+                          IRepository<IMissionTeam> missionTeamRepository,
+                          IRepository<IUser> userRepository,
+                          IRepository<IRole> roleRepository,
+                          IRepository<ISystemSetting> systemSettingRepository,
+                          IRepository<ITabField> tabFieldRepository,
+                          IRepository<ITabFieldSize> tabFieldSizeRepository,
+                          IRepository<ITabFieldType> tabFieldTypeRepository,
+                          IRepository<ITab> tabRepository,
+                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
+                          Configuration configuration,
+                          IPasswordEncryptor passwordEncryptor) {
 
         this.configuration = configuration;
         this.passwordEncryptor = passwordEncryptor;
-        diagnosisRepository = new Repository<>();
-        userRepository = new Repository<>();
-        roleRepository = new Repository<>();
-        systemSettingRepository = new Repository<>();
-        tabFieldRepository = new Repository<>();
-        tabFieldSizeRepository = new Repository<>();
-        tabFieldTypeRepository = new Repository<>();
-        tabRepository = new Repository<>();
-        patientAgeClassificationRepository = new Repository<>();
-        missionCountryRepository = new Repository<>();
-        missionTeamRepository = new Repository<>();
-        missionCityRepository = new Repository<>();
+        this.diagnosisRepository = diagnosisRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.systemSettingRepository = systemSettingRepository;
+        this.tabFieldRepository = tabFieldRepository;
+        this.tabFieldSizeRepository = tabFieldSizeRepository;
+        this.tabFieldTypeRepository = tabFieldTypeRepository;
+        this.tabRepository = tabRepository;
+        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
+        this.missionCountryRepository = missionCountryRepository;
+        this.missionTeamRepository = missionTeamRepository;
+        this.missionCityRepository = missionCityRepository;
 
         seed();
     }
@@ -1115,7 +1127,7 @@ public class DatabaseSeeder {
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
             adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
             adminUser.setDeleted(false);
-            Role role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
+            IRole role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
             adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
@@ -1133,7 +1145,7 @@ public class DatabaseSeeder {
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
             superUser.setDateCreated( dateUtils.getCurrentDateTime() );
             superUser.setDeleted(false);
-            Role role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
+            IRole role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );

@@ -20,7 +20,11 @@
     <label for="">Age: </label><span>@patient.getAge</span>
     <label for="">Sex: </label><span>@patient.getSex</span>
     <label for="">City: </label><span>@patient.getCity</span>
-    @if(pageName == "Medical") {
+    <!-- [FEMR-217] - views/medical/edit.scala.html no longer passes simply "Medical" - now passes "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId -->
+    <!-- broken in commit 23c533c -->
+    <!-- Currently assumes "Medical -" will start pageName argument.  If this changes, updated string in conditional execution -->
+    <!-- Contributed by Jonathan Clow during the CEN5035 course at FSU -->
+    @if(pageName.contains("Medical -")) {
         <label for="">BMI: </label> <span id="bmi"></span>
     } else {
            <label>Height: </label> <span>@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric) / @outputHeightOrNA(String.valueOf(patient.getHeightFeetDual), String.valueOf(patient.getHeightInchesDual), !settings.isMetric)</span>

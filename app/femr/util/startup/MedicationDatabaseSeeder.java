@@ -57,7 +57,7 @@ public class MedicationDatabaseSeeder {
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
 
-        this.seed();
+        seed();
     }
 
     private void seed() {
@@ -342,8 +342,7 @@ public class MedicationDatabaseSeeder {
 
             }
 
-
-//            conceptPrescriptionAdministrationRepository.createAll(conceptPrescriptionAdministrationsToAdd);
+            conceptPrescriptionAdministrationRepository.createAll(conceptPrescriptionAdministrationsToAdd);
         }
     }
 
@@ -415,7 +414,8 @@ public class MedicationDatabaseSeeder {
             conceptMedicationUnit.setIsDeleted(false);
             newconceptMedicationUnits.add(conceptMedicationUnit);
         }
-        //conceptMedicationUnitRepository.createAll(newconceptMedicationUnits);
+
+        conceptMedicationUnitRepository.createAll(newconceptMedicationUnits);
     }
 
     private void seedConceptMedicationForms() {
@@ -564,7 +564,8 @@ public class MedicationDatabaseSeeder {
             conceptMedicationForm.setIsDeleted(false);
             newMedicationForms.add(conceptMedicationForm);
         }
-        //conceptMedicationFormRepository.createAll(newMedicationForms);
+
+        conceptMedicationFormRepository.createAll(newMedicationForms);
     }
 
     private void seedConceptMedicationGenerics(){
@@ -642,8 +643,8 @@ public class MedicationDatabaseSeeder {
         newConceptMedicationGenerics.add(addConceptMedicationGeneric(conceptMedicationGenerics, "zinc"));
         newConceptMedicationGenerics.removeIf(Objects::isNull);//remove the null stragglers cause eBean don't like em
 
-        //if (newConceptMedicationGenerics.size() > 0)
-          //  conceptMedicationGenericRepository.createAll(newConceptMedicationGenerics);
+        if (newConceptMedicationGenerics.size() > 0)
+            conceptMedicationGenericRepository.createAll(newConceptMedicationGenerics);
     }
 
     /**
@@ -772,8 +773,8 @@ public class MedicationDatabaseSeeder {
 
 
 
-       // if (newConceptMedicationGenericStrengths.size() > 0)
-          //  conceptMedicationGenericStrengthRepository.createAll(newConceptMedicationGenericStrengths);
+        if (newConceptMedicationGenericStrengths.size() > 0)
+            conceptMedicationGenericStrengthRepository.createAll(newConceptMedicationGenericStrengths);
     }
 
     /**
@@ -1199,8 +1200,8 @@ public class MedicationDatabaseSeeder {
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Prednisolone", "inj"));
 
         newConceptMedications.removeIf(Objects::isNull);
-        //if (newConceptMedications.size() > 0)
-         // conceptMedicationRepository.createAll(newConceptMedications);
+        if (newConceptMedications.size() > 0)
+          conceptMedicationRepository.createAll(newConceptMedications);
     }
 
     /**

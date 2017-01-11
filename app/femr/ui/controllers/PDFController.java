@@ -218,7 +218,18 @@ public class PDFController extends Controller {
 
         // Row 2
         table.addCell(getStyledPhrase("Sex: ", outputStringOrNA(patientItem.getSex())));
-        table.addCell(getStyledPhrase("Height: ", outputHeightOrNA(patientItem.getHeightFeet(), patientItem.getHeightInches())));
+
+        //[FEMR-113] Contributed by Robert Massicotte during the CEN5035 course at FSU
+        int patientHeightFeet = patientItem.getHeightFeet();
+        int patientHeightInches = patientItem.getHeightInches();
+        if (patientHeightFeet == 0 && patientHeightInches == 0) {
+            // display null height as N/A
+            table.addCell(getStyledPhrase("Height: ", "N/A"));
+        } else {
+            // otherwise, display normally (e.g. 5'8")
+            table.addCell(getStyledPhrase("Height: ", outputHeightOrNA(patientHeightFeet, patientHeightInches)));
+        }
+
         table.addCell(getStyledPhrase("Weight: ", outputFloatOrNA(patientItem.getWeight()) + " lbs"));
         table.completeRow();
 

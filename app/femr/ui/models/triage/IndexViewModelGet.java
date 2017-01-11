@@ -33,6 +33,8 @@ public class IndexViewModelGet {
     private PatientItem patient;
     //search info
     private boolean searchError = false;
+    //age to age classification info
+    private boolean agemismatchError = false;
     //vital names
     private List<VitalItem> vitalNames;
     //system settings
@@ -49,6 +51,14 @@ public class IndexViewModelGet {
 
     public void setLinkToMedical(boolean linkToMedical){
         this.linkToMedical = linkToMedical;
+    }
+
+    public boolean isAgemismatchError() {
+        return agemismatchError;
+    }
+
+    public void setAgemismatchError(boolean agemismatchError) {
+        this.agemismatchError = agemismatchError;
     }
 
     public boolean isSearchError() {

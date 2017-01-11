@@ -93,7 +93,9 @@
                 <div id="disclaimerWrap">
                     <label for="disclaimer">
                         The patient was counseled on the risks and side effects of the medications dispensed.</label>
-                    <input type="checkbox" name="disclaimer" value="1" />
+                    <!--ISSUE#138 https://teamfemr.atlassian.net/browse/FEMR-138
+                     Contributed by Mohammad Alahmadi during the CEN5035 course at FSU -->
+                    <input type="checkbox" name="disclaimer" value="1" required/>
                     <input type="hidden" name="disclaimer" value="0" />
                 </div>
                 <div id="submitWrap">

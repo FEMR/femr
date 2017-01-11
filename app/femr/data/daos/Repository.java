@@ -48,7 +48,7 @@ public class Repository<T> implements IRepository<T> {
     }
     @Override
     public List<? extends T> createAll(List<? extends T> entities){
-        Ebean.save(entities);
+        Ebean.saveAll(entities);
         return entities;
     }
 

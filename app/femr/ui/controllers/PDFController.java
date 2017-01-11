@@ -436,6 +436,11 @@ public class PDFController extends Controller {
 
             table.addCell(cell);
 
+            //[FEMR-208] Contributed by Xiaoxiao Gan during the CEN5035 course at FSU
+            Paragraph AmountTitle = new Paragraph("Amount", getTitleFont());
+            cell = new PdfPCell(AmountTitle);
+            table.addCell(cell);
+
             table.completeRow();
 
             for (PrescriptionItem prescription : prescriptionItems) {
@@ -453,6 +458,12 @@ public class PDFController extends Controller {
                     Paragraph replacedMedName = new Paragraph(prescription.getName(), getValueFont());
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
+
+                    //[FEMR-208] Contributed by Xiaoxiao Gan during the CEN5035 course at FSU
+                    Paragraph Amount = new Paragraph(Integer.toString(prescription.getAmount()));
+                    cell = new PdfPCell(Amount);
+                    table.addCell(cell);
+
                 } else {
                     Paragraph medName = new Paragraph(prescription.getName(), getValueFont());
                     cell = new PdfPCell(medName);
@@ -460,6 +471,11 @@ public class PDFController extends Controller {
 
                     Paragraph blankCell = new Paragraph(" ", getValueFont());
                     cell = new PdfPCell(blankCell);
+                    table.addCell(cell);
+
+                    //[FEMR-208] Contributed by Xiaoxiao Gan during the CEN5035 course at FSU
+                    Paragraph Amount = new Paragraph(Integer.toString(prescription.getAmount()));
+                    cell = new PdfPCell(Amount);
                     table.addCell(cell);
                 }
                 table.completeRow();

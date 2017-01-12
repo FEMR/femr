@@ -26,6 +26,7 @@ import play.Logger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * This class contains utilities for manipulating dates. If you add something here, please clearly document the
@@ -51,7 +52,7 @@ public class dateUtils {
     }
 
     public static DateTime getCurrentDateTime(){
-        return new DateTime();
+        return new DateTime(DateTimeZone.UTC);
     }
 
     /**
@@ -155,7 +156,10 @@ public class dateUtils {
     public static String getFriendlyDate(DateTime dateTime){
         if (dateTime == null)
             return null;
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - HH:mm:ss");
+
+        dateTime.toDateTime(DateTimeZone.UTC);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy - hh:mm:ss a");
+
         String dtStr = dateTime.toString(fmt);
         return dtStr;
     }

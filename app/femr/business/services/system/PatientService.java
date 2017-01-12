@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 public class PatientService implements IPatientService {
 
@@ -76,7 +77,7 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> updateSex(int id, String sex) {
+    public ServiceResponse<PatientItem> updateSexAndAge(int id, String sex, Date age) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -89,12 +90,16 @@ public class PatientService implements IPatientService {
                 response.addError("exception", "Patient Not Found");
                 return response;
             }
-
+            if(age!=null){
+                savedPatient.setAge(age);
+                savedPatient = patientRepository.savePatient(savedPatient);
+            }
             // sex can be changed, but not set to null
             if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
                 savedPatient = patientRepository.savePatient(savedPatient);
             }
+
 
             String photoPath = null;
             Integer photoId = null;

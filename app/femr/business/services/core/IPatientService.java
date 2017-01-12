@@ -21,6 +21,7 @@ package femr.business.services.core;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 
+import java.util.Date;
 import java.util.Map;
 
 public interface IPatientService {
@@ -34,15 +35,16 @@ public interface IPatientService {
     ServiceResponse<Map<String,String>> retrieveAgeClassifications();
 
     /**
-     * Updates a patients sex if that patient does not previously have one assigned. If sex is null then it just gets and
-     * returns the patient.
+     * Updates a patients sex and age if that patient does not previously have one assigned. If sex or age is null then it just sets
+     * whichever field is available, then gets and returns the patient.
      *
      * @param id the id of the patient, not null
      * @param sex the sex of the patient, may be null
+     * @param age the age of the patient, may be null
      * @return a service response that contains a PatientItem representing the patient that was updated
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> updateSex(int id, String sex);
+    ServiceResponse<PatientItem> updateSexAndAge(int id, String sex, Date age);
 
     /**
      * Creates a new patient.

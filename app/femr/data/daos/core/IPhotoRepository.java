@@ -27,7 +27,7 @@ public interface IPhotoRepository {
      * @param filePath the location where the photo will be saved, not null
      * @return true if success, false otherwise
      */
-    boolean createPhotoOnFilesystem(FilePart<Object> image, String filePath);
+    boolean createPhotoOnFilesystem(FilePart image, String filePath);
 
     /**
      * Creates a new jpg image on the filesystem

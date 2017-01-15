@@ -17,6 +17,7 @@ import femr.ui.models.superuser.TabsViewModelGet;
 import femr.ui.models.superuser.TabsViewModelPost;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -29,15 +30,16 @@ import java.util.List;
 @AllowedRoles({Roles.SUPERUSER})
 public class TabController extends Controller {
 
-    private final Form<TabsViewModelPost> TabsViewModelForm = Form.form(TabsViewModelPost.class);
-    private final Form<ContentViewModelPost> ContentViewModelForm = Form.form(ContentViewModelPost.class);
+    private final FormFactory formFactory;
     private final ITabService tabService;
     private final ISessionService sessionService;
 
     @Inject
-    public TabController(ITabService tabService,
+    public TabController(FormFactory formFactory,
+                         ITabService tabService,
                                ISessionService sessionService) {
 
+        this.formFactory = formFactory;
         this.tabService = tabService;
         this.sessionService = sessionService;
     }
@@ -66,6 +68,8 @@ public class TabController extends Controller {
 
     public Result managePost() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        final Form<TabsViewModelPost> TabsViewModelForm = formFactory.form(TabsViewModelPost.class);
         TabsViewModelPost viewModelPost = TabsViewModelForm.bindFromRequest().get();
 
         //becomes new or edit
@@ -146,6 +150,8 @@ public class TabController extends Controller {
     //name = tab name
     public Result fieldsPost(String name) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        final Form<ContentViewModelPost> ContentViewModelForm = formFactory.form(ContentViewModelPost.class);
         ContentViewModelPost viewModelPost = ContentViewModelForm.bindFromRequest().get();
 
         //adding/editing a field

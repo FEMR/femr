@@ -33,10 +33,11 @@ import femr.ui.views.html.partials.history.listTabFieldHistory;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 import play.data.Form;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import play.data.FormFactory;
 import play.mvc.Security;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -47,30 +48,30 @@ import java.util.Map;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class HistoryController extends Controller {
 
-    private final Form<fieldValueViewModel> fieldValueViewModelForm = Form.form(fieldValueViewModel.class);
+    private final FormFactory formFactory;
     private final IEncounterService encounterService;
     private final ISessionService sessionService;
     private final ISearchService searchService;
     private final ITabService tabService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
-    private IPatientService patientService;
+
     @Inject
-    public HistoryController(IEncounterService encounterService,
+    public HistoryController(FormFactory formFactory,
+                             IEncounterService encounterService,
                              ISessionService sessionService,
                              ISearchService searchService,
                              ITabService tabService,
                              IPhotoService photoService,
-                             IVitalService vitalService,
-                             IPatientService patientService) {
+                             IVitalService vitalService) {
 
+        this.formFactory = formFactory;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
         this.searchService = searchService;
         this.tabService = tabService;
         this.photoService = photoService;
         this.vitalService = vitalService;
-        this.patientService = patientService;
     }
 
     /**
@@ -258,6 +259,7 @@ public class HistoryController extends Controller {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //get POST data
+        final Form<fieldValueViewModel> fieldValueViewModelForm = formFactory.form(fieldValueViewModel.class);
         fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 
         //get the patient encounter from the service layer
@@ -292,6 +294,7 @@ public class HistoryController extends Controller {
     public Result listTabFieldHistoryGet(int encounterID) {
 
         //Populate model with request data that was changed
+        final Form<fieldValueViewModel> fieldValueViewModelForm = formFactory.form(fieldValueViewModel.class);
         fieldValueViewModel fields = fieldValueViewModelForm.bindFromRequest().get();
 
         //get the recorded tab field values using the id from the previous

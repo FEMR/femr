@@ -25,7 +25,6 @@ import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IRoleService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
-import femr.common.models.MissionItem;
 import femr.common.models.MissionTripItem;
 import femr.common.models.UserItem;
 import femr.data.models.mysql.Roles;
@@ -36,8 +35,8 @@ import femr.ui.views.html.admin.users.manage;
 import femr.ui.views.html.admin.users.create;
 import femr.ui.views.html.admin.users.edit;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -47,19 +46,21 @@ import java.util.List;
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class UsersController extends Controller {
-    private final Form<CreateViewModel> createViewModelForm = Form.form(CreateViewModel.class);
-    private Form<EditViewModel> editViewModelForm = Form.form(EditViewModel.class);
+
+    private final FormFactory formFactory;
     private IMissionTripService missionTripService;
     private ISessionService sessionService;
     private IUserService userService;
     private IRoleService roleService;
 
     @Inject
-    public UsersController(IMissionTripService missionTripService,
+    public UsersController(FormFactory formFactory,
+                           IMissionTripService missionTripService,
                            ISessionService sessionService,
                            IUserService userService,
                            IRoleService roleService) {
 
+        this.formFactory = formFactory;
         this.missionTripService = missionTripService;
         this.sessionService = sessionService;
         this.userService = userService;
@@ -85,6 +86,8 @@ public class UsersController extends Controller {
     public Result createGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
+
         ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
             throw new RuntimeException();
@@ -96,6 +99,8 @@ public class UsersController extends Controller {
     //Create a new User
     public Result createPost() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
         Form<CreateViewModel> form = createViewModelForm.bindFromRequest();
         ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();
         if (roleServiceResponse.hasErrors()){
@@ -152,6 +157,9 @@ public class UsersController extends Controller {
         editUserViewModel.setRoles(userItem.getRoles());
         editUserViewModel.setNotes(userItem.getNotes());
         editUserViewModel.setMissionTripItems(missionTripItemServiceResponse.getResponseObject());
+
+
+        Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class);
         editViewModelForm = editViewModelForm.fill(editUserViewModel);
 
 
@@ -170,6 +178,8 @@ public class UsersController extends Controller {
             return internalServerError();
         }
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class);
         Form<EditViewModel> form = editViewModelForm.bindFromRequest();
 
         ServiceResponse<List<String>> roleServiceResponse = roleService.retrieveAllRoles();

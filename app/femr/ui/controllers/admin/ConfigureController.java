@@ -30,6 +30,7 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.configure.IndexViewModelGet;
 import femr.ui.models.admin.configure.IndexViewModelPost;
 import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -40,13 +41,16 @@ import java.util.List;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class ConfigureController extends Controller {
 
-    private final Form<IndexViewModelPost> indexViewModelForm = Form.form(IndexViewModelPost.class);
+    private final FormFactory formFactory;
     private ISessionService sessionService;
     private IConfigureService configureService;
 
     @Inject
-    public ConfigureController(ISessionService sessionService,
+    public ConfigureController(FormFactory formFactory,
+                               ISessionService sessionService,
                                IConfigureService configureService) {
+
+        this.formFactory = formFactory;
         this.sessionService = sessionService;
         this.configureService = configureService;
     }
@@ -70,6 +74,8 @@ public class ConfigureController extends Controller {
     }
 
     public Result managePost() {
+
+        final Form<IndexViewModelPost> indexViewModelForm = formFactory.form(IndexViewModelPost.class);
         IndexViewModelPost viewModel = indexViewModelForm.bindFromRequest().get();
 
         ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.updateSystemSettings(viewModel.getSettings());

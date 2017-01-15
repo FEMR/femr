@@ -71,7 +71,7 @@ public class PhotoRepository implements IPhotoRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean createPhotoOnFilesystem(FilePart<Object> image, String filePath){
+    public boolean createPhotoOnFilesystem(FilePart image, String filePath){
 
         if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
 

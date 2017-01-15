@@ -20,7 +20,6 @@ package femr.ui.controllers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import femr.business.services.core.IMedicationService;
 import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -129,10 +128,9 @@ public class ResearchController extends Controller {
         ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
         File csvFile = exportServiceResponse.getResponseObject();
 
-        response().setContentType("application/x-download");
         response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
 
-        return ok(csvFile);
+        return ok(csvFile).as("application/x-download");
     }
 
     /**

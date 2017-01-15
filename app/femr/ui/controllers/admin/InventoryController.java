@@ -243,14 +243,12 @@ public class InventoryController extends Controller {
 
       ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
 
-      response().setContentType("application/x-download");
-
       SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
       String timestamp = format.format(new Date());
       String csvFileName = "inventory-"+timestamp+".csv";
       response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
 
-      return ok(exportServiceResponse.getResponseObject());
+      return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
     public Result ajaxDelete(int medicationID, int tripId) {

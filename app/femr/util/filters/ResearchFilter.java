@@ -4,23 +4,22 @@ package femr.util.filters;
 
 import akka.stream.Materializer;
 import com.google.inject.Inject;
+import femr.ui.controllers.routes;
 import play.Configuration;
 import play.mvc.*;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-/**
- * Created by kevin on 06/01/17.
- */
-public class ResearchFilterJava extends Filter {
+public class ResearchFilter extends Filter {
 
     private Configuration configuration;
 
     @Inject
-    public ResearchFilterJava(Configuration configuration, Materializer mat){
-        super(mat);
+    public ResearchFilter(Configuration configuration, Materializer mat){
 
+        super(mat);
         this.configuration = configuration;
     }
 
@@ -28,7 +27,7 @@ public class ResearchFilterJava extends Filter {
     @Override
     public CompletionStage<Result> apply(Function<Http.RequestHeader, CompletionStage<Result>> next, Http.RequestHeader rh) {
 
-        //get the reserach only setting from config file
+        //get the research only setting from config file
         String researchOnlySetting_String = configuration.getString("settings.researchOnly");
 
         //lets assume it's 0 unless told otherwise
@@ -53,12 +52,14 @@ public class ResearchFilterJava extends Filter {
                 !rh.path().contains("/logout") &&
                 !rh.path().equals("/"))
 
-            return Results.redirect(controllers.routes.ResearchController.indexGet());
-        else{
+            return CompletableFuture.completedFuture(
+                    Results.redirect(routes.ResearchController.indexGet()
+                    )
+            );
 
+        else {
 
+            return next.apply(rh);
         }
-
-        return null;
     }
 }

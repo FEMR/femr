@@ -71,10 +71,13 @@
                         }
 
                         </div>
+
+                        @if(viewModel.isAgemismatchError) {
+                            <span class="errors">The selected age group does not match the mentioned age.</span>
+                        }
                     </div>
 
                 </div>
-
                 @inputGender(viewModel)
 
 

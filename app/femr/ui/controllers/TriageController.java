@@ -14,14 +14,13 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
 import play.data.Form;
 import play.mvc.*;
+import play.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -159,6 +158,14 @@ public class TriageController extends Controller {
         //or get current patient for new encounter
         ServiceResponse<PatientItem> patientServiceResponse;
         PatientItem patientItem;
+        if(!IsAgeClassificationValid(viewModel)){
+            Logger.error("Attempted to save conflicting information between age and age classification. Save stopped.");
+            //Now display error back to the user.
+            IndexViewModelGet form = getPopulatedForm(viewModel, currentUser);
+            return ok(index.render(currentUser, form));
+    }
+
+
         if (id == 0) {
             patientItem = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = patientService.createPatient(patientItem);
@@ -257,7 +264,83 @@ public class TriageController extends Controller {
 
         return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientServiceResponse.getResponseObject().getId())));
     }
-  //  public Result deletePatientPost(int patientId, int deleteByUserID){
+
+    private boolean IsAgeClassificationValid(IndexViewModelPost viewModel){
+        //if either age classifictation is empty or age is empty then there is no
+        //mismatch between age and age classification
+        if( viewModel.getAgeClassification() == null || viewModel.getAgeClassification().isEmpty())
+            return true;
+        else if (viewModel.getAge() == null)
+            return true;
+        //get age classifications
+        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+
+        if (patientAgeClassificationsResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        Map<String, String> possibleAgeClassifications = patientAgeClassificationsResponse.getResponseObject();
+        String agerange = possibleAgeClassifications.get(viewModel.getAgeClassification());
+        String[] splitrange = agerange.split("-|\\+");
+        Date bday = viewModel.getAge();
+        LocalDate bdayld = new LocalDate(bday);
+        Years years = Years.yearsBetween(bdayld, LocalDate.now());
+        int ageinyears = years.getYears();
+        if(splitrange.length == 2)
+        {
+            int agemin = Integer.parseInt(splitrange[0]);
+            int agemax = Integer.parseInt(splitrange[1]);
+            if(ageinyears>=agemin && ageinyears <=agemax)
+                return true;
+            else
+                return false;
+
+        }
+        else
+        {
+            int agemin = Integer.parseInt(splitrange[0]);
+            if(ageinyears>=agemin)
+                return true;
+            else
+                return false;
+        }
+
+    }
+
+    ///This function regenerates the IndexViewModelGet Form from the viewModel
+    ///Used in indexpost to return an error if there is a mismatch between age and age classification information
+    private IndexViewModelGet getPopulatedForm(IndexViewModelPost viewModel, CurrentUser currentUser) {
+
+
+        //retrieve vitals names for dynamic html element naming
+        ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.retrieveAllVitalItems();
+        if (vitalServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientItem patientItem;
+        patientItem = populatePatientItem(viewModel, currentUser);
+        patientItem.setId(0);
+        IndexViewModelGet form =  new IndexViewModelGet();//IndexViewModelFormGet.bindFromRequest().get();
+
+        //get age classifications
+        ServiceResponse<Map<String, String>> patientAgeClassificationsResponse = patientService.retrieveAgeClassifications();
+        if (patientAgeClassificationsResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        //get the settings
+        ServiceResponse<SettingItem> settingItemServiceResponse = searchService.retrieveSystemSettings();
+        if (settingItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        form.setPatient(patientItem);
+        form.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
+        form.setSettings(settingItemServiceResponse.getResponseObject());
+        form.setVitalNames(vitalServiceResponse.getResponseObject());
+        form.setAgemismatchError(true);
+        return form;
+    }
+
+    //  public Result deletePatientPost(int patientId, int deleteByUserID){
     public Result deletePatientPost(int patientId){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
@@ -294,7 +377,6 @@ public class TriageController extends Controller {
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());
         patient.setCity(viewModelPost.getCity());
-
         return patient;
     }
 

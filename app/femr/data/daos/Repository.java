@@ -28,7 +28,7 @@ public class Repository<T> implements IRepository<T> {
 
     @Override
     public int count(Class<? extends T> clazz) {
-        return Ebean.find(clazz).findRowCount();
+        return Ebean.find(clazz).findCount();
     }
 
     @Override

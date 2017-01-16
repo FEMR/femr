@@ -62,7 +62,7 @@ public class User implements IUser {
     private DateTime DateCreated; //Sam Zanni
     @Column (name = "created_by", unique = true, nullable = false) //Sam Zanni
     private Integer CreatedBy; //Sam Zanni
-    /*@ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)*/
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = MissionTrip.class)
     @JoinTable(
             name = "mission_trip_users",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},

@@ -45,11 +45,7 @@ public class MissionTrip implements IMissionTrip {
     private Date startDate;
     @Column(name = "end_date")
     private Date endDate;
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = User.class)
-    @JoinTable(
-            name = "mission_trip_users",
-            joinColumns = {@JoinColumn(name = "mission_trip_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    @ManyToMany(mappedBy = "missionTrips", fetch = FetchType.LAZY, targetEntity = User.class)
     private List<IUser> users;
 
     @Override

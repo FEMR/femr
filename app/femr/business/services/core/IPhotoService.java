@@ -47,7 +47,7 @@ public interface IPhotoService {
      * @return a service response that contains true if creation successful, false if not
      * and/or errors if they exist.
      */
-    ServiceResponse<Boolean> createEncounterPhotos(List<FilePart<Object>> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod);
+    ServiceResponse<Boolean> createEncounterPhotos(List<FilePart<File>> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod);
 
     /**
      * Saves a patient's photo and updates the patients photoId field to point

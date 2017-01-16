@@ -2,9 +2,9 @@ package femr.data.daos.core;
 
 import femr.data.models.core.IPatientEncounterPhoto;
 import femr.data.models.core.IPhoto;
-import play.mvc.Http.MultipartFormData.FilePart;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
 public interface IPhotoRepository {
@@ -27,7 +27,7 @@ public interface IPhotoRepository {
      * @param filePath the location where the photo will be saved, not null
      * @return true if success, false otherwise
      */
-    boolean createPhotoOnFilesystem(FilePart image, String filePath);
+    boolean createPhotoOnFilesystem(File image, String filePath);
 
     /**
      * Creates a new jpg image on the filesystem

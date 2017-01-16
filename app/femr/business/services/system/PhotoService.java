@@ -167,7 +167,7 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart<Object>> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
+    public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart<File>> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try {
             int count = mod.getPhotoId().size();
@@ -176,7 +176,7 @@ public class PhotoService implements IPhotoService {
                 Integer id = mod.getPhotoId().get(i);
                 if (id == null) {
                     //This is a new image, add it to the DB and filesystem:
-                    for (FilePart fp_iterator : encounterImages) {
+                    for (FilePart<File> fp_iterator : encounterImages) {
                         String keyName = fp_iterator.getKey();
                         int leftBracket = keyName.indexOf("[");
                         int rightBracket = keyName.indexOf("]");
@@ -185,7 +185,7 @@ public class PhotoService implements IPhotoService {
                             String tempindex = i.toString();
 
                             if (keyName.equalsIgnoreCase(tempindex)) {
-                                saveNewEncounterImage(fp_iterator, patientEncounterItem, mod.getImageDescText().get(i));
+                                saveNewEncounterImage(fp_iterator.getFile(), patientEncounterItem, mod.getImageDescText().get(i));
                                 break;
                             }
                         }
@@ -269,7 +269,7 @@ public class PhotoService implements IPhotoService {
     }
 
 
-    private void saveNewEncounterImage(FilePart image, PatientEncounterItem patientEncounter, String descriptionText) {
+    private void saveNewEncounterImage(File image, PatientEncounterItem patientEncounter, String descriptionText) {
         try {
             String imageFileName;
 

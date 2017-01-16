@@ -38,7 +38,7 @@ public class Repository<T> implements IRepository<T> {
 
     @Override
     public void delete(List<? extends T> entities){
-        Ebean.delete(entities);
+        Ebean.deleteAll(entities);
     }
 
     @Override

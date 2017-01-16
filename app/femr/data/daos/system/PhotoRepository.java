@@ -13,12 +13,10 @@ import femr.data.models.mysql.PatientEncounterPhoto;
 import femr.data.models.mysql.Photo;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
-import play.mvc.Http.MultipartFormData.FilePart;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -71,7 +69,7 @@ public class PhotoRepository implements IPhotoRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean createPhotoOnFilesystem(FilePart image, String filePath){
+    public boolean createPhotoOnFilesystem(File image, String filePath){
 
         if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
 
@@ -81,7 +79,7 @@ public class PhotoRepository implements IPhotoRepository {
         try {
 
             //find out where the file is being stored on the filesystem (usually in /tmp)
-            Path src = FileSystems.getDefault().getPath(image.getFilename());
+            Path src = FileSystems.getDefault().getPath(image.getAbsolutePath());
             //identify where fEMR wants to store the file
             Path dest = FileSystems.getDefault().getPath(filePath);
             //move the file from a temporary to a permanent location
@@ -315,7 +313,7 @@ public class PhotoRepository implements IPhotoRepository {
 
             if (photoRecordsToDelete != null) {
 
-                Ebean.delete(photoRecordsToDelete);
+                Ebean.deleteAll(photoRecordsToDelete);
             }
 
         } catch (Exception ex) {

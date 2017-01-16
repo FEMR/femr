@@ -335,22 +335,8 @@ public class MedicalController extends Controller {
             }
         }
 
-
-        Http.MultipartFormData<File> body = request().body().asMultipartFormData();
-
-
-
-
-
-
         //create patient encounter photos
         photoService.createEncounterPhotos(request().body().asMultipartFormData().getFiles(), patientEncounterItem, viewModelPost);
-
-
-
-
-
-
 
         //get the prescriptions that have an ID (e.g. prescriptions that exist in the dictionary).
         List<PrescriptionItem> prescriptionItemsWithID = viewModelPost.getPrescriptions()

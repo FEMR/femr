@@ -158,7 +158,6 @@ public class UsersController extends Controller {
         editUserViewModel.setNotes(userItem.getNotes());
         editUserViewModel.setMissionTripItems(missionTripItemServiceResponse.getResponseObject());
 
-
         Form<EditViewModel> editViewModelForm = formFactory.form(EditViewModel.class);
         editViewModelForm = editViewModelForm.fill(editUserViewModel);
 

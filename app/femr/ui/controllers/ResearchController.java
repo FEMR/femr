@@ -49,7 +49,6 @@ import java.util.*;
 @AllowedRoles({Roles.RESEARCHER})
 public class ResearchController extends Controller {
 
-
     private final FormFactory formFactory;
     private IResearchService researchService;
     private ISessionService sessionService;

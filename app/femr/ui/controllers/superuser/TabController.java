@@ -37,7 +37,7 @@ public class TabController extends Controller {
     @Inject
     public TabController(FormFactory formFactory,
                          ITabService tabService,
-                               ISessionService sessionService) {
+                         ISessionService sessionService) {
 
         this.formFactory = formFactory;
         this.tabService = tabService;

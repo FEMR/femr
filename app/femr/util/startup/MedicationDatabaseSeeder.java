@@ -57,7 +57,7 @@ public class MedicationDatabaseSeeder {
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
         this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
 
-        seed();
+        this.seed();
     }
 
     private void seed() {

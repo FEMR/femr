@@ -684,7 +684,6 @@ public class DatabaseSeeder {
      * Uses references to HPI, PMH, and Treatment Tabs
      * Uses references to both number and text TabFieldTypes
      */
-
     private void seedDefaultTabFields() {
         List<? extends ITabField> tabFields = tabFieldRepository.findAll(TabField.class);
 

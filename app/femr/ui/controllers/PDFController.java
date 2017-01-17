@@ -449,11 +449,12 @@ public class PDFController extends Controller {
 
                     table.addCell(cell);
 
-                    Paragraph replacedMedName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph replacedMedName = new Paragraph(prescription.getPrescriptionDetail(), getValueFont());
+
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {
-                    Paragraph medName = new Paragraph(prescription.getName(), getValueFont());
+                    Paragraph medName = new Paragraph(prescription.getPrescriptionDetail(), getValueFont());
                     cell = new PdfPCell(medName);
                     table.addCell(cell);
 

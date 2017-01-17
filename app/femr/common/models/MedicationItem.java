@@ -156,5 +156,11 @@ public class MedicationItem {
         public void setDenominator(boolean isDenominator) {
             this.isDenominator = isDenominator;
         }
+
+        public String getActiveIngredientDetails(){
+
+            return "        • " + name + System.getProperty("line.separator") +"          "+value.toString()+" "+unit;
+
+        }
     }
 }

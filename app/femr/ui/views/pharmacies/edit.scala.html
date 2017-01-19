@@ -1,3 +1,4 @@
+@import femr.ui.models.pharmacy.EditViewModelGet
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean )
 
 @import femr.ui.controllers.routes.HistoryController
@@ -51,8 +52,6 @@
             </div>
 
 
-
-
             <div id="medicationWrap" class="form-group">
                 <h4>List of Medications</h4>
                 <ol id="medicationList">
@@ -93,12 +92,15 @@
                 <div id="disclaimerWrap">
                     <label for="disclaimer">
                         The patient was counseled on the risks and side effects of the medications dispensed.</label>
-                    <input type="checkbox" name="disclaimer" value="1" />
+                    <!--FEMR-138 Contributed by Ali Hamie during the CEN5035 course at FSU -->
+                    <input type="checkbox" id="disclaimerCheck" name="disclaimer"   value="1" onchange='handleChange(this);' />
                     <input type="hidden" name="disclaimer" value="0" />
                 </div>
                 <div id="submitWrap">
-                    <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                        <!--FEMR-138 Contributed by Ali Hamie during the CEN5035 course at FSU -->
+                    <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right" disabled>
                         Submit</button>
+
 
                     <a href="@{HistoryController.indexPatientGet(
                         Integer.toString(viewModel.getPatient.getId)).url}" class="fButton fOtherButton pull-left">Patient History</a>

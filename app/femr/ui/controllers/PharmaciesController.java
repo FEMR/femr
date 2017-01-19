@@ -190,6 +190,9 @@ public class PharmaciesController extends Controller {
         boolean isCounseled = false;
         if (createViewModelPost.getDisclaimer() == 1){
             isCounseled = true;
+        }else{ //FEMR-138 Contributed by Ali Hamie during the CEN5035 course at FSU
+            //This should never happen! If it is then somehow users are submitting without agreeing to disclaimer.
+            throw new RuntimeException();
         }
 
 

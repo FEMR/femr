@@ -60,6 +60,24 @@ var prescriptionFeature = {
         $amountInput.val(amount);
     }
 };
+
+//FEMR-138 Contributed by Ali Hamie during the CEN5035 course at FSU
+//handles the change of the disclaimer checkbox
+function handleChange(checkbox) {
+
+    submitBtnSetEnabled(checkbox);
+
+}
+
+function submitBtnSetEnabled(checkbox){
+
+    if(checkbox.checked == true){
+        document.getElementById("pharmacySubmitBtn").removeAttribute("disabled");
+    }else{
+        document.getElementById("pharmacySubmitBtn").setAttribute("disabled","disabled");
+    }
+}
+
 $(document).ready(function () {
     $('.replaceBtn').click(replaceClick);
 
@@ -73,6 +91,11 @@ $(document).ready(function () {
     prescriptionFeature.initializeMedicationTypeahead().then(function() {
         prescriptionFeature.addMedicationTypeahead();
     });
+
+    //FEMR-138 Contributed by Ali Hamie during the CEN5035 course at FSU
+    //sets initial state of submit button depending on the disclaimer checkbox
+    submitBtnSetEnabled(document.getElementById("disclaimerCheck"));
+
     /*prescriptionFeature.initializeAdministrationTypeahead().then(function() {
         prescriptionFeature.addAdministrationTypeahead();
     });*/

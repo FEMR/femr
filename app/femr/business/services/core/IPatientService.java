@@ -20,6 +20,7 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
+import femr.data.models.mysql.Patient;
 
 import java.util.Map;
 
@@ -34,15 +35,14 @@ public interface IPatientService {
     ServiceResponse<Map<String,String>> retrieveAgeClassifications();
 
     /**
-     * Updates a patients sex if that patient does not previously have one assigned. If sex is null then it just gets and
-     * returns the patient.
+     * Updates a patients information according to passed patient populated by the viewModel
      *
      * @param id the id of the patient, not null
-     * @param sex the sex of the patient, may be null
+     * @param patient patient information to be updated, not null
      * @return a service response that contains a PatientItem representing the patient that was updated
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> updateSex(int id, String sex);
+    ServiceResponse<PatientItem> updatePatient(int id, PatientItem patient);
 
     /**
      * Creates a new patient.

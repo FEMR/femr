@@ -529,9 +529,11 @@ $(document).ready(function () {
     });
     $('#noDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("false");
+        var temp = checkIfDuplicatePatient(); //var is not important, just necessary because the function returns true value which isn't applicable here
     });
     $('#yesDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("true");
+        var temp = checkIfDuplicatePatient(); //var is not important, just necessary because the function returns true value which isn't applicable here
     });
     //birthday shit
     $('#age').change(function () {
@@ -614,55 +616,109 @@ $(document).ready(function () {
 
     $('#triageSubmitBtn').click(function () {
         var pass = validate();
-        var patientInfo = triageFields.patientInformation;
-        var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
-        var url = "/search/check/" + query;
 
         //only prepare for POST if the fields are validated
         //also only do the diabetes prompt checking if the fields are validated
         if (pass === true){
-            //get the base64 URI string from the canvas
-            patientPhotoFeature.prepareForPOST();
-            //make sure the feature is turned on before JSONifying
-            if (multipleChiefComplaintFeature.isActive === true) {
-                multipleChiefComplaintFeature.JSONifyChiefComplaints();
-            }
+                //get the base64 URI string from the canvas
+                patientPhotoFeature.prepareForPOST();
+                //make sure the feature is turned on before JSONifying
+                if (multipleChiefComplaintFeature.isActive === true) {
+                    multipleChiefComplaintFeature.JSONifyChiefComplaints();
+                }
 
-            var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
-            if (isDiabeticScreeningPromptNecessary) {
-                var diabetesDialog = $('.submitResetWrap.hidden');
-                var submitMenu = $('.submitResetWrap').not('.hidden');
-                $(submitMenu).addClass('hidden');
-                $(diabetesDialog).removeClass('hidden');
-                diabeticScreeningFeature.readonlyEverything();
-            } else {
-                checkIfDuplicatePatient();
-            }
-            pass = !isDiabeticScreeningPromptNecessary;
+                var isDiabeticScreeningPromptNecessary = Boolean(diabeticScreeningFeature.shouldPatientBeScreened());
+                if (isDiabeticScreeningPromptNecessary){
+                    var diabetesDialog = $('.submitResetWrap.hidden');
+                    var submitMenu = $('.submitResetWrap').not('.hidden');
+                    $(submitMenu).addClass('hidden');
+                    $(diabetesDialog).removeClass('hidden');
+                    diabeticScreeningFeature.readonlyEverything();
+                    pass = !isDiabeticScreeningPromptNecessary;
+                } else {
+                    var pause = checkIfDuplicatePatient();
+                    pass = !pause;
+                }
+
         }
         return pass; //located in triageClientValidation.js
     });
 
-    $('#noDiabetesScreen').click(function () {
-        checkIfDuplicatePatient();
-    });
-
-    $('#yesDiabetesScreen').click(function () {
-        checkIfDuplicatePatient();
-    });
-
-    function checkIfDuplicatePatient() {
-        var patientInfo = triageFields.patientInformation;
-        var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
-        var url = "/search/check/" + query;
+    var checkIfDuplicatePatient = function() {
+    var patientInfo = triageFields.patientInformation;
+    var query = patientInfo.firstName.val() + " " +  patientInfo.lastName.val();
+    var url = "/search/matchingPatients/" + query;
+    var patientCounter = 0;
         $.getJSON(url, function (result) {
-            if (result === true) {
-                if (confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
-                    var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
-                    window.location.replace(duplicatePatientUrl);
-                }
+            var length = Object.keys(result).length;
+            var displayPatientCounter = patientCounter + 1;
+            $('#numberOfMatches1').text(length.toString());
+            $('#numberOfMatches2').text(length.toString());
+            $('#matchingPatientCounter').text(displayPatientCounter.toString());
+
+            if(length > 0) {
+                var i = 0;
+                $('.modal').css("display", "block");
+                var display = $('.modal').css("display");
+                var photoRouteBase = "/photo/patient/";
+                var photoRouteEnd = "?showDefault=true";
+                var photoRoute = photoRouteBase + result[i].Id + photoRouteEnd;
+
+                var name = result[i].firstName + " " + result[i].lastName;
+                var dob = result[i].friendlyDateOfBirth;
+                var gender = result[i].sex;
+                var city = result[i].city;
+                var height = result[i].heightFeet + "' " + result[i].heightInches + "''";
+
+                $('#patientPhotoModal').attr('src', photoRoute);
+                $('#firstNameModal').text(name);
+                $('#dobModal').text(dob);
+                $('#genderModal').text(gender);
+                $('#cityModal').text(city);
+                $('#heightModal').text(height);
+
+                $('#matchingPatientBtn').click(function () {
+                    var id = result[i].Id;
+                    var actionUrl = '/triage?id=' + id;
+                    //TriageController.indexPost()
+                    $('#patientPostForm').attr('action', actionUrl);
+                    $('#matchingPatientBtn').attr('type', 'submit');
+                });
+
+                $('#notMatchingPatientBtn').click(function () {
+                    patientCounter++;
+                    i++;
+                    if(patientCounter === length) //if viewing last matching patient, change button type so submit will occur
+                        $('#notMatchingPatientBtn').attr('type', 'submit');
+
+                    var photoPath = photoRouteBase + result[i].Id + photoRouteEnd;
+                    var name = result[i].firstName + " " + result[i].lastName;
+                    var dob = result[i].friendlyDateOfBirth;
+                    var gender = result[i].sex;
+                    var city = result[i].city;
+                    var height = result[i].heightFeet + "' " + result[i].heightInches + "''";
+
+                    $('#patientPhotoModal').attr('src', photoPath);
+                    $('#firstNameModal').text(name);
+                    $('#dobModal').text(dob);
+                    $('#genderModal').text(gender);
+                    $('#cityModal').text(city);
+                    $('#heightModal').text(height);
+
+                    displayPatientCounter += 1;
+                    $('#matchingPatientCounter').text(displayPatientCounter.toString());
+                });
+
+                closeBtn.onclick = function() {
+                    matchingPatientModal.style.display = "none";
+                    $('#patientPostForm').submit(); //if modal is closed, continue with post submission
+                };
             }
-        })
+        }).fail(function(response){
+            if(response.responseText === "No matching patients found.")
+                $('#patientPostForm').submit(); //if no matching patients, carry on with patient submission
+        });
+       return true; // return true to freeze posting until possible getJSON returns possible matching patients
     };
 
     patientPhotoFeature.init();
@@ -821,3 +877,8 @@ window.setInterval(function () {
 
 }, 500);
 
+var matchingPatientModal = document.getElementById('matchingPatientModal');
+var closeBtn = document.getElementsByClassName("close")[0];
+closeBtn.onclick = function() {
+    matchingPatientModal.style.display = "none";
+}

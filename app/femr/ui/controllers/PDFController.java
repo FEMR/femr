@@ -409,7 +409,7 @@ public class PDFController extends Controller {
 
         // Row 6
         PdfPCell cellTreatment = new PdfPCell(table.getDefaultCell());
-        TabFieldItem treatment = tabFieldMultiMap.getMostRecentOrEmpty("treatment", null);
+        TabFieldItem treatment = tabFieldMultiMap.getMostRecentOrEmpty("procedure_counseling", null);
         cellTreatment.addElement(getStyledPhrase("Treatment: ", outputStringOrNA(treatment.getValue())));
         cellTreatment.setColspan(3);
         table.addCell(cellTreatment);

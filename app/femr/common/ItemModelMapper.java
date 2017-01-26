@@ -173,7 +173,8 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Float weight,
                                                 String pathToPatientPhoto,
                                                 Integer photoId,
-                                                String ageClassification) {
+                                                String ageClassification,
+                                                String ageCalculated) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -202,6 +203,7 @@ public class ItemModelMapper implements IItemModelMapper {
         if (age != null) {
 
             patientItem.setAge(dateUtils.getAge(age));//age (int)
+            patientItem.setAgeCalculated(ageCalculated);
             patientItem.setBirth(age);//date of birth(date)
             patientItem.setFriendlyDateOfBirth(dateUtils.getFriendlyDate(age));
 

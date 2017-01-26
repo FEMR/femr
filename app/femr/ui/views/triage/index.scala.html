@@ -60,9 +60,20 @@
 
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>
+
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     <span class="orSpan">OR</span>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
+                    <div class="generalInfoInput">
+
+                        <label>Auto-Calculated</label>
+                        @if(viewModel.getPatient.getAgeCalculated == null) {
+                            <input type = "text" name="ageCalculated" class="fInput" id="ageCalculated" value="Unknown" readonly />
+                        } else {
+                            <input type = "text" name="ageCalculated" class="fInput" id="ageCalculated" value="@viewModel.getPatient.getAgeCalculated" readonly />
+                        }
+                    </div>
+
                     <span class="orSpan">OR</span>
                     <div class="generalInfoInput">
                         <div id="classificationRadioWrap">

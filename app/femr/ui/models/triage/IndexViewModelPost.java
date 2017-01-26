@@ -29,6 +29,7 @@ public class IndexViewModelPost {
     private String address;
     private String city;
     private Date age;
+    private String ageCalculated;
     private String ageClassification;
     private String sex;
     public Boolean deletePhoto; //flag to determine if user would like to delete image file
@@ -245,5 +246,13 @@ public class IndexViewModelPost {
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;
+    }
+
+    public String getAgeCalculated() {
+        return ageCalculated;
+    }
+
+    public void setAgeCalculated(String ageCalculated) {
+        this.ageCalculated = ageCalculated;
     }
 }

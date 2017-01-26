@@ -59,6 +59,8 @@ public class Patient implements IPatient {
     private Integer deletedByUserId;
     @Column(name = "reason_deleted", nullable = true)
     private String reasonDeleted;
+    @Column(name = "age_calculated", nullable = true)
+    private Integer ageCalculated;
 
 
     @Override
@@ -197,6 +199,26 @@ public class Patient implements IPatient {
     @Override
     public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
     
-    
+    @Override
+    public String getAgeCalculated() {
+        if (this.ageCalculated == null) {
+            return "Unknown";
+        } else if (this.ageCalculated.intValue() == 0) {
+            return "No";
+        } else {
+            return "Yes";
+        }
+    }
+
+    @Override
+    public void setAgeCalculated(String yesNo) {
+        if (yesNo != null && !yesNo.equals("Unknown")) {
+            if (yesNo.equals("Yes")) {
+                this.ageCalculated = 1;
+            } else {
+                this.ageCalculated = 0;
+            }
+        }
+    }
 
 }

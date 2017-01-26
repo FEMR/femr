@@ -146,7 +146,7 @@ public interface IDataModelMapper {
      * @param photoID   the id of a photo of the patient, may be null
      * @return an implementation of IPatient or null if processing fails
      */
-    IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, Integer photoID);
+    IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, Integer photoID, boolean birthdayIsFake);
 
     /**
      * Generate and provide an implementation of IPatientEncounter.

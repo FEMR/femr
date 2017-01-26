@@ -28,6 +28,7 @@ public class ResearchExportItem {
     private UUID patientId;
     private String gender;
     private Integer age;
+    private String birthday;
     private Boolean isPregnant;
     private Integer weeksPregnant;
     private String dayOfVisit;
@@ -60,6 +61,12 @@ public class ResearchExportItem {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getBirthday() { return birthday; }
 
     public Boolean getIsPregnant() {
         return isPregnant;

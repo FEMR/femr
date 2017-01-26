@@ -30,6 +30,7 @@ public class PatientItem {
     private String age;//this is a string representing an integer and "YO"(adult) or "MO"(infant)
     private Integer yearsOld;//the age of the patient as an integer. 0 if the patient is less than a year old
     private Integer monthsOld;
+    private boolean birthdayIsFake;
     private Date birth;
     private String friendlyDateOfBirth;
     private String sex;
@@ -225,4 +226,8 @@ public class PatientItem {
     public void setMonthsOld(Integer monthsOld) {
         this.monthsOld = monthsOld;
     }
+
+    public boolean getBirthdayIsFake() { return birthdayIsFake; }
+
+    public void setBirthdayIsFake(boolean isFake) { this.birthdayIsFake = isFake; }
 }

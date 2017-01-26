@@ -290,6 +290,8 @@ public class TriageController extends Controller {
         patient.setPhoneNumber(viewModelPost.getPhoneNumber());
         if (viewModelPost.getAge() != null) {
             patient.setBirth(viewModelPost.getAge());
+            //if birthday is fake.
+            patient.setBirthdayIsFake(viewModelPost.getBirthdayIsFake());
         }
         patient.setSex(viewModelPost.getSex());
         patient.setAddress(viewModelPost.getAddress());

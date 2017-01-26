@@ -173,7 +173,8 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Float weight,
                                                 String pathToPatientPhoto,
                                                 Integer photoId,
-                                                String ageClassification) {
+                                                String ageClassification,
+                                                boolean birthdayIsFake) {
 
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||

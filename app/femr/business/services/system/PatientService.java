@@ -122,7 +122,8 @@ public class PatientService implements IPatientService {
                     null,
                     photoPath,
                     photoId,
-                    null);
+                    null,
+                    savedPatient.getBirthdayIsFake());
             response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
@@ -145,7 +146,7 @@ public class PatientService implements IPatientService {
 
         try {
             IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getPhoneNumber(),
-                    patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
+                    patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId(), patient.getBirthdayIsFake());
             newPatient = patientRepository.savePatient(newPatient);
             String photoPath = null;
             Integer photoId = null;
@@ -169,7 +170,8 @@ public class PatientService implements IPatientService {
                             null,
                             photoPath,
                             photoId,
-                            null)
+                            null,
+                            newPatient.getBirthdayIsFake())
             );
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());

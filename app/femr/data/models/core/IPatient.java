@@ -83,4 +83,8 @@ public interface IPatient {
     void setReasonDeleted(String reason) ;
 
     
+    void setBirthdayIsFake(Boolean isFake);
+
+    Boolean getBirthdayIsFake();
+
 }

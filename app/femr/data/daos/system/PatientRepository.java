@@ -1,8 +1,11 @@
 package femr.data.daos.system;
+
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
@@ -16,6 +19,46 @@ import java.util.List;
 
 public class PatientRepository implements IPatientRepository {
 
+    private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
+
+    @Inject
+    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider){
+
+        this.patientAgeClassificationProvider = patientAgeClassificationProvider;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder){
+
+        if (StringUtils.isNullOrWhiteSpace(name) || StringUtils.isNullOrWhiteSpace(description)) {
+
+            return null;
+        }
+
+        IPatientAgeClassification patientAgeClassification = patientAgeClassificationProvider.get();
+        patientAgeClassification.setName(name);
+        patientAgeClassification.setDescription(description);
+        patientAgeClassification.setIsDeleted(false);
+        patientAgeClassification.setSortOrder(sortOrder);
+
+        try {
+
+            Ebean.save(patientAgeClassification);
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-createPatientAgeClassification", ex.getMessage());
+            throw ex;
+        }
+
+        return patientAgeClassification;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(){
 
@@ -25,6 +68,31 @@ public class PatientRepository implements IPatientRepository {
             Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
                     .where()
                     .eq("isDeleted", false)
+                    .order()
+                    .asc("sortOrder");
+
+            response = patientAgeClassificationExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrieveAllPatientAgeClassifications", ex.getMessage());
+            throw ex;
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted){
+
+        List<? extends IPatientAgeClassification> response = null;
+        try {
+
+            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("isDeleted", isDeleted)
                     .order()
                     .asc("sortOrder");
 

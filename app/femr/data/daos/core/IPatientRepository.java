@@ -7,12 +7,32 @@ import java.util.List;
 public interface IPatientRepository {
 
     /**
-     * Retrieve list of all patient age classificaitons that are not deleted.
+     * Create a new patient age classification. Be careful with sort order, it needs to be unique
+     *
+     * @param name name of the classification, not null
+     * @param description description of the classification (e.g. 0-1, 2-12), not null
+     * @param sortOrder sort order of the classification, not null, unique
+     * @return the new patient age classification or null if errors happen
+     */
+    IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder);
+
+    /**
+     * Retrieve list of all patient age classificaitons. Does not take into consideration if
+     * they are deleted.
      * Performs ascending sort by SortOrder column.
      *
      * @return list of sorted age classifications or NULL if an error occurs
      */
     List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications();
+
+    /**
+     * Retrieve list of all patient age classificaitons that are/are not deleted.
+     * Performs ascending sort by SortOrder column.
+     *
+     * @param isDeleted value for isDeleted
+     * @return list of sorted age classifications or NULL if an error occurs
+     */
+    List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted);
 
     /**
      *  Retrieve list of all patients that have not

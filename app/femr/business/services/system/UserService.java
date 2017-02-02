@@ -18,22 +18,16 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IUserService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
-import femr.data.models.mysql.Role;
-import femr.data.models.mysql.User;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
@@ -47,20 +41,17 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
     private final IPasswordEncryptor passwordEncryptor;
-    private final IRepository<IRole> roleRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public UserService(IUserRepository userRepository,
                        IPasswordEncryptor passwordEncryptor,
-                       IRepository<IRole> roleRepository,
                        IDataModelMapper dataModelMapper,
                        @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
-        this.roleRepository = roleRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -70,13 +61,11 @@ public class UserService implements IUserService {
      */
     @Override
     public ServiceResponse<UserItem> createUser(UserItem user, String password, int userId) {
+
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         try {
 
-            ExpressionList<Role> query = QueryProvider.getRoleQuery()
-                    .where()
-                    .in("name", user.getRoles());
-            List<? extends IRole> roles = roleRepository.find(query);
+            List<? extends IRole> roles = userRepository.retrieveRolesByName(user.getRoles());
 
             // AJ Saclayan - Password Constraints
             IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, userId);
@@ -88,7 +77,7 @@ public class UserService implements IUserService {
                 return response;
             }
 
-            newUser = userRepository.create(newUser);
+            newUser = userRepository.createUser(newUser);
             response.setResponseObject(itemModelMapper.createUserItem(newUser));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -166,7 +155,7 @@ public class UserService implements IUserService {
         try {
             IUser user = userRepository.retrieveUserById(id);
             user.setDeleted(!user.getDeleted());
-            user = userRepository.update(user);
+            user = userRepository.updateUser(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -204,11 +193,15 @@ public class UserService implements IUserService {
             response.addError("", "send a user");
             return response;
         }
-        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
-                .where()
-                .ne("name", "SuperUser");
 
-        List<? extends IRole> allRoles = roleRepository.find(roleQuery);
+
+        List<? extends IRole> allRoles = userRepository.retrieveAllRoles();
+
+        if (allRoles == null) {
+
+            response.addError("", "no roles found");
+            return response;
+        }
 
         try {
             IUser user = userRepository.retrieveUserById(userItem.getId());
@@ -227,7 +220,7 @@ public class UserService implements IUserService {
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
             user.setPasswordCreatedDate(DateTime.now());
-            user = userRepository.update(user);
+            user = userRepository.updateUser(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -269,7 +262,7 @@ public class UserService implements IUserService {
             encryptAndSetUserPassword(currentUser);
         }
 
-        currentUser = userRepository.update(currentUser);
+        currentUser = userRepository.updateUser(currentUser);
         if (currentUser != null) {
             response.setResponseObject(currentUser);
         } else {

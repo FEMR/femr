@@ -2,12 +2,19 @@ package femr.data.daos.system;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
+import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IUserRepository;
+import femr.data.models.core.ILoginAttempt;
+import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
+import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
+import femr.util.calculations.dateUtils;
+import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
+import javax.inject.Provider;
 import java.util.List;
 
 /**
@@ -15,16 +22,92 @@ import java.util.List;
  */
 public class UserRepository implements IUserRepository {
 
+    private final Provider<ILoginAttempt> loginAttemptProvider;
+    private final Provider<IRole> roleProvider;
+    private final Provider<IUser> userProvider;
+
+    @Inject
+    public UserRepository(Provider<ILoginAttempt> loginAttemptProvider,
+                          Provider<IUser> userProvider,
+                          Provider<IRole> roleProvider) {
+
+        this.loginAttemptProvider = loginAttemptProvider;
+        this.roleProvider = roleProvider;
+        this.userProvider = userProvider;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public IUser create(IUser user){
+    public ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId) {
+
+        ILoginAttempt loginAttempt = loginAttemptProvider.get();
+
+        if (StringUtils.isNullOrWhiteSpace(usernameValue) || ipAddress == null) {
+
+            return null;
+        }
+
+        try {
+
+            loginAttempt.setLoginDate(dateUtils.getCurrentDateTime());
+            loginAttempt.setIsSuccessful(isSuccessful);
+            loginAttempt.setUsernameAttempt(usernameValue);
+            loginAttempt.setIp_address(ipAddress);
+
+            if (userId == null)
+                loginAttempt.setUser(null);
+            else
+                loginAttempt.setUser(Ebean.getReference(userProvider.get().getClass(), userId));
+
+            Ebean.save(loginAttempt);
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-createLoginAttempt", ex);
+            throw ex;
+        }
+
+        return loginAttempt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRole createRole(int id, String name){
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        IRole role = roleProvider.get();
+        role.setId(id);
+        role.setName(name);
+
+        try {
+
+            Ebean.save(role);
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-createRole", ex);
+            throw ex;
+        }
+
+        return role;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IUser createUser(IUser user){
         try {
             Ebean.save(user);
         } catch (Exception ex) {
 
-            Logger.error("UserRepository-create", ex);
+            Logger.error("UserRepository-createUser", ex);
             throw ex;
         }
         return user;
@@ -34,12 +117,35 @@ public class UserRepository implements IUserRepository {
      * {@inheritDoc}
      */
     @Override
-    public IUser update(IUser user){
+    public Integer countUsers() {
+
+        Integer count = 0;
+
+        //get an empty user for ebean to specify the table
+        IUser user = userProvider.get();
+
+        try {
+
+            count = Ebean.find(user.getClass()).findCount();
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-countUsers", ex);
+            throw ex;
+        }
+
+        return count;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IUser updateUser(IUser user){
         try {
             Ebean.update(user);
         } catch (Exception ex) {
 
-            Logger.error("UserRepository-update", ex);
+            Logger.error("UserRepository-updateUser", ex);
             throw ex;
         }
         return user;
@@ -123,5 +229,85 @@ public class UserRepository implements IUserRepository {
         }
 
         return users;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IRole> retrieveAllRoles(){
+
+        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
+                .where()
+                .ne("name", "SuperUser");
+
+        List<? extends IRole> allRoles;
+        try{
+
+            allRoles = roleQuery.findList();
+        } catch (Exception ex){
+
+            Logger.error("UserRepository-retrieveAllRoles", ex);
+            throw ex;
+        }
+
+        return allRoles;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IRole> retrieveRolesByName(List<String> roleNames){
+
+        if (roleNames == null){
+
+            return null;
+        }
+
+        ExpressionList<Role> query = QueryProvider.getRoleQuery()
+                .where()
+                .in("name", roleNames);
+
+        List<? extends IRole> roles;
+
+        try{
+
+            roles = query.findList();
+        } catch(Exception ex){
+
+            Logger.error("UserRepository-retrieveRolesByName", ex);
+            throw ex;
+        }
+
+        return roles;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRole retrieveRoleByName(String roleName) {
+
+        if (StringUtils.isNullOrWhiteSpace(roleName)) {
+
+            return null;
+        }
+
+        IRole role = roleProvider.get();
+
+        try {
+
+            role = Ebean.find(role.getClass())
+                    .where()
+                    .eq("name", roleName)
+                    .findUnique();
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-retrieveRoleByName", ex);
+            throw ex;
+        }
+
+        return role;
     }
 }

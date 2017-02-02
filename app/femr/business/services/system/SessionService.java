@@ -26,7 +26,7 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;
 
@@ -39,29 +39,23 @@ public class SessionService implements ISessionService {
     private IMissionTripService missionTripService;
     private IPasswordEncryptor passwordEncryptor;
     private ISessionHelper sessionHelper;
-    private final IRepository<ILoginAttempt> loginAttemptRepository;
     private final IDataModelMapper dataModelMapper;
-    private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IRepository<IRole> roleRepository;
+    private final IUserRepository userRepository;
 
     @Inject
     public SessionService(IUserService userService,
                           IMissionTripService missionTripService,
                           IPasswordEncryptor passwordEncryptor,
                           ISessionHelper sessionHelper,
-                          IRepository<ILoginAttempt> loginAttemptRepository,
                           IDataModelMapper dataModelMapper,
-                          IRepository<ISystemSetting> systemSettingRepository,
-                          IRepository<IRole> roleRepository) {
+                          IUserRepository userRepository) {
 
         this.userService = userService;
         this.missionTripService = missionTripService;
         this.passwordEncryptor = passwordEncryptor;
         this.sessionHelper = sessionHelper;
-        this.loginAttemptRepository = loginAttemptRepository;
         this.dataModelMapper = dataModelMapper;
-        this.systemSettingRepository = systemSettingRepository;
-        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -113,8 +107,7 @@ public class SessionService implements ISessionService {
             response.setResponseObject(createCurrentUser(userWithEmail, tripId));//send the user back in the response object
         }
 
-        ILoginAttempt loginAttempt = dataModelMapper.createLoginAttempt(email, isSuccessful, ipAddressBinary, userId);
-        loginAttemptRepository.create(loginAttempt);
+        userRepository.createLoginAttempt(email, isSuccessful, ipAddressBinary, userId);
 
         return response;
     }

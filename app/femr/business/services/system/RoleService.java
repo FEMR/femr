@@ -18,25 +18,22 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IRoleService;
 import femr.common.dtos.ServiceResponse;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.IRole;
-import femr.data.daos.IRepository;
-import femr.data.models.mysql.Role;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoleService implements IRoleService {
 
-    private final IRepository<IRole> roleRepository;
+    private final IUserRepository userRepository;
 
     @Inject
-    public RoleService(IRepository<IRole> roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleService(IUserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     /**
@@ -45,11 +42,9 @@ public class RoleService implements IRoleService {
     @Override
     public ServiceResponse<List<String>> retrieveAllRoles() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
-        ExpressionList<Role> query = QueryProvider.getRoleQuery()
-                .where()
-                .ne("name", "SuperUser");
+
         try {
-            List<? extends IRole> roles = roleRepository.find(query);
+            List<? extends IRole> roles = userRepository.retrieveAllRoles();
             List<String> stringRoles = new ArrayList<>();
             for (IRole role : roles) {
                 stringRoles.add(role.getName());

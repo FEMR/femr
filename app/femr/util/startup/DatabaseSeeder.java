@@ -22,6 +22,8 @@ import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
@@ -35,49 +37,48 @@ import java.util.List;
 @Singleton
 public class DatabaseSeeder {
 
+    private final IPatientRepository patientRepository;
+    private final IUserRepository userRepository;
+
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionCountry> missionCountryRepository;
     private final IRepository<IMissionCity> missionCityRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
-    private final IRepository<IUser> userRepository;
-    private final IRepository<IRole> roleRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
     private final IRepository<ITab> tabRepository;
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
 
     private final Configuration configuration;
     private final IPasswordEncryptor passwordEncryptor;
 
     @Inject
-    public DatabaseSeeder(IRepository<IConceptDiagnosis> diagnosisRepository,
+    public DatabaseSeeder(IPatientRepository patientRepository,
+                          IUserRepository userRepository,
+                          IRepository<IConceptDiagnosis> diagnosisRepository,
                           IRepository<IMissionCountry> missionCountryRepository,
                           IRepository<IMissionCity> missionCityRepository,
                           IRepository<IMissionTeam> missionTeamRepository,
-                          IRepository<IUser> userRepository,
-                          IRepository<IRole> roleRepository,
                           IRepository<ISystemSetting> systemSettingRepository,
                           IRepository<ITabField> tabFieldRepository,
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
                           IRepository<ITabFieldType> tabFieldTypeRepository,
                           IRepository<ITab> tabRepository,
-                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           Configuration configuration,
                           IPasswordEncryptor passwordEncryptor) {
+
+        this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
 
         this.configuration = configuration;
         this.passwordEncryptor = passwordEncryptor;
         this.diagnosisRepository = diagnosisRepository;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
         this.tabFieldTypeRepository = tabFieldTypeRepository;
         this.tabRepository = tabRepository;
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.missionCountryRepository = missionCountryRepository;
         this.missionTeamRepository = missionTeamRepository;
         this.missionCityRepository = missionCityRepository;
@@ -492,63 +493,30 @@ public class DatabaseSeeder {
 
     private void seedPatientAgeClassification() {
         //sort order auto increments
-        List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.findAll(PatientAgeClassification.class);
+        List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
 
-        List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
-        PatientAgeClassification patientAgeClassification;
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("infant");
-            patientAgeClassification.setDescription("0-1");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(1);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("infant", "0-1", 1);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("child");
-            patientAgeClassification.setDescription("2-12");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(2);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("child", "2-12", 2);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("teen");
-            patientAgeClassification.setDescription("13-17");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(3);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("teen", "13-17", 3);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("adult");
-            patientAgeClassification.setDescription("18-64");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(4);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("adult", "18-64", 4);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("elder");
-            patientAgeClassification.setDescription("65+");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(5);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("elder", "65+", 5);
         }
 
-        patientAgeClassificationRepository.createAll(newPatientAgeClassifications);
     }
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Seed available system settings
@@ -1105,7 +1073,7 @@ public class DatabaseSeeder {
      * and the super user information.
      */
     private void seedAdminUser() {
-        int userCount = userRepository.count(User.class);
+        int userCount = userRepository.countUsers();
 
         if (userCount == 0) {
             String defaultAdminUsername = configuration.getString("default.admin.username");
@@ -1127,11 +1095,11 @@ public class DatabaseSeeder {
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
             adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
             adminUser.setDeleted(false);
-            IRole role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
+            IRole role = userRepository.retrieveRoleByName("Administrator");
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
             adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
-            userRepository.create(adminUser);
+            userRepository.createUser(adminUser);
 
             //SuperUser is currently only used for managing dynamic tabs on the medical page
             //SuperUser is an account that gives access to important configuration
@@ -1145,23 +1113,22 @@ public class DatabaseSeeder {
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
             superUser.setDateCreated( dateUtils.getCurrentDateTime() );
             superUser.setDeleted(false);
-            IRole role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
+            IRole role1 = userRepository.retrieveRoleByName("SuperUser");
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
-            userRepository.create(superUser);
+            userRepository.createUser(superUser);
         }
     }
 
     private void seedUserRoles() {
-      // Other roles are in database from early evolutions
-      List<? extends IRole> roles = roleRepository.findAll(Role.class);
+      //Retrieve other roles in the database excluding SuperUser role which is fine
+        //because we are only looking for Manager
+      List<? extends IRole> roles = userRepository.retrieveAllRoles();
       if (!containRole(roles, "Manager")) {
         // Manager role doesn't exist, add it
-        Role newRole = new Role();
-        newRole.setId(Roles.MANAGER);
-        newRole.setName("Manager");
-        roleRepository.create(newRole);
+
+          userRepository.createRole(Roles.MANAGER, "Manager");
       }
     }
 }

@@ -60,7 +60,7 @@ public class PatientService implements IPatientService {
         try {
 
 
-            List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
+            List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications(false);
             for (IPatientAgeClassification pac : patientAgeClassifications) {
 
                 patientAgeClassificationStrings.put(pac.getName(), pac.getDescription());

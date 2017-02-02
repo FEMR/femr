@@ -40,7 +40,6 @@ public class DatabaseSeeder {
     private final IRepository<IMissionCity> missionCityRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<IUser> userRepository;
-    private final IRepository<IRole> roleRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
@@ -57,7 +56,6 @@ public class DatabaseSeeder {
                           IRepository<IMissionCity> missionCityRepository,
                           IRepository<IMissionTeam> missionTeamRepository,
                           IRepository<IUser> userRepository,
-                          IRepository<IRole> roleRepository,
                           IRepository<ISystemSetting> systemSettingRepository,
                           IRepository<ITabField> tabFieldRepository,
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
@@ -71,7 +69,6 @@ public class DatabaseSeeder {
         this.passwordEncryptor = passwordEncryptor;
         this.diagnosisRepository = diagnosisRepository;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
@@ -1127,7 +1124,7 @@ public class DatabaseSeeder {
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
             adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
             adminUser.setDeleted(false);
-            IRole role = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "Administrator"));
+            IRole role = Ebean.find(Role.class).where().eq("name", "Administrator").findUnique();
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
             adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
@@ -1145,7 +1142,7 @@ public class DatabaseSeeder {
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
             superUser.setDateCreated( dateUtils.getCurrentDateTime() );
             superUser.setDeleted(false);
-            IRole role1 = roleRepository.findOne(Ebean.find(Role.class).where().eq("name", "SuperUser"));
+            IRole role1 = Ebean.find(Role.class).where().eq("name", "SuperUser").findUnique();
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
@@ -1155,13 +1152,13 @@ public class DatabaseSeeder {
 
     private void seedUserRoles() {
       // Other roles are in database from early evolutions
-      List<? extends IRole> roles = roleRepository.findAll(Role.class);
+      List<? extends IRole> roles = Ebean.find(Role.class).findList();
       if (!containRole(roles, "Manager")) {
         // Manager role doesn't exist, add it
         Role newRole = new Role();
         newRole.setId(Roles.MANAGER);
         newRole.setName("Manager");
-        roleRepository.create(newRole);
+        Ebean.save(newRole);
       }
     }
 }

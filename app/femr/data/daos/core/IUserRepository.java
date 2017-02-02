@@ -12,14 +12,14 @@ public interface IUserRepository {
      * @param user to create
      * @return the provided user
      */
-    IUser create(IUser user);
+    IUser createUser(IUser user);
 
     /**
      * Update user in database
      * @param user to update
      * @return the provided user
      */
-    IUser update(IUser user);
+    IUser updateUser(IUser user);
 
     /**
      * Retrieve user by id

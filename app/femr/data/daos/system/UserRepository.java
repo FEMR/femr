@@ -19,7 +19,7 @@ public class UserRepository implements IUserRepository {
      * {@inheritDoc}
      */
     @Override
-    public IUser create(IUser user){
+    public IUser createUser(IUser user){
         try {
             Ebean.save(user);
         } catch (Exception ex) {
@@ -34,7 +34,7 @@ public class UserRepository implements IUserRepository {
      * {@inheritDoc}
      */
     @Override
-    public IUser update(IUser user){
+    public IUser updateUser(IUser user){
         try {
             Ebean.update(user);
         } catch (Exception ex) {

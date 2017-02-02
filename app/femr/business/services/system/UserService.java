@@ -88,7 +88,7 @@ public class UserService implements IUserService {
                 return response;
             }
 
-            newUser = userRepository.create(newUser);
+            newUser = userRepository.createUser(newUser);
             response.setResponseObject(itemModelMapper.createUserItem(newUser));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -166,7 +166,7 @@ public class UserService implements IUserService {
         try {
             IUser user = userRepository.retrieveUserById(id);
             user.setDeleted(!user.getDeleted());
-            user = userRepository.update(user);
+            user = userRepository.updateUser(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -227,7 +227,7 @@ public class UserService implements IUserService {
             user.setRoles(newRoles);
             user.setPasswordReset(userItem.isPasswordReset());
             user.setPasswordCreatedDate(DateTime.now());
-            user = userRepository.update(user);
+            user = userRepository.updateUser(user);
             response.setResponseObject(itemModelMapper.createUserItem(user));
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -269,7 +269,7 @@ public class UserService implements IUserService {
             encryptAndSetUserPassword(currentUser);
         }
 
-        currentUser = userRepository.update(currentUser);
+        currentUser = userRepository.updateUser(currentUser);
         if (currentUser != null) {
             response.setResponseObject(currentUser);
         } else {

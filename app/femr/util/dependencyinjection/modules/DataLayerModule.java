@@ -73,6 +73,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IUser.class).toProvider(UserProvider.class);
         bind(IVital.class).toProvider(VitalProvider.class);
 
+        //Non generic repositories
         bind(IMedicationRepository.class).to(MedicationRepository.class);
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPhotoRepository.class).to(PhotoRepository.class);
@@ -81,7 +82,7 @@ public class DataLayerModule extends AbstractModule {
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
 
-        //Repository Injection
+        //Generic repositories (being phased out in place of non generic)
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
         bind(new TypeLiteral<IRepository<ILoginAttempt>>() {}).to(new TypeLiteral<Repository<ILoginAttempt>>() {});
@@ -106,13 +107,11 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacement>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacement>>() {});
         bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacementReason>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacementReason>>() {});
         bind(new TypeLiteral<IRepository<IPhoto>>() {}).to(new TypeLiteral<Repository<IPhoto>>() {});
-        bind(new TypeLiteral<IRepository<IRole>>() {}).to(new TypeLiteral<Repository<IRole>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});
         bind(new TypeLiteral<IRepository<ITab>>(){}).to(new TypeLiteral<Repository<ITab>>(){});
         bind(new TypeLiteral<IRepository<ITabField>>(){}).to(new TypeLiteral<Repository<ITabField>>(){});
         bind(new TypeLiteral<IRepository<ITabFieldType>>(){}).to(new TypeLiteral<Repository<ITabFieldType>>(){});
         bind(new TypeLiteral<IRepository<ITabFieldSize>>(){}).to(new TypeLiteral<Repository<ITabFieldSize>>(){});
-        bind(new TypeLiteral<IRepository<IUser>>() {}).to(new TypeLiteral<Repository<IUser>>() {});
         bind(new TypeLiteral<IRepository<IVital>>() {}).to(new TypeLiteral<Repository<IVital>>() {});
 
         // Research

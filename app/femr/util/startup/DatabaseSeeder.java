@@ -22,6 +22,7 @@ import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
@@ -35,11 +36,12 @@ import java.util.List;
 @Singleton
 public class DatabaseSeeder {
 
+    private final IUserRepository userRepository;
+
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionCountry> missionCountryRepository;
     private final IRepository<IMissionCity> missionCityRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
-    private final IRepository<IUser> userRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
@@ -51,11 +53,11 @@ public class DatabaseSeeder {
     private final IPasswordEncryptor passwordEncryptor;
 
     @Inject
-    public DatabaseSeeder(IRepository<IConceptDiagnosis> diagnosisRepository,
+    public DatabaseSeeder(IUserRepository userRepository,
+                          IRepository<IConceptDiagnosis> diagnosisRepository,
                           IRepository<IMissionCountry> missionCountryRepository,
                           IRepository<IMissionCity> missionCityRepository,
                           IRepository<IMissionTeam> missionTeamRepository,
-                          IRepository<IUser> userRepository,
                           IRepository<ISystemSetting> systemSettingRepository,
                           IRepository<ITabField> tabFieldRepository,
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
@@ -65,10 +67,11 @@ public class DatabaseSeeder {
                           Configuration configuration,
                           IPasswordEncryptor passwordEncryptor) {
 
+        this.userRepository = userRepository;
+
         this.configuration = configuration;
         this.passwordEncryptor = passwordEncryptor;
         this.diagnosisRepository = diagnosisRepository;
-        this.userRepository = userRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
@@ -1102,7 +1105,7 @@ public class DatabaseSeeder {
      * and the super user information.
      */
     private void seedAdminUser() {
-        int userCount = userRepository.count(User.class);
+        int userCount = userRepository.countUsers();
 
         if (userCount == 0) {
             String defaultAdminUsername = configuration.getString("default.admin.username");
@@ -1124,11 +1127,11 @@ public class DatabaseSeeder {
             adminUser.setLastLogin(dateUtils.getCurrentDateTime());
             adminUser.setDateCreated( dateUtils.getCurrentDateTime() );
             adminUser.setDeleted(false);
-            IRole role = Ebean.find(Role.class).where().eq("name", "Administrator").findUnique();
+            IRole role = userRepository.retrieveRoleByName("Administrator");
             adminUser.addRole(role);
             adminUser.setPasswordReset(false);
             adminUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
-            userRepository.create(adminUser);
+            userRepository.createUser(adminUser);
 
             //SuperUser is currently only used for managing dynamic tabs on the medical page
             //SuperUser is an account that gives access to important configuration
@@ -1142,23 +1145,22 @@ public class DatabaseSeeder {
             superUser.setLastLogin(dateUtils.getCurrentDateTime());
             superUser.setDateCreated( dateUtils.getCurrentDateTime() );
             superUser.setDeleted(false);
-            IRole role1 = Ebean.find(Role.class).where().eq("name", "SuperUser").findUnique();
+            IRole role1 = userRepository.retrieveRoleByName("SuperUser");
             superUser.addRole(role1);
             superUser.setPasswordReset(false);
             superUser.setPasswordCreatedDate( dateUtils.getCurrentDateTime() );
-            userRepository.create(superUser);
+            userRepository.createUser(superUser);
         }
     }
 
     private void seedUserRoles() {
-      // Other roles are in database from early evolutions
-      List<? extends IRole> roles = Ebean.find(Role.class).findList();
+      //Retrieve other roles in the database excluding SuperUser role which is fine
+        //because we are only looking for Manager
+      List<? extends IRole> roles = userRepository.retrieveAllRoles();
       if (!containRole(roles, "Manager")) {
         // Manager role doesn't exist, add it
-        Role newRole = new Role();
-        newRole.setId(Roles.MANAGER);
-        newRole.setName("Manager");
-        Ebean.save(newRole);
+
+          userRepository.createRole(Roles.MANAGER, "Manager");
       }
     }
 }

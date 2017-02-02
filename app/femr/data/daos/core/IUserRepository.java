@@ -9,11 +9,28 @@ import java.util.List;
 public interface IUserRepository {
 
     /**
+     * Create role in database
+     *
+     * @param id id of the role, not null
+     * @param name name of the role to be created, not null
+     * @return the new role
+     */
+    IRole createRole(int id, String name);
+
+    /**
      * Create user in database
+     *
      * @param user to create
      * @return the provided user
      */
     IUser createUser(IUser user);
+
+    /**
+     * Counts the number of users in the database
+     *
+     * @return the number of users in the database
+     */
+    Integer countUsers();
 
     /**
      * Update user in database
@@ -64,4 +81,12 @@ public interface IUserRepository {
      * @return list of roles as data models
      */
     List<? extends IRole> retrieveRolesByName(List<String> roleNames);
+
+    /**
+     * Retrieves a unique role by its name
+     *
+     * @param roleName exact name of the role, not null
+     * @return the role or null if not found
+     */
+    IRole retrieveRoleByName(String roleName);
 }

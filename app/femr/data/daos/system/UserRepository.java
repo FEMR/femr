@@ -2,20 +2,60 @@ package femr.data.daos.system;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
+import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
+import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
+import javax.inject.Provider;
 import java.util.List;
 
 /**
  * Created by ajsaclayan on 11/20/16.
  */
 public class UserRepository implements IUserRepository {
+
+    private final Provider<IUser> userProvider;
+    private final Provider<IRole> roleProvider;
+
+    @Inject
+    public UserRepository(Provider<IUser> userProvider,
+                          Provider<IRole> roleProvider){
+
+        this.userProvider = userProvider;
+        this.roleProvider = roleProvider;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IRole createRole(int id, String name){
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        IRole role = roleProvider.get();
+        role.setId(id);
+        role.setName(name);
+
+        try {
+
+            Ebean.save(role);
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-createRole", ex);
+            throw ex;
+        }
+
+        return role;
+    }
 
     /**
      * {@inheritDoc}
@@ -26,10 +66,33 @@ public class UserRepository implements IUserRepository {
             Ebean.save(user);
         } catch (Exception ex) {
 
-            Logger.error("UserRepository-create", ex);
+            Logger.error("UserRepository-createUser", ex);
             throw ex;
         }
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer countUsers() {
+
+        Integer count = 0;
+
+        //get an empty user for ebean to specify the table
+        IUser user = userProvider.get();
+
+        try {
+
+            count = Ebean.find(user.getClass()).findCount();
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-countUsers", ex);
+            throw ex;
+        }
+
+        return count;
     }
 
     /**
@@ -41,7 +104,7 @@ public class UserRepository implements IUserRepository {
             Ebean.update(user);
         } catch (Exception ex) {
 
-            Logger.error("UserRepository-update", ex);
+            Logger.error("UserRepository-updateUser", ex);
             throw ex;
         }
         return user;
@@ -177,5 +240,33 @@ public class UserRepository implements IUserRepository {
         }
 
         return roles;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IRole retrieveRoleByName(String roleName) {
+
+        if (StringUtils.isNullOrWhiteSpace(roleName)) {
+
+            return null;
+        }
+
+        IRole role = roleProvider.get();
+
+        try {
+
+            role = Ebean.find(role.getClass())
+                    .where()
+                    .eq("name", roleName)
+                    .findUnique();
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-retrieveRoleByName", ex);
+            throw ex;
+        }
+
+        return role;
     }
 }

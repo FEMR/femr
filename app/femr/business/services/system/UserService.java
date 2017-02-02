@@ -47,20 +47,17 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
     private final IPasswordEncryptor passwordEncryptor;
-    private final IRepository<IRole> roleRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public UserService(IUserRepository userRepository,
                        IPasswordEncryptor passwordEncryptor,
-                       IRepository<IRole> roleRepository,
                        IDataModelMapper dataModelMapper,
                        @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
-        this.roleRepository = roleRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -70,13 +67,11 @@ public class UserService implements IUserService {
      */
     @Override
     public ServiceResponse<UserItem> createUser(UserItem user, String password, int userId) {
+
         ServiceResponse<UserItem> response = new ServiceResponse<>();
         try {
 
-            ExpressionList<Role> query = QueryProvider.getRoleQuery()
-                    .where()
-                    .in("name", user.getRoles());
-            List<? extends IRole> roles = roleRepository.find(query);
+            List<? extends IRole> roles = userRepository.retrieveRolesByName(user.getRoles());
 
             // AJ Saclayan - Password Constraints
             IUser newUser = dataModelMapper.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), dateUtils.getCurrentDateTime(), user.getNotes(), password, false, false, roles, userId);
@@ -204,11 +199,15 @@ public class UserService implements IUserService {
             response.addError("", "send a user");
             return response;
         }
-        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
-                .where()
-                .ne("name", "SuperUser");
 
-        List<? extends IRole> allRoles = roleRepository.find(roleQuery);
+
+        List<? extends IRole> allRoles = userRepository.retrieveAllRoles();
+
+        if (allRoles == null) {
+
+            response.addError("", "no roles found");
+            return response;
+        }
 
         try {
             IUser user = userRepository.retrieveUserById(userItem.getId());

@@ -4,7 +4,9 @@ import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IUserRepository;
+import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
+import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
 import play.Logger;
 
@@ -123,5 +125,57 @@ public class UserRepository implements IUserRepository {
         }
 
         return users;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IRole> retrieveAllRoles(){
+
+        ExpressionList<Role> roleQuery = QueryProvider.getRoleQuery()
+                .where()
+                .ne("name", "SuperUser");
+
+        List<? extends IRole> allRoles;
+        try{
+
+            allRoles = roleQuery.findList();
+        } catch (Exception ex){
+
+            Logger.error("UserRepository-retrieveAllRoles", ex);
+            throw ex;
+        }
+
+        return allRoles;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IRole> retrieveRolesByName(List<String> roleNames){
+
+        if (roleNames == null){
+
+            return null;
+        }
+
+        ExpressionList<Role> query = QueryProvider.getRoleQuery()
+                .where()
+                .in("name", roleNames);
+
+        List<? extends IRole> roles;
+
+        try{
+
+            roles = query.findList();
+        } catch(Exception ex){
+
+            Logger.error("UserRepository-retrieveRolesByName", ex);
+            throw ex;
+        }
+
+        return roles;
     }
 }

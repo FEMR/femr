@@ -1,4 +1,5 @@
 package femr.data.daos.core;
+import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import java.util.List;
 
@@ -48,4 +49,19 @@ public interface IUserRepository {
      * @return all users that were on that trip
      */
     List<? extends IUser> retrieveUsersByTripId(Integer tripId);
+
+    /**
+     * Retrieves all user roles except the role named "SuperUser"
+     *
+     * @return a list of all roles
+     */
+    List<? extends IRole> retrieveAllRoles();
+
+    /**
+     * Retrieves a list of roles based on the name of the role
+     *
+     * @param roleNames list of roles as strings, not null
+     * @return list of roles as data models
+     */
+    List<? extends IRole> retrieveRolesByName(List<String> roleNames);
 }

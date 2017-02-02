@@ -41,8 +41,6 @@ public class SessionService implements ISessionService {
     private ISessionHelper sessionHelper;
     private final IRepository<ILoginAttempt> loginAttemptRepository;
     private final IDataModelMapper dataModelMapper;
-    private final IRepository<ISystemSetting> systemSettingRepository;
-    private final IRepository<IRole> roleRepository;
 
     @Inject
     public SessionService(IUserService userService,
@@ -50,9 +48,7 @@ public class SessionService implements ISessionService {
                           IPasswordEncryptor passwordEncryptor,
                           ISessionHelper sessionHelper,
                           IRepository<ILoginAttempt> loginAttemptRepository,
-                          IDataModelMapper dataModelMapper,
-                          IRepository<ISystemSetting> systemSettingRepository,
-                          IRepository<IRole> roleRepository) {
+                          IDataModelMapper dataModelMapper) {
 
         this.userService = userService;
         this.missionTripService = missionTripService;
@@ -60,8 +56,6 @@ public class SessionService implements ISessionService {
         this.sessionHelper = sessionHelper;
         this.loginAttemptRepository = loginAttemptRepository;
         this.dataModelMapper = dataModelMapper;
-        this.systemSettingRepository = systemSettingRepository;
-        this.roleRepository = roleRepository;
     }
 
     /**

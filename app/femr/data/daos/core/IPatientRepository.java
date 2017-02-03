@@ -7,12 +7,22 @@ import java.util.List;
 public interface IPatientRepository {
 
     /**
-     * Retrieve list of all patient age classificaitons that are not deleted.
+     * Retrieve list of all patient age classificaitons. Does not take into consideration if
+     * they are deleted.
      * Performs ascending sort by SortOrder column.
      *
      * @return list of sorted age classifications or NULL if an error occurs
      */
     List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications();
+
+    /**
+     * Retrieve list of all patient age classificaitons that are/are not deleted.
+     * Performs ascending sort by SortOrder column.
+     *
+     * @param isDeleted value for isDeleted
+     * @return list of sorted age classifications or NULL if an error occurs
+     */
+    List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted);
 
     /**
      *  Retrieve list of all patients that have not

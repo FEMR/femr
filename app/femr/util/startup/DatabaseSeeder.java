@@ -22,6 +22,7 @@ import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -36,6 +37,7 @@ import java.util.List;
 @Singleton
 public class DatabaseSeeder {
 
+    private final IPatientRepository patientRepository;
     private final IUserRepository userRepository;
 
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
@@ -47,13 +49,13 @@ public class DatabaseSeeder {
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
     private final IRepository<ITab> tabRepository;
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
 
     private final Configuration configuration;
     private final IPasswordEncryptor passwordEncryptor;
 
     @Inject
-    public DatabaseSeeder(IUserRepository userRepository,
+    public DatabaseSeeder(IPatientRepository patientRepository,
+                          IUserRepository userRepository,
                           IRepository<IConceptDiagnosis> diagnosisRepository,
                           IRepository<IMissionCountry> missionCountryRepository,
                           IRepository<IMissionCity> missionCityRepository,
@@ -63,10 +65,10 @@ public class DatabaseSeeder {
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
                           IRepository<ITabFieldType> tabFieldTypeRepository,
                           IRepository<ITab> tabRepository,
-                          IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
                           Configuration configuration,
                           IPasswordEncryptor passwordEncryptor) {
 
+        this.patientRepository = patientRepository;
         this.userRepository = userRepository;
 
         this.configuration = configuration;
@@ -77,7 +79,6 @@ public class DatabaseSeeder {
         this.tabFieldSizeRepository = tabFieldSizeRepository;
         this.tabFieldTypeRepository = tabFieldTypeRepository;
         this.tabRepository = tabRepository;
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
         this.missionCountryRepository = missionCountryRepository;
         this.missionTeamRepository = missionTeamRepository;
         this.missionCityRepository = missionCityRepository;
@@ -492,7 +493,7 @@ public class DatabaseSeeder {
 
     private void seedPatientAgeClassification() {
         //sort order auto increments
-        List<? extends IPatientAgeClassification> patientAgeClassifications = patientAgeClassificationRepository.findAll(PatientAgeClassification.class);
+        List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
 
         List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
         PatientAgeClassification patientAgeClassification;

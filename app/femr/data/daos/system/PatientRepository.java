@@ -38,6 +38,28 @@ public class PatientRepository implements IPatientRepository {
         return response;
     }
 
+    @Override
+    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted){
+
+        List<? extends IPatientAgeClassification> response = null;
+        try {
+
+            Query<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("isDeleted", isDeleted)
+                    .order()
+                    .asc("sortOrder");
+
+            response = patientAgeClassificationExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrieveAllPatientAgeClassifications", ex.getMessage());
+            throw ex;
+        }
+
+        return response;
+    }
+
     /**
      * {@inheritDoc}
      */

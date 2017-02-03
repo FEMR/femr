@@ -7,6 +7,16 @@ import java.util.List;
 public interface IPatientRepository {
 
     /**
+     * Create a new patient age classification. Be careful with sort order, it needs to be unique
+     *
+     * @param name name of the classification, not null
+     * @param description description of the classification (e.g. 0-1, 2-12), not null
+     * @param sortOrder sort order of the classification, not null, unique
+     * @return the new patient age classification or null if errors happen
+     */
+    IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder);
+
+    /**
      * Retrieve list of all patient age classificaitons. Does not take into consideration if
      * they are deleted.
      * Performs ascending sort by SortOrder column.

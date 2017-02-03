@@ -495,61 +495,28 @@ public class DatabaseSeeder {
         //sort order auto increments
         List<? extends IPatientAgeClassification> patientAgeClassifications = patientRepository.retrieveAllPatientAgeClassifications();
 
-        List<PatientAgeClassification> newPatientAgeClassifications = new ArrayList<>();
-        PatientAgeClassification patientAgeClassification;
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "infant")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("infant");
-            patientAgeClassification.setDescription("0-1");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(1);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("infant", "0-1", 1);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "child")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("child");
-            patientAgeClassification.setDescription("2-12");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(2);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("child", "2-12", 2);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "teen")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("teen");
-            patientAgeClassification.setDescription("13-17");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(3);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("teen", "13-17", 3);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "adult")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("adult");
-            patientAgeClassification.setDescription("18-64");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(4);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("adult", "18-64", 4);
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")) {
-            patientAgeClassification = new PatientAgeClassification();
-            patientAgeClassification.setName("elder");
-            patientAgeClassification.setDescription("65+");
-            patientAgeClassification.setIsDeleted(false);
-            patientAgeClassification.setSortOrder(5);
-            newPatientAgeClassifications.add(patientAgeClassification);
+
+            patientRepository.createPatientAgeClassification("adult", "18-64", 5);
         }
 
-        patientAgeClassificationRepository.createAll(newPatientAgeClassifications);
     }
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Seed available system settings

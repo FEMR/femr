@@ -9,7 +9,7 @@
 
 ### -Required downloads
 1. [MySQL 5.6](http://www.mysql.com/)
-2. [Play Framework 2.5.10](http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10.zip)
+2. [Lightbend Activator](http://www.lightbend.com/activator/download)
 3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 4. [IntelliJ IDEA Ultimate 15](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)

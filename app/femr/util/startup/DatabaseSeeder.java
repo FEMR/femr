@@ -513,7 +513,7 @@ public class DatabaseSeeder {
         }
         if (patientAgeClassifications != null && !containClassification(patientAgeClassifications, "elder")) {
 
-            patientRepository.createPatientAgeClassification("adult", "18-64", 5);
+            patientRepository.createPatientAgeClassification("elder", "65+", 5);
         }
 
     }

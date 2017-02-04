@@ -33,4 +33,11 @@ These people have contributed to fEMR's design and implementation:
 * [Melissa Heredia](https://github.com/mtwins)
 * [Christopher Richmond](https://github.com/C-RICHMOND)
 * [Martin Van Well](https://github.com/thraxus)
-
+* [gerrytucker78](https://github.com/gerrytucker78)
+* [axm155231](https://github.com/axm155231)
+* [Raghunath Thota]
+* [Jarrod Moore]
+* [Robert Massicott]
+* [Mohammad Alahmadi]
+* [Jonathan Clow]
+* [Harsha Peswani]

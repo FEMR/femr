@@ -35,9 +35,9 @@ These people have contributed to fEMR's design and implementation:
 * [Martin Van Well](https://github.com/thraxus)
 * [gerrytucker78](https://github.com/gerrytucker78)
 * [axm155231](https://github.com/axm155231)
-* [Raghunath Thota]
-* [Jarrod Moore]
-* [Robert Massicott]
-* [Mohammad Alahmadi]
-* [Jonathan Clow]
-* [Harsha Peswani]
+* [Raghunath Thota](https://github.com/rags8013)
+* [Jarrod Moore](https://github.com/JarrodMoore)
+* [Robert Massicott](https://github.com/robmass94)
+* [Mohammad Alahmadi](https://github.com/malahmadi1)
+* [Jonathan Clow](https://github.com/Hachimaki)
+* [Harsha Peswani](https://github.com/hsp15b)

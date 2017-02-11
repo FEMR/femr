@@ -18,15 +18,11 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IRoleService;
 import femr.common.dtos.ServiceResponse;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.IRole;
-import femr.data.daos.IRepository;
-import femr.data.models.mysql.Role;
 
 import java.util.ArrayList;
 import java.util.List;

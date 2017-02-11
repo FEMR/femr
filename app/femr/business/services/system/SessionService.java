@@ -26,7 +26,6 @@ import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.business.wrappers.sessions.ISessionHelper;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;

@@ -37,7 +37,6 @@ import java.util.List;
 public class DataModelMapper implements IDataModelMapper{
 
     private final Provider<IChiefComplaint> chiefComplaintProvider;
-    private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IMedication> medicationProvider;
     private final Provider<IMedicationGeneric> medicationGenericProvider;
     private final Provider<IMedicationGenericStrength> medicationGenericStrengthProvider;
@@ -46,14 +45,11 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IConceptMedicationForm> conceptMedicationFormProvider;
     private final Provider<IMedicationInventory> medicationInventoryProvider;
     private final Provider<IMissionCity> missionCityProvider;
-    private final Provider<IMissionCountry> missionCountryProvider;
     private final Provider<IMissionTeam> missionTeamProvider;
     private final Provider<IMissionTrip> missionTripProvider;
     private final Provider<IPatient> patientProvider;
     private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
-    private final Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
-    private final Provider<IEncounterService> patientEncounterTabField;
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
     private final Provider<IPatientPrescription> patientPrescriptionProvider;
@@ -70,7 +66,6 @@ public class DataModelMapper implements IDataModelMapper{
 
     @Inject
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
-                           Provider<ILoginAttempt> loginAttemptProvider,
                            Provider<IMedication> medicationProvider,
                            Provider<IMedicationGeneric> medicationGenericProvider,
                            Provider<IConceptMedicationForm> conceptMedicationFormProvider,
@@ -79,14 +74,11 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationProvider,
                            Provider<IMedicationInventory> medicationInventoryProvider,
                            Provider<IMissionCity> missionCityProvider,
-                           Provider<IMissionCountry> missionCountryProvider,
                            Provider<IMissionTeam> missionTeamProvider,
                            Provider<IMissionTrip> missionTripProvider,
                            Provider<IPatient> patientProvider,
                            Provider<IPatientAgeClassification> patientAgeClassificationProvider,
-                           Provider<IPatientEncounterPhoto> patientEncounterPhotoProvider,
                            Provider<IPatientEncounter> patientEncounterProvider,
-                           Provider<IEncounterService> patientEncounterTabField,
                            Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
                            Provider<IPatientPrescription> patientPrescriptionProvider,
@@ -102,7 +94,6 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IVital> vitalProvider) {
 
         this.chiefComplaintProvider = chiefComplaintProvider;
-        this.loginAttemptProvider = loginAttemptProvider;
         this.patientEncounterProvider = patientEncounterProvider;
         this.medicationProvider = medicationProvider;
         this.medicationGenericProvider = medicationGenericProvider;
@@ -112,13 +103,10 @@ public class DataModelMapper implements IDataModelMapper{
         this.conceptMedicationUnitProvider = conceptMedicationUnitProvider;
         this.medicationInventoryProvider = medicationInventoryProvider;
         this.missionCityProvider = missionCityProvider;
-        this.missionCountryProvider = missionCountryProvider;
         this.missionTeamProvider = missionTeamProvider;
         this.missionTripProvider = missionTripProvider;
         this.patientProvider = patientProvider;
-        this.patientEncounterTabField = patientEncounterTabField;
         this.patientAgeClassificationProvider = patientAgeClassificationProvider;
-        this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;

@@ -85,7 +85,6 @@ public class DataLayerModule extends AbstractModule {
         //Generic repositories (being phased out in place of non generic)
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
-        bind(new TypeLiteral<IRepository<ILoginAttempt>>() {}).to(new TypeLiteral<Repository<ILoginAttempt>>() {});
         bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
         bind(new TypeLiteral<IRepository<IMedicationGenericStrength>>() {}).to(new TypeLiteral<Repository<IMedicationGenericStrength>>() {});
         bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<Repository<IMedicationGeneric>>() {});
@@ -97,7 +96,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});
         bind(new TypeLiteral<IRepository<IMissionTrip>>() {}).to(new TypeLiteral<Repository<IMissionTrip>>() {});
-        bind(new TypeLiteral<IRepository<IPatient>>() {}).to(new TypeLiteral<Repository<IPatient>>() {});
         bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<Repository<IPatientAgeClassification>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
@@ -106,7 +104,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientPrescription>>() {}).to(new TypeLiteral<Repository<IPatientPrescription>>() {});
         bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacement>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacement>>() {});
         bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacementReason>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacementReason>>() {});
-        bind(new TypeLiteral<IRepository<IPhoto>>() {}).to(new TypeLiteral<Repository<IPhoto>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});
         bind(new TypeLiteral<IRepository<ITab>>(){}).to(new TypeLiteral<Repository<ITab>>(){});
         bind(new TypeLiteral<IRepository<ITabField>>(){}).to(new TypeLiteral<Repository<ITabField>>(){});

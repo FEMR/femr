@@ -157,29 +157,6 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId){
-
-        if (StringUtils.isNullOrWhiteSpace(usernameValue) || ipAddress == null) {
-
-            return null;
-        }
-        ILoginAttempt loginAttempt = loginAttemptProvider.get();
-        loginAttempt.setLoginDate(dateUtils.getCurrentDateTime());
-        loginAttempt.setIsSuccessful(isSuccessful);
-        loginAttempt.setUsernameAttempt(usernameValue);
-        loginAttempt.setIp_address(ipAddress);
-        if (userId == null)
-            loginAttempt.setUser(null);
-        else
-            loginAttempt.setUser(Ebean.getReference(userProvider.get().getClass(), userId));
-
-        return loginAttempt;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public IMedication createMedication(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {

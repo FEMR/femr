@@ -1,4 +1,5 @@
 package femr.data.daos.core;
+import femr.data.models.core.ILoginAttempt;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import java.util.List;
@@ -7,6 +8,17 @@ import java.util.List;
  * Created by ajsaclayan on 11/20/16.
  */
 public interface IUserRepository {
+
+    /**
+     * Log an attempt by a user trying to log in
+     *
+     * @param usernameValue the value that the device/person submitted to the server as a username, not null
+     * @param isSuccessful whether or not the login attempt was successful, not null
+     * @param ipAddress the ip address of the device trying to log in - in binary form, not null
+     * @param userId id of the user account that is trying to be logged into, may be null
+     * @return a new login attempt
+     */
+    ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId);
 
     /**
      * Create role in database

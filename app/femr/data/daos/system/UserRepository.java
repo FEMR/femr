@@ -5,10 +5,12 @@ import com.avaje.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IUserRepository;
+import femr.data.models.core.ILoginAttempt;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
 import femr.data.models.mysql.Role;
 import femr.data.models.mysql.User;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
@@ -20,20 +22,59 @@ import java.util.List;
  */
 public class UserRepository implements IUserRepository {
 
-    private final Provider<IUser> userProvider;
+    private final Provider<ILoginAttempt> loginAttemptProvider;
     private final Provider<IRole> roleProvider;
+    private final Provider<IUser> userProvider;
 
     @Inject
-    public UserRepository(Provider<IUser> userProvider,
-                          Provider<IRole> roleProvider){
+    public UserRepository(Provider<ILoginAttempt> loginAttemptProvider,
+                          Provider<IUser> userProvider,
+                          Provider<IRole> roleProvider) {
 
-        this.userProvider = userProvider;
+        this.loginAttemptProvider = loginAttemptProvider;
         this.roleProvider = roleProvider;
+        this.userProvider = userProvider;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
+    public ILoginAttempt createLoginAttempt(String usernameValue, boolean isSuccessful, byte[] ipAddress, Integer userId) {
+
+        ILoginAttempt loginAttempt = loginAttemptProvider.get();
+
+        if (StringUtils.isNullOrWhiteSpace(usernameValue) || ipAddress == null) {
+
+            return null;
+        }
+
+        try {
+
+            loginAttempt.setLoginDate(dateUtils.getCurrentDateTime());
+            loginAttempt.setIsSuccessful(isSuccessful);
+            loginAttempt.setUsernameAttempt(usernameValue);
+            loginAttempt.setIp_address(ipAddress);
+
+            if (userId == null)
+                loginAttempt.setUser(null);
+            else
+                loginAttempt.setUser(Ebean.getReference(userProvider.get().getClass(), userId));
+
+            Ebean.save(loginAttempt);
+        } catch (Exception ex) {
+
+            Logger.error("UserRepository-createLoginAttempt", ex);
+            throw ex;
+        }
+
+        return loginAttempt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IRole createRole(int id, String name){
 
         if (StringUtils.isNullOrWhiteSpace(name)) {

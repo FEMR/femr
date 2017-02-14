@@ -38,7 +38,7 @@ var prescriptionFeature = {
                     $medicationID.val(item.id);
                 }).on('typeahead:autocompleted', function (event, item, data) {
                     $(this).trigger("typeahead:selected", item);
-                }).on("change", function () {
+                }).on("input", function () {
                     var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
                     $medicationID.val("");  //Remove value if it is not one from typeahead
                 });

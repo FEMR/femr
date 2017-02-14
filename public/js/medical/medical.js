@@ -85,7 +85,7 @@ var prescriptionFeature = {
                 // triggered when an item is tabbed to completion
                 $(this).trigger("typeahead:selected", item);
             }
-        ).on("change", function(event) {
+        ).on("input", function(event) {
                 // triggered when text is entered that is not part of the autocomplete
                 var $medicationID = $(this).closest(".prescriptionRow").find(".medicationID");
                 $medicationID.val("");

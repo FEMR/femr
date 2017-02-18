@@ -178,12 +178,6 @@ public class PatientService implements IPatientService {
         return response;
     }
 
-
-    //Expected behavior:
-    //1) Flags patient w/ id as deleted with a timestamp
-    //2) Flags user w/ deleteByUserID as being the person who deleted it
-    //3) Reason must be provided for why the user is deleted
-
     /**
      * {@inheritDoc}
      */

@@ -20,8 +20,6 @@ import play.mvc.Result;
 import play.mvc.Security;
 import java.util.List;
 
-import static femr.util.calculations.dateUtils.getDisplayTime;
-
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.MANAGER})
 public class ManagerController extends Controller {

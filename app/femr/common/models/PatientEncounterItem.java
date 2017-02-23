@@ -53,7 +53,6 @@ public class PatientEncounterItem {
         this.chiefComplaints = new ArrayList<>();
     }
 
-
     public int getId() {
         return id;
     }

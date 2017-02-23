@@ -38,15 +38,15 @@
         @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
             <li><a href="@ResearchController.indexGet()">Research</a></li>
         }
+        @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
+            <li><a href="@ManagerController.indexGet()">Manager</a></li>
+        }
         @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
             <li><a href="@AdminController.index()">Admin</a></li>
         }
         @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
             <li><a href="@SuperuserController.indexGet()">SuperUser</a></li>
         }
-        @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
-                        <li><a href="@ManagerController.indexGet()">Manager</a></li>
-                    }
         <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span>Reference</span></a></li>
     </ul>
     <p class="userStatus">

@@ -1,16 +1,8 @@
 package femr.ui.models.manager;
 
 import femr.common.models.PatientEncounterItem;
-import femr.common.models.PatientItem;
-import femr.common.models.TabFieldItem;
-import femr.data.models.mysql.PatientEncounter;
-import femr.util.DataStructure.Mapping.VitalMultiMap;
-import femr.util.calculations.dateUtils;
-import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 //Manages Manger Controller
 public class IndexViewModelGet {

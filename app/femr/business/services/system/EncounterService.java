@@ -487,7 +487,7 @@ public class EncounterService implements IEncounterService {
                 .where()
                 .ge("date_of_triage_visit", today)
                 .le("date_of_triage_visit", tommorrow)
-                . eq("mission_trip_id",tripID);
+                .eq("mission_trip_id",tripID);
 
         try{
             List<PatientItem> patientItems=null;

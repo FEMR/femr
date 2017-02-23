@@ -31,9 +31,6 @@ public class InventoryViewModelGet {
     //trip information
     private MissionTripItem missionTripItem;
 
-    private String userFriendlyTrip;
-
-
     public List<MedicationItem> getMedications() {
         return medications;
     }
@@ -72,13 +69,5 @@ public class InventoryViewModelGet {
 
     public void setConceptMedications(List<MedicationItem> conceptMedications) {
         this.conceptMedications = conceptMedications;
-    }
-
-    public String getUserFriendlyTrip() {
-        return userFriendlyTrip;
-    }
-
-    public void setUserFriendlyTrip(String userFriendlyTrip) {
-        this.userFriendlyTrip = userFriendlyTrip;
     }
 }

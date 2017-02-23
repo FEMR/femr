@@ -19,7 +19,6 @@
 package femr.util.calculations;
 
 import femr.common.models.PatientEncounterItem;
-import femr.data.models.mysql.PatientEncounter;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

@@ -39,4 +39,7 @@ public interface IPhoto {
     Date   getInsertTS();
     void   setInsertTS(Date dt);
 
+    byte[]   getPhotoBlob();
+    void     setPhotoBlob(byte[] photo);
+
 }

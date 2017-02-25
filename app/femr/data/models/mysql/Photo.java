@@ -23,6 +23,7 @@ import femr.data.models.core.IPhoto;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
 @Table(name = "photos")
 public class Photo implements IPhoto {
@@ -35,6 +36,9 @@ public class Photo implements IPhoto {
     private String _filePath;
     @Column(name = "insertTS", nullable = true)
     private Date _insertTS;
+    @Column(name = "photo", nullable = true)
+    @Lob
+    private byte[] _photo;
 
     @Override
     public int getId() {
@@ -71,4 +75,11 @@ public class Photo implements IPhoto {
 
     @Override
     public void   setInsertTS(Date dt) { _insertTS = dt; }
+
+    @Override
+    public byte[]   getPhotoBlob() { return _photo; }
+
+    @Override
+    public void   setPhotoBlob(byte[] photo) { _photo = photo; }
+
 }

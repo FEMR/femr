@@ -58,24 +58,25 @@ public interface IPhotoService {
      * @param deleteFlag  true if photo is being deleted instead of saved, not null
      * @return a service response that contains true if creation successful, false if not
      * and/or errors if they exist.
-     * */
+     */
     ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
 
-    /**
-     * Gets the filesystem path to a patients photo.
-     *
-     * @param patientId id of the patient, not null
-     * @return a service response that contains a string to the photo's file location
-     * and/or errors if they exist.
-     * */
-    ServiceResponse<String> retrievePatientPhotoPath(int patientId);
 
     /**
-     * Gets the filesystem path to any photo.
-     *
-     * @param photoId id of the photo, not null
-     * @return a service response that contains a string to the photo's file location
-     * and/or errors if they exist.
-     * */
-    ServiceResponse<String> retrievePhotoPath(int photoId);
+     *  Returns patient photo in binary form.  Will determine where to fetch the photo (file system or blob)
+     *    based on the photos.useDbStorage property.
+     * @param patientId
+     * @return
+     */
+    ServiceResponse<byte[]> retrievePatientPhotoData(int patientId);
+
+
+    /**
+     *  Returns any photo by ID in binary form.  Will determine where to fetch the photo (file system or blob)
+     *    based on the photos.useDbStorage property.
+     * @param photoId
+     * @return
+     */
+    ServiceResponse<byte[]> retrievePhotoData(int photoId);
+
 }

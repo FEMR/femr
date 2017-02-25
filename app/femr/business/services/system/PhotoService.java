@@ -18,6 +18,7 @@
 */
 package femr.business.services.system;
 
+import com.avaje.ebean.Ebean;
 import com.google.inject.name.Named;
 import femr.business.helpers.LogicDoer;
 import femr.business.services.core.IPhotoService;
@@ -34,14 +35,17 @@ import femr.data.models.core.IPhoto;
 import femr.ui.models.medical.EditViewModelPost;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.codec.binary.Base64;
+import play.Logger;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ByteArrayOutputStream;
 
 public class PhotoService implements IPhotoService {
 
@@ -50,6 +54,7 @@ public class PhotoService implements IPhotoService {
     private IPhotoRepository photoRepository;
     private IPatientRepository patientRepository;
     private final IItemModelMapper itemModelMapper;
+    private boolean _bUseDbPhotoStorage;
 
     @Inject
     public PhotoService(IPatientRepository patientRepository,
@@ -69,15 +74,31 @@ public class PhotoService implements IPhotoService {
 
         _encounterPhotoPath = LogicDoer.getMedicalPhotoPath();
 
+        _bUseDbPhotoStorage = LogicDoer.getUseDbStorageFlag();
 
-        //Ensure folder exists, if not, create it
-        f = new File(_profilePhotoPath);
-        if (!f.exists())
-            f.mkdirs();
 
-        f = new File(_encounterPhotoPath);
-        if (!f.exists())
-            f.mkdirs();
+        if (!_bUseDbPhotoStorage){
+            //Ensure folder exists, if not, create it
+            f = new File(_profilePhotoPath);
+            if (!f.exists())
+                f.mkdirs();
+
+            f = new File(_encounterPhotoPath);
+            if (!f.exists())
+                f.mkdirs();
+        }
+    }
+
+    private byte[] convertBufferedImageToByteArray(BufferedImage img) {
+        if(img != null) {
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(img, "jpg", baos);
+                return baos.toByteArray();
+            } catch (Exception ex) {
+            }
+        }
+        return null;
     }
 
     /**
@@ -89,12 +110,28 @@ public class PhotoService implements IPhotoService {
 
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);
-            String imageFileName = "/Patient_" + patient.getId() + ".jpg";
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
+
+                //Decode image, save as BufferedImage:
+                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
+                BufferedImage bufferedImage = decodeToImage(parsedImage);
+                String imageFileName = "N/A";
+
+                if(!_bUseDbPhotoStorage) {
+                    //Store to file system
+                    imageFileName = "/Patient_" + patient.getId() + ".jpg";
+                    //save image to disk
+                    String filePathTarget = _profilePhotoPath + imageFileName;
+                    photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
+                }
+
+
                 if (patient.getPhoto() == null) {
-                    //Create new photo Id record
-                    IPhoto pPhoto = photoRepository.createPhoto("", imageFileName);
+                    //Create new photo Id record, pass in binary photo data if _bUseDbPhotoStorage is true
+                    IPhoto pPhoto = photoRepository.createPhoto("",
+                            imageFileName,
+                            _bUseDbPhotoStorage ? convertBufferedImageToByteArray(bufferedImage) : null);
                     patient.setPhoto(pPhoto);
                     patientRepository.savePatient(patient);
                 } else {
@@ -102,11 +139,7 @@ public class PhotoService implements IPhotoService {
                     //photoId = patient.getPhoto().getId();
                 }
 
-                //save image to disk
-                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
-                BufferedImage bufferedImage = decodeToImage(parsedImage);
-                String filePathTarget = _profilePhotoPath + imageFileName;
-                photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
+
             } else {
                 if (deleteFlag != null)
                     if (deleteFlag && patient.getPhoto() != null) {
@@ -127,18 +160,51 @@ public class PhotoService implements IPhotoService {
         return response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public ServiceResponse<String> retrievePatientPhotoPath(int patientId) {
-        ServiceResponse<String> response = new ServiceResponse<>();
+    public ServiceResponse<byte[]> retrievePhotoData(int photoId) {
+        ServiceResponse<byte[]> response = new ServiceResponse<>();
+        try {
+            IPhoto photo = photoRepository.retrievePhotoById(photoId);
+            if(photo != null) {
+                if(!_bUseDbPhotoStorage) {
+                    //Read data from file and return:
+                    File encPhoto = new File(_encounterPhotoPath + photo.getFilePath());
+                    if(encPhoto.canRead()) {
+                        byte[] photoData = Files.readAllBytes(Paths.get(_encounterPhotoPath + photo.getFilePath()));
+                        response.setResponseObject(photoData);
+                    }
+                } else {
+                    //Data is already loaded in Photo record, let's return it!
+                    response.setResponseObject(photo.getPhotoBlob());
+                }
+            }
+
+        }
+        catch (Exception ex) {
+            response.addError("", ex.getMessage());
+            return response;
+        }
+
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<byte[]> retrievePatientPhotoData(int patientId) {
+        ServiceResponse<byte[]> response = new ServiceResponse<>();
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);
             if (patient.getPhoto() == null) {
                 response.setResponseObject(null);
             } else {
-                response.setResponseObject(_profilePhotoPath + patient.getPhoto().getFilePath());
+                if(_bUseDbPhotoStorage) {
+                    //BLOB Mode
+                    response.setResponseObject(patient.getPhoto().getPhotoBlob());
+                } else {
+                    //File system mode
+                    byte[] photoData = Files.readAllBytes(Paths.get(_profilePhotoPath + patient.getPhoto().getFilePath()));
+                    response.setResponseObject(photoData);
+                }
+
             }
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -147,21 +213,7 @@ public class PhotoService implements IPhotoService {
         return response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServiceResponse<String> retrievePhotoPath(int photoId) {
-        ServiceResponse<String> response = new ServiceResponse<>();
 
-        try {
-            IPhoto photo = photoRepository.retrievePhotoById(photoId);
-            response.setResponseObject(_encounterPhotoPath + photo.getFilePath());
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
-        return response;
-    }
 
     /**
      * {@inheritDoc}
@@ -271,16 +323,18 @@ public class PhotoService implements IPhotoService {
 
     private void saveNewEncounterImage(File image, PatientEncounterItem patientEncounter, String descriptionText) {
         try {
-            String imageFileName;
+            String imageFileName = "N/A";
 
             //Create photo record:
-            IPhoto pPhoto = photoRepository.createPhoto(descriptionText, "");
+            IPhoto pPhoto = photoRepository.createPhoto(descriptionText, "", null);
             //this is redundant...?
             IPhoto editPhoto = photoRepository.retrievePhotoById(pPhoto.getId());
 
-            //Build the filepath for the image
-            imageFileName = "Patient_" + patientEncounter.getPatientItem().getId()
-                    + "_Enc_" + patientEncounter.getId() + "_Photo_" + editPhoto.getId();
+            if(!_bUseDbPhotoStorage) {
+                //Build the filepath for the image
+                imageFileName = "Patient_" + patientEncounter.getPatientItem().getId()
+                        + "_Enc_" + patientEncounter.getId() + "_Photo_" + editPhoto.getId();
+            }
 
             //Since the photo ID is part of the file name
             //  I am setting the filePath field after the record is created
@@ -289,7 +343,16 @@ public class PhotoService implements IPhotoService {
             //Link photo record in photoEncounter table
             photoRepository.createEncounterPhoto(editPhoto.getId(), patientEncounter.getId());
 
-            photoRepository.createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
+            if(!_bUseDbPhotoStorage) {
+                photoRepository.createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
+            } else {
+                //Read image data, update blob field:
+                byte[] imgData = Files.readAllBytes(Paths.get(image.getAbsolutePath()));
+                photoRepository.updatePhotoData(pPhoto.getId(), imgData);
+            }
+
+
+
 
         } catch (Exception ex) {
 
@@ -312,7 +375,8 @@ public class PhotoService implements IPhotoService {
 
             photoRepository.deleteEncounterPhotosByPhotoId(savedPhoto.getId());
 
-            photoRepository.deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
+            if(!_bUseDbPhotoStorage)
+                photoRepository.deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
 
             photoRepository.deletePhotoById(savedPhoto.getId());
         }

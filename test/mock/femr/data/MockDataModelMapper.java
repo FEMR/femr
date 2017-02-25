@@ -129,7 +129,7 @@ public class MockDataModelMapper implements IDataModelMapper{
     }
 
     @Override
-    public IPhoto createPhoto(String description, String filePath) {
+    public IPhoto createPhoto(String description, String filePath, byte[] photoData) {
         return null;
     }
 

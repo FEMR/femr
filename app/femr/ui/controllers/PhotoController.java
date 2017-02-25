@@ -2,6 +2,7 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
+import femr.business.helpers.LogicDoer;
 import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IPhotoService;
 import femr.data.models.mysql.Roles;
@@ -32,34 +33,22 @@ public class PhotoController {
      * @return
      */
     public Result GetPatientPhoto(Integer patientId, Boolean showDefault) {
-        String pathToPhoto = "";
-
         if (patientId != null) {
-            ServiceResponse<String> pathToPhotoResponse = photoService.retrievePatientPhotoPath(patientId);
-            if (pathToPhotoResponse.hasErrors()) {
+            ServiceResponse<byte[]> photoDataResponse = photoService.retrievePatientPhotoData(patientId);
+            if (photoDataResponse.hasErrors()) {
                 throw new RuntimeException();
             }
-            if (pathToPhotoResponse.getResponseObject() != null) {
-                pathToPhoto = pathToPhotoResponse.getResponseObject();
-                File photo = new File(pathToPhoto);
-                if (photo.canRead())
-                    return ok(photo).as("image/jpg");
-                else{
-                    //need to be able to tell the difference between Triage and Search
-                    //if Triage, do not show default
-                    //if Search, show default
-                    pathToPhoto = null;
-                    showDefault = true;
-                }
-
+            if (photoDataResponse.getResponseObject() != null) {
+                return ok(photoDataResponse.getResponseObject()).as("image/jpg");
             }
         }
 
-        if (StringUtils.isNullOrWhiteSpace(pathToPhoto) && showDefault) {
-            pathToPhoto = ConfigFactory.load().getString("photos.defaultProfilePhoto");
+        if (showDefault) {
+            String pathToDefaultPhoto = ConfigFactory.load().getString("photos.defaultProfilePhoto");
+            return ok(new File(pathToDefaultPhoto)).as("image/jpg");
         }
 
-        return ok(new File(pathToPhoto)).as("image/jpg");
+        return ok().as("image/jpg");
     }
 
     /**
@@ -70,13 +59,16 @@ public class PhotoController {
      */
     public Result GetPhoto(int photoId) {
         if (photoId > 0) {
-            ServiceResponse<String> pathToPhotoResponse = photoService.retrievePhotoPath(photoId);
+            ServiceResponse<byte[]> pathToPhotoResponse = photoService.retrievePhotoData(photoId);
             if (pathToPhotoResponse.hasErrors()) {
                 throw new RuntimeException();
             }
-            return ok(new File(pathToPhotoResponse.getResponseObject())).as("image/jpg");
+            if(pathToPhotoResponse.getResponseObject() != null)
+                return ok(pathToPhotoResponse.getResponseObject()).as("image/jpg");
+
         }
         //No luck, return nothing
-        return ok("");
+        return ok().as("image/jpg");  //return empty image
     }
+
 }

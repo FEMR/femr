@@ -36,6 +36,11 @@ public class Photo implements IPhoto {
     @Column(name = "insertTS", nullable = true)
     private Date _insertTS;
 
+    @Lob
+    @Basic(fetch=FetchType.LAZY) //Lazy load to prevent downloading full image unless needed
+    @Column(name = "photo")
+    private byte[] _photo;
+
     @Override
     public int getId() {
         return _id;
@@ -71,4 +76,11 @@ public class Photo implements IPhoto {
 
     @Override
     public void   setInsertTS(Date dt) { _insertTS = dt; }
+
+    @Override
+    public byte[]   getPhotoBlob() { return _photo; }
+
+    @Override
+    public void   setPhotoBlob(byte[] photo) { _photo = photo; }
+
 }

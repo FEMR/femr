@@ -35,13 +35,11 @@ public class PhotoRepository implements IPhotoRepository {
         this.patientEncounterPhotoProvider = patientEncounterPhotoProvider;
     }
 
-
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public IPhoto createPhoto(String description, String filePath) {
+    public IPhoto createPhoto(String description, String filePath, byte[] photoData) {
 
         IPhoto photo;
 
@@ -53,8 +51,7 @@ public class PhotoRepository implements IPhotoRepository {
         }*/
 
         try {
-
-            photo = dataModelMapper.createPhoto(description, filePath);
+            photo = dataModelMapper.createPhoto(description, filePath, photoData);
             Ebean.save(photo);
         } catch (Exception ex) {
 
@@ -254,6 +251,29 @@ public class PhotoRepository implements IPhotoRepository {
         return photo;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPhoto updatePhotoData(int id, byte[] photoData){
+
+        IPhoto photo;
+
+        try {
+
+            photo = retrievePhotoById(id);
+            photo.setPhotoBlob(photoData);
+            Ebean.save(photo);
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-updatePhotoData", ex);
+            throw ex;
+        }
+
+        return photo;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -284,7 +304,7 @@ public class PhotoRepository implements IPhotoRepository {
 
         if (StringUtils.isNullOrWhiteSpace(filePath)){
 
-            Logger.error("PhotoRepository-deletePhotoFromFilesystemById: no filePath to delete");
+            Logger.error("PhotoService-deletePhotoFromFilesystemById: no filePath to delete");
             return false;
         }
 
@@ -294,7 +314,7 @@ public class PhotoRepository implements IPhotoRepository {
             isDeleted = photoToDelete.delete();
         } catch (Exception ex) {
 
-            Logger.error("PhotoRepository-deletePhotoFromFilesystemById", ex);
+            Logger.error("PhotoService-deletePhotoFromFilesystemById", ex);
             return false;
         }
 

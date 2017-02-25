@@ -451,7 +451,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPhoto createPhoto(String description, String filePath) {
+    public IPhoto createPhoto(String description, String filePath, byte[] photoData) {
 
         if (StringUtils.isNullOrWhiteSpace(filePath)) {
 
@@ -466,6 +466,9 @@ public class DataModelMapper implements IDataModelMapper{
         if (StringUtils.isNullOrWhiteSpace(description)) photo.setDescription("");
         else photo.setDescription(description);
         photo.setFilePath(filePath);
+
+        if(photoData != null)
+            photo.setPhotoBlob(photoData);
 
         return photo;
     }

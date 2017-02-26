@@ -59,7 +59,8 @@ public class PhotoController {
      */
     public Result GetPhoto(int photoId) {
         if (photoId > 0) {
-            ServiceResponse<String> pathToPhotoResponse = photoService.retrievePhotoPath(photoId);
+            //TODO: Fix encounter processing:
+            ServiceResponse<String> pathToPhotoResponse = null; //photoService.retrievePhotoPath(photoId);
             if (pathToPhotoResponse.hasErrors()) {
                 throw new RuntimeException();
             }

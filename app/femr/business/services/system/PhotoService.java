@@ -172,22 +172,6 @@ public class PhotoService implements IPhotoService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<String> retrievePhotoPath(int photoId) {
-        ServiceResponse<String> response = new ServiceResponse<>();
-
-        try {
-            IPhoto photo = photoRepository.retrievePhotoById(photoId);
-            response.setResponseObject(_encounterPhotoPath + photo.getFilePath());
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ServiceResponse<Boolean> createEncounterPhotos(List<FilePart<File>> encounterImages, PatientEncounterItem patientEncounterItem, EditViewModelPost mod) {
         ServiceResponse<Boolean> sr = new ServiceResponse<>();
         try {
@@ -424,4 +408,5 @@ public class PhotoService implements IPhotoService {
 
         return true;
     }
+
 }

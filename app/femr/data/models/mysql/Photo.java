@@ -39,7 +39,6 @@ public class Photo implements IPhoto {
 
     @Column(name = "photo", nullable = true)
     @Lob
-    @LazyLoad
     private byte[] _photo;
 
     @Override

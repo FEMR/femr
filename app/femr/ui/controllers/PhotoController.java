@@ -2,6 +2,7 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
+import femr.business.helpers.LogicDoer;
 import femr.common.dtos.ServiceResponse;
 import femr.business.services.core.IPhotoService;
 import femr.data.models.mysql.Roles;
@@ -80,9 +81,4 @@ public class PhotoController {
         return ok("");
     }
 
-    public Result GetPhotoFromBlobData(int photoId) {
-        if(photoId > 0) {
-
-        }
-    }
 }

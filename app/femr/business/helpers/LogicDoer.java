@@ -49,10 +49,11 @@ public class LogicDoer {
 
     }
 
-    public static bool getUseDbStorageFlag() {
+    public static boolean getUseDbStorageFlag() {
         try
         {
-            return ConfigFactory.load().getBool("photos.useDbStorage");
+            String sBoolRslt = ConfigFactory.load().getString("photos.useDbStorage");
+            return Boolean.parseBoolean(sBoolRslt);
         }
         catch (Exception ex)
         {

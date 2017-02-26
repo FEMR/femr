@@ -236,33 +236,6 @@ public class PhotoRepository implements IPhotoRepository {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean deletePhotoFromFilesystemById(String filePath){
-
-        //track if the photo located @ filePath actually gets deleted
-        boolean isDeleted;
-
-        if (StringUtils.isNullOrWhiteSpace(filePath)){
-
-            Logger.error("PhotoRepository-deletePhotoFromFilesystemById: no filePath to delete");
-            return false;
-        }
-
-        try {
-
-            File photoToDelete = new File(filePath);
-            isDeleted = photoToDelete.delete();
-        } catch (Exception ex) {
-
-            Logger.error("PhotoRepository-deletePhotoFromFilesystemById", ex);
-            return false;
-        }
-
-        return isDeleted;
-    }
 
     /**
      * {@inheritDoc}
@@ -287,4 +260,6 @@ public class PhotoRepository implements IPhotoRepository {
 
         return true;
     }
+
+
 }

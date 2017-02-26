@@ -374,7 +374,7 @@ public class PhotoService implements IPhotoService {
             photoRepository.deleteEncounterPhotosByPhotoId(savedPhoto.getId());
 
             if(!_bUseDbPhotoStorage)
-                photoRepository.deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
+                deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
 
             photoRepository.deletePhotoById(savedPhoto.getId());
         }
@@ -464,6 +464,30 @@ public class PhotoService implements IPhotoService {
         }
 
         return true;
+    }
+
+    private boolean deletePhotoFromFilesystemById(String filePath){
+
+        //track if the photo located @ filePath actually gets deleted
+        boolean isDeleted;
+
+        if (StringUtils.isNullOrWhiteSpace(filePath)){
+
+            Logger.error("PhotoService-deletePhotoFromFilesystemById: no filePath to delete");
+            return false;
+        }
+
+        try {
+
+            File photoToDelete = new File(filePath);
+            isDeleted = photoToDelete.delete();
+        } catch (Exception ex) {
+
+            Logger.error("PhotoService-deletePhotoFromFilesystemById", ex);
+            return false;
+        }
+
+        return isDeleted;
     }
 
 }

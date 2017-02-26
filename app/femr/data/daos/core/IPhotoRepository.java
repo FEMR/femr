@@ -91,13 +91,6 @@ public interface IPhotoRepository {
      */
     boolean deletePhotoById(int id);
 
-    /**
-     * Performs a *hard delete* on the photo on the filesystem
-     *
-     * @param filePath id of the photo to delete
-     * @return true if the photo was deleted, throws an error if something went wrong
-     */
-    boolean deletePhotoFromFilesystemById(String filePath);
 
     /**
      * Performs a *hard delete* on the photo in the EncounterPhotos table

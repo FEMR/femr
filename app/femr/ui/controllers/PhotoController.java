@@ -57,17 +57,18 @@ public class PhotoController {
      * @param photoId id of the image
      * @return
      */
-    public Result GetEncounterPhoto(int photoId) {
+    public Result GetPhoto(int photoId) {
         if (photoId > 0) {
-            //TODO: Fix encounter processing:
-            ServiceResponse<String> pathToPhotoResponse = null; //photoService.retrievePhotoPath(photoId);
+            ServiceResponse<byte[]> pathToPhotoResponse = photoService.retrievePhotoData(photoId);
             if (pathToPhotoResponse.hasErrors()) {
                 throw new RuntimeException();
             }
-            return ok(new File(pathToPhotoResponse.getResponseObject())).as("image/jpg");
+            if(pathToPhotoResponse.getResponseObject() != null)
+                return ok(pathToPhotoResponse.getResponseObject()).as("image/jpg");
+
         }
         //No luck, return nothing
-        return ok("");
+        return ok().as("image/jpg");  //return empty image
     }
 
 }

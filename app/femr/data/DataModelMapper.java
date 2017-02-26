@@ -29,10 +29,7 @@ import org.joda.time.DateTime;
 import javax.inject.Provider;
 import java.util.Date;
 import java.util.List;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.ByteArrayOutputStream;
-import javax.imageio.ImageIO;
+
 
 
 /**
@@ -456,7 +453,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPhoto createPhoto(String description, String filePath, BufferedImage photoData) {
+    public IPhoto createPhoto(String description, String filePath, byte[] photoData) {
 
         if (StringUtils.isNullOrWhiteSpace(filePath)) {
 
@@ -473,21 +470,7 @@ public class DataModelMapper implements IDataModelMapper{
         photo.setFilePath(filePath);
 
         if(photoData != null)
-        {
-            //photo.setPhotoBlob(((DataBufferByte) photoData.getData().getDataBuffer()).getData());
-
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(photoData, "jpg", baos);
-                photo.setPhotoBlob(baos.toByteArray());
-            } catch (Exception ex) {
-                photo.setPhotoBlob(null);
-            }
-
-
-        }
-
-
+            photo.setPhotoBlob(photoData);
 
         return photo;
     }

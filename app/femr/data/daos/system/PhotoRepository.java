@@ -14,7 +14,6 @@ import femr.data.models.mysql.Photo;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class PhotoRepository implements IPhotoRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPhoto createPhoto(String description, String filePath, BufferedImage photoData) {
+    public IPhoto createPhoto(String description, String filePath, byte[] photoData) {
 
         IPhoto photo;
 
@@ -189,6 +188,29 @@ public class PhotoRepository implements IPhotoRepository {
         } catch (Exception ex) {
 
             Logger.error("PhotoRepository-updatePhotoDescription", ex);
+            throw ex;
+        }
+
+        return photo;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPhoto updatePhotoData(int id, byte[] photoData){
+
+        IPhoto photo;
+
+        try {
+
+            photo = retrievePhotoById(id);
+            photo.setPhotoBlob(photoData);
+            Ebean.save(photo);
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-updatePhotoData", ex);
             throw ex;
         }
 

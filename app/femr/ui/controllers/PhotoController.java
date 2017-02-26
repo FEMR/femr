@@ -34,7 +34,7 @@ public class PhotoController {
      */
     public Result GetPatientPhoto(Integer patientId, Boolean showDefault) {
         if (patientId != null) {
-            ServiceResponse<byte[]> photoDataResponse = photoService.retrievePhotoData(patientId);
+            ServiceResponse<byte[]> photoDataResponse = photoService.retrievePatientPhotoData(patientId);
             if (photoDataResponse.hasErrors()) {
                 throw new RuntimeException();
             }
@@ -57,7 +57,7 @@ public class PhotoController {
      * @param photoId id of the image
      * @return
      */
-    public Result GetPhoto(int photoId) {
+    public Result GetEncounterPhoto(int photoId) {
         if (photoId > 0) {
             //TODO: Fix encounter processing:
             ServiceResponse<String> pathToPhotoResponse = null; //photoService.retrievePhotoPath(photoId);

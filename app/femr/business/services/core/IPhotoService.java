@@ -62,9 +62,21 @@ public interface IPhotoService {
     ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
 
 
-    /*
-     *  Returns patient photo in binary form
+    /**
+     *  Returns patient photo in binary form.  Will determine where to fetch the photo (file system or blob)
+     *    based on the photos.useDbStorage property.
+     * @param patientId
+     * @return
      */
-    ServiceResponse<byte[]> retrievePhotoData(int patientId);
+    ServiceResponse<byte[]> retrievePatientPhotoData(int patientId);
+
+
+    /**
+     *  Returns any photo by ID in binary form.  Will determine where to fetch the photo (file system or blob)
+     *    based on the photos.useDbStorage property.
+     * @param photoId
+     * @return
+     */
+    ServiceResponse<byte[]> retrievePhotoData(int photoId);
 
 }

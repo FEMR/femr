@@ -17,7 +17,7 @@ public interface IPhotoRepository {
      * @param filePath location to the photo on the filesystem, not null
      * @return the new photo or NULL if an error occurs
      */
-    IPhoto createPhoto(String description, String filePath, BufferedImage photoData);
+    IPhoto createPhoto(String description, String filePath, byte[] photoData);
 
 
     /**
@@ -72,6 +72,16 @@ public interface IPhotoRepository {
      * @return the current state of the Photo
      */
     IPhoto updatePhotoFilePath(int id, String filePath);
+
+
+    /**
+     * Sets the binary image data field
+     *
+     * @param id primary key of the photo to update
+     * @param photoData  binary image data
+     * @return the current state of the Photo
+     */
+    IPhoto updatePhotoData(int id, byte[] photoData);
 
     /**
      * Performs a *hard delete* on the photo in the Photos table

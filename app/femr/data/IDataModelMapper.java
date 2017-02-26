@@ -205,7 +205,7 @@ public interface IDataModelMapper {
      * @param filePath    path to the file, not null
      * @return an implementation of IPhoto or null if processing fails
      */
-    IPhoto createPhoto(String description, String filePath, BufferedImage photoData);
+    IPhoto createPhoto(String description, String filePath, byte[] photoData);
 
     /**
      * Generate and provide an implementation of IPhoto.

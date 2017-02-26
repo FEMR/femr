@@ -60,15 +60,12 @@ public interface IPhotoService {
      * and/or errors if they exist.
      */
     ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
+    
 
-    /**
-     * Gets the filesystem path to a patients photo.
-     *
-     * @param patientId id of the patient, not null
-     * @return a service response that contains a string to the photo's file location
-     * and/or errors if they exist.
+    /*
+     *  Returns patient photo in binary form
      */
-    ServiceResponse<String> retrievePatientPhotoPath(int patientId);
+    ServiceResponse<byte[]> retrievePhotoData(int patientId);
 
     /**
      * Gets the filesystem path to any photo.
@@ -79,10 +76,5 @@ public interface IPhotoService {
      */
     ServiceResponse<String> retrievePhotoPath(int photoId);
 
-    /**
-     * @param photoId
-     * @return
-     */
-    ServiceResponse<byte[]> retrievePhotoBlobData(int photoId);
 
 }

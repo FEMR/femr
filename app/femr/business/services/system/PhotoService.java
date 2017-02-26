@@ -42,9 +42,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,18 +143,23 @@ public class PhotoService implements IPhotoService {
         return response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public ServiceResponse<String> retrievePatientPhotoPath(int patientId) {
-        ServiceResponse<String> response = new ServiceResponse<>();
+    public ServiceResponse<byte[]> retrievePhotoData(int patientId) {
+        ServiceResponse<byte[]> response = new ServiceResponse<>();
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);
             if (patient.getPhoto() == null) {
                 response.setResponseObject(null);
             } else {
-                response.setResponseObject(_profilePhotoPath + patient.getPhoto().getFilePath());
+                if(_bUseDbPhotoStorage) {
+                    //BLOB Mode
+                    response.setResponseObject(patient.getPhoto().getPhotoBlob());
+                } else {
+                    //File system mode
+                    byte[] photoData = Files.readAllBytes(Paths.get(_profilePhotoPath + patient.getPhoto().getFilePath()));
+                    response.setResponseObject(photoData);
+                }
+
             }
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -175,19 +178,6 @@ public class PhotoService implements IPhotoService {
         try {
             IPhoto photo = photoRepository.retrievePhotoById(photoId);
             response.setResponseObject(_encounterPhotoPath + photo.getFilePath());
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public ServiceResponse<byte[]> retrievePhotoBlobData(int photoId) {
-        ServiceResponse<byte[]> response = new ServiceResponse<>();
-
-        try {
-            IPhoto photo = photoRepository.retrievePhotoById(photoId);
-            response.setResponseObject(photo.getPhotoBlob());
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }

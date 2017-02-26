@@ -97,14 +97,22 @@ public class PhotoService implements IPhotoService {
 
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);
-            String imageFileName = "/Patient_" + patient.getId() + ".jpg";
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
-                //save image to disk
+
+                //Decode image, save as BufferedImage:
                 String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
                 BufferedImage bufferedImage = decodeToImage(parsedImage);
-                String filePathTarget = _profilePhotoPath + imageFileName;
-                createPhotoOnFilesystem(bufferedImage, filePathTarget);
+                String imageFileName = "N/A";
+
+                if(!_bUseDbPhotoStorage) {
+                    //Store to file system
+                    imageFileName = "/Patient_" + patient.getId() + ".jpg";
+                    //save image to disk
+                    String filePathTarget = _profilePhotoPath + imageFileName;
+                    createPhotoOnFilesystem(bufferedImage, filePathTarget);
+                }
+
 
                 if (patient.getPhoto() == null) {
                     //Create new photo Id record, pass in binary photo data if _bUseDbPhotoStorage is true

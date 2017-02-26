@@ -58,7 +58,7 @@ public interface IPhotoService {
      * @param deleteFlag  true if photo is being deleted instead of saved, not null
      * @return a service response that contains true if creation successful, false if not
      * and/or errors if they exist.
-     * */
+     */
     ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag);
 
     /**
@@ -67,7 +67,7 @@ public interface IPhotoService {
      * @param patientId id of the patient, not null
      * @return a service response that contains a string to the photo's file location
      * and/or errors if they exist.
-     * */
+     */
     ServiceResponse<String> retrievePatientPhotoPath(int patientId);
 
     /**
@@ -76,6 +76,13 @@ public interface IPhotoService {
      * @param photoId id of the photo, not null
      * @return a service response that contains a string to the photo's file location
      * and/or errors if they exist.
-     * */
+     */
     ServiceResponse<String> retrievePhotoPath(int photoId);
+
+    /**
+     * @param photoId
+     * @return
+     */
+    ServiceResponse<byte[]> retrievePhotoBlobData(int photoId);
+
 }

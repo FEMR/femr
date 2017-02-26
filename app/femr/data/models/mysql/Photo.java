@@ -37,8 +37,9 @@ public class Photo implements IPhoto {
     @Column(name = "insertTS", nullable = true)
     private Date _insertTS;
 
-    @Column(name = "photo", nullable = true)
     @Lob
+    @Basic(fetch=FetchType.EAGER) //TODO: Determine how to make this work with LAZY load. (-BD)
+    @Column(name = "photo", nullable = true)
     private byte[] _photo;
 
     @Override

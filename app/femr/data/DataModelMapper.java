@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.List;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.ByteArrayOutputStream;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -471,7 +473,20 @@ public class DataModelMapper implements IDataModelMapper{
         photo.setFilePath(filePath);
 
         if(photoData != null)
-            photo.setPhotoBlob(((DataBufferByte) photoData.getData().getDataBuffer()).getData());
+        {
+            //photo.setPhotoBlob(((DataBufferByte) photoData.getData().getDataBuffer()).getData());
+
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(photoData, "jpg", baos);
+                photo.setPhotoBlob(baos.toByteArray());
+            } catch (Exception ex) {
+                photo.setPhotoBlob(null);
+            }
+
+
+        }
+
 
 
         return photo;

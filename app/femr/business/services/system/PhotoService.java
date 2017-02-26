@@ -18,6 +18,7 @@
 */
 package femr.business.services.system;
 
+import com.avaje.ebean.Ebean;
 import com.google.inject.name.Named;
 import femr.business.helpers.LogicDoer;
 import femr.business.services.core.IPhotoService;
@@ -34,12 +35,16 @@ import femr.data.models.core.IPhoto;
 import femr.ui.models.medical.EditViewModelPost;
 import femr.util.stringhelpers.StringUtils;
 import org.apache.commons.codec.binary.Base64;
+import play.Logger;
 import play.mvc.Http.MultipartFormData.FilePart;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +55,7 @@ public class PhotoService implements IPhotoService {
     private IPhotoRepository photoRepository;
     private IPatientRepository patientRepository;
     private final IItemModelMapper itemModelMapper;
+    private boolean _bUseDbPhotoStorage;
 
     @Inject
     public PhotoService(IPatientRepository patientRepository,
@@ -68,6 +74,8 @@ public class PhotoService implements IPhotoService {
         _profilePhotoPath = LogicDoer.getPatientPhotoPath();
 
         _encounterPhotoPath = LogicDoer.getMedicalPhotoPath();
+
+        _bUseDbPhotoStorage = LogicDoer.getUseDbStorageFlag();
 
 
         //Ensure folder exists, if not, create it
@@ -96,11 +104,11 @@ public class PhotoService implements IPhotoService {
                 String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
                 BufferedImage bufferedImage = decodeToImage(parsedImage);
                 String filePathTarget = _profilePhotoPath + imageFileName;
-                photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
+                createPhotoOnFilesystem(bufferedImage, filePathTarget);
 
                 if (patient.getPhoto() == null) {
-                    //Create new photo Id record
-                    IPhoto pPhoto = photoRepository.createPhoto("", imageFileName, bufferedImage);
+                    //Create new photo Id record, pass in binary photo data if _bUseDbPhotoStorage is true
+                    IPhoto pPhoto = photoRepository.createPhoto("", imageFileName, _bUseDbPhotoStorage ? bufferedImage : null);
                     patient.setPhoto(pPhoto);
                     patientRepository.savePatient(patient);
                 } else {
@@ -159,6 +167,19 @@ public class PhotoService implements IPhotoService {
         try {
             IPhoto photo = photoRepository.retrievePhotoById(photoId);
             response.setResponseObject(_encounterPhotoPath + photo.getFilePath());
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public ServiceResponse<byte[]> retrievePhotoBlobData(int photoId) {
+        ServiceResponse<byte[]> response = new ServiceResponse<>();
+
+        try {
+            IPhoto photo = photoRepository.retrievePhotoById(photoId);
+            response.setResponseObject(photo.getPhotoBlob());
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -291,7 +312,7 @@ public class PhotoService implements IPhotoService {
             //Link photo record in photoEncounter table
             photoRepository.createEncounterPhoto(editPhoto.getId(), patientEncounter.getId());
 
-            photoRepository.createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
+            createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
 
         } catch (Exception ex) {
 
@@ -353,4 +374,56 @@ public class PhotoService implements IPhotoService {
     }
 
 
+
+    /**
+     * {@inheritDoc}
+     */
+
+    protected boolean createPhotoOnFilesystem(File image, String filePath){
+
+        if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
+
+            return false;
+        }
+
+        try {
+
+            //find out where the file is being stored on the filesystem (usually in /tmp)
+            Path src = FileSystems.getDefault().getPath(image.getAbsolutePath());
+            //identify where fEMR wants to store the file
+            Path dest = FileSystems.getDefault().getPath(filePath);
+            //move the file from a temporary to a permanent location
+            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    protected boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath){
+
+        if (bufferedImage == null || StringUtils.isNullOrWhiteSpace(filePath)){
+
+            return false;
+        }
+
+        try {
+
+            File photo = new File(filePath);
+            ImageIO.write(bufferedImage, "jpg", photo);
+        } catch (Exception ex) {
+
+            Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
+            return false;
+        }
+
+        return true;
+    }
 }

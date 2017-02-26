@@ -17,7 +17,7 @@ public interface IPhotoRepository {
      * @param filePath location to the photo on the filesystem, not null
      * @return the new photo or NULL if an error occurs
      */
-    IPhoto createPhoto(String description, String filePath);
+    IPhoto createPhoto(String description, String filePath, BufferedImage photoData);
 
     /**
      * Takes a FilePart and moves it out of a temporary folder on the

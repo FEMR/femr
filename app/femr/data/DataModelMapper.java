@@ -29,6 +29,9 @@ import org.joda.time.DateTime;
 import javax.inject.Provider;
 import java.util.Date;
 import java.util.List;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+
 
 /**
  * Responsible for creating model objects (data/models).
@@ -451,7 +454,7 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPhoto createPhoto(String description, String filePath) {
+    public IPhoto createPhoto(String description, String filePath, BufferedImage photoData) {
 
         if (StringUtils.isNullOrWhiteSpace(filePath)) {
 
@@ -466,6 +469,10 @@ public class DataModelMapper implements IDataModelMapper{
         if (StringUtils.isNullOrWhiteSpace(description)) photo.setDescription("");
         else photo.setDescription(description);
         photo.setFilePath(filePath);
+
+        if(photoData != null)
+            photo.setPhotoBlob(((DataBufferByte) photoData.getData().getDataBuffer()).getData());
+
 
         return photo;
     }

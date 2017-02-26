@@ -79,4 +79,10 @@ public class PhotoController {
         //No luck, return nothing
         return ok("");
     }
+
+    public Result GetPhotoFromBlobData(int photoId) {
+        if(photoId > 0) {
+
+        }
+    }
 }

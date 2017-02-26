@@ -22,6 +22,7 @@ import femr.data.models.core.*;
 import org.joda.time.DateTime;
 import java.util.Date;
 import java.util.List;
+import java.awt.image.BufferedImage;
 
 public interface IDataModelMapper {
 
@@ -204,7 +205,7 @@ public interface IDataModelMapper {
      * @param filePath    path to the file, not null
      * @return an implementation of IPhoto or null if processing fails
      */
-    IPhoto createPhoto(String description, String filePath);
+    IPhoto createPhoto(String description, String filePath, BufferedImage photoData);
 
     /**
      * Generate and provide an implementation of IPhoto.

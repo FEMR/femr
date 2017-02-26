@@ -36,8 +36,10 @@ public class Photo implements IPhoto {
     private String _filePath;
     @Column(name = "insertTS", nullable = true)
     private Date _insertTS;
+
     @Column(name = "photo", nullable = true)
     @Lob
+    @LazyLoad
     private byte[] _photo;
 
     @Override

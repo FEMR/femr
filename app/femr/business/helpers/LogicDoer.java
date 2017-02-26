@@ -18,6 +18,7 @@
 */
 package femr.business.helpers;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.typesafe.config.ConfigFactory;
 import femr.data.models.core.IPatientEncounter;
 import femr.util.calculations.dateUtils;
@@ -46,6 +47,17 @@ public class LogicDoer {
             return path;
         }
 
+    }
+
+    public static bool getUseDbStorageFlag() {
+        try
+        {
+            return ConfigFactory.load().getBool("photos.useDbStorage");
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
     }
 
     /**

@@ -41,7 +41,7 @@ public class PhotoRepository implements IPhotoRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPhoto createPhoto(String description, String filePath) {
+    public IPhoto createPhoto(String description, String filePath, BufferedImage photoData) {
 
         IPhoto photo;
 
@@ -53,8 +53,7 @@ public class PhotoRepository implements IPhotoRepository {
         }*/
 
         try {
-
-            photo = dataModelMapper.createPhoto(description, filePath);
+            photo = dataModelMapper.createPhoto(description, filePath, photoData);
             Ebean.save(photo);
         } catch (Exception ex) {
 

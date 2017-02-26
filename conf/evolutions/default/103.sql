@@ -1,7 +1,7 @@
 # --- !Ups
 
 ALTER TABLE `photos`
-ADD COLUMN `photo` BLOB NULL AFTER `insertTS`;
+ADD COLUMN `photo` LONGBLOB NULL AFTER `insertTS`;
 
 # --- !Downs
 

@@ -92,9 +92,15 @@ public class PhotoService implements IPhotoService {
             String imageFileName = "/Patient_" + patient.getId() + ".jpg";
 
             if (StringUtils.isNotNullOrWhiteSpace(imageString)) {
+                //save image to disk
+                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
+                BufferedImage bufferedImage = decodeToImage(parsedImage);
+                String filePathTarget = _profilePhotoPath + imageFileName;
+                photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
+
                 if (patient.getPhoto() == null) {
                     //Create new photo Id record
-                    IPhoto pPhoto = photoRepository.createPhoto("", imageFileName);
+                    IPhoto pPhoto = photoRepository.createPhoto("", imageFileName, bufferedImage);
                     patient.setPhoto(pPhoto);
                     patientRepository.savePatient(patient);
                 } else {
@@ -102,11 +108,7 @@ public class PhotoService implements IPhotoService {
                     //photoId = patient.getPhoto().getId();
                 }
 
-                //save image to disk
-                String parsedImage = imageString.substring(imageString.indexOf(",") + 1);
-                BufferedImage bufferedImage = decodeToImage(parsedImage);
-                String filePathTarget = _profilePhotoPath + imageFileName;
-                photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
+
             } else {
                 if (deleteFlag != null)
                     if (deleteFlag && patient.getPhoto() != null) {
@@ -274,7 +276,7 @@ public class PhotoService implements IPhotoService {
             String imageFileName;
 
             //Create photo record:
-            IPhoto pPhoto = photoRepository.createPhoto(descriptionText, "");
+            IPhoto pPhoto = photoRepository.createPhoto(descriptionText, "", null);
             //this is redundant...?
             IPhoto editPhoto = photoRepository.retrievePhotoById(pPhoto.getId());
 

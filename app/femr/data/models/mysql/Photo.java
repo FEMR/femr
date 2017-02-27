@@ -38,8 +38,8 @@ public class Photo implements IPhoto {
     private Date _insertTS;
 
     @Lob
-    @Basic(fetch=FetchType.EAGER) //TODO: Determine how to make this work with LAZY load. (-BD)
-    @Column(name = "photo", nullable = true)
+    @Basic(fetch=FetchType.LAZY) //Lazy load to prevent downloading full image unless needed
+    @Column(name = "photo")
     private byte[] _photo;
 
     @Override

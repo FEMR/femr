@@ -92,6 +92,7 @@ public class PhotoService implements IPhotoService {
             try {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(img, "jpg", baos);
+                return baos.toByteArray();
             } catch (Exception ex) {
             }
         }
@@ -104,7 +105,6 @@ public class PhotoService implements IPhotoService {
     @Override
     public ServiceResponse<Boolean> createPatientPhoto(String imageString, int patientId, Boolean deleteFlag) {
         ServiceResponse<Boolean> response = new ServiceResponse<>();
-        byte[] photoData;
 
         try {
             IPatient patient = patientRepository.retrievePatientById(patientId);

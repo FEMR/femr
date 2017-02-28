@@ -9,7 +9,7 @@
 
 ### -Required downloads
 1. [MySQL 5.6](http://www.mysql.com/)
-2. [Lightbend Activator](http://www.lightbend.com/activator/download)
+2. [Scala Build Tool](http://www.scala-sbt.org/)
 3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 4. [IntelliJ IDEA Ultimate 15](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
@@ -23,7 +23,7 @@
     git clone https://github.com/yourusername/femr.git
 
 #####4. clean and compile the project
-    activator clean compile
+    sbt clean compile
 
 ### -Setting up IntelliJ IDEA
 1. Install Plugin: Scala
@@ -41,7 +41,7 @@
      [config.file // /absolute/location/to/conf/application.dev.conf]
      [user.dir // /absolute/location/to/femr]
 13. Run
-14. Contact kevin.zurek@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
+14. Contact info@teamfemr.org for an IntelliJ IDEA liscense key or with any issues configuring IntelliJ.
 
 
 # General workflow information (Git, Pull Requests, branching, etc..):

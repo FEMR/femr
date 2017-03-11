@@ -66,7 +66,7 @@ public class PhotoRepository implements IPhotoRepository {
     /**
      * {@inheritDoc}
      */
-
+    @Override
     public boolean createPhotoOnFilesystem(File image, String filePath){
 
         if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
@@ -94,7 +94,7 @@ public class PhotoRepository implements IPhotoRepository {
     /**
      * {@inheritDoc}
      */
-
+    @Override
     public boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath){
 
         if (bufferedImage == null || StringUtils.isNullOrWhiteSpace(filePath)){
@@ -294,6 +294,10 @@ public class PhotoRepository implements IPhotoRepository {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean deletePhotoFromFilesystemById(String filePath){
 
         //track if the photo located @ filePath actually gets deleted

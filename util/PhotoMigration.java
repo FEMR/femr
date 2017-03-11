@@ -1,4 +1,4 @@
-package femr.util;
+package scripts;
 
 
 import com.typesafe.config.ConfigFactory;

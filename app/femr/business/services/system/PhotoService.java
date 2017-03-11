@@ -121,7 +121,7 @@ public class PhotoService implements IPhotoService {
                     imageFileName = "/Patient_" + patient.getId() + ".jpg";
                     //save image to disk
                     String filePathTarget = _profilePhotoPath + imageFileName;
-                    createPhotoOnFilesystem(bufferedImage, filePathTarget);
+                    photoRepository.createPhotoOnFilesystem(bufferedImage, filePathTarget);
                 }
 
 
@@ -342,7 +342,7 @@ public class PhotoService implements IPhotoService {
             photoRepository.createEncounterPhoto(editPhoto.getId(), patientEncounter.getId());
 
             if(!_bUseDbPhotoStorage) {
-                createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
+                photoRepository.createPhotoOnFilesystem(image, this._encounterPhotoPath + imageFileName);
             } else {
                 //Read image data, update blob field:
                 byte[] imgData = Files.readAllBytes(Paths.get(image.getAbsolutePath()));
@@ -374,7 +374,7 @@ public class PhotoService implements IPhotoService {
             photoRepository.deleteEncounterPhotosByPhotoId(savedPhoto.getId());
 
             if(!_bUseDbPhotoStorage)
-                deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
+                photoRepository.deletePhotoFromFilesystemById(filePath + savedPhoto.getFilePath());
 
             photoRepository.deletePhotoById(savedPhoto.getId());
         }
@@ -412,82 +412,5 @@ public class PhotoService implements IPhotoService {
         return image;
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
-
-    protected boolean createPhotoOnFilesystem(File image, String filePath){
-
-        if (image == null || StringUtils.isNullOrWhiteSpace(filePath)){
-
-            return false;
-        }
-
-        try {
-
-            //find out where the file is being stored on the filesystem (usually in /tmp)
-            Path src = FileSystems.getDefault().getPath(image.getAbsolutePath());
-            //identify where fEMR wants to store the file
-            Path dest = FileSystems.getDefault().getPath(filePath);
-            //move the file from a temporary to a permanent location
-            java.nio.file.Files.move(src, dest, StandardCopyOption.ATOMIC_MOVE);
-        } catch (Exception ex) {
-
-            Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-
-    protected boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath){
-
-        if (bufferedImage == null || StringUtils.isNullOrWhiteSpace(filePath)){
-
-            return false;
-        }
-
-        try {
-
-            File photo = new File(filePath);
-            ImageIO.write(bufferedImage, "jpg", photo);
-        } catch (Exception ex) {
-
-            Logger.error("PhotoRepository-createPhotoOnFilesystem", ex);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean deletePhotoFromFilesystemById(String filePath){
-
-        //track if the photo located @ filePath actually gets deleted
-        boolean isDeleted;
-
-        if (StringUtils.isNullOrWhiteSpace(filePath)){
-
-            Logger.error("PhotoService-deletePhotoFromFilesystemById: no filePath to delete");
-            return false;
-        }
-
-        try {
-
-            File photoToDelete = new File(filePath);
-            isDeleted = photoToDelete.delete();
-        } catch (Exception ex) {
-
-            Logger.error("PhotoService-deletePhotoFromFilesystemById", ex);
-            return false;
-        }
-
-        return isDeleted;
-    }
 
 }

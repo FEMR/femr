@@ -19,6 +19,26 @@ public interface IPhotoRepository {
      */
     IPhoto createPhoto(String description, String filePath, byte[] photoData);
 
+    /**
+     * Takes a FilePart and moves it out of a temporary folder on the
+     * filesystem into fEMR's directory
+     *
+     * @param image the image itself, not null
+     * @param filePath the location where the photo will be saved, not null
+     * @return true if success, false otherwise
+     */
+    boolean createPhotoOnFilesystem(File image, String filePath);
+
+    /**
+     * Creates a new jpg image on the filesystem
+     *
+     * @param bufferedImage the buffered image, not null
+     * @param filePath the location where the photo will be saved, not null
+     * @return true if success, false otherwise
+     */
+    boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath);
+
+
 
     /**
      * Creates a new patient encounter photo entry in the database
@@ -90,6 +110,15 @@ public interface IPhotoRepository {
      * @return true if the photo was deleted, throws an error if something went wrong
      */
     boolean deletePhotoById(int id);
+
+    /**
+     * Performs a *hard delete* on the photo on the filesystem
+     *
+     * @param filePath id of the photo to delete
+     * @return true if the photo was deleted, throws an error if something went wrong
+     */
+    boolean deletePhotoFromFilesystemById(String filePath);
+
 
 
     /**

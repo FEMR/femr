@@ -318,7 +318,7 @@ public class DataModelMapper implements IDataModelMapper{
     @Override
     public IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, Integer photoID) {
 
-        if (userID < 0 || StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName)) {
+        if (StringUtils.isNullOrWhiteSpace(firstName) || StringUtils.isNullOrWhiteSpace(lastName) || StringUtils.isNullOrWhiteSpace(city)) {
 
             return null;
         }

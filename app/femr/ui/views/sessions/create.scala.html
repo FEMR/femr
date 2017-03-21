@@ -1,4 +1,4 @@
-@(createForm: Form[femr.ui.models.sessions.CreateViewModel])
+@(createForm: Form[femr.ui.models.sessions.CreateViewModel], errorMsg: Integer)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SessionsController
@@ -6,6 +6,12 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")">
     }
 @main("Login", styles = styles) {
+
+    @if(errorMsg.equals(1)){
+        <div id="errormsg" style="color:red">
+                <h1>Login Attempt Failed! Try again.</h1>
+        </div>
+    }
 
     @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
         <div id="login">

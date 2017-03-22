@@ -6,11 +6,14 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")">
     }
 @main("Login", styles = styles) {
-
     @helper.form(action = SessionsController.createPost(), 'class -> "form-signin") {
         <div id="login">
             <h1>Please sign in</h1>
-            <input type="text" name="email" placeholder="Email" />
+            @if(createForm != null) {
+                <input type="text" name="email" value='@createForm.get().getEmail' />
+            } else{
+                <input type="text" name="email" placeholder="Email" />
+            }
             <input type="password" name="password" placeholder="Password" />
             <input type="submit" value="Log in" />
             <img src="@routes.Assets.versioned("img/logo_color_sm.png")" />

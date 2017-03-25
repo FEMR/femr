@@ -330,7 +330,7 @@ public class PhotoService implements IPhotoService {
 
             if(!_bUseDbPhotoStorage) {
                 //Build the filepath for the image
-                imageFileName = "Patient_" + patientEncounter.getPatientId()
+                imageFileName = "Patient_" + patientEncounter.getPatientItem().getId()
                         + "_Enc_" + patientEncounter.getId() + "_Photo_" + editPhoto.getId();
             }
 

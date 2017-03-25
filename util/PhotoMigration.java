@@ -1,8 +1,3 @@
-package scripts;
-
-
-import com.typesafe.config.ConfigFactory;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,19 +20,24 @@ public class PhotoMigration {
 
         try
         {
-            String url  = ConfigFactory.load().getString("db.default.url");
-            String user = ConfigFactory.load().getString("db.default.username");
-            String pass = ConfigFactory.load().getString("db.default.password");
-            String patPath = ConfigFactory.load().getString("photos.path");
-            String encPath = ConfigFactory.load().getString("photos.encounterPath");
+            if(args.length >= 5)
+            {
+                String url  = args[0];
+                String user = args[1];
+                String pass = args[2];
+                String patPath = args[3];
+                String encPath = args[4];
 
-            PhotoMigration pm = new PhotoMigration(url, user, pass, patPath, encPath);
+                PhotoMigration pm = new PhotoMigration(url, user, pass, patPath, encPath);
 
-
-            //NOTE: Set to TRUE if you want the migration
-            //       to overwrite existing blob fields
-            pm.MigratePhotos(false);
-
+                //NOTE: Set to TRUE if you want the migration
+                //       to overwrite existing blob fields
+                pm.MigratePhotos(false);
+            }
+            else
+            {
+                System.out.println("Usage: [db_url] [db_username] [db_password] [patient photo path] [encounter photo path]");
+            }
         }
         catch (Exception ex)
         {

@@ -18,7 +18,6 @@
 */
 package femr.business.helpers;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.typesafe.config.ConfigFactory;
 import femr.data.models.core.IPatientEncounter;
 import femr.util.calculations.dateUtils;

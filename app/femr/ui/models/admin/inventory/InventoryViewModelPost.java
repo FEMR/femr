@@ -50,6 +50,14 @@ public class InventoryViewModelPost {
             errors.add(new ValidationError("medicationName", "name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(medicationForm))
             errors.add(new ValidationError("medicationForm", "a form is required"));
+
+        // Based on the error from JIRA fEMR-278, generic name is required
+        for(int i = 0; i < medicationIngredient.size(); i++){
+            if(StringUtils.isNullOrWhiteSpace(medicationIngredient.get(i)) && medicationStrength.get(i) > 0.0){
+                errors.add(new ValidationError("medicationGeneric", "a generic name is required"));
+            }
+        }
+
         /*
         for (Integer i : medicationStrength){
             if (i == null)

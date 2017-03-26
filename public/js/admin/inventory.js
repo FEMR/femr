@@ -234,3 +234,16 @@ function bindRemoveAction(element){
         }
     });
 }
+
+$('#submitMedicationButton').click(function () {
+    // resetting any border that may have been applied previously
+    $('.medicationIngredient').css('border', '');
+
+    for(var x = 0; x < $('.medicationIngredient').length; x++){
+        if($('.medicationsStrength')[x].value.trim().length > 0 && $('.medicationIngredient')[x].value.trim().length == 0){
+            $('.medicationIngredient').eq(x).css('border', '1px solid red');
+            return false;
+        }
+    }
+    return true;
+});

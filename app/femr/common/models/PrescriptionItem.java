@@ -25,6 +25,11 @@ public class PrescriptionItem {
     private int id;
     private String name;
     private String originalMedicationName;
+
+    private String replacementMedicationName;
+
+    private int replacementAmount;
+
     private String prescriberFirstName;
     private String prescriberLastName;
     private Integer administrationID;
@@ -170,5 +175,21 @@ public class PrescriptionItem {
 
     public void setCounseled(Boolean counseled) {
         isCounseled = counseled;
+    }
+
+    public String getReplacementMedicationName() {
+        return replacementMedicationName;
+    }
+
+    public int getReplacementAmount() {
+        return replacementAmount;
+    }
+
+    public void setReplacementMedicationName(String replacementMedicationName) {
+        this.replacementMedicationName = replacementMedicationName;
+    }
+
+    public void setReplacementAmount(int replacementAmount) {
+        this.replacementAmount = replacementAmount;
     }
 }

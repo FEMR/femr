@@ -419,10 +419,11 @@ public class SearchService implements ISearchService {
                     .collect(Collectors.toList());
             List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
                     .filter(pp -> pp.getPatientPrescriptionReplacements().size() > 0)
-                    .map(pp -> itemModelMapper.createPrescriptionItem(
+                    .map(pp -> itemModelMapper.createPrescriptionItemWithReplacement(
                             pp.getId(),
-                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
                             pp.getMedication().getName(),
+                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
+                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getAmount(),
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
                             pp.getConceptPrescriptionAdministration(),

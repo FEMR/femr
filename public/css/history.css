@@ -52,9 +52,14 @@
 }
 
 .encounterViewBody {
-    width: 100%;
     padding: 20px;
-    overflow: hidden;
+    margin: 0 -15px;
+}
+
+.encounterViewBody:before, .encounterViewBody:after { /* Floated Column Clear Fix */
+    content: '';
+    display: table;
+    clear: both;
 }
 
 .encounterViewBody img {
@@ -86,30 +91,33 @@
     width: 33%;
     float: left;
     overflow: hidden;
+    padding: 0 15px;
 }
 
 .encounterViewBodyLeftHalf {
     width: 50%;
     float: left;
+    padding: 0 15px;
 }
 
 .encounterViewBodyMiddle {
     width: 33%;
     float: left;
-
+    padding: 0 15px;
 }
 
 .encounterViewBodyRight {
     width: 33%;
     float: left;
-
+    padding: 0 15px;
 }
 
 @media(max-width: 767px){
     .encounterViewBodyLeft, .encounterViewBodyMiddle, .encounterViewBodyRight{
-        width: 60%;
-        margin: 0 auto;
-        border-bottom: 1px solid black;
+        width: 100%;
+        margin: 0 auto 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #343434;
         text-align: left;
         float: none;
     }
@@ -274,14 +282,9 @@
     padding: 15px;
     background-color: gray;
 
-
-
-
-
 }
 
 .form-history{
-
     max-height: 200px;
     overflow-y: auto;
     background-color: #ffffff;
@@ -330,6 +333,40 @@
     padding: 0;
 }
 
+.prescription-row{
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #999;
+    font-size: 16px;
+}
+
+.prescription-row .prescription-id{
+    font-size: .8em;
+    display: block;
+    color: #666;
+}
+
+.prescription-row .active-ingredients{
+    font-size: .7em;
+    font-style: italic;
+    padding-left: 17px;
+    margin-bottom: 10px;
+}
+
+.prescription-row .alert{
+    border: 2px solid #efe24b;
+    background-color: rgba(239, 226, 75, 0.5);
+    border-radius: 6px;
+    font-size: .8em;
+    margin: 15px 0 10px;
+    padding: .8em;
+}
+
+@media (max-width: 767px){
+    .prescription-row:last-child{
+        border: 0;
+    }
+}
 
 
 

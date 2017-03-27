@@ -379,6 +379,23 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
+    public PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementAmount, int replacementId, String firstName, String lastName,
+                                                                  IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
+                                                                  IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled)  {
+
+        PrescriptionItem prescriptionItem = createPrescriptionItem(id, name, null, firstName, lastName, conceptPrescriptionAdministration, amount, medication, quantityCurrent, quantityInitial, isCounseled);
+        if (replacementMedicationName != null)
+            prescriptionItem.setReplacementMedicationName(replacementMedicationName);
+        prescriptionItem.setReplacementAmount(replacementAmount);
+        prescriptionItem.setReplacementId(replacementId);
+        return prescriptionItem;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ProblemItem createProblemItem(String name) {
 
         if (StringUtils.isNullOrWhiteSpace(name)) {

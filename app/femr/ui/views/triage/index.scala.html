@@ -41,6 +41,8 @@
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
+                <input class="hidden" type="text" id="patientId" value="viewModel.getPatient.getId"/>
+
                 <h2>General Info</h2>
 
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")

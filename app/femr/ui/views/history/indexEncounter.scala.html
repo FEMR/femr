@@ -46,6 +46,7 @@
             <div class="encounterViewBody">
                 <input type="hidden" id="patientEncounterId" value="@viewModel.getPatientEncounterItem.getId" />
                 <div class="encounterViewBodyLeft">
+                    <div class="row">
                 @defining(viewModel.getPatientItem) { patient =>
                     <div class="encounterViewBodyLeftHalf">
                         <p><span class="infoLabel">First Name:</span> @outputStringOrNA(patient.getFirstName)</p>
@@ -77,6 +78,7 @@
                         <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
                     </div>
                 }
+                    </div>
                 </div>
                 <div class="encounterViewBodyMiddle">
                 @defining(viewModel.getPatientEncounterItem) { encounter =>
@@ -188,42 +190,50 @@
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
                     }
                     @if(!viewModelPharmacy.getPrescriptions.isEmpty()){
-                            <table id="medTable">
-                                <thead>
-                                    <tr>
-                                        <th>Original Prescription</th>
-                                        <th>Replaced</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                            <p> <span class="infoLabel">Dispensed Medication:</span> </p>
+                        <p> <span class="infoLabel">Dispensed Medication:</span> </p>
+
                         @for(x <- 1 to viewModelPharmacy.getPrescriptions.size) {
                             @defining(viewModelPharmacy.getPrescriptions.get(x - 1)) { prescription =>
-                              <tr>
+                                <div class="prescription-row">
                                   @if(prescription.getReplacementMedicationName != null) {
-                                      <th><p><del><span>@prescription.getAmount @outputStringOrNA(prescription.getName)</span></del></p>
-                                          (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
-                                          @for(activeDrug <- prescription.getMedicationActiveDrugs) {
-                                              <span class='activeDrug'> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </span>
-                                          }
-                                      </th>
-                                      <th> @prescription.getReplacementAmount @outputStringOrNA(prescription.getReplacementMedicationName)
+                                          <p>
+                                              <span class="prescription-id">Prescription #@prescription.getId() - <span class="red">Replaced</span></span>
+                                              <del>
+                                              @prescription.getAmount @outputStringOrNA(prescription.getName)
 
-                                      </th>
-                                  } else {
-                                      <th> @prescription.getAmount @outputStringOrNA(prescription.getName)
                                           (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
+
+                                            </del>
+                                          </p>
+                                      <del>
+                                      <ul class="active-ingredients">
+                                      @for(activeDrug <- prescription.getMedicationActiveDrugs) {
+                                          <li> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </li>
+                                      }
+                                      </ul>
+                                      </del>
+                                      <div class="alert">
+                                          This prescription was replaced by prescription #@prescription.getReplacementId:<br>
+                                          <b>@prescription.getReplacementAmount @outputStringOrNA(prescription.getReplacementMedicationName)</b>
+                                      </div>
+                                  } else {
+                                      <p>
+                                          <span class="prescription-id">Prescription #@prescription.getId()</span>
+                                          @prescription.getAmount @outputStringOrNA(prescription.getName)
+                                          (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
+
+                                          <ul class="active-ingredients">
                                           @for(activeDrug <- prescription.getMedicationActiveDrugs) {
-                                              <span class='activeDrug'> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </span>
+                                              <li> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </li>
                                           }
-                                      </th>
-                                      <th></th>
+                                          </ul>
+
+                                      </p>
                                   }
-                              </tr>
+                                </div>
                             }
                         }
-                                    </tbody>
-                                </table>
+
                     }
 
 

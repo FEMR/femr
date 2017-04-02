@@ -159,6 +159,7 @@ public interface IItemModelMapper {
      * @param name          name of the prescription, not null
      * @param replacementMedicationName name for replacement prescription, may be null
      * @param replacementAmount amount for replacement prescription
+     * @param replacementId Id number for replacement prescription
      * @param firstName     first name of the person that prescribed the medication, may be null
      * @param lastName      last name of the person that prescribed the medication, may be null
      * @param conceptPrescriptionAdministration
@@ -169,7 +170,7 @@ public interface IItemModelMapper {
      * @param isCounseled indicates whether or not the pharmacist checked the checkbox indicating that they counseled the patient on this prescription, may be null
      * @return a new PrescriptionItem or null if processing fails
      */
-    PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementAmount, String firstName, String lastName,
+    PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementAmount, int replacementId, String firstName, String lastName,
                                             IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
                                             IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled);
 

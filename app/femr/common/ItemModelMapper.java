@@ -379,7 +379,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementAmount, String firstName, String lastName,
+    public PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementAmount, int replacementId, String firstName, String lastName,
                                                                   IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
                                                                   IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled)  {
 
@@ -387,7 +387,7 @@ public class ItemModelMapper implements IItemModelMapper {
         if (replacementMedicationName != null)
             prescriptionItem.setReplacementMedicationName(replacementMedicationName);
         prescriptionItem.setReplacementAmount(replacementAmount);
-
+        prescriptionItem.setReplacementId(replacementId);
         return prescriptionItem;
 
     }

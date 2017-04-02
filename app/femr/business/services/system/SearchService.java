@@ -117,8 +117,7 @@ public class SearchService implements ISearchService {
             if (recentEncounter.getPatientAgeClassification() != null){
                 ageClassification = recentEncounter.getPatientAgeClassification().getName();
             }
-
-
+            
             String pathToPhoto = null;
             Integer photoId = null;
             if (savedPatient.getPhoto() != null) {
@@ -417,6 +416,7 @@ public class SearchService implements ISearchService {
                             pp.isCounseled()
                     ))
                     .collect(Collectors.toList());
+
             List<PrescriptionItem> replacedPrescriptions = patientPrescriptions.stream()
                     .filter(pp -> pp.getPatientPrescriptionReplacements().size() > 0)
                     .map(pp -> itemModelMapper.createPrescriptionItemWithReplacement(
@@ -424,6 +424,7 @@ public class SearchService implements ISearchService {
                             pp.getMedication().getName(),
                             pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
                             pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getAmount(),
+                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getId(),
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
                             pp.getConceptPrescriptionAdministration(),

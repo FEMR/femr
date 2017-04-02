@@ -23,6 +23,8 @@ import java.util.List;
 
 public class PrescriptionItem {
     private int id;
+
+    private int replacementId;
     private String name;
     private String originalMedicationName;
 
@@ -191,5 +193,13 @@ public class PrescriptionItem {
 
     public void setReplacementAmount(int replacementAmount) {
         this.replacementAmount = replacementAmount;
+    }
+
+    public int getReplacementId() {
+        return replacementId;
+    }
+
+    public void setReplacementId(int replacementId) {
+        this.replacementId = replacementId;
     }
 }

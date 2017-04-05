@@ -44,7 +44,7 @@ public interface IPatientService {
      * @return a service response that contains a PatientItem representing the patient that was updated
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> updateSexAndAge(int id, String sex, Date age);
+    ServiceResponse<PatientItem> updateSexAgePhoneNumberAddress(int id, String sex, Date age, String address, String phn);
 
     /**
      * Creates a new patient.

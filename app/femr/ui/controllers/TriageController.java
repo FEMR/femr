@@ -162,13 +162,13 @@ public class TriageController extends Controller {
             patientItem = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = patientService.createPatient(patientItem);
         } else {
-            patientServiceResponse = patientService.updateSexAndAge(id, viewModel.getSex(), viewModel.getAge());
+            patientServiceResponse = patientService.updateSexAgePhoneNumberAddress(id, viewModel.getSex(), viewModel.getAge()
+            , viewModel.getAddress(), viewModel.getPhoneNumber());
         }
         if (patientServiceResponse.hasErrors()) {
             throw new RuntimeException();
         }
         patientItem = patientServiceResponse.getResponseObject();
-
 
         photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());
         //V code for saving photo without javascript

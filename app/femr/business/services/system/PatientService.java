@@ -77,7 +77,7 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> updateSexAndAge(int id, String sex, Date age) {
+    public ServiceResponse<PatientItem> updateSexAgePhoneNumberAddress(int id, String sex, Date age, String address, String phn) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -97,6 +97,14 @@ public class PatientService implements IPatientService {
             // sex can be changed, but not set to null
             if(StringUtils.isNotNullOrWhiteSpace(sex)) {
                 savedPatient.setSex(sex);
+                savedPatient = patientRepository.savePatient(savedPatient);
+            }
+            if (StringUtils.isNotNullOrWhiteSpace(address)) {
+                savedPatient.setAddress(address);
+                savedPatient = patientRepository.savePatient(savedPatient);
+            }
+            if (StringUtils.isNotNullOrWhiteSpace(phn)) {
+                savedPatient.setPhoneNumber(phn);
                 savedPatient = patientRepository.savePatient(savedPatient);
             }
 

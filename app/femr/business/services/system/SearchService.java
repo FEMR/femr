@@ -178,6 +178,7 @@ public class SearchService implements ISearchService {
 
         ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
                 .where()
+                .isNull("isEncounterDeleted")
                 .eq("id", encounterId);
 
         try {
@@ -242,6 +243,7 @@ public class SearchService implements ISearchService {
         }
         ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
                 .where()
+                .isNull("isEncounterDeleted")
                 .eq("id", encounterId);
 
         try {
@@ -266,6 +268,7 @@ public class SearchService implements ISearchService {
         }
         Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
+                .isNull("isEncounterDeleted")
                 .eq("patient_id", patientId)
                 .order()
                 .asc("date_of_triage_visit");
@@ -294,6 +297,7 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
+                .isNull("isEncounterDeleted")
                 .eq("patient_id", patientId)
                 .order()
                 .desc("date_of_triage_visit");

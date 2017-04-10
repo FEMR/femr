@@ -559,4 +559,34 @@ public class EncounterService implements IEncounterService {
 
         return tabFieldId;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientEncounterItem> deleteEncounter(int encounterId, int patientId, int userId, String reason){
+        ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
+
+        if (StringUtils.isNullOrWhiteSpace(reason)) {
+            response.addError("", "reason not provided");
+            return response;
+        }
+        //might need to add patientId
+        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("patient_id", patientId)
+                .eq("id", encounterId);
+
+        try{
+           IPatientEncounter savedEncounter = patientEncounterRepository.findOne(patientEncounterQuery);//.findOne(patientEncounterQuery);
+            savedEncounter.setIsEncounterDeleted(DateTime.now());
+            savedEncounter.setDeletedEncounterByUserId(userId);
+            savedEncounter.setReasonEncounterDeleted(reason);
+            patientEncounterRepository.update(savedEncounter);
+        }catch (Exception ex) {
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
 }

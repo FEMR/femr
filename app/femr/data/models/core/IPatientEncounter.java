@@ -75,4 +75,16 @@ public interface IPatientEncounter {
     Boolean getIsDiabetesScreened();
 
     void setIsDiabetesScreened(Boolean isDiabetesScreened);
+
+    DateTime getIsEncounterDeleted();
+
+    void setIsEncounterDeleted(DateTime isDeleted);
+
+    Integer getDeletedEncounterByUserId() ;
+
+    void setDeletedEncounterByUserId(Integer userId) ;
+
+    String getReasonEncounterDeleted() ;
+
+    void setReasonEncounterDeleted(String reason) ;
 }

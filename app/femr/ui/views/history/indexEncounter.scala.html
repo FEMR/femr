@@ -1,4 +1,5 @@
 @(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.history.IndexEncounterViewModel, viewModelMedical: femr.ui.models.history.IndexEncounterMedicalViewModel, viewModelPharmacy: femr.ui.models.history.IndexEncounterPharmacyViewModel)
+@roles = @{currentUser.getRoles().map(r => r.getId())}
 
     @import femr.ui.views.html.layouts.main
     @import femr.ui.views.html.partials.helpers.outputStringOrNA
@@ -13,6 +14,8 @@
 
     @import collection.JavaConversions._
     @import femr.ui.controllers.routes.PDFController
+    @import femr.ui.controllers.routes.TriageController
+    @import femr.data.models.mysql.Roles
 
 
     @additionalScripts = {
@@ -32,6 +35,15 @@
         <div class="sectionBackground backgroundForWrap" id="encounterViewWrap">
             <div id="encounterViewHeader">
 
+                @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
+                    @helper.form(action = TriageController.deleteEncounterPost(viewModel.getPatientEncounterItem.getId, viewModel.getPatientItem.getId)){
+                        <input type="hidden" name="reasonDeleted" id="reasonDeleted" />
+                        <button hidden="true" type="submit"  id="deleteEncounter"></button>
+                    }
+                    <span>
+                        <button type="submit" id="deleteEncounterBtn" class="btn btn-danger pull-right"> Delete this Encounter</button>
+                    </span>
+                }
 
                 <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName

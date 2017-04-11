@@ -17,7 +17,7 @@ public interface IPhotoRepository {
      * @param filePath location to the photo on the filesystem, not null
      * @return the new photo or NULL if an error occurs
      */
-    IPhoto createPhoto(String description, String filePath);
+    IPhoto createPhoto(String description, String filePath, byte[] photoData);
 
     /**
      * Takes a FilePart and moves it out of a temporary folder on the
@@ -37,6 +37,8 @@ public interface IPhotoRepository {
      * @return true if success, false otherwise
      */
     boolean createPhotoOnFilesystem(BufferedImage bufferedImage, String filePath);
+
+
 
     /**
      * Creates a new patient encounter photo entry in the database
@@ -91,6 +93,16 @@ public interface IPhotoRepository {
      */
     IPhoto updatePhotoFilePath(int id, String filePath);
 
+
+    /**
+     * Sets the binary image data field
+     *
+     * @param id primary key of the photo to update
+     * @param photoData  binary image data
+     * @return the current state of the Photo
+     */
+    IPhoto updatePhotoData(int id, byte[] photoData);
+
     /**
      * Performs a *hard delete* on the photo in the Photos table
      *
@@ -106,6 +118,8 @@ public interface IPhotoRepository {
      * @return true if the photo was deleted, throws an error if something went wrong
      */
     boolean deletePhotoFromFilesystemById(String filePath);
+
+
 
     /**
      * Performs a *hard delete* on the photo in the EncounterPhotos table

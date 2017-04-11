@@ -48,6 +48,18 @@ public class LogicDoer {
 
     }
 
+    public static boolean getUseDbStorageFlag() {
+        try
+        {
+            String sBoolRslt = ConfigFactory.load().getString("photos.useDbStorage");
+            return Boolean.parseBoolean(sBoolRslt);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
     /**
      * Attempts to retrieve the user specified photo path.
      * If nothing is found, defaults to ../Upload/Pictures/PatientEncounters

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
+import femr.business.services.system.EncounterService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -263,12 +264,26 @@ public class TriageController extends Controller {
         final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
         DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
         //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
+        ServiceResponse<PatientItem> patientItemResponse = patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
 
         if(patientItemResponse.hasErrors())
             throw new RuntimeException();
 
         return redirect(routes.TriageController.indexGet());
+    }
+
+    public Result deleteEncounterPost(int encounterId, int patientId){
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
+        DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
+
+        ServiceResponse<PatientEncounterItem> patientItemResponse = encounterService.deleteEncounter(encounterId, patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
+
+        if(patientItemResponse.hasErrors())
+            throw new RuntimeException();
+
+        return redirect(routes.HistoryController.indexPatientGet(Integer.toString(patientId)));
     }
 
     private boolean isDiabetesPromptTurnedOn(){

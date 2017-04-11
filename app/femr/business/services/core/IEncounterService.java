@@ -127,5 +127,13 @@ public interface IEncounterService {
      *@return List of PatientEncounterItems who were checked in on the current Day
      */
     ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters(int tripID);
-
+    /**
+     * Soft Delete of a patient encounter.
+     * @param encounterId id of the encounter for the patient
+     * @param patientId id of the patient
+     * @param userId id of the user deleting the encounter
+     * @param reason the reason for deleting the encounter
+     * @return deleted encounter and/or error if any occur
+     */
+    ServiceResponse<PatientEncounterItem> deleteEncounter(int encounterId, int patientId, int userId, String reason);
 }

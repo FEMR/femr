@@ -116,4 +116,19 @@ $(document).ready(function () {
             }
         } while (reason === "");
     });
+
+    //this is used to delete an encounter
+    $('#deleteEncounterBtn').click(function () {
+        var msg = "Please enter the reason for deleting this encounter below:";
+        var reason;
+
+        do {
+            if (reason = prompt(msg)) {
+                $('#reasonDeleted').val(reason);
+                $("#deleteEncounter").click();
+            } else if (!msg.includes('***')) {
+                msg += "\n\n***A reason must be provided in order to delete a patient encounter***";
+            }
+        } while (reason === "");
+    });
 });

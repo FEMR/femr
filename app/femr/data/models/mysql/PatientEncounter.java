@@ -65,6 +65,12 @@ public class PatientEncounter implements IPatientEncounter {
     private User diabetesScreener;
     @Column(name="is_diabetes_screened", nullable = true)
     private Boolean isDiabetesScreened;
+    @Column(name = "isEncounterDeleted", nullable = true)
+    private DateTime isEncounterDeleted;
+    @Column(name = "deleted_encounter_by_user_id", unique = false, nullable = true)
+    private Integer deletedEncounterByUserId;
+    @Column(name = "reason_encounter_deleted", nullable = true)
+    private String reasonEncounterDeleted;
 
     @Override
     public int getId() {
@@ -202,4 +208,22 @@ public class PatientEncounter implements IPatientEncounter {
 
     @Override
     public void setIsDiabetesScreened(Boolean isDiabetesScreened) {this.isDiabetesScreened = isDiabetesScreened;}
+
+    @Override
+    public DateTime getIsEncounterDeleted(){return isEncounterDeleted;}
+
+    @Override
+    public void setIsEncounterDeleted(DateTime isDeleted){this.isEncounterDeleted = isDeleted;}
+
+    @Override
+    public Integer getDeletedEncounterByUserId(){return deletedEncounterByUserId;}
+
+    @Override
+    public void setDeletedEncounterByUserId(Integer userId){this.deletedEncounterByUserId = userId;}
+
+    @Override
+    public String getReasonEncounterDeleted(){return reasonEncounterDeleted;}
+
+    @Override
+    public void setReasonEncounterDeleted(String reason){this.reasonEncounterDeleted = reason;}
 }

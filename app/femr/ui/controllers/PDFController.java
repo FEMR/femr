@@ -441,7 +441,7 @@ public class PDFController extends Controller {
 
             table.addCell(cell);
 
-            Paragraph replacedMedsTitle = new Paragraph("Replaced", getTitleFont());
+            Paragraph replacedMedsTitle = new Paragraph("Replacement", getTitleFont());
             cell = new PdfPCell(replacedMedsTitle);
 
             table.addCell(cell);
@@ -458,21 +458,17 @@ public class PDFController extends Controller {
                 }
 
 
-                if (prescription.getOriginalMedicationName() != null) {
-
-                    //jank way to strikethrough
-                    Chunk strikeThrough = new Chunk(prescription.getAmount() + " " + prescription.getOriginalMedicationName(), getValueFont());
-                    strikeThrough.setUnderline(0.1f, 3f);   // Thickness, the y axis location of
-                    Paragraph originalMedName = new Paragraph(strikeThrough);
+                if (prescription.getReplacementMedicationName() != null) {
+                    Paragraph originalMedName = new Paragraph("Prescription #" + prescription.getId() + " - Replaced \n" + prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont());
                     cell = new PdfPCell(originalMedName);
 
                     table.addCell(cell);
 
-                    Paragraph replacedMedName = new Paragraph(prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont());
+                    Paragraph replacedMedName = new Paragraph("Prescription #" + prescription.getReplacementId() + " \n" + prescription.getReplacementAmount() + " " + prescription.getReplacementMedicationName(), getValueFont());
                     cell = new PdfPCell(replacedMedName);
                     table.addCell(cell);
                 } else {
-                    Paragraph medName = new Paragraph(prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont());
+                    Paragraph medName = new Paragraph("Prescription #" + prescription.getId() + "\n" + prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont());
                     cell = new PdfPCell(medName);
                     table.addCell(cell);
 

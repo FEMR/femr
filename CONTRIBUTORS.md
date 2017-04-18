@@ -41,3 +41,6 @@ These people have contributed to fEMR's design and implementation:
 * [Mohammad Alahmadi](https://github.com/malahmadi1)
 * [Jonathan Clow](https://github.com/Hachimaki)
 * [Harsha Peswani](https://github.com/hsp15b)
+* [Samuel Cabell](https://github.com/SamuelDev)
+* [Drake Svoboda](https://github.com/drakesvoboda)
+* [Adrian Kalinowski](https://github.com/adriankalinowski)

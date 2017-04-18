@@ -54,16 +54,28 @@
                 <tr>
                     <th>City</th>
                     <th>Country</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                 </tr>
             </thead>
             <tbody>
+
             @for(i <- 1 to viewModel.getAvailableCities.size) {
                 @defining(viewModel.getAvailableCities.get(i - 1)) { city =>
-
-                    <tr>
-                        <td>@city.getCityName</td>
-                        <td>@city.getCountryName</td>
-                    </tr>
+                    @defining(viewModel.getMissionItems.get(i - 1)) { item => @defining(viewModel.getMissionItems.get(i - 1)) { missionItem =>
+                        @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                            @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+                                <tr> @helper.form(action = TripController.editGet(missionTrip.getId)) {
+                                }
+                                <td>@city.getCityName</td>
+                                <td>@city.getCountryName</td>
+                                <td>@missionTrip.getFriendlyTripStartDate</td>
+                                <td>@missionTrip.getFriendlyTripEndDate</td>
+                                </tr>
+                            }
+                        }
+                    }
+                    }
                 }
             }
             </tbody>

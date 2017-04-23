@@ -90,7 +90,7 @@ function replaceClick() {
         $replacementDiv.addClass("hidden");
         // Reset input's to defaults
         $replacementDiv.find(".prescriptionInput input").val("");
-        $replacementDiv.find(".prescriptionAmount input").val(0);
+        $replacementDiv.find(".prescriptionAmount input").val("");
     }
 }
 

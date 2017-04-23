@@ -18,6 +18,7 @@
 */
 package femr.ui.controllers;
 
+import com.itextpdf.tool.xml.html.pdfelement.HtmlCell;
 import femr.business.services.core.*;
 import femr.common.models.*;
 import femr.data.models.mysql.*;
@@ -436,8 +437,9 @@ public class PDFController extends Controller {
         table.completeRow();
         if(!prescriptionItems.isEmpty()) {
             //Create Dispensed Table.
-            Paragraph originalMedsTitle = new Paragraph("Original", getTitleFont());
-            PdfPCell cell = new PdfPCell(originalMedsTitle);
+            PdfPCell cell;
+            /*Paragraph originalMedsTitle = new Paragraph("Original", getTitleFont());
+            cell = new PdfPCell(originalMedsTitle);
 
             table.addCell(cell);
 
@@ -446,7 +448,7 @@ public class PDFController extends Controller {
 
             table.addCell(cell);
 
-            table.completeRow();
+            table.completeRow();*/
 
             for (PrescriptionItem prescription : prescriptionItems) {
                 String medicationForm = prescription.getMedicationForm();
@@ -457,25 +459,24 @@ public class PDFController extends Controller {
                     medicationForm = medicationForm.trim();
                 }
 
-
+                cell = new HtmlCell();
                 if (prescription.getReplacementMedicationName() != null) {
-                    Paragraph originalMedName = new Paragraph("Prescription #" + prescription.getId() + " - Replaced \n" + prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont());
-                    cell = new PdfPCell(originalMedName);
+                    cell.addElement(new Paragraph("Prescription #" + prescription.getId() + " - REPLACED", getValueFont()));
+                    cell.addElement(new Paragraph(prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFontStrikethrough()));
 
-                    table.addCell(cell);
-
-                    Paragraph replacedMedName = new Paragraph("Prescription #" + prescription.getReplacementId() + " \n" + prescription.getReplacementAmount() + " " + prescription.getReplacementMedicationName(), getValueFont());
-                    cell = new PdfPCell(replacedMedName);
-                    table.addCell(cell);
+                    cell.addElement(
+                            new Paragraph(
+                            "This prescription was replaced by prescription #" + prescription.getReplacementId(),
+                            getValueFont())
+                    );
                 } else {
-                    Paragraph medName = new Paragraph("Prescription #" + prescription.getId() + "\n" + prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont());
-                    cell = new PdfPCell(medName);
-                    table.addCell(cell);
-
-                    Paragraph blankCell = new Paragraph(" ", getValueFont());
-                    cell = new PdfPCell(blankCell);
-                    table.addCell(cell);
+                    cell.addElement(new Paragraph("Prescription #" + prescription.getId(), getValueFont()));
+                    cell.addElement(new Paragraph(prescription.getAmount() + " " + prescription.getName() + " (" + medicationForm + ")", getValueFont()));
                 }
+
+                cell.setColspan(2);
+                cell.setPadding(5);
+                table.addCell(cell);
                 table.completeRow();
             }
         }
@@ -658,6 +659,10 @@ public class PDFController extends Controller {
      */
     private Font getValueFont(){
         return new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, BaseColor.BLACK);
+    }
+
+    private Font getValueFontStrikethrough(){
+        return new Font(Font.FontFamily.HELVETICA, 11, Font.STRIKETHRU, BaseColor.BLACK);
     }
 
     private Phrase getStyledPhrase(String title, String value) {

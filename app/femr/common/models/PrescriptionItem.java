@@ -27,7 +27,7 @@ public class PrescriptionItem {
     private String name;
     private String originalMedicationName;
     private String replacementMedicationName;
-    private int replacementAmount;
+    private Integer replacementAmount;
     private String prescriberFirstName;
     private String prescriberLastName;
     private Integer administrationID;
@@ -114,6 +114,15 @@ public class PrescriptionItem {
         return amount;
     }
 
+    public Integer getAmountWithNull(){
+        return amount;
+    }
+
+    public String printAmount(){
+        if(amount == null) return "";
+        return amount.toString();
+    }
+
     public void setAmount(Integer amount) {
         this.amount = amount;
     }
@@ -179,16 +188,25 @@ public class PrescriptionItem {
         return replacementMedicationName;
     }
 
-    public int getReplacementAmount() {
+    public Integer getReplacementAmount() {
+        if (replacementAmount == null) return 0;
         return replacementAmount;
     }
 
+    public Integer getReplacementAmountWithNull(){
+        return replacementAmount;
+    }
     public void setReplacementMedicationName(String replacementMedicationName) {
         this.replacementMedicationName = replacementMedicationName;
     }
 
-    public void setReplacementAmount(int replacementAmount) {
+    public void setReplacementAmount(Integer replacementAmount) {
         this.replacementAmount = replacementAmount;
+    }
+
+    public String printReplacementAmount(){
+        if(replacementAmount == null) return "";
+        return replacementAmount.toString();
     }
 
     public int getReplacementId() {

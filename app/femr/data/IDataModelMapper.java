@@ -186,7 +186,7 @@ public interface IDataModelMapper {
      * @param dateDispensed   date and time the patient prescription dispensed to the patient, can be null
      * @return an implementation of IPatientPrescription or null if processing fails, not null
      */
-    IPatientPrescription createPatientPrescription(int amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, DateTime dateDispensed, boolean isCounseled);
+    IPatientPrescription createPatientPrescription(Integer amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId, DateTime dateDispensed, boolean isCounseled);
 
     /**
      * Creates a patient prescription replacement based on the ID of the prescriptions.

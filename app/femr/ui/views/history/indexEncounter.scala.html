@@ -199,7 +199,7 @@
                                           <p>
                                               <span class="prescription-id">Prescription #@prescription.getId() - <span class="red">Replaced</span></span>
                                               <del>
-                                              @prescription.getAmount @outputStringOrNA(prescription.getName)
+                                                  @prescription.printAmount @outputStringOrNA(prescription.getName)
 
                                           (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
 
@@ -214,12 +214,13 @@
                                       </del>
                                       <div class="alert">
                                           This prescription was replaced by prescription #@prescription.getReplacementId:<br>
-                                          <b>@prescription.getReplacementAmount @outputStringOrNA(prescription.getReplacementMedicationName)</b>
+                                          <b>@prescription.printReplacementAmount @outputStringOrNA(prescription.getReplacementMedicationName)</b>
                                       </div>
                                   } else {
                                       <p>
                                           <span class="prescription-id">Prescription #@prescription.getId()</span>
-                                          @prescription.getAmount @outputStringOrNA(prescription.getName)
+                                          @prescription.printAmount
+                                          @outputStringOrNA(prescription.getName)
                                           (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
 
                                           <ul class="active-ingredients">

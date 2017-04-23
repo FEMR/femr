@@ -317,7 +317,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
+    public ServiceResponse<PrescriptionItem> createPrescription(int medicationId, Integer administrationId, int encounterId, int userId, Integer amount, String specialInstructions) {
 
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
         if (administrationId !=null && administrationId <= 0)
@@ -361,7 +361,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, int amount, String specialInstructions) {
+    public ServiceResponse<PrescriptionItem> createPrescriptionWithNewMedication(String medicationName, Integer administrationId, int encounterId, int userId, Integer amount, String specialInstructions) {
 
         ServiceResponse<PrescriptionItem> response = new ServiceResponse<>();
 
@@ -389,7 +389,6 @@ public class MedicationService implements IMedicationService {
 
             patientPrescription = patientPrescriptionRepository.create(patientPrescription);
 
-
             PrescriptionItem prescriptionItem = itemModelMapper.createPrescriptionItem(
                     patientPrescription.getId(),
                     patientPrescription.getMedication().getName(),
@@ -405,8 +404,6 @@ public class MedicationService implements IMedicationService {
             response.setResponseObject(prescriptionItem);
 
         } catch (Exception ex) {
-
-
 
             response.addError("", ex.getMessage());
         }

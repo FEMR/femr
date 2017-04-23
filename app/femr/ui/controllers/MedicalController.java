@@ -360,7 +360,7 @@ public class MedicalController extends Controller {
                     prescriptionItem.getAdministrationID(),
                     patientEncounterItem.getId(),
                     currentUserSession.getId(),
-                    prescriptionItem.getAmount(),
+                    prescriptionItem.getAmountWithNull(),
                     null);
 
             if (createPrescriptionServiceResponse.hasErrors()){
@@ -389,7 +389,7 @@ public class MedicalController extends Controller {
                     prescriptionItem.getAdministrationID(),
                     patientEncounterItem.getId(),
                     currentUserSession.getId(),
-                    prescriptionItem.getAmount(),
+                    prescriptionItem.getAmountWithNull(),
                     null);
 
             if (createPrescriptionServiceResponse.hasErrors()){

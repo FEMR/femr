@@ -43,7 +43,7 @@ public class PatientPrescription implements IPatientPrescription {
     @JoinColumn(name = "user_id", nullable = false)
     private User physician;
     @Column(name = "amount", nullable = true)
-    private  int amount;
+    private  Integer amount;
     @Column(name = "date_taken", nullable = false)
     private DateTime dateTaken;
     @Column(name = "special_instructions", nullable = true)
@@ -101,12 +101,12 @@ public class PatientPrescription implements IPatientPrescription {
     }
 
     @Override
-    public int getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
     @Override
-    public void setAmount(int amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 

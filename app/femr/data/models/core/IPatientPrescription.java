@@ -39,9 +39,9 @@ public interface IPatientPrescription {
 
     void setPhysician(IUser physician);
 
-    int getAmount();
+    Integer getAmount();
 
-    void setAmount(int amount);
+    void setAmount(Integer amount);
 
     DateTime getDateTaken();
 

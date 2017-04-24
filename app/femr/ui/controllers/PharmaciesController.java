@@ -206,19 +206,15 @@ public class PharmaciesController extends Controller {
                 if (script.getAdministrationID() == -1)
                     script.setAdministrationID(null);
 
-                //create a new prescription to replace the old prescription.
-                if (script.getAmount() == null){
-                    script.setAmount(0);
-                }
-
                 if (script.getMedicationID() != null){
                     //the medication has already been entered into the medications table (through admin inventory?)
 
-                    ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(script.getMedicationID(),
+                    ServiceResponse<PrescriptionItem> createPrescriptionResponse = medicationService.createPrescription(
+                            script.getMedicationID(),
                             script.getAdministrationID(),
                             patientEncounterItem.getId(),
                             currentUserSession.getId(),
-                            script.getAmount(),
+                            script.getAmountWithNull(),
                             null);
                     PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
                     //mark the prescription for replacing
@@ -231,7 +227,7 @@ public class PharmaciesController extends Controller {
                             script.getAdministrationID(),
                             patientEncounterItem.getId(),
                             currentUserSession.getId(),
-                            script.getAmount(),
+                            script.getAmountWithNull(),
                             null);
                     PrescriptionItem newPrescriptionItem = createPrescriptionResponse.getResponseObject();
                     //mark the prescription for replacing

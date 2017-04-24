@@ -7,13 +7,13 @@ var medicalFieldValidator = {
         $(".prescription").each(function() {
 
             if ($(this).has(".replacement") && !$(this).find(".replacement").hasClass("hidden")) {
-                var $medicationID = $(this).find(".medicationID"),
-                    $medicationName = $(this).find(".medicationName.tt-input"),
+                var $medicationID = $(this).find(".medicationID");
+                    /*$medicationName = $(this).find(".medicationName.tt-input"),
                     $prescriptionAmount = $(this).find(".prescriptionAmount > input");
 
                 if ($.trim($prescriptionAmount.val()) == "" && $medicationName.val() != ""){
                     medicalFieldValidator.errors.push("Prescription amount cannot be blank.");
-                }
+                }*/
 
                 prescriptions.push($medicationID.val());
             } else {

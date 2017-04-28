@@ -1,10 +1,13 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import femr.business.helpers.QueryProvider;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
+import femr.data.daos.Repository;
+import femr.data.models.mysql.PatientEncounterTabField;
 import femr.data.models.mysql.Roles;
 import femr.ui.controllers.helpers.FieldHelper;
 import femr.ui.helpers.security.AllowedRoles;
@@ -17,6 +20,7 @@ import femr.ui.views.html.medical.listVitals;
 import femr.ui.views.html.partials.medical.tabs.prescriptionRow;
 import femr.util.DataStructure.Mapping.TabFieldMultiMap;
 import femr.util.DataStructure.Mapping.VitalMultiMap;
+import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import play.data.Form;
 import play.data.FormFactory;
@@ -24,8 +28,11 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -437,6 +444,38 @@ public class MedicalController extends Controller {
         }
 
         return ok("true");
+    }
+
+    public Result deleteExistingProblem(int patientId, String problem){
+
+        //get current patient
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
+        if (patientItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
+
+        //get current encounter
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if (patientEncounterServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
+        //patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
+        PatientEncounterTabField fieldData = QueryProvider.getPatientEncounterTabFieldQuery()
+                .fetch("tabField")
+                .where()
+                .eq("patient_encounter_id", patientEncounterItem.getId())
+                .eq("tabField.name", "problem")
+                .eq("tab_field_value", problem)
+                .order()
+                .asc("date_taken")
+                .findUnique();
+
+        fieldData.setIsDeleted(dateUtils.getCurrentDateTime());
+        fieldData.setDeletedByUserId(sessionService.retrieveCurrentUserSession().getId());
+
+        return ok();
     }
 
     //partials

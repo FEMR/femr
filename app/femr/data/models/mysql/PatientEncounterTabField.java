@@ -47,6 +47,10 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chief_complaint_id", nullable = true)
     private ChiefComplaint chiefComplaint;
+    @Column(name = "IsDeleted", nullable = true)
+    private DateTime IsDeleted;
+    @Column(name = "DeletedByUserId", nullable = true)
+    private Integer DeletedByUserId;
 
 
     @Override
@@ -124,4 +128,16 @@ public class PatientEncounterTabField implements IPatientEncounterTabField {
     public void setChiefComplaint(IChiefComplaint chiefComplaint) {
         this.chiefComplaint = (ChiefComplaint) chiefComplaint;
     }
+
+    @Override
+    public DateTime getIsDeleted(){ return IsDeleted; };
+
+    @Override
+    public void setIsDeleted(DateTime time){ this.IsDeleted = time; };
+
+    @Override
+    public Integer getDeletedByUserId(){ return DeletedByUserId; };
+
+    @Override
+    public void setDeletedByUserId(Integer userId){ this.DeletedByUserId = userId; };
 }

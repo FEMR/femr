@@ -417,6 +417,7 @@ public class EncounterService implements IEncounterService {
         Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
                 .fetch("tabField")
                 .where()
+                .isNull("IsDeleted")
                 .eq("patient_encounter_id", encounterId)
                 .eq("tabField.name", "problem")
                 .order()

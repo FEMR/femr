@@ -439,6 +439,28 @@ public class MedicalController extends Controller {
         return ok("true");
     }
 
+    //Called via AJAX: (/medical/deleteProblem/:patientId/:problem) to deleted a problem
+    public Result deleteExistingProblem(int patientId, String problem){
+
+        //get current patient
+        ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
+        if (patientItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientItem patientItem = patientItemServiceResponse.getResponseObject();
+
+        //get current encounter
+        ServiceResponse<PatientEncounterItem> patientEncounterServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        if (patientEncounterServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
+
+        ServiceResponse<Boolean> deleteProblemServiceResponse = encounterService.deleteExistingProblem(patientEncounterItem.getId(), problem, sessionService.retrieveCurrentUserSession().getId());
+
+        return ok(deleteProblemServiceResponse.getResponseObject().toString());
+    }
+
     //partials
     public Result newVitalsGet() {
 

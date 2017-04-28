@@ -46,7 +46,7 @@ jobs:
   - get: resource-config
     passed: [job-package]
   - get: resource-femr-app
-    passed: [job-test]
+    passed: [job-package]
     trigger: true
   - task: femr-deploy
     file: resource-femr-app/ci/task_run_deploy.yml

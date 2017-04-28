@@ -14,7 +14,7 @@ var problemFeature = {
         $('.problem')
             .parent()
             .append("<div class='problem'>" +
-            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control input-sm newProblems'/>" +
+            "<input name='problems[" + problemIndex + "].name' type='text' class='form-control newProblems'/>" +
             "</div>");
 
         var problemInputElement = $("[name='problems[" + problemIndex + "].name'");
@@ -618,3 +618,20 @@ function photoNameFixup() {
 
     return true;
 }
+
+$('.deleteProblem').click(function(){
+    var lineToRemove = $(this).parent().parent();
+
+    $.ajax({
+        type: 'post',
+        url: '/medical/deleteProblem/' + $('#patientId').val() + '/' + $(this).data('problem'),
+        success: function(result){
+            if(result == "true"){
+                lineToRemove.remove();
+            }
+        },
+        failure: function(result){
+
+        }
+    });
+});

@@ -57,4 +57,12 @@ public interface IPatientEncounterTabField {
     ChiefComplaint getChiefComplaint();
 
     void setChiefComplaint(IChiefComplaint chiefComplaint);
+
+    DateTime getIsDeleted();
+
+    void setIsDeleted(DateTime time);
+
+    Integer getDeletedByUserId();
+
+    void setDeletedByUserId(Integer userId);
 }

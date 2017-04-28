@@ -22,6 +22,9 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
+import femr.data.models.core.IPatientEncounterTabField;
+import femr.data.models.mysql.PatientEncounterTabField;
+
 import java.util.List;
 import java.util.Map;
 
@@ -128,4 +131,13 @@ public interface IEncounterService {
      */
     ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters(int tripID);
 
+    /**
+     * Deletes a problem that was submitted on the Medical page as part of a patient encounter
+     *
+     * @param encounterId id of the encounter, not null
+     * @param problem the string of the problem itself, not null
+     * @param userId id of the user deleting the problem, not null
+     * @return true if deleting was successful or false if it did not succeed
+     */
+    ServiceResponse<Boolean> deleteExistingProblem(int encounterId, String problem, int userId);
 }

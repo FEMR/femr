@@ -620,16 +620,15 @@ function photoNameFixup() {
 }
 
 $('.deleteProblem').click(function(){
-    /*$(this)
-        .parent()
-        .parent()
-        .remove();*/
+    var lineToRemove = $(this).parent().parent();
+
     $.ajax({
         type: 'post',
         url: '/medical/deleteProblem/' + $('#patientId').val() + '/' + $(this).data('problem'),
-        //data: { patientId: $('#patientId').val() },
         success: function(result){
-
+            if(result == "true"){
+                lineToRemove.remove();
+            }
         },
         failure: function(result){
 

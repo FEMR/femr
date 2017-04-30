@@ -28,8 +28,6 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -461,21 +459,10 @@ public class MedicalController extends Controller {
             throw new RuntimeException();
         }
         PatientEncounterItem patientEncounterItem = patientEncounterServiceResponse.getResponseObject();
-        //patientEncounterItem = encounterService.checkPatientInToMedical(patientEncounterItem.getId(), currentUserSession.getId()).getResponseObject();
-        PatientEncounterTabField fieldData = QueryProvider.getPatientEncounterTabFieldQuery()
-                .fetch("tabField")
-                .where()
-                .eq("patient_encounter_id", patientEncounterItem.getId())
-                .eq("tabField.name", "problem")
-                .eq("tab_field_value", problem)
-                .order()
-                .asc("date_taken")
-                .findUnique();
 
-        fieldData.setIsDeleted(dateUtils.getCurrentDateTime());
-        fieldData.setDeletedByUserId(sessionService.retrieveCurrentUserSession().getId());
+        ServiceResponse<Boolean> deleteProblemServiceResponse = encounterService.deleteExistingProblem(patientEncounterItem.getId(), problem, sessionService.retrieveCurrentUserSession().getId());
 
-        return ok();
+        return ok(deleteProblemServiceResponse.getResponseObject().toString());
     }
 
     //partials

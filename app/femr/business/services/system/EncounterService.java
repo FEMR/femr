@@ -417,6 +417,7 @@ public class EncounterService implements IEncounterService {
         Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
                 .fetch("tabField")
                 .where()
+                .isNull("IsDeleted")
                 .eq("patient_encounter_id", encounterId)
                 .eq("tabField.name", "problem")
                 .order()
@@ -505,6 +506,38 @@ public class EncounterService implements IEncounterService {
         return response;
 
 
+    }
+
+    @Override
+    public ServiceResponse<Boolean> deleteExistingProblem(int encounterId, String problem, int userId){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+
+        try {
+            //PatientEncounterTabField fieldData
+            ExpressionList<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
+                    .fetch("tabField")
+                    .where()
+                    .eq("patient_encounter_id", encounterId)
+                    .eq("tabField.name", "problem")
+                    .eq("tab_field_value", problem)
+                    .isNull("IsDeleted")
+                    .isNull("DeletedByUserId");
+
+            // Query gets an entire list in case of duplicate rows of the same problem, will then only set the first instance to deleted
+            IPatientEncounterTabField fieldData = patientEncounterTabFieldRepository.find(query).get(0);
+
+            fieldData.setIsDeleted(dateUtils.getCurrentDateTime());
+            fieldData.setDeletedByUserId(userId);
+
+            fieldData = patientEncounterTabFieldRepository.update(fieldData);
+
+            response.setResponseObject(true);
+        }
+        catch(Exception e){
+            response.setResponseObject(false);
+        }
+
+        return response;
     }
 
     /**

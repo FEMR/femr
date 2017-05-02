@@ -22,6 +22,9 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.*;
 import femr.data.models.core.IPatientEncounter;
+import femr.data.models.core.IPatientEncounterTabField;
+import femr.data.models.mysql.PatientEncounterTabField;
+
 import java.util.List;
 import java.util.Map;
 
@@ -127,5 +130,7 @@ public interface IEncounterService {
      *@return List of PatientEncounterItems who were checked in on the current Day
      */
     ServiceResponse<List<PatientEncounterItem>> retrieveCurrentDayPatientEncounters(int tripID);
+
+    ServiceResponse<Boolean> deleteExistingProblem(int encounterId, String problem, int userId);
 
 }

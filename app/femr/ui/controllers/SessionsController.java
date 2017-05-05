@@ -6,6 +6,7 @@ import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.data.models.core.IUser;
+import femr.data.models.mysql.User;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
@@ -44,17 +45,19 @@ public class SessionsController extends Controller {
             return redirect(routes.HomeController.index());
         }
 
-        return ok(create.render(createViewModelForm));
+        return ok(create.render(createViewModelForm,""));
     }
 
     public Result createPost() {
 
         final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+
         ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
         if (response.hasErrors()) {
-            return ok(create.render(createViewModelForm));
+
+            return ok(create.render(createViewModelForm, viewModel.getEmail()));
         }else{
             IUser user = userService.retrieveById(response.getResponseObject().getId());
             user.setLastLogin(dateUtils.getCurrentDateTime());

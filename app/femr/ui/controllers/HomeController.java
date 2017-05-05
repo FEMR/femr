@@ -24,7 +24,7 @@ public class HomeController extends Controller {
             return ok(index.render(currentUser));
         }
 
-        return ok(create.render(null));
+        return ok(create.render(null, ""));
     }
 
 

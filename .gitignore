@@ -34,3 +34,6 @@ dist
 # Ignore OS specific Files #
 .DS_Store
 Thumbs.db
+
+#concourse
+ci/credentials.yml

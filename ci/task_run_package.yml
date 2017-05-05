@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: kevinzurek/femr, tag: "latest"}
+
+inputs:
+- name: resource-femr-app
+- name: resource-config
+
+outputs:
+- name: femr-dist
+
+run:
+  path: resource-femr-app/ci/task_run_package.sh

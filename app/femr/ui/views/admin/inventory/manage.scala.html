@@ -1,9 +1,9 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.InventoryViewModelGet)
+@import femr.ui.models.admin.inventory.ManageViewModelGet
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: ManageViewModelGet)
 
 @import femr.ui.controllers.admin.routes.InventoryController
-@import femr.ui.controllers.admin.routes.TripController
 
-
+@import femr.ui.views.html.partials.admin.inventory.inventoryMenu
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
@@ -20,133 +20,33 @@
         <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
     }
 
-@admin("Inventory", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+@admin("Inventory - Formulary", currentUser, styles = additionalStyles, scripts = additionalScripts) {
 
-    @if( viewModel.getMissionTripItem == null ){
-        <div class="alert warning">
+    @inventoryMenu(viewModel.getMissionTripItem)
 
-            <h3>Your account is not assigned to a trip</h3>
 
-            <p>In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
-
-            <a class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
-        </div>
-    } else {
-        <span>
-        @defining(viewModel.getMissionTripItem) { trip =>
-            <p>You are viewing the formulary for <b>@trip.getFriendlyTripTitle</b></p>
-        }
-        </span>
-    }
-
-    @helper.form(action = InventoryController.managePost()) {
-
-        @if( currentUser.getTripId == null ){
-            <fieldset disabled="disabled">
-        }
-        <h3>Add Existing Medicine To Formulary:</h3>
-        <p>-Add medication(s) from the concept dictionary. Adjust current/initial quantity in the Current Formulary section after clicking Submit.</p>
-        <select id="addConceptMedicineSelect2" multiple="multiple" name="newConceptMedicationsForInventory[]">
-        @defining(viewModel.getConceptMedications) { conceptMeds =>
-            @for(i <- 1 to conceptMeds.size) {
-                <option value="@conceptMeds.get(i - 1).getId">@conceptMeds.get(i - 1).getFullName</option>
-            }
-        }
-        </select>
-
-        <h3>Add Custom Medicine To Formulary:</h3>
-        <p>-Add a new medication that does not exist in the concept dictionary.</p>
-        <div class="newMedicationWrap">
-
-            <div class="row">
-                <div class="fieldMedication" >
-                    <label for="medicationName">Brand</label>
-                    <input type="text" class="fInput" id="medicationName" name="medicationName"  placeholder="" />
-                </div>
-
-                <div class="fieldMedication">
-                    <label for="medicationForm">Form</label>
-                    <select name="medicationForm" class="fOption">
-                        @*<option value="" disabled selected>Form</option>*@
-                        @for(formIndex <- 1 to viewModel.getAvailableForms.size) {
-                            @defining(viewModel.getAvailableForms.get(formIndex - 1)) { form =>
-                                <option value="@form">@form</option>
-                            }
-                        }
-                    </select>
-                </div>
-
-                <div class="fieldMedication">
-                    <label for="medicationQuantity">Quantity</label>
-                    <input type="number" class="fInput text" name="medicationQuantity" placeholder="" />
-                </div>
-
-            </div>
-            <div class="row ingredients">
-                <div class="ingredientWrap">
-
-                    <div class="ingredientFields first">
-
-                        <div class="fieldMedication">
-                            <label for="medicationIngredient">Generic</label>
-                            <input type="text" name="medicationIngredient[]" class="fInput medicationIngredient" placeholder="" />
-                        </div>
-
-                        <div class="fieldMedication">
-                            <label for="medicationStrength">Strength</label>
-                            <input type="number" name="medicationStrength[]" class="fInput medicationsStrength" placeholder="" />
-                        </div>
-
-                        <div class="fieldMedication">
-                            <label for="medicationUnit">Unit</label>
-                            <select name="medicationUnit[]" class="fOption">
-                                @*<option value="" selected>Unit</option>*@
-                                @for(unitIndex <- 1 to viewModel.getAvailableUnits.size) {
-                                    @defining(viewModel.getAvailableUnits.get(unitIndex - 1)) { unit =>
-                                        <option value="@unit">@unit</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-
-                        <a class="fButton removeIngredient">
-                            <span>-</span>
-                        </a>
-
-                    </div>
-
-                    <a class="fButton" id="addNewIngredient">
-                        <span>+</span>
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <button class="fButton" id="submitMedicationButton">Submit</button>
-            </div>
-
-        </div>
-
-        @if( currentUser.getTripId() == null ){
-            </fieldset>
-        }
-    }
-    
     <div id="currentMedication">
         <h3>Current Formulary:</h3>
         <div class="row" id="currentMedicationHeader">
-          <div class="col-xs-9">
-            -As medications are dispensed, quantity will be subtracted from the Current Quantity column.
-          </div>
-          <div class="col-xs-3">
-            @if( currentUser.getTripId() == null ){
-            <span class="fExportCSVButton pull-right disabled">
-              <a class="btn fButton fOtherButton disabled" href="#">Export as CSV</a>
-            } else {
-            <span class="fExportCSVButton pull-right">
-              <a class="btn fButton fOtherButton" href="@{InventoryController.exportGet(currentUser.getTripId).url}">Export as CSV</a>
-            }
+            <div class="col-xs-9">
+                <ul>
+                    <li>Add medications using the buttons above</li>
+                    <li>Formulary only applies to Users on the trip <b>mentioned above</b></li>
+                    <li>Manually edit Current/Initial quantity below</li>
+                    <li>Quantity will be subtracted from the Current Quantity column after being dispensed in Pharmacy</li>
+                    <li>Export your inventory data using the "Export as CSV" button to the right</li>
+                </ul>
+            </div>
+            <div class="col-xs-3">
+                @if( currentUser.getTripId() == null ){
+                    <span class="fExportCSVButton pull-right disabled">
+                        <a class="btn fButton fOtherButton disabled" href="#">Export as CSV</a>
+                        } else {
+                    <span class="fExportCSVButton pull-right">
+                        <a class="btn fButton fOtherButton" href="@{InventoryController.exportGet(currentUser.getTripId).url}">Export as CSV</a>
+                        }
             </span>
-          </div>
+            </div>
         </div>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable" class="table">
@@ -160,36 +60,36 @@
                 <tbody>
                 @for(m <- 1 to viewModel.getMedications.size) {
                     @if(viewModel.getMedications.get(m - 1).getIsDeleted == null){
-                    <tr>
-                        <td>@m</td>
-                        <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
+                        <tr>
+                            <td>@m</td>
+                            <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
 
 
-                        <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId">
+                            <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId">
 
-                            <span class="editCurrentQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityCurrent</span>
-                            <input class="editCurrentInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityCurrent" />
-                            <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
-                            <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
-                            <button type="button" class="btn btn-xs editCurrentQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
+                                <span class="editCurrentQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityCurrent</span>
+                                <input class="editCurrentInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityCurrent" />
+                                <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
+                                <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
+                                <button type="button" class="btn btn-xs editCurrentQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
 
-                        </td>
+                            </td>
 
-                        <td class="totalQuantity" value="@viewModel.getMedications.get(m-1).getId" >
+                            <td class="totalQuantity" value="@viewModel.getMedications.get(m-1).getId" >
 
-                            <span class="editTotalQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityTotal</span>
-                            <input class="editTotalInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityTotal" />
-                            <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
-                            <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
-                            <button type="button" class="btn btn-xs editTotalQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
+                                <span class="editTotalQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityTotal</span>
+                                <input class="editTotalInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityTotal" />
+                                <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
+                                <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
+                                <button type="button" class="btn btn-xs editTotalQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
 
-                        </td>
-                        <td>
+                            </td>
+                            <td>
 
-                            <button type="button" class="btn btn-danger removeBtn" data-medicationid="@viewModel.getMedications.get(m-1).getId" data-tripid="@currentUser.getTripId">Remove</button>
+                                <button type="button" class="btn btn-danger removeBtn" data-medicationid="@viewModel.getMedications.get(m-1).getId" data-tripid="@currentUser.getTripId">Remove</button>
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     }
                 }
                 </tbody>

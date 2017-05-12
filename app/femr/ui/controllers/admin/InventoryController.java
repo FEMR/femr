@@ -28,7 +28,7 @@ import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.*;
 import femr.common.models.MedicationItem;
-import femr.ui.views.html.admin.inventory.manage;
+import femr.ui.views.html.admin.inventory.*;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
@@ -68,11 +68,14 @@ public class InventoryController extends Controller {
         this.sessionService = sessionService;
     }
 
+    /**
+     * Serves up the inventory homepage. POST communication for updating quantity
+     * is handled by AJAX calls
+     */
     public Result manageGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-
-        InventoryViewModelGet viewModel = new InventoryViewModelGet();
+        ManageViewModelGet viewModel = new ManageViewModelGet();
 
         // If the use does not have a trip ID, we cannot retrieve the list of medications
         // since they are tied to a trip
@@ -80,10 +83,13 @@ public class InventoryController extends Controller {
 
             ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventorysByTripId(currentUser.getTripId());
             if (medicationServiceResponse.hasErrors()) {
+
                 throw new RuntimeException();
             } else {
+
                 viewModel.setMedications(medicationServiceResponse.getResponseObject());
             }
+
 
             ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
             if (missionTripServiceResponse.hasErrors()) {
@@ -94,17 +100,28 @@ public class InventoryController extends Controller {
                 viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
             }
 
-        }
-        else{
+        } else {
 
-            viewModel.setMedications( new ArrayList<>() );
+            viewModel.setMedications(new ArrayList<>());
         }
 
-        ServiceResponse<List<MedicationItem>> conceptMedicationServiceResponse = conceptService.retrieveAllMedicationConcepts();
-        if (conceptMedicationServiceResponse.hasErrors()) {
+        return ok(manage.render(currentUser, viewModel));
+    }
+
+
+    /**
+     * Page for adding a new custom medication
+     */
+    public Result customGet() {
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        CustomViewModelGet viewModel = new CustomViewModelGet();
+
+        ServiceResponse<List<String>> availableMedicationFormsResponse = medicationService.retrieveAvailableMedicationForms();
+        if (availableMedicationFormsResponse.hasErrors()) {
             throw new RuntimeException();
         } else {
-            viewModel.setConceptMedications(conceptMedicationServiceResponse.getResponseObject());
+            viewModel.setAvailableForms(availableMedicationFormsResponse.getResponseObject());
         }
 
         ServiceResponse<List<String>> availableMedicationUnitsResponse = medicationService.retrieveAvailableMedicationUnits();
@@ -114,25 +131,28 @@ public class InventoryController extends Controller {
             viewModel.setAvailableUnits(availableMedicationUnitsResponse.getResponseObject());
         }
 
-        ServiceResponse<List<String>> availableMedicationFormsResponse = medicationService.retrieveAvailableMedicationForms();
-        if (availableMedicationFormsResponse.hasErrors()) {
+        ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
+        if (missionTripServiceResponse.hasErrors()) {
+
             throw new RuntimeException();
         } else {
-            viewModel.setAvailableForms(availableMedicationFormsResponse.getResponseObject());
+
+            viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
         }
 
-        return ok(manage.render(currentUser, viewModel));
+        return ok(custom.render(currentUser, viewModel));
     }
 
     /**
-     * Handles the submission of a new medication from the Admin Inventory Tracking screen.
+     * Handles the submission of a new custom medication from an Admin
      */
-    public Result managePost() {
-
+    public Result customPost(){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        final Form<InventoryViewModelPost> inventoryViewModelPostForm = formFactory.form(InventoryViewModelPost.class);
-        Form<InventoryViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
+        final Form<CustomViewModelPost> inventoryViewModelPostForm = formFactory.form(CustomViewModelPost.class);
+
+        Form<CustomViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
+
         if (form.hasErrors()) {
             return redirect("/admin/inventory");
 
@@ -145,7 +165,9 @@ public class InventoryController extends Controller {
 
         }
 
-        InventoryViewModelPost inventoryViewModelPost = form.bindFromRequest().get();
+        CustomViewModelPost inventoryViewModelPost = form.bindFromRequest().get();
+
+
 
         // create a new medicationItem for managing the compilation of active ingredients
         // (this could potentially be moved into the service layer)
@@ -191,18 +213,56 @@ public class InventoryController extends Controller {
         }
 
 
+        return redirect("/admin/inventory");
+    }
 
+    /**
+     * Page for adding a new medication from the concept dictionary
+     */
+    public Result existingGet() {
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        ExistingViewModelGet viewModel = new ExistingViewModelGet();
+
+        ServiceResponse<List<MedicationItem>> conceptMedicationServiceResponse = conceptService.retrieveAllMedicationConcepts();
+        if (conceptMedicationServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else {
+            viewModel.setConceptMedications(conceptMedicationServiceResponse.getResponseObject());
+        }
+
+        ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
+        if (missionTripServiceResponse.hasErrors()) {
+
+            throw new RuntimeException();
+        } else {
+
+            viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
+        }
+
+        return ok(existing.render(currentUser, viewModel));
+    }
+
+    /**
+     * Handles the submission of an existing medication from an Admin
+     */
+    public Result existingPost() {
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        final Form<ExistingViewModelPost> existingViewModelPostForm = formFactory.form(ExistingViewModelPost.class);
+        Form<ExistingViewModelPost> existingForm = existingViewModelPostForm.bindFromRequest();
+        ExistingViewModelPost existingViewModelPost = existingForm.bindFromRequest().get();
 
         //if just adding medications from the concept dictionary, there won't be any amount involved
         //and knowledge of the ingredients already exists.
-        if (inventoryViewModelPost.getNewConceptMedicationsForInventory() != null) {
+        if (existingViewModelPost.getNewConceptMedicationsForInventory() != null) {
 
             ServiceResponse<MedicationItem> conceptMedicationServiceResponse;
             ServiceResponse<MedicationItem> medicationItemServiceResponse;
             MedicationItem conceptMedicationItem;
 
             //for each concept medication id that was sent from the select2 form
-            for (Integer conceptMedicationId : inventoryViewModelPost.getNewConceptMedicationsForInventory()) {
+            for (Integer conceptMedicationId : existingViewModelPost.getNewConceptMedicationsForInventory()) {
 
                 //get the actual concept MedicationItem from the id that was sent in
                 conceptMedicationServiceResponse = conceptService.retrieveConceptMedication(conceptMedicationId);

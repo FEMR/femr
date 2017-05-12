@@ -23,7 +23,7 @@ import femr.common.models.MissionTripItem;
 
 import java.util.List;
 
-public class InventoryViewModelGet {
+public class ManageViewModelGet {
     private List<MedicationItem> medications;
     private List<MedicationItem> conceptMedications;
     private List<String> availableUnits;

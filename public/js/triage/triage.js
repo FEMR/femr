@@ -25,7 +25,7 @@ var patientPhotoFeature = {
             jwc.destroyCrop();
 
         //Create new crop window
-       jwc = $(patientPhotoFeature.config.imageElement).jWindowCrop({
+        jwc = $(patientPhotoFeature.config.imageElement).jWindowCrop({
             targetWidth: patientPhotoFeature.config.windowWidth,
             targetHeight: patientPhotoFeature.config.windowHeight,
             loadingText: '',
@@ -571,6 +571,77 @@ $(document).ready(function () {
         }
     });
     $('#years').change(function () {
+        // no need for backend check since user cannot put incorrect classification
+        // with these checks
+        if($(this).val() >= 65) {
+            $('[name=ageClassification][value="infant"]').prop("disabled", true);
+            $('[name=ageClassification][value="child"]').prop("disabled", true);
+            $('[name=ageClassification][value="teen"]').prop("disabled", true);
+            $('[name=ageClassification][value="adult"]').prop("disabled", true);
+            $('[name=ageClassification][value="elder"]').prop("disabled", false);
+
+            // resets in case user tries to select something before age input and not after
+            $('[name=ageClassification][value="infant"]').prop("checked", false);
+            $('[name=ageClassification][value="child"]').prop("checked", false);
+            $('[name=ageClassification][value="teen"]').prop("checked", false);
+            $('[name=ageClassification][value="adult"]').prop("checked", false);
+        }
+        else if($(this).val() < 65 && $(this).val() >= 18)
+        {
+            $('[name=ageClassification][value="infant"]').prop("disabled", true);
+            $('[name=ageClassification][value="child"]').prop("disabled", true);
+            $('[name=ageClassification][value="teen"]').prop("disabled", true);
+            $('[name=ageClassification][value="adult"]').prop("disabled", false);
+            $('[name=ageClassification][value="elder"]').prop("disabled", true);
+
+            // resets in case user tries to select something before age input and not after
+            $('[name=ageClassification][value="infant"]').prop("checked", false);
+            $('[name=ageClassification][value="child"]').prop("checked", false);
+            $('[name=ageClassification][value="teen"]').prop("checked", false);
+            $('[name=ageClassification][value="elder"]').prop("checked", false);
+        }
+        else if($(this).val() < 18 && $(this).val() >= 13)
+        {
+            $('[name=ageClassification][value="infant"]').prop("disabled", true);
+            $('[name=ageClassification][value="child"]').prop("disabled", true);
+            $('[name=ageClassification][value="teen"]').prop("disabled", false);
+            $('[name=ageClassification][value="adult"]').prop("disabled", true);
+            $('[name=ageClassification][value="elder"]').prop("disabled", true);
+
+            // resets in case user tries to select something before age input and not after
+            $('[name=ageClassification][value="infant"]').prop("checked", false);
+            $('[name=ageClassification][value="child"]').prop("checked", false);
+            $('[name=ageClassification][value="elder"]').prop("checked", false);
+            $('[name=ageClassification][value="adult"]').prop("checked", false);
+        }
+        else if($(this).val() < 13 && $(this).val() >= 2)
+        {
+            $('[name=ageClassification][value="infant"]').prop("disabled", true);
+            $('[name=ageClassification][value="child"]').prop("disabled", false);
+            $('[name=ageClassification][value="teen"]').prop("disabled", true);
+            $('[name=ageClassification][value="adult"]').prop("disabled", true);
+            $('[name=ageClassification][value="elder"]').prop("disabled", true);
+
+            // resets in case user tries to select something before age input and not after
+            $('[name=ageClassification][value="infant"]').prop("checked", false);
+            $('[name=ageClassification][value="elder"]').prop("checked", false);
+            $('[name=ageClassification][value="teen"]').prop("checked", false);
+            $('[name=ageClassification][value="adult"]').prop("checked", false);
+        }
+        else if($(this).val() < 2 && $(this).val() >= 0)
+        {
+            $('[name=ageClassification][value="infant"]').prop("disabled", false);
+            $('[name=ageClassification][value="child"]').prop("disabled", true);
+            $('[name=ageClassification][value="teen"]').prop("disabled", true);
+            $('[name=ageClassification][value="adult"]').prop("disabled", true);
+            $('[name=ageClassification][value="elder"]').prop("disabled", true);
+
+            // resets in case user tries to select something before age input and not after
+            $('[name=ageClassification][value="elder"]').prop("checked", false);
+            $('[name=ageClassification][value="child"]').prop("checked", false);
+            $('[name=ageClassification][value="teen"]').prop("checked", false);
+            $('[name=ageClassification][value="adult"]').prop("checked", false);
+        }
         if (birthdayAgeAutoCalculateFeature.ageChangeCheck()) {
             var birthDate = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge();
             var birthString = birthDate.toYMD();
@@ -744,9 +815,9 @@ $(document).ready(function () {
                     $(this).trigger("typeahead:selected", item);
                 }
             ).on("change", function(event) {
-                    // triggered when text is entered that is not part of the autocomplete
-                    var $cityName = $(this).closest(".cityRow").find(".cityID");
-                    $cityName.val("");
+                // triggered when text is entered that is not part of the autocomplete
+                var $cityName = $(this).closest(".cityRow").find(".cityID");
+                $cityName.val("");
             });
 
             // Reenable search input field
@@ -760,13 +831,13 @@ $(document).ready(function () {
 
         });
     }
-   //citiesFeature.initializeCitiesTypeahead().then(function() {
-   //     citiesFeature.addCitiesTypeahead();
-   // });
-   //
-   // ///AJ Saclayan Cities Suggestion
-   // typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/cities", cityFeature.newProblems.first(),'name',true,true);
-   // //typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
+    //citiesFeature.initializeCitiesTypeahead().then(function() {
+    //     citiesFeature.addCitiesTypeahead();
+    // });
+    //
+    // ///AJ Saclayan Cities Suggestion
+    // typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/cities", cityFeature.newProblems.first(),'name',true,true);
+    // //typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/diagnoses", problemFeature.newProblems.first(), 'diagnoses', true, true);
 
 });
 
@@ -824,4 +895,3 @@ window.setInterval(function () {
     }
 
 }, 500);
-

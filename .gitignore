@@ -34,3 +34,11 @@ dist
 # Ignore OS specific Files #
 .DS_Store
 Thumbs.db
+
+#Concourse creds
+credentials.yml
+
+#PhotoMigration utility
+util/PhotoMigration$Photo.class
+util/PhotoMigration.class
+

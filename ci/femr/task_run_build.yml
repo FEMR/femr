@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: kevinzurek/femr, tag: "latest"}
+
+inputs:
+- name: git-femr-app
+
+outputs:
+- name: sbt-cache
+
+run:
+  path: git-femr-app/ci/femr/task_run_build.sh

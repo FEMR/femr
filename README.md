@@ -1,6 +1,6 @@
 # FEMR - Fast Electronic Medical Records
 
-[![Build Status](https://travis-ci.org/FEMR/femr.svg?branch=master)](https://travis-ci.org/FEMR/femr)
+[![Build Status](https://concourse.teamfemr.org/api/v1/pipelines/femr/jobs/build-test-package/badge)](https://concourse.teamfemr.org/teams/main/pipelines/femr)
 
 A simple and fast EMR system.
 

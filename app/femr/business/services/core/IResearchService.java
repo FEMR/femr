@@ -41,4 +41,12 @@ public interface IResearchService {
      ServiceResponse<ResearchResultSetItem> retrieveGraphData(ResearchFilterItem filterItem);
 
      ServiceResponse<File> retrieveCsvExportFile(ResearchFilterItem filters);
+
+     /**
+     *
+     *
+     * @param tripId Mission trip id to export
+     * @return a csn vile of the encounters for the passed in trip id
+     */
+     ServiceResponse<File> exportPatientsByTrip(Integer tripId);
 }

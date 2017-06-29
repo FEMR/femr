@@ -124,7 +124,10 @@ public class ResearchController extends Controller {
 
         ResearchFilterItem filterItem = createResearchFilterItem(filterViewModel);
 
-        ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
+        // This does weird stuff and isn't reliable.
+        //ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
+        ServiceResponse<File> exportServiceResponse = researchService.exportPatientsByTrip(filterItem.getMissionTripId());
+
         File csvFile = exportServiceResponse.getResponseObject();
 
         response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());

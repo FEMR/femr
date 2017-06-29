@@ -154,6 +154,25 @@ public class dateUtils {
         return dateString;
     }
 
+    /**
+     * Converts a DateTime object to an international date string
+     *
+     * Format: (dd/MMMM/yyyy)
+     * Format: 02-Aug-1989
+     *
+     * @param dateTime
+     * @return
+     */
+    public static String getFriendlyInternationalDateTime(DateTime dateTime){
+
+        if (dateTime == null)
+            return null;
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MMMM/yyyy");
+        String dateString = dateTime.toString(formatter);
+
+        return dateString;
+    }
+
     public static String getFriendlyDate(DateTime dateTime){
         if (dateTime == null)
             return null;

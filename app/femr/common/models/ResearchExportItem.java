@@ -31,11 +31,14 @@ public class ResearchExportItem {
     private Boolean isPregnant;
     private Integer weeksPregnant;
     private String dayOfVisit;
+    private Integer tripId;
     private List<String> chiefComplaints;
     private List<String> prescribedMedications;
     private List<String> dispensedMedications;
     private Map<String, Float> vitalMap;
     private Map<String, String> tabFieldMap;
+    private String trip_team;
+    private String trip_country;
 
     public UUID getPatientId() {
         return patientId;
@@ -123,5 +126,29 @@ public class ResearchExportItem {
 
     public void setDayOfVisit(String day) {
         this.dayOfVisit = day;
+    }
+
+    public Integer getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(Integer tripId) {
+        this.tripId = tripId;
+    }
+
+    public String getTrip_team() {
+        return trip_team;
+    }
+
+    public void setTrip_team(String trip_team) {
+        this.trip_team = trip_team;
+    }
+
+    public String getTrip_country() {
+        return trip_country;
+    }
+
+    public void setTrip_country(String trip_country) {
+        this.trip_country = trip_country;
     }
 }

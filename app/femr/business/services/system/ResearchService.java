@@ -24,25 +24,25 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import femr.business.helpers.LogicDoer;
-import femr.business.services.core.IEncounterService;
-import femr.business.services.core.IMissionTripService;
-import femr.business.services.core.IResearchService;
 import femr.business.helpers.QueryProvider;
-import femr.common.IItemModelMapper;
+import femr.business.services.core.IResearchService;
 import femr.common.dtos.ServiceResponse;
-import femr.common.models.*;
-import femr.data.models.core.research.IResearchEncounter;
-import femr.data.models.mysql.*;
-import femr.data.models.mysql.research.ResearchEncounter;
+import femr.common.models.ResearchExportItem;
+import femr.common.models.ResearchFilterItem;
+import femr.common.models.ResearchResultItem;
+import femr.common.models.ResearchResultSetItem;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;
+import femr.data.models.core.research.IResearchEncounter;
+import femr.data.models.mysql.PatientEncounterTabField;
+import femr.data.models.mysql.PatientPrescription;
+import femr.data.models.mysql.Vital;
+import femr.data.models.mysql.research.ResearchEncounter;
 import femr.data.models.mysql.research.ResearchEncounterVital;
 import femr.util.calculations.dateUtils;
-import femr.util.dependencyinjection.providers.MissionCityProvider;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import femr.util.stringhelpers.StringUtils;
-import femr.business.services.system.MissionTripService.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -185,49 +185,8 @@ public class ResearchService implements IResearchService {
 
         }
 
-        // Make File and get path
-        String csvFilePath = LogicDoer.getCsvFilePath();
-        //Ensure folder exists, if not, create it
-        File f = new File(csvFilePath);
-        if (!f.exists())
-            f.mkdirs();
+        File eFile = createCsvFile(researchExportItemsForCSVExport);
 
-        // trailing slash is included in path
-        //CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
-        String timestamp = format.format(new Date());
-        String csvFileName = csvFilePath+"export-"+timestamp+".csv";
-        File eFile = new File(csvFileName);
-        boolean fileCreated = false;
-        if(!eFile.exists()) {
-            try {
-                fileCreated = eFile.createNewFile();
-            }
-            catch( IOException e ){
-
-                e.printStackTrace();
-            }
-        }
-
-        if( fileCreated ) {
-
-            Gson gson = new Gson();
-            JsonParser gsonParser = new JsonParser();
-            String jsonString = gson.toJson(researchExportItemsForCSVExport);
-
-            GsonFlattener parser = new GsonFlattener();
-            CSVWriterGson writer = new CSVWriterGson();
-
-            try {
-
-                List<Map<String, String>> flatJson = parser.parse(gsonParser.parse(jsonString).getAsJsonArray());
-                writer.writeAsCSV(flatJson, csvFileName);
-
-            } catch (FileNotFoundException e) {
-
-                e.printStackTrace();
-            }
-        }
         response.setResponseObject(eFile);
 
         return response;
@@ -313,7 +272,20 @@ public class ResearchService implements IResearchService {
         exportitem.setVitalMap(vitals);
 
         //month and year of the encounter
-        exportitem.setDayOfVisit(dateUtils.getFriendlyDateMonthYear(encounter.getDateOfTriageVisit()));
+        exportitem.setDayOfVisit(dateUtils.getFriendlyInternationalDateTime(encounter.getDateOfTriageVisit()));
+
+        //mission trip id of the encounter
+        if (encounter.getMissionTrip() == null)
+            exportitem.setTripId(-1);
+        else{
+            exportitem.setTripId(encounter.getMissionTrip().getId());
+            if (encounter.getMissionTrip().getMissionTeam() != null){
+                exportitem.setTrip_team(encounter.getMissionTrip().getMissionTeam().getName());
+                exportitem.setTrip_country(encounter.getMissionTrip().getMissionCity().getMissionCountry().getName());
+            }
+
+        }
+
 
         return exportitem;
 
@@ -366,6 +338,122 @@ public class ResearchService implements IResearchService {
         }
 
         return response;
+    }
+
+    @Override
+    public ServiceResponse<File> exportPatientsByTrip(Integer tripId){
+
+        ServiceResponse<File> response = new ServiceResponse<>();
+
+        // Build Query based on Filters
+        Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
+
+        researchEncounterQuery
+                .fetch("patient")
+                .fetch("patientPrescriptions")
+                .fetch("patientPrescriptions.medication");
+
+        ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
+
+        // -1 is default from form
+        if ( tripId != null && tripId != -1 ) {
+
+            researchEncounterExpressionList.eq("missionTrip.id",tripId);
+        }
+
+        researchEncounterExpressionList.isNull("patient.isDeleted");
+        researchEncounterExpressionList.orderBy().desc("date_of_triage_visit");
+        researchEncounterExpressionList.findList();
+
+        List<? extends IResearchEncounter> patientEncounters = researchEncounterRepository.find(researchEncounterExpressionList);
+
+
+        // As new patients are encountered, generate a UUID to represent them in the export file
+        Map<Integer, UUID> patientIdMap = new HashMap<>();
+
+        // Format patient data for the csv file
+        List<ResearchExportItem> researchExportItemsForCSVExport = new ArrayList<>();
+
+        for(IResearchEncounter patientEncounter : patientEncounters ){
+
+            UUID patient_uuid;
+
+            // If UUID already generated for patient, use that
+            if( patientIdMap.containsKey(patientEncounter.getPatient().getId()) ){
+
+                patient_uuid = patientIdMap.get(patientEncounter.getPatient().getId());
+            }
+            // otherwise generate and store for potential additional patient encounters
+            else{
+
+                patient_uuid = UUID.randomUUID();
+                patientIdMap.put(patientEncounter.getPatient().getId(), patient_uuid);
+            }
+
+            ResearchExportItem item = createResearchExportItem(patientEncounter, patient_uuid);
+            researchExportItemsForCSVExport.add(item);
+        }
+
+        File eFile = createCsvFile(researchExportItemsForCSVExport);
+
+        response.setResponseObject(eFile);
+
+        return response;
+    }
+
+    /**
+     * Creates a csv file from a list of ResearchExportItems
+     *
+     * @param encounters the encounters to be in the file
+     * @return a csv formatted file of the encounters
+     */
+    private File createCsvFile( List<ResearchExportItem> encounters ){
+
+        // Make File and get path
+        String csvFilePath = LogicDoer.getCsvFilePath();
+        //Ensure folder exists, if not, create it
+        File f = new File(csvFilePath);
+        if (!f.exists())
+            f.mkdirs();
+
+        // trailing slash is included in path
+        //CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
+        String timestamp = format.format(new Date());
+        String csvFileName = csvFilePath+"export-"+timestamp+".csv";
+        File eFile = new File(csvFileName);
+        boolean fileCreated = false;
+        if(!eFile.exists()) {
+            try {
+                fileCreated = eFile.createNewFile();
+            }
+            catch( IOException e ){
+
+                e.printStackTrace();
+            }
+        }
+
+        if( fileCreated ) {
+
+            Gson gson = new Gson();
+            JsonParser gsonParser = new JsonParser();
+            String jsonString = gson.toJson(encounters);
+
+            GsonFlattener parser = new GsonFlattener();
+            CSVWriterGson writer = new CSVWriterGson();
+
+            try {
+
+                List<Map<String, String>> flatJson = parser.parse(gsonParser.parse(jsonString).getAsJsonArray());
+                writer.writeAsCSV(flatJson, csvFileName);
+
+            } catch (FileNotFoundException e) {
+
+                e.printStackTrace();
+            }
+        }
+
+        return eFile;
     }
 
     /**
@@ -632,8 +720,6 @@ public class ResearchService implements IResearchService {
         }
         return results;
     }
-
-
 
     // do stuff specific to vitals request
     private ResearchResultSetItem buildMedicationResultSet(List<? extends IResearchEncounter> encounters, ResearchFilterItem filters) {
@@ -1529,7 +1615,6 @@ public class ResearchService implements IResearchService {
         return resultSet;
 
     }
-
 
     private Integer getWeeksPregnant( IResearchEncounter encounter ){
 

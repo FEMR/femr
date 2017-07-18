@@ -24,3 +24,5 @@ aws ec2 wait volume-available --volume-ids $OLD_VOLUME_ID
 
 aws ec2 delete-volume --volume-id $OLD_VOLUME_ID
 
+
+aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-1:542839501738:targetgroup/femr/fa185a89f4d15d06 --targets Id=$NEW_INSTANCE_ID

@@ -16,7 +16,7 @@ NEW_INSTANCE_ID=$(cat output.txt | jq -r .Instances[].InstanceId)
 
 aws ec2 wait instance-status-ok --instance-ids $NEW_INSTANCE_ID
 
-aws ec2 associate-address --instance-id $NEW_INSTANCE_ID --allocation-id eipalloc-266cdf18
+aws ec2 associate-address --instance-id $NEW_INSTANCE_ID --allocation-id eipalloc-8c3711be
 
 aws ec2 terminate-instances --instance-ids $OLD_INSTANCE_ID
 

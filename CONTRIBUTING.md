@@ -84,7 +84,9 @@ git checkout -b feature-FEMR832-fixingEverythingEverywhere
 Always sync your fork's (username/femr) master branch with the project's (femr/femr) master branch. If your working branch begins to deviate too far from master, merging will becoming increasingly difficult. This ensures that your work remains in sync with everyone else's work:
 
 1. List your current remotes to see if you have one pointing upstream to the main project repository (femr/femr):
+```bash
     git remote -v
+```
 
 2. If you do not, add one:
 ```bash

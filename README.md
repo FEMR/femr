@@ -4,10 +4,9 @@
 
 A simple and fast EMR system.
 
-###Community
+### Community
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
-3. [Mailing List](https://groups.google.com/forum/#!forum/team-femr)
 
 ### Description
 
@@ -36,4 +35,3 @@ Add play framework to your PATH environment variable if you haven't done so alre
 ### Questions?
 
 Email: kevin.zurek@teamfemr.org
-

@@ -44,3 +44,8 @@ These people have contributed to fEMR's design and implementation:
 * [Samuel Cabell](https://github.com/SamuelDev)
 * [Drake Svoboda](https://github.com/drakesvoboda)
 * [Adrian Kalinowski](https://github.com/adriankalinowski)
+* [Artem Bolshakov & Mario Carcamo](https://github.com/atbolsh)
+* [Joel Rizzo II](https://github.com/milesprower1010)
+* [chrislogo](https://github.com/chrislogo)
+* [axm155231](https://github.com/axm155231)
+* [Will McCall](https://github.com/yajaru)

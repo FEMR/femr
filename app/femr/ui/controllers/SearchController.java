@@ -96,12 +96,28 @@ public class SearchController extends Controller {
      * @return
      */
     public Result doesPatientExist(String query){
-
-        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
+        String[] parts = null;
+        ServiceResponse<List<PatientItem>> patientResponse = null;
+        boolean extracheck = false;
+        if (query.contains(";")) {
+            parts = query.split(";");
+            extracheck = true;
+            patientResponse = searchService.retrievePatientsFromQueryString(parts[0] + " " + parts[1]);
+        }
+        else
+            patientResponse = searchService.retrievePatientsFromQueryString(query);
         if (patientResponse.hasErrors() || patientResponse.getResponseObject().size() == 0) {
             return ok("false");
         }
-        return ok("true");
+        else {
+            if (!extracheck)
+                return ok("true");
+            for (PatientItem patient : patientResponse.getResponseObject()) {
+                if (patient.getCity().equals(parts[2]))
+                    return ok("false");
+            }
+            return ok("true");
+        }
     }
 
     public Result typeaheadPatientsJSONGet(){

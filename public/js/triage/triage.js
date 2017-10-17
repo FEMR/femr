@@ -653,7 +653,7 @@ $(document).ready(function () {
 
     function checkIfDuplicatePatient() {
         var patientInfo = triageFields.patientInformation;
-        var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
+        var query = patientInfo.firstName.val() + ";" + patientInfo.lastName.val() + ";" + patientInfo.city.val();
         var url = "/search/check/" + query;
         var patientId = $("#patientId").val();
 

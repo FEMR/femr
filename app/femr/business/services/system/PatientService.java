@@ -28,6 +28,8 @@ import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+import play.Logger;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +70,7 @@ public class PatientService implements IPatientService {
             response.setResponseObject(patientAgeClassificationStrings);
         } catch (Exception ex) {
 
+            Logger.error("PatientService-retrieveAgeClassifications", ex);
             response.addError("", ex.getMessage());
         }
         return response;
@@ -77,7 +80,7 @@ public class PatientService implements IPatientService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<PatientItem> updateSexAgePhoneNumberAddress(int id, String sex, Date age, String address, String phn) {
+    public ServiceResponse<PatientItem> updatePatientPhoneNumber(int id, String phoneNumber) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -85,55 +88,206 @@ public class PatientService implements IPatientService {
 
             IPatient savedPatient = patientRepository.retrievePatientById(id);
 
-            if( savedPatient == null ){
+            if (savedPatient == null) {
+
+                response.addError("exception", "Patient not found");
+            } else {
+
+                if (StringUtils.isNotNullOrWhiteSpace(phoneNumber)) {
+
+                    savedPatient.setPhoneNumber(phoneNumber);
+                    savedPatient = patientRepository.savePatient(savedPatient);
+                }
+                String photoPath = getPatientPhotoPathOrNull(savedPatient);
+                Integer photoId = getPatientPhotoIdOrNull(savedPatient);
+
+                PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                        savedPatient.getFirstName(),
+                        savedPatient.getLastName(),
+                        savedPatient.getPhoneNumber(),
+                        savedPatient.getCity(),
+                        savedPatient.getAddress(),
+                        savedPatient.getUserId(),
+                        savedPatient.getAge(),
+                        savedPatient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        photoPath,
+                        photoId,
+                        null);
+
+                response.setResponseObject(patientItem);
+            }
+        } catch (Exception ex) {
+
+            Logger.error("PatientService-updatePatientPhoneNumber", ex);
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientItem> updatePatientSex(int id, String sex) {
+
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        try {
+
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
+
+            if (savedPatient == null) {
+
+                response.addError("exception", "Patient not found");
+            } else {
+
+                if (StringUtils.isNotNullOrWhiteSpace(sex)) {
+
+                    savedPatient.setSex(sex);
+                    savedPatient = patientRepository.savePatient(savedPatient);
+                }
+
+                String photoPath = getPatientPhotoPathOrNull(savedPatient);
+                Integer photoId = getPatientPhotoIdOrNull(savedPatient);
+
+                PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                        savedPatient.getFirstName(),
+                        savedPatient.getLastName(),
+                        savedPatient.getPhoneNumber(),
+                        savedPatient.getCity(),
+                        savedPatient.getAddress(),
+                        savedPatient.getUserId(),
+                        savedPatient.getAge(),
+                        savedPatient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        photoPath,
+                        photoId,
+                        null);
+
+                response.setResponseObject(patientItem);
+            }
+        } catch (Exception ex) {
+
+            Logger.error("PatientService-updatePatientSex", ex);
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientItem> updatePatientAge(int id, Date age) {
+
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        try {
+
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
+
+            if (savedPatient == null) {
+
+                response.addError("exception", "Patient not found");
+            } else {
+                if (age != null) {
+
+                    savedPatient.setAge(age);
+                    savedPatient = patientRepository.savePatient(savedPatient);
+                }
+
+                String photoPath = getPatientPhotoPathOrNull(savedPatient);
+                Integer photoId = getPatientPhotoIdOrNull(savedPatient);
+
+                PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                        savedPatient.getFirstName(),
+                        savedPatient.getLastName(),
+                        savedPatient.getPhoneNumber(),
+                        savedPatient.getCity(),
+                        savedPatient.getAddress(),
+                        savedPatient.getUserId(),
+                        savedPatient.getAge(),
+                        savedPatient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        photoPath,
+                        photoId,
+                        null);
+
+                response.setResponseObject(patientItem);
+
+            }
+        } catch (Exception ex) {
+
+            Logger.error("PatientService-updatePatientAge", ex);
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientItem> updatePatientAddress(int id, String address) {
+
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        try {
+
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
+
+            if (savedPatient == null) {
 
                 response.addError("exception", "Patient Not Found");
-                return response;
-            }
-            if(age!=null){
-                savedPatient.setAge(age);
-                savedPatient = patientRepository.savePatient(savedPatient);
-            }
-            // sex can be changed, but not set to null
-            if(StringUtils.isNotNullOrWhiteSpace(sex)) {
-                savedPatient.setSex(sex);
-                savedPatient = patientRepository.savePatient(savedPatient);
-            }
-            if (StringUtils.isNotNullOrWhiteSpace(address)) {
-                savedPatient.setAddress(address);
-                savedPatient = patientRepository.savePatient(savedPatient);
-            }
-            if (StringUtils.isNotNullOrWhiteSpace(phn)) {
-                savedPatient.setPhoneNumber(phn);
-                savedPatient = patientRepository.savePatient(savedPatient);
-            }
+            } else {
 
+                if (StringUtils.isNotNullOrWhiteSpace(address)) {
 
-            String photoPath = null;
-            Integer photoId = null;
-            if (savedPatient.getPhoto() != null) {
-                photoPath = savedPatient.getPhoto().getFilePath();
-                photoId = savedPatient.getPhoto().getId();
+                    savedPatient.setAddress(address);
+                    savedPatient = patientRepository.savePatient(savedPatient);
+                }
+
+                String photoPath = null;
+                Integer photoId = null;
+                if (savedPatient.getPhoto() != null) {
+                    photoPath = savedPatient.getPhoto().getFilePath();
+                    photoId = savedPatient.getPhoto().getId();
+                }
+                PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
+                        savedPatient.getFirstName(),
+                        savedPatient.getLastName(),
+                        savedPatient.getPhoneNumber(),
+                        savedPatient.getCity(),
+                        savedPatient.getAddress(),
+                        savedPatient.getUserId(),
+                        savedPatient.getAge(),
+                        savedPatient.getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        photoPath,
+                        photoId,
+                        null);
+                response.setResponseObject(patientItem);
             }
-            PatientItem patientItem = itemModelMapper.createPatientItem(savedPatient.getId(),
-                    savedPatient.getFirstName(),
-                    savedPatient.getLastName(),
-                    savedPatient.getPhoneNumber(),
-                    savedPatient.getCity(),
-                    savedPatient.getAddress(),
-                    savedPatient.getUserId(),
-                    savedPatient.getAge(),
-                    savedPatient.getSex(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    photoPath,
-                    photoId,
-                    null);
-            response.setResponseObject(patientItem);
 
         } catch (Exception ex) {
+
+            Logger.error("PatientService-updateAddress", ex);
             response.addError("exception", ex.getMessage());
         }
 
@@ -155,12 +309,10 @@ public class PatientService implements IPatientService {
             IPatient newPatient = dataModelMapper.createPatient(patient.getUserId(), patient.getFirstName(), patient.getLastName(), patient.getPhoneNumber(),
                     patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
             newPatient = patientRepository.savePatient(newPatient);
-            String photoPath = null;
-            Integer photoId = null;
-            if (newPatient.getPhoto() != null) {
-                photoPath = newPatient.getPhoto().getFilePath();
-                photoId = newPatient.getPhoto().getId();
-            }
+
+            String photoPath = getPatientPhotoPathOrNull(newPatient);
+            Integer photoId = getPatientPhotoIdOrNull(newPatient);
+
             response.setResponseObject(
                     itemModelMapper.createPatientItem(newPatient.getId(),
                             newPatient.getFirstName(),
@@ -180,6 +332,8 @@ public class PatientService implements IPatientService {
                             null)
             );
         } catch (Exception ex) {
+
+            Logger.error("PatientService-createPatient", ex);
             response.addError("exception", ex.getMessage());
         }
 
@@ -209,9 +363,42 @@ public class PatientService implements IPatientService {
             patientRepository.savePatient(savedPatient);
         } catch (Exception ex) {
 
+            Logger.error("PatientService-deletePatient", ex);
             response.addError("exception", ex.getMessage());
         }
 
         return response;
+    }
+
+    /**
+     * Retrieve the patient's photo path or null if it doesn't exist
+     *
+     * @param patient patient object with or without Photo
+     * @return the path to the Photo or null if there's no photo
+     */
+    private String getPatientPhotoPathOrNull(IPatient patient){
+
+        String photoPath = null;
+        if (patient.getPhoto() != null) {
+            photoPath = patient.getPhoto().getFilePath();
+        }
+
+        return photoPath;
+    }
+
+    /**
+     * Retrieve the patient's photo ID or null if it doesn't exist
+     *
+     * @param patient patient object with or without Photo
+     * @return the path to the Photo or null if there's no photo
+     */
+    private Integer getPatientPhotoIdOrNull(IPatient patient){
+
+        Integer photoId = null;
+        if (patient.getPhoto() != null){
+            photoId = patient.getPhoto().getId();
+        }
+
+        return photoId;
     }
 }

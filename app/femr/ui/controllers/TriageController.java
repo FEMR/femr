@@ -13,6 +13,7 @@ import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.triage.*;
 import femr.ui.views.html.triage.index;
 import femr.util.stringhelpers.StringUtils;
+import play.Logger;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.*;
@@ -162,12 +163,37 @@ public class TriageController extends Controller {
             patientItem = populatePatientItem(viewModel, currentUser);
             patientServiceResponse = patientService.createPatient(patientItem);
         } else {
-            patientServiceResponse = patientService.updateSexAgePhoneNumberAddress(id, viewModel.getSex(), viewModel.getAge()
-            , viewModel.getAddress(), viewModel.getPhoneNumber());
+
+            patientServiceResponse = patientService.updatePatientAge(id, viewModel.getAge());
+            if (patientServiceResponse.hasErrors()){
+
+                Logger.error("TriageController-indexPost", "there was an issue updating the patient's age");
+                throw new RuntimeException();
+            }
+
+            patientServiceResponse = patientService.updatePatientAddress(id, viewModel.getAddress());
+            if (patientServiceResponse.hasErrors()) {
+
+                Logger.error("TriageController-indexPost", "there was an issue updating the patient's address");
+                throw new RuntimeException();
+            }
+
+            patientServiceResponse = patientService.updatePatientPhoneNumber(id, viewModel.getPhoneNumber());
+            if (patientServiceResponse.hasErrors()){
+
+                Logger.error("TriageController-indexPost", "there was an issue updating the patient's phone number");
+                throw new RuntimeException();
+            }
+
+            patientServiceResponse = patientService.updatePatientSex(id, viewModel.getSex());
+            if (patientServiceResponse.hasErrors()){
+
+                Logger.error("TriageController-indexPost", "there was an issue updating the patient's sex");
+                throw new RuntimeException();
+            }
+
         }
-        if (patientServiceResponse.hasErrors()) {
-            throw new RuntimeException();
-        }
+
         patientItem = patientServiceResponse.getResponseObject();
 
         photoService.createPatientPhoto(viewModel.getPatientPhotoCropped(), patientItem.getId(), viewModel.getDeletePhoto());

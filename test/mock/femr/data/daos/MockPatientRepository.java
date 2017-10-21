@@ -73,6 +73,8 @@ public class MockPatientRepository implements IPatientRepository{
     public IPatient retrievePatientById(Integer id) {
 
         retrievePatientByIdWasCalled = true;
+        if (id == 0)
+            mockPatient = null;
         return mockPatient;
     }
 
@@ -94,6 +96,7 @@ public class MockPatientRepository implements IPatientRepository{
     public IPatient savePatient(IPatient patient) {
         
         savePatientWasCalled = true;
+
         return patient;
     }
 }

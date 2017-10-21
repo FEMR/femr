@@ -25,6 +25,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+
 import static org.junit.Assert.*;
 import mock.femr.common.MockItemModelMapper;
 
@@ -53,8 +57,153 @@ public class PatientServiceTest {
         //      \(-__-)/
     }
 
+    @Test
+    public void updatePatientAddress_invalidPatientIdProvided_errorProduced() throws Exception {
 
+        //arrange
+        ServiceResponse<PatientItem> response;
 
+        //act
+        response = patientService.updatePatientAddress(0, "123 not a real address");
+
+        //assert
+        assertFalse(mockPatientRepository.savePatientWasCalled);
+        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
+        assertNull(response.getResponseObject());
+        assertTrue(response.hasErrors());
+    }
+
+    @Test
+    public void updatePatientAddress_ageProvided_agePersisted() throws Exception {
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientAddress(1, "123 not a real address");
+
+        //assert
+        assertTrue(mockPatientRepository.savePatientWasCalled);
+        assertTrue(mockItemModelMapper.createPatientItemWasCalled);
+        assertNotNull(response.getResponseObject());
+        assertEquals(response.getResponseObject().getAddress(), "123 not a real address");
+    }
+
+    @Test
+    public void updatePatientAge_invalidPatientIdProvided_errorProduced() throws Exception {
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientAge(0, new Date());
+
+        //assert
+        assertFalse(mockPatientRepository.savePatientWasCalled);
+        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
+        assertNull(response.getResponseObject());
+        assertTrue(response.hasErrors());
+    }
+
+    @Test
+    public void updatePatientAge_ageProvided_agePersisted() throws Exception {
+
+        Date testDate = Calendar.getInstance().getTime();
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientAge(1, testDate);
+
+        //assert
+        assertTrue(mockPatientRepository.savePatientWasCalled);
+        assertTrue(mockItemModelMapper.createPatientItemWasCalled);
+        assertNotNull(response.getResponseObject());
+        assertEquals(response.getResponseObject().getBirth(), testDate);
+    }
+
+    @Test
+    public void updatePatientPhoneNumber_invalidPatientIdProvided_errorProduced() throws Exception {
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientPhoneNumber(0, "male");
+
+        //assert
+        assertFalse(mockPatientRepository.savePatientWasCalled);
+        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
+        assertNull(response.getResponseObject());
+        assertTrue(response.hasErrors());
+    }
+
+    @Test
+    public void updatePatientPhoneNumber_numberProvided_numberPersisted() throws Exception {
+
+        Random rand = new Random();
+        String randomNumber = String.valueOf(rand.nextInt(13));
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientPhoneNumber(1, randomNumber);
+
+        //assert
+        assertTrue(mockPatientRepository.savePatientWasCalled);
+        assertTrue(mockItemModelMapper.createPatientItemWasCalled);
+        assertNotNull(response.getResponseObject());
+        assertEquals(response.getResponseObject().getPhoneNumber(), randomNumber);
+    }
+
+    @Test
+    public void updatePatientSex_invalidPatientIdProvided_errorProduced() throws Exception {
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientSex(0, "male");
+
+        //assert
+        assertFalse(mockPatientRepository.savePatientWasCalled);
+        assertFalse(mockItemModelMapper.createPatientItemWasCalled);
+        assertNull(response.getResponseObject());
+        assertTrue(response.hasErrors());
+    }
+
+    @Test
+    public void updatePatientSex_sexProvided_sexPersisted() throws Exception {
+
+        //arrange
+        ServiceResponse<PatientItem> response;
+
+        //act
+        response = patientService.updatePatientSex(1, "male");
+
+        //assert
+        assertTrue(mockPatientRepository.savePatientWasCalled);
+        assertTrue(mockItemModelMapper.createPatientItemWasCalled);
+        assertNotNull(response.getResponseObject());
+        assertEquals(response.getResponseObject().getSex(), "male");
+
+        //want to run again with female, but not in a separate unit test.
+        //this will make sure that we aren't getting a false positive based
+        //on what is stored in the MockPatient by default
+        mockPatientRepository.savePatientWasCalled = false;
+        mockItemModelMapper.createPatientItemWasCalled = false;
+
+        //act
+        response = patientService.updatePatientSex(1, "female");
+
+        //assert
+        assertTrue(mockPatientRepository.savePatientWasCalled);
+        assertTrue(mockItemModelMapper.createPatientItemWasCalled);
+        assertNotNull(response.getResponseObject());
+        assertEquals(response.getResponseObject().getSex(), "female");
+    }
 
     @Test
     public void deletePatient_nullReasonProvided_errorProduced() throws Exception {

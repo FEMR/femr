@@ -48,7 +48,6 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IMissionTeam> missionTeamProvider;
     private final Provider<IMissionTrip> missionTripProvider;
     private final Provider<IPatient> patientProvider;
-    private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
     private final Provider<IPatientEncounter> patientEncounterProvider;
     private final Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider;
     private final Provider<IPatientEncounterVital> patientEncounterVitalProvider;
@@ -77,7 +76,6 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<IMissionTeam> missionTeamProvider,
                            Provider<IMissionTrip> missionTripProvider,
                            Provider<IPatient> patientProvider,
-                           Provider<IPatientAgeClassification> patientAgeClassificationProvider,
                            Provider<IPatientEncounter> patientEncounterProvider,
                            Provider<IPatientEncounterTabField> patientEncounterTabFieldProvider,
                            Provider<IPatientEncounterVital> patientEncounterVitalProvider,
@@ -106,7 +104,6 @@ public class DataModelMapper implements IDataModelMapper{
         this.missionTeamProvider = missionTeamProvider;
         this.missionTripProvider = missionTripProvider;
         this.patientProvider = patientProvider;
-        this.patientAgeClassificationProvider = patientAgeClassificationProvider;
         this.patientEncounterTabFieldProvider = patientEncounterTabFieldProvider;
         this.patientEncounterVitalProvider = patientEncounterVitalProvider;
         this.patientPrescriptionProvider = patientPrescriptionProvider;
@@ -345,31 +342,6 @@ public class DataModelMapper implements IDataModelMapper{
      * {@inheritDoc}
      */
     @Override
-    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId) {
-
-        if (patientID < 1 || userId < 1 || date == null) {
-
-            return null;
-        }
-
-        IPatientEncounter patientEncounter = patientEncounterProvider.get();
-
-        patientEncounter.setDateOfTriageVisit(date);
-        //provide a proxy patient for the encounter
-        patientEncounter.setPatient(Ebean.getReference(patientProvider.get().getClass(), patientID));
-        patientEncounter.setNurse(Ebean.getReference(userProvider.get().getClass(), userId));
-        if (patientAgeClassificationId != null)
-            patientEncounter.setPatientAgeClassification(Ebean.getReference(patientAgeClassificationProvider.get().getClass(), patientAgeClassificationId));
-        if (tripId != null)
-            patientEncounter.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), tripId));
-
-        return patientEncounter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId) {
 
         if (tabFieldId < 1 || userId < 1 || StringUtils.isNullOrWhiteSpace(value) || encounterId < 1 || dateTaken == null) {
@@ -570,24 +542,5 @@ public class DataModelMapper implements IDataModelMapper{
     public IUser createUser(int userId) {
 
         return Ebean.getReference(userProvider.get().getClass(), userId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId, Boolean isDiabetesScreened){
-
-        if (patientEncounter == null){
-            return null;
-        }
-        //if screening was performed, set date and screener
-        else if (isDiabetesScreened) {
-            patientEncounter.setDateOfDiabeteseScreen(dateUtils.getCurrentDateTime());
-            patientEncounter.setDiabetesScreener(Ebean.getReference(userProvider.get().getClass(), diabetesScreenerId));
-        }
-        //note whether screening was performed or not
-        patientEncounter.setIsDiabetesScreened(isDiabetesScreened);
-        return patientEncounter;
     }
 }

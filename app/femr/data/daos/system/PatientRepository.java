@@ -110,6 +110,29 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
+    public IPatientAgeClassification retrievePatientAgeClassification(String ageClassification) {
+
+        IPatientAgeClassification response = null;
+        try {
+
+            ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
+                    .where()
+                    .eq("name", ageClassification);
+
+            response = patientAgeClassificationExpressionList.findUnique();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrievePatientAgeClassification", ex);
+            throw ex;
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IPatient> retrieveAllPatients() {
 
         List<? extends IPatient> response = null;

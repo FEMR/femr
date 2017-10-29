@@ -13,6 +13,7 @@ public class MockPatientRepository implements IPatientRepository{
 
     public boolean createPatientAgeClassificationWasCalled = false;
     public boolean retrieveAllPatientAgeClassificationsWasCalled = false;
+    public boolean retrievePatientAgeClassificationWasCalled = false;
     public boolean retrieveAllPatientsWasCalled = false;
     public boolean retrievePatientsInCountryWasCalled = false;
     public boolean retrievePatientByIdWasCalled = false;
@@ -52,6 +53,13 @@ public class MockPatientRepository implements IPatientRepository{
     public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted) {
 
         retrieveAllPatientAgeClassificationsWasCalled = true;
+        return null;
+    }
+
+    @Override
+    public IPatientAgeClassification retrievePatientAgeClassification(String ageClassification) {
+
+        retrievePatientAgeClassificationWasCalled = true;
         return null;
     }
 

@@ -31,6 +31,7 @@ import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IEncounterRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
@@ -49,7 +50,7 @@ public class SearchService implements ISearchService {
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
     private final IPatientRepository patientRepository;
-    private final IRepository<IPatientEncounter> patientEncounterRepository;
+    private final IEncounterRepository patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
@@ -62,7 +63,7 @@ public class SearchService implements ISearchService {
     public SearchService(IRepository<IConceptDiagnosis> diagnosisRepository,
                          IRepository<IMissionTrip> missionTripRepository,
                          IPatientRepository patientRepository,
-                         IRepository<IPatientEncounter> patientEncounterRepository,
+                         IEncounterRepository patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
                          IRepository<IPatientPrescription> patientPrescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
@@ -95,15 +96,9 @@ public class SearchService implements ISearchService {
             return response;
         }
 
-        //get patient encounters so we can use the newest one
-        Query<PatientEncounter> peQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("patient_id", patientId)
-                .order()
-                .desc("date_of_triage_visit");
         try {
             //IPatient savedPatient = patientRepository.findOne(query);
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(peQuery);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.retrievePatientEncountersByPatientIdDesc(patientId);
             if (patientEncounters.size() < 1) throw new Exception();
 
             IPatientEncounter recentEncounter = patientEncounters.get(0);
@@ -175,12 +170,9 @@ public class SearchService implements ISearchService {
             return response;
         }
 
-        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
-
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.retrievePatientEncounterById(encounterId);
             IPatient patient = patientEncounter.getPatient();
             Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, patientEncounter.getId());
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
@@ -239,12 +231,9 @@ public class SearchService implements ISearchService {
             response.addError("", "invalid ID");
             return response;
         }
-        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
 
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+            IPatientEncounter patientEncounter = patientEncounterRepository.retrievePatientEncounterById(encounterId);
             PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
         } catch (Exception ex) {
@@ -263,13 +252,9 @@ public class SearchService implements ISearchService {
             response.addError("", "Invalid patient ID.");
             return response;
         }
-        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("patient_id", patientId)
-                .order()
-                .asc("date_of_triage_visit");
+
         try {
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.retrievePatientEncountersByPatientIdAsc(patientId);
             if (patientEncounters.size() < 1) {
                 response.addError("", "That patient does not exist.");
                 return response;
@@ -290,14 +275,10 @@ public class SearchService implements ISearchService {
      */
     @Override
     public ServiceResponse<List<PatientEncounterItem>> retrievePatientEncounterItemsByPatientId(int patientId) {
+
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
-        Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("patient_id", patientId)
-                .order()
-                .desc("date_of_triage_visit");
         try {
-            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
+            List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.retrievePatientEncountersByPatientIdDesc(patientId);
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();
             for (IPatientEncounter pe : patientEncounters) {
                 patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(pe));

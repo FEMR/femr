@@ -20,17 +20,11 @@ package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import femr.data.daos.core.IPhotoRepository;
-import femr.data.daos.system.PhotoRepository;
+import femr.data.daos.core.*;
+import femr.data.daos.system.*;
 import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
-import femr.data.daos.core.IMedicationRepository;
-import femr.data.daos.system.MedicationRepository;
-import femr.data.daos.core.IPatientRepository;
-import femr.data.daos.system.PatientRepository;
-import femr.data.daos.core.IUserRepository;
-import femr.data.daos.system.UserRepository;
 import femr.data.models.core.research.IResearchEncounter;
 import femr.data.models.core.research.IResearchEncounterVital;
 import femr.util.dependencyinjection.providers.*;
@@ -74,6 +68,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IVital.class).toProvider(VitalProvider.class);
 
         //Non generic repositories
+        bind(IEncounterRepository.class).to(EncounterRepository.class);
         bind(IMedicationRepository.class).to(MedicationRepository.class);
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPhotoRepository.class).to(PhotoRepository.class);
@@ -96,8 +91,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});
         bind(new TypeLiteral<IRepository<IMissionTrip>>() {}).to(new TypeLiteral<Repository<IMissionTrip>>() {});
-        bind(new TypeLiteral<IRepository<IPatientAgeClassification>>() {}).to(new TypeLiteral<Repository<IPatientAgeClassification>>() {});
-        bind(new TypeLiteral<IRepository<IPatientEncounter>>() {}).to(new TypeLiteral<Repository<IPatientEncounter>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});
         bind(new TypeLiteral<IRepository<IPatientEncounterVital>>() {}).to(new TypeLiteral<Repository<IPatientEncounterVital>>() {});

@@ -24,7 +24,7 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
-    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
         return null;
     }
 

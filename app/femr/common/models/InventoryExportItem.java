@@ -20,6 +20,7 @@ package femr.common.models;
 
 import java.util.*;
 import com.google.gson.annotations.SerializedName;
+import org.joda.time.DateTime;
 
 //One InventoryExportItem per line in the research CSV export
 public class InventoryExportItem {
@@ -28,9 +29,11 @@ public class InventoryExportItem {
     @SerializedName("Medication")       private String name;
     @SerializedName("Current Quantity") private Integer quantityCurrent;
     @SerializedName("Initial Quantity") private Integer quantityInitial;
+    @SerializedName("Time Added")       private String timeAdded;
+    @SerializedName("Created By")       private String createdBy;
 
     static public List<String> getFieldOrder() {
-      return Arrays.asList("ID", "Medication", "Current Quantity", "Initial Quantity");
+      return Arrays.asList("ID", "Medication", "Current Quantity", "Initial Quantity", "Time Added", "Created By");
     }
 
     public InventoryExportItem(MedicationItem med) {
@@ -38,6 +41,8 @@ public class InventoryExportItem {
       name = med.getFullName();
       quantityCurrent = med.getQuantityCurrent();
       quantityInitial = med.getQuantityTotal();
+      timeAdded = med.getTimeAdded();
+      createdBy = med.getCreatedBy();
     }
 
     public Integer getMedicationId() {
@@ -70,5 +75,21 @@ public class InventoryExportItem {
 
     public void setQuantityInitial(Integer quantityInitial) {
         this.quantityInitial = quantityInitial;
+    }
+
+    public String getTimeAdded() {
+        return timeAdded;
+    }
+
+    public void setTimeAdded(String timeAdded) {
+        this.timeAdded = timeAdded;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }

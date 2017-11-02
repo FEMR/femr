@@ -210,14 +210,26 @@ public class TriageController extends Controller {
 
 
         if (viewModel.getHeightFeet() != null) {
+
+            // if a value for feet (or meters) is entered and inches (or centimeters) equals null, initialize inches to 0
+            if(viewModel.getHeightInches() == null){
+                newVitals.put("heightInches", 0f);
+            }
             Float heightFeet = viewModel.getHeightFeet().floatValue();
             newVitals.put("heightFeet", heightFeet);
         }
 
+
         if (viewModel.getHeightInches() != null) {
+
+            // if a value for inches (or centimeters) is entered and feet (or meters) equals null, initialize feet to 0
+            if(viewModel.getHeightFeet() == null){
+                newVitals.put("heightFeet", 0f);
+            }
            Float heightInches = viewModel.getHeightInches().floatValue();
             newVitals.put("heightInches", heightInches);
         }
+
 
         //Alaa Serhan
         if (viewModel.getWeight() != null) {

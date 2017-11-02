@@ -158,6 +158,7 @@ public class PatientItem {
     }
 
     public void setHeightFeet(Integer heightFeet) {
+
         this.heightFeet = heightFeet;
     }
 
@@ -166,6 +167,8 @@ public class PatientItem {
     }
 
     public void setHeightInches(Integer heightInches) {
+
+
         this.heightInches = heightInches;
     }
 

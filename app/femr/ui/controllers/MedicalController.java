@@ -531,7 +531,9 @@ public class MedicalController extends Controller {
 
             newVitals.put("heightFeet", heightFeet);
             newVitals.put("heightInches", heightInches);
+
         }
+
 
         //Alaa Serhan
         if (viewModel.getWeight() != null) {

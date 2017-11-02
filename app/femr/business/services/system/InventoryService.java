@@ -81,7 +81,6 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
 
-        ////JG
         for (IMedicationInventory m : medicationsInventory) {
 
             medicationItems.add(itemModelMapper.createMedicationInventoryItem(m.getMedication(), m.getQuantityCurrent(),

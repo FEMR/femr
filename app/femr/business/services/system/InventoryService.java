@@ -29,8 +29,10 @@ import femr.common.models.MedicationItem;
 import femr.common.models.InventoryExportItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.MedicationInventory;
+import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 import femr.data.models.mysql.Medication;
 import femr.util.stringhelpers.CSVWriterGson;
@@ -44,17 +46,20 @@ public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
+    private final IUserRepository userRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationInventory> medicationInventoryRepository,
+                            IUserRepository userRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
+        this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -83,7 +88,22 @@ public class InventoryService implements IInventoryService {
 
         for (IMedicationInventory m : medicationsInventory) {
 
-            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(), m.getQuantityInitial(), m.getIsDeleted()));
+            String name;
+            if(m.getCreatedBy() == null) {
+                name = "";
+            } else {
+                IUser user = userRepository.retrieveUserById(m.getCreatedBy());
+                name = user.getLastName() + ", " + user.getFirstName();
+            }
+
+            String timeStamp;
+            if(m.getTimeAdded() == null) {
+                timeStamp = "";
+            } else {
+                timeStamp = dateUtils.convertTimeToString(m.getTimeAdded());
+            }
+            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(),
+                    m.getQuantityInitial(), m.getIsDeleted(), timeStamp, name));
         }
         response.setResponseObject(medicationItems);
 
@@ -105,7 +125,7 @@ public class InventoryService implements IInventoryService {
         try{
 
             IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            MedicationItem medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted());
+            MedicationItem medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex){
 
@@ -145,7 +165,7 @@ public class InventoryService implements IInventoryService {
                 medicationInventory.setQuantityInitial(quantityTotal);
                 medicationInventory = medicationInventoryRepository.update(medicationInventory);
             }
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null, null, null);
 
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
@@ -176,7 +196,7 @@ public class InventoryService implements IInventoryService {
             medicationInventory.setQuantityCurrent(newQuantity);
 
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null, null, null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -205,7 +225,7 @@ public class InventoryService implements IInventoryService {
             else
                 medicationInventory.setIsDeleted(DateTime.now());
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted());
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -247,7 +267,7 @@ public class InventoryService implements IInventoryService {
                 totalQuantity = medicationInventory.getQuantityInitial();
             }
 
-            medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity, null);
+            medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity, null, null, null);
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());
@@ -270,8 +290,24 @@ public class InventoryService implements IInventoryService {
       // Convert result of query to a list to export
       List<InventoryExportItem> inventoryExport = new ArrayList<>();
       for (IMedicationInventory med : medicationInventory) {
-        inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
-                med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted())));
+
+          String name;
+          if(med.getCreatedBy() == null) {
+              name = "";
+          } else {
+              IUser user = userRepository.retrieveUserById(med.getCreatedBy());
+              name = user.getLastName() + ", " + user.getFirstName();
+          }
+
+          String timeStamp;
+          if(med.getTimeAdded() == null) {
+              timeStamp = "";
+          } else {
+              timeStamp = dateUtils.convertTimeToString(med.getTimeAdded());
+          }
+          inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
+                med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted(),
+                timeStamp, name)));
       }
 
       // Convert export list to json

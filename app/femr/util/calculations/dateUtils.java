@@ -43,12 +43,25 @@ public class dateUtils {
         return years.getYears();
     }
 
+    /**
+     * Returns a string in the format "yyyy/MM/dd HH:mm:ss"
+     * *
+     * @param timeStamp an unformated DateTime
+     * @return the time as a string
+     */
+    public static String convertTimeToString(DateTime timeStamp){
+        DateTimeFormatter dateFormat = DateTimeFormat
+                .forPattern("yyyy/MM/dd HH:mm:ss");
+        String dt = dateFormat.print(timeStamp).toString();
+        return dt;
+    }
+
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
-                .forPattern("yyyy/mm/dd HH:mm:ss");
+                .forPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime localDateTime = new LocalDateTime();
         dateFormat.print(localDateTime);
-        String dt = localDateTime.toString();
+        String dt = dateFormat.print(localDateTime).toString();
         return dt;
     }
 

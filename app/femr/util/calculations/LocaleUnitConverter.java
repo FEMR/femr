@@ -64,14 +64,14 @@ public class LocaleUnitConverter {
     public static PatientItem toMetric(PatientItem patient) {
         if (patient == null) return patient;
 
-        // Store seperate height variables temporarily
+        // Store separate height variables temporarily
         // Wish getHeightFeet() and getHeightInches() were'nt stored as Integer in PatientItem.
         // Causes issues with precision when value stored in database as a non whole number
         if (patient.getHeightFeet() != null && patient.getHeightInches() != null) {
             Integer feet = patient.getHeightFeet();
             Integer inches = patient.getHeightInches();
 
-            //added for femr-136 - dulal unit display
+            //added for femr-136 - dual unit display
             patient.setHeightFeetDual(patient.getHeightFeet());
             patient.setHeightInchesDual(patient.getHeightInches());
 
@@ -101,7 +101,7 @@ public class LocaleUnitConverter {
     public static PatientItem forDualUnitDisplay(PatientItem patient) {
         if (patient == null) return patient;
 
-        // Store seperate height variables temporarilyl
+        // Store separate height variables temporarily
         // Wish getHeightFeet() and getHeightInches() were'nt stored as Integer in PatientItem.
         // Causes issues with precision when value stored in database as a non whole number
         if (patient.getHeightFeet() != null && patient.getHeightInches() != null) {
@@ -184,7 +184,7 @@ public class LocaleUnitConverter {
     public static Integer getMeters(Integer Feet, Integer Inches) {
         /* Calculate total inches (feet*12)+inches */
         Float totalInches = (float)(Inches + Feet * 12);
-        return (int)Math.floor(totalInches * 0.0254f);
+        return (int)Math.floor((totalInches * 0.0254f));
     }
 
     /**

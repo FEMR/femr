@@ -385,6 +385,7 @@ var triageFields = {
     },
     patientVitals: {
         respiratoryRate: $('#respiratoryRate'),
+        bloodPressureTitle: $('#bloodPressureTitle'),
         bloodPressureSystolic: $('#bloodPressureSystolic'),
         bloodPressureDiastolic: $('#bloodPressureDiastolic'),
         heartRate: $('#heartRate'),
@@ -506,7 +507,7 @@ var birthdayAgeAutoCalculateFeature = {
 
 $(document).ready(function () {
     $('.newPatientBtn').click(function () {
-        if (confirm("Are you sure you want to reset the fields?")) {
+        if (confirm("Are you sure you want to reset the fields?!")) {
             window.location = "/triage";
         }
         else {
@@ -824,4 +825,69 @@ window.setInterval(function () {
     }
 
 }, 500);
+$(document).ready(function(){
+    $('#bloodPressureSystolic').change(function(){
+        var patient = triageFields.patientVitals;
+
+        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
+            patient.bloodPressureTitle.css('color', 'red');
+            patient.bloodPressureTitle.css('fontSize', '20px');
+        }
+        else {
+            patient.bloodPressureTitle.css('color', 'black');
+            patient.bloodPressureTitle.css('fontSize', '14px');
+        }
+
+    });
+});
+$(document).ready(function(){
+    $('#bloodPressureDiastolic').change(function(){
+        var patient = triageFields.patientVitals;
+
+        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
+            patient.bloodPressureTitle.css('color', 'red');
+            patient.bloodPressureTitle.css('fontSize', '20px');
+
+        }
+        else {
+            patient.bloodPressureTitle.css('color', 'black');
+            patient.bloodPressureTitle.css('fontSize', '14px');
+        }
+
+    });
+});
+
+$(document).ready(function(){
+    $('#bloodPressureSystolic').change(function(){
+        var patient = triageFields.patientVitals;
+
+        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
+            patient.bloodPressureTitle.css('color', 'red');
+            patient.bloodPressureTitle.css('fontSize', '20px');
+        }
+        else {
+            patient.bloodPressureTitle.css('color', 'black');
+            patient.bloodPressureTitle.css('fontSize', '14px');
+        }
+
+    });
+});
+$(document).ready(function(){
+    $('#bloodPressureDiastolic').change(function(){
+        var patient = triageFields.patientVitals;
+
+        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
+            patient.bloodPressureTitle.css('color', 'red');
+            patient.bloodPressureTitle.css('fontSize', '20px');
+
+        }
+        else {
+            patient.bloodPressureTitle.css('color', 'black');
+            patient.bloodPressureTitle.css('fontSize', '14px');
+        }
+
+    });
+});
+
+
 

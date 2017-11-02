@@ -1,0 +1,140 @@
+@import femr.ui.controllers.HistoryController
+@(currentUser: femr.common.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.history.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
+@import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.controllers.routes.TriageController
+@import femr.data.models.mysql.Roles
+
+@* List of currentUser roles to use with the Roles class *@
+@roles = @{currentUser.getRoles().map(r => r.getId())}
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
+}
+@additionalScripts = {
+    <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
+}
+
+@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history")) {
+    @if(viewModel.getPatientItems.size > 1) {
+        <div class="encounterInfoWrap backgroundForWrap">
+            <div class="row well well-sm">
+                <h4 class="text-center">Duplicate Patient Search Results</h4>
+                <div class="panel panel-default">
+                    <table class="table vert-align">
+                        <tr>
+                            <th>Photo</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>City</th>
+                            <th>&nbsp;</th>
+                        </tr>
+
+                        @for(a <- 1 to viewModel.getPatientItems.size) {
+                            @defining(viewModel.getPatientItems.get(a - 1)) { patient =>
+                                <tr>
+                                    <td class="vert-align"><img class="thumbnail searchThumb" src="@patient.getPathToPhoto" width="90" height="90"/></td>
+                                    <td class="vert-align patientId">@patient.getId</td>
+                                    <td class="vert-align">@patient.getFirstName @patient.getLastName</td>
+                                    <td class="vert-align">@patient.getPhoneNumber</td>
+                                    <td class="vert-align">@patient.getSex</td>
+                                    <td class="vert-align">@patient.getAge</td>
+                                    <td class="vert-align">@patient.getCity</td>
+                                    <td class="vert-align">
+                                        <button type="button" class="selectPageFromRow fButton pull-right">Select</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    }
+    <div class="encounterInfoWrap backgroundForWrap">
+
+        <div id="viewPatientHeader">
+            <div id="patientPhoto">
+            @if(viewModel.getPatientItem.getPathToPhoto != null && !viewModel.getPatientItem.getPathToPhoto.isEmpty) {
+
+                <img class="" height="90" width="90" src="@viewModel.getPatientItem.getPathToPhoto" />
+
+            }
+            </div>
+            <div id="patientInformation">
+                <h1 class="bold margin-top-zero">Patient Id: @viewModel.getPatientItem.getId</h1>
+
+                @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
+                    @helper.form(action = TriageController.deletePatientPost(viewModel.getPatientItem.getId)){
+                        <input type="hidden" name="reasonDeleted" id="reasonDeleted" />
+                        <button hidden="true" type="submit"  id="deletePatient"></button>
+                    }
+                    <span>
+                        <button type="submit" id="deletePatientBtn" class="btn btn-danger pull-right"> Delete this Patient</button>
+                    </span>
+                }
+
+                <a href="@{MedicalController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Medical</a>
+                <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">View in Pharmacy</a>
+                <a href="@{TriageController.indexPopulatedGet(viewModel.getPatientItem.getId).url}" class="btn btn-default pull-right">See This Patient In Triage</a>
+
+                <br/><br/>
+            </div>
+        </div>
+
+
+        <div class="row inputRow">
+            <div class="col-sm-6 col-xs-12 col-md-6">
+                <h3 class="pull-left bold margin-top-zero">General Info</h3>
+                <div class="medicalHistoryLineDivide"></div>
+                <div class="text-center">
+                    <label class="inputLabel">First Name:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="firstName" value="@viewModel.getPatientItem.getFirstName" readonly/>
+                    <label class="inputLabel">Last Name:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="lastName" value="@viewModel.getPatientItem.getLastName" readonly/>
+                    <label class="inputLabel">Phone Number:</label>
+                    <input type="tel" class="form-control input-sm pull-left" name="phoneNumber" value="@viewModel.getPatientItem.getPhoneNumber" readonly/>
+                    <label class="inputLabel">Address:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="address" value="@viewModel.getPatientItem.getAddress" readonly/>
+                    <label class="inputLabel">City:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="city" value="@viewModel.getPatientItem.getCity" readonly/>
+                    <label class="inputLabel">Age:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="age" value="@viewModel.getPatientItem.getAge" readonly/>
+                    <label class="inputLabel">Sex:</label>
+                    <input type="text" class="form-control input-sm pull-left" name="age" value="@viewModel.getPatientItem.getSex" readonly/>
+                    @*display pregnancy?*@
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 col-md-6">
+                <h3 class="pull-left bold margin-top-zero">Previous Encounters</h3>
+
+                <div class="medicalHistoryLineDivide"></div>
+                <ol>
+                @for(patientEncounter <- patientEncounters) {
+                    <li>
+                        <a href="/history/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
+                            <p class="date">@patientEncounter.getTriageDateOfVisit</p>
+                            @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0){
+                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1) @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
+                            }else{
+                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> N/A</p>
+                            }
+
+                        </a>
+                    </li>
+                    <div class="medicalHistoryLineDivide"></div>
+                }
+                </ol>
+                <div class="alert alert-info" id="encounterAlert">Click an encounter to view past history!</div>
+            </div>
+        </div>
+
+    </div>
+}

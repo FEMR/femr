@@ -1,0 +1,15 @@
+@(label: String, field1: String, forInput1: String, field2: String, forInput2: String, value: femr.common.models.PatientItem)
+    @inputBlock = {
+        <div class="generalInfoInput">
+            <label for="@label">Years</label>
+            @if(value.getAge == null) {
+                <input type="text" class="age-input fInput" id="@forInput1" name="@forInput1" placeholder="@field1">
+                <input type="text" class="age-input fInput" id="@forInput2" name="@forInput2" placeholder="@field2">
+            } else {
+                <input type="text" class="fInput" id="readOnlyAge" name="readOnlyAge" value="@value.getAge" readonly/>
+                <input type="text" class="hidden" id="@forInput1" value="@value.getYearsOld"/>
+                <input type="text" class="hidden" id="@forInput2" value="@value.getMonthsOld"/>
+            }
+        </div>
+    }
+@inputBlock

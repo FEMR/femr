@@ -1,0 +1,117 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean )
+
+@import femr.ui.controllers.routes.HistoryController
+@import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
+@import femr.ui.views.html.partials.patientOverview
+@import femr.ui.views.html.partials.medical.tabs.prescriptionRow
+@import femr.ui.views.html.partials.helpers.outputStringOrNA
+
+    @additionalScripts = {
+
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/pharmacy/pharmacyClientValidation.js")"></script>
+        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type = "text/javascript"   src="@routes.Assets.versioned("js/libraries/handlebars.js")"></script>
+        <script type = "text/javascript"   src="@routes.Assets.versioned("js/libraries/jquery-ui.min.js")"></script>
+    }
+    @additionalStyles = {
+
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/pharmacy.css")">
+        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
+    }
+
+@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
+    <div id="pharmacyContentWrap">
+
+        @patientOverview(viewModel.getPatient, viewModel.getPatientEncounterItem, viewModel.getSettings, "Pharmacy - " + "Patient ID: " + viewModel.getPatient.getId)
+
+
+
+        <div id="mainWrap" class="backgroundForWrap">
+        @helper.form(action = PharmaciesController.editPost(viewModel.getPatient.getId)) {
+
+
+            <div id="diagnosisWrap">
+                <h4>List of Diagnoses</h4>
+
+                <ol class="problems">
+
+                @if(viewModel.getProblems != null) {
+                    @for(y <- 1 to viewModel.getProblems.size) {
+                        @if(viewModel.getProblems.get(y - 1) != null) {
+                            <li>@viewModel.getProblems.get(y - 1).getName</li>
+
+                        }
+                    }
+                }
+                </ol>
+            </div>
+
+
+
+
+            <div id="medicationWrap" class="form-group">
+                <h4>List of Medications</h4>
+                <ol id="medicationList">
+                @for(x <- 1 to viewModel.getPrescriptions.size) {
+                    @defining(viewModel.getPrescriptions.get(x - 1)) { prescription =>
+                        <li class="prescription" id="med@(x-1)" data-medID="@prescription.getMedicationID">
+                            <input type="text" class="hidden" name="prescriptions[@(x-1)].id" value="@prescription.getId"/>
+                            <button type="button" class="fButton fOtherButton replaceBtn">R</button>
+                            <div>
+                                <span>@prescription.printAmount @prescription.getName (@outputStringOrNA(prescription.getMedicationForm).toString().trim()) - @prescription.getAdministrationName </span>
+                            </div>
+                            <div>
+                                <span id="prescriber">
+                                    Prescriber: @prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
+                            </div>
+                            <div class="medicationRemaining">Current Quantity: @prescription.getMedicationRemaining</div>
+                            @if(prescription.getAmount > prescription.getMedicationRemaining) {
+                                <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
+                            }
+                            <div class="replacement hidden">
+
+                                <div class="prescription-grid prescriptionHeader">
+                                    <label class="prescription-field prescriptionName" for="prescription">Prescription</label>
+                                    <label class="prescription-field prescriptionAdministration">Administration</label>
+                                    <label class="prescription-field prescriptionAdministrationDays">Days</label>
+                                    <label class="prescription-field prescriptionAmount">Amount</label>
+                                </div>
+
+                                @prescriptionRow( viewModel.getMedicationAdministrationItems, x-1, null )
+
+                            </div>
+                        </li>
+                    }
+
+                }
+                </ol>
+
+                <div id="disclaimerWrap">
+                    <label for="disclaimer">
+                        The patient was counseled on the risks and side effects of the medications dispensed.</label>
+                    <!--ISSUE#138 https://teamfemr.atlassian.net/browse/FEMR-138
+                     Contributed by Mohammad Alahmadi during the CEN5035 course at FSU -->
+                    <input type="checkbox" name="disclaimer" value="1" required/>
+                    <input type="hidden" name="disclaimer" value="0" />
+                </div>
+                <div id="submitWrap">
+                    <button type="submit" id="pharmacySubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                        Submit</button>
+
+                    <a href="@{HistoryController.indexPatientGet(
+                        Integer.toString(viewModel.getPatient.getId)).url}" class="fButton fOtherButton pull-left">Patient History</a>
+                    <a href="@{MedicalController.editGet(viewModel.getPatient.getId).url}" class="fButton fOtherButton pull-left">View in Medical</a>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+}
+}

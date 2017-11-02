@@ -21,6 +21,9 @@ package femr.data;
 import com.avaje.ebean.Ebean;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
+import femr.business.services.core.ISessionService;
+import femr.business.services.system.SessionService;
+import femr.common.dtos.CurrentUser;
 import femr.data.models.core.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
@@ -63,6 +66,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<ITab> tabProvider;
     private final Provider<IVital> vitalProvider;
     private final Provider<IUser> userProvider;
+    private final Provider<ISessionService> sessionServiceProvider;
 
     @Inject
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
@@ -91,7 +95,9 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<ITabFieldType> tabFieldTypeProvider,
                            Provider<ITab> tabProvider,
                            Provider<IUser> userProvider,
-                           Provider<IVital> vitalProvider) {
+                           Provider<IVital> vitalProvider,
+                           Provider<ISessionService> sessionServiceProvider
+                           ) {
 
         this.chiefComplaintProvider = chiefComplaintProvider;
         this.patientEncounterProvider = patientEncounterProvider;
@@ -120,6 +126,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.tabProvider = tabProvider;
         this.userProvider = userProvider;
         this.vitalProvider = vitalProvider;
+        this.sessionServiceProvider = sessionServiceProvider;
     }
 
     /**
@@ -236,6 +243,9 @@ public class DataModelMapper implements IDataModelMapper{
     public IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId) {
 
         IMedicationInventory medicationInventory;
+        ISessionService sessionService = sessionServiceProvider.get();
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        DateTime currentDateTime = DateTime.now();
 
         try{
 
@@ -244,6 +254,8 @@ public class DataModelMapper implements IDataModelMapper{
             medicationInventory.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), missionTripId));
             medicationInventory.setQuantityCurrent(quantityCurrent);
             medicationInventory.setQuantityInitial(quantityTotal);
+            medicationInventory.setTimeAdded(currentDateTime);
+            medicationInventory.setCreatedBy(currentUser.getFirstName() + " " + currentUser.getLastName());
         }catch(Exception ex){
 
             medicationInventory = null;

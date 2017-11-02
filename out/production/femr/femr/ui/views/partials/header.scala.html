@@ -1,0 +1,13 @@
+@(currentUser: femr.common.dtos.CurrentUser = null)
+
+@import femr.ui.views.html.partials
+<div class="navigation">
+    <div class="container">
+    @if(currentUser != null) {
+        @partials.authenticated(currentUser)
+    } else {
+        @partials.anonymous()
+    }
+    </div>
+</div>
+

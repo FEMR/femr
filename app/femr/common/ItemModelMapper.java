@@ -59,6 +59,61 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
+    public MedicationItem createMedicationInventoryItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal,
+                                                        DateTime isDeleted, DateTime timeAdded, String createdBy) {
+
+        if (medication == null) {
+
+            return null;
+        }
+
+        MedicationItem medicationItem = new MedicationItem();
+
+        medicationItem.setId(medication.getId());
+        medicationItem.setName(medication.getName());
+        medicationItem.setQuantityCurrent(quantityCurrent);
+        medicationItem.setQuantityTotal(quantityTotal);
+        if (medication.getConceptMedicationForm() != null) {
+            medicationItem.setForm(medication.getConceptMedicationForm().getName());
+        }
+
+        DecimalFormat df = new DecimalFormat("######.####");
+        int count = 0;
+        String fullActiveDrugName = "";
+        for (IMedicationGenericStrength medicationGenericStrength : medication.getMedicationGenericStrengths()) {
+
+            medicationItem.addActiveIngredient(medicationGenericStrength.getMedicationGeneric().getName(),
+                    medicationGenericStrength.getConceptMedicationUnit().getName(),
+                    medicationGenericStrength.getValue(),
+                    medicationGenericStrength.isDenominator()
+            );
+            if (count == 0){
+                fullActiveDrugName = fullActiveDrugName.concat(df.format(medicationGenericStrength.getValue()) + " " + medicationGenericStrength.getConceptMedicationUnit().getName() + " " + medicationGenericStrength.getMedicationGeneric().getName());
+            }else{
+                fullActiveDrugName = fullActiveDrugName.concat(" / " + df.format(medicationGenericStrength.getValue()) + " " + medicationGenericStrength.getConceptMedicationUnit().getName() + " " + medicationGenericStrength.getMedicationGeneric().getName());
+            }
+
+            count++;
+        }
+
+        medicationItem.setFullName(medicationItem.getName().concat(" " + fullActiveDrugName));
+        if (StringUtils.isNotNullOrWhiteSpace(medicationItem.getForm()))
+            medicationItem.setFullName(medicationItem.getFullName().concat(" " + "(" + medicationItem.getForm() + ")"));
+
+        //Check to see if medication is deleted.
+        if(isDeleted != null)
+            medicationItem.setIsDeleted(isDeleted);
+
+        medicationItem.setTimeAdded(timeAdded);
+        medicationItem.setCreatedBy(createdBy);
+
+        return medicationItem;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted) {
 
         if (medication == null) {

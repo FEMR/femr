@@ -81,9 +81,11 @@ public class InventoryService implements IInventoryService {
 
         List<MedicationItem> medicationItems = new ArrayList<>();
 
+        ////JG
         for (IMedicationInventory m : medicationsInventory) {
 
-            medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(), m.getQuantityInitial(), m.getIsDeleted()));
+            medicationItems.add(itemModelMapper.createMedicationInventoryItem(m.getMedication(), m.getQuantityCurrent(),
+                    m.getQuantityInitial(), m.getIsDeleted(), m.getTimeAdded(), m.getCreatedBy()));
         }
         response.setResponseObject(medicationItems);
 
@@ -270,8 +272,9 @@ public class InventoryService implements IInventoryService {
       // Convert result of query to a list to export
       List<InventoryExportItem> inventoryExport = new ArrayList<>();
       for (IMedicationInventory med : medicationInventory) {
-        inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
-                med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted())));
+        inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationInventoryItem(
+                med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted(),
+                med.getTimeAdded(), med.getCreatedBy())));
       }
 
       // Convert export list to json

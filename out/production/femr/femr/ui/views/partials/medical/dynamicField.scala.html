@@ -1,0 +1,17 @@
+@(value: java.lang.String, name: java.lang.String, size: java.lang.String, order: java.lang.Integer, tipe: java.lang.String, placeholder: java.lang.String, isReadOnly: Boolean, index: Integer)
+
+
+@if(size.toLowerCase == "medium") {
+    <label for="@name">@name</label>
+    <input name="tabFieldItems[@index].name" class="hidden" type="text" value="@name"/>
+    <input name="tabFieldItems[@index].value" type="text" placeholder="@placeholder" class="fInput customField" value="@value"@if(isReadOnly){readonly}/>
+    <br/>
+} else {
+    @if(size.toLowerCase == "large") {
+        <label for="@name">@name</label>
+        <input type="text" class="hidden" name="tabFieldItems[@index].name" value="@name"/>
+        <textarea name="tabFieldItems[@index].value" class="fTextArea customField" placeholder="@placeholder"@if(isReadOnly){readonly} >@value</textarea>
+
+        <br/>
+    }
+}

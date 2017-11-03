@@ -334,7 +334,7 @@ public class TriageController extends Controller {
 
         return patient;
     }
-
+    //Mazen
     private List<String> parseChiefComplaintsJSON(String chiefComplaint, String chiefComplaintJSON) {
         List<String> chiefComplaints = new ArrayList<>();
         //JSON chief complaints (multiple chief complaints - requires javascript)

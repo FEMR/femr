@@ -16,6 +16,7 @@ var vitalClientValidator = function (vitalElements) {
         vitalElements.bloodPressureDiastolic.css('border-color', 'red');
         isValid = false;
     }
+
     //Heart Rate
     if ($.trim(vitalElements.heartRate.val().length) > 0 && integerCheck(vitalElements.heartRate.val()) === false) {
         vitalElements.heartRate.css('border-color', 'red');

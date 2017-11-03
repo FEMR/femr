@@ -172,6 +172,7 @@ public class IndexViewModelPost {
     }
 
     public void setHeightInches(Integer heightInches) {
+
         this.heightInches = heightInches;
     }
 

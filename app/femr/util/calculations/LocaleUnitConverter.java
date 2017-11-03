@@ -33,8 +33,10 @@ public class LocaleUnitConverter {
             String feetS = vitalMap.get("heightFeet", vitalMap.getDate(dateIndex));
             String inchesS = vitalMap.get("heightInches", vitalMap.getDate(dateIndex));
 
+
             if (feetS != null && inchesS != null) {
                 // Convert Height to Metric
+
                 Integer meters = getMeters(feetS, inchesS);
                 Integer cm = getCentimetres(feetS, inchesS);
 
@@ -64,14 +66,14 @@ public class LocaleUnitConverter {
     public static PatientItem toMetric(PatientItem patient) {
         if (patient == null) return patient;
 
-        // Store seperate height variables temporarily
+        // Store separate height variables temporarily
         // Wish getHeightFeet() and getHeightInches() were'nt stored as Integer in PatientItem.
         // Causes issues with precision when value stored in database as a non whole number
         if (patient.getHeightFeet() != null && patient.getHeightInches() != null) {
             Integer feet = patient.getHeightFeet();
             Integer inches = patient.getHeightInches();
 
-            //added for femr-136 - dulal unit display
+            //added for femr-136 - dual unit display
             patient.setHeightFeetDual(patient.getHeightFeet());
             patient.setHeightInchesDual(patient.getHeightInches());
 
@@ -101,7 +103,7 @@ public class LocaleUnitConverter {
     public static PatientItem forDualUnitDisplay(PatientItem patient) {
         if (patient == null) return patient;
 
-        // Store seperate height variables temporarilyl
+        // Store separate height variables temporarily
         // Wish getHeightFeet() and getHeightInches() were'nt stored as Integer in PatientItem.
         // Causes issues with precision when value stored in database as a non whole number
         if (patient.getHeightFeet() != null && patient.getHeightInches() != null) {
@@ -132,6 +134,7 @@ public class LocaleUnitConverter {
         if (vitalMap.containsKey("temperature"))
             vitalMap.put("temperature", getFahrenheit(vitalMap.get("temperature")));
 
+
         if (vitalMap.containsKey("heightFeet") && vitalMap.containsKey("heightInches")) {
             Float heightMetres = vitalMap.get("heightFeet");
             Float heightCentimetres = vitalMap.get("heightInches");
@@ -140,6 +143,16 @@ public class LocaleUnitConverter {
             vitalMap.put("heightFeet" ,getFeet(heightMetres, heightCentimetres));
             vitalMap.put("heightInches", getInches(heightMetres, heightCentimetres));
         }
+
+
+    /*
+        else if(vitalMap.containsKey("heightFeet")){
+            Float heightMetres = vitalMap.get("heightFeet");
+            Float heightCentimetres = 0f;
+            vitalMap.put("heightFeet" ,getFeet(heightMetres,heightCentimetres));
+            vitalMap.put("heightInches", getInches(heightMetres, heightCentimetres));
+        }
+        */
 
         if (vitalMap.containsKey("weight"))
             vitalMap.put("weight", getLbs(vitalMap.get("weight")));
@@ -182,9 +195,23 @@ public class LocaleUnitConverter {
      * @return Height in meters (ie 2.43 returns 2))
      */
     public static Integer getMeters(Integer Feet, Integer Inches) {
+        System.out.println("Feet: " + Feet);
+        System.out.println("Inches: " + Inches);
         /* Calculate total inches (feet*12)+inches */
         Float totalInches = (float)(Inches + Feet * 12);
-        return (int)Math.floor(totalInches * 0.0254f);
+        return (int)Math.floor((totalInches * 0.0254f));
+
+
+        /*
+        Double InchesDec = 0.0000;
+        if(Inches != 0){
+            InchesDec = (double)Inches / 12;
+        }
+        Double heightDec = Feet + InchesDec;
+        System.out.println("heightDec: " + heightDec);
+        System.out.println("heightDec / 3.28: " + (heightDec / 3.2800));
+        return (int)Math.floor(heightDec / 3.2800);
+    */
     }
 
     /**
@@ -195,6 +222,8 @@ public class LocaleUnitConverter {
      * @return Height in meters (ie 2.43 returns 2))
      */
     public static Integer getMeters(Float Feet, Float Inches) {
+        System.out.println("Inches: " + Inches);
+        System.out.println("InchesRound: " + Math.round(Inches));
         return getMeters(Math.round(Feet), Math.round(Inches));
     }
 

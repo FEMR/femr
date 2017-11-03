@@ -26,8 +26,7 @@ public class SettingItem {
     // Alaa Serhan  - adding setting for isMetric
     private boolean isMetric;
     private boolean isDiabetesPrompt;
-
-
+    //Mazen
     public boolean isMultipleChiefComplaint() {
         return isMultipleChiefComplaint;
     }
@@ -67,6 +66,7 @@ public class SettingItem {
     public boolean isDiabetesPrompt() {
         return isDiabetesPrompt;
     }
+
 
     public void setIsDiabetesPrompt(boolean isDiabetesPrompt) {
         this.isDiabetesPrompt = isDiabetesPrompt;

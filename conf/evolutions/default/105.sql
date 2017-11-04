@@ -1,7 +1,7 @@
 # --- !Ups
 
 ALTER TABLE `medication_inventories`
-ADD COLUMN `timeAdded` DATETIME NULL DEFAULT NULL,
+ADD COLUMN `timeAdded` VARCHAR (255) NULL DEFAULT NULL,
 ADD COLUMN `createdBy` VARCHAR (255) NULL DEFAULT NULL;
 
 

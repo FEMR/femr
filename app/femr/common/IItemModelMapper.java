@@ -52,23 +52,11 @@ public interface IItemModelMapper {
      * @param quantityCurrent the quantity of the medication available, nullable if non existant
      * @param quantityTotal the total quantity of a medication, nullable if non existant
      * @param isDeleted if the medication was deleted form the inventory
-     * @return a new MedicationItem or null if processing fails
-     */
-    MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted);
-
-    /**
-     * Generate and provide an instance of MedicationInventoryItem
-     *
-     * @param medication the medication data bean, not null
-     * @param quantityCurrent the quantity of the medication available, nullable if non existant
-     * @param quantityTotal the total quantity of a medication, nullable if non existant
-     * @param isDeleted if the medication was deleted form the inventory
      * @param timeAdded the date and time the medication was added to the inventory
      * @param createdBy name of the user who added medication to inventory
      * @return a new MedicationItem or null if processing fails
      */
-    MedicationItem createMedicationInventoryItem(IMedication medication, Integer quantityCurrent,
-                                                 Integer quantityTotal, DateTime isDeleted, DateTime timeAdded, String createdBy);
+    MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy);
 
     /**
      * Generate and provide an instance of MissionItem.

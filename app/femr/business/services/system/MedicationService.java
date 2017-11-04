@@ -159,12 +159,12 @@ public class MedicationService implements IMedicationService {
             // There exist a matching medication in the database, so update that one rather then create new one
             if (matchingMedication != null) {
                 medicationRepository.deleteMedication(matchingMedication.getId(), false);
-                response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null));
+                response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null, null, null));
 
             } else {
                 IMedication medication = medicationRepository.createNewMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 //creates the medication item - quantities are null because the medication was just created.
-                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null);
+                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null, null, null);
 
                 response.setResponseObject(newMedicationItem);
             }
@@ -501,7 +501,7 @@ public class MedicationService implements IMedicationService {
             for (IMedication m : medications) {
                 //use the item model mapper to generate the MedicationItem which contains
                 //the standard full name for a medication everywhere
-                medicationItem = itemModelMapper.createMedicationItem(m, null, null, null);
+                medicationItem = itemModelMapper.createMedicationItem(m, null, null, null, null, null);
                 ObjectNode medication = Json.newObject();
 
                 medication.put("id", m.getId());

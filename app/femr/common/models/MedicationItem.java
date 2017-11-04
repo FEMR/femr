@@ -39,7 +39,7 @@ public class MedicationItem {
     //a medication can have more than one active ingredient.
     private List<ActiveIngredient> activeIngredients;
     private DateTime isDeleted;
-    private DateTime timeAdded;
+    private String timeAdded;
     private String createdBy;
 
     public MedicationItem() {
@@ -121,11 +121,11 @@ public class MedicationItem {
 
     public void setIsDeleted(DateTime isDeleted) {this.isDeleted = isDeleted; }
 
-    public DateTime getTimeAdded() {
+    public String getTimeAdded() {
         return timeAdded;
     }
 
-    public void setTimeAdded(DateTime timeAdded) {
+    public void setTimeAdded(String timeAdded) {
         this.timeAdded = timeAdded;
     }
 

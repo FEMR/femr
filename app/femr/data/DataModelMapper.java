@@ -245,7 +245,7 @@ public class DataModelMapper implements IDataModelMapper{
         IMedicationInventory medicationInventory;
         ISessionService sessionService = sessionServiceProvider.get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        DateTime currentDateTime = DateTime.now();
+        String timeStamp = dateUtils.getCurrentDateTimeString();
 
         try{
 
@@ -254,7 +254,7 @@ public class DataModelMapper implements IDataModelMapper{
             medicationInventory.setMissionTrip(Ebean.getReference(missionTripProvider.get().getClass(), missionTripId));
             medicationInventory.setQuantityCurrent(quantityCurrent);
             medicationInventory.setQuantityInitial(quantityTotal);
-            medicationInventory.setTimeAdded(currentDateTime);
+            medicationInventory.setTimeAdded(timeStamp);
             medicationInventory.setCreatedBy(currentUser.getFirstName() + " " + currentUser.getLastName());
         }catch(Exception ex){
 

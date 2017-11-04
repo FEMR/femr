@@ -45,10 +45,10 @@ public class dateUtils {
 
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
-                .forPattern("yyyy/mm/dd HH:mm:ss");
+                .forPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime localDateTime = new LocalDateTime();
         dateFormat.print(localDateTime);
-        String dt = localDateTime.toString();
+        String dt = dateFormat.print(localDateTime).toString();
         return dt;
     }
 

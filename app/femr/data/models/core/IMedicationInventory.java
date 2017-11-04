@@ -28,9 +28,9 @@ public interface IMedicationInventory {
 
     void setIsDeleted(DateTime isDeleted);
 
-    DateTime getTimeAdded();
+    String getTimeAdded();
 
-    void setTimeAdded(DateTime timeAdded);
+    void setTimeAdded(String timeAdded);
 
     String getCreatedBy();
 

@@ -65,7 +65,7 @@ public class ConceptService implements IConceptService {
             List<? extends IMedication> allMedications = conceptMedicationRepository.find(conceptMedicationExpressionList);
 
             for (IMedication m : allMedications) {
-                medicationConcepts.add(itemModelMapper.createMedicationItem(m, null, null, null));
+                medicationConcepts.add(itemModelMapper.createMedicationItem(m, null, null, null, null, null));
             }
 
             response.setResponseObject(medicationConcepts);
@@ -97,7 +97,7 @@ public class ConceptService implements IConceptService {
 
             IMedication medication = conceptMedicationRepository.findOne(conceptMedicationExpressionList);
 
-            medicationConcept = itemModelMapper.createMedicationItem(medication, null, null, null);
+            medicationConcept = itemModelMapper.createMedicationItem(medication, null, null, null, null, null);
 
             response.setResponseObject(medicationConcept);
         } catch (Exception ex) {

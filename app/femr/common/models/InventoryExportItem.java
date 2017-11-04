@@ -29,7 +29,7 @@ public class InventoryExportItem {
     @SerializedName("Medication")       private String name;
     @SerializedName("Current Quantity") private Integer quantityCurrent;
     @SerializedName("Initial Quantity") private Integer quantityInitial;
-    @SerializedName("Time Added")       private DateTime timeAdded;
+    @SerializedName("Time Added")       private String timeAdded;
     @SerializedName("Created By")       private String createdBy;
 
     static public List<String> getFieldOrder() {
@@ -77,11 +77,11 @@ public class InventoryExportItem {
         this.quantityInitial = quantityInitial;
     }
 
-    public DateTime getTimeAdded() {
+    public String getTimeAdded() {
         return timeAdded;
     }
 
-    public void setTimeAdded(DateTime timeAdded) {
+    public void setTimeAdded(String timeAdded) {
         this.timeAdded = timeAdded;
     }
 

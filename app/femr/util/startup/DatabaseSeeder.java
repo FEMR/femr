@@ -19,8 +19,10 @@
 package femr.util.startup;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import femr.business.helpers.QueryProvider;
 import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IUserRepository;
@@ -572,13 +574,18 @@ public class DatabaseSeeder {
             systemSettingRepository.create(systemSetting);
         }
 
-        if (systemSettings != null && !containSetting(systemSettings, "Research Only")) {
+        // If the System Setting "Research Only" exists, this deletes it
+        if (containSetting(systemSettings, "Research Only")) {
             systemSetting = new SystemSetting();
-            systemSetting.setName("Research Only");
-            systemSetting.setActive(false);
-            systemSetting.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
-            systemSettingRepository.create(systemSetting);
+            ExpressionList<SystemSetting> researchOnlySetting = QueryProvider.getSystemSettingQuery()
+                    .where()
+                    .eq("name","Research Only");
+            systemSetting = (SystemSetting) systemSettingRepository.findOne(researchOnlySetting);
+            systemSettingRepository.delete(systemSetting);
         }
+
+
+
         //Asks a physician in medical if they screened the patient for diabetes based on
         //criteria: (Age >= 18) AND (Systolic bp >= 140 OR Diastolic bp >= 90)
         if (systemSettings != null && !containSetting(systemSettings, "Diabetes Prompt")){
@@ -629,12 +636,6 @@ public class DatabaseSeeder {
             if (ss.getName().equals("Country Filter")){
                 if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
                     ss.setDescription("When checked, patients from other countries will not show up in a search");
-                    systemSettingRepository.update((SystemSetting)ss);
-                }
-            }
-            if (ss.getName().equals("Research Only")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
-                    ss.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
                     systemSettingRepository.update((SystemSetting)ss);
                 }
             }

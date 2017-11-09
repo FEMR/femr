@@ -29,18 +29,18 @@
 @main(title, currentUser, adminStyles, adminScripts) {
     <div id="admin-panels">
         <div id="admin-left-panel">
-            <a href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-cog"></span>
+            <a href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
-            <a href="@InventoryController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-briefcase"></span>
+            <a href="@InventoryController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
                 Inventory</a>
-            <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-globe"></span>
+            <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-globe"></span>
                 Trips</a>
             @if(currentUser.getEmail == "superuser"){
-                <a href="@TabController.manageGet()" class="fButton userBtns fOtherButton fAdminButton"><span class="glyphicon glyphicon-wrench"></span>
+                <a href="@TabController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-wrench"></span>
                     Tabs</a>
 
             }
-            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns"><span class="glyphicon glyphicon-user"></span>
+            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-user"></span>
                 Users</a>
         </div>
         <div id="admin-right-panel">

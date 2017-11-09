@@ -639,12 +639,6 @@ public class DatabaseSeeder {
                     systemSettingRepository.update((SystemSetting)ss);
                 }
             }
-            if (ss.getName().equals("Research Only")){
-                if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
-                    ss.setDescription("When checked, turns off all functionality except research. Not to be used in a clinic environment");
-                    systemSettingRepository.update((SystemSetting)ss);
-                }
-            }
             if (ss.getName().equals("Diabetes Prompt")){
                 if (StringUtils.isNullOrWhiteSpace(ss.getDescription())){
                     ss.setDescription("When checked, asks a physician in medical if they screened a patient for diabetes when blood pressure is over 135/80 and age is over 18 OR older than 25 and BMI greater than or equal to 25");

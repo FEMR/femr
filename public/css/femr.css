@@ -81,6 +81,10 @@ hr {
     text-decoration: none;
     color: #000000;
 }
+.fAdminButtonLeftTextAlign {
+    text-align: left;
+    padding-left:50px;
+}
 .fRedButton{
     /*background-color: rgb(198, 0, 0);*/
     background-color: #ad0000;

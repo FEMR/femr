@@ -366,30 +366,16 @@ public class ItemModelMapper implements IItemModelMapper {
 
         if (isCounseled != null)
             prescriptionItem.setCounseled(isCounseled);
-/*
-        if (medication != null) {
 
-            MedicationItem medicationItem;
-            //Inventory isn't coming through
-            if(quantityCurrent != null && quantityInitial != null){
+        if (medicationItem != null) {
+            if (medicationItem.getQuantityCurrent() == null)
+                prescriptionItem.setFormularyMessage("Medication is not found in the formulary");
+            else if (amount > medicationItem.getQuantityCurrent())
+                prescriptionItem.setFormularyMessage("Not Enough Medication Remaining to Dispense!");
+        } else {
+            prescriptionItem.setFormularyMessage("Medication is not found in the formulary");
+        }
 
-                medicationItem = createMedicationItem(medication, quantityCurrent, quantityInitial, null, null, null);
-                prescriptionItem.setMedicationRemaining( quantityCurrent );
-            }
-            else{
-                medicationItem = createMedicationItem(medication, null, null, null, null, null);
-            }
-
-
-
-            prescriptionItem.setMedicationID(medicationItem.getId());
-
-            if (medicationItem.getForm() != null)
-                prescriptionItem.setMedicationForm(medicationItem.getForm());
-
-            if (medicationItem.getActiveIngredients() != null)
-                prescriptionItem.setMedicationActiveDrugs(medicationItem.getActiveIngredients());
-        }*/
         prescriptionItem.setMedicationItem(medicationItem);
         prescriptionItem.setMedicationID(medicationItem.getId());//redundant, but keeping in for now to debug
         return prescriptionItem;

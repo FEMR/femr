@@ -98,24 +98,34 @@ public class SearchService implements ISearchService {
         }
 
         try {
-            //IPatient savedPatient = patientRepository.findOne(query);
+            IPatient savedPatient = patientRepository.retrievePatientById(patientId);
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.retrievePatientEncountersByPatientIdDesc(patientId);
-            if (patientEncounters.size() < 1) throw new Exception();
 
-            IPatientEncounter recentEncounter = patientEncounters.get(0);
-            IPatient savedPatient = patientEncounters.get(0).getPatient();
-            Integer patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
-            Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer diabetic = QueryHelper.findPatientDiabetic(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer alcohol = QueryHelper.findPatientAlcohol(patientEncounterVitalRepository, recentEncounter.getId());
-
+            Integer patientHeightFeet = null;
+            Integer patientHeightInches = null;
+            Float patientWeight = null;
+            Integer weeksPregnant = null;
+            Integer smoker = null;
+            Integer diabetic = null;
+            Integer alcohol = null;
             String ageClassification = null;
-            if (recentEncounter.getPatientAgeClassification() != null){
-                ageClassification = recentEncounter.getPatientAgeClassification().getName();
+            if (patientEncounters.size() > 0){
+
+                IPatientEncounter recentEncounter = patientEncounters.get(0);
+                patientHeightFeet = QueryHelper.findPatientHeightFeet(patientEncounterVitalRepository, recentEncounter.getId());
+                patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
+                patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
+                weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, recentEncounter.getId());
+                smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
+                diabetic = QueryHelper.findPatientDiabetic(patientEncounterVitalRepository, recentEncounter.getId());
+                alcohol = QueryHelper.findPatientAlcohol(patientEncounterVitalRepository, recentEncounter.getId());
+
+                if (recentEncounter.getPatientAgeClassification() != null){
+                    ageClassification = recentEncounter.getPatientAgeClassification().getName();
+                }
             }
+
+
             
             String pathToPhoto = null;
             Integer photoId = null;
@@ -271,15 +281,14 @@ public class SearchService implements ISearchService {
 
         try {
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.retrievePatientEncountersByPatientIdAsc(patientId);
-            if (patientEncounters.size() < 1) {
-                response.addError("", "That patient does not exist.");
-                return response;
-            }
-            IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
-            PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(currentPatientEncounter);
-            response.setResponseObject(patientEncounterItem);
+            if (patientEncounters.size() > 0) {
 
+                IPatientEncounter currentPatientEncounter = patientEncounters.get(patientEncounters.size() - 1);
+                PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(currentPatientEncounter);
+                response.setResponseObject(patientEncounterItem);
+            }
         } catch (Exception ex) {
+
             response.addError("exception", ex.getMessage());
         }
 

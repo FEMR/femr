@@ -68,9 +68,7 @@
                                     Prescriber: @prescription.getPrescriberLastName, @prescription.getPrescriberFirstName</span>
                             </div>
                             <div class="medicationRemaining">Current Quantity: @prescription.getMedicationItem.getQuantityCurrent</div>
-                            @if(prescription.getAmount > prescription.getMedicationItem.getQuantityCurrent) {
-                                <div class="lowMedication">Not Enough Medication Remaining to Dispense!</div>
-                            }
+                                <div class="lowMedication">@prescription.getFormularyMessage</div>
                             <div class="replacement hidden">
                                 <div class="prescription-grid prescriptionHeader">
                                     <label class="prescription-field prescriptionName" for="prescription">Prescription</label>

@@ -27,6 +27,7 @@ import femr.common.models.*;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.history.*;
+import femr.ui.models.triage.DeleteViewModelPost;
 import femr.ui.views.html.history.indexEncounter;
 import femr.ui.views.html.history.indexPatient;
 import femr.ui.views.html.partials.history.listTabFieldHistory;

@@ -20,6 +20,16 @@ public interface IEncounterRepository {
     IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId);
 
     /**
+     * Deletes a patient's encounter. this is a soft delete
+     *
+     * @param encounterId id of the encounter to delete, not null
+     * @param reason reason that the user is deleting the encounter, may be null
+     * @param userId id of the user deleting the encounter, not null
+     * @return the deleted patient encounter
+     */
+    IPatientEncounter deletePatientEncounter(int encounterId, String reason, int userId);
+
+    /**
      * Retrieves all patient encounters with provided constraints
      *
      * @param from patient encounters greater than or equal to this date, may be null

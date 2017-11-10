@@ -47,6 +47,7 @@ POST        /pharmacy                                          @femr.ui.controll
 GET         /history/encounter/:id                             @femr.ui.controllers.HistoryController.indexEncounterGet(id: Integer)
 POST        /history/encounter/updateField/:id                 @femr.ui.controllers.HistoryController.updateEncounterPost(id: Integer)
 GET         /history/encounter/listTabFieldHistory/:id         @femr.ui.controllers.HistoryController.listTabFieldHistoryGet(id: Integer)
+POST        /history/encounter/delete/:id                      @femr.ui.controllers.TriageController.deleteEncounterPost(id: Integer,encounterId: Integer)
 GET         /history/patient/:query                            @femr.ui.controllers.HistoryController.indexPatientGet(query: String)
 #Search
 GET         /search/:page                                      @femr.ui.controllers.SearchController.handleSearch(page: String)
@@ -65,7 +66,6 @@ GET         /triage/:id                                        @femr.ui.controll
 GET         /triage                                            @femr.ui.controllers.TriageController.indexGet()
 POST        /triage                                            @femr.ui.controllers.TriageController.indexPost(id: Integer)
 POST        /triage/:id                                        @femr.ui.controllers.TriageController.deletePatientPost(id: Integer)
-
 #Medical
 POST        /medical/updateVitals/:id                          @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
 GET         /medical/newVitals                                 @femr.ui.controllers.MedicalController.newVitalsGet()

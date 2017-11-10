@@ -196,7 +196,5 @@ public class Patient implements IPatient {
 
     @Override
     public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
-    
-    
 
 }

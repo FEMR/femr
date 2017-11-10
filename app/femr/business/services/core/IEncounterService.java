@@ -105,6 +105,16 @@ public interface IEncounterService {
     ServiceResponse<List<ProblemItem>> createProblems(List<String> problemValues, int encounterId, int userId);
 
     /**
+     * Deletes a patient encounter
+     *
+     * @param deleteByUserID id of the user deleting the encounter, not null
+     * @param reason reason that the user is deleting the encounter, may be null
+     * @param encounterId id of the encounter to delete, not null
+     * @return a service response that contains the deleted patient encounter item
+     */
+    ServiceResponse<PatientEncounterItem> deleteEncounter( int deleteByUserID, String reason,int encounterId);
+
+    /**
      * Retrieves all problems.
      *
      * @param encounterId id of the encounter, not null

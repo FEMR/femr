@@ -322,6 +322,24 @@ public class TriageController extends Controller {
         return redirect(routes.TriageController.indexGet());
     }
 
+   public Result deleteEncounterPost(int patientId,int encounterId){
+
+       CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
+        DeleteViewModelPost reasonEncounterDeleted = DeleteViewModelForm.bindFromRequest().get();
+        if(reasonEncounterDeleted.getReasonEncounterDeleted().equals("")){
+            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
+
+        }
+        else {
+            //Method sets encounter as deleted in the database
+            ServiceResponse<PatientEncounterItem> patientItemResponse = encounterService.deleteEncounter(currentUser.getId(), reasonEncounterDeleted.getReasonEncounterDeleted(), encounterId);
+
+            if (patientItemResponse.hasErrors())
+                throw new RuntimeException();
+            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
+        }
+    }
     private boolean isDiabetesPromptTurnedOn(){
 
         //get system settings to determine if diabetes prompt is turned on

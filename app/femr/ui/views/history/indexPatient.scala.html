@@ -1,4 +1,3 @@
-@import femr.ui.controllers.HistoryController
 @(currentUser: femr.common.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.history.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
 
 @import femr.ui.views.html.layouts.main
@@ -6,6 +5,7 @@
 @import femr.ui.controllers.routes.MedicalController
 @import femr.ui.controllers.routes.PharmaciesController
 @import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.HistoryController
 @import femr.data.models.mysql.Roles
 
 @* List of currentUser roles to use with the Roles class *@
@@ -122,11 +122,10 @@
                         <a href="/history/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
                             <p class="date">@patientEncounter.getTriageDateOfVisit</p>
                             @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0){
-                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1) @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
+                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1)  @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
                             }else{
                                 <p class ="chiefComplaint"><strong>Chief complaint: </strong> N/A</p>
                             }
-
                         </a>
                     </li>
                     <div class="medicalHistoryLineDivide"></div>

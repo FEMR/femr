@@ -161,7 +161,6 @@ public class EncounterService implements IEncounterService {
         }
 
         try {
-
             IPatientEncounter patientEncounter = patientEncounterRepository.savePatientEncounterPharmacyCheckin(encounterId, userId, DateTime.now());
             response.setResponseObject(patientEncounter);
         } catch (Exception ex) {
@@ -250,10 +249,12 @@ public class EncounterService implements IEncounterService {
 
             ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
                     .where()
-                    .eq("patient_encounter_id", encounterId);
+                    .eq("patient_encounter_id", encounterId)
+                    .isNull("isDeleted");
             ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                     .where()
-                    .eq("patient_encounter_id", encounterId);
+                    .eq("patient_encounter_id", encounterId)
+                    .isNull("isDeleted");
 
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
@@ -348,7 +349,8 @@ public class EncounterService implements IEncounterService {
 
             ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
                     .where()
-                    .eq("patient_encounter_id", encounterId);
+                    .eq("patient_encounter_id", encounterId)
+                    .isNull("isDeleted");;
 
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
@@ -495,6 +497,28 @@ public class EncounterService implements IEncounterService {
         return response;
 
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<PatientEncounterItem> deleteEncounter(int deleteByUserID, String reason, int encounterId) {
+
+        ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
+
+        try {
+
+            IPatientEncounter savedEncounter = patientEncounterRepository.deletePatientEncounter(encounterId, reason, deleteByUserID);
+            response.setResponseObject(itemModelMapper.createPatientEncounterItem(savedEncounter));
+
+        } catch (Exception ex) {
+
+            Logger.error("PatientEncounterService-deleteEncounter", ex);
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
     }
 
     /**

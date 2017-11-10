@@ -11,10 +11,14 @@
     @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
 
     @import femr.ui.views.html.partials.encounter.dynamicTabSpan
+    @import femr.data.models.mysql.Roles
 
     @import collection.JavaConversions._
     @import femr.ui.controllers.routes.PDFController
+    @import femr.ui.controllers.routes.TriageController
 
+    @* List of currentUser roles to use with the Roles class *@
+    @roles = @{currentUser.getRoles().map(r => r.getId())}
 
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.2.4.min.js")"></script>
@@ -38,7 +42,21 @@
                 <p>@viewModel.getPatientItem.getFirstName @viewModel.getPatientItem.getLastName
                     (@viewModel.getPatientItem.getId)</p>
 
-                <a href="@PDFController.index(viewModel.getPatientEncounterItem.getId)" target="_blank" id="historyButton" class="fButton fRedButton pull-right">Generate PDF</a>
+                <a href="@PDFController.index(viewModel.getPatientEncounterItem.getId)" target="_blank" id="historyButton" class="btn btn-default pull-left">Generate PDF</a>
+
+                @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
+                    @helper.form(action = TriageController.deleteEncounterPost(viewModel.getPatientItem.getId, viewModel.getPatientEncounterItem.getId)) {
+                        <input type="hidden" name="reasonEncounterDeleted" class="reasonEncounterDeleted" />
+                        <button hidden="true" type="submit" class="deleteEcounter"></button>
+
+                        <span>
+                            <button type="submit" class="deleteEncounterbtn btn btn-danger pull-right" >
+                                Delete this Encounter</button>
+                        </span>
+                    }
+                }
+
+
             </div>
 
             <div class="encounterViewBodyHeader">

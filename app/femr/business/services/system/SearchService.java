@@ -327,6 +327,7 @@ public class SearchService implements ISearchService {
                 .fetch("medication.medicationInventory" )
                 .fetch("patientEncounter")
                 .where()
+                .isNull("patientEncounter.isDeleted")
                 .eq("encounter_id", encounterId);
         try {
 
@@ -406,6 +407,7 @@ public class SearchService implements ISearchService {
         ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
                 .fetch("patientEncounter")
                 .where()
+                .isNull("patientEncounter.isDeleted")
                 .eq("encounter_id", encounterId)
                 .ne("user_id_pharmacy", null);
 

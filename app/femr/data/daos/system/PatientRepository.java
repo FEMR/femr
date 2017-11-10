@@ -169,6 +169,7 @@ public class PatientRepository implements IPatientRepository {
                     .fetch("patientEncounters.missionTrip.missionCity")
                     .fetch("patientEncounters.missionTrip.missionCity.missionCountry")
                     .where()
+                    .isNull("patientEncounters.isDeleted")
                     .isNull("isDeleted")
                     .eq("patientEncounters.missionTrip.missionCity.missionCountry.name", country);
 

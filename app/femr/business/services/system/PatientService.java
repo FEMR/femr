@@ -369,7 +369,32 @@ public class PatientService implements IPatientService {
 
         return response;
     }
+    //mazen
+    public ServiceResponse<PatientItem> deleteEncounter(int id, int deleteByUserID, String reason) {
 
+        ServiceResponse<PatientItem> response = new ServiceResponse<>();
+
+        if (StringUtils.isNullOrWhiteSpace(reason)) {
+
+            response.addError("", "reason not provided");
+            return response;
+        }
+
+        try {
+
+            IPatient savedPatient = patientRepository.retrievePatientById(id);
+            savedPatient.setIsDeleted(DateTime.now());
+            savedPatient.setDeletedByUserId(deleteByUserID);
+            savedPatient.setReasonDeleted(reason);
+            patientRepository.savePatient(savedPatient);
+        } catch (Exception ex) {
+
+            Logger.error("PatientService-deletePatient", ex);
+            response.addError("exception", ex.getMessage());
+        }
+
+        return response;
+    }
     /**
      * Retrieve the patient's photo path or null if it doesn't exist
      *

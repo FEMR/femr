@@ -64,7 +64,7 @@ GET         /triage/:id                                        @femr.ui.controll
 GET         /triage                                            @femr.ui.controllers.TriageController.indexGet()
 POST        /triage                                            @femr.ui.controllers.TriageController.indexPost(id: Integer)
 POST        /triage/:id                                        @femr.ui.controllers.TriageController.deletePatientPost(id: Integer)
-
+POST        /triage/:id                                        @femr.ui.controllers.TriageController.deleteEncounterPost(id: Integer)
 #Medical
 POST        /medical/updateVitals/:id                          @femr.ui.controllers.MedicalController.updateVitalsPost(id: Integer)
 GET         /medical/newVitals                                 @femr.ui.controllers.MedicalController.newVitalsGet()

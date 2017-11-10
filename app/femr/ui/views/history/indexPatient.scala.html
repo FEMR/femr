@@ -122,12 +122,20 @@
                         <a href="/history/encounter/@patientEncounter.getId" class="encbtns btn btn-default btn-xs btn-block" role="button" type="button">
                             <p class="date">@patientEncounter.getTriageDateOfVisit</p>
                             @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0){
-                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1) @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
+                                <p class ="chiefComplaint"><strong>Chief complaint: </strong> @for(x <- 1 to patientEncounter.getChiefComplaints.size) { @patientEncounter.getChiefComplaints.get(x-1)  @if(x < patientEncounter.getChiefComplaints.size){ | }}</p>
                             }else{
                                 <p class ="chiefComplaint"><strong>Chief complaint: </strong> N/A</p>
                             }
-
                         </a>
+                        @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
+                            @helper.form(action = TriageController.deleteEncounterPost(viewModel.getPatientItem.getId)){
+                                <input type="hidden" name="reasonDeleted" id="reasonEncounterDeleted" />
+                                <button hidden="true" type="submit"  id="deleteEcounter"></button>
+                            }
+                            <span>
+                                <button type="submit" id="deleteEncounterbtn" class="delete-encounter"> Delete this Encounter</button>
+                            </span>
+                        }
                     </li>
                     <div class="medicalHistoryLineDivide"></div>
                 }

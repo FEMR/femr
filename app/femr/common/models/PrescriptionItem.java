@@ -42,6 +42,7 @@ public class PrescriptionItem {
     private Boolean isCounseled;
 
     private MedicationItem medicationItem;
+    private String formularyMessage;
 
     public PrescriptionItem(String name){
         medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
@@ -210,5 +211,13 @@ public class PrescriptionItem {
 
     public void setMedicationItem(MedicationItem medicationItem) {
         this.medicationItem = medicationItem;
+    }
+
+    public String getFormularyMessage() {
+        return formularyMessage;
+    }
+
+    public void setFormularyMessage(String formularyMessage) {
+        this.formularyMessage = formularyMessage;
     }
 }

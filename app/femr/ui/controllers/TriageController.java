@@ -135,7 +135,7 @@ public class TriageController extends Controller {
         viewModelGet.setVitalNames(vitalServiceResponse.getResponseObject());
         viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
         //Patient has an open encounter for medical
-        if(patientEncounter.getIsClosed() == false){
+        if(patientEncounter != null && !patientEncounter.getIsClosed()){
             viewModelGet.setLinkToMedical(true);
         }
         else{

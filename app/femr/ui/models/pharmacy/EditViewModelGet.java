@@ -76,5 +76,4 @@ public class EditViewModelGet {
     public void setMedicationAdministrationItems(List<MedicationAdministrationItem> medicationAdministrationItems) {
         this.medicationAdministrationItems = medicationAdministrationItems;
     }
-
 }

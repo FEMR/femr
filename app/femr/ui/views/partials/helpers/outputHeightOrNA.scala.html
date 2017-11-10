@@ -2,12 +2,14 @@
 
 
     @if(isMetric) {
-        @if(feet == null || inches == null  ) {
+        @if(feet == null && inches == null ) {
             @emptyValue
         } else {
+
             @* Output height in meters with centimeters 0 padded on the left
-             * Hack to do it on a string using String.Format() *@
-            @emptyValue
+            * Hack to do it on a string using String.Format() *@
+            @("%s.%2sm".format(feet, inches).replace(' ', '0'))
+            
         }
     } else {
 		@* Output empty value if feet and inches are equal to "null" string *@

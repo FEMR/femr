@@ -8,6 +8,7 @@ import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IEncounterRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.PatientEncounter;
+import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 import play.Logger;
 
@@ -71,9 +72,32 @@ public class EncounterRepository implements IEncounterRepository {
      * {@inheritDoc}
      */
     @Override
+    public IPatientEncounter deletePatientEncounter(int encounterId, String reason, int userId) {
+
+        IPatientEncounter patientEncounter;
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("id", encounterId);
+
+        patientEncounter = query.findUnique();
+        if (patientEncounter != null) {
+
+            patientEncounter.setEncounterDeleted(dateUtils.getCurrentDateTime());
+            patientEncounter.setDeletedByUserId(userId);
+            patientEncounter.setReasonDeleted(reason);
+            Ebean.save(patientEncounter);
+        }
+
+        return patientEncounter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IPatientEncounter> retrievePatientEncounters(DateTime from, DateTime to, Integer tripId) {
 
-        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where();
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().isNull("isDeleted");
         if (from != null) {
 
             query = query.where().ge("date_of_triage_visit", from);
@@ -111,6 +135,7 @@ public class EncounterRepository implements IEncounterRepository {
 
             Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                     .where()
+                    .isNull("isDeleted")
                     .eq("patient_id", patientId)
                     .order()
                     .asc("date_of_triage_visit");
@@ -136,6 +161,7 @@ public class EncounterRepository implements IEncounterRepository {
 
             Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                     .where()
+                    .isNull("isDeleted")
                     .eq("patient_id", patientId)
                     .order()
                     .desc("date_of_triage_visit");
@@ -161,6 +187,7 @@ public class EncounterRepository implements IEncounterRepository {
 
             ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                     .where()
+                    .isNull("isDeleted")
                     .eq("id", id);
             response = query.findUnique();
         } catch (Exception ex) {

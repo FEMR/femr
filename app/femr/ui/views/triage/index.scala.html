@@ -34,7 +34,7 @@
         }
         @if(viewModel.isLinkToMedical()){
 
-           <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()">Go To Medical</a></p>
+           <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank">Go To Medical</a></p>
         }
         <h2 class="text-center">Check In - Triage</h2>
 
@@ -263,7 +263,7 @@
 
 
             @if(viewModel.getPatient.getId != 0) {
-                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left">Patient History</a>
+                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>
             }
 
         </div>

@@ -43,6 +43,20 @@ public class dateUtils {
         return years.getYears();
     }
 
+    //input saved DateTime and convert it to a string in the format "yyyy/MM/dd HH:mm:ss"
+    /**
+     * Returns a string in the format "yyyy/MM/dd HH:mm:ss"
+     * *
+     * @param timeStamp the birthdate of the patient
+     * @return a string with the patient's age
+     */
+    public static String convertTimeToString(DateTime timeStamp){
+        DateTimeFormatter dateFormat = DateTimeFormat
+                .forPattern("yyyy/MM/dd HH:mm:ss");
+        String dt = dateFormat.print(timeStamp).toString();
+        return dt;
+    }
+
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
                 .forPattern("yyyy/MM/dd HH:mm:ss");

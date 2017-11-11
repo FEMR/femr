@@ -29,8 +29,10 @@ import femr.common.models.MedicationItem;
 import femr.common.models.InventoryExportItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.MedicationInventory;
+import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 import femr.data.models.mysql.Medication;
 import femr.util.stringhelpers.CSVWriterGson;
@@ -44,17 +46,20 @@ public class InventoryService implements IInventoryService {
 
     private final IRepository<IMedication> medicationRepository;
     private final IRepository<IMedicationInventory> medicationInventoryRepository;
+    private final IUserRepository userRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public InventoryService(IRepository<IMedication> medicationRepository,
                             IRepository<IMedicationInventory> medicationInventoryRepository,
+                            IUserRepository userRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.medicationInventoryRepository = medicationInventoryRepository;
+        this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -83,8 +88,12 @@ public class InventoryService implements IInventoryService {
 
         for (IMedicationInventory m : medicationsInventory) {
 
+            IUser user = userRepository.retrieveUserById(m.getCreatedBy());
+            String name = user.getLastName() + ", " + user.getFirstName();
+            String timeStamp = dateUtils.convertTimeToString(m.getTimeAdded());
+
             medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(),
-                    m.getQuantityInitial(), m.getIsDeleted(), m.getTimeAdded(), m.getCreatedBy()));
+                    m.getQuantityInitial(), m.getIsDeleted(), timeStamp, name));
         }
         response.setResponseObject(medicationItems);
 
@@ -271,9 +280,14 @@ public class InventoryService implements IInventoryService {
       // Convert result of query to a list to export
       List<InventoryExportItem> inventoryExport = new ArrayList<>();
       for (IMedicationInventory med : medicationInventory) {
-        inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
+
+          IUser user = userRepository.retrieveUserById(med.getCreatedBy());
+          String name = user.getLastName() + ", " + user.getFirstName();
+          String timeStamp = dateUtils.convertTimeToString(med.getTimeAdded());
+
+          inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
                 med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted(),
-                med.getTimeAdded(), med.getCreatedBy())));
+                timeStamp, name)));
       }
 
       // Convert export list to json

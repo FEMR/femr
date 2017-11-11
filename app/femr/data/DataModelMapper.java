@@ -245,7 +245,7 @@ public class DataModelMapper implements IDataModelMapper{
         IMedicationInventory medicationInventory;
         ISessionService sessionService = sessionServiceProvider.get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        String timeStamp = dateUtils.getCurrentDateTimeString();
+        DateTime timeStamp = DateTime.now();
 
         try{
 
@@ -255,7 +255,7 @@ public class DataModelMapper implements IDataModelMapper{
             medicationInventory.setQuantityCurrent(quantityCurrent);
             medicationInventory.setQuantityInitial(quantityTotal);
             medicationInventory.setTimeAdded(timeStamp);
-            medicationInventory.setCreatedBy(currentUser.getFirstName() + " " + currentUser.getLastName());
+            medicationInventory.setCreatedBy(currentUser.getId());
         }catch(Exception ex){
 
             medicationInventory = null;

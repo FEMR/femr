@@ -28,4 +28,11 @@ public interface IMedicationInventory {
 
     void setIsDeleted(DateTime isDeleted);
 
+    DateTime getTimeAdded();
+
+    void setTimeAdded(DateTime timeAdded);
+
+    Integer getCreatedBy();
+
+    void setCreatedBy(Integer createdBy);
 }

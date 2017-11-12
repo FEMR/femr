@@ -30,11 +30,11 @@ public class MedicationInventory implements IMedicationInventory{
     @Column(name = "isDeleted", nullable = true)
     private DateTime isDeleted;
 
-    @Column(name = "timeAdded", unique = false, nullable = false)
+    @Column(name = "timeAdded")
     private DateTime timeAdded;
 
-    @Column(name = "createdBy", unique = false, nullable = false)
-    private int createdBy;
+    @Column(name = "createdBy")
+    private Integer createdBy;
 
     @Override
     public int getId() {
@@ -96,8 +96,8 @@ public class MedicationInventory implements IMedicationInventory{
     public void setTimeAdded(DateTime timeAdded) { this.timeAdded = timeAdded; }
 
     @Override
-    public int getCreatedBy() { return createdBy; }
+    public Integer getCreatedBy() { return createdBy; }
 
     @Override
-    public void setCreatedBy(int createdBy) { this.createdBy = createdBy; }
+    public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
 }

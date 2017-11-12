@@ -43,12 +43,11 @@ public class dateUtils {
         return years.getYears();
     }
 
-    //input saved DateTime and convert it to a string in the format "yyyy/MM/dd HH:mm:ss"
     /**
      * Returns a string in the format "yyyy/MM/dd HH:mm:ss"
      * *
-     * @param timeStamp the birthdate of the patient
-     * @return a string with the patient's age
+     * @param timeStamp an unformated DateTime
+     * @return the time as a string
      */
     public static String convertTimeToString(DateTime timeStamp){
         DateTimeFormatter dateFormat = DateTimeFormat

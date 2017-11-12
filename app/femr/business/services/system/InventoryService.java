@@ -88,10 +88,20 @@ public class InventoryService implements IInventoryService {
 
         for (IMedicationInventory m : medicationsInventory) {
 
-            IUser user = userRepository.retrieveUserById(m.getCreatedBy());
-            String name = user.getLastName() + ", " + user.getFirstName();
-            String timeStamp = dateUtils.convertTimeToString(m.getTimeAdded());
+            String name;
+            if(m.getCreatedBy() == null) {
+                name = "";
+            } else {
+                IUser user = userRepository.retrieveUserById(m.getCreatedBy());
+                name = user.getLastName() + ", " + user.getFirstName();
+            }
 
+            String timeStamp;
+            if(m.getTimeAdded() == null) {
+                timeStamp = "";
+            } else {
+                timeStamp = dateUtils.convertTimeToString(m.getTimeAdded());
+            }
             medicationItems.add(itemModelMapper.createMedicationItem(m.getMedication(), m.getQuantityCurrent(),
                     m.getQuantityInitial(), m.getIsDeleted(), timeStamp, name));
         }
@@ -281,10 +291,20 @@ public class InventoryService implements IInventoryService {
       List<InventoryExportItem> inventoryExport = new ArrayList<>();
       for (IMedicationInventory med : medicationInventory) {
 
-          IUser user = userRepository.retrieveUserById(med.getCreatedBy());
-          String name = user.getLastName() + ", " + user.getFirstName();
-          String timeStamp = dateUtils.convertTimeToString(med.getTimeAdded());
+          String name;
+          if(med.getCreatedBy() == null) {
+              name = "";
+          } else {
+              IUser user = userRepository.retrieveUserById(med.getCreatedBy());
+              name = user.getLastName() + ", " + user.getFirstName();
+          }
 
+          String timeStamp;
+          if(med.getTimeAdded() == null) {
+              timeStamp = "";
+          } else {
+              timeStamp = dateUtils.convertTimeToString(med.getTimeAdded());
+          }
           inventoryExport.add(new InventoryExportItem(itemModelMapper.createMedicationItem(
                 med.getMedication(), med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted(),
                 timeStamp, name)));

@@ -32,7 +32,7 @@ public interface IMedicationInventory {
 
     void setTimeAdded(DateTime timeAdded);
 
-    int getCreatedBy();
+    Integer getCreatedBy();
 
-    void setCreatedBy(int createdBy);
+    void setCreatedBy(Integer createdBy);
 }

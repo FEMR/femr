@@ -46,7 +46,7 @@ public class PatientServiceTest {
         mockPatientRepository = new MockPatientRepository();
         mockDataModelMapper =  new MockDataModelMapper();
         mockItemModelMapper = new MockItemModelMapper();
-        patientService = new PatientService(mockPatientRepository, mockDataModelMapper, mockItemModelMapper);
+        patientService = new PatientService(mockPatientRepository, patientEncounterRepository, mockDataModelMapper, mockItemModelMapper);
     }
 
     @After

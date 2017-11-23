@@ -95,5 +95,5 @@ public interface IPatientService {
      * @return the deleted patient and/or errors if they exist
      */
     ServiceResponse<PatientItem> deletePatient(int patientId, int deleteByUserID, String reason);
-    public ServiceResponse<PatientItem> deleteEncounter(int id, int deleteByUserID, String reason);
+    ServiceResponse<PatientItem> deleteEncounter(int id, int deleteByUserID, String reason,int encounterId);
     }

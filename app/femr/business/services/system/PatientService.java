@@ -24,8 +24,10 @@ import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
 import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.*;
+import femr.data.models.mysql.PatientEncounter;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
 import play.Logger;
@@ -38,15 +40,17 @@ import java.util.Date;
 public class PatientService implements IPatientService {
 
     private final IPatientRepository patientRepository;
+    private final IRepository <IPatientEncounter> patientEncounterRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public PatientService(IPatientRepository patientRepository,
-                          IDataModelMapper dataModelMapper,
+                          IRepository<IPatientEncounter> patientEncounterRepository, IDataModelMapper dataModelMapper,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.patientRepository = patientRepository;
+        this.patientEncounterRepository = patientEncounterRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -369,8 +373,7 @@ public class PatientService implements IPatientService {
 
         return response;
     }
-    //mazen
-    public ServiceResponse<PatientItem> deleteEncounter(int id, int deleteByUserID, String reason) {
+    public ServiceResponse<PatientItem> deleteEncounter(int id, int deleteByUserID, String reason, int encounterId) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
@@ -383,9 +386,11 @@ public class PatientService implements IPatientService {
         try {
 
             IPatient savedPatient = patientRepository.retrievePatientById(id);
-            savedPatient.setIsDeleted(DateTime.now());
-            savedPatient.setDeletedByUserId(deleteByUserID);
-            savedPatient.setReasonDeleted(reason);
+            //IPatientEncounterTabField savedEncounters = patientEncounterRepository;
+            IPatientEncounter savedEncounter = savedPatient.getPatientEncounters().get(encounterId);
+            savedEncounter.setEncounterDeleted(DateTime.now());
+            savedEncounter.setDeletedByUserId(deleteByUserID);
+            savedEncounter.setReasonDeleted(reason);
             patientRepository.savePatient(savedPatient);
         } catch (Exception ex) {
 

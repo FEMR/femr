@@ -308,13 +308,14 @@ public class TriageController extends Controller {
         return redirect(routes.TriageController.indexGet());
     }
 
-    public Result deleteEncounterPost(int patientId){
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
+   public Result deleteEncounterPost(int patientId,int encounterId){
+    //patientEncounter.getId
+           System.out.print("test");
+       CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
         DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
         //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deleteEncounter(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
+        ServiceResponse<PatientItem> patientItemResponse= patientService.deleteEncounter(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted(),encounterId);
 
         if(patientItemResponse.hasErrors())
             throw new RuntimeException();

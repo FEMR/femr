@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.List;
 
 public class MockItemModelMapper implements IItemModelMapper{
+
+    public boolean createPatientItemWasCalled = false;
+
     @Override
     public CityItem createCityItem(String cityName, String countryName) {
         return null;
@@ -21,7 +24,7 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
-    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
         return null;
     }
 
@@ -36,8 +39,32 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
-    public PatientItem createPatientItem(int id, String firstName, String lastName, String phoneNumber, String city, String address, int userId, Date age, String sex, Integer weeksPregnant, Integer heightFeet, Integer heightInches, Float weight, String pathToPatientPhoto, Integer photoId, String ageClassification) {
-        return null;
+    public PatientItem createPatientItem(int id, String firstName, String lastName, String phoneNumber, String city, String address,
+                                         int userId, Date age, String sex, Integer weeksPregnant, Integer heightFeet, Integer heightInches,
+                                         Float weight, String pathToPatientPhoto, Integer photoId, String ageClassification) {
+
+
+        //don't really need a mock patient item yet
+        PatientItem patientItem = new PatientItem();
+        patientItem.setId(id);
+        patientItem.setFirstName(firstName);
+        patientItem.setLastName(lastName);
+        patientItem.setPhoneNumber(phoneNumber);
+        patientItem.setCity(city);
+        patientItem.setAddress(address);
+        patientItem.setUserId(userId);
+        patientItem.setSex(sex);
+        patientItem.setWeeksPregnant(weeksPregnant);
+        patientItem.setHeightFeet(heightFeet);
+        patientItem.setHeightInches(heightInches);
+        patientItem.setWeight(weight);
+        patientItem.setPathToPhoto(pathToPatientPhoto);
+        patientItem.setPhotoId(photoId);
+        patientItem.setBirth(age);
+        patientItem.setAge(ageClassification);
+
+        createPatientItemWasCalled = true;
+        return patientItem;
     }
 
     @Override

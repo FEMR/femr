@@ -139,18 +139,6 @@ public interface IDataModelMapper {
     IPatient createPatient(int userID, String firstName, String lastName, String phoneNumber, Date birthday, String sex, String address, String city, Integer photoID);
 
     /**
-     * Generate and provide an implementation of IPatientEncounter.
-     *
-     * @param patientID                  id of the patient, not null
-     * @param date                       date of checking for triage, not null
-     * @param userId                     id of the user creating the encounter, not null
-     * @param patientAgeClassificationId id of the age classification, may be null
-     * @param tripId                     id of the trip, may be null
-     * @return an implementation of IPatientEncounter or null if processing fails
-     */
-    IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId);
-
-    /**
      * Generate and provide an implementation of IPatientEncounterTabField
      *
      * @param tabFieldId       id of the field, not null
@@ -266,14 +254,4 @@ public interface IDataModelMapper {
      * @return a User reference object
      */
     IUser createUser(int userId);
-    
-    /**
-     * Uses the user provider to update a patient encounter with diabetes screening information
-     *
-     * @param patientEncounter the patient encounter to be updated, not null
-     * @param diabetesScreenerId the id of the physician that screened the patient for diabetes, not null
-     * @return a PatientEncounter ready to be updated with the date of screening and the physician that did the screening
-     */
-    IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId, Boolean isDiabetesScreened);
-
 }

@@ -35,6 +35,14 @@ public interface IPatientRepository {
     List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted);
 
     /**
+     * Retrieve a patient age classification from the database by its name.
+     *
+     * @param ageClassification name of the patient age classification, not null
+     * @return the patient age classification or NULL if not found or if errors occur
+     */
+    IPatientAgeClassification retrievePatientAgeClassification(String ageClassification);
+
+    /**
      *  Retrieve list of all patients that have not
      *  been deleted.
      *  @return list containing all patients or NULL if an error occurs

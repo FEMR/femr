@@ -104,11 +104,6 @@ public class MockDataModelMapper implements IDataModelMapper{
     }
 
     @Override
-    public IPatientEncounter createPatientEncounter(int patientID, DateTime date, int userId, Integer patientAgeClassificationId, Integer tripId) {
-        return null;
-    }
-
-    @Override
     public IPatientEncounterTabField createPatientEncounterTabField(int tabFieldId, int userId, String value, int encounterId, DateTime dateTaken, Integer chiefComplaintId) {
         return null;
     }
@@ -155,11 +150,6 @@ public class MockDataModelMapper implements IDataModelMapper{
 
     @Override
     public IUser createUser(int userId) {
-        return null;
-    }
-
-    @Override
-    public IPatientEncounter updatePatientEncounterWithDiabetesScreening(IPatientEncounter patientEncounter, int diabetesScreenerId, Boolean isDiabetesScreened) {
         return null;
     }
 }

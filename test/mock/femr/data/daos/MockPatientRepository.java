@@ -13,6 +13,7 @@ public class MockPatientRepository implements IPatientRepository{
 
     public boolean createPatientAgeClassificationWasCalled = false;
     public boolean retrieveAllPatientAgeClassificationsWasCalled = false;
+    public boolean retrievePatientAgeClassificationWasCalled = false;
     public boolean retrieveAllPatientsWasCalled = false;
     public boolean retrievePatientsInCountryWasCalled = false;
     public boolean retrievePatientByIdWasCalled = false;
@@ -56,6 +57,13 @@ public class MockPatientRepository implements IPatientRepository{
     }
 
     @Override
+    public IPatientAgeClassification retrievePatientAgeClassification(String ageClassification) {
+
+        retrievePatientAgeClassificationWasCalled = true;
+        return null;
+    }
+
+    @Override
     public List<? extends IPatient> retrieveAllPatients() {
 
         retrieveAllPatientsWasCalled = true;
@@ -73,6 +81,8 @@ public class MockPatientRepository implements IPatientRepository{
     public IPatient retrievePatientById(Integer id) {
 
         retrievePatientByIdWasCalled = true;
+        if (id == 0)
+            mockPatient = null;
         return mockPatient;
     }
 
@@ -94,6 +104,7 @@ public class MockPatientRepository implements IPatientRepository{
     public IPatient savePatient(IPatient patient) {
         
         savePatientWasCalled = true;
+
         return patient;
     }
 }

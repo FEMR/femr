@@ -55,6 +55,8 @@
                     <th>Medication</th>
                     <th>Current Quantity</th>
                     <th>Initial Quantity</th>
+                    <th>Date Added</th>
+                    <th>Added By</th>
                     <th>Remove</th>
                 </thead>
                 <tbody>
@@ -63,7 +65,6 @@
                         <tr>
                             <td>@m</td>
                             <td class="name">@viewModel.getMedications.get(m - 1).getFullName</td>
-
 
                             <td class="currentQuantity" value="@viewModel.getMedications.get(m-1).getId">
 
@@ -75,7 +76,7 @@
 
                             </td>
 
-                            <td class="totalQuantity" value="@viewModel.getMedications.get(m-1).getId" >
+                            <td class="totalQuantity" value="@viewModel.getMedications.get(m-1).getId">
 
                                 <span class="editTotalQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityTotal</span>
                                 <input class="editTotalInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityTotal" />
@@ -84,6 +85,9 @@
                                 <button type="button" class="btn btn-xs editTotalQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
 
                             </td>
+
+                            <td class="time">@viewModel.getMedications.get(m-1).getTimeAdded</td>
+                            <td class="created">@viewModel.getMedications.get(m-1).getCreatedBy</td>
                             <td>
 
                                 <button type="button" class="btn btn-danger removeBtn" data-medicationid="@viewModel.getMedications.get(m-1).getId" data-tripid="@currentUser.getTripId">Remove</button>

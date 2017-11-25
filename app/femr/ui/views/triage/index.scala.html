@@ -34,7 +34,7 @@
         }
         @if(viewModel.isLinkToMedical()){
 
-           <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()">Go To Medical</a></p>
+           <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank">Go To Medical</a></p>
         }
         <h2 class="text-center">Check In - Triage</h2>
 
@@ -142,7 +142,7 @@
                         </div>
 
                         <div class="vitalWrap">
-                            <label for="bloodPressureSystolic">Blood Pressure</label>
+                            <label for="bloodPressureSystolic" id="bloodPressureTitle">Blood Pressure</label>
                             <div class="doubleVital">
                                 <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(7).getName" placeholder="Systolic" name="@viewModel.getVitalNames.get(7).getName"/>
                                 <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(8).getName" placeholder="Diastolic" name="@viewModel.getVitalNames.get(8).getName"/>
@@ -263,16 +263,11 @@
 
 
             @if(viewModel.getPatient.getId != 0) {
-                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left">Patient History</a>
+                <a href="@HistoryController.indexPatientGet(viewModel.getPatient.getId.toString)" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>
             }
 
         </div>
-
-
-
-
-    </div>
-
+  </div>
 
     </div>
 }

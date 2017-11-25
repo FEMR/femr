@@ -29,20 +29,23 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
 import femr.data.IDataModelMapper;
 import femr.data.daos.IRepository;
+import femr.data.daos.core.IEncounterRepository;
+import femr.data.daos.core.IPatientRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
+import play.Logger;
 
 import java.util.*;
 
 public class EncounterService implements IEncounterService {
 
     private final IRepository<IChiefComplaint> chiefComplaintRepository;
-    private final IRepository<IPatientAgeClassification> patientAgeClassificationRepository;
-    private final IRepository<IPatientEncounter> patientEncounterRepository;
+    private final IPatientRepository patientRepository;
+    private final IEncounterRepository patientEncounterRepository;
     private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IUserRepository userRepository;
@@ -51,8 +54,8 @@ public class EncounterService implements IEncounterService {
 
     @Inject
     public EncounterService(IRepository<IChiefComplaint> chiefComplaintRepository,
-                            IRepository<IPatientAgeClassification> patientAgeClassificationRepository,
-                            IRepository<IPatientEncounter> patientEncounterRepository,
+                            IPatientRepository patientRepository,
+                            IEncounterRepository patientEncounterRepository,
                             IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository,
                             IRepository<ITabField> tabFieldRepository,
                             IUserRepository userRepository,
@@ -60,7 +63,7 @@ public class EncounterService implements IEncounterService {
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.chiefComplaintRepository = chiefComplaintRepository;
-        this.patientAgeClassificationRepository = patientAgeClassificationRepository;
+        this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
         this.tabFieldRepository = tabFieldRepository;
@@ -82,16 +85,20 @@ public class EncounterService implements IEncounterService {
             IUser nurseUser = userRepository.retrieveUserById(userId);
 
             //find the age classification of the patient, if it exists
-            ExpressionList<PatientAgeClassification> patientAgeClassificationExpressionList = QueryProvider.getPatientAgeClassificationQuery()
-                    .where()
-                    .eq("name", ageClassification);
-            IPatientAgeClassification patientAgeClassification = patientAgeClassificationRepository.findOne(patientAgeClassificationExpressionList);
+            IPatientAgeClassification patientAgeClassification = null;
+            try {
+
+                patientAgeClassification = patientRepository.retrievePatientAgeClassification(ageClassification);
+            } catch (Exception ex) {
+
+                Logger.error("EncounterService-createPatientEncounter", "invalid patient age classification caught in EncounterService");
+            }
+
             Integer patientAgeClassificationId = null;
             if (patientAgeClassification != null)
                 patientAgeClassificationId = patientAgeClassification.getId();
 
-            IPatientEncounter newPatientEncounter = dataModelMapper.createPatientEncounter(patientId, dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, tripId);
-            newPatientEncounter = patientEncounterRepository.create(newPatientEncounter);
+            IPatientEncounter newPatientEncounter = patientEncounterRepository.createPatientEncounter(patientId, dateUtils.getCurrentDateTime(), nurseUser.getId(), patientAgeClassificationId, tripId);
 
             List<IChiefComplaint> chiefComplaintBeans = new ArrayList<>();
             Integer chiefComplaintSortOrder = 0;
@@ -108,6 +115,8 @@ public class EncounterService implements IEncounterService {
 
             response.setResponseObject(itemModelMapper.createPatientEncounterItem(newPatientEncounter));
         } catch (Exception ex) {
+
+            Logger.error("EncounterService-createPatientEncounter", ex);
             response.addError("exception", ex.getMessage());
         }
 
@@ -119,27 +128,21 @@ public class EncounterService implements IEncounterService {
      */
     @Override
     public ServiceResponse<PatientEncounterItem> checkPatientInToMedical(int encounterId, int userId) {
+
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
+
         if (encounterId < 1) {
             response.addError("", "encounterId must be greater than 0");
             return response;
         }
 
-        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
-
         try {
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
-            patientEncounter.setDateOfMedicalVisit(DateTime.now());
-            IUser user = userRepository.retrieveUserById(userId);
-            patientEncounter.setDoctor(user);
 
-            patientEncounter = patientEncounterRepository.update(patientEncounter);
-
-
+            IPatientEncounter patientEncounter = patientEncounterRepository.savePatientEncounterMedicalCheckin(encounterId, userId, DateTime.now());
             response.setResponseObject(itemModelMapper.createPatientEncounterItem(patientEncounter));
         } catch (Exception ex) {
+
+            Logger.error("EncounterService-checkPatientInToMedical", ex);
             response.addError("exception", ex.getMessage());
         }
 
@@ -158,14 +161,12 @@ public class EncounterService implements IEncounterService {
         }
 
         try {
-            ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().eq("id", encounterId);
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
-            patientEncounter.setDateOfPharmacyVisit(DateTime.now());
-            IUser user = userRepository.retrieveUserById(userId);
-            patientEncounter.setPharmacist(user);
-            patientEncounter = patientEncounterRepository.update(patientEncounter);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.savePatientEncounterPharmacyCheckin(encounterId, userId, DateTime.now());
             response.setResponseObject(patientEncounter);
         } catch (Exception ex) {
+
+            Logger.error("EncounterService-checkPatientInToPharmacy", ex);
             response.addError("exception", ex.getMessage());
         }
 
@@ -183,10 +184,8 @@ public class EncounterService implements IEncounterService {
             return response;
         }
         try {
-            ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                    .where()
-                    .eq("id", encounterId);
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
+
+            IPatientEncounter patientEncounter = patientEncounterRepository.retrievePatientEncounterById(encounterId);
             if (patientEncounter.getDoctor() == null) {
                 response.setResponseObject(null);
             } else {
@@ -194,6 +193,8 @@ public class EncounterService implements IEncounterService {
                 response.setResponseObject(userItem);
             }
         } catch (Exception ex) {
+
+            Logger.error("EncounterService-retrievePhysicianThatCheckedInPatientToMedical", ex);
             response.addError("", "error finding encounter");
         }
         return response;
@@ -449,21 +450,15 @@ public class EncounterService implements IEncounterService {
 
         ServiceResponse<PatientEncounterItem> response = new ServiceResponse<>();
 
-        ExpressionList<PatientEncounter> patientEncounterQuery = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .eq("id", encounterId);
         try {
 
-            IPatientEncounter patientEncounter = patientEncounterRepository.findOne(patientEncounterQuery);
-            dataModelMapper.updatePatientEncounterWithDiabetesScreening(patientEncounter, userId, isScreened);
-
-            patientEncounter = patientEncounterRepository.update(patientEncounter);
-
+            IPatientEncounter patientEncounter = patientEncounterRepository.savePatientEncounterDiabetesScreening(encounterId, userId, dateUtils.getCurrentDateTime(), isScreened);
             PatientEncounterItem patientEncounterItem = itemModelMapper.createPatientEncounterItem(patientEncounter);
             response.setResponseObject(patientEncounterItem);
 
         } catch (Exception ex) {
 
+            Logger.error("EncounterService-screenPatientForDiabetes", ex);
             response.addError("", ex.getMessage());
         }
 
@@ -483,16 +478,10 @@ public class EncounterService implements IEncounterService {
         today=today.withTimeAtStartOfDay();
         DateTime tommorrow=today;
         tommorrow=tommorrow.plusDays(1);
-        //query todays patients
-        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
-                .where()
-                .ge("date_of_triage_visit", today)
-                .le("date_of_triage_visit", tommorrow)
-                .eq("mission_trip_id",tripID);
 
         try{
-            List<PatientItem> patientItems=null;
-            List<? extends IPatientEncounter> patient = patientEncounterRepository.find(query);
+            List<? extends IPatientEncounter> patient = patientEncounterRepository.retrievePatientEncounters(today, tommorrow, tripID);
+
             for (IPatientEncounter patient1 : patient) {
 
                 patientEncounterItems.add(itemModelMapper.createPatientEncounterItem(patient1));

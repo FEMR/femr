@@ -59,7 +59,7 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
-    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted) {
+    public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
 
         if (medication == null) {
 
@@ -102,6 +102,9 @@ public class ItemModelMapper implements IItemModelMapper {
         //Check to see if medication is deleted.
         if(isDeleted != null)
             medicationItem.setIsDeleted(isDeleted);
+
+        medicationItem.setTimeAdded(timeAdded);
+        medicationItem.setCreatedBy(createdBy);
 
         return medicationItem;
     }
@@ -357,11 +360,11 @@ public class ItemModelMapper implements IItemModelMapper {
             //Inventory isn't coming through
             if(quantityCurrent != null && quantityInitial != null){
 
-                medicationItem = createMedicationItem(medication, quantityCurrent, quantityInitial, null);
+                medicationItem = createMedicationItem(medication, quantityCurrent, quantityInitial, null, null, null);
                 prescriptionItem.setMedicationRemaining( quantityCurrent );
             }
             else{
-                medicationItem = createMedicationItem(medication, null, null, null);
+                medicationItem = createMedicationItem(medication, null, null, null, null, null);
             }
 
             prescriptionItem.setMedicationID(medicationItem.getId());

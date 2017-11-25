@@ -20,6 +20,7 @@ package femr.business.services.core;
 
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
+import femr.data.models.mysql.Patient;
 
 import java.util.Date;
 import java.util.Map;
@@ -35,16 +36,45 @@ public interface IPatientService {
     ServiceResponse<Map<String,String>> retrieveAgeClassifications();
 
     /**
-     * Updates a patients sex and age if that patient does not previously have one assigned. If sex or age is null then it just sets
-     * whichever field is available, then gets and returns the patient.
+     * Updates a patient's address with the address value. If address is null then no action is taken.
+     * This method will not remove a patient's address
      *
      * @param id the id of the patient, not null
-     * @param sex the sex of the patient, may be null
-     * @param age the age of the patient, may be null
+     * @param address the address of the patient, may be null
      * @return a service response that contains a PatientItem representing the patient that was updated
      * and/or errors if they exist.
      */
-    ServiceResponse<PatientItem> updateSexAgePhoneNumberAddress(int id, String sex, Date age, String address, String phn);
+    ServiceResponse<PatientItem> updatePatientAddress(int id, String address);
+
+    /**
+     * Updates a patient's age with the age value. If age is null then no action is taken.
+     * This method will not remove a patient's age
+     *
+     * @param id id of the patient, not null
+     * @param age age of the patient, may be null
+     * @return the updated patient item
+     */
+    ServiceResponse<PatientItem> updatePatientAge(int id, Date age);
+
+    /**
+     * Updates the patient's phone number with the phoneNumber value. If phoneNumber is null then no action is taken.
+     * This method will not remove a patient's phone number
+     *
+     * @param id id of the patient, not null
+     * @param phoneNumber phone number of the patient, may be null
+     * @return the updated patient item
+     */
+    ServiceResponse<PatientItem> updatePatientPhoneNumber(int id, String phoneNumber);
+
+    /**
+     * Updates the patient's sex with whatever value is provided in sex. If sex is null then no action is taken.
+     * This method will not remove a patient's sex
+     *
+     * @param id id of the patient, not null
+     * @param sex sex of the patient,  may be null
+     * @return the updated patient item
+     */
+    ServiceResponse<PatientItem> updatePatientSex(int id, String sex);
 
     /**
      * Creates a new patient.

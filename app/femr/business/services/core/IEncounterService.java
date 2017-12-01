@@ -74,7 +74,7 @@ public interface IEncounterService {
 
     /**
      * Creates a bunch of tab fields that belong to a chief complaint
-     *
+     * Method is returning all none deleted encounters
      * @param tabFieldNameValues a mapping of tab field names to their respective values, not null/empty
      * @param encounterId the id of the encounter, not null
      * @param userId the id of the user creating the tab fields, not null

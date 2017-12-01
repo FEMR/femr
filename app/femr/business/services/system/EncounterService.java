@@ -128,7 +128,7 @@ public class EncounterService implements IEncounterService {
         ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
                 .eq("id", encounterId)
-                .isNull("isDeleted");;
+                .isNull("isDeleted");
 
         try {
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
@@ -159,7 +159,7 @@ public class EncounterService implements IEncounterService {
         }
 
         try {
-            ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().eq("id", encounterId).isNull("isDeleted");;
+            ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery().where().eq("id", encounterId).isNull("isDeleted");
             IPatientEncounter patientEncounter = patientEncounterRepository.findOne(query);
             patientEncounter.setDateOfPharmacyVisit(DateTime.now());
             IUser user = userRepository.retrieveUserById(userId);
@@ -351,7 +351,8 @@ public class EncounterService implements IEncounterService {
 
             ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
                     .where()
-                    .eq("patient_encounter_id", encounterId);
+                    .eq("patient_encounter_id", encounterId)
+                    .isNull("isDeleted");;
 
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;
@@ -493,7 +494,8 @@ public class EncounterService implements IEncounterService {
                 .where()
                 .ge("date_of_triage_visit", today)
                 .le("date_of_triage_visit", tommorrow)
-                .eq("mission_trip_id",tripID);
+                .eq("mission_trip_id",tripID)
+                .isNull("isDeleted") ;
 
         try{
             List<PatientItem> patientItems=null;

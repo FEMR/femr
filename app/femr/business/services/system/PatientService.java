@@ -17,8 +17,10 @@
      you have any questions, contact <info@teamfemr.org>.
 */
 package femr.business.services.system;
+import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IPatientService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -373,28 +375,25 @@ public class PatientService implements IPatientService {
 
         return response;
     }
-    public ServiceResponse<PatientItem> deleteEncounter(int id, int deleteByUserID, String reason, int encounterId) {
+    public ServiceResponse<PatientItem> deleteEncounter(int deleteByUserID, String reason, int encounterId) {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-        if (StringUtils.isNullOrWhiteSpace(reason)) {
 
-            response.addError("", "reason not provided");
-            return response;
-        }
-
+        ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
+                .where()
+                .eq("id", encounterId);
         try {
 
-            IPatient savedPatient = patientRepository.retrievePatientById(id);
-            //IPatientEncounterTabField savedEncounters = patientEncounterRepository;
-            IPatientEncounter savedEncounter = savedPatient.getPatientEncounters().get(encounterId);
+            IPatientEncounter savedEncounter = patientEncounterRepository.findOne(query);
             savedEncounter.setEncounterDeleted(DateTime.now());
             savedEncounter.setDeletedByUserId(deleteByUserID);
             savedEncounter.setReasonDeleted(reason);
-            patientRepository.savePatient(savedPatient);
+            patientEncounterRepository.update(savedEncounter);
+
         } catch (Exception ex) {
 
-            Logger.error("PatientService-deletePatient", ex);
+            Logger.error("PatientEncounterService-deleteEncounter", ex);
             response.addError("exception", ex.getMessage());
         }
 

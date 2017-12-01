@@ -293,9 +293,11 @@ public class SearchService implements ISearchService {
         ServiceResponse<List<PatientEncounterItem>> response = new ServiceResponse<>();
         Query<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
+                .isNull("isDeleted")
                 .eq("patient_id", patientId)
                 .order()
                 .desc("date_of_triage_visit");
+
         try {
             List<? extends IPatientEncounter> patientEncounters = patientEncounterRepository.find(query);
             List<PatientEncounterItem> patientEncounterItems = new ArrayList<>();

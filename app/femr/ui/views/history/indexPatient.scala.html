@@ -128,13 +128,15 @@
                             }
                         </a>
                         @if(roles.contains(Roles.ADMINISTRATOR) || roles.contains(Roles.SUPERUSER) ) {
-                            @helper.form(action = TriageController.deleteEncounterPost(viewModel.getPatientItem.getId, patientEncounter.getId)){
-                                <input type="hidden" name="reasonEncounterDeleted" id="reasonEncounterDeleted" />
-                                <button hidden="true" type="submit"  id="deleteEcounter"></button>
+                            @helper.form(action = TriageController.deleteEncounterPost(viewModel.getPatientItem.getId, patientEncounter.getId)) {
+                                <input type="hidden" name="reasonEncounterDeleted" class="reasonEncounterDeleted" />
+                                <button hidden="true" type="submit" class="deleteEcounter"></button>
+
+                                <span>
+                                    <button type="submit" class="deleteEncounterbtn" >
+                                        Delete this Encounter</button>
+                                </span>
                             }
-                            <span>
-                                <button type="submit" id="deleteEncounterbtn" class="delete-encounter"> Delete this Encounter</button>
-                            </span>
                         }
                     </li>
                     <div class="medicalHistoryLineDivide"></div>

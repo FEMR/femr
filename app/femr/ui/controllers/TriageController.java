@@ -310,17 +310,22 @@ public class TriageController extends Controller {
 
    public Result deleteEncounterPost(int patientId,int encounterId){
     //patientEncounter.getId
-           System.out.print("test");
+
        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
-        DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
-        //Getting UserItem
-        ServiceResponse<PatientItem> patientItemResponse= patientService.deleteEncounter(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted(),encounterId);
+        DeleteViewModelPost reasonEncounterDeleted = DeleteViewModelForm.bindFromRequest().get();
+        if(reasonEncounterDeleted.getReasonEncounterDeleted().equals("")){
+            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
 
-        if(patientItemResponse.hasErrors())
-            throw new RuntimeException();
+        }
+        else {
+            //Getting UserItem
+            ServiceResponse<PatientItem> patientItemResponse = patientService.deleteEncounter(currentUser.getId(), reasonEncounterDeleted.getReasonEncounterDeleted(), encounterId);
 
-        return redirect(routes.TriageController.indexGet());
+            if (patientItemResponse.hasErrors())
+                throw new RuntimeException();
+            return redirect(routes.HistoryController.indexPatientGet("" + patientId));
+        }
     }
     private boolean isDiabetesPromptTurnedOn(){
 

@@ -69,8 +69,8 @@ public class PatientEncounter implements IPatientEncounter {
     private DateTime isDeleted;
     @Column(name = "deleted_by_user_id", unique = false, nullable = true)
     private Integer deletedByUserId;
-    @Column(name = "reason_deleted", nullable = true)
-    private String reasonDeleted;
+    @Column(name = "reason_encounter_deleted", nullable = true)
+    private String reasonEncounterDeleted;
 
     @Override
     public int getId() {
@@ -228,9 +228,9 @@ public class PatientEncounter implements IPatientEncounter {
     }
 
     @Override
-    public String getReasonDeleted() { return reasonDeleted; }
+    public String getReasonDeleted() { return reasonEncounterDeleted; }
 
     @Override
-    public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
+    public void setReasonDeleted(String reason) { this.reasonEncounterDeleted = reason; }
 
 }

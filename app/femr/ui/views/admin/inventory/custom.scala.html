@@ -23,7 +23,7 @@
         <fieldset disabled="disabled">
         }
 
-    @helper.form(action = InventoryController.customPost()) {
+    @helper.form(action = InventoryController.customPost(viewModel.getMissionTripItem.getId)) {
 
         <h3>Add Custom Medicine To Formulary:</h3>
         <ul>

@@ -30,6 +30,13 @@ public class ManageViewModelGet {
     private List<String> availableForms;
     //trip information
     private MissionTripItem missionTripItem;
+    private List<MissionTripItem> missionTripList;
+
+    public List<MissionTripItem> getMissionTripList() { return missionTripList;}
+
+    public void setMissionTripList(List<MissionTripItem> missionTripList) {
+        this.missionTripList = missionTripList;
+    }
 
     public List<MedicationItem> getMedications() {
         return medications;

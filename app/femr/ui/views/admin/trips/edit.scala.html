@@ -36,11 +36,9 @@
             }
         }
         </select>
-
         <button type="submit">Add</button>
 
         <h4>Remove users from this trip:</h4>
-
         <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
             @defining(viewModel.getUsers) { users =>
                 @for(i <- 1 to users.size) {

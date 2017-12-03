@@ -15,9 +15,9 @@
 
 } else {
     <div id="inventoryOptionsWrap">
-        <a href="@InventoryController.existingGet()" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
+        <a href="@InventoryController.existingGet(missionTripItem.getId)" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
             Existing Medication</a>
-        <a href="@InventoryController.customGet()" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
+        <a href="@InventoryController.customGet(missionTripItem.getId)" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
             Custom Medication</a>
     </div>
 

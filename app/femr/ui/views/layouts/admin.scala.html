@@ -1,4 +1,4 @@
-@(title: String,
+ @(title: String,
         currentUser: femr.common.dtos.CurrentUser,
         styles: Html = Html(""),
         scripts: Html = Html(""),
@@ -31,7 +31,7 @@
         <div id="admin-left-panel">
             <a href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
                 Configure</a>
-            <a href="@InventoryController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
+            <a href="@InventoryController.manageGet(0)" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
                 Inventory</a>
             <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-globe"></span>
                 Trips</a>

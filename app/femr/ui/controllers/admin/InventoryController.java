@@ -26,6 +26,7 @@ import femr.common.models.MissionTripItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.admin.configure.IndexViewModelPost;
 import femr.ui.models.admin.inventory.*;
 import femr.common.models.MedicationItem;
 import femr.ui.views.html.admin.inventory.*;
@@ -72,26 +73,31 @@ public class InventoryController extends Controller {
      * Serves up the inventory homepage. POST communication for updating quantity
      * is handled by AJAX calls
      */
-    public Result manageGet() {
+    public Result manageGet(Integer tripID) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
         ManageViewModelGet viewModel = new ManageViewModelGet();
 
         // If the use does not have a trip ID, we cannot retrieve the list of medications
         // since they are tied to a trip
-        if( currentUser.getTripId() != null ){
+        Integer retrieveID;
 
-            ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventorysByTripId(currentUser.getTripId());
+        if(tripID == 0) {
+            retrieveID = currentUser.getTripId();
+        } else {
+            retrieveID = tripID;
+        }
+
+        if( retrieveID != null ){
+
+            ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventorysByTripId(retrieveID);
             if (medicationServiceResponse.hasErrors()) {
-
                 throw new RuntimeException();
             } else {
-
                 viewModel.setMedications(medicationServiceResponse.getResponseObject());
             }
 
 
-            ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
+            ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(retrieveID);
             if (missionTripServiceResponse.hasErrors()) {
 
                 throw new RuntimeException();
@@ -100,19 +106,36 @@ public class InventoryController extends Controller {
                 viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
             }
 
+            ServiceResponse<List<MissionTripItem>> missionTripListServiceResponse = missionTripService.retrieveAllTripInformationByUserId(currentUser.getId());
+            if (missionTripServiceResponse.hasErrors()) {
+
+                throw new RuntimeException();
+            } else {
+
+                viewModel.setMissionTripList(missionTripListServiceResponse.getResponseObject());
+            }
         } else {
 
             viewModel.setMedications(new ArrayList<>());
+            viewModel.setMissionTripList(new ArrayList<>());
         }
 
         return ok(manage.render(currentUser, viewModel));
     }
 
+    public Result managePost() {
 
-    /**
-     * Page for adding a new custom medication
-     */
-    public Result customGet() {
+        final Form<ManageViewModelPost> manageViewModelForm = formFactory.form(ManageViewModelPost.class);
+        ManageViewModelPost viewModel = manageViewModelForm.bindFromRequest().get();
+
+        //if(viewModel.getSelectedTrip()==null) {viewModel.setSelectedTrip(0);}
+
+        return redirect("/admin/inventory/" + viewModel.getSelectedTrip());
+    }
+        /**
+         * Page for adding a new custom medication
+         */
+    public Result customGet(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         CustomViewModelGet viewModel = new CustomViewModelGet();
@@ -131,7 +154,7 @@ public class InventoryController extends Controller {
             viewModel.setAvailableUnits(availableMedicationUnitsResponse.getResponseObject());
         }
 
-        ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
+        ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(tripId);
         if (missionTripServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -146,7 +169,7 @@ public class InventoryController extends Controller {
     /**
      * Handles the submission of a new custom medication from an Admin
      */
-    public Result customPost(){
+    public Result customPost(Integer tripId){
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         final Form<CustomViewModelPost> inventoryViewModelPostForm = formFactory.form(CustomViewModelPost.class);
@@ -154,7 +177,7 @@ public class InventoryController extends Controller {
         Form<CustomViewModelPost> form = inventoryViewModelPostForm.bindFromRequest();
 
         if (form.hasErrors()) {
-            return redirect("/admin/inventory");
+            return redirect("/admin/inventory/0");
 
             //System.out.println(form.errors().toString());
             //if the request gets past the javascript validation and fails validation in the viewmodel, then
@@ -203,7 +226,7 @@ public class InventoryController extends Controller {
             }
             ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(
                     createMedicationServiceResponse.getResponseObject().getId(),
-                    currentUser.getTripId(),
+                    tripId,
                     inventoryViewModelPost.getMedicationQuantity());
 
             if (setQuantityServiceResponse.hasErrors()){
@@ -213,13 +236,13 @@ public class InventoryController extends Controller {
         }
 
 
-        return redirect("/admin/inventory");
+        return redirect("/admin/inventory/"+tripId);
     }
 
     /**
      * Page for adding a new medication from the concept dictionary
      */
-    public Result existingGet() {
+    public Result existingGet(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ExistingViewModelGet viewModel = new ExistingViewModelGet();
@@ -231,7 +254,7 @@ public class InventoryController extends Controller {
             viewModel.setConceptMedications(conceptMedicationServiceResponse.getResponseObject());
         }
 
-        ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(currentUser.getTripId());
+        ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(tripId);
         if (missionTripServiceResponse.hasErrors()) {
 
             throw new RuntimeException();
@@ -246,7 +269,7 @@ public class InventoryController extends Controller {
     /**
      * Handles the submission of an existing medication from an Admin
      */
-    public Result existingPost() {
+    public Result existingPost(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         final Form<ExistingViewModelPost> existingViewModelPostForm = formFactory.form(ExistingViewModelPost.class);
@@ -280,7 +303,7 @@ public class InventoryController extends Controller {
                         return internalServerError();
                     }else{
 
-                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), currentUser.getTripId(), 0);
+                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
                         if (setQuantityServiceResponse.hasErrors()){
 
                             return internalServerError();
@@ -292,7 +315,7 @@ public class InventoryController extends Controller {
             }
         }
 
-        return redirect("/admin/inventory");
+        return redirect("/admin/inventory/"+tripId);
     }
 
     /**

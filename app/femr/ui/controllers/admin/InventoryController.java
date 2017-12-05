@@ -26,7 +26,6 @@ import femr.common.models.MissionTripItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.admin.configure.IndexViewModelPost;
 import femr.ui.models.admin.inventory.*;
 import femr.common.models.MedicationItem;
 import femr.ui.views.html.admin.inventory.*;
@@ -72,24 +71,29 @@ public class InventoryController extends Controller {
     /**
      * Serves up the inventory homepage. POST communication for updating quantity
      * is handled by AJAX calls
+     *
+     * @param tripID trip id of selected mission trip
+     *               when initially clicking the inventory page tripID = 0
+     * @return returns viewModel with updated inventory
      */
     public Result manageGet(Integer tripID) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ManageViewModelGet viewModel = new ManageViewModelGet();
 
-        // If the use does not have a trip ID, we cannot retrieve the list of medications
-        // since they are tied to a trip
-        Integer retrieveID;
-
+        // if tripID = 0 display the user's current trip
+        // otherwise use the trip they have selected
+        Integer retrieveTripID;
         if(tripID == 0) {
-            retrieveID = currentUser.getTripId();
+            retrieveTripID = currentUser.getTripId();
         } else {
-            retrieveID = tripID;
+            retrieveTripID = tripID;
         }
 
-        if( retrieveID != null ){
+        // If the use does not have a trip ID, we cannot retrieve the list of medications
+        // since they are tied to a trip
+        if( retrieveTripID != null ){
 
-            ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventorysByTripId(retrieveID);
+            ServiceResponse<List<MedicationItem>> medicationServiceResponse = inventoryService.retrieveMedicationInventorysByTripId(retrieveTripID);
             if (medicationServiceResponse.hasErrors()) {
                 throw new RuntimeException();
             } else {
@@ -97,7 +101,7 @@ public class InventoryController extends Controller {
             }
 
 
-            ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(retrieveID);
+            ServiceResponse<MissionTripItem> missionTripServiceResponse = missionTripService.retrieveAllTripInformationByTripId(retrieveTripID);
             if (missionTripServiceResponse.hasErrors()) {
 
                 throw new RuntimeException();
@@ -123,18 +127,23 @@ public class InventoryController extends Controller {
         return ok(manage.render(currentUser, viewModel));
     }
 
+    /**
+     * Set the selected trip in the viewModel
+     * @return and updated viewModel
+     */
     public Result managePost() {
 
         final Form<ManageViewModelPost> manageViewModelForm = formFactory.form(ManageViewModelPost.class);
         ManageViewModelPost viewModel = manageViewModelForm.bindFromRequest().get();
 
-        //if(viewModel.getSelectedTrip()==null) {viewModel.setSelectedTrip(0);}
-
         return redirect("/admin/inventory/" + viewModel.getSelectedTrip());
     }
-        /**
-         * Page for adding a new custom medication
-         */
+    /**
+     * Page for adding a new medication from the concept dictionary
+     * @param tripId add custom medication to trip with this tripID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return updated trip inventory
+     */
     public Result customGet(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
@@ -168,9 +177,11 @@ public class InventoryController extends Controller {
 
     /**
      * Handles the submission of a new custom medication from an Admin
+     * @param tripId add existing medication to trip with this tripID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return updated trip inventory
      */
     public Result customPost(Integer tripId){
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         final Form<CustomViewModelPost> inventoryViewModelPostForm = formFactory.form(CustomViewModelPost.class);
 
@@ -240,7 +251,10 @@ public class InventoryController extends Controller {
     }
 
     /**
-     * Page for adding a new medication from the concept dictionary
+     * Page for adding an existing medication from the concept dictionary
+     * @param tripId add existing medication to trip with this tripID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return updated trip inventory
      */
     public Result existingGet(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
@@ -268,9 +282,11 @@ public class InventoryController extends Controller {
 
     /**
      * Handles the submission of an existing medication from an Admin
+     * @param tripId add existing medication to trip with this tripID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return updated trip inventory
      */
     public Result existingPost(Integer tripId) {
-        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         final Form<ExistingViewModelPost> existingViewModelPostForm = formFactory.form(ExistingViewModelPost.class);
         Form<ExistingViewModelPost> existingForm = existingViewModelPostForm.bindFromRequest();
@@ -320,9 +336,11 @@ public class InventoryController extends Controller {
 
     /**
      * Called when a user wants to export the data to a CSV file.
+     * @param tripId export inventory for trip with this ID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return inventory CSV file
      */
     public Result exportGet(int tripId) {
-      CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
       ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
 

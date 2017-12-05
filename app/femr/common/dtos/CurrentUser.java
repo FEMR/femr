@@ -64,8 +64,6 @@ public class CurrentUser {
         return roles;
     }
 
-    public void setTripId(int tripId) { this.tripId = tripId; }
-
     public Integer getTripId() {
         return tripId;
     }

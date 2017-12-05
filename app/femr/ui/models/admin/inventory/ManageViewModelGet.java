@@ -31,11 +31,6 @@ public class ManageViewModelGet {
     //trip information
     private MissionTripItem missionTripItem;
     private List<MissionTripItem> missionTripList;
-    private List<List<MedicationItem>> medicationInventories;
-
-    public List<List<MedicationItem>> getMedicationInventories() { return medicationInventories;}
-
-    public void setMedicationInventories(List<List<MedicationItem>> medicationInventories) { this.medicationInventories = medicationInventories;}
 
     public List<MissionTripItem> getMissionTripList() { return missionTripList;}
 

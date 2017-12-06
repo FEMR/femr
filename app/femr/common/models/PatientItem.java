@@ -47,6 +47,8 @@ public class PatientItem {
     //added for femr-136 - dual unit display
     private Float weightDual;
 
+    // Model in question to modify (thinking of adding my variables here)
+
     public PatientItem(){
         //default empty values
         this.Id = 0;

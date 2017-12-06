@@ -6,6 +6,7 @@
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
     @import femr.ui.views.html.partials.helpers.outputWeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
+    @import femr.ui.views.html.partials.helpers.outputYesOrNO
 
     @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
 
@@ -75,7 +76,16 @@
                             String.valueOf(patient.getHeightInches),
                             viewModelMedical.getSettings.isMetric
                         )</p>
-                        <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
+
+                            <p><span class="infoLabel">
+                                Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
+
+
+                            <p><span class="infoLabel">Smoking:</span>No </p>
+
+                        <p><span class="infoLabel">Diabetes:</span>No </p>
+                        <p><span class="infoLabel">Alcohol:</span>No </p>
+
                     </div>
                 }
                     </div>

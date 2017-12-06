@@ -22,6 +22,7 @@ import femr.common.models.*;
 
 public class IndexEncounterViewModel {
 
+    // Looks to be making use of the PatientItem.java file
     //patient
     private PatientItem patientItem;
     //patient encounter

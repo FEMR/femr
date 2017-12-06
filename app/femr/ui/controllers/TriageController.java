@@ -277,6 +277,20 @@ public class TriageController extends Controller {
 		 if (viewModel.getWeeksPregnant() != null) { /*Sam Zanni*/
             newVitals.put("weeksPregnant", viewModel.getWeeksPregnant().floatValue());
         }
+
+        // Osman
+
+        if(viewModel.getSmoker() != null){
+            newVitals.put("smoker", viewModel.getSmoker().floatValue());
+        }
+
+        if(viewModel.getDiabetes() != null){
+            newVitals.put("diabetic", viewModel.getDiabetes().floatValue());
+        }
+
+        if(viewModel.getAlcohol() != null){
+            newVitals.put("alcohol", viewModel.getAlcohol().floatValue());
+        }
 		
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {

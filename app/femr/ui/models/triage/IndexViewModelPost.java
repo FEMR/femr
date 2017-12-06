@@ -46,6 +46,10 @@ public class IndexViewModelPost {
     //begin encounter
     private String chiefComplaint;
     private Integer weeksPregnant;
+    //Osman
+    private Integer smoker;
+    private Integer diabetic;
+    private Integer alcohol;
 
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
@@ -243,6 +247,17 @@ public class IndexViewModelPost {
     public String getIsDiabetesScreenPerformed() {
         return isDiabetesScreenPerformed;
     }
+
+    // Osman
+
+    public Integer getSmoker() {return smoker;}
+    public void setSmoker(Integer smoker){this.smoker = smoker;}
+
+    public Integer getDiabetes() {return diabetic;}
+    public void setDiabetic(Integer diabetes){this.diabetic = diabetes;}
+
+    public Integer getAlcohol() {return alcohol;}
+    public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;

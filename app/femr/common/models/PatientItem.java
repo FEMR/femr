@@ -47,6 +47,11 @@ public class PatientItem {
     //added for femr-136 - dual unit display
     private Float weightDual;
 
+    // Model in question to modify (thinking of adding my variables here)
+    private Integer smoker;
+    private Integer diabetic;
+    private Integer alcohol;
+
     public PatientItem(){
         //default empty values
         this.Id = 0;
@@ -227,4 +232,13 @@ public class PatientItem {
     public void setMonthsOld(Integer monthsOld) {
         this.monthsOld = monthsOld;
     }
+
+    public Integer getSmoker() {return smoker;}
+    public void setSmoker(Integer smoker){this.smoker = smoker;}
+
+    public Integer getDiabetes() {return diabetic;}
+    public void setDiabetic(Integer diabetes){this.diabetic = diabetes;}
+
+    public Integer getAlcohol() {return alcohol;}
+    public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
 }

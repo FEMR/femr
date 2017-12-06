@@ -6,6 +6,7 @@
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
     @import femr.ui.views.html.partials.helpers.outputWeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
+    @import femr.ui.views.html.partials.helpers.outputYesOrNA
 
     @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
 
@@ -68,7 +69,6 @@
                                     </span>
                                 }
                             </p>
-                        }
 
                         <p><span class="infoLabel">Height:</span>
                             @defining(viewModelMedical.getVitalList) { vitalMap =>
@@ -106,7 +106,34 @@
                         </p>
 
                     }
-                    </div>
+                        @defining(viewModelMedical.getVitalList) { vitalMap =>
+
+                            <p><span class="infoLabel">Smoking:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputYesOrNA(vitalMap.get("smoker", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                                }
+                                </p>
+
+                            <p><span class="infoLabel">Diabetes:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputYesOrNA(vitalMap.get("diabetic", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                                }
+                            </p>
+
+                            <p><span class="infoLabel">Alcohol:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                        @outputYesOrNA(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))
+                                    }       </span>
+                            </p>
+                        }
+
+                        </div>
+
                 }
                     </div>
                 </div>
@@ -397,4 +424,6 @@
         </div>
 
     }
+}
+
 

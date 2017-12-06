@@ -63,7 +63,7 @@ public class TriageController extends Controller {
             throw new RuntimeException();
         }
 
-        //initalize an empty patient
+        //initialize an empty patient
         PatientItem patientItem = new PatientItem();
 
         //get settings

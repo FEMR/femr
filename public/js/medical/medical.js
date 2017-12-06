@@ -354,7 +354,7 @@ $(document).ready(function () {
         draggable: true,
         position: 'center',
         modal: true,
-        height: 400,
+        height: 500,
         width: 450
 
     });

@@ -51,6 +51,7 @@ public class DatabaseSeeder {
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
     private final IRepository<ITab> tabRepository;
+    private final IRepository<IVital> vitalRepository;
 
     private final Configuration configuration;
     private final IPasswordEncryptor passwordEncryptor;
@@ -67,6 +68,7 @@ public class DatabaseSeeder {
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
                           IRepository<ITabFieldType> tabFieldTypeRepository,
                           IRepository<ITab> tabRepository,
+                          IRepository<IVital> vitalRepository,
                           Configuration configuration,
                           IPasswordEncryptor passwordEncryptor) {
 
@@ -84,6 +86,7 @@ public class DatabaseSeeder {
         this.missionCountryRepository = missionCountryRepository;
         this.missionTeamRepository = missionTeamRepository;
         this.missionCityRepository = missionCityRepository;
+        this.vitalRepository = vitalRepository;
 
         this.seed();
     }
@@ -101,6 +104,38 @@ public class DatabaseSeeder {
         seedPatientAgeClassification();
         seedDiagnosis();
         seedUserRoles();
+        seedVitals();
+    }
+
+    private void seedVitals() {
+
+        List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
+
+        Vital vital;
+        if (vitals != null && !containVital(vitals, "smoker")) {
+            vital = new Vital();
+            vital.setName("smoker");
+            vital.setData_type("int");
+            vital.setUnitOfMeasurement("True/False");
+            vital.setDeleted(false);
+            vitalRepository.create(vital);
+        }
+        if (vitals != null && !containVital(vitals, "diabetic")) {
+            vital = new Vital();
+            vital.setName("diabetic");
+            vital.setData_type("int");
+            vital.setUnitOfMeasurement("True/False");
+            vital.setDeleted(false);
+            vitalRepository.create(vital);
+        }
+        if (vitals != null && !containVital(vitals, "alcohol")) {
+            vital = new Vital();
+            vital.setName("alcohol");
+            vital.setData_type("int");
+            vital.setUnitOfMeasurement("True/False");
+            vital.setDeleted(false);
+            vitalRepository.create(vital);
+        }
     }
     
     private void seedDiagnosis() {
@@ -1066,6 +1101,15 @@ public class DatabaseSeeder {
         }
       }
       return false;
+    }
+
+    private static boolean containVital(List<? extends IVital> vitals, String vitalName) {
+        for (IVital vital : vitals) {
+            if (vital.getName().equals(vitalName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

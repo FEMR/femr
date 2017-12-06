@@ -77,7 +77,7 @@ public class QueryHelper {
         return heightFeet;
     }
 
-    public static Integer findPatientHeightInches(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
+    public static Integer findPatientHeightInches(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId) {
         Integer heightInches = null;
         Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()
                 .fetch("vital")
@@ -91,6 +91,54 @@ public class QueryHelper {
         }
         return heightInches;
     }
+
+    public static Integer findPatientSmoker(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId) {
+        Integer smoker = null;
+        Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", "smoker")
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query1);
+        if (patientEncounterVitals.size() > 0) {
+            smoker = Math.round(patientEncounterVitals.get(0).getVitalValue());
+        }
+        return smoker;
+    }
+
+
+    public static Integer findPatientDiabetic(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
+        Integer diabetic = null;
+        Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", "diabetic")
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query1);
+        if (patientEncounterVitals.size() > 0) {
+            diabetic = Math.round(patientEncounterVitals.get(0).getVitalValue());
+        }
+        return diabetic;
+
+    }
+
+    public static Integer findPatientAlcohol(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
+        Integer alcohol = null;
+        Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", "alcohol")
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query1);
+        if (patientEncounterVitals.size() > 0) {
+            alcohol = Math.round(patientEncounterVitals.get(0).getVitalValue());
+        }
+        return alcohol;
+    }
+
 
     /**
      * AJ Saclayan

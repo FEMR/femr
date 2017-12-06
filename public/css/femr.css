@@ -772,3 +772,8 @@ input[style] {
     flex: 2;
     margin-right: 0;
 }
+
+/* Leave Feedback Link */
+.leaveFeedback {
+    text-align: center;
+}

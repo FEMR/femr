@@ -1,3 +1,16 @@
+/* Leave Feedback Link */
+div.leaveFeedback {
+    text-align: center;
+}
+
+div.leaveFeedback a {
+    color: #000;
+}
+
+div.leaveFeedback a:hover {
+    text-decoration: none;
+}
+
 div.ifContainer {
     width: 600px;
     margin: 0 auto;

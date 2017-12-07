@@ -29,6 +29,6 @@ public class FeedbackController extends Controller {
 
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        return ok(feedback.render());
+        return ok(feedback.render(currentUser));
     }
 }

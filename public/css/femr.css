@@ -3,6 +3,8 @@
 /*src: url("../fonts/DejaVuSansCondensed.ttf");*/
 /*}*/
 
+@import "feedback.css";
+
 body {
     padding-top: 50px;
     background: url("../img/paper_greyNoise.png") repeat;
@@ -771,9 +773,4 @@ input[style] {
 
     flex: 2;
     margin-right: 0;
-}
-
-/* Leave Feedback Link */
-.leaveFeedback {
-    text-align: center;
 }

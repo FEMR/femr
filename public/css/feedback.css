@@ -12,11 +12,12 @@ div.leaveFeedback a:hover {
 }
 
 div.ifContainer {
-    width: 600px;
+    width: 1000px;
     margin: 0 auto;
     background: #fff;
     overflow: auto;
     padding: 15px;
+    margin-top: 20px;
 }
 
 textarea#usrFeedback {

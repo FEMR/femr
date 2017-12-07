@@ -1,56 +1,24 @@
-@(title: String, currentUser: femr.common.dtos.CurrentUser = null,
-        styles: Html = Html(""), scripts: Html = Html(""),
-        outsideContainerTop: Html = Html(""), outsideContainerBottom: Html = Html(""), search: Html = Html(""))(content: Html)
-
-@import femr.ui.views.html.partials.footer
-@import femr.ui.views.html.partials.header
-
 <!DOCTYPE html>
-<html class="no-js" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
   <head>
-    <title>@title | fEMR - The free EMR</title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("img/favicon.png")">
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/bootstrap.min.css")">
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/femr.css")"/>
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/feedback.css"/>
-    @styles
-    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/modernizr-2.6.2.min.js")"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="assets/css/feedback.css">
+    <title>Feedback</title>
   </head>
   <body>
-    @header(currentUser)
+    <div class="ifContainer">
 
-    @outsideContainerTop
+      <h1>Give Feedback</h1>
+      <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately.</p>
+      <form action="">
+        <textarea name="usrFeedback" id="usrFeedback" cols="50" rows="10"></textarea>
 
-    <div class="container">
-      @search
+        <input type="button" value="Submit" id="feedbackSubmit">
+      </form>
 
-      @content
-
-      <div class="ifContainer">
-
-        <h1>Give Feedback</h1>
-        <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately.</p>
-        <form action="">
-          <textarea name="usrFeedback" id="usrFeedback" cols="50" rows="10"></textarea>
-
-          <input type="button" value="Submit" id="feedbackSubmit">
-          </form>
-
-          <p id="disclaimer">Your feedback is completely anonymous and will only be used to produce a better fEMR product.</p>
-        </div>
-
-
-      @footer()
+      <p id="disclaimer">Your feedback is completely anonymous and will only be used to produce a better fEMR product.</p>
     </div>
-
-    @outsideContainerBottom
-
-    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-2.0.3.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/bootstrap.min.js")"></script>
-    <script type = "text/javascript" src="@routes.Assets.versioned("js/shared/femr.js")"></script>
-    @scripts
   </body>
 </html>

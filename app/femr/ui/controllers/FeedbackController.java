@@ -14,21 +14,24 @@ import play.mvc.Security;
 
 
 @Security.Authenticated(FEMRAuthenticated.class)
-@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
+@AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE, Roles.MANAGER, Roles.RESEARCHER, Roles.ADMINISTRATOR})
+
 public class FeedbackController extends Controller {
 
     private final ISessionService sessionService;
 
     @Inject
     public FeedbackController( ISessionService sessionService ) {
-
         this.sessionService = sessionService;
     }
 
+    // GET
     public Result indexGet() {
-
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-
         return ok(feedback.render(currentUser));
     }
+
+    // POST
+
+
 }

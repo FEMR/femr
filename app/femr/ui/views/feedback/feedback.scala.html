@@ -1,6 +1,7 @@
 @(currentUser: femr.common.dtos.CurrentUser)
 
 @import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.FeedbackController
 
 
   @additionalScripts = {}
@@ -14,9 +15,11 @@
         <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately.</p>
 
         <!-- Need form helper here -->
+        @helper.form(action = FeedbackController.indexPost()) {
 
-          <textarea name="usrFeedback" id="usrFeedback" cols="50" rows="10"></textarea>
+            <textarea name="usrFeedback" id="usrFeedback" cols="50" rows="10"></textarea>
 
+        }
           <input type="button" value="Submit" class="fButton fSubmitButton" id="feedbackSubmit">
 
 

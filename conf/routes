@@ -96,4 +96,4 @@ GET         /assets/*file                                      controllers.Asset
 
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()
-#POST        /feedback                                           @femr.ui.controllers.FeedbackController.indexPost()
+POST        /feedback                                           @femr.ui.controllers.FeedbackController.indexPost()

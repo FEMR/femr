@@ -77,6 +77,8 @@ public interface ISearchService {
      *               is assigned to a trip, can be null
      * @return a service response that contains a list of PrescriptionItems
      * and/or errors if they exist.
+     * Deleted encounters won't show up if they're set as deleted in the database.
+     *
      */
     ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId, Integer tripId);
 

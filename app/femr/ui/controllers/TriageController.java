@@ -300,6 +300,7 @@ public class TriageController extends Controller {
         final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
         DeleteViewModelPost reasonDeleted = DeleteViewModelForm.bindFromRequest().get();
         //Getting UserItem
+
         ServiceResponse<PatientItem> patientItemResponse= patientService.deletePatient(patientId, currentUser.getId(), reasonDeleted.getReasonDeleted());
 
         if(patientItemResponse.hasErrors())
@@ -309,7 +310,6 @@ public class TriageController extends Controller {
     }
 
    public Result deleteEncounterPost(int patientId,int encounterId){
-    //patientEncounter.getId
 
        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         final Form<DeleteViewModelPost> DeleteViewModelForm = formFactory.form(DeleteViewModelPost.class);
@@ -319,7 +319,7 @@ public class TriageController extends Controller {
 
         }
         else {
-            //Getting UserItem
+            //Method sets encounter as deleted in the database
             ServiceResponse<PatientItem> patientItemResponse = patientService.deleteEncounter(currentUser.getId(), reasonEncounterDeleted.getReasonEncounterDeleted(), encounterId);
 
             if (patientItemResponse.hasErrors())

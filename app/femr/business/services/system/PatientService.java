@@ -379,7 +379,7 @@ public class PatientService implements IPatientService {
 
         ServiceResponse<PatientItem> response = new ServiceResponse<>();
 
-
+        //finds the encounter that is going to be deleted.
         ExpressionList<PatientEncounter> query = QueryProvider.getPatientEncounterQuery()
                 .where()
                 .eq("id", encounterId);

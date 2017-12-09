@@ -24,6 +24,19 @@
 
     @inventoryMenu(viewModel.getMissionTripItem)
 
+    @if(currentUser.getTripId != null) {
+
+    <div id="tripSelection">
+        @helper.form(action = InventoryController.managePost()) {
+            <h4>Select a different trip inventory to view: </h4>
+            <select id="selectTripInventory" name="selectedTrip">
+            @for(i <- 1 to viewModel.getMissionTripList.size) {
+                <option value="@viewModel.getMissionTripList.get(i - 1).getId">@viewModel.getMissionTripList.get(i - 1).getFriendlyTripTitle</option>
+            }
+            </select>
+            <button type="submit">Select</button>
+        }
+    </div>
 
     <div id="currentMedication">
         <h3>Current Formulary:</h3>
@@ -43,7 +56,7 @@
                         <a class="btn fButton fOtherButton disabled" href="#">Export as CSV</a>
                         } else {
                     <span class="fExportCSVButton pull-right">
-                        <a class="btn fButton fOtherButton" href="@{InventoryController.exportGet(currentUser.getTripId).url}">Export as CSV</a>
+                        <a class="btn fButton fOtherButton" href="@{InventoryController.exportGet(viewModel.getMissionTripItem.getId).url}">Export as CSV</a>
                         }
             </span>
             </div>
@@ -100,5 +113,5 @@
             </table>
         </div>
     </div>
-
+    }
 }

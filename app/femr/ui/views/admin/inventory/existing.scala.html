@@ -26,7 +26,7 @@
         <fieldset disabled="disabled">
         }
 
-    @helper.form(action = InventoryController.existingPost()) {
+    @helper.form(action = InventoryController.existingPost(viewModel.getMissionTripItem.getId)) {
 
         <h3>Add Existing Medicine To Formulary:</h3>
         <ul>

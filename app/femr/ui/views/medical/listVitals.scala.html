@@ -84,6 +84,7 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
 
                 @if(viewModel.getSettings.isMetric) {
                     @* Output height formatted as metric (1.4m) *@
+
                     @outputHeightOrNA(
                         vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
                         vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1)),

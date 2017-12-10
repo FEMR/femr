@@ -107,6 +107,9 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, recentEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
             Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer diabetic = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer alcohol = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
 
             String ageClassification = null;
             if (recentEncounter.getPatientAgeClassification() != null){
@@ -118,6 +121,8 @@ public class SearchService implements ISearchService {
             if (savedPatient.getPhoto() != null) {
                 pathToPhoto = savedPatient.getPhoto().getFilePath();
                 photoId = savedPatient.getPhoto().getId();
+
+
             }
             PatientItem patientItem = itemModelMapper.createPatientItem(
                     savedPatient.getId(),
@@ -135,7 +140,11 @@ public class SearchService implements ISearchService {
                     patientWeight,
                     pathToPhoto,
                     photoId,
-                    ageClassification
+                    ageClassification,
+                    smoker,
+                    diabetic,
+                    alcohol
+
             );
 
             //TODO: why is this being repeated?
@@ -178,6 +187,9 @@ public class SearchService implements ISearchService {
             Integer patientHeightInches = QueryHelper.findPatientHeightInches(patientEncounterVitalRepository, patientEncounter.getId());
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
             Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer diabetic = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer alcohol = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
 
             String ageClassification = null;
             if (patientEncounter.getPatientAgeClassification() != null){
@@ -206,7 +218,10 @@ public class SearchService implements ISearchService {
                     patientWeight,
                     pathToPhoto,
                     photoId,
-                    ageClassification
+                    ageClassification,
+                    smoker,
+                    diabetic,
+                    alcohol
             );
 
             // If metric setting enabled convert response patientItem to metric
@@ -532,6 +547,9 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
+                        null,
+                        null,
+                        null,
                         null
                 ));
             }
@@ -639,6 +657,9 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
+                        null,
+                        null,
+                        null,
                         null
                 );
 

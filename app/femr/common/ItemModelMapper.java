@@ -176,8 +176,11 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 Float weight,
                                                 String pathToPatientPhoto,
                                                 Integer photoId,
-                                                String ageClassification) {
-
+                                                String ageClassification,
+                                                Integer smoker,
+                                                Integer diabetic,
+                                                Integer alcohol) {
+        // Osman above
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
                 StringUtils.isNullOrWhiteSpace(city)) {
@@ -268,7 +271,11 @@ public class ItemModelMapper implements IItemModelMapper {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null));
+        // Osman above
 
         if( patientEncounter.getMissionTrip() != null ) {
             patientEncounterItem.setMissionTripId(patientEncounter.getMissionTrip().getId());

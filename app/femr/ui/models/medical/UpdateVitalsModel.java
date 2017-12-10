@@ -30,6 +30,9 @@ public class UpdateVitalsModel {
     private Float weight;
     private Float glucose;
     private Float weeksPregnant;
+    private Integer smoker;
+    private Integer diabetic;
+    private Integer alcohol;
 
     public Float getBloodPressureSystolic() {
         return bloodPressureSystolic;
@@ -118,4 +121,13 @@ public class UpdateVitalsModel {
     public void setWeeksPregnant(Float weeksPregnant) { /*Sam Zanni*/
         this.weeksPregnant = weeksPregnant;
     }
+
+    public Integer getSmoker() {return smoker;}
+    public void setSmoker(Integer smoker){this.smoker = smoker;}
+
+    public Integer getDiabetes() {return diabetic;}
+    public void setDiabetic(Integer diabetes){this.diabetic = diabetes;}
+
+    public Integer getAlcohol() {return alcohol;}
+    public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
 }

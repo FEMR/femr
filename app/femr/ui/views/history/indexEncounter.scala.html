@@ -77,14 +77,16 @@
                             viewModelMedical.getSettings.isMetric
                         )</p>
 
-                            <p><span class="infoLabel">
-                                Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
+                        <p><span class="infoLabel">
+                            Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
 
+                        @*//osman*@
 
-                            <p><span class="infoLabel">Smoking:</span>No </p>
+                        <p><span class="infoLabel">Smoking:</span> @(viewModel.getPatientItem.getSmoker) </p>
 
-                        <p><span class="infoLabel">Diabetes:</span>No </p>
-                        <p><span class="infoLabel">Alcohol:</span>No </p>
+                        <p><span class="infoLabel">Diabetes:</span> @(viewModel.getPatientItem.getDiabetes) </p>
+                        <p><span class="infoLabel">Alcohol:</span> @(viewModel.getPatientItem.getAlcohol) </p>
+
 
                     </div>
                 }
@@ -376,4 +378,5 @@
         </div>
 
     }
+
 

@@ -19,6 +19,8 @@ import femr.business.services.core.IPatientService;
 import femr.business.services.system.PatientService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
+import femr.data.daos.IRepository;
+import femr.data.models.core.IPatientEncounter;
 import mock.femr.data.MockDataModelMapper;
 import mock.femr.data.daos.MockPatientRepository;
 import org.junit.After;
@@ -35,6 +37,7 @@ import mock.femr.common.MockItemModelMapper;
 public class PatientServiceTest {
 
     private IPatientService patientService;
+    private IRepository<IPatientEncounter> patientEncounterRepository;
     private MockPatientRepository mockPatientRepository;
     private MockDataModelMapper mockDataModelMapper;
     private MockItemModelMapper mockItemModelMapper;
@@ -46,6 +49,7 @@ public class PatientServiceTest {
         mockPatientRepository = new MockPatientRepository();
         mockDataModelMapper =  new MockDataModelMapper();
         mockItemModelMapper = new MockItemModelMapper();
+
         patientService = new PatientService(mockPatientRepository, patientEncounterRepository, mockDataModelMapper, mockItemModelMapper);
     }
 

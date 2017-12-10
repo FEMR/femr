@@ -5,12 +5,29 @@
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+
+        <script>
+                if (window.location.search.indexOf('feedback=received') > -1) {
+                    $('#feedbackResponse').css({"display":"block"});
+                    setTimeout(function () {
+                        $('#feedbackResponse').show().delay(2000).fadeOut('fast');
+                    }, 2000);
+                }
+
+        </script>
+
     }
 
 
   @top = {
     <div class="jumbotron">
       <div class="container">
+
+          <div id="feedbackResponse">Your feedback has been received.</div>
+
+
+
+
         <h2>Welcome to fEMR 2.3.4-beta, @currentUser.getFirstName!</h2>
         @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
         <p>Please select a tab at the top to get started!</p>

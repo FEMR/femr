@@ -40,7 +40,10 @@ public class LocaleUnitConverter {
 
                 // Store metric height in multimap as heightMeters and heightCm
                 vitalMap.put("heightMeters", vitalMap.getDate(dateIndex), meters); // puts it back into map
+                //System.out.println(String.format("%02d", cm));
                 vitalMap.put("heightCm", vitalMap.getDate(dateIndex), String.format("%02d", cm)); // puts it back into map
+
+
             }
 
             // Get the imperial weight

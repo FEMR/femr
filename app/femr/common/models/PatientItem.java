@@ -157,17 +157,11 @@ public class PatientItem {
         return heightFeet;
     }
 
-    public void setHeightFeet(Integer heightFeet) {
+    public void setHeightFeet(Integer heightFeet) { this.heightFeet = heightFeet; }
 
-        this.heightFeet = heightFeet;
-    }
-
-    public Integer getHeightInches() {
-        return heightInches;
-    }
+    public Integer getHeightInches() { return heightInches; }
 
     public void setHeightInches(Integer heightInches) {
-
         this.heightInches = heightInches;
     }
 
@@ -187,10 +181,7 @@ public class PatientItem {
         this.heightInchesDual = heightInchesDual;
     }
 
-
-    public Float getWeight() {
-        return weight;
-    }
+    public Float getWeight() { return weight; }
 
     public void setWeight(Float weight) {
         this.weight = weight;

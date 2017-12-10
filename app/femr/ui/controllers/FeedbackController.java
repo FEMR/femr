@@ -48,7 +48,7 @@ public class FeedbackController extends Controller {
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        return redirect("http://google.com");
+        return redirect("/?feedback=received");
 
     }
 

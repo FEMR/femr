@@ -82,10 +82,9 @@
 
                         @*//osman*@
 
-                        <p><span class="infoLabel">Smoking:</span> @(viewModel.getPatientItem.getSmoker) </p>
-
-                        <p><span class="infoLabel">Diabetes:</span> @(viewModel.getPatientItem.getDiabetes) </p>
-                        <p><span class="infoLabel">Alcohol:</span> @(viewModel.getPatientItem.getAlcohol) </p>
+                        <p><span class="infoLabel">Smoking:</span> @outputYesOrNO(viewModel.getPatientItem.getSmoker) </p>
+                        <p><span class="infoLabel">Diabetes:</span> @outputYesOrNO(viewModel.getPatientItem.getDiabetes) </p>
+                        <p><span class="infoLabel">Alcohol:</span> @outputYesOrNO(viewModel.getPatientItem.getAlcohol) </p>
 
 
                     </div>

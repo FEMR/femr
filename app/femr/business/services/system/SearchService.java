@@ -108,8 +108,8 @@ public class SearchService implements ISearchService {
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, recentEncounter.getId());
             Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, recentEncounter.getId());
             Integer smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer diabetic = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
-            Integer alcohol = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer diabetic = QueryHelper.findPatientDiabetic(patientEncounterVitalRepository, recentEncounter.getId());
+            Integer alcohol = QueryHelper.findPatientAlcohol(patientEncounterVitalRepository, recentEncounter.getId());
 
             String ageClassification = null;
             if (recentEncounter.getPatientAgeClassification() != null){
@@ -188,8 +188,8 @@ public class SearchService implements ISearchService {
             Float patientWeight = QueryHelper.findPatientWeight(patientEncounterVitalRepository, patientEncounter.getId());
             Integer weeksPregnant = QueryHelper.findWeeksPregnant(patientEncounterVitalRepository, patientEncounter.getId());
             Integer smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
-            Integer diabetic = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
-            Integer alcohol = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer diabetic = QueryHelper.findPatientDiabetic(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer alcohol = QueryHelper.findPatientAlcohol(patientEncounterVitalRepository, patientEncounter.getId());
 
             String ageClassification = null;
             if (patientEncounter.getPatientAgeClassification() != null){

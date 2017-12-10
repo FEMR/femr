@@ -19,7 +19,12 @@ $(document).ready(function () {
             heightFeet: $('#newHeightFeet'),
             heightInches: $('#newHeightInches'),
             glucose: $('#newGlucose'),
-            weeksPregnant: $('#weeksPreg')
+            weeksPregnant: $('#weeksPreg'),
+            smoker: $('#newSmoker'),
+            diabetic: $('#newDiabetic'),
+            alcohol: $('#newAlcohol')
+
+
         };
 
         var isValid = vitalClientValidator(patientVitals);
@@ -67,6 +72,19 @@ $(document).ready(function () {
 
             if (patientVitals.weeksPregnant.val() !== '') { /*Sam Zanni*/
                 newVitals.weeksPregnant = patientVitals.weeksPregnant.val();
+            }
+
+            // Osman
+            if (patientVitals.smoker.val() !== ''){
+                newVitals.smoker = patientVitals.smoker.val();
+            }
+
+            if (patientVitals.diabetic.val() !== ''){
+                newVitals.diabetic = patientVitals.diabetic.val();
+            }
+
+            if (patientVitals.alcohol.val() !== '' ){
+                newVitals.alcohol = patientVitals.alcohol.val();
             }
 
             $.ajax({

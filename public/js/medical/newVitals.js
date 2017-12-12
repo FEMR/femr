@@ -4,6 +4,8 @@ $(document).ready(function () {
     });
 
     $('#saveVitalsBtn').on('click', function () {
+
+
         var newVitals = {};
 
         var patientVitals = {
@@ -23,6 +25,7 @@ $(document).ready(function () {
             smoker: $('#newSmoker'),
             diabetic: $('#newDiabetic'),
             alcohol: $('#newAlcohol')
+
 
 
         };
@@ -73,19 +76,15 @@ $(document).ready(function () {
             if (patientVitals.weeksPregnant.val() !== '') { /*Sam Zanni*/
                 newVitals.weeksPregnant = patientVitals.weeksPregnant.val();
             }
-
             // Osman
-            if (patientVitals.smoker.val() !== ''){
-                newVitals.smoker = patientVitals.smoker.val();
-            }
 
-            if (patientVitals.diabetic.val() !== ''){
-                newVitals.diabetic = patientVitals.diabetic.val();
-            }
+            var checkSmoker = document.getElementById("newSmoker").checked;
+            var checkDiabetic = document.getElementById("newDiabetic").checked;
+            var checkAlcohol = document.getElementById("newAlcohol").checked;
 
-            if (patientVitals.alcohol.val() !== '' ){
-                newVitals.alcohol = patientVitals.alcohol.val();
-            }
+            newVitals.smoker = checkSmoker === true ? "1" : null;
+            newVitals.diabetic = checkDiabetic === true ? "1" : null;
+            newVitals.alcohol = checkAlcohol === true ? "1" : null;
 
             $.ajax({
                 url: '/medical/updateVitals/' + $("#patientId").val(),

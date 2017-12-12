@@ -171,16 +171,15 @@
 
                         </div>
                         <!--Osman-->
-                        <div class = "vitalWrap"></div>
-                        <label>Smoking</label>
-                        <input type="checkbox" step="any" class="fCheckbox" name="smoker" value="1">
+                        <br/>
+                        <label class="btn btn-default"> Smoking
+                        <input type="checkbox" step="any" class="fButton" id="smoker" name="smoker" value="1">
+                        </label>
+                        
+                        <label class="btn btn-default"> Diabetes
+                        <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">
+                        </label>
 
-
-                        <label>Diabetes</label>
-                        <input type="checkbox" step="any" class="fCheckbox" name="diabetic" value="1">
-
-                        <label>Alcohol</label>
-                        <input type="checkbox" step="any" class="fCheckbox" name="alcohol" value="1">
 
                     </div>
 
@@ -230,6 +229,12 @@
 
                             <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(9).getName" name="@viewModel.getVitalNames.get(9).getName" placeholder="mg/dl"/>
                         </div>
+
+                        <!--Osman-->
+                        <br/>
+                        <label class="btn btn-default">Alcohol
+                            <input type="checkbox" step="any" class="fButton" id="alcohol" name="alcohol" value="1">
+                        </label>
 
                     </div>
 

@@ -81,10 +81,9 @@
                             Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
 
                         @*//osman*@
-
-                        <p><span class="infoLabel">Smoking:</span> @outputYesOrNO(viewModel.getPatientItem.getSmoker) </p>
-                        <p><span class="infoLabel">Diabetes:</span> @outputYesOrNO(viewModel.getPatientItem.getDiabetes) </p>
-                        <p><span class="infoLabel">Alcohol:</span> @outputYesOrNO(viewModel.getPatientItem.getAlcohol) </p>
+                        <p><span class="infoLabel">Smoking:</span> @outputYesOrNO(patient.getSmoker) </p>
+                        <p><span class="infoLabel">Diabetes:</span> @outputYesOrNO(patient.getDiabetes) </p>
+                        <p><span class="infoLabel">Alcohol:</span> @outputYesOrNO(patient.getAlcohol) </p>
 
 
                     </div>

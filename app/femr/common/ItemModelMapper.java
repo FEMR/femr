@@ -233,13 +233,13 @@ public class ItemModelMapper implements IItemModelMapper {
         if (weight != null)
             patientItem.setWeight(weight);
 
-        if (smoker !=null)
+        if (smoker != null)
             patientItem.setSmoker(smoker);
 
         if (diabetic != null)
             patientItem.setDiabetic(diabetic);
 
-        if (alcohol !=null)
+        if (alcohol != null)
             patientItem.setAlcohol(alcohol);
 
         return patientItem;

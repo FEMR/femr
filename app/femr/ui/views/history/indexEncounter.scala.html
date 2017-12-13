@@ -70,12 +70,42 @@
                             </p>
                         }
 
-                        <p><span class="infoLabel">Height:</span> @outputHeightOrNA(
-                            String.valueOf(patient.getHeightFeet),
-                            String.valueOf(patient.getHeightInches),
-                            viewModelMedical.getSettings.isMetric
-                        )</p>
-                        <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
+                        <p><span class="infoLabel">Height:</span>
+                            @defining(viewModelMedical.getVitalList) { vitalMap =>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    @if(viewModelMedical.getSettings.isMetric) {
+                                        @outputHeightOrNA(
+                                            vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1)),
+                                            vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1)),
+                                            viewModelMedical.getSettings.isMetric,
+                                            ""
+                                        )}else {
+                                        @outputHeightOrNA(
+                                            vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1)),
+                                            vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1)),
+                                            viewModelMedical.getSettings.isMetric,
+                                            ""
+                                        )
+                                    }
+                                }
+                        </p>
+
+                        <p><span class="infoLabel">Weight:</span>
+                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+
+                            @if(viewModelMedical.getSettings.isMetric) {
+                                @outputWeightOrNA(vitalMap.get("weightKgs", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+
+                            } else {
+                                @outputWeightOrNA(vitalMap.get("weight", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+
+                            }
+
+                            }
+
+                        </p>
+
+                    }
                     </div>
                 }
                     </div>
@@ -106,14 +136,15 @@
 
                 <div class="encounterViewBodyRight">
                 @defining(viewModelMedical.getVitalList) { vitalMap =>
-                    <p>
-                        <span class="infoLabel">Temperature:</span>
+                    <p><span class="infoLabel">Temperature:</span>
+                    @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                        @if(viewModelMedical.getSettings.isMetric) {
+                            @outputTemperatureOrNA(vitalMap.get("temperatureCelsius", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
+                        } else {
+                            @outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric, "")
 
-                        @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                            <span>
-                            @outputTemperatureOrNA(vitalMap.get("temperature", vitalMap.getDate(dateIndex - 1)), viewModelMedical.getSettings.isMetric)
-                            </span>
                         }
+                    }
                         </p>
 
                     <p>

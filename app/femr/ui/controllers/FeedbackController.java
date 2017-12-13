@@ -3,6 +3,7 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import femr.business.services.core.ISessionService;
+import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
@@ -24,14 +25,16 @@ public class FeedbackController extends Controller {
 
     private final ISessionService sessionService;
     private final FormFactory formFactory;
-
+    private final IUserService userService;
 
 
     @Inject
     public FeedbackController( ISessionService sessionService,
-                               FormFactory formFactory) {
+                               FormFactory formFactory,
+                               IUserService userService) {
         this.sessionService = sessionService;
         this.formFactory = formFactory;
+        this.userService = userService;
     }
 
 
@@ -47,6 +50,9 @@ public class FeedbackController extends Controller {
         final Form<IndexViewModelPost> IndexViewModelForm = formFactory.form(IndexViewModelPost.class);
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        userService.createFeedback(viewModel.getFeedbackMsg());
+
 
         return redirect("/?feedback=received");
 

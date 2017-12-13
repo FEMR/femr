@@ -1,6 +1,7 @@
-@(number: java.lang.Integer)
+@(number: java.lang.String)
+@import femr.util.stringhelpers.StringUtils
 
-@if(number == null){
+@if(StringUtils.isNullOrWhiteSpace(number)){
     No
 }else{
     Yes

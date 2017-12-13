@@ -133,19 +133,19 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
         <tr id="smoker">
             <th>Smoking</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td data-smoker="@vitalMap.get("smoker", vitalMap.getDate(dateIndex - 1))"></td>
+                <td> @outputYesOrNO(vitalMap.get("smoker", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
         <tr id="diabetic">
             <th>Diabetes</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td data-diabetes="@vitalMap.get("diabetic", vitalMap.getDate(dateIndex - 1))"></td>
+                <td> @outputYesOrNO(vitalMap.get("diabetic", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
         <tr id="alcohol">
             <th>Alcohol</th>
             @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
-                <td data-alcohol="@vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1))"></td>
+                <td> @outputYesOrNO(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
     </tbody>

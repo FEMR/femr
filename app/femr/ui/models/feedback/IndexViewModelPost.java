@@ -1,6 +1,5 @@
 package femr.ui.models.feedback;
 
-import java.util.Date;
 
 public class IndexViewModelPost {
 

@@ -1,22 +1,11 @@
 # --- !Ups
 
-CREATE  TABLE `feedback` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `date` DATE NOT NULL ,
-  `feedback` TEXT NOT NULL ,
-  PRIMARY KEY (`id`) );
+ALTER TABLE `medication_inventories`
+ADD COLUMN `timeAdded` DATETIME NULL,
+ADD COLUMN `createdBy` INT(11) NULL;
 
 # --- !Downs
 
-DROP TABLE IF EXISTS feedback;
-
-
-
-
-
-
-
-
-
-
-
+ALTER TABLE `medication_inventories`
+DROP COLUMN `timeAdded`,
+DROP COLUMN `createdBy`;

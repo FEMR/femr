@@ -38,8 +38,10 @@ public class MedicationItem {
     //active ingredients uses an inner class because
     //a medication can have more than one active ingredient.
     private List<ActiveIngredient> activeIngredients;
-
     private DateTime isDeleted;
+    private String timeAdded;
+    private String createdBy;
+
     public MedicationItem() {
         this.activeIngredients = new ArrayList<>();
     }
@@ -118,6 +120,22 @@ public class MedicationItem {
     public DateTime getIsDeleted() { return isDeleted; }
 
     public void setIsDeleted(DateTime isDeleted) {this.isDeleted = isDeleted; }
+
+    public String getTimeAdded() {
+        return timeAdded;
+    }
+
+    public void setTimeAdded(String timeAdded) {
+        this.timeAdded = timeAdded;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public class ActiveIngredient {
         private String name;

@@ -108,6 +108,10 @@
     float: right;
 }
 
+#tripSelection {
+    padding: 15px;
+}
+
 #inventoryTable{
 
 }
@@ -130,7 +134,17 @@
 
 #inventoryTable td.name{
 
-    width: 50%;
+    width: 30%;
+}
+
+#inventoryTable td.time{
+
+    width: 15%;
+}
+
+#inventoryTable td.created{
+
+    width: 10%;
 }
 
 .alert{

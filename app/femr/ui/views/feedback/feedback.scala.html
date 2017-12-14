@@ -5,7 +5,9 @@
 
 
   @additionalScripts = {}
-  @additionalStyles = {}
+  @additionalStyles = {
+      <link rel="stylesheet" href="@routes.Assets.versioned("css/feedback.css")">
+  }
 
 @main("Feedback", currentUser, styles = additionalStyles, scripts = additionalScripts) {
 

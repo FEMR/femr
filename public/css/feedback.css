@@ -1,38 +1,3 @@
-
-/* Leave Feedback Link */
-
-    div.leaveFeedback {
-        text-align: center;
-        bord
-    }
-
-    div.leaveFeedback a {
-        color: #333;
-        text-decoration: underline;
-    }
-
-    div.leaveFeedback a:hover {
-        /*
-        text-decoration: none;
-        */
-
-    }
-
-
-/* Feedback Response (in home page view) */
-    div#feedbackResponse {
-        width: 80%;
-        background: green;
-        border: 4px solid darkgreen;
-        border-radius: 4px;
-        text-align: center;
-        color: #fff;
-        margin: 0 auto;
-        margin-bottom: 48px;
-        display: none;
-    }
-
-
 /* Feedback Page */
 
     div.ifContainer {

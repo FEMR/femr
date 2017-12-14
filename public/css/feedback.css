@@ -3,14 +3,19 @@
 
     div.leaveFeedback {
         text-align: center;
+        bord
     }
 
     div.leaveFeedback a {
         color: #333;
+        text-decoration: underline;
     }
 
     div.leaveFeedback a:hover {
+        /*
         text-decoration: none;
+        */
+
     }
 
 

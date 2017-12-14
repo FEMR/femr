@@ -568,6 +568,20 @@ public class MedicalController extends Controller {
         if (viewModel.getWeeksPregnant() != null) {
             newVitals.put("weeksPregnant", viewModel.getWeeksPregnant());
         }
+
+        // Osman
+
+        if(viewModel.getSmoker() != null){
+            newVitals.put("smoker", viewModel.getSmoker().floatValue());
+        }
+
+        if(viewModel.getDiabetes() != null){
+            newVitals.put("diabetic", viewModel.getDiabetes().floatValue());
+        }
+
+        if(viewModel.getAlcohol() != null){
+            newVitals.put("alcohol", viewModel.getAlcohol().floatValue());
+        }
         
 
         return newVitals;

@@ -94,6 +94,9 @@ public interface IItemModelMapper {
      * @param pathToPatientPhoto filepath to the patient photo, may be null
      * @param photoId            id of the patients photo, may be null
      * @param ageClassification  age classification of the patient (adult,child, etc), may be null
+     * @param smoker             does the patient smoke or not, may be null
+     * @param diabetic           is the patient diabetic or not, may be null
+     * @param alcohol            does the patient drink alcohol or not, may be null
      * @return a new PatientItem or null if processing fails, may be null
      */
     PatientItem createPatientItem(int id,
@@ -111,7 +114,10 @@ public interface IItemModelMapper {
                                   Float weight,
                                   String pathToPatientPhoto,
                                   Integer photoId,
-                                  String ageClassification);
+                                  String ageClassification,
+                                  Integer smoker,
+                                  Integer diabetic,
+                                  Integer alcohol);
 
     /**
      * Generate and provide an instance of PatientEncounterItem

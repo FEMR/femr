@@ -6,6 +6,7 @@
     @import femr.ui.views.html.partials.helpers.outputHeightOrNA
     @import femr.ui.views.html.partials.helpers.outputWeightOrNA
     @import femr.ui.views.html.partials.helpers.outputBloodPressureOrNA
+    @import femr.ui.views.html.partials.helpers.outputYesOrNO
 
     @import femr.ui.views.html.partials.helpers.outputTemperatureOrNA
 
@@ -68,15 +69,46 @@
                                     </span>
                                 }
                             </p>
-                        }
 
+                        }
                         <p><span class="infoLabel">Height:</span> @outputHeightOrNA(
                             String.valueOf(patient.getHeightFeet),
                             String.valueOf(patient.getHeightInches),
                             viewModelMedical.getSettings.isMetric
                         )</p>
-                        <p><span class="infoLabel">Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
+
+                        <p><span class="infoLabel">
+                            Weight:</span> @outputWeightOrNA(String.valueOf(patient.getWeight), viewModelMedical.getSettings.isMetric)</p>
+
+                        @*//osman*@
+                        @defining(viewModelMedical.getVitalList) { vitalMap =>
+
+                            <p><span class="infoLabel">Smoking:</span>
+                                 @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                     <span>
+                                     @outputYesOrNO(vitalMap.get("smoker", vitalMap.getDate(dateIndex - 1)))
+                                     </span>
+                            }
+                                 </p>
+
+                            <p><span class="infoLabel">Diabetes:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputYesOrNO(vitalMap.get("diabetic", vitalMap.getDate(dateIndex - 1)))
+                                    </span>
+                            }
+                            </p>
+
+                            <p><span class="infoLabel">Alcohol:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                    @outputYesOrNO(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))
+                            }       </span>
+                            </p>
+                        }
+
                     </div>
+
                 }
                     </div>
                 </div>
@@ -366,4 +398,5 @@
         </div>
 
     }
+
 

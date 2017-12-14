@@ -116,7 +116,11 @@ public class PatientService implements IPatientService {
                         null,
                         photoPath,
                         photoId,
+                        null,
+                        null,
+                        null,
                         null);
+                //Osman
 
                 response.setResponseObject(patientItem);
             }
@@ -170,6 +174,9 @@ public class PatientService implements IPatientService {
                         null,
                         photoPath,
                         photoId,
+                        null,
+                        null,
+                        null,
                         null);
 
                 response.setResponseObject(patientItem);
@@ -223,8 +230,11 @@ public class PatientService implements IPatientService {
                         null,
                         photoPath,
                         photoId,
+                        null,
+                        null,
+                        null,
                         null);
-
+                //Osman
                 response.setResponseObject(patientItem);
 
             }
@@ -281,7 +291,11 @@ public class PatientService implements IPatientService {
                         null,
                         photoPath,
                         photoId,
+                        null,
+                        null,
+                        null,
                         null);
+                //Osman
                 response.setResponseObject(patientItem);
             }
 
@@ -329,7 +343,11 @@ public class PatientService implements IPatientService {
                             null,
                             photoPath,
                             photoId,
+                            null,
+                            null,
+                            null,
                             null)
+                    //Osman
             );
         } catch (Exception ex) {
 

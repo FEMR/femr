@@ -1,0 +1,22 @@
+/* Feedback Page */
+
+    div.ifContainer {
+        width: 100%;
+        background: #fff;
+        overflow: auto;
+        padding: 25px;
+        margin-top: 20px;
+    }
+
+    textarea#usrFeedback {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        border: 1px solid #333;
+    }
+
+    button#feedbackSubmit {
+        display: block;
+        margin: 10px 0;
+    }
+

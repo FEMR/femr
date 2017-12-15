@@ -27,6 +27,8 @@ import java.util.List;
 
 public interface IUserService {
 
+    ServiceResponse<Boolean> createFeedback(String feedback);
+
     /**
      * Create a brand new user.
      *

@@ -25,9 +25,13 @@ import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.UserItem;
 import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
 import femr.data.daos.core.IUserRepository;
+import femr.data.models.core.IFeedback;
+import femr.data.models.core.IPatientPrescriptionReplacement;
 import femr.data.models.core.IRole;
 import femr.data.models.core.IUser;
+import femr.data.models.mysql.Feedback;
 import femr.util.calculations.dateUtils;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.stringhelpers.StringUtils;
@@ -43,17 +47,34 @@ public class UserService implements IUserService {
     private final IPasswordEncryptor passwordEncryptor;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
+    private final IRepository<IFeedback> feedbackRepository;
 
     @Inject
     public UserService(IUserRepository userRepository,
                        IPasswordEncryptor passwordEncryptor,
                        IDataModelMapper dataModelMapper,
-                       @Named("identified") IItemModelMapper itemModelMapper) {
+                       @Named("identified") IItemModelMapper itemModelMapper,
+                       IRepository<IFeedback> feedbackRepository) {
 
         this.userRepository = userRepository;
         this.passwordEncryptor = passwordEncryptor;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
+        this.feedbackRepository = feedbackRepository;
+    }
+
+    @Override
+    public ServiceResponse<Boolean> createFeedback(String feedback) {
+        IFeedback newFeedback = new Feedback();
+
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+
+        newFeedback.setDate(dateUtils.getCurrentDateTime());
+        newFeedback.setFeedback(feedback);
+
+        feedbackRepository.create(newFeedback);
+
+        return response;
     }
 
     /**

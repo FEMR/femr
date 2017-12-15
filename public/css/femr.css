@@ -387,11 +387,11 @@ float: right;
     }
 
     .navigationItems {
-        width: 70% !important;
+        width: 85% !important;
     }
 
     .userStatus {
-        width: 30% !important;
+        width: 15% !important;
     }
 }
 

@@ -27,7 +27,6 @@ public class PrescriptionItem {
     private String name;
     private String originalMedicationName;
     private String replacementMedicationName;
-    private Integer replacementAmount;
     private String prescriberFirstName;
     private String prescriberLastName;
     private Integer administrationID;
@@ -38,11 +37,11 @@ public class PrescriptionItem {
     //medicationName is used for prescriptions that don't have an ID
     private String medicationName;
     private String medicationForm;
-    //of the particular medication, how much remains in the inventory?
-    private Integer medicationRemaining;
     private List<MedicationItem.ActiveIngredient> medicationActiveDrugs;
     //was the checkbox checked for this prescription indicating the patient was counseled by the pharmacist
     private Boolean isCounseled;
+
+    private MedicationItem medicationItem;
 
     public PrescriptionItem(String name){
         medicationActiveDrugs = new ArrayList<MedicationItem.ActiveIngredient>();
@@ -118,9 +117,23 @@ public class PrescriptionItem {
         return amount;
     }
 
-    public String printAmount(){
-        if(amount == null) return "";
-        return amount.toString();
+    public String printFullPrescriptionName() {
+        String fullPrescriptionName = "";
+        if (amount != null)
+            fullPrescriptionName = fullPrescriptionName + amount + " - ";
+        else
+            fullPrescriptionName = fullPrescriptionName + "N/A - ";
+
+        if (medicationItem != null) {
+            fullPrescriptionName = fullPrescriptionName + " " + medicationItem.getFullName();
+        }
+
+        if (administrationName != null)
+            fullPrescriptionName = fullPrescriptionName + " - " + getAdministrationName();
+        else
+            fullPrescriptionName = fullPrescriptionName + " - " + "N/A";
+
+        return fullPrescriptionName;
     }
 
     public void setAmount(Integer amount) {
@@ -141,15 +154,6 @@ public class PrescriptionItem {
 
     public void setMedicationForm(String medicationForm) {
         this.medicationForm = medicationForm;
-    }
-
-    public Integer getMedicationRemaining() {
-        if (medicationRemaining == null) return 0;
-        return medicationRemaining;
-    }
-
-    public void setMedicationRemaining(Integer medicationRemaining) {
-        this.medicationRemaining = medicationRemaining;
     }
 
     public List<MedicationItem.ActiveIngredient> getMedicationActiveDrugs() {
@@ -188,25 +192,8 @@ public class PrescriptionItem {
         return replacementMedicationName;
     }
 
-    public Integer getReplacementAmount() {
-        if (replacementAmount == null) return 0;
-        return replacementAmount;
-    }
-
-    public Integer getReplacementAmountWithNull(){
-        return replacementAmount;
-    }
     public void setReplacementMedicationName(String replacementMedicationName) {
         this.replacementMedicationName = replacementMedicationName;
-    }
-
-    public void setReplacementAmount(Integer replacementAmount) {
-        this.replacementAmount = replacementAmount;
-    }
-
-    public String printReplacementAmount(){
-        if(replacementAmount == null) return "";
-        return replacementAmount.toString();
     }
 
     public int getReplacementId() {
@@ -215,5 +202,13 @@ public class PrescriptionItem {
 
     public void setReplacementId(int replacementId) {
         this.replacementId = replacementId;
+    }
+
+    public MedicationItem getMedicationItem() {
+        return medicationItem;
+    }
+
+    public void setMedicationItem(MedicationItem medicationItem) {
+        this.medicationItem = medicationItem;
     }
 }

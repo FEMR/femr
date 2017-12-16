@@ -40,7 +40,7 @@
         <input class='medicationID' value='@script.getMedicationID' type='hidden' />
 
         <span class="prescription-field prescriptionName">
-            <input type='text' class='medicationName form-control input-sm' value="@script.getName (@outputStringOrNA(script.getMedicationForm).toString().trim())" readonly />
+            <input type='text' class='medicationName form-control input-sm' value="@script.getMedicationItem.getFullName" readonly />
         </span>
         <span class="prescription-field prescriptionAdministration">
 

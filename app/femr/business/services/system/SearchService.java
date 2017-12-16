@@ -38,6 +38,7 @@ import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptDiagnosis;
 import femr.util.calculations.LocaleUnitConverter;
 import femr.util.stringhelpers.StringUtils;
+import org.joda.time.DateTime;
 import play.Logger;
 
 import java.util.*;
@@ -334,6 +335,9 @@ public class SearchService implements ISearchService {
 
                 Integer quantityCurrent = null;
                 Integer quantityInitial = null;
+                DateTime isDeleted = null;
+                String timeAdded = "";
+                String createdBy = "";
 
                 //if the medication resides in inventory and the user is on the trip using that inventory
                 //this will make sure that information about the current state of inventory is included
@@ -349,23 +353,25 @@ public class SearchService implements ISearchService {
 
                         quantityCurrent = inventoryResponse.getResponseObject().getQuantityCurrent();
                         quantityInitial = inventoryResponse.getResponseObject().getQuantityTotal();
+                        isDeleted = inventoryResponse.getResponseObject().getIsDeleted();
+                        timeAdded = inventoryResponse.getResponseObject().getTimeAdded();
+                        createdBy = inventoryResponse.getResponseObject().getCreatedBy();
                     }
 
                 }
+
+                MedicationItem medicationItem = itemModelMapper.createMedicationItem(pp.getMedication(),quantityCurrent, quantityInitial, isDeleted, timeAdded, createdBy);
 
                 PrescriptionItem item = itemModelMapper.createPrescriptionItem(
 
                         pp.getId(),
                         pp.getMedication().getName(),
-                        null,
                         pp.getPhysician().getFirstName(),
                         pp.getPhysician().getLastName(),
                         pp.getConceptPrescriptionAdministration(),
                         pp.getAmount(),
-                        pp.getMedication(),
-                        quantityCurrent,
-                        quantityInitial,
-                        pp.isCounseled()
+                        pp.isCounseled(),
+                        medicationItem
                 );
                 prescriptionItems.add(item);
             }
@@ -396,20 +402,19 @@ public class SearchService implements ISearchService {
 
         try {
             List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+
+
             List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()
                     .filter(pp -> pp.getDateDispensed() != null)
                     .map(pp -> itemModelMapper.createPrescriptionItem(
                             pp.getId(),
                             pp.getMedication().getName(),
-                            null,
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
                             pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
-                            pp.getMedication(),
-                            null,
-                            null,
-                            pp.isCounseled()
+                            pp.isCounseled(),
+                            itemModelMapper.createMedicationItem(pp.getMedication(), null, null, null, null, null)
                     ))
                     .collect(Collectors.toList());
 
@@ -419,16 +424,13 @@ public class SearchService implements ISearchService {
                             pp.getId(),
                             pp.getMedication().getName(),
                             pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getMedication().getName(),
-                            pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getAmount(),
                             pp.getPatientPrescriptionReplacements().get(0).getReplacementPrescription().getId(),
                             pp.getPhysician().getFirstName(),
                             pp.getPhysician().getLastName(),
                             pp.getConceptPrescriptionAdministration(),
                             pp.getAmount(),
-                            pp.getMedication(),
-                            null,
-                            null,
-                            pp.isCounseled()
+                            pp.isCounseled(),
+                            itemModelMapper.createMedicationItem(pp.getMedication(), null, null, null, null, null)
                     ))
                     .collect(Collectors.toList());
             prescriptionItems.addAll(replacedPrescriptions);

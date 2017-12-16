@@ -3,7 +3,6 @@ package mock.femr.common;
 import femr.common.IItemModelMapper;
 import femr.common.models.*;
 import femr.data.models.core.*;
-import femr.data.models.mysql.MedicationInventory;
 import org.joda.time.DateTime;
 
 import java.util.Date;
@@ -78,12 +77,12 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
-    public PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName, IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled) {
+    public PrescriptionItem createPrescriptionItem(int id, String name, String firstName, String lastName, IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, Boolean isCounseled, MedicationItem medicationItem) {
         return null;
     }
 
     @Override
-    public PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, Integer replacementAmount, int replacementId, String firstName, String lastName, IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled) {
+    public PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementId, String firstName, String lastName, IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, Boolean isCounseled, MedicationItem medicationItem) {
         return null;
     }
 

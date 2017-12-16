@@ -248,7 +248,7 @@
                             <span class="value">@outputStringOrNA(viewModelPharmacy.getProblems.get(problemIterator - 1))</span></p>
                     }
                     @if(!viewModelPharmacy.getPrescriptions.isEmpty()){
-                        <p> <span class="infoLabel">Dispensed Medication:</span> </p>
+                        <p> <span class="infoLabel">Dispensed Medication(s):</span> </p>
 
                         @for(x <- 1 to viewModelPharmacy.getPrescriptions.size) {
                             @defining(viewModelPharmacy.getPrescriptions.get(x - 1)) { prescription =>
@@ -256,37 +256,13 @@
                                   @if(prescription.getReplacementMedicationName != null) {
                                           <p>
                                               <span class="prescription-id">Prescription #@prescription.getId() - <span class="red">Replaced</span></span>
-                                              <del>
-                                                  @prescription.printAmount @outputStringOrNA(prescription.getName)
-
-                                          (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
-
-                                            </del>
+                                              <del>@prescription.printFullPrescriptionName</del>
                                           </p>
-                                      <del>
-                                      <ul class="active-ingredients">
-                                      @for(activeDrug <- prescription.getMedicationActiveDrugs) {
-                                          <li> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </li>
-                                      }
-                                      </ul>
-                                      </del>
-                                      <div class="alert">
-                                          This prescription was replaced by prescription #@prescription.getReplacementId:<br>
-                                          <b>@prescription.printReplacementAmount @outputStringOrNA(prescription.getReplacementMedicationName)</b>
-                                      </div>
+                                      <div class="alert">This prescription was replaced by prescription #@prescription.getReplacementId</div>
                                   } else {
                                       <p>
                                           <span class="prescription-id">Prescription #@prescription.getId()</span>
-                                          @prescription.printAmount
-                                          @outputStringOrNA(prescription.getName)
-                                          (@outputStringOrNA(prescription.getMedicationForm).toString().trim)
-
-                                          <ul class="active-ingredients">
-                                          @for(activeDrug <- prescription.getMedicationActiveDrugs) {
-                                              <li> @activeDrug.getName @activeDrug.getValue @activeDrug.getUnit </li>
-                                          }
-                                          </ul>
-
+                                          @prescription.printFullPrescriptionName
                                       </p>
                                   }
                                 </div>

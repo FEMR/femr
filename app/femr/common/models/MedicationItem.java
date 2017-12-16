@@ -26,6 +26,9 @@ import java.util.List;
 public class MedicationItem {
 
     private int id;
+    //Stores inventory quantity if this instance of MedicationItem is
+    //associated with a patient encounter that belongs to a trip using
+    //inventory feature
     private Integer quantityCurrent;
     private Integer quantityTotal;
     private String form;

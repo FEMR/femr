@@ -149,15 +149,13 @@ public interface IItemModelMapper {
      * @param lastName      last name of the person that prescribed the medication, may be null
      * @param conceptPrescriptionAdministration
      * @param amount
-     * @param medication
-     * @param quantityCurrent current quantity of the medication in Inventory, may be null
-     * @param quantityInitial initial quantity of the medication in inventory, may be null
+     * @param medicationitem the MedicationItem for the prescription
      * @param isCounseled indicates whether or not the pharmacist checked the checkbox indicating that they counseled the patient on this prescription, may be null
      * @return a new PrescriptionItem or null if processing fails
      */
-    PrescriptionItem createPrescriptionItem(int id, String name, String originalMedicationName, String firstName, String lastName,
+    PrescriptionItem createPrescriptionItem(int id, String name, String firstName, String lastName,
                                             IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
-                                            IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled);
+                                            Boolean isCounseled, MedicationItem medicationItem);
 
     /**
      * Generate and provide an instance of PrescriptionItem. quantityCurrent and quantityInitial will be null if the
@@ -172,15 +170,13 @@ public interface IItemModelMapper {
      * @param lastName      last name of the person that prescribed the medication, may be null
      * @param conceptPrescriptionAdministration
      * @param amount
-     * @param medication
-     * @param quantityCurrent current quantity of the medication in Inventory, may be null
-     * @param quantityInitial initial quantity of the medication in inventory, may be null
      * @param isCounseled indicates whether or not the pharmacist checked the checkbox indicating that they counseled the patient on this prescription, may be null
+     * @param medicationitem the MedicationItem for the prescription
      * @return a new PrescriptionItem or null if processing fails
      */
-    PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, Integer replacementAmount, int replacementId, String firstName, String lastName,
+    PrescriptionItem createPrescriptionItemWithReplacement(int id, String name, String replacementMedicationName, int replacementId, String firstName, String lastName,
                                             IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount,
-                                            IMedication medication, Integer quantityCurrent, Integer quantityInitial, Boolean isCounseled);
+                                            Boolean isCounseled, MedicationItem medicationItem);
 
     /**
      * Generate and provide an instance of ProblemItem.

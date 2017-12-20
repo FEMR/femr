@@ -37,7 +37,6 @@ import mock.femr.common.MockItemModelMapper;
 public class PatientServiceTest {
 
     private IPatientService patientService;
-    private IRepository<IPatientEncounter> patientEncounterRepository;
     private MockPatientRepository mockPatientRepository;
     private MockDataModelMapper mockDataModelMapper;
     private MockItemModelMapper mockItemModelMapper;
@@ -50,7 +49,7 @@ public class PatientServiceTest {
         mockDataModelMapper =  new MockDataModelMapper();
         mockItemModelMapper = new MockItemModelMapper();
 
-        patientService = new PatientService(mockPatientRepository, patientEncounterRepository, mockDataModelMapper, mockItemModelMapper);
+        patientService = new PatientService(mockPatientRepository, mockDataModelMapper, mockItemModelMapper);
     }
 
     @After

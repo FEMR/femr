@@ -370,7 +370,7 @@ public class ItemModelMapper implements IItemModelMapper {
         if (medicationItem != null) {
             if (medicationItem.getQuantityCurrent() == null)
                 prescriptionItem.setFormularyMessage("Medication is not found in the formulary");
-            else if (amount > medicationItem.getQuantityCurrent())
+            else if (amount != null && amount > medicationItem.getQuantityCurrent())
                 prescriptionItem.setFormularyMessage("Not Enough Medication Remaining to Dispense!");
         } else {
             prescriptionItem.setFormularyMessage("Medication is not found in the formulary");

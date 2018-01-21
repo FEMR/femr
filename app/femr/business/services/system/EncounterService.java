@@ -253,8 +253,7 @@ public class EncounterService implements IEncounterService {
                     .isNull("isDeleted");
             ExpressionList<ChiefComplaint> chiefComplaintExpressionList = QueryProvider.getChiefComplaintQuery()
                     .where()
-                    .eq("patient_encounter_id", encounterId)
-                    .isNull("isDeleted");
+                    .eq("patient_encounter_id", encounterId);
 
             //the object we will use to populate to put in the ServiceResponse
             List<TabFieldItem> tabFieldItemsForResponse;

@@ -17,7 +17,7 @@ var problemFeature = {
             "<input name='problems[" + problemIndex + "].name' type='text' class='form-control newProblems'/>" +
             "</div>");
 
-        var problemInputElement = $("[name='problems[" + problemIndex + "].name'");
+        var problemInputElement = $("[name='problems[" + problemIndex + "].name']");
         //data for typeahead already exists on the page from loading the diagnoses input box
         typeaheadFeature.initalizeTypeAhead($(problemInputElement), 'diagnoses', true, true);
         $(problemInputElement).focus();

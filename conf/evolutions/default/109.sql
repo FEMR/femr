@@ -4,8 +4,10 @@ ALTER TABLE `patient_encounters`
 DROP FOREIGN KEY `fk_patient_encounter_user_id_users_id_pharm`,
 DROP FOREIGN KEY `fk_patient_encounter_user_id_users_id_doc`,
 DROP FOREIGN KEY `fk_patient_encounter_user_id_users_id`;
+# --- ALTER TABLE `patient_encounters`
+# --- DROP INDEX `fk_patient_encounter_user_id_users_id_pharm` ;
 ALTER TABLE `patient_encounters`
-DROP INDEX `fk_patient_encounter_user_id_users_id_pharm` ;
+DROP INDEX `user_id_idx` ;
 
 ALTER TABLE `patient_encounters`
 ADD INDEX `fk_patient_encounter_user_id_users_id_nurse_idx` (`user_id_triage` ASC),
@@ -59,7 +61,11 @@ ADD CONSTRAINT `fk_patient_encounter_user_id_users_id`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+# --- ALTER TABLE `patient_encounters`
+# --- DROP INDEX `fk_patient_encounter_user_id_users_id_pharm_idx` ,
+# --- ADD INDEX `fk_patient_encounter_user_id_users_id_pharm` (`user_id_triage` ASC);
+
 ALTER TABLE `patient_encounters`
 DROP INDEX `fk_patient_encounter_user_id_users_id_pharm_idx` ,
-ADD INDEX `fk_patient_encounter_user_id_users_id_pharm` (`user_id_triage` ASC);
+ADD INDEX `user_id_idx` (`user_id_triage` ASC);
 

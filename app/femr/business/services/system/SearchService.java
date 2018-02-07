@@ -499,10 +499,10 @@ public class SearchService implements ISearchService {
             //could be an ID, name, or phone number
             try {
                 //see if it is a number
-                if(isNumeric(words[0]) && words[0].length() > 5)
+                if(isNumeric(words[0])) {
                     phoneNumber = words[0];
-                else
                     id = Integer.parseInt(words[0]);
+                }
             } catch (NumberFormatException ex) {
                 //see if it it a string
                 firstName = words[0];
@@ -520,15 +520,24 @@ public class SearchService implements ISearchService {
         try {
             //Build the Query
             //TODO: filter these by the current country of the team
-            if (id != null) {
-                //if we have an id, that is all we need.
-                //this is the most ideal scenario
-                IPatient patient = patientRepository.retrievePatientById(id);
+            if (id != null || phoneNumber != null) {
+
                 List<IPatient> iPatients = new ArrayList<>();
-                iPatients.add(patient);
-                patients = iPatients;
-            } else if (phoneNumber != null) {
-                patients = patientRepository.retrievePatientsByPhoneNumber(phoneNumber);
+                if(id != null) {
+
+                    //if we have an id, that is all we need.
+                    //this is the most ideal scenario
+                    IPatient patient = patientRepository.retrievePatientById(id);
+                    iPatients.add(patient);
+                }
+
+                // if we found a patient by id above
+                if ( iPatients.size() > 0 ) {
+                    patients = iPatients;
+                } else {
+                    patients = patientRepository.retrievePatientsByPhoneNumber(phoneNumber);
+                }
+
             } else {
                 patients = patientRepository.retrievePatientsByName(firstName, lastName);
             }

@@ -92,6 +92,11 @@ public class MockItemModelMapper implements IItemModelMapper{
     }
 
     @Override
+    public NoteItem createNoteItem(String name, DateTime datetimestamp, String reporter) {
+        return null;
+    }
+
+    @Override
     public SettingItem createSettingItem(List<? extends ISystemSetting> systemSettings) {
         return null;
     }

@@ -419,6 +419,26 @@ public class ItemModelMapper implements IItemModelMapper {
      * {@inheritDoc}
      */
     @Override
+    public NoteItem createNoteItem(String name, DateTime datetimestamp, String reporter) {
+
+        if (StringUtils.isNullOrWhiteSpace(name)) {
+
+            return null;
+        }
+
+        NoteItem noteItem = new NoteItem();
+
+        noteItem.setName(name);
+        noteItem.setDate(datetimestamp);
+        noteItem.setReporter(reporter);
+
+        return noteItem;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public SettingItem createSettingItem(List<? extends ISystemSetting> systemSettings) {
 
         SettingItem settingItem = new SettingItem();

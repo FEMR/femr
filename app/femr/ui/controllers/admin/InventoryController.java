@@ -77,6 +77,7 @@ public class InventoryController extends Controller {
      * @return returns viewModel with updated inventory
      */
     public Result manageGet(Integer tripID) {
+        System.out.println("In InventoryController manageGet:");
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ManageViewModelGet viewModel = new ManageViewModelGet();
 
@@ -145,6 +146,7 @@ public class InventoryController extends Controller {
      *               trip if they do not select another trip
      * @return updated trip inventory
      */
+    //\A
     public Result customGet(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
@@ -258,6 +260,7 @@ public class InventoryController extends Controller {
      * @return updated trip inventory
      */
     public Result existingGet(Integer tripId) {
+        System.out.println("In InventoryController existingGet:");
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ExistingViewModelGet viewModel = new ExistingViewModelGet();
@@ -288,10 +291,16 @@ public class InventoryController extends Controller {
      * @return updated trip inventory
      */
     public Result existingPost(Integer tripId) {
-
+        System.out.println("In InventoryController existingPost:");
         final Form<ExistingViewModelPost> existingViewModelPostForm = formFactory.form(ExistingViewModelPost.class);
         Form<ExistingViewModelPost> existingForm = existingViewModelPostForm.bindFromRequest();
         ExistingViewModelPost existingViewModelPost = existingForm.bindFromRequest().get();
+
+        System.out.println("newconceptmeds4inventory: ");
+        for (Integer i: existingViewModelPost.getNewConceptMedicationsForInventory()){
+            System.out.print(i);
+        }
+        System.out.println();
 
         //if just adding medications from the concept dictionary, there won't be any amount involved
         //and knowledge of the ingredients already exists.
@@ -313,13 +322,15 @@ public class InventoryController extends Controller {
 
                     //create a non-concept MedicationItem from the concept MedicationItem
                     conceptMedicationItem = conceptMedicationServiceResponse.getResponseObject();
+                    System.out.println("(conceptMedID, isdel) <== ("+conceptMedicationItem.getId()+", "+conceptMedicationItem.getIsDeleted()+")");
                     medicationItemServiceResponse = medicationService.createMedication(conceptMedicationItem.getName(), conceptMedicationItem.getForm(), conceptMedicationItem.getActiveIngredients());
-
+                    System.out.println("\\\\\\Out of Service Response");
                     if (medicationItemServiceResponse.hasErrors()) {
 
                         return internalServerError();
                     }else{
-
+                        //\A//TODO//IMPORTANT//That bit was 0 originally
+                        System.out.println("(response obj isdel) <= ("+medicationItemServiceResponse.getResponseObject().getIsDeleted()+")");
                         ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
                         if (setQuantityServiceResponse.hasErrors()){
 
@@ -354,9 +365,12 @@ public class InventoryController extends Controller {
     }
 
     public Result ajaxDelete(int medicationID, int tripId) {
+        System.out.println("In InventoryController ajaxDelete:");
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
 
+        //System.out.println(medicationID);
         if (inventoryServiceResponse.hasErrors()) {
+            //System.out.println("haserrors");
             throw new RuntimeException();
         }
         return ok("true");

@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by kevin on 14/05/17.
  */
+//\A
 public class ExistingViewModelGet {
 
     private List<MedicationItem> conceptMedications;

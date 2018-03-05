@@ -511,7 +511,7 @@ $(document).ready(function () {
             window.location = "/triage";
         }
         else {
-            return;
+
         }
     });
 
@@ -668,8 +668,7 @@ $(document).ready(function () {
                 }
             }
         })
-    };
-
+    }
     patientPhotoFeature.init();
 
     $('#photoInput').change(function (evt) {

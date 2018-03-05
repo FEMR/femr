@@ -123,12 +123,15 @@ public class MedicationRepository implements IMedicationRepository {
      */
     @Override
     public IMedication deleteMedication (Integer medicationId, boolean isDeleted){
+        System.out.println("In MedicationReposititory deleteMedication:");
         ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
                 .where()
                 .eq("id", medicationId);
 
         IMedication medication = medicationQuery.findUnique();
         medication.setIsDeleted(isDeleted);
+        //medication.setIsDeleted(true);
+        //System.out.println("isDeleted: " + medication.getIsDeleted());
         try {
             Ebean.save(medication);
         } catch (Exception ex) {

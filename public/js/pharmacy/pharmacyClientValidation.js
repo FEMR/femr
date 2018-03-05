@@ -33,7 +33,7 @@ var medicalFieldValidator = {
             last = prescriptions[i];
         }
     }
-}
+};
 
 
 $(document).ready(function () {

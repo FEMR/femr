@@ -73,7 +73,10 @@
                     <th>Remove</th>
                 </thead>
                 <tbody>
+                    @println((viewModel.getMedications.get(0)) getClass)
                 @for(m <- 1 to viewModel.getMedications.size) {
+                    @print("vm isdel: " + viewModel.getMedications.get(m - 1).getIsDeleted)
+                    @print(", ")
                     @if(viewModel.getMedications.get(m - 1).getIsDeleted == null){
                         <tr>
                             <td>@m</td>

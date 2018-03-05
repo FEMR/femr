@@ -88,7 +88,7 @@ public class MedicationService implements IMedicationService {
      * {@inheritDoc}
      */
     public ServiceResponse<MedicationItem> createMedication(String name, String form, List<MedicationItem.ActiveIngredient> activeIngredients) {
-
+        System.out.println("In ServiceResponse createMedication:");
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
         try {
@@ -156,14 +156,20 @@ public class MedicationService implements IMedicationService {
             }
 
             // There exist a matching medication in the database, so update that one rather then create new one
+            //\A In theory, if we deleted one earlier and want to readd it, it's already there
             if (matchingMedication != null) {
+                System.out.println("Thinking the Med Exists (has matching medication)");
                 medicationRepository.deleteMedication(matchingMedication.getId(), false);
+                Ebean.save(matchingMedication);
+                //\A\Edits
+                //medicationRepository.deleteMedication(matchingMedication.getId(), true);
                 response.setResponseObject(itemModelMapper.createMedicationItem(matchingMedication, null, null, null, null, null));
 
             } else {
+                System.out.println("Thinking the Med NOT Exists (No matching medication)");
                 IMedication medication = medicationRepository.createNewMedication(name, medicationGenericStrengths, conceptMedicationForm);
                 //creates the medication item - quantities are null because the medication was just created.
-                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, null, null, null, null, null);
+                MedicationItem newMedicationItem = itemModelMapper.createMedicationItem(medication, 0, 0, null, null, null);
 
                 response.setResponseObject(newMedicationItem);
             }
@@ -172,6 +178,8 @@ public class MedicationService implements IMedicationService {
 
             response.addError("", "error creating medication");
         }
+        //IMportant
+        //medicationInventoryRepository.update(medicationRepository);
 
         return response;
     }
@@ -402,7 +410,6 @@ public class MedicationService implements IMedicationService {
 
     public ServiceResponse<MedicationItem> deleteMedication(int medicationID) {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-
         // Get the medication Item by it's ID
         IMedication medication;
         ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()

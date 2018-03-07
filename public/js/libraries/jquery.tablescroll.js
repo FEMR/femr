@@ -114,7 +114,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 			if (tb.outerHeight() <= settings.height)
 			{
 			//	wrapper.css({height:'auto',width:(width-diff)+'px'});
-                wrapper.css({height:'auto'})
+                wrapper.css({height:'auto'});
 				flush = false;
 			}
 

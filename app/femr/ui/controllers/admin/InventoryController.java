@@ -18,6 +18,9 @@
 */
 package femr.ui.controllers.admin;
 
+import com.avaje.ebean.ExpressionList;
+import femr.data.models.mysql.MedicationInventory;
+import femr.business.helpers.QueryProvider;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -190,8 +193,6 @@ public class InventoryController extends Controller {
 
         if (form.hasErrors()) {
             return redirect("/admin/inventory/0");
-
-            //System.out.println(form.errors().toString());
             //if the request gets past the javascript validation and fails validation in the viewmodel, then
             //don't proceed to save anything. In the future, this should alert the user as to what they did
             //wrong.
@@ -288,7 +289,6 @@ public class InventoryController extends Controller {
      * @return updated trip inventory
      */
     public Result existingPost(Integer tripId) {
-
         final Form<ExistingViewModelPost> existingViewModelPostForm = formFactory.form(ExistingViewModelPost.class);
         Form<ExistingViewModelPost> existingForm = existingViewModelPostForm.bindFromRequest();
         ExistingViewModelPost existingViewModelPost = existingForm.bindFromRequest().get();
@@ -314,17 +314,35 @@ public class InventoryController extends Controller {
                     //create a non-concept MedicationItem from the concept MedicationItem
                     conceptMedicationItem = conceptMedicationServiceResponse.getResponseObject();
                     medicationItemServiceResponse = medicationService.createMedication(conceptMedicationItem.getName(), conceptMedicationItem.getForm(), conceptMedicationItem.getActiveIngredients());
-
                     if (medicationItemServiceResponse.hasErrors()) {
 
                         return internalServerError();
                     }else{
 
-                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
+                        //If it exists in the formulary, delete or un-delete the medication from the formulary
+                        inventoryService.deleteInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+
+                        //Find the medication so we can find it's initial quantity, and current quantity
+                        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                                .where()
+                                .eq("missionTrip.id", tripId)
+                                .eq("medication.id", medicationItemServiceResponse.getResponseObject().getId());
+                        MedicationInventory medicationInventory = medicationInventoryExpressionList.findUnique();
+
+                        //Add the medication to the trip formulary. If it already existed and was deleted,
+                        //set the initial and current quality to the values set before deletion.
+                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(),
+                                                                                                                       tripId,
+                                                                                                                       medicationInventory.getQuantityInitial());
+                        ServiceResponse<MedicationItem> setCurrentQuantityServiceResponse = inventoryService.setQuantityCurrent(medicationItemServiceResponse.getResponseObject().getId(),
+                                                                                                                                tripId,
+                                                                                                                                medicationInventory.getQuantityCurrent());
                         if (setQuantityServiceResponse.hasErrors()){
 
                             return internalServerError();
                         }
+
+
                     }
 
 

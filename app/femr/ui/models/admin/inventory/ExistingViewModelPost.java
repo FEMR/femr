@@ -2,6 +2,7 @@ package femr.ui.models.admin.inventory;
 
 import java.util.List;
 
+
 public class ExistingViewModelPost {
 
     //this is a list of IDs that come out of the select2 textbox for adding

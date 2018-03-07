@@ -138,6 +138,7 @@ public class InventoryService implements IInventoryService {
     }
 
     /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -159,8 +160,8 @@ public class InventoryService implements IInventoryService {
                 //it doesn't yet exist, create a new one
                 medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
                 medicationInventory = medicationInventoryRepository.create(medicationInventory);
-            } else {
-
+            }
+             else {
 
                 medicationInventory.setQuantityInitial(quantityTotal);
                 medicationInventory = medicationInventoryRepository.update(medicationInventory);
@@ -208,6 +209,8 @@ public class InventoryService implements IInventoryService {
 
     /**
      *{@inheritDoc}
+     * This function both deletes a medication and un-deletes it (meaning it was added at some point)
+     * from the trip formulary. This does not create new medications that haven't been added
      **/
     @Override
     public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
@@ -216,15 +219,23 @@ public class InventoryService implements IInventoryService {
                 .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
+
         try {
-            //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            //This should exist already, so no need to query for unique, but wue for unique regardless.
+            // While fixing fEMR-277. There was a bug where if you readded medications you deleted,
+            // it would just re-add them as a new medication with a new id. This avoids that
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+
             //Checks to see if medication was already deleted, then user wanted to undo delete
-            if(medicationInventory.getIsDeleted() != null)
+            if(medicationInventory.getIsDeleted() != null) {
                 medicationInventory.setIsDeleted(null);
-            else
+            }
+            else {
                 medicationInventory.setIsDeleted(DateTime.now());
+            }
+
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
+
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {

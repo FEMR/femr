@@ -59,7 +59,6 @@ public class ItemModelMapper implements IItemModelMapper {
      */
     @Override
     public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
-
         if (medication == null) {
 
             return null;

@@ -187,6 +187,14 @@ public interface IItemModelMapper {
     ProblemItem createProblemItem(String name);
 
     /**
+     * Generate and provide an instance of ProblemItem.
+     *
+     * @param name the name of the problem, not null
+     * @return a new ProblemItem or null if processing fails
+     */
+    NoteItem createNoteItem(String name, DateTime datetimestamp, String reporter);
+
+    /**
      * Generate and provide an instance of SettingItem.
      *
      * @param systemSettings a list of all system settings, not null

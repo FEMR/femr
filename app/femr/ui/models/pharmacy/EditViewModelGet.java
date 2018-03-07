@@ -30,6 +30,7 @@ public class EditViewModelGet {
     private List<PrescriptionItem> prescriptions;
     //Problems
     private List<ProblemItem> problems;
+    private List<NoteItem> notes;
     private List<MedicationAdministrationItem> medicationAdministrationItems;
 
     public List<PrescriptionItem> getPrescriptions() {
@@ -62,6 +63,14 @@ public class EditViewModelGet {
 
     public void setProblems(List<ProblemItem> problems) {
         this.problems = problems;
+    }
+
+    public List<NoteItem> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<NoteItem> notes) {
+        this.notes = notes;
     }
 
     // Alaa Serhan

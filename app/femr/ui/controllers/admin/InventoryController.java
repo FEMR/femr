@@ -18,6 +18,9 @@
 */
 package femr.ui.controllers.admin;
 
+import com.avaje.ebean.ExpressionList;
+import femr.data.models.mysql.MedicationInventory;
+import femr.business.helpers.QueryProvider;
 import com.google.inject.Inject;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -77,7 +80,6 @@ public class InventoryController extends Controller {
      * @return returns viewModel with updated inventory
      */
     public Result manageGet(Integer tripID) {
-        System.out.println("In InventoryController manageGet:");
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         ManageViewModelGet viewModel = new ManageViewModelGet();
 
@@ -146,7 +148,6 @@ public class InventoryController extends Controller {
      *               trip if they do not select another trip
      * @return updated trip inventory
      */
-    //\A
     public Result customGet(Integer tripId) {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
@@ -192,8 +193,6 @@ public class InventoryController extends Controller {
 
         if (form.hasErrors()) {
             return redirect("/admin/inventory/0");
-
-            //System.out.println(form.errors().toString());
             //if the request gets past the javascript validation and fails validation in the viewmodel, then
             //don't proceed to save anything. In the future, this should alert the user as to what they did
             //wrong.
@@ -260,7 +259,6 @@ public class InventoryController extends Controller {
      * @return updated trip inventory
      */
     public Result existingGet(Integer tripId) {
-        System.out.println("In InventoryController existingGet:");
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         ExistingViewModelGet viewModel = new ExistingViewModelGet();
@@ -291,16 +289,9 @@ public class InventoryController extends Controller {
      * @return updated trip inventory
      */
     public Result existingPost(Integer tripId) {
-        System.out.println("In InventoryController existingPost:");
         final Form<ExistingViewModelPost> existingViewModelPostForm = formFactory.form(ExistingViewModelPost.class);
         Form<ExistingViewModelPost> existingForm = existingViewModelPostForm.bindFromRequest();
         ExistingViewModelPost existingViewModelPost = existingForm.bindFromRequest().get();
-
-        System.out.println("newconceptmeds4inventory: ");
-        for (Integer i: existingViewModelPost.getNewConceptMedicationsForInventory()){
-            System.out.print(i);
-        }
-        System.out.println();
 
         //if just adding medications from the concept dictionary, there won't be any amount involved
         //and knowledge of the ingredients already exists.
@@ -322,20 +313,36 @@ public class InventoryController extends Controller {
 
                     //create a non-concept MedicationItem from the concept MedicationItem
                     conceptMedicationItem = conceptMedicationServiceResponse.getResponseObject();
-                    System.out.println("(conceptMedID, isdel) <== ("+conceptMedicationItem.getId()+", "+conceptMedicationItem.getIsDeleted()+")");
                     medicationItemServiceResponse = medicationService.createMedication(conceptMedicationItem.getName(), conceptMedicationItem.getForm(), conceptMedicationItem.getActiveIngredients());
-                    System.out.println("\\\\\\Out of Service Response");
                     if (medicationItemServiceResponse.hasErrors()) {
 
                         return internalServerError();
                     }else{
-                        //\A//TODO//IMPORTANT//That bit was 0 originally
-                        System.out.println("(response obj isdel) <= ("+medicationItemServiceResponse.getResponseObject().getIsDeleted()+")");
-                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
+
+                        //If it exists in the formulary, delete or un-delete the medication from the formulary
+                        inventoryService.deleteInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+
+                        //Find the medication so we can find it's initial quantity, and current quantity
+                        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                                .where()
+                                .eq("missionTrip.id", tripId)
+                                .eq("medication.id", medicationItemServiceResponse.getResponseObject().getId());
+                        MedicationInventory medicationInventory = medicationInventoryExpressionList.findUnique();
+
+                        //Add the medication to the trip formulary. If it already existed and was deleted,
+                        //set the initial and current quality to the values set before deletion.
+                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(),
+                                                                                                                       tripId,
+                                                                                                                       medicationInventory.getQuantityInitial());
+                        ServiceResponse<MedicationItem> setCurrentQuantityServiceResponse = inventoryService.setQuantityCurrent(medicationItemServiceResponse.getResponseObject().getId(),
+                                                                                                                                tripId,
+                                                                                                                                medicationInventory.getQuantityCurrent());
                         if (setQuantityServiceResponse.hasErrors()){
 
                             return internalServerError();
                         }
+
+
                     }
 
 
@@ -365,12 +372,9 @@ public class InventoryController extends Controller {
     }
 
     public Result ajaxDelete(int medicationID, int tripId) {
-        System.out.println("In InventoryController ajaxDelete:");
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
 
-        //System.out.println(medicationID);
         if (inventoryServiceResponse.hasErrors()) {
-            //System.out.println("haserrors");
             throw new RuntimeException();
         }
         return ok("true");

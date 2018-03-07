@@ -17,7 +17,7 @@
      you have any questions, contact <info@teamfemr.org>.
 */
 package femr.ui.models.admin.inventory;
-//\A
+
 import femr.common.models.MedicationItem;
 import femr.common.models.MissionTripItem;
 
@@ -39,11 +39,6 @@ public class ManageViewModelGet {
     }
 
     public List<MedicationItem> getMedications() {
-        System.out.println("In ManageViewModelGet getMedications:");
-//        for(MedicationItem i: medications) {
-//            System.out.print(i.getName() + ", ");
-//        }
-        //System.out.println();
         return medications;
     }
 
@@ -80,7 +75,6 @@ public class ManageViewModelGet {
     }
 
     public void setConceptMedications(List<MedicationItem> conceptMedications) {
-        System.out.println("In ManageViewModelGet setConceptMedications:");
         this.conceptMedications = conceptMedications;
     }
 }

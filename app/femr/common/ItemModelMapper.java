@@ -59,8 +59,6 @@ public class ItemModelMapper implements IItemModelMapper {
      */
     @Override
     public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
-        System.out.println("In ItemModelMapper createMedicationItem: ");
-        System.out.println("(med,isdel) <= (" + medication.getName()+ ", " + isDeleted + ")" );
         if (medication == null) {
 
             return null;

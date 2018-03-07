@@ -70,7 +70,6 @@ public class InventoryService implements IInventoryService {
     @Override
     public ServiceResponse<List<MedicationItem>> retrieveMedicationInventorysByTripId(int tripId) {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
-        System.out.println("In InventoryService retrieveMedicationInventorysByTripId:");
 
         //Querying based on the trip id.  Each trip will have its own inventory.
         ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
@@ -108,12 +107,6 @@ public class InventoryService implements IInventoryService {
         }
         response.setResponseObject(medicationItems);
 
-//        System.out.print("MedList: ");
-//        for (MedicationItem i: medicationItems){
-//            System.out.print(i.getID() + ", ");
-//        }
-//        System.out.println();
-
         return response;
     }
 
@@ -145,6 +138,7 @@ public class InventoryService implements IInventoryService {
     }
 
     /**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -166,8 +160,8 @@ public class InventoryService implements IInventoryService {
                 //it doesn't yet exist, create a new one
                 medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
                 medicationInventory = medicationInventoryRepository.create(medicationInventory);
-            } else {
-
+            }
+             else {
 
                 medicationInventory.setQuantityInitial(quantityTotal);
                 medicationInventory = medicationInventoryRepository.update(medicationInventory);
@@ -215,35 +209,31 @@ public class InventoryService implements IInventoryService {
 
     /**
      *{@inheritDoc}
+     * This function both deletes a medication and un-deletes it (meaning it was added at some point)
+     * from the trip formulary. This does not create new medications that haven't been added
      **/
     @Override
     public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
-        System.out.println("In InventoryService deleteInventoryMedication: ");
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
         ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
                 .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
-        System.out.print("medicationInventoryExpressionList: " + medicationInventoryExpressionList);
-//        for (IMedicationInventory m: medicationInventoryExpressionList){
-//            System.out.print(m); System.out.println(", ");
-//        }
-        System.out.println();
 
         try {
-            //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            //This should exist already, so no need to query for unique, but wue for unique regardless.
+            // While fixing fEMR-277. There was a bug where if you readded medications you deleted,
+            // it would just re-add them as a new medication with a new id. This avoids that
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+
             //Checks to see if medication was already deleted, then user wanted to undo delete
-            System.out.println("med repo: " + medicationInventory.getIsDeleted());
-//            System.out.println("med repo: " + medicationInventory.getID());
             if(medicationInventory.getIsDeleted() != null) {
                 medicationInventory.setIsDeleted(null);
             }
             else {
                 medicationInventory.setIsDeleted(DateTime.now());
-                System.out.println("getisdeleted set to datetime");
             }
-            //\A//Does this actually update anything?
+
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
 
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);

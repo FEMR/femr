@@ -161,7 +161,7 @@ public class InventoryService implements IInventoryService {
                 medicationInventory = medicationInventoryRepository.create(medicationInventory);
             } else if (medicationInventory.getIsDeleted() != null){
                 //If it exists, but was deleted at some point, re-add (un-delete) it
-                this.deleteInventoryMedication(medicationId, tripId);
+                deleteInventoryMedication(medicationId, tripId);
             } else {
 
 

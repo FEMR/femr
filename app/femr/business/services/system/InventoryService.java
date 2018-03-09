@@ -220,8 +220,7 @@ public class InventoryService implements IInventoryService {
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
-            //This should exist already, so no need to query for unique, but
-            //Query for unique to make sure the same medication is not readded. It happened in testing
+            //This should exist already, so no need to query for unique. Que for unique to make sure the same medication is not readded
             medicationInventory = medicationInventoryExpressionList.findUnique();
             //Checks to see if medication was already deleted, then user wanted to undo delete
             if(medicationInventory.getIsDeleted() != null)

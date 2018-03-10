@@ -235,9 +235,10 @@ public class InventoryService implements IInventoryService {
 
         } catch (Exception ex) {
 
-        response.addError("", ex.getMessage());
+            response.addError("", ex.getMessage());
         }
 
+        return response;
     }
 
 

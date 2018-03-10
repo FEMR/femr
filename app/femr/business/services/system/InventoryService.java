@@ -209,6 +209,10 @@ public class InventoryService implements IInventoryService {
 
     }
 
+    /*
+    *{@inheritDoc}
+    * This method assumes that the medication has been soft-deleted before it is called.
+    **/
     public ServiceResponse <MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
@@ -221,7 +225,7 @@ public class InventoryService implements IInventoryService {
         MedicationItem medicationItem;
         try{
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            medicationInventory.setIsDeleted(null)l;
+            medicationInventory.setIsDeleted(null);
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);
@@ -236,6 +240,8 @@ public class InventoryService implements IInventoryService {
 
     /**
      *{@inheritDoc}
+     * This method assumes that the formulary medication has not been soft-deleted before it is called.
+     * If it has been soft deleted, the only thing that will update is the time of deletion.
      **/
     @Override
     public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
@@ -247,11 +253,7 @@ public class InventoryService implements IInventoryService {
         try {
             //This should exist already, so no need to query for unique.
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            //Checks to see if medication was already deleted, then user wanted to undo delete
-            if(medicationInventory.getIsDeleted() != null)
-                medicationInventory.setIsDeleted(null);
-            else
-                medicationInventory.setIsDeleted(DateTime.now());
+            medicationInventory.setIsDeleted(DateTime.now());
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);

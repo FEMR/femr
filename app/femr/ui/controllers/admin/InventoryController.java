@@ -353,6 +353,12 @@ public class InventoryController extends Controller {
       return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
+    /**
+     * Called when a user hits the remove button to remove a medication from the trip formulary.
+     * @param medicationID
+     * @param tripId
+     * @return Result of soft-deletion
+     */
     public Result ajaxDelete(int medicationID, int tripId) {
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
 

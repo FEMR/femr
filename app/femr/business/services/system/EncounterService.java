@@ -465,11 +465,8 @@ public class EncounterService implements IEncounterService {
             if (patientEncounterTreatmentFields == null) {
                 response.addError("", "bad query");
             } else {
-                for (IPatientEncounterTabField petf : patientEncounterTreatmentFields) {
-                    if (petf.getTabField() != null)
-                        noteItems.add(itemModelMapper.createNoteItem(petf.getTabFieldValue(),petf.getDateTaken(),userRepository.retrieveUserById(petf.getUserId()).getLastName() + ", " + userRepository.retrieveUserById(petf.getUserId()).getFirstName()));
-                        break; // forget the rest; just want one...
-                }
+                IPatientEncounterTabField petf = patientEncounterTreatmentFields.get(0); // get newest note; 4get the rest
+                noteItems.add(itemModelMapper.createNoteItem(petf.getTabFieldValue(),petf.getDateTaken(),userRepository.retrieveUserById(petf.getUserId()).getLastName() + ", " + userRepository.retrieveUserById(petf.getUserId()).getFirstName()));
                 response.setResponseObject(noteItems);
             }
         } catch (Exception ex) {

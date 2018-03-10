@@ -187,9 +187,11 @@ public interface IItemModelMapper {
     ProblemItem createProblemItem(String name);
 
     /**
-     * Generate and provide an instance of ProblemItem.
+     * Generate and provide an instance of NoteItem
      *
-     * @param name the name of the problem, not null
+     * @param name the text of the note, not null
+     * @param datetimestamp the date the note was modified
+     * @param reporter the name of the prescriber
      * @return a new ProblemItem or null if processing fails
      */
     NoteItem createNoteItem(String name, DateTime datetimestamp, String reporter);

@@ -209,7 +209,7 @@ public class InventoryService implements IInventoryService {
 
     }
 
-    public ServiceResponse <MedicationItem> addInventoryMedication(int medicationId, int tripId){
+    public ServiceResponse <MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
         ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
@@ -220,9 +220,11 @@ public class InventoryService implements IInventoryService {
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try{
-            medicationInventory = medicationInventoryExpressionList.findUnique();
-            if (medicationInventory == null) {
-            }
+            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            medicationInventory.setIsDeleted(null)l;
+            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
+            response.setResponseObject(medicationItem);
 
         } catch (Exception ex) {
 

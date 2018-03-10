@@ -9,6 +9,7 @@ import femr.data.daos.core.IMedicationRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.Medication;
 import femr.data.models.mysql.MedicationGeneric;
+import femr.data.models.mysql.MedicationInventory;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;
 import femr.data.models.mysql.concepts.ConceptMedicationUnit;
 import femr.util.stringhelpers.StringUtils;
@@ -69,6 +70,57 @@ public class MedicationRepository implements IMedicationRepository {
             throw ex;
         }
         return medicationGeneric;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedicationInventory retrieveMedicationInventoryByMedicationIdAndTripId(int medicationId, int tripId) {
+
+        IMedicationInventory medicationInventory = null;
+        try {
+
+            ExpressionList<MedicationInventory> medicationInventoryExpressionList;
+            medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                    .where()
+                    .eq("missionTrip.id", tripId)
+                    .eq("medication.id", medicationId);
+
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+        } catch(Exception ex) {
+            Logger.error("MedicationRepository-retrieveMedicationInventoryByMedicationIdAndTripId", ex.getMessage(), "medicationId: " + medicationId + "tripId: " + tripId);
+            throw ex;
+        }
+        return medicationInventory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IMedicationInventory> retrieveMedicationInventoriesByTripId(int tripId, Boolean isDeleted) {
+
+        List<? extends IMedicationInventory> response;
+        //Querying based on the trip id.  Each trip will have its own inventory.
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("missionTrip.id", tripId);
+
+        if (!isDeleted) {
+
+            //does this work?
+            medicationInventoryExpressionList.eq("isDeleted", null);
+        }
+
+        try {
+            response = medicationInventoryExpressionList.findList();
+        } catch (Exception ex) {
+            Logger.error("MedicationRepository-retrieveMedicationInventoriesByTripId", ex.getMessage(), "trip id: " + tripId );
+            throw ex;
+        }
+
+        return response;
     }
 
     /**
@@ -216,6 +268,24 @@ public class MedicationRepository implements IMedicationRepository {
         }
 
         return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedicationInventory saveMedicationInventory(IMedicationInventory medicationInventory) {
+
+        try {
+
+            Ebean.save(medicationInventory);
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-saveMedicationInventory", ex.getMessage());
+            throw ex;
+        }
+
+        return medicationInventory;
     }
 
 }

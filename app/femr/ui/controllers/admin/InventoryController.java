@@ -212,6 +212,7 @@ public class InventoryController extends Controller {
         // strength/unit/ingredients (active ingredietns) are involved
         // *denominator field not taken into consideration - always false
         if (inventoryViewModelPost.getMedicationStrength().get(0) != null) {
+
             for (int genericIndex = 0; genericIndex < inventoryViewModelPost.getMedicationStrength().size(); genericIndex++) {
 
                 if (inventoryViewModelPost.getMedicationIngredient().get(genericIndex) != null &&
@@ -226,6 +227,8 @@ public class InventoryController extends Controller {
                     );
                 }
             }
+
+            //Creates the medication
             ServiceResponse<MedicationItem> createMedicationServiceResponse = medicationService.createMedication(
                     inventoryViewModelPost.getMedicationName(),
                     inventoryViewModelPost.getMedicationForm(),
@@ -236,12 +239,21 @@ public class InventoryController extends Controller {
 
                 return internalServerError();
             }
-            ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(
-                    createMedicationServiceResponse.getResponseObject().getId(),
-                    tripId,
-                    inventoryViewModelPost.getMedicationQuantity());
 
-            if (setQuantityServiceResponse.hasErrors()){
+            int medicationId = createMedicationServiceResponse.getResponseObject().getId();
+            int quantity = inventoryViewModelPost.getMedicationQuantity();
+            //Creates an inventory for the Medication
+            ServiceResponse<MedicationItem> createMedicationInventoryServiceResponse =
+                    inventoryService.createMedicationInventory(medicationId, tripId);
+            //sets initial total quantity
+            ServiceResponse<MedicationItem> setQuantityTotalServiceResponse =
+                    inventoryService.setQuantityTotal(medicationId, tripId, quantity);
+            //sets initial current quanitty
+            ServiceResponse<MedicationItem> setQuantityCurrentServiceResponse =
+                    inventoryService.setQuantityCurrent(medicationId, tripId, quantity);
+
+
+            if (createMedicationInventoryServiceResponse.hasErrors() || setQuantityTotalServiceResponse.hasErrors()) {
 
                 return internalServerError();
             }
@@ -318,10 +330,12 @@ public class InventoryController extends Controller {
                     if (medicationItemServiceResponse.hasErrors()) {
 
                         return internalServerError();
-                    }else{
+                    } else {
 
-                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
-                        if (setQuantityServiceResponse.hasErrors()){
+                        //ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
+                        //ServiceResponse<MedicationItem> createOrReAddInventoryResponse = inventoryService.createNewInventoryMedicationOrReAddExisting(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        ServiceResponse<MedicationItem> createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        if (createOrReAddInventoryResponse.hasErrors()) {
 
                             return internalServerError();
                         }
@@ -353,6 +367,12 @@ public class InventoryController extends Controller {
       return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
+    /**
+     * Called when a user hits the remove button to remove a medication from the trip formulary.
+     * @param medicationID
+     * @param tripId
+     * @return Result of soft-deletion
+     */
     public Result ajaxDelete(int medicationID, int tripId) {
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
 

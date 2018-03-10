@@ -51,7 +51,6 @@ public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
     private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
     private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
     private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
@@ -64,7 +63,6 @@ public class MedicationService implements IMedicationService {
     public MedicationService(IMedicationRepository medicationRepository,
                              IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
                              IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
-                             IRepository<IMedicationInventory> medicationInventoryRepository,
                              IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
@@ -74,7 +72,6 @@ public class MedicationService implements IMedicationService {
 
         this.medicationRepository = medicationRepository;
         this.conceptMedicationFormRepository = conceptMedicationFormRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
         this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
         this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;

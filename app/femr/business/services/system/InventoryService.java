@@ -209,6 +209,29 @@ public class InventoryService implements IInventoryService {
 
     }
 
+    public ServiceResponse <MedicationItem> addInventoryMedication(int medicationId, int tripId){
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("medication.id", medicationId)
+                .eq("missionTrip.id", tripId);
+
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
+        try{
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+            if (medicationInventory == null) {
+            }
+
+        } catch (Exception ex) {
+
+        response.addError("", ex.getMessage());
+        }
+
+    }
+
+
     /**
      *{@inheritDoc}
      **/

@@ -161,7 +161,7 @@ public class InventoryService implements IInventoryService {
                 medicationInventory = medicationInventoryRepository.create(medicationInventory);
             } else if (medicationInventory.getIsDeleted() != null){
                 //If it exists, but was deleted at some point, re-add (un-delete) it
-                deleteInventoryMedication(medicationId, tripId);
+                reAddInventoryMedication(medicationId, tripId);
             } else {
 
 
@@ -212,6 +212,7 @@ public class InventoryService implements IInventoryService {
     /*
     *{@inheritDoc}
     * This method assumes that the medication has been soft-deleted before it is called.
+    * The medication therefore had to have existed in teh formulary table before this method updates it.
     **/
     public ServiceResponse <MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
@@ -224,7 +225,9 @@ public class InventoryService implements IInventoryService {
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try{
+            //Find the medication of interest from the formulary.
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            //Undo the soft-delete of  the medication from the formulary, then update the backend to reflect the change.
             medicationInventory.setIsDeleted(null);
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
@@ -240,7 +243,7 @@ public class InventoryService implements IInventoryService {
 
     /**
      *{@inheritDoc}
-     * This method assumes that the formulary medication has not been soft-deleted before it is called.
+     * This method soft-deletes a trip formulary medication that is assumed to be added but not yet soft-deleted.
      * If it has been soft deleted, the only thing that will update is the time of deletion.
      **/
     @Override
@@ -252,7 +255,9 @@ public class InventoryService implements IInventoryService {
         MedicationItem medicationItem;
         try {
             //This should exist already, so no need to query for unique.
+            //Find the medication of interest from the formulary.
             medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            //Soft-delete of the medication from the formulary, then update the backend to reflect the change.
             medicationInventory.setIsDeleted(DateTime.now());
             medicationInventory = medicationInventoryRepository.update(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);

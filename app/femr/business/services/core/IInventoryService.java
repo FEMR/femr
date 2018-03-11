@@ -70,13 +70,23 @@ public interface IInventoryService {
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
 
     /**
-     * Deletes inventory medication by medication/tripId.
+     * Deletes (soft-deletes) inventory medication by medication/tripId.
      *
      * @param medicationId id of the medication.
      * @param tripId id of the trip that has the medication.
      * @return
      **/
     ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId);
+
+    /**
+     * "Undeletes" (undoes soft-delete) of an inventory medication by medication/tripid.
+     *
+     * @param medicationId
+     * @param tripId
+     * @return
+     */
+    ServiceResponse<MedicationItem> reAddInventoryMedication(int medicationId, int tripId);
+
     /**
      * Subtracts quantity from the current quantity when someone dispenses medication.
      * Subtracts amount dispensed from the current quantity of a medication when someone dispenses a prescription. This

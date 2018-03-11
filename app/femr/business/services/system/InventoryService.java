@@ -209,11 +209,10 @@ public class InventoryService implements IInventoryService {
 
     }
 
-    /*
+    /**
     *{@inheritDoc}
-    * This method assumes that the medication has been soft-deleted before it is called.
-    * The medication therefore had to have existed in teh formulary table before this method updates it.
     **/
+    @Override
     public ServiceResponse <MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
@@ -244,8 +243,6 @@ public class InventoryService implements IInventoryService {
 
     /**
      *{@inheritDoc}
-     * This method soft-deletes a trip formulary medication that is assumed to be added but not yet soft-deleted.
-     * If it has been soft deleted, the only thing that will update is the time of deletion.
      **/
     @Override
     public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){

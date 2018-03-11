@@ -54,6 +54,9 @@ public class CreateViewModel {
         if (roles == null || roles.size() < 1)
             errors.add(new ValidationError("roles", "a user needs at least one role"));
 
+        if(password.length() < 8)
+            errors.add(new ValidationError("password", "The password must contain at least 8 characters"));
+
         return errors.isEmpty() ? null : errors;
     }
 

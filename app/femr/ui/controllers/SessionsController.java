@@ -102,8 +102,8 @@ public class SessionsController extends Controller {
             messages.add("password is a required field");
         else
         {
-            if(viewModel.getNewPassword().length() < 6)        //AJ Saclayan Password Constraints
-                messages.add("password is less than 6 characters");
+            if(viewModel.getNewPassword().length() < 8)        //AJ Saclayan Password Constraints
+                messages.add("password is less than 8 characters");
             if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
                     messages.add("password must have an uppercase");
             if (!hasNumber.matcher(viewModel.getNewPassword()).find())

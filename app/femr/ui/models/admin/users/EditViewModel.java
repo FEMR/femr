@@ -53,10 +53,10 @@ public class EditViewModel {
         // then they want to actually change the password, if it is 0, the old password will still remain
         if(newPassword.length() > 0)
         {
-            if(newPassword.length() < 6 || !hasUppercase.matcher(newPassword).find()
+            if(newPassword.length() < 8 || !hasUppercase.matcher(newPassword).find()
                     || !hasNumber.matcher(newPassword).find())      //AJ Saclayan Password Constraints
                 errors.add(new ValidationError("newPassword",
-                        "password must have at least 6 characters with at least one upper case letter and number"));
+                        "password must have at least 8 characters with at least one upper case letter and number"));
         }
         
         if (roles == null || roles.size() < 1)

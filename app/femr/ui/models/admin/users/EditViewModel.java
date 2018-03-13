@@ -39,6 +39,8 @@ public class EditViewModel {
     private List<MissionTripItem> missionTripItems;
 
     public List<ValidationError> validate(){
+        Pattern hasLowercase = Pattern.compile("[a-z]");    // Aditya Nerella
+
         Pattern hasUppercase = Pattern.compile("[A-Z]");
         Pattern hasNumber = Pattern.compile("\\d");
         List<ValidationError> errors = new ArrayList<>();
@@ -53,10 +55,14 @@ public class EditViewModel {
         // then they want to actually change the password, if it is 0, the old password will still remain
         if(newPassword.length() > 0)
         {
-            if(newPassword.length() < 8 || !hasUppercase.matcher(newPassword).find()
-                    || !hasNumber.matcher(newPassword).find())      //AJ Saclayan Password Constraints
-                errors.add(new ValidationError("newPassword",
-                        "password must have at least 8 characters with at least one upper case letter and number"));
+            if (newPassword.length() < 8)
+                errors.add(new ValidationError("newPassword", "password must be at least 8 characters long"));
+            if (!hasUppercase.matcher(newPassword).find())
+                errors.add(new ValidationError("newPassword", "password must have at least one uppercase character"));
+            if (!hasNumber.matcher(newPassword).find())
+                errors.add(new ValidationError("newPassword", "password must have at least one number"));
+            if (!hasLowercase.matcher(newPassword).find()) //AJ Saclayan & Aditya Nerella Password Constraints
+                errors.add(new ValidationError("newPassword", "password must have at least one lowercase character"));
         }
         
         if (roles == null || roles.size() < 1)

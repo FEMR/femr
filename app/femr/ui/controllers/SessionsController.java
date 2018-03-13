@@ -95,6 +95,8 @@ public class SessionsController extends Controller {
         IUser user = userService.retrieveById(currentUser.getId());
         Boolean isNewPassword = false;
 
+        Pattern hasLowercase = Pattern.compile("[a-z]");
+
         Pattern hasUppercase = Pattern.compile("[A-Z]");
         Pattern hasNumber = Pattern.compile("\\d");
         ArrayList<String> messages = new ArrayList<>();
@@ -104,10 +106,14 @@ public class SessionsController extends Controller {
         {
             if(viewModel.getNewPassword().length() < 8)        //AJ Saclayan Password Constraints
                 messages.add("password is less than 8 characters");
+            if(!hasLowercase.matcher(viewModel.getNewPassword()).find())
+                messages.add("password must have a lowercase character");
             if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
-                    messages.add("password must have an uppercase");
+                    messages.add("password must have an uppercase character");
+
             if (!hasNumber.matcher(viewModel.getNewPassword()).find())
                     messages.add("password must have a number");
+
             if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
                 messages.add("passwords do not match");
             //check if new password is equal to the old password

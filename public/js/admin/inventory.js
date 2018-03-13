@@ -30,6 +30,7 @@ var manageInventoryFeature = {
      * Set click event for when a user clicks the edit initial quantity
      * button. Event opens a textbox to alter the quantity.
      */
+
     bindEditTotalQuantityButtonClick: function(){
         $(".editTotalQuantityBtn").unbind("click");
         $(".editTotalQuantityBtn").click(function(){
@@ -62,7 +63,6 @@ var manageInventoryFeature = {
         $(".editTotalInput").unbind("keypress");
         $(".editTotalInput").keypress(function(e) {
             if (e.which == 13) {
-
                 manageInventoryFeature.editTotalQuantity( this );
                 e.preventDefault();
             }

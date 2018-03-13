@@ -98,29 +98,28 @@ var createUsers = {
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
         createUsers.elements.passwordTextBox.next(".errors").text(passwordVerify);
-        if(password.length < 6){
-           pass = false;
-        }
-        var re = /[A-Z]/;
-        if(!re.test(password)){
-           pass = false;
-        }
 
-        re = /[0-9]/;
-        if ($.trim(document.forms["createForm"]["password"].value) === "") {
+        if (password  === "") {
             passwordErrors = "please assign this user a password";
             pass = false;
         }
-        else if(!re.test(password)) {
-            pass = false;
+        else{
+            if(password.length < 6){
+                pass = false;
+            }
+            var re = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[_]).{6,}/;
+            if(!re.test(password)) {
+                pass = false;
+            }
         }
 
         if(pass === false)
         {
-            if (passwordErrors != "")
+            if (passwordErrors !== "")
                 createUsers.elements.password.next (".errors").text(passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least 6 characters with at least one upper case letter and number");
+                createUsers.elements.password.next(".errors").text("password must have at least 6 characters with at least one upper case letter, " +
+                    "lower case letter and number");
         }
         else{
             createUsers.elements.password.next(".errors").text("");

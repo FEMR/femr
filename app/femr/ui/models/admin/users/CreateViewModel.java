@@ -22,7 +22,7 @@ import femr.util.stringhelpers.StringUtils;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;     //Aditya Nerella
+import java.util.regex.Pattern;
 
 public class CreateViewModel {
     private Integer userId;
@@ -43,7 +43,7 @@ public class CreateViewModel {
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
 
-        Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z]).{6,}");    //Aditya Nerella
+        Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z]).{6,}");
 
         if (StringUtils.isNullOrWhiteSpace(firstName))
             errors.add(new ValidationError("firstName", "first name is a required field"));
@@ -53,7 +53,7 @@ public class CreateViewModel {
             errors.add(new ValidationError("password", "password is a required field"));
         // added for FEMR-159
 
-        if (!PassReqs.matcher(password).find()){    //Aditya Nerella
+        if (!PassReqs.matcher(password).find()){
             errors.add(new ValidationError("password", "password must have at least one Uppercase, one lowercase," +
                     "one digit and 6 characters long."));
         }

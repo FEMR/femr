@@ -95,7 +95,7 @@ public class SessionsController extends Controller {
         IUser user = userService.retrieveById(currentUser.getId());
         Boolean isNewPassword = false;
 
-        Pattern hasLowercase = Pattern.compile("[a-z]");    //Aditya Nerella
+        Pattern hasLowercase = Pattern.compile("[a-z]");
 
         Pattern hasUppercase = Pattern.compile("[A-Z]");
         Pattern hasNumber = Pattern.compile("\\d");
@@ -110,10 +110,10 @@ public class SessionsController extends Controller {
             if(!hasLowercase.matcher(viewModel.getNewPassword()).find())
                 messages.add("password must have a lowercase");
 
-            if (!hasUppercase.matcher(viewModel.getNewPassword()).find())   //Aditya Nerella
+            if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
                     messages.add("password must have an uppercase");
 
-            if (!hasNumber.matcher(viewModel.getNewPassword()).find())      //Aditya Nerella
+            if (!hasNumber.matcher(viewModel.getNewPassword()).find())
                     messages.add("password must have a number");
 
             if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))

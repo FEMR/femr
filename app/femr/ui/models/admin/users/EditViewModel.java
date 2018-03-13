@@ -39,7 +39,7 @@ public class EditViewModel {
     private List<MissionTripItem> missionTripItems;
 
     public List<ValidationError> validate(){
-        Pattern hasLowercase = Pattern.compile("[a-z]");    // Aditya Nerella
+        Pattern hasLowercase = Pattern.compile("[a-z]");
 
         Pattern hasUppercase = Pattern.compile("[A-Z]");
         Pattern hasNumber = Pattern.compile("\\d");
@@ -57,7 +57,7 @@ public class EditViewModel {
         {
             if(newPassword.length() < 6 || !hasUppercase.matcher(newPassword).find()
                     || !hasNumber.matcher(newPassword).find()
-                    || !hasLowercase.matcher(newPassword).find()) //AJ Saclayan & Aditya Nerella Password Constraints
+                    || !hasLowercase.matcher(newPassword).find()) //AJ Saclayan Password Constraints
                 errors.add(new ValidationError("newPassword",
                         "password must have at least 6 characters with at least one upper case letter, one lower case letter" +
                                 "and number"));

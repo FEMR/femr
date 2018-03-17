@@ -322,7 +322,7 @@ public class InventoryController extends Controller {
 
                         //ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
                         ServiceResponse<MedicationItem> createOrReAddInventoryResponse = inventoryService.createNewInventoryMedicationOrReAddExisting(medicationItemServiceResponse.getResponseObject().getId(), tripId);
-                        if (setQuantityServiceResponse.hasErrors()){
+                        if (createOrReAddInventoryResponse.hasErrors()){
 
                             return internalServerError();
                         }

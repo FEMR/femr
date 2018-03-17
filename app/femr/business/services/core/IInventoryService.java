@@ -69,6 +69,8 @@ public interface IInventoryService {
 **/
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
 
+
+    ServiceResponse<MedicationItem> createNewInventoryMedicationOrReAddExisting(int medicationId, int tripId);
     /**
      * Deletes (soft-deletes) inventory medication by medication/tripId.
      *

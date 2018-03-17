@@ -153,21 +153,9 @@ public class InventoryService implements IInventoryService {
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
-
             medicationInventory = medicationInventoryExpressionList.findUnique();
-            if (medicationInventory == null) {
-                //it doesn't yet exist, create a new one
-                medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
-                medicationInventory = medicationInventoryRepository.create(medicationInventory);
-            } else if (medicationInventory.getIsDeleted() != null){
-                //If it exists, but was deleted at some point, re-add (un-delete) it
-                reAddInventoryMedication(medicationId, tripId);
-            } else {
-
-
-                medicationInventory.setQuantityInitial(quantityTotal);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            }
+            medicationInventory.setQuantityInitial(quantityTotal);
+            medicationInventory = medicationInventoryRepository.update(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null, null, null);
 
             response.setResponseObject(medicationItem);
@@ -209,11 +197,44 @@ public class InventoryService implements IInventoryService {
 
     }
 
+    public ServiceResponse<MedicationItem> createNewInventoryMedicationOrReAddExisting(int medicationId, int tripId){
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
+                .where()
+                .eq("medication.id", medicationId)
+                .eq("missionTrip.id", tripId);
+
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
+        try {
+
+            medicationInventory = medicationInventoryExpressionList.findUnique();
+            if (medicationInventory == null){
+                //If the medication is not in the inventory, then create it.
+                //Assume new inventory medications have 0 current quantity and 0 total quantity.
+                medicationInventory = dataModelMapper.createMedicationInventory(0, 0, medicationId, tripId);
+                medicationInventory = medicationInventoryRepository.create(medicationInventory);
+            } else {
+                //If the medication is in the inventory, just readd it
+                reAddInventoryMedication(medicationId, tripId);
+            }
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null, null, null);
+            response.setResponseObject(medicationItem);
+        } catch (Exception ex) {
+
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+
     /**
     *{@inheritDoc}
     **/
     @Override
-    public ServiceResponse <MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
+    public ServiceResponse<MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
         return setDeletionStateOfInventoryMedication(medicationId, tripId, false);
     }
     

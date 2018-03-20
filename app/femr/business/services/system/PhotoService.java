@@ -80,12 +80,18 @@ public class PhotoService implements IPhotoService {
         if (!_bUseDbPhotoStorage){
             //Ensure folder exists, if not, create it
             f = new File(_profilePhotoPath);
-            if (!f.exists())
+            if (!f.exists()) {
+                f.setReadable(true, true);
+                f.setWritable(true, true);
                 f.mkdirs();
+            }
 
             f = new File(_encounterPhotoPath);
-            if (!f.exists())
+            if (!f.exists()) {
+                f.setReadable(true, true);
+                f.setWritable(true, true);
                 f.mkdirs();
+            }
         }
     }
 

@@ -64,7 +64,7 @@
 
             <label>Change User Password**</label>
             <p>**Changes the user's password when filled out. Proceed with caution.</p>
-            @helper.Text(form("newPassword"),
+            @helper.inputText(form("newPassword"),
                 'class -> "fInput",
                 'placeholder -> "New Password",
                 'type -> "password",

@@ -118,8 +118,7 @@ var createUsers = {
             if (passwordErrors !== "")
                 createUsers.elements.password.next (".errors").text(passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least 8 characters with at least one upper case letter, " +
-                    "lower case letter and number");
+                createUsers.elements.password.next(".errors").text("password must have at least one Uppercase, one lowercase, one digit and 8 characters long.");
         }
         else{
             createUsers.elements.password.next(".errors").text("");

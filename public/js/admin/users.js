@@ -104,10 +104,10 @@ var createUsers = {
             pass = false;
         }
         else{
-            if(password.length < 6){
+            if(password.length < 8){
                 pass = false;
             }
-            var re = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[_]).{6,}/;
+            var re = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[_]).{8,}/;
             if(!re.test(password)) {
                 pass = false;
             }
@@ -118,7 +118,7 @@ var createUsers = {
             if (passwordErrors !== "")
                 createUsers.elements.password.next (".errors").text(passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least 6 characters with at least one upper case letter, " +
+                createUsers.elements.password.next(".errors").text("password must have at least 8 characters with at least one upper case letter, " +
                     "lower case letter and number");
         }
         else{

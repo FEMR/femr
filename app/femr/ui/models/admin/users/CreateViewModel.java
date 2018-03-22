@@ -43,7 +43,7 @@ public class CreateViewModel {
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
 
-        Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z]).{6,}");
+        Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z]).{8,}");
 
         if (StringUtils.isNullOrWhiteSpace(firstName))
             errors.add(new ValidationError("firstName", "first name is a required field"));
@@ -55,7 +55,7 @@ public class CreateViewModel {
 
         if (!PassReqs.matcher(password).find()){
             errors.add(new ValidationError("password", "password must have at least one Uppercase, one lowercase," +
-                    "one digit and 6 characters long."));
+                    "one digit and 8 characters long."));
         }
 
         if (!password.equals(passwordVerify)) {

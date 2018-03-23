@@ -197,6 +197,10 @@ public class InventoryService implements IInventoryService {
 
     }
 
+    /**
+     *{@inheritDoc}
+     **/
+    @Override
     public ServiceResponse<MedicationItem> createNewInventoryMedicationOrReAddExisting(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
@@ -231,8 +235,8 @@ public class InventoryService implements IInventoryService {
 
 
     /**
-    *{@inheritDoc}
-    **/
+     *{@inheritDoc}
+     **/
     @Override
     public ServiceResponse<MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
         return setDeletionStateOfInventoryMedication(medicationId, tripId, false);

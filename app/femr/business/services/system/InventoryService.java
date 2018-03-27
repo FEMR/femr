@@ -159,6 +159,9 @@ public class InventoryService implements IInventoryService {
                 //it doesn't yet exist, create a new one
                 medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
                 medicationInventory = medicationInventoryRepository.create(medicationInventory);
+            } else if (medicationInventory.getIsDeleted() != null){
+                //If it exists, but was deleted at some point, re-add (un-delete) it
+                deleteInventoryMedication(medicationId, tripId);
             } else {
 
 

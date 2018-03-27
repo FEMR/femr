@@ -49,7 +49,6 @@ public class FieldHelper {
         TabFieldItem tabFieldItem;
 
         for (String field : fields){
-
             tabFieldItem = tabFieldMultiMap.getMostRecentOrEmpty(field, null);
             tabFieldItemsForChiefComplaint.add(tabFieldItem);
         }

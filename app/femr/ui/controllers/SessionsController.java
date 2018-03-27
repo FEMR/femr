@@ -67,7 +67,7 @@ public class SessionsController extends Controller {
             DateTime stop = new DateTime(DateTime.now());
             int daysBetween = Days.daysBetween(start, stop).getDays();
 
-            if(daysBetween > 60){
+            if(daysBetween > 90){
                 user.setPasswordReset(true);
             }
 

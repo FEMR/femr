@@ -49,10 +49,18 @@
                 </ol>
             </div>
 
-
-
-
             <div id="medicationWrap" class="form-group">
+                <h4>Pharmacy Notes</h4>
+                        <table class="noteTable">
+                        <tr class="noteRow"><th width="70%">Note</th><th width="30%">Prescriber</th></tr>
+                        @if(viewModel.getNotes != null) {
+                            @for(y <- 1 to viewModel.getNotes.size) {
+                                @if(viewModel.getNotes.get(y - 1) != null) {
+                                    <tr><td>@viewModel.getNotes.get(y - 1).getName</td><td> @viewModel.getNotes.get(y - 1).getReporter</td></tr>
+                                    }
+                                }
+                            }
+                        </table>
                 <h4>List of Medications</h4>
                 <ol id="medicationList">
                 @for(x <- 1 to viewModel.getPrescriptions.size) {

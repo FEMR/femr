@@ -159,6 +159,16 @@ public class PharmaciesController extends Controller {
             }
         }
 
+        //find patient notes, they do not have to exist.
+        ServiceResponse<List<NoteItem>> noteItemServiceResponse = encounterService.retrieveNoteItems(patientEncounterItem.getId());
+        if (noteItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else {
+            if (noteItemServiceResponse.getResponseObject().size() > 0) {
+                viewModelGet.setNotes(noteItemServiceResponse.getResponseObject());
+            }
+        }
+
         return ok(edit.render(currentUserSession, viewModelGet, false));
     }
 

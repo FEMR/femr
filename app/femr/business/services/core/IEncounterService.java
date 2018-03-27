@@ -124,6 +124,15 @@ public interface IEncounterService {
     ServiceResponse<List<ProblemItem>> retrieveProblemItems(int encounterId);
 
     /**
+     * Retrieves all pharmacy notes.
+     *
+     * @param encounterId id of the encounter, not null
+     * @return a service response that contains a list of NoteItems that exist
+     * and/or errors if they exist.
+     */
+    ServiceResponse<List<NoteItem>> retrieveNoteItems(int encounterId);
+
+    /**
      * Marks that a patient was screened for diabetes during an encounter
      *
      * @param encounterId id of the encounter for the patient, not null

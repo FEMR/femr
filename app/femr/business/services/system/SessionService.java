@@ -42,7 +42,6 @@ public class SessionService implements ISessionService {
     private ISessionHelper sessionHelper;
     private final IDataModelMapper dataModelMapper;
     private final IUserRepository userRepository;
-    private final IUserRepository userRepository;
     private final Configuration configuration;
 
     @Inject
@@ -52,8 +51,7 @@ public class SessionService implements ISessionService {
                           ISessionHelper sessionHelper,
                           IDataModelMapper dataModelMapper,
                           IUserRepository userRepository,
-                          Configuration configuration) {
-                          IUserRepository userRepository) {
+                          Configuration configuration){
 
         this.userService = userService;
         this.missionTripService = missionTripService;
@@ -61,6 +59,7 @@ public class SessionService implements ISessionService {
         this.sessionHelper = sessionHelper;
         this.dataModelMapper = dataModelMapper;
         this.userRepository = userRepository;
+        this.configuration =configuration;
     }
 
     /**
@@ -159,3 +158,4 @@ public class SessionService implements ISessionService {
         return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId, timeout);
     }
 }
+

@@ -204,7 +204,6 @@ public class MedicationRepository implements IMedicationRepository {
                     .where()
                     .eq("medicationInventory.missionTrip.id", tripId)
                     .isNotNull("conceptMedicationForm")
-                    .isNull("medicationInventory.isDeleted")
                     .gt("medicationInventory.quantityCurrent", 0)
                     .orderBy("name");
 

@@ -8,11 +8,9 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/users.css")">
         <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
     }
-
     @additionalScripts = {
         <script type="text/javascript" src="@routes.Assets.versioned("js/admin/users.js")"></script>
         <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
-        <script type="text/javascript"></script>
     }
 
 @admin("Users", currentUser, styles = additionalStyles, scripts = additionalScripts) {

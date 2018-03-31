@@ -28,7 +28,7 @@
 
 
 
-<div class="navigationItemsWrap">
+<div class="navigationItemsWrap" >
     <ul class="navigationItems">
         @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
             <li><a href="@TriageController.indexGet()">Triage</a></li>
@@ -58,3 +58,5 @@
         </a>
     </p>
 </div>
+    <input type="hidden" value="@currentUser.getTimeout2()" id='h_v' class='h_v'>
+

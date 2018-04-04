@@ -1,27 +1,47 @@
-package femr.util.InternetConnnectionUtil;
+package femr.util.InternetConnnection;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import play.libs.Json;
-import play.mvc.Http;
-import play.server.Server;
+import com.typesafe.config.ConfigFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.*;
 
 public final class InternetConnectionUtil {
-    static Boolean existsConnection;
+    private static boolean existsConnection = false;
+
+    private static final URL locationDataEndpoint = configLocationDataEndpoint();
+    private static final int connectionTimeoutInMilliseconds = configConnectionTimeoutInMilliseconds();
+    private static final int connectionCheckIntervalInSeconds = configConnectionCheckIntervalInSeconds();
+
+    private static URL configLocationDataEndpoint(){
+        try {
+            return new URL(ConfigFactory.load().getString("internetconnection.locationDataEndpoint"));
+        } catch (MalformedURLException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
+    }
+
+    private static int configConnectionTimeoutInMilliseconds(){
+        return ConfigFactory.load().getInt("internetconnection.timeoutInMiliseconds");
+    }
+
+    private static int configConnectionCheckIntervalInSeconds(){
+        return ConfigFactory.load().getInt("internetconnection.connectionCheckIntervalInSeconds");
+    }
+
+    private static void setExistsConnection(boolean existsConnection){
+        InternetConnectionUtil.existsConnection = existsConnection;
+    }
 
     /**
      * Tests whether https://teamfemr.org is reachable
      *
-     * @param timeout in milliseconds
      * @return Boolean value for whether connection was made
      */
-    public static Boolean existsConnection(int timeout) {
+    private static Boolean existsConnection() {
         try {
             URL url = new URL("https://google.com");
 
@@ -29,22 +49,19 @@ public final class InternetConnectionUtil {
             HttpURLConnection urlConnect = (HttpURLConnection)url.openConnection();
 
             //Set connection timout
-            urlConnect.setConnectTimeout(timeout);
+            urlConnect.setConnectTimeout(connectionTimeoutInMilliseconds);
 
             //trying to retrieve data from the source. If there
             //is no connection, this line will fail
             Object objData = urlConnect.getContent();
 
         } catch (UnknownHostException e) {
-            //This would be adding an error to some ServiceResponse<T>
             return false;
 
         } catch (IOException e) {
-            //This would be adding an error to some ServiceResponse<T>
             return false;
         }
 
-        //This would be a ServiceResponse<T> or similar when incorporated into production code.
         return true;
     }
 
@@ -72,17 +89,17 @@ public final class InternetConnectionUtil {
     /**
      * Get some subset of the location data provided by a GET request of api.ipdata.co
      * Valid args
-     * @param timeout
+     * @param
      * @return
      */
-    private static JsonObject getLocationDataByIp(int timeout){
+    private static JsonObject getLocationDataByIp(){
         JsonObject locationDataJson = null;
         try{
             URL url = new URL("https://api.ipdata.co/");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setConnectTimeout(timeout);
-            con.setReadTimeout(timeout);
+            con.setConnectTimeout(connectionTimeoutInMilliseconds);
+            con.setReadTimeout(connectionTimeoutInMilliseconds);
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
@@ -93,7 +110,7 @@ public final class InternetConnectionUtil {
             }
             in.close();
 
-            JsonObject locationData = (new JsonParser().parse(content.toString())).getAsJsonObject();
+            locationDataJson = new JsonParser().parse(content.toString()).getAsJsonObject();
         }
         catch(MalformedURLException e){
             e.printStackTrace();
@@ -116,30 +133,48 @@ public final class InternetConnectionUtil {
         } else {
             JsonObject filteredJson = new JsonObject();
             for(String key: keys){
-                filteredJson.add("key", locationDataJson.get(key));
+                filteredJson.add(key, locationDataJson.get(key));
             }
             return filteredJson;
         }
     }
 
-    public Boolean sendLocationInformation(URL url){
-        try{
-            JsonObject rawLocationJson = getLocationDataByIp(1000);
-            JsonObject jsonToSend = filterJsonByKeys(rawLocationJson, "ip","country_name");
+    private static JsonObject getJsonForSlack(JsonObject text){
+        JsonObject slackJson = new JsonObject();
+        slackJson.addProperty("text", text.toString());
+        return slackJson;
+    }
 
-            HttpURLConnection urlConnect = (HttpURLConnection)url.openConnection();
+    private InternetConnectionUtil(){
+        //There should be no objects of this type.
+        //This utility should just be accessed by tasks and the controllers/service layer
+    }
+
+    public static boolean getExistsConnection(){
+        return InternetConnectionUtil.existsConnection;
+    }
+
+    public static void updateExistsConnection(){
+        setExistsConnection(existsConnection());
+    }
+
+    public static Boolean sendLocationInformation(){
+        try{
+            JsonObject rawLocationJson = getLocationDataByIp();
+            JsonObject jsonToSend = filterJsonByKeys(rawLocationJson, "ip","country_name");
+            HttpURLConnection urlConnect = (HttpURLConnection)locationDataEndpoint.openConnection();
             urlConnect.setRequestMethod("POST");
-            urlConnect.setRequestProperty("User-Agent", "USER_AGENT");
-            urlConnect.setRequestProperty("Accept-Language", "UTF-8");
+            urlConnect.setRequestProperty("Content-Type",  "application/json");
             urlConnect.setDoOutput(true);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnect.getOutputStream());
-            outputStreamWriter.write(jsonToSend.toString());
+            urlConnect.setDoInput(true);
+            DataOutputStream outputStreamWriter = new DataOutputStream(urlConnect.getOutputStream());
+            outputStreamWriter.writeBytes(getJsonForSlack(jsonToSend).toString());
             outputStreamWriter.flush();
+            outputStreamWriter.close();
             int responseCode = urlConnect.getResponseCode();
             if(responseCode < 200 || responseCode > 299){
                 return false;
             }
-
         } catch(IOException e) {
             return false;
         }

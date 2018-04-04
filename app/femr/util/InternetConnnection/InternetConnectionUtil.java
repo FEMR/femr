@@ -13,6 +13,7 @@ public final class InternetConnectionUtil {
     private static final URL locationDataEndpoint = configLocationDataEndpoint();
     private static final int connectionTimeoutInMilliseconds = configConnectionTimeoutInMilliseconds();
     private static final int connectionCheckIntervalInSeconds = configConnectionCheckIntervalInSeconds();
+    private static final int sendLocationDataInvervalInSeconds = configSendLocationDataIntervalInSeconds();
 
     private static URL configLocationDataEndpoint(){
         try {
@@ -30,6 +31,10 @@ public final class InternetConnectionUtil {
 
     private static int configConnectionCheckIntervalInSeconds(){
         return ConfigFactory.load().getInt("internetconnection.connectionCheckIntervalInSeconds");
+    }
+
+    private static int configSendLocationDataIntervalInSeconds(){
+        return ConfigFactory.load().getInt("internetconnection.locationDataSendIntervalInSeconds");
     }
 
     private static void setExistsConnection(boolean existsConnection){
@@ -152,6 +157,14 @@ public final class InternetConnectionUtil {
 
     public static boolean getExistsConnection(){
         return InternetConnectionUtil.existsConnection;
+    }
+
+    public static int getConnectionCheckIntervalInSeconds(){
+        return connectionCheckIntervalInSeconds;
+    }
+
+    public static int getSendLocationDataInvervalInSeconds(){
+        return sendLocationDataInvervalInSeconds;
     }
 
     public static void updateExistsConnection(){

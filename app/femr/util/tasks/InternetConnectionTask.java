@@ -28,7 +28,7 @@ public class InternetConnectionTask {
     private void initialize() {
         this.actorSystem.scheduler().schedule(
                 Duration.create(0, TimeUnit.SECONDS), // initialDelay
-                Duration.create(100, TimeUnit.SECONDS), // interval
+                Duration.create(InternetConnectionUtil.getSendLocationDataInvervalInSeconds(), TimeUnit.SECONDS), // interval
                 () -> {
                     InternetConnectionUtil.updateExistsConnection();
                     if(InternetConnectionUtil.getExistsConnection()){

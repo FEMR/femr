@@ -7,6 +7,7 @@ public class AsynchronousTaskConfigurer extends AbstractModule {
     @Override
     protected void configure() {
         //All asynchronous tasks must be loaded as eager singletons
-        bind(InternetConnectionTask.class).asEagerSingleton();
+        bind(CheckInternetConnectionTask.class).asEagerSingleton();
+        bind(SendLocationDataTask.class).asEagerSingleton();
     }
 }

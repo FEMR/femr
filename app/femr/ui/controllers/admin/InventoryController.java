@@ -236,10 +236,15 @@ public class InventoryController extends Controller {
 
                 return internalServerError();
             }
-            ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(
-                    createMedicationServiceResponse.getResponseObject().getId(),
-                    tripId,
-                    inventoryViewModelPost.getMedicationQuantity());
+            ServiceResponse<MedicationItem> setQuantityServiceResponse =
+                    inventoryService.createNewInventoryMedicationOrReAddExisting(createMedicationServiceResponse.getResponseObject().getId(),
+                                                                                 tripId
+                                                                                );
+            setQuantityServiceResponse = inventoryService.setQuantityTotal(createMedicationServiceResponse.getResponseObject().getId(),
+                                                                           tripId,
+                                                                           inventoryViewModelPost.getMedicationQuantity()
+                                                                            );
+
 
             if (setQuantityServiceResponse.hasErrors()){
 
@@ -320,8 +325,9 @@ public class InventoryController extends Controller {
                         return internalServerError();
                     }else{
 
-                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
-                        if (setQuantityServiceResponse.hasErrors()){
+                        //ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
+                        ServiceResponse<MedicationItem> createOrReAddInventoryResponse = inventoryService.createNewInventoryMedicationOrReAddExisting(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        if (createOrReAddInventoryResponse.hasErrors()){
 
                             return internalServerError();
                         }
@@ -353,6 +359,12 @@ public class InventoryController extends Controller {
       return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
+    /**
+     * Called when a user hits the remove button to remove a medication from the trip formulary.
+     * @param medicationID
+     * @param tripId
+     * @return Result of soft-deletion
+     */
     public Result ajaxDelete(int medicationID, int tripId) {
         ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
 

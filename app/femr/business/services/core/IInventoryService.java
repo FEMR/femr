@@ -48,8 +48,7 @@ public interface IInventoryService {
 
     /**
      * Sets the total number of a medication in the inventory. If the total number has not yet been set, then it will
-     * also set the current quantity to the total quantity (assumes this is a new entry and all the medications are
-     * available).
+     * also set the current quantity to the total quantity (assumes all the medications are available).
      *
      * @param medicationId id of the medication.
      * @param tripId id of the trip that is bringing the medication.
@@ -66,17 +65,37 @@ public interface IInventoryService {
      * @param tripId id of the trip that has the medication.
      * @param quantityCurrent amount of the medication currently in the inventory.
      * @return a medication item that contains quantity information.
-**/
+    **/
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
 
     /**
-     * Deletes inventory medication by medication/tripId.
+     * Adds a new medication to the trip inventory if it is not yet there,
+     * or undoes the soft delete of a medication already added to a trip inventory
+     *
+     * @param medicationId id of the medication
+     * @param tripId id of the trip that will contain or contains the medication.
+     * @return a medication item that contains quantity information.
+     */
+    ServiceResponse<MedicationItem> createNewInventoryMedicationOrReAddExisting(int medicationId, int tripId);
+
+    /**
+     * Deletes (soft-deletes) inventory medication by medication/tripId.
      *
      * @param medicationId id of the medication.
      * @param tripId id of the trip that has the medication.
-     * @return
+     * @return a medication item that contains quantity information,
      **/
     ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId);
+
+    /**
+     * Undeletes (undoes soft-delete) of an inventory medication by medication/tripid.
+     *
+     * @param medicationId
+     * @param tripId
+     * @return a medication item that contains quantity information,
+     */
+    ServiceResponse<MedicationItem> reAddInventoryMedication(int medicationId, int tripId);
+
     /**
      * Subtracts quantity from the current quantity when someone dispenses medication.
      * Subtracts amount dispensed from the current quantity of a medication when someone dispenses a prescription. This

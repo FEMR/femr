@@ -18,10 +18,8 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -31,7 +29,6 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IMedicationRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.MedicationInventory;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
 import femr.util.stringhelpers.CSVWriterGson;
@@ -182,16 +179,11 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<MedicationItem> createMedicationInventory(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
-
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
 
-            medicationInventory = medicationInventoryExpressionList.findUnique();
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
 
             if (medicationInventory == null){
                 //If the medication is not in the inventory, then create it.

@@ -1,5 +1,5 @@
 @import femr.ui.models.admin.inventory.ManageViewModelGet
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: ManageViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: ManageViewModelGet, assets: AssetsFinder)
 
 @import femr.ui.controllers.admin.routes.InventoryController
 
@@ -8,19 +8,19 @@
 
     @additionalStyles = {
 
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/select2.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/inventory.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/select2.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/inventory.css")">
     }
     @additionalScripts = {
 
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/select2.min.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/admin/inventory.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/select2.min.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/admin/inventory.js")"></script>
     }
 
-@admin("Inventory - Formulary", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+@admin("Inventory - Formulary", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
     @inventoryMenu(viewModel.getMissionTripItem)
 

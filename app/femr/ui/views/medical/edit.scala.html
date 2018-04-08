@@ -1,6 +1,6 @@
 @(currentUser: femr.common.dtos.CurrentUser,
         vitals: femr.util.DataStructure.Mapping.VitalMultiMap,
-        viewModel: femr.ui.models.medical.EditViewModelGet)
+        viewModel: femr.ui.models.medical.EditViewModelGet, assets: AssetsFinder)
 
 @import femr.ui.controllers.routes.HistoryController
 @import femr.ui.controllers.routes.MedicalController
@@ -12,21 +12,21 @@
 @import femr.ui.views.html.medical.listVitals
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/medical/medical.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/medical/medical.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.tablescroll.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
     }
     @additionalScripts = {
 
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/medical/medical.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/medical/medicalClientValidation.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery-ui.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/medical/medical.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/medical/medicalClientValidation.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery.tablescroll.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
     }
 
-@main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical")) {
+@main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical"), assets = assets) {
     <input type="hidden" value="@viewModel.getPatientItem.getId" id="patientId"/>
 
     <div id="medicalContentWrap">
@@ -45,7 +45,7 @@
                 }
                 <div id="vitalsPartial">
                         <!-- Repalaced when user clicks save in record new vitals dialog -->
-                    @listVitals(vitals, viewModel)
+                    @listVitals(vitals, viewModel, assets)
                 </div>
 
                 <button type="button" id="newVitalsBtn" class="fButton fOtherButton">Record New Vitals</button>

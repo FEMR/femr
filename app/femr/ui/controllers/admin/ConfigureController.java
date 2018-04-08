@@ -19,6 +19,7 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.IConfigureService;
 import femr.business.services.core.ISessionService;
 import femr.common.dtos.CurrentUser;
@@ -41,15 +42,18 @@ import java.util.List;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class ConfigureController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private ISessionService sessionService;
     private IConfigureService configureService;
 
     @Inject
-    public ConfigureController(FormFactory formFactory,
+    public ConfigureController(AssetsFinder assetsFinder,
+                               FormFactory formFactory,
                                ISessionService sessionService,
                                IConfigureService configureService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.sessionService = sessionService;
         this.configureService = configureService;
@@ -70,7 +74,7 @@ public class ConfigureController extends Controller {
         }
 
 
-        return ok(manage.render(currentUser, indexViewModel));
+        return ok(manage.render(currentUser, indexViewModel, assetsFinder));
     }
 
     public Result managePost() {

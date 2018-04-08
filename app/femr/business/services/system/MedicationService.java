@@ -18,7 +18,7 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.*;
+import io.ebean.*;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;

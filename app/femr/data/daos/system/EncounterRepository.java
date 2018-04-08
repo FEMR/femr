@@ -1,8 +1,8 @@
 package femr.data.daos.system;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.Ebean;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import com.google.inject.Provider;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IEncounterRepository;
@@ -79,7 +79,7 @@ public class EncounterRepository implements IEncounterRepository {
                 .where()
                 .eq("id", encounterId);
 
-        patientEncounter = query.findUnique();
+        patientEncounter = query.findOne();
         if (patientEncounter != null) {
 
             patientEncounter.setEncounterDeleted(dateUtils.getCurrentDateTime());
@@ -189,7 +189,7 @@ public class EncounterRepository implements IEncounterRepository {
                     .where()
                     .isNull("isDeleted")
                     .eq("id", id);
-            response = query.findUnique();
+            response = query.findOne();
         } catch (Exception ex) {
 
             Logger.error("EncounterRepository-retreivePatientEncounterById", ex);

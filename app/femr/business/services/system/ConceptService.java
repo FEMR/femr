@@ -18,7 +18,7 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
+import io.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;

@@ -5,7 +5,7 @@ package femr.util.filters;
 import akka.stream.Materializer;
 import com.google.inject.Inject;
 import femr.ui.controllers.routes;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.mvc.*;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,10 +14,10 @@ import java.util.function.Function;
 
 public class ResearchFilter extends Filter {
 
-    private Configuration configuration;
+    private Config configuration;
 
     @Inject
-    public ResearchFilter(Configuration configuration, Materializer mat){
+    public ResearchFilter(Config configuration, Materializer mat){
 
         super(mat);
         this.configuration = configuration;

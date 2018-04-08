@@ -18,7 +18,7 @@
 */
 package femr.data;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 import com.google.inject.Inject;
 import femr.business.services.core.IEncounterService;
 import femr.business.services.core.ISessionService;

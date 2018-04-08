@@ -19,6 +19,7 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -45,6 +46,7 @@ import java.util.Date;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IConceptService conceptService;
     private final IInventoryService inventoryService;
@@ -53,13 +55,15 @@ public class InventoryController extends Controller {
     private final ISessionService sessionService;
 
     @Inject
-    public InventoryController(FormFactory formFactory,
+    public InventoryController(AssetsFinder assetsFinder,
+                               FormFactory formFactory,
                                IConceptService conceptService,
                                IInventoryService inventoryService,
                                IMedicationService medicationService,
                                IMissionTripService missionTripService,
                                ISessionService sessionService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.conceptService = conceptService;
         this.inventoryService = inventoryService;
@@ -124,7 +128,7 @@ public class InventoryController extends Controller {
             viewModel.setMissionTripList(new ArrayList<>());
         }
 
-        return ok(manage.render(currentUser, viewModel));
+        return ok(manage.render(currentUser, viewModel, assetsFinder));
     }
 
     /**
@@ -173,7 +177,7 @@ public class InventoryController extends Controller {
             viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
         }
 
-        return ok(custom.render(currentUser, viewModel));
+        return ok(custom.render(currentUser, viewModel, assetsFinder));
     }
 
     /**
@@ -290,7 +294,7 @@ public class InventoryController extends Controller {
             viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
         }
 
-        return ok(existing.render(currentUser, viewModel));
+        return ok(existing.render(currentUser, viewModel, assetsFinder));
     }
 
     /**

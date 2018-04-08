@@ -18,8 +18,8 @@
 */
 package femr.business.helpers;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import femr.data.daos.IRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientEncounterVital;

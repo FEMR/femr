@@ -19,6 +19,7 @@
 package femr.ui.controllers;
 
 import com.itextpdf.tool.xml.html.pdfelement.HtmlCell;
+import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.models.*;
 import femr.data.models.mysql.*;

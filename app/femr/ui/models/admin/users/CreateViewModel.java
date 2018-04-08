@@ -19,12 +19,14 @@
 package femr.ui.models.admin.users;
 
 import femr.util.stringhelpers.StringUtils;
+import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;     //Aditya Nerella
 
-public class CreateViewModel {
+@Constraints.Validate
+public class CreateViewModel implements Constraints.Validatable<List<ValidationError>> {
     private Integer userId;
     private String firstName;
     private String lastName;
@@ -40,6 +42,7 @@ public class CreateViewModel {
     private Integer CreatedBy; //Sam Zanni
     private String DateCreated; //Sam Zanni
 
+    @Override
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
 

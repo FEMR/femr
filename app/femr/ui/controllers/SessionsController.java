@@ -1,6 +1,7 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
@@ -23,13 +24,15 @@ import java.util.regex.Pattern;
 
 public class SessionsController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final ISessionService sessionsService;
     private final IUserService userService;
 
     @Inject
-    public SessionsController(FormFactory formFactory, ISessionService sessionsService, IUserService userService) {
+    public SessionsController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionsService, IUserService userService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.sessionsService = sessionsService;
         this.userService = userService;
@@ -44,7 +47,7 @@ public class SessionsController extends Controller {
             return redirect(routes.HomeController.index());
         }
 
-        return ok(create.render(createViewModelForm, 0));
+        return ok(create.render(createViewModelForm, 0, assetsFinder));
     }
 
     public Result createPost() {
@@ -54,7 +57,7 @@ public class SessionsController extends Controller {
         ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
         if (response.hasErrors()) {
-            return ok(create.render(createViewModelForm.bindFromRequest(), 1));
+            return ok(create.render(createViewModelForm.bindFromRequest(), 1, assetsFinder));
         }else{
             IUser user = userService.retrieveById(response.getResponseObject().getId());
             user.setLastLogin(dateUtils.getCurrentDateTime());
@@ -84,7 +87,7 @@ public class SessionsController extends Controller {
 
         final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
 
-        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>()));
+        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>(), assetsFinder));
     }
 
     public Result editPasswordPost(){
@@ -124,7 +127,7 @@ public class SessionsController extends Controller {
         }
 
         if(!messages.isEmpty())
-            return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages));
+            return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages, assetsFinder));
         else
         {
             user.setPassword(viewModel.getNewPassword());

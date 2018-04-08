@@ -1,10 +1,10 @@
-@(currentUser: femr.common.dtos.CurrentUser)
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.main
 
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
 
         <script>
                 if (window.location.search.indexOf('feedback=received') > -1) {
@@ -36,7 +36,7 @@
     </div>
   }
 
-@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts) {
+@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assets = assets) {
   @*<ul>
   @for(role <- currentUser.getRoles) {
     <li>@role.getName</li>

@@ -2,6 +2,7 @@ package femr.ui.controllers.superuser;
 
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.ITabService;
 import femr.common.dtos.CurrentUser;
@@ -30,15 +31,18 @@ import java.util.List;
 @AllowedRoles({Roles.SUPERUSER})
 public class TabController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final ITabService tabService;
     private final ISessionService sessionService;
 
     @Inject
-    public TabController(FormFactory formFactory,
+    public TabController(AssetsFinder assetsFinder,
+                         FormFactory formFactory,
                          ITabService tabService,
                          ISessionService sessionService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.tabService = tabService;
         this.sessionService = sessionService;
@@ -63,7 +67,7 @@ public class TabController extends Controller {
         }
         viewModelGet.setDeletedTabs(response.getResponseObject());
 
-        return ok(manage.render(currentUser, viewModelGet));
+        return ok(manage.render(currentUser, viewModelGet, assetsFinder));
     }
 
     public Result managePost() {
@@ -144,7 +148,7 @@ public class TabController extends Controller {
         }
         viewModelGet.setCustomFieldSizes(fieldSizesResponse.getResponseObject());
 
-        return ok(fields.render(currentUser, viewModelGet));
+        return ok(fields.render(currentUser, viewModelGet, assetsFinder));
     }
 
     //name = tab name

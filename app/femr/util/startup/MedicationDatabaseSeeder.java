@@ -18,7 +18,7 @@
 */
 package femr.util.startup;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 import com.google.inject.Inject;
 import femr.data.daos.IRepository;
 import femr.data.models.core.*;

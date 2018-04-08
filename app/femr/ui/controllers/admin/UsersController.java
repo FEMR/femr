@@ -19,6 +19,7 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -47,6 +48,7 @@ import java.util.List;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class UsersController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private IMissionTripService missionTripService;
     private ISessionService sessionService;
@@ -54,12 +56,14 @@ public class UsersController extends Controller {
     private IRoleService roleService;
 
     @Inject
-    public UsersController(FormFactory formFactory,
+    public UsersController(AssetsFinder assetsFinder,
+                           FormFactory formFactory,
                            IMissionTripService missionTripService,
                            ISessionService sessionService,
                            IUserService userService,
                            IRoleService roleService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.missionTripService = missionTripService;
         this.sessionService = sessionService;
@@ -79,7 +83,7 @@ public class UsersController extends Controller {
         ManageViewModelGet viewModelGet = new ManageViewModelGet();
         viewModelGet.setUsers(userServiceResponse.getResponseObject());
 
-        return ok(manage.render(currentUser, viewModelGet));
+        return ok(manage.render(currentUser, viewModelGet, assetsFinder));
     }
 
     //Create a new User
@@ -93,7 +97,7 @@ public class UsersController extends Controller {
             throw new RuntimeException();
         }
 
-        return ok(create.render(currentUser, createViewModelForm, new ArrayList<String>(), roleServiceResponse.getResponseObject()));
+        return ok(create.render(currentUser, createViewModelForm, new ArrayList<String>(), roleServiceResponse.getResponseObject(), assetsFinder));
     }
 
     //Create a new User
@@ -111,7 +115,7 @@ public class UsersController extends Controller {
 
         if (form.hasErrors()) {
 
-            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject()));
+            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
         } else {
             CreateViewModel viewModel = form.bindFromRequest().get();
             UserItem user = createUserItem(viewModel);
@@ -119,7 +123,7 @@ public class UsersController extends Controller {
             ServiceResponse<UserItem> response = userService.createUser(user, viewModel.getPassword(), currentUser.getId());
             if (response.hasErrors()) {
                 messages.add(response.getErrors().get(""));
-                return ok(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject()));
+                return ok(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
             }
             else
                 //added user's last name to be displayed[FEMR-161]
@@ -130,7 +134,7 @@ public class UsersController extends Controller {
                     messages.add("An account for " + user.getFirstName() + " "+ user.getLastName() +" was created successfully. You may begin creating a new user.");
 
 
-            return ok(create.render(currentUser, createViewModelForm, messages, roleServiceResponse.getResponseObject()));
+            return ok(create.render(currentUser, createViewModelForm, messages, roleServiceResponse.getResponseObject(), assetsFinder));
         }
     }
 
@@ -173,7 +177,7 @@ public class UsersController extends Controller {
             return internalServerError();
         }
 
-        return ok(edit.render(currentUser, editViewModelForm, roleServiceResponse.getResponseObject(), new ArrayList<String>()));
+        return ok(edit.render(currentUser, editViewModelForm, roleServiceResponse.getResponseObject(), new ArrayList<String>(), assetsFinder));
     }
 
     //  edit a user dialog
@@ -194,7 +198,7 @@ public class UsersController extends Controller {
 
         if (form.hasErrors()){
 
-            return badRequest(edit.render(currentUser, form, roleServiceResponse.getResponseObject(), new ArrayList<String>()));
+            return badRequest(edit.render(currentUser, form, roleServiceResponse.getResponseObject(), new ArrayList<String>(), assetsFinder));
         }else{
             EditViewModel viewModel = form.bindFromRequest().get();
             ServiceResponse<UserItem> userServiceResponse = userService.retrieveUser(id);

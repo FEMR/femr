@@ -18,8 +18,8 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;

@@ -2,6 +2,7 @@ package femr.ui.controllers;
 
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
@@ -23,15 +24,19 @@ import play.data.FormFactory;
 
 public class FeedbackController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final ISessionService sessionService;
     private final FormFactory formFactory;
     private final IUserService userService;
 
 
     @Inject
-    public FeedbackController( ISessionService sessionService,
+    public FeedbackController( AssetsFinder assetsFinder,
+                               ISessionService sessionService,
                                FormFactory formFactory,
                                IUserService userService) {
+
+        this.assetsFinder = assetsFinder;
         this.sessionService = sessionService;
         this.formFactory = formFactory;
         this.userService = userService;
@@ -42,7 +47,7 @@ public class FeedbackController extends Controller {
     // GET
     public Result indexGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        return ok(feedback.render(currentUser));
+        return ok(feedback.render(currentUser, assetsFinder));
     }
 
     // POST

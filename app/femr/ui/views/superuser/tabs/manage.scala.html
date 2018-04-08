@@ -1,13 +1,13 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TabsViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TabsViewModelGet, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.admin
 @import femr.ui.controllers.superuser.routes.TabController
 
 @additionalStyles = {
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/superuser/superuser.css")">
+    <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
 }
 
-@admin("Tabs", currentUser, styles = additionalStyles) {
+@admin("Tabs", currentUser, styles = additionalStyles, assets = assets) {
     <h1>Tabs</h1>
     <p>Do not put spaces in Tab Names.</p>
     <div id="superUserWrap">

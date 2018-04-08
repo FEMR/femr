@@ -1,9 +1,9 @@
 package femr.data.daos.system;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Expr;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.Ebean;
+import io.ebean.Expr;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.helpers.QueryProvider;
@@ -119,7 +119,7 @@ public class PatientRepository implements IPatientRepository {
                     .where()
                     .eq("name", ageClassification);
 
-            response = patientAgeClassificationExpressionList.findUnique();
+            response = patientAgeClassificationExpressionList.findOne();
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrievePatientAgeClassification", ex);
@@ -197,7 +197,7 @@ public class PatientRepository implements IPatientRepository {
                     .eq("id", id)
                     .isNull("isDeleted");
 
-            response = query.findUnique();
+            response = query.findOne();
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrievePatientById", ex.getMessage(), "id: " + id);

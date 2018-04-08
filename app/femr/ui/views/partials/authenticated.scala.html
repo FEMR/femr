@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser)
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
 @import femr.ui.controllers.routes.HomeController
@@ -13,7 +13,7 @@
 @import femr.ui.controllers.routes.ReferenceController
 <div class="navigationLogo">
     <a href="@HomeController.index()">
-        <img src="@routes.Assets.versioned("img/logo_color_wordless_sm.png")" />
+        <img src="@assets.path("img/logo_color_wordless_sm.png")" />
     </a>
 </div>
 

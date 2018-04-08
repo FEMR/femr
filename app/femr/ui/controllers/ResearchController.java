@@ -20,6 +20,7 @@ package femr.ui.controllers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.IMissionTripService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -34,7 +35,7 @@ import femr.ui.models.research.json.ResearchItemModel;
 import femr.ui.views.html.research.index;
 import femr.ui.models.research.FilterViewModel;
 import femr.util.stringhelpers.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -49,6 +50,7 @@ import java.util.*;
 @AllowedRoles({Roles.RESEARCHER})
 public class ResearchController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private IResearchService researchService;
     private ISessionService sessionService;
@@ -61,8 +63,9 @@ public class ResearchController extends Controller {
      * @param researchService   {@link IResearchService}
      */
     @Inject
-    public ResearchController(FormFactory formFactory, ISessionService sessionService, IResearchService researchService, IMissionTripService missionTripService) {
+    public ResearchController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionService, IResearchService researchService, IMissionTripService missionTripService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.researchService = researchService;
         this.sessionService = sessionService;
@@ -89,7 +92,7 @@ public class ResearchController extends Controller {
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
 
-        return ok(index.render(currentUserSession, filterViewModel));
+        return ok(index.render(currentUserSession, filterViewModel, assetsFinder));
     }
 
     /**

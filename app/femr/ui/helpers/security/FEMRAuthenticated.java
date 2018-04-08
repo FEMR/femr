@@ -1,7 +1,7 @@
 package femr.ui.helpers.security;
 
 import com.google.inject.Inject;
-import play.Configuration;
+import com.typesafe.config.Config;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -13,10 +13,10 @@ import static play.mvc.Controller.session;
 
 public class FEMRAuthenticated extends Security.Authenticator {
 
-    private final Configuration configuration;
+    private final Config configuration;
 
     @Inject
-    public FEMRAuthenticated(Configuration configuration){
+    public FEMRAuthenticated(Config configuration){
 
         this.configuration = configuration;
     }

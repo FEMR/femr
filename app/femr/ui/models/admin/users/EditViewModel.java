@@ -18,15 +18,17 @@
 */
 package femr.ui.models.admin.users;
 
-import femr.common.models.MissionItem;
 import femr.common.models.MissionTripItem;
 import femr.util.stringhelpers.StringUtils;
+import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class EditViewModel {
+@Constraints.Validate
+public class EditViewModel implements Constraints.Validatable<List<ValidationError>> {
     private Integer userId;
     private String firstName;
     private String lastName;
@@ -38,6 +40,7 @@ public class EditViewModel {
     private List<String> roles;
     private List<MissionTripItem> missionTripItems;
 
+    @Override
     public List<ValidationError> validate(){
         Pattern hasLowercase = Pattern.compile("[a-z]");    // Aditya Nerella
 

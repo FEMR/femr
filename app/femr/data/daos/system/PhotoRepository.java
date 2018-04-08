@@ -1,7 +1,7 @@
 package femr.data.daos.system;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
+import io.ebean.Ebean;
+import io.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.helpers.QueryProvider;
@@ -197,7 +197,7 @@ public class PhotoRepository implements IPhotoRepository {
                     .where()
                     .eq("id", id);
 
-            photo = query.findUnique();
+            photo = query.findOne();
         } catch (Exception ex) {
 
             Logger.error("PhotoRepository-retrievePhotoById", ex);

@@ -1,6 +1,7 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
@@ -29,17 +30,20 @@ import java.util.stream.Collectors;
 @AllowedRoles({Roles.ADMINISTRATOR})
 public class TripController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IMissionTripService missionTripService;
     private final ISessionService sessionService;
     private final IUserService userService;
 
     @Inject
-    public TripController(FormFactory formFactory,
+    public TripController(AssetsFinder assetsFinder,
+                          FormFactory formFactory,
                           IMissionTripService missionTripService,
                           ISessionService sessionService,
                           IUserService userService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.missionTripService = missionTripService;
         this.sessionService = sessionService;
@@ -52,7 +56,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createTripViewModelGet(null);
 
-        return ok(manage.render(currentUser, tripViewModel));
+        return ok(manage.render(currentUser, tripViewModel, assetsFinder));
     }
 
     public Result managePost(){
@@ -86,7 +90,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createTripViewModelGet(messages);
 
-        return ok(manage.render(currentUser, tripViewModel));
+        return ok(manage.render(currentUser, tripViewModel, assetsFinder));
     }
 
     //for when you click the edit button in the left hand column of the trip table
@@ -129,7 +133,7 @@ public class TripController extends Controller {
         allUsers.removeAll(editViewModelGet.getUsers());
         editViewModelGet.setAllUsers(allUsers);
 
-        return ok(edit.render(currentUser, editViewModelGet));
+        return ok(edit.render(currentUser, editViewModelGet, assetsFinder));
     }
 
     public Result editPost(Integer id){
@@ -166,7 +170,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createTripViewModelGet(null);
 
-        return ok(cities.render(currentUser, tripViewModel));
+        return ok(cities.render(currentUser, tripViewModel, assetsFinder));
     }
 
     public Result citiesPost(){
@@ -191,7 +195,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createTripViewModelGet(messages);
 
-        return ok(cities.render(currentUser, tripViewModel));
+        return ok(cities.render(currentUser, tripViewModel, assetsFinder));
     }
 
     public Result teamsGet() {
@@ -199,7 +203,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createTripViewModelGet(null);
 
-        return ok(teams.render(currentUser, tripViewModel));
+        return ok(teams.render(currentUser, tripViewModel, assetsFinder));
     }
 
     public Result teamsPost() {
@@ -229,7 +233,7 @@ public class TripController extends Controller {
 
         TripViewModelGet tripViewModel = createTripViewModelGet(messages);
 
-        return ok(teams.render(currentUser, tripViewModel));
+        return ok(teams.render(currentUser, tripViewModel, assetsFinder));
     }
 
     /**

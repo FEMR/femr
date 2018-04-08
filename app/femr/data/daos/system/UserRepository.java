@@ -1,7 +1,7 @@
 package femr.data.daos.system;
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.Ebean;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import com.google.inject.Inject;
 import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IUserRepository;
@@ -160,7 +160,7 @@ public class UserRepository implements IUserRepository {
 
         IUser user = null;
         try {
-            user = userQuery.findUnique();
+            user = userQuery.findOne();
         } catch (Exception ex) {
 
             Logger.error("UserRepository-retrieveUserById", ex);
@@ -179,7 +179,7 @@ public class UserRepository implements IUserRepository {
 
         IUser user = null;
         try{
-            user = userQuery.findUnique();
+            user = userQuery.findOne();
         } catch (Exception ex) {
 
             Logger.error("UserRepository-retrieveUserByEmail", ex);
@@ -301,7 +301,7 @@ public class UserRepository implements IUserRepository {
             role = Ebean.find(role.getClass())
                     .where()
                     .eq("name", roleName)
-                    .findUnique();
+                    .findOne();
         } catch (Exception ex) {
 
             Logger.error("UserRepository-retrieveRoleByName", ex);

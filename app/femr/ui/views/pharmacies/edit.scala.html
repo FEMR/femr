@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean )
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.pharmacy.EditViewModelGet, searchError: java.lang.Boolean, assets: AssetsFinder )
 
 @import femr.ui.controllers.routes.HistoryController
 @import femr.ui.controllers.routes.MedicalController
@@ -11,18 +11,18 @@
 
     @additionalScripts = {
 
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/pharmacy/pharmacy.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/pharmacy/pharmacyClientValidation.js")"></script>
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
-        <script type = "text/javascript"   src="@routes.Assets.versioned("js/libraries/jquery-ui.min.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/pharmacy/pharmacy.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/pharmacy/pharmacyClientValidation.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type = "text/javascript"   src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
     }
     @additionalStyles = {
 
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/pharmacy.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/pharmacy.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
     }
 
-@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy")) {
+@main("Pharmacy", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("pharmacy"), assets = assets) {
     <div id="pharmacyContentWrap">
 
         @patientOverview(viewModel.getPatient, viewModel.getPatientEncounterItem, viewModel.getSettings, "Pharmacy - " + "Patient ID: " + viewModel.getPatient.getId)

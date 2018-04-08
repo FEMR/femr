@@ -1,4 +1,4 @@
-@()
+@(assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.error
     @content = {
@@ -10,4 +10,4 @@
 
 
     }
-@error(errorContent = content)
+@error(errorContent = content, assets = assets)

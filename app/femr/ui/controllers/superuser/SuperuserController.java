@@ -19,6 +19,7 @@
 package femr.ui.controllers.superuser;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.common.dtos.CurrentUser;
 import femr.business.services.core.ISessionService;
 import femr.data.models.mysql.Roles;
@@ -33,16 +34,18 @@ import femr.ui.views.html.superuser.index;
 @AllowedRoles({Roles.SUPERUSER})
 public class SuperuserController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final ISessionService sessionService;
 
     @Inject
-    public SuperuserController(ISessionService sessionService) {
+    public SuperuserController(AssetsFinder assetsFinder,ISessionService sessionService) {
 
+        this.assetsFinder = assetsFinder;
         this.sessionService = sessionService;
     }
 
     public Result indexGet() {
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        return ok(index.render(currentUser));
+        return ok(index.render(currentUser, assetsFinder));
     }
 }

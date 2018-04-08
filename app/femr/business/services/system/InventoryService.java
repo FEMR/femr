@@ -131,6 +131,7 @@ public class InventoryService implements IInventoryService {
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
+
             medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
             medicationInventory.setQuantityInitial(quantityTotal);
             medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);

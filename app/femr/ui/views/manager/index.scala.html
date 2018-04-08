@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModelGet: femr.ui.models.manager.IndexViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModelGet: femr.ui.models.manager.IndexViewModelGet, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.TripController
@@ -6,10 +6,10 @@
 
 @additionalStyles = {
 
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/manager/manager.css")">
+    <link rel="stylesheet" href="@assets.path("css/manager/manager.css")">
 }
 
-@main("ManagerTab", currentUser, styles = additionalStyles) {
+@main("ManagerTab", currentUser, styles = additionalStyles, assets = assets) {
     <div class="backgroundForWrap">
 
 

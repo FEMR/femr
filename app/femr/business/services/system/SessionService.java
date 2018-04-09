@@ -29,6 +29,7 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.util.encryptions.IPasswordEncryptor;
+import play.Configuration;
 
 import java.net.InetAddress;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class SessionService implements ISessionService {
     private ISessionHelper sessionHelper;
     private final IDataModelMapper dataModelMapper;
     private final IUserRepository userRepository;
+    private final Configuration configuration;
 
     @Inject
     public SessionService(IUserService userService,
@@ -48,7 +50,8 @@ public class SessionService implements ISessionService {
                           IPasswordEncryptor passwordEncryptor,
                           ISessionHelper sessionHelper,
                           IDataModelMapper dataModelMapper,
-                          IUserRepository userRepository) {
+                          IUserRepository userRepository,
+                          Configuration configuration){
 
         this.userService = userService;
         this.missionTripService = missionTripService;
@@ -56,6 +59,7 @@ public class SessionService implements ISessionService {
         this.sessionHelper = sessionHelper;
         this.dataModelMapper = dataModelMapper;
         this.userRepository = userRepository;
+        this.configuration =configuration;
     }
 
     /**
@@ -150,6 +154,8 @@ public class SessionService implements ISessionService {
 
     private CurrentUser createCurrentUser(IUser user, Integer tripId) {
 
-        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId);
+        long timeout = Long.valueOf(configuration.getString("sessionTimeout")) * 1000 * 60;
+        return new CurrentUser(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRoles(), tripId, timeout);
     }
 }
+

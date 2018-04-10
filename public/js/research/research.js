@@ -390,7 +390,7 @@ var graphLoaderModule = (function(){
 })();
 
 
-jQuery(document).ready(function(){
+$(document).ready(function(){
 
     filterMenuModule.init();
     graphLoaderModule.init();
@@ -415,6 +415,9 @@ jQuery(document).ready(function(){
             lastChartWidth = currChartWidth;
         }
     }).trigger("resize");
+
+    mydate3();
+    mydate1();
 
 });
 
@@ -485,4 +488,41 @@ function mapGraphData(name, datamap){
     }
     return toRet;
 };
+
+function mydate()
+{
+    //alert("");
+    document.getElementById("startDate").hidden=false;
+    document.getElementById("ndt").hidden=true;
+}
+function mydate1()
+{
+    d=new Date(document.getElementById("startDate").value);
+    dt=d.getUTCDate();
+    mn=d.getUTCMonth();
+    mn++;
+    yy=d.getFullYear();
+    document.getElementById("ndt").value=dt+"/"+mn+"/"+yy;
+    document.getElementById("ndt").hidden=false;
+    document.getElementById("startDate").hidden=true;
+    document.getElementById("start-up").innerHTML=dt+"/"+mn+"/"+yy;
+}
+function mydate2()
+{
+    //alert("");
+    document.getElementById("endDate").hidden=false;
+    document.getElementById("ndt2").hidden=true;
+}
+function mydate3()
+{
+    d=new Date(document.getElementById("endDate").value);
+    dt=d.getUTCDate();
+    mn=d.getUTCMonth();
+    mn++;
+    yy=d.getFullYear();
+    document.getElementById("ndt2").value=dt+"/"+mn+"/"+yy;
+    document.getElementById("ndt2").hidden=false;
+    document.getElementById("endDate").hidden=true;
+    document.getElementById("start-end").innerHTML=dt+"/"+mn+"/"+yy;
+}
 

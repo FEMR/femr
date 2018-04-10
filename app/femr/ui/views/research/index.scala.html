@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="@routes.Assets.versioned("css/research.css")">
     }
     @additionalScripts = {
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/d3.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/d3.tip.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("js/research/saveSvgAsPng.js")"></script>
@@ -124,8 +126,21 @@
                             </span>
                             <span class="glyphicon glyphicon-chevron-right"></span>
                             <ul class="submenu">
-                                <li>Start Date <input type="date" id="startDate" name="startDate" value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" /></li>
-                                <li>End Date <input type="date" id="endDate" name="endDate" value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" /></li>
+                                <li>Start Date (DD/MM/YYYY)
+                                    <input type="date" id="startDate" name="startDate" format="dd/MM/yyyy" onchange="mydate1()"  hidden value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" />
+                                    <input type="text" id="ndt"  onclick="mydate()"  format="dd/MM/yyyy" value="@viewModel.getStartDate()"  />
+                                </li>
+                                <li>End Date (DD/MM/YYYY)
+                                    <input type="date" id="endDate" name="endDate" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
+                                    <input type="text" id="ndt2"  onclick="mydate2()"  format="dd/MM/yyyy" value="@viewModel.getEndDate()"  />
+                                </li>
+                                <!--
+                                <li>
+                                    Yo moms a hoe
+                                        <input type="date" id="dt" onchange="mydate1();" hidden value="2015/08/22"/>
+                                        <input type="text" id="ndt"  onclick="mydate();"  value="22/8/2015"  />
+                                </li>
+                                -->
                             </ul>
                         </li>
 
@@ -235,5 +250,42 @@
             </div>
 
         </div>
+    <script>
+            function mydate()
+            {
+                //alert("");
+                document.getElementById("startDate").hidden=false;
+                document.getElementById("ndt").hidden=true;
+            }
+            function mydate1()
+            {
+                d=new Date(document.getElementById("startDate").value);
+                dt=d.getUTCDate();
+                mn=d.getUTCMonth();
+                mn++;
+                yy=d.getFullYear();
+                document.getElementById("ndt").value=dt+"/"+mn+"/"+yy
+                document.getElementById("ndt").hidden=false;
+                document.getElementById("startDate").hidden=true;
+            }
+            function mydate2()
+            {
+                //alert("");
+                document.getElementById("endDate").hidden=false;
+                document.getElementById("ndt2").hidden=true;
+            }
+            function mydate3()
+            {
+                d=new Date(document.getElementById("endDate").value);
+                dt=d.getUTCDate();
+                mn=d.getUTCMonth();
+                mn++;
+                yy=d.getFullYear();
+                document.getElementById("ndt2").value=dt+"/"+mn+"/"+yy
+                document.getElementById("ndt2").hidden=false;
+                document.getElementById("endDate").hidden=true;
+            }
+
+    </script>
 
 }

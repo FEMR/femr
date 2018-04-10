@@ -30,14 +30,16 @@ public class CurrentUser {
     private List<IRole> roles;
     //the id of the current trip, can be null if it doesn't exist
     private Integer tripId;
+    long SessionTimeOut;
 
-    public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles, Integer tripId) {
+    public CurrentUser(int id, String firstName, String lastName, String email, List<IRole> roles, Integer tripId, long time) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.roles = roles;
         this.tripId = tripId;
+        this.SessionTimeOut = time;
     }
 
     public int getId() {
@@ -66,5 +68,9 @@ public class CurrentUser {
 
     public Integer getTripId() {
         return tripId;
+    }
+
+    public long getTimeout2() {
+        return SessionTimeOut;
     }
 }

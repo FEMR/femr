@@ -285,3 +285,26 @@ function calculateBMIScore(system, weight, height) {
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+
+//This script will run on all the pages in which femr.js is loaded onto
+//It forces a page refresh if the user is inactive
+var hv = $('#h_v').val();
+
+var timeOutTime = hv;
+var t;
+if(timeOutTime!=null) {
+    window.onload = ResetTime;
+// DOM Events
+    document.onmousemove = ResetTime;
+    document.onkeypress = ResetTime;
+}
+function logout() {
+    window.location.assign(window.location.href);
+}
+
+function ResetTime() {
+    clearTimeout(t);
+    t = setTimeout(logout, timeOutTime);
+    // 1000 milisec = 1 sec
+}

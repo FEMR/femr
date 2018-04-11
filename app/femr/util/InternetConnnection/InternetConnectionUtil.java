@@ -144,12 +144,6 @@ public final class InternetConnectionUtil {
         }
     }
 
-    private static JsonObject getJsonForSlack(JsonObject text){
-        JsonObject slackJson = new JsonObject();
-        slackJson.addProperty("text", text.toString());
-        return slackJson;
-    }
-
     private InternetConnectionUtil(){
         //There should be no objects of this type.
         //This utility should just be accessed by tasks and the controllers/service layer
@@ -181,7 +175,7 @@ public final class InternetConnectionUtil {
             urlConnect.setDoOutput(true);
             urlConnect.setDoInput(true);
             DataOutputStream outputStreamWriter = new DataOutputStream(urlConnect.getOutputStream());
-            outputStreamWriter.writeBytes(getJsonForSlack(jsonToSend).toString());
+            outputStreamWriter.writeBytes(jsonToSend.toString());
             outputStreamWriter.flush();
             outputStreamWriter.close();
             int responseCode = urlConnect.getResponseCode();

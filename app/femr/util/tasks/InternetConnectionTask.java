@@ -10,7 +10,6 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
-//import femr.util.InternetConnnection.InternetConnectionUtil;
 
 public class InternetConnectionTask {
 

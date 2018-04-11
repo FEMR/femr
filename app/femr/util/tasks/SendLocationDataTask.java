@@ -30,7 +30,6 @@ public class SendLocationDataTask {
                 Duration.create(0, TimeUnit.SECONDS), // initialDelay
                 Duration.create(InternetConnectionUtil.getSendLocationDataInvervalInSeconds(), TimeUnit.SECONDS), // interval
                 () -> {
-                    System.out.println("SENDING");
                     InternetConnectionUtil.updateExistsConnection();
                     if(InternetConnectionUtil.getExistsConnection() == true){
                         InternetConnectionUtil.sendLocationInformation();

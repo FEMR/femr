@@ -60,7 +60,7 @@
     box-shadow: 0 0 3px rgb(250, 0, 0);
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"] { /*Nerella*/
     width: 100%;
     background: #fff;
     margin-bottom: 4%;

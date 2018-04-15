@@ -51,6 +51,18 @@ public class SessionsController extends Controller {
 
         final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
         CreateViewModel viewModel = createViewModelForm.bindFromRequest().get();
+
+        String emailUpperCase = viewModel.getEmail().toUpperCase();
+        String password = viewModel.getPassword();
+
+        if( !(emailUpperCase.equals("ADMIN") || emailUpperCase.equals("SUPERUSER")) ) {
+            Pattern Isemail = Pattern.compile("[A-Za-z\\d]+@[A-Za-z\\d]+.[A-Za-z]+$");
+           
+            if (!Isemail.matcher(viewModel.getEmail()).find()){
+                return ok(create.render(createViewModelForm.bindFromRequest(), 1));
+            }
+        }
+
         ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
         if (response.hasErrors()) {

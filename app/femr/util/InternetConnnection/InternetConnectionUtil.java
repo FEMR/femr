@@ -71,27 +71,6 @@ public final class InternetConnectionUtil {
     }
 
     /**
-     * Find our IP address by pinging checkip.amazonaws.com
-     * Only Makes Sense if there exists an internet connection
-     *
-     * @return InetAddress with current external ip; null if the check fails
-     */
-    private static InetAddress getExternalIpAddress(){
-        InetAddress externalIp = null;
-        try{
-            URL amazonAWS = new URL("http://checkip.amazonaws.com");
-            BufferedReader in = new BufferedReader(new InputStreamReader(amazonAWS.openStream()));
-
-            String ip = in.readLine();
-            externalIp = InetAddress.getByName(ip);
-        } catch(MalformedURLException e){
-        } catch(IOException e){
-        }
-
-        return externalIp;
-    }
-
-    /**
      * Get some subset of the location data provided by a GET request of api.ipdata.co
      * Valid args
      * @param
@@ -168,6 +147,9 @@ public final class InternetConnectionUtil {
     public static Boolean sendLocationInformation(){
         try{
             JsonObject rawLocationJson = getLocationDataByIp();
+            if(rawLocationJson==null){
+
+            }
             JsonObject jsonToSend = filterJsonByKeys(rawLocationJson, "ip","country_name");
             HttpURLConnection urlConnect = (HttpURLConnection)locationDataEndpoint.openConnection();
             urlConnect.setRequestMethod("POST");
@@ -183,6 +165,8 @@ public final class InternetConnectionUtil {
                 return false;
             }
         } catch(IOException e) {
+            return false;
+        } catch(NullPointerException e){
             return false;
         }
         return true;

@@ -108,9 +108,6 @@ public final class InternetConnectionUtil {
             Logger.error("Issue with getting location data - https://api.ipdata.co/ did not provide valid Json: "
                     + e.getMessage(), e.getMessage(), e);
         }
-        catch(MalformedURLException e){
-            Logger.error("Malformed URL to \"https://api.ipdata.co/\": " + e.getMessage(), e.getMessage(), e);
-        }
         catch(IOException e){
             Logger.error("There was an issue getting location data from api.ipdata.co: "
                     + e.getMessage(), e.getMessage(), e);

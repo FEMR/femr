@@ -87,6 +87,13 @@ public final class InternetConnectionUtil {
             con.setConnectTimeout(connectionTimeoutInMilliseconds);
             con.setReadTimeout(connectionTimeoutInMilliseconds);
 
+            int responseCode = con.getResponseCode();
+            if(responseCode < 200 || responseCode > 299){
+                //This should trigger when we've hit the daily limit for sending location data
+                Logger.error("Getting Location data from https://api.ipdata.co/ failed with response code: " + responseCode + ".");
+                return null;
+            }
+
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -98,14 +105,15 @@ public final class InternetConnectionUtil {
 
             locationDataJson = new JsonParser().parse(content.toString()).getAsJsonObject();
         } catch(IllegalStateException e){
-            //This should trigger when we've hit the daily limit for sending location data
-            Logger.error("Issue with getting location data - Api.ipdata.co did not provide valid Json: ", e.getMessage(), e);
+            Logger.error("Issue with getting location data - https://api.ipdata.co/ did not provide valid Json: "
+                    + e.getMessage(), e.getMessage(), e);
         }
         catch(MalformedURLException e){
-            e.printStackTrace();
+            Logger.error("Malformed URL to \"https://api.ipdata.co/\": " + e.getMessage(), e.getMessage(), e);
         }
         catch(IOException e){
-            Logger.error("There was an issue getting location data from api.ipdata.co: ", e.getMessage(), e);
+            Logger.error("There was an issue getting location data from api.ipdata.co: "
+                    + e.getMessage(), e.getMessage(), e);
         }
         return locationDataJson;
     }
@@ -153,7 +161,7 @@ public final class InternetConnectionUtil {
         try{
             JsonObject rawLocationJson = getLocationDataByIp();
             if(rawLocationJson == null){
-                Logger.error("There was an issue getting location data from api.ipdata.co");
+                Logger.error("There was an issue getting location data from api.ipdata.co.");
                 return false;
             }
             JsonObject jsonToSend = filterJsonByKeys(rawLocationJson, "ip","country_name");
@@ -172,7 +180,7 @@ public final class InternetConnectionUtil {
                 return false;
             }
         } catch(IOException e) {
-            Logger.error("There was an issue sending location data to endpoint: ", e.getMessage(), e);
+            Logger.error("There was an issue sending location data to endpoint: " + e.getMessage(), e.getMessage(), e);
             return false;
         }
         return true;

@@ -119,7 +119,8 @@
                             <a class="opt-link">Filter Date (DD/MM/YYYY)</a>
                             <span class="val">
                                 <span class="date">
-                                   <span class="start">@viewModel.getStartDate()</span> - <span class="end">@viewModel.getEndDate()</span>
+                                    <span class="start">@viewModel.getStartDate()</span> - <span hidden class="end">@viewModel.getEndDate()</span>
+                                    <span  id="start-end"></span>
                                 </span>
                             </span>
                             <span class="glyphicon glyphicon-chevron-right"></span>
@@ -131,7 +132,7 @@
                                 </li>
                                 <li>End Date
                                     (DD/MM/YYYY)
-                                    <input type="date" id="endDate" name="endDate" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
+                                    <input type="date" id="endDate" name="endDate" format="dd/MM/yyyy" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
                                     <input type="text" id="ndt2"  onclick="mydate2()"  format="dd/MM/yyyy" value="@viewModel.getEndDate()"  />
                                 </li>
                             </ul>
@@ -244,6 +245,7 @@
 
         </div>
         <script>
+
                 function mydate()
                 {
                     //alert("");
@@ -257,9 +259,10 @@
                     mn=d.getUTCMonth();
                     mn++;
                     yy=d.getFullYear();
-                    document.getElementById("ndt").value=dt+"/"+mn+"/"+yy
+                    document.getElementById("ndt").value=dt+"/"+mn+"/"+yy;
                     document.getElementById("ndt").hidden=false;
                     document.getElementById("startDate").hidden=true;
+                    document.getElementById("start-up").innerHTML=dt+"/"+mn+"/"+yy;
                 }
                 function mydate2()
                 {
@@ -274,10 +277,14 @@
                     mn=d.getUTCMonth();
                     mn++;
                     yy=d.getFullYear();
-                    document.getElementById("ndt2").value=dt+"/"+mn+"/"+yy
+                    document.getElementById("ndt2").value=dt+"/"+mn+"/"+yy;
                     document.getElementById("ndt2").hidden=false;
                     document.getElementById("endDate").hidden=true;
+                    document.getElementById("start-end").innerHTML=dt+"/"+mn+"/"+yy;
                 }
+                mydate3();
+
+
         </script>
 
 }

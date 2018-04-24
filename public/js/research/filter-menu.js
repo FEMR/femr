@@ -99,10 +99,10 @@ var filterMenuModule = (function () {
             var yearNum = defaultEndDate.getUTCFullYear();
 
             var endDateInputString = yearNum + '-' + monthNum + '-' + dayNum;
-            var endDateString = dayNum + '/' + monthNum + '/' + yearNum;
-
+            var endDateString = monthNum + '/' + dayNum + '/' + yearNum;
+            var endDateStringDisplay = dayNum  + '/' + monthNum + '/' + yearNum;
             // Set End Date in text and Date input item
-            $(filterMenus.filter).find(".val").find(".date").find(".end").text(endDateString);
+            $(filterMenus.filter).find(".val").find(".date").find(".end").text(endDateStringDisplay);
             $(filterFields.endDate).val(endDateInputString);
             filterValues.endDate = endDateString;
 
@@ -115,7 +115,8 @@ var filterMenuModule = (function () {
 
         // make default startDate of 120 days ago
         var defaultStartDate = new Date(defaultEndDate.getTime() - 120 * 24 * 60 * 60 * 1000);
-        // date field is in format yyyy-MM-dd --> view String like dd/mm/yyyy
+        // date field is in format yyyy-MM-dd --> view String like mm/dd/yyyy
+        //
         if (Object.prototype.toString.call(defaultStartDate) === "[object Date]" && !isNaN(defaultStartDate.getTime())) {
 
             var monthNum = defaultStartDate.getUTCMonth() + 1;
@@ -124,10 +125,10 @@ var filterMenuModule = (function () {
             var yearNum = defaultStartDate.getUTCFullYear();
 
             var startDateInputString = yearNum + '-' + monthNum + '-' + dayNum;
-            var startDateString = dayNum + '/' + monthNum+ '/' + yearNum;
-
+            var startDateString = monthNum + '/' + dayNum + '/' + yearNum;
+            var startDateStringDisplay = dayNum  + '/' + monthNum + '/' + yearNum;
             // Set Start Date in text and Date input item
-            $(filterMenus.filter).find(".val").find(".date").find(".start").text(startDateString);
+            $(filterMenus.filter).find(".val").find(".date").find(".start").text(startDateStringDisplay);
             $(filterFields.startDate).val(startDateInputString);
             filterValues.startDate = startDateString;
 
@@ -373,7 +374,7 @@ var filterMenuModule = (function () {
     var chooseStartDate = function () {
 
         var dateString = $(filterFields.startDate).val();
-        // date field is in format yyyy-MM-dd --> convert to Date object and build string like dd/mm/yyyy
+        // date field is in format yyyy-MM-dd --> convert to Date object and build string like mm/dd/yyyy
         var startDate = new Date(dateString);
         if (Object.prototype.toString.call(startDate) === "[object Date]" && !isNaN(startDate.getTime())) {
 
@@ -381,7 +382,7 @@ var filterMenuModule = (function () {
             var dayNum = startDate.getUTCDate();
             if (dayNum < 10 && dayNum >= 0) dayNum = '0' + dayNum.toString();
             var yearNum = startDate.getUTCFullYear();
-            var startDateString = dayNum + '/' + monthNum + '/' + yearNum;
+            var startDateString = dayNum +'/' + monthNum  + '/' + yearNum;
             $(filterMenus.filter).find(".val").find(".date").find(".start").text(startDateString);
             filterValues.startDate = startDateString;
         }
@@ -395,7 +396,7 @@ var filterMenuModule = (function () {
     var chooseEndDate = function () {
 
         var dateString = $(filterFields.endDate).val();
-        // date field is in format yyyy-MM-dd --> convert to Date object and build string like dd/mm/yyyy
+        // date field is in format yyyy-MM-dd --> convert to Date object and build string like mm/dd/yyyy
         var endDate = new Date(dateString);
         if (Object.prototype.toString.call(endDate) === "[object Date]" && !isNaN(endDate.getTime())) {
 
@@ -403,7 +404,7 @@ var filterMenuModule = (function () {
             var dayNum = endDate.getUTCDate();
             if (dayNum < 10 && dayNum >= 0) dayNum = '0' + dayNum.toString();
             var yearNum = endDate.getUTCFullYear();
-            var endDateString = dayNum + '/' + monthNum + '/' + yearNum;
+            var endDateString = + dayNum + '/' + monthNum  + '/' + yearNum;
             $(filterMenus.filter).find(".val").find(".date").find(".end").text(endDateString);
             filterValues.endDate = endDateString;
         }
@@ -631,7 +632,7 @@ var filterMenuModule = (function () {
         return false;
     };
 
-    
+
     var registerTypeahead = function () {
 
         typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/medicationsWithID", filterFields.medicationName, "medication", true, true);

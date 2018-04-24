@@ -7,6 +7,8 @@ import com.typesafe.config.ConfigFactory;
 import java.io.*;
 import java.net.*;
 
+import play.Logger;
+
 public final class InternetConnectionUtil {
     private static boolean existsConnection = false;
 
@@ -95,12 +97,15 @@ public final class InternetConnectionUtil {
             in.close();
 
             locationDataJson = new JsonParser().parse(content.toString()).getAsJsonObject();
+        } catch(IllegalStateException e){
+            //This should trigger when we've hit the daily limit for sending location data
+            Logger.error("Issue with getting location data - Api.ipdata.co did not provide valid Json: ", e.getMessage(), e);
         }
         catch(MalformedURLException e){
             e.printStackTrace();
         }
         catch(IOException e){
-            e.printStackTrace();
+            Logger.error("There was an issue getting location data from api.ipdata.co: ", e.getMessage(), e);
         }
         return locationDataJson;
     }
@@ -147,8 +152,9 @@ public final class InternetConnectionUtil {
     public static Boolean sendLocationInformation(){
         try{
             JsonObject rawLocationJson = getLocationDataByIp();
-            if(rawLocationJson==null){
-
+            if(rawLocationJson == null){
+                Logger.error("There was an issue getting location data from api.ipdata.co");
+                return false;
             }
             JsonObject jsonToSend = filterJsonByKeys(rawLocationJson, "ip","country_name");
             HttpURLConnection urlConnect = (HttpURLConnection)locationDataEndpoint.openConnection();
@@ -162,11 +168,11 @@ public final class InternetConnectionUtil {
             outputStreamWriter.close();
             int responseCode = urlConnect.getResponseCode();
             if(responseCode < 200 || responseCode > 299){
+                Logger.error("Sending data to endpoint failed with response code: " + responseCode + ".");
                 return false;
             }
         } catch(IOException e) {
-            return false;
-        } catch(NullPointerException e){
+            Logger.error("There was an issue sending location data to endpoint: ", e.getMessage(), e);
             return false;
         }
         return true;

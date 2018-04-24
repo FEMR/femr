@@ -100,10 +100,9 @@ var filterMenuModule = (function () {
 
             var endDateInputString = yearNum + '-' + monthNum + '-' + dayNum;
             var endDateString = monthNum + '/' + dayNum + '/' + yearNum;
-            var endDateStringDisplay = dayNum + '/' + monthNum + '/' + yearNum;
 
             // Set End Date in text and Date input item
-            $(filterMenus.filter).find(".val").find(".date").find(".end").text(endDateStringDisplay);
+            $(filterMenus.filter).find(".val").find(".date").find(".end").text(endDateString);
             $(filterFields.endDate).val(endDateInputString);
             filterValues.endDate = endDateString;
 
@@ -126,9 +125,9 @@ var filterMenuModule = (function () {
 
             var startDateInputString = yearNum + '-' + monthNum + '-' + dayNum;
             var startDateString = monthNum + '/' + dayNum + '/' + yearNum;
-            var startDateStringDisplay = dayNum + '/' + monthNum + '/' + yearNum;
+
             // Set Start Date in text and Date input item
-            $(filterMenus.filter).find(".val").find(".date").find(".start").text(startDateStringDisplay);
+            $(filterMenus.filter).find(".val").find(".date").find(".start").text(startDateString);
             $(filterFields.startDate).val(startDateInputString);
             filterValues.startDate = startDateString;
 

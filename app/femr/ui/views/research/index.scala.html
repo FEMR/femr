@@ -119,8 +119,8 @@
                             <a class="opt-link">Filter Date (DD/MM/YYYY)</a>
                             <span class="val">
                                 <span class="date">
-                                    <span class="start">@viewModel.getStartDate()</span> - <span hidden class="end">@viewModel.getEndDate()</span>
-                                    <span  id="start-end"></span>
+                                    <span hidden class="start">@viewModel.getStartDate()</span><span hidden class="end">@viewModel.getEndDate()</span>
+                                    <span id="start-up"></span> - <span  id="start-end"></span>
                                 </span>
                             </span>
                             <span class="glyphicon glyphicon-chevron-right"></span>
@@ -283,7 +283,7 @@
                     document.getElementById("start-end").innerHTML=dt+"/"+mn+"/"+yy;
                 }
                 mydate3();
-
+                mydate1();
 
         </script>
 

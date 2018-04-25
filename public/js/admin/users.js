@@ -97,7 +97,7 @@ var createUsers = {
         // Adding password constraint!
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
-        createUsers.elements.passwordTextBox.next(".errors").text(passwordVerify);
+        createUsers.elements.password.next(".errors").text(passwordVerify);
 
         if (password  === "") {
             passwordErrors = "please assign this user a password";

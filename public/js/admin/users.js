@@ -97,7 +97,7 @@ var createUsers = {
         // Adding password constraint!
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
-        createUsers.elements.passwordTextBox.next(".errors").text(passwordVerify);
+        createUsers.elements.password.next(".errors").text(passwordVerify);
 
         if (password  === "") {
             passwordErrors = "please assign this user a password";
@@ -107,7 +107,7 @@ var createUsers = {
             if(password.length < 8){
                 pass = false;
             }
-            var re = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[_]).{8,}/;
+            var re = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%\^&*()_\-+=|\\\"\':;?\/\{\}\[\]<>,\.~` \t]{8,}/;
             if(!re.test(password)) {
                 pass = false;
             }

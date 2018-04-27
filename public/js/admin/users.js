@@ -157,33 +157,40 @@ var editUsers = {
         passwordTextBox: $('#newPassword')
     },
     /**
-     * Validates the roles for edit users page
+     * Validates the password for edit user page
      */
-    validateRolesAndPassword: function () {
+    validatePassword: function () {
         var pass = true;
         //validate passwords
         var newPassword = $.trim(document.forms["createForm"]["newPassword"].value);
         var newPasswordVerify = $.trim(document.forms["createForm"]["newPasswordVerify"].value);
         if (newPassword !== "") {
-            if (newPassword != newPasswordVerify){
+            if (newPassword != newPasswordVerify) {
                 editUsers.elements.passwordTextBox.next(".errors").text("passwords do not match");
                 pass = false;
-            }else{
+            } else {
                 editUsers.elements.passwordTextBox.next(".errors").text("");
             }
         } else {
             editUsers.elements.passwordTextBox.next(".errors").text("");
         }
+        return pass;
+    },
+    /**
+     * Validates the roles for edit user page
+     */
+    validateRoles: function () {
+        var role = true;
         //validate roles
         if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
-            pass = false;
+            role = false;
         }
-        if (pass === false) {
+        if (role === false) {
             createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");
         }
-        return pass;
+        return role;
     },
     bindRoleDropDownClick: function () {
         $('.roleListItem').click(function () {
@@ -214,9 +221,10 @@ var editUsers = {
     },
     bindSubmitButton: function () {
         $('#editUserSubmitBtn').click(function () {
-            var roleValidation = editUsers.validateRolesAndPassword();
+            var roleValidation = editUsers.validateRoles();
+            var passwordValidation = editUsers.validatePassword();
             var elementValidation = createAndEditUsers.validateElements();
-            return roleValidation && elementValidation;
+            return roleValidation && passwordValidation && elementValidation;
         });
     }
 };

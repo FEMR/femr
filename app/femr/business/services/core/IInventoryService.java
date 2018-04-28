@@ -69,6 +69,19 @@ public interface IInventoryService {
     ServiceResponse<MedicationItem> setQuantityCurrent(int medicationId, int tripId, int quantityCurrent);
 
     /**
+     * Checks whether a medication has been added to the trip inventory at some point.
+     * Returns ServiceResponse<Boolean> with Boolean set as true if the medication was at some point
+     * added to the inventory (regardless of soft-deletion state).
+     * Returns ServiceResponse<Boolean> with Boolean set as false if the medication has never been added
+     * to that trip's inventory
+     *
+     * @param medicationId
+     * @param tripId
+     * @return ServiceResponse with boolean object as to whether the medication was ever added to the given trip inventory
+     */
+    ServiceResponse<Boolean> existsInventoryMedicationInTrip(int medicationId, int tripId);
+
+    /**
      * Adds a new medication to the trip inventory if it is not yet there,
      * or undoes the soft delete of a medication already added to a trip inventory
      *

@@ -336,9 +336,15 @@ public class InventoryController extends Controller {
                         return internalServerError();
                     } else {
 
-                        //ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
-                        //ServiceResponse<MedicationItem> createOrReAddInventoryResponse = inventoryService.createNewInventoryMedicationOrReAddExisting(medicationItemServiceResponse.getResponseObject().getId(), tripId);
-                        ServiceResponse<MedicationItem> createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        //Check to see if the medication has ever been added to the trip inventory.
+                        // If so, set it's soft deletion state to being 'undeleted'. Otherwise, create the inventory medication.
+                        ServiceResponse<MedicationItem> createOrReAddInventoryResponse = null;
+                        if(inventoryService.existsInventoryMedicationInTrip(medicationItemServiceResponse.getResponseObject().getId(),tripId).getResponseObject()){
+                            createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        } else {
+                            createOrReAddInventoryResponse = inventoryService.createInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        }
+
                         if (createOrReAddInventoryResponse.hasErrors()) {
 
                             return internalServerError();

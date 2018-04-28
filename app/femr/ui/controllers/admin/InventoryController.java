@@ -342,7 +342,7 @@ public class InventoryController extends Controller {
                         if(inventoryService.existsInventoryMedicationInTrip(medicationItemServiceResponse.getResponseObject().getId(),tripId).getResponseObject()){
                             createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
                         } else {
-                            createOrReAddInventoryResponse = inventoryService.createInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                            createOrReAddInventoryResponse = inventoryService.createMedicationInventory(medicationItemServiceResponse.getResponseObject().getId(), tripId);
                         }
 
                         if (createOrReAddInventoryResponse.hasErrors()) {

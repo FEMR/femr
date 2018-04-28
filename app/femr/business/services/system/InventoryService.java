@@ -200,7 +200,7 @@ public class InventoryService implements IInventoryService {
      *{@inheritDoc}
      **/
     @Override
-    public ServiceResponse<MedicationItem> createInventoryMedication(int medicationId, int tripId){
+    public ServiceResponse<MedicationItem> createMedicationInventory(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
         IMedicationInventory medicationInventory;

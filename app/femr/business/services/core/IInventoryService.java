@@ -89,7 +89,7 @@ public interface IInventoryService {
      * @param tripId id of the trip that will contain or contains the medication.
      * @return a medication item that contains quantity information.
      */
-    ServiceResponse<MedicationItem> createInventoryMedication(int medicationId, int tripId);
+    ServiceResponse<MedicationItem> createMedicationInventory(int medicationId, int tripId);
 
     /**
      * Deletes (soft-deletes) inventory medication by medication/tripId.

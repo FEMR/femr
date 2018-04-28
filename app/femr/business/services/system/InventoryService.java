@@ -146,6 +146,30 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Boolean> existsInventoryMedicationInTrip(int medicationId, int tripId){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+        IMedicationInventory medicationInventory;
+
+        boolean existsInTrip = false;
+        try{
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+            if(medicationInventory != null){
+                response.setResponseObject(new Boolean(true));
+            } else {
+                response.setResponseObject(new Boolean(false));
+            }
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+
+    }
+
 
     /**
     *{@inheritDoc}
@@ -228,7 +252,6 @@ public class InventoryService implements IInventoryService {
         try {
             //This should exist already, so no need to query for unique.
             medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
-
             //Soft-delete of the medication from the formulary, then update the backend to reflect the change.
             if (stateToSetTo == true) {
                 medicationInventory.setIsDeleted(DateTime.now());
@@ -240,6 +263,8 @@ public class InventoryService implements IInventoryService {
             response.setResponseObject(medicationItem);
 
         } catch (Exception ex) {
+
+            Logger.error("InventoryService-setDeletionStateOfInventoryMedication error while delete state of inventory medication", ex.getStackTrace(), ex);
             response.addError("", ex.getMessage());
         }
 

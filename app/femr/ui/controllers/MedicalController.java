@@ -542,8 +542,21 @@ public class MedicalController extends Controller {
             if (viewModel.getHeightFeet() == null) {
                 newVitals.put("heightFeet", 0f);
             }
-            Float heightInches = viewModel.getHeightInches().floatValue();
-            newVitals.put("heightInches", heightInches);
+
+            Float heightInches;
+            Float heightFeet;
+
+            if(viewModel.getHeightInches() > 11) {
+                heightFeet = (float)(viewModel.getHeightInches()/12);
+                heightInches =(float)(viewModel.getHeightInches() % 12);
+                newVitals.put("heightFeet", heightFeet);
+                newVitals.put("heightInches", heightInches);
+            }
+
+            else {
+                heightInches = viewModel.getHeightInches().floatValue();
+                newVitals.put("heightInches", heightInches);
+            }
         }
 
         //Alaa Serhan

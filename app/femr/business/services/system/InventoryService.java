@@ -188,6 +188,8 @@ public class InventoryService implements IInventoryService {
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null, null, null);
 
             response.setResponseObject(medicationItem);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
         }
 
         return response;

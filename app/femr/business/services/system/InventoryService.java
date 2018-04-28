@@ -146,6 +146,29 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
+    /**
+     * @{inheritDoc}
+     */
+    public ServiceResponse<Boolean> existsInventoryMedicationInTrip(int medicationId, int tripId){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+        IMedicationInventory medicationInventory;
+
+        boolean existsInTrip = false;
+        try{
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+            if(medicationInventory != null){
+                response.setResponseObject(new Boolean(true));
+            } else {
+                response.setResponseObject(new Boolean(false));
+            }
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+
+    }
+
 
     /**
     *{@inheritDoc}
@@ -165,8 +188,6 @@ public class InventoryService implements IInventoryService {
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null, null, null);
 
             response.setResponseObject(medicationItem);
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
         }
 
         return response;
@@ -177,7 +198,7 @@ public class InventoryService implements IInventoryService {
      *{@inheritDoc}
      **/
     @Override
-    public ServiceResponse<MedicationItem> createMedicationInventory(int medicationId, int tripId){
+    public ServiceResponse<MedicationItem> createInventoryMedication(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
         IMedicationInventory medicationInventory;
@@ -228,19 +249,22 @@ public class InventoryService implements IInventoryService {
         try {
             //This should exist already, so no need to query for unique.
             medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
-
+            System.out.println(medicationInventory);
             //Soft-delete of the medication from the formulary, then update the backend to reflect the change.
             if (stateToSetTo == true) {
                 medicationInventory.setIsDeleted(DateTime.now());
             } else {
                 medicationInventory.setIsDeleted(null);
             }
+            System.out.println("A");
             medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
+            System.out.println("B");
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);
 
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
+            System.out.println(ex.getMessage());
         }
 
         return response;

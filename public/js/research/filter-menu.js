@@ -631,7 +631,7 @@ var filterMenuModule = (function () {
         return false;
     };
 
-    
+
     var registerTypeahead = function () {
 
         typeaheadFeature.setGlobalVariableAndInitalize("/search/typeahead/medicationsWithID", filterFields.medicationName, "medication", true, true);

@@ -116,16 +116,25 @@
                         </li>
 
                         <li id="gfilter-menu" class="menu-item">
-                            <a class="opt-link">Filter Date</a>
+                            <a class="opt-link">Filter Date (DD/MM/YYYY)</a>
                             <span class="val">
                                 <span class="date">
-                                   <span class="start">@viewModel.getStartDate()</span> - <span class="end">@viewModel.getEndDate()</span>
+                                    <span hidden class="start">@viewModel.getStartDate()</span><span hidden class="end">@viewModel.getEndDate()</span>
+                                    <span id="start-up"></span> - <span  id="start-end"></span>
                                 </span>
                             </span>
                             <span class="glyphicon glyphicon-chevron-right"></span>
                             <ul class="submenu">
-                                <li>Start Date <input type="date" id="startDate" name="startDate" value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" /></li>
-                                <li>End Date <input type="date" id="endDate" name="endDate" value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" /></li>
+                                <li>Start Date
+                                    (DD/MM/YYYY)
+                                    <input type="date" id="startDate" name="startDate" format="dd/MM/yyyy" onchange="mydate1()"  hidden value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" />
+                                    <input type="text" id="ndt"  onclick="mydate()"  format="dd/MM/yyyy" value="@viewModel.getStartDate()"  />
+                                </li>
+                                <li>End Date
+                                    (DD/MM/YYYY)
+                                    <input type="date" id="endDate" name="endDate" format="dd/MM/yyyy" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
+                                    <input type="text" id="ndt2"  onclick="mydate2()"  format="dd/MM/yyyy" value="@viewModel.getEndDate()"  />
+                                </li>
                             </ul>
                         </li>
 
@@ -235,5 +244,47 @@
             </div>
 
         </div>
+        <script>
+
+                function mydate()
+                {
+                    //alert("");
+                    document.getElementById("startDate").hidden=false;
+                    document.getElementById("ndt").hidden=true;
+                }
+                function mydate1()
+                {
+                    d=new Date(document.getElementById("startDate").value);
+                    dt=d.getUTCDate();
+                    mn=d.getUTCMonth();
+                    mn++;
+                    yy=d.getFullYear();
+                    document.getElementById("ndt").value=dt+"/"+mn+"/"+yy;
+                    document.getElementById("ndt").hidden=false;
+                    document.getElementById("startDate").hidden=true;
+                    document.getElementById("start-up").innerHTML=dt+"/"+mn+"/"+yy;
+                }
+                function mydate2()
+                {
+                    //alert("");
+                    document.getElementById("endDate").hidden=false;
+                    document.getElementById("ndt2").hidden=true;
+                }
+                function mydate3()
+                {
+                    d=new Date(document.getElementById("endDate").value);
+                    dt=d.getUTCDate();
+                    mn=d.getUTCMonth();
+                    mn++;
+                    yy=d.getFullYear();
+                    document.getElementById("ndt2").value=dt+"/"+mn+"/"+yy;
+                    document.getElementById("ndt2").hidden=false;
+                    document.getElementById("endDate").hidden=true;
+                    document.getElementById("start-end").innerHTML=dt+"/"+mn+"/"+yy;
+                }
+                mydate3();
+                mydate1();
+
+        </script>
 
 }

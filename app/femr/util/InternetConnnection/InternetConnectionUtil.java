@@ -2,7 +2,10 @@ package femr.util.InternetConnnection;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.jcraft.jsch.*;
+import static com.jcraft.jsch.JSch.setConfig;
 import play.Logger;
 import java.io.*;
 import java.net.*;
@@ -14,6 +17,15 @@ public final class InternetConnectionUtil {
     private static final int connectionTimeoutInMilliseconds = configConnectionTimeoutInMilliseconds();
     private static final int connectionCheckIntervalInSeconds = configConnectionCheckIntervalInSeconds();
     private static final int sendLocationDataInvervalInSeconds = configSendLocationDataIntervalInSeconds();
+    private static final String sshUser = configSshUser();
+    private static final String sshHost = configSshHost();
+    private static final String pathToSshKey = configPathToSshKey();
+    // private static final String pathToSshKnownHosts = configPathToSshKnownHosts();
+    private static final int remoteSshPort = configRemoteSshPort();
+    private static final int remoteSshPortForward = configRemoteSshPortForward();
+    private static final int localSshPort = configLocalSshPort();
+    private static final int sshTimeoutInMilliseconds = configSshTimeoutInMilliseconds();
+    private static Session rsshSession = buildSSHSession();
 
     private static URL configLocationDataEndpoint(){
         try {
@@ -35,6 +47,38 @@ public final class InternetConnectionUtil {
 
     private static int configSendLocationDataIntervalInSeconds(){
         return ConfigFactory.load().getInt("internetconnection.locationDataSendIntervalInSeconds");
+    }
+
+    private static String configSshUser(){
+        return ConfigFactory.load().getString("internetconnection.sshUser");
+    }
+
+    private static String configSshHost(){
+        return ConfigFactory.load().getString("internetconnection.sshHost");
+    }
+
+    private static String configPathToSshKey(){
+        return ConfigFactory.load().getString("internetconnection.pathToSshKey");
+    }
+
+    /*private static String configPathToSshKnownHosts(){
+        return ConfigFactory.load().getString("internetconnection.pathToSshKnownHosts");
+    }*/
+
+    private static int configRemoteSshPort(){
+        return ConfigFactory.load().getInt("internetconnection.remoteSshPort");
+    }
+
+    private static int configRemoteSshPortForward(){
+        return ConfigFactory.load().getInt("internetconnection.remoteSshPortForward");
+    }
+
+    private static int configLocalSshPort(){
+        return ConfigFactory.load().getInt("internetconnection.localSshPort");
+    }
+
+    private static int configSshTimeoutInMilliseconds(){
+        return ConfigFactory.load().getInt("internetconnection.sshTimeoutInMilliseconds");
     }
 
     private static void setExistsConnection(boolean existsConnection){
@@ -147,6 +191,10 @@ public final class InternetConnectionUtil {
         return sendLocationDataInvervalInSeconds;
     }
 
+    public static int getSshTimeoutInMilliseconds(){
+        return sshTimeoutInMilliseconds;
+    }
+
     public static void updateExistsConnection(){
         setExistsConnection(existsConnection());
     }
@@ -180,5 +228,41 @@ public final class InternetConnectionUtil {
             return false;
         }
         return true;
+    }
+
+    public static Boolean maintainRsshSession() {
+        if (rsshSession != null && !rsshSession.isConnected()) {
+            Logger.info("The SSH session has either not been established or it has been broken");
+            rsshSession = buildSSHSession();
+        } else {
+            Logger.info("The SSH session looks healthy (☞ﾟヮﾟ)☞");
+        }
+
+        return true;
+    }
+
+    private static Session buildSSHSession() {
+        try {
+            JSch jsch = new JSch();
+            jsch.addIdentity(pathToSshKey);
+            // jsch.setKnownHosts(pathToSshKnownHosts);
+            // command being executed by Jsch to connect is equivalent to:
+            // ssh sshUser@sshHost -p remoteSshPort
+            Session session = jsch.getSession(sshUser, sshHost, remoteSshPort);
+            session.setTimeout(sshTimeoutInMilliseconds);
+            session.setConfig("StrictHostKeyChecking", "no");
+            Logger.info("Attempting connection to " + sshUser + "@" + sshHost + ":" + remoteSshPort + "...");
+            session.connect();
+            if (session.isConnected())
+                Logger.info("Success");
+            else
+                Logger.info("Connection Failed");
+            // ssh -R localSshPort:localhost:remoteSshPortForward sshUser@sshHost:remoteSshPort
+            session.setPortForwardingR(remoteSshPortForward, "localhost", localSshPort);
+            return session;
+        } catch (Exception e) {
+            Logger.error("Exception while trying to establish SSh connection and reverse tunnel", e.getMessage(), e);
+        }
+        return null;
     }
 }

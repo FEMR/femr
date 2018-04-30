@@ -23,6 +23,7 @@ import com.typesafe.config.ConfigFactory;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
 import femr.util.tasks.CheckInternetConnectionTask;
+import femr.util.tasks.MaintainReverseSshTunnelTask;
 import femr.util.tasks.SendLocationDataTask;
 
 public class UtilitiesModule extends AbstractModule {
@@ -35,6 +36,7 @@ public class UtilitiesModule extends AbstractModule {
         if(ConfigFactory.load().getBoolean("internetconnection.enableInternetConnectivityFunctionality")){
             bind(CheckInternetConnectionTask.class).asEagerSingleton();
             bind(SendLocationDataTask.class).asEagerSingleton();
+            bind(MaintainReverseSshTunnelTask.class).asEagerSingleton();
         }
     }
 }

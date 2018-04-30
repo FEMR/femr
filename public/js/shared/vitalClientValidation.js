@@ -47,8 +47,8 @@ var vitalClientValidator = function (vitalElements) {
         vitalElements.heightInches.css('border-color', 'red');
         isValid = false;
     }
-    //Height - Inches less than 12, CM less than 100
-    var maxHeight = (isMetric) ? 100 : 12;
+    //Height - Inches less than 109, CM less than 276
+    var maxHeight = (isMetric) ? 276 : 109;
     if ($.trim(vitalElements.heightInches.val()) >= maxHeight) {
         vitalElements.heightInches.attr("placeholder", "Max value: " + (maxHeight - 1));
         vitalElements.heightInches.css('border-color', 'red');

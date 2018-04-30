@@ -1,5 +1,15 @@
 package femr.ui.controllers;
 
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
+import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IVitalService;
+import femr.common.models.VitalItem;
+import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
+import femr.data.models.core.ISystemSetting;
+import femr.data.models.mysql.SystemSetting;
+
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.*;
@@ -44,6 +54,7 @@ public class MedicalController extends Controller {
     private final ISearchService searchService;
     private final IVitalService vitalService;
     private final FieldHelper fieldHelper;
+    private final IRepository<ISystemSetting> systemSettingRepository;
 
     @Inject
     public MedicalController(AssetsFinder assetsFinder,
@@ -54,7 +65,8 @@ public class MedicalController extends Controller {
                              IPhotoService photoService,
                              ISessionService sessionService,
                              ISearchService searchService,
-                             IVitalService vitalService) {
+                             IVitalService vitalService,
+                             IRepository<ISystemSetting> systemSettingRepository) {
 
         this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
@@ -66,6 +78,7 @@ public class MedicalController extends Controller {
         this.photoService = photoService;
         this.vitalService = vitalService;
         this.fieldHelper = new FieldHelper();
+        this.systemSettingRepository = systemSettingRepository;
     }
 
     public Result indexGet() {
@@ -546,8 +559,21 @@ public class MedicalController extends Controller {
             if (viewModel.getHeightFeet() == null) {
                 newVitals.put("heightFeet", 0f);
             }
-            Float heightInches = viewModel.getHeightInches().floatValue();
-            newVitals.put("heightInches", heightInches);
+
+            Float heightInches;
+            Float heightFeet;
+
+            if(viewModel.getHeightInches() > 11 && !isMetric()) {
+                heightFeet = (float)(viewModel.getHeightInches()/12);
+                heightInches =(float)(viewModel.getHeightInches() % 12);
+                newVitals.put("heightFeet", heightFeet);
+                newVitals.put("heightInches", heightInches);
+            }
+
+            else {
+                heightInches = viewModel.getHeightInches().floatValue();
+                newVitals.put("heightInches", heightInches);
+            }
         }
 
         //Alaa Serhan
@@ -589,6 +615,15 @@ public class MedicalController extends Controller {
         
 
         return newVitals;
+    }
+
+
+    private boolean isMetric() {
+        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
+                .where()
+                .eq("name", "Metric System Option");
+        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        return isMetric.isActive();
     }
 
     /*

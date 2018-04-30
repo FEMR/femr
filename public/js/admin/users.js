@@ -107,7 +107,7 @@ var createUsers = {
             if(password.length < 8){
                 pass = false;
             }
-            var re = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[_]).{8,}/;
+            var re = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%\^&*()_\-+=|\\\"\':;?\/\{\}\[\]<>,\.~` \t]{8,}/;
             if(!re.test(password)) {
                 pass = false;
             }

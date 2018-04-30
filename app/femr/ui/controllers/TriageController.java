@@ -1,5 +1,15 @@
 package femr.ui.controllers;
 
+import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
+import femr.business.helpers.QueryProvider;
+import femr.business.services.core.IVitalService;
+import femr.common.models.VitalItem;
+import femr.data.IDataModelMapper;
+import femr.data.daos.IRepository;
+import femr.data.models.core.ISystemSetting;
+import femr.data.models.mysql.SystemSetting;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
@@ -34,6 +44,7 @@ public class TriageController extends Controller {
     private final ISearchService searchService;
     private final IPhotoService photoService;
     private final IVitalService vitalService;
+    private final IRepository<ISystemSetting> systemSettingRepository;
 
     @Inject
     public TriageController(FormFactory formFactory,
@@ -42,7 +53,8 @@ public class TriageController extends Controller {
                             ISearchService searchService,
                             IPatientService patientService,
                             IPhotoService photoService,
-                            IVitalService vitalService) {
+                            IVitalService vitalService,
+                            IRepository<ISystemSetting> systemSettingRepository) {
 
         this.formFactory = formFactory;
         this.encounterService = encounterService;
@@ -51,6 +63,7 @@ public class TriageController extends Controller {
         this.patientService = patientService;
         this.photoService = photoService;
         this.vitalService = vitalService;
+        this.systemSettingRepository = systemSettingRepository;
     }
 
     public Result indexGet() {
@@ -253,10 +266,10 @@ public class TriageController extends Controller {
                 newVitals.put("heightFeet", 0f);
             }
 
-            Float heightInches;
-            Float heightFeet;
+              Float heightInches;
+              Float heightFeet;
 
-            if(viewModel.getHeightInches() > 11) {
+            if(viewModel.getHeightInches() > 11 && !isMetric()) {
                 heightFeet = (float)(viewModel.getHeightInches()/12);
                 heightInches =(float)(viewModel.getHeightInches() % 12);
                 newVitals.put("heightFeet", heightFeet);
@@ -400,6 +413,17 @@ public class TriageController extends Controller {
 
         return chiefComplaints;
     }
+
+    //Joe Brown
+
+    private boolean isMetric() {
+        ExpressionList<SystemSetting> query = QueryProvider.getSystemSettingQuery()
+                .where()
+                .eq("name", "Metric System Option");
+        ISystemSetting isMetric = systemSettingRepository.findOne(query);
+        return isMetric.isActive();
+    }
+
 
 //    //AJ Saclayan Cities
 //    public void editPost()

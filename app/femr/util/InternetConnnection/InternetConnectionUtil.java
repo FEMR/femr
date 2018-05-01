@@ -2,6 +2,7 @@ package femr.util.InternetConnnection;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import play.Logger;
 import java.io.*;
@@ -16,6 +17,10 @@ public final class InternetConnectionUtil {
     private static final int connectionTimeoutInMilliseconds = configConnectionTimeoutInMilliseconds();
     private static final int connectionCheckIntervalInSeconds = configConnectionCheckIntervalInSeconds();
     private static final int sendLocationDataInvervalInSeconds = configSendLocationDataIntervalInSeconds();
+    private static String sshUser = configSshUser();
+    private static String sshHost = configSshHost();
+    private static String pathToSshKey = configPathToSshKey();
+    private static String pathToSshKnownHosts = configPathToSshKnownHosts();
 
     private static URL configLocationDataEndpoint(){
         try {
@@ -37,6 +42,22 @@ public final class InternetConnectionUtil {
 
     private static int configSendLocationDataIntervalInSeconds(){
         return ConfigFactory.load().getInt("internetconnection.locationDataSendIntervalInSeconds");
+    }
+
+    private static String configSshUser(){
+        return ConfigFactory.load().getString("internetconnection.sshUser");
+    }
+
+    private static String configSshHost(){
+        return ConfigFactory.load().getString("internetconnection.sshHost");
+    }
+
+    private static String configPathToSshKey(){
+        return ConfigFactory.load().getString("internetconnection.pathToSshKey");
+    }
+
+    private static String configPathToSshKnownHosts(){
+        return ConfigFactory.load().getString("internetconnection.pathToSshKnownHosts");
     }
 
     private static void setExistsConnection(boolean existsConnection){
@@ -186,82 +207,19 @@ public final class InternetConnectionUtil {
 
     public Boolean doSSH(){
         JSch jsch = new JSch();
-        String user="";
-        String host="";
-        String password="";
+        try {
+            Session session = jsch.getSession(sshUser, sshHost, 22);
 
-        try{
-            Session session=jsch.getSession(user, host, 22);
-            session.setPassword(password);
+            jsch.setKnownHosts(pathToSshKnownHosts);
+            jsch.addIdentity(pathToSshKey);
 
-//            JFileChooser chooser = new JFileChooser();
-////            chooser.setDialogTitle("Choose your known_hosts(ex. ~/.ssh/known_hosts)");
-//            chooser.setFileHidingEnabled(false);
-//            System.out.println("AAA");
-//            int returnVal=chooser.showOpenDialog(null);
-//            if(returnVal==JFileChooser.APPROVE_OPTION) {
-//                System.out.println("You chose "+
-//                        chooser.getSelectedFile().getAbsolutePath()+".");
-//                jsch.setKnownHosts(chooser.getSelectedFile().getAbsolutePath());
-//            }
-            jsch.setKnownHosts("");
-            HostKeyRepository hkr=jsch.getHostKeyRepository();
-            HostKey[] hks=hkr.getHostKey();
-            if(hks!=null){
-                System.out.println("Host keys in "+hkr.getKnownHostsRepositoryID());
-                for(int i=0; i<hks.length; i++){
-                    HostKey hk=hks[i];
-                    System.out.println(hk.getHost()+" "+
-                            hk.getType()+" "+
-                            hk.getFingerPrint(jsch));
-                }
-                System.out.println("");
-            }
-            session.setConfig("server_host_key", hks[hks.length-1].getType());
-//            System.exit(1);
-            //UNSAFE, PROBABLY FIND A WORKAOUND
-//            JSch.setConfig("StrictHostKeyChecking", "no");
-            //something with aes encryption. No idea what this is
-//            session.setConfig("cipher.s2c", "aes128-cbc,3des-cbc,blowfish-cbc");
-//            session.setConfig("cipher.c2s", "aes128-cbc,3des-cbc,blowfish-cbc");
-//            session.setConfig("CheckCiphers", "aes128-cbc");
-//            session.setUserInfo();
-
-//            HostKeyRepository hkr = jsch.getHostKeyRepository();
-//            System.out.println(hkr);
-//            for(HostKey hk : hkr.getHostKey()){
-//                System.out.println("inloop");
-//                if(hk.getHost().equals("")){
-//                    String type = hk.getType();
-//                    session.setConfig("server_host_key",type);
-//                    System.out.println("found key");
-//                }
-//            }
-//            session.setConfig("server_host_key", "ssh-ed25519");
             session.connect();
-            session.setPortForwardingR(1234, "localhost", 22);
-//            Channel channel=session.openChannel("shell");
-//
-//            channel.setInputStream(System.in);
-//            channel.setOutputStream(System.out);
-//
-//            channel.connect();
-            //https://stackoverflow.com/questions/2405885/run-a-command-over-ssh-with-jsch/11902536
-            StringBuilder outputBuffer = new StringBuilder();
-            Channel channel = session.openChannel("exec");
-            ((ChannelExec)channel).setCommand("ifconfig | grep inet");//echo 5
-            InputStream commandOutput = channel.getInputStream();
-            channel.connect();
-            int readByte = commandOutput.read();
-
-            while(readByte != 0xffffffff) {
-                outputBuffer.append((char) readByte);
-                readByte = commandOutput.read();
-            }
+            ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
+            channel.get("src", "dst");
 
             session.disconnect();
-            System.out.println(outputBuffer.toString());
-            System.out.println("nofail");
+        } catch (SftpException e){
+            e.printStackTrace();
         } catch(JSchException e) {
             e.printStackTrace();
         } catch(IOException e){

@@ -9,6 +9,8 @@ import java.io.*;
 import java.net.*;
 
 import com.jcraft.jsch.*;
+import static com.jcraft.jsch.JSch.setConfig;
+
 
 public final class InternetConnectionUtil {
     private static boolean existsConnection = false;
@@ -17,10 +19,14 @@ public final class InternetConnectionUtil {
     private static final int connectionTimeoutInMilliseconds = configConnectionTimeoutInMilliseconds();
     private static final int connectionCheckIntervalInSeconds = configConnectionCheckIntervalInSeconds();
     private static final int sendLocationDataInvervalInSeconds = configSendLocationDataIntervalInSeconds();
-    private static String sshUser = configSshUser();
-    private static String sshHost = configSshHost();
-    private static String pathToSshKey = configPathToSshKey();
-    private static String pathToSshKnownHosts = configPathToSshKnownHosts();
+    private static final String sshUser = configSshUser();
+    private static final String sshHost = configSshHost();
+    private static final String pathToSshKey = configPathToSshKey();
+    private static final String pathToSshKnownHosts = configPathToSshKnownHosts();
+    private static final int remoteSshPort = configRemoteSshPort();
+    private static final int localSshPort = configLocalSshPort();
+    private static final int sshTimeoutInMilliseconds = configSshTimeoutInMilliseconds();
+    private static Session rsshSession = initConnectedRsshSession();
 
     private static URL configLocationDataEndpoint(){
         try {
@@ -59,6 +65,33 @@ public final class InternetConnectionUtil {
     private static String configPathToSshKnownHosts(){
         return ConfigFactory.load().getString("internetconnection.pathToSshKnownHosts");
     }
+
+    private static int configRemoteSshPort(){
+        return ConfigFactory.load().getInt("internetconnection.remoteSshPort");
+    }
+
+    private static int configLocalSshPort(){
+        return ConfigFactory.load().getInt("internetconnection.localSshPort");
+    }
+
+    private static int configSshTimeoutInMilliseconds(){
+        return ConfigFactory.load().getInt("internetconnection.sshTimeoutInSeconds");
+    }
+
+    private static Session initConnectedRsshSession(){
+        JSch jsch = new JSch();
+        try {
+            Session session = jsch.getSession(sshUser, sshHost, 22);
+            session.setTimeout(sshTimeoutInMilliseconds);
+            session.connect();
+            session.setPortForwardingR(remoteSshPort, sshHost, localSshPort);
+            return session;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     private static void setExistsConnection(boolean existsConnection){
         InternetConnectionUtil.existsConnection = existsConnection;
@@ -205,28 +238,21 @@ public final class InternetConnectionUtil {
         return true;
     }
 
-    public Boolean doSSH(){
-        JSch jsch = new JSch();
+    public Boolean maintainRsshSession(){
         try {
-            Session session = jsch.getSession(sshUser, sshHost, 22);
-
-            jsch.setKnownHosts(pathToSshKnownHosts);
-            jsch.addIdentity(pathToSshKey);
-
+            ChannelExec testChannel = (ChannelExec) session.openChannel("exec");
+            testChannel.setCommand("true");
+            testChannel.connect();
+            if(logger.isDebugEnabled()) {
+                logger.debug("Session erfolgreich getestet, verwende sie erneut");
+            }
+            testChannel.exit();
+        } catch (Throwable t) {
+            session = jsch.getSession(user, host, port);
+            session.setConfig(config);
             session.connect();
-            ChannelSftp channel = (ChannelSftp) session.openChannel("sftp");
-            channel.get("src", "dst");
-
-            session.disconnect();
-        } catch (SftpException e){
-            e.printStackTrace();
-        } catch(JSchException e) {
-            e.printStackTrace();
-        } catch(IOException e){
-            e.printStackTrace();
         }
-
-        return null;
+        return session;
     }
 }
 

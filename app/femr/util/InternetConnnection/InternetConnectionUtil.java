@@ -81,6 +81,8 @@ public final class InternetConnectionUtil {
     private static Session initConnectedRsshSession(){
         JSch jsch = new JSch();
         try {
+            jsch.addIdentity(pathToSshKey);
+            jsch.setKnownHosts(pathToSshKnownHosts);
             Session session = jsch.getSession(sshUser, sshHost, 22);
             session.setTimeout(sshTimeoutInMilliseconds);
             session.connect();
@@ -91,7 +93,6 @@ public final class InternetConnectionUtil {
         }
         return null;
     }
-
 
     private static void setExistsConnection(boolean existsConnection){
         InternetConnectionUtil.existsConnection = existsConnection;
@@ -203,6 +204,11 @@ public final class InternetConnectionUtil {
         return sendLocationDataInvervalInSeconds;
     }
 
+    public static int getSshTimeoutInMilliseconds(){
+        return sshTimeoutInMilliseconds;
+    }
+
+
     public static void updateExistsConnection(){
         setExistsConnection(existsConnection());
     }
@@ -238,21 +244,28 @@ public final class InternetConnectionUtil {
         return true;
     }
 
-    public Boolean maintainRsshSession(){
+    public static Boolean maintainRsshSession(){
+        JSch jsch = new JSch();
         try {
-            ChannelExec testChannel = (ChannelExec) session.openChannel("exec");
+            ChannelExec testChannel = (ChannelExec) rsshSession.openChannel("exec");
             testChannel.setCommand("true");
             testChannel.connect();
-            if(logger.isDebugEnabled()) {
-                logger.debug("Session erfolgreich getestet, verwende sie erneut");
-            }
-            testChannel.exit();
+//            if(logger.isDebugEnabled()) {
+//                logger.debug("session renewed");
+//            }
+            testChannel.disconnect();
         } catch (Throwable t) {
-            session = jsch.getSession(user, host, port);
-            session.setConfig(config);
-            session.connect();
+            try {
+                System.out.println("doing rebuild");
+                rsshSession = jsch.getSession(sshUser, sshHost, localSshPort);
+                rsshSession.setTimeout(sshTimeoutInMilliseconds);
+                rsshSession.connect();
+                rsshSession.setPortForwardingR(remoteSshPort, sshHost, localSshPort);
+            }catch (JSchException e){
+                e.printStackTrace();
+            }
         }
-        return session;
+        return true;
     }
 }
 

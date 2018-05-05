@@ -37,6 +37,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import femr.ui.views.html.admin.configure.manage;
 import java.util.List;
+import play.Logger;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
@@ -84,6 +85,7 @@ public class ConfigureController extends Controller {
 
         ServiceResponse<List<? extends ISystemSetting>> systemSettingsResponse = configureService.updateSystemSettings(viewModel.getSettings());
         if (systemSettingsResponse.hasErrors()) {
+            Logger.error("Failed to update System Configuration Settings", systemSettingsResponse.getErrors());
             throw new RuntimeException();
         }
 

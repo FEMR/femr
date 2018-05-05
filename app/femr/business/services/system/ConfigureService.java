@@ -60,19 +60,28 @@ public class ConfigureService implements IConfigureService {
         ServiceResponse<List<? extends ISystemSetting>> response = new ServiceResponse<>();
         List<? extends ISystemSetting> allSystemSettings = systemSettingRepository.findAll(SystemSetting.class);
 
+        System.out.println(systemSettings);
         try {
-            for (ISystemSetting ss : allSystemSettings) {
-                if (systemSettings.contains(ss.getName())) {
-                    ss.setActive(true);
-                    systemSettingRepository.update(ss);
-                } else {
+            if(systemSettings == null){
+                //If systemSettings is null, that means that all settings buttons were unchecked.
+                for (ISystemSetting ss: allSystemSettings){
                     ss.setActive(false);
                     systemSettingRepository.update(ss);
                 }
+            } else {
+                System.out.println(allSystemSettings.size());
+                for (ISystemSetting ss : allSystemSettings) {
+                    System.out.println(ss.getName());
+                    if (systemSettings.contains(ss.getName())) {
+                        ss.setActive(true);
+                        systemSettingRepository.update(ss);
+                    } else {
+                        ss.setActive(false);
+                        systemSettingRepository.update(ss);
+                    }
+                }
+                response.setResponseObject(allSystemSettings);
             }
-
-
-            response.setResponseObject(allSystemSettings);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }

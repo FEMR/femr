@@ -298,6 +298,7 @@ if(timeOutTime!=null) {
 // DOM Events
     document.onmousemove = ResetTime;
     document.onkeypress = ResetTime;
+    document.ontouchend = ResetTime;
 }
 function logout() {
     window.location.assign(window.location.href);

@@ -801,7 +801,8 @@ public class MedicationDatabaseSeeder {
 
         ConceptMedicationGenericStrength conceptMedicationGenericStrength = null;
 
-        if (conceptMedicationGenericStrengths != null && !containConceptGenericStrength(conceptMedicationGenericStrengths, conceptMedicationGenericMap.get(genericName), conceptMedicationUnitMap.get(genericUnit), value)){
+        if (conceptMedicationGenericStrengths != null &&
+                !containConceptGenericStrength(conceptMedicationGenericStrengths, conceptMedicationGenericMap.get(genericName), conceptMedicationUnitMap.get(genericUnit), value)){
 
             conceptMedicationGenericStrength = new ConceptMedicationGenericStrength();
             conceptMedicationGenericStrength.setMedicationGeneric(Ebean.getReference(ConceptMedicationGeneric.class, conceptMedicationGenericMap.get(genericName)));
@@ -902,10 +903,10 @@ public class MedicationDatabaseSeeder {
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Principen", "caps"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "aspirin", 325.0, "mg"));
-        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, " ", "tabs"));
+        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Bayer", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "aspirin", 81.0, "mg"));
-        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, " ", "tabs"));
+        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Bayer", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "atenolol", 50.0, "mg"));
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Tenormin", "tabs"));
@@ -977,13 +978,13 @@ public class MedicationDatabaseSeeder {
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Colace", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "doxycycline", 100.0, "mg"));
-        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, " ", "caps"));
+        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Vibramycin", "caps"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "doxycycline", 150.0, "mg"));
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Adoxa", "caps"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "doxycycline", 75.0, "mg"));
-        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, " ", "caps"));
+        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Vibramycin", "caps"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "econazole", 85.0, "mg"));
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Spectazole", "crm"));
@@ -998,7 +999,7 @@ public class MedicationDatabaseSeeder {
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Diflucan", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "folic acid", 1.0, "mg"));
-        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, " ", "tabs"));
+        newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Folvite", "tabs"));
         conceptMedicationGenericStrengthsToAdd = new ArrayList<>();
         conceptMedicationGenericStrengthsToAdd.add(getConceptMedicationGenericStrength(conceptMedicationGenericStrengths, "glipizide", 10.0, "mg"));
         newConceptMedications.add(addConceptMedication(conceptMedications, conceptMedicationFormMap, conceptMedicationGenericStrengthsToAdd, "Glucotrol", "tabs"));
@@ -1215,7 +1216,11 @@ public class MedicationDatabaseSeeder {
      * @param form form of the new medication, may be null
      * @return a new ConceptMedication or null if errors or null if the concept medication already exists
      */
-    private ConceptMedication addConceptMedication(List<? extends IMedication> conceptMedications, Map<String, Integer> conceptMedicationFormMap, List<IMedicationGenericStrength> conceptMedicationGenericStrengths, String brandName, String form){
+    private ConceptMedication addConceptMedication(List<? extends IMedication> conceptMedications,
+                                                   Map<String, Integer> conceptMedicationFormMap,
+                                                   List<IMedicationGenericStrength> conceptMedicationGenericStrengths,
+                                                   String brandName,
+                                                   String form){
 
         if (conceptMedications == null || conceptMedicationFormMap == null || conceptMedicationGenericStrengths == null){
 
@@ -1230,7 +1235,15 @@ public class MedicationDatabaseSeeder {
             List<IMedicationGenericStrength> medicationGenericStrengths = medication.getMedicationGenericStrengths();
             Collections.sort(medicationGenericStrengths, (o1, o2) -> ((Integer)o1.getId()).compareTo(o2.getId()));
 
-            if (medicationGenericStrengths.equals(conceptMedicationGenericStrengths) && medication.getName().equals(brandName) && medication.getConceptMedicationForm() != null && medication.getConceptMedicationForm().getName().equals(form)){
+            if (medicationGenericStrengths.equals(conceptMedicationGenericStrengths) &&
+                    medication.getName().equals(brandName) &&
+                    medication.getConceptMedicationForm() != null &&
+                    medication.getConceptMedicationForm().getName().equals(form)){
+                return null;
+            } else if (femr.util.stringhelpers.StringUtils.isNullOrWhiteSpace(medication.getName())&& femr.util.stringhelpers.StringUtils.isNotNullOrWhiteSpace(brandName)) {
+                // Everything is the same except the name, just update the name of the concept medication in the dictionary
+                medication.setName(brandName);
+                conceptMedicationRepository.update(medication);
                 return null;
             }
         }

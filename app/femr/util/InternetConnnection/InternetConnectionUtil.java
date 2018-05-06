@@ -89,7 +89,7 @@ public final class InternetConnectionUtil {
             session.setPortForwardingR(remoteSshPort, sshHost, localSshPort);
             return session;
         } catch (Exception e){
-            e.printStackTrace();
+            Logger.error("Failed to create initial reverse ssh tunnel: ", e.getMessage(), e);
         }
         return null;
     }

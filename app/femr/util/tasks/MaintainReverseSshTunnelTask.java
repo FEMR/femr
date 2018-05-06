@@ -28,9 +28,8 @@ public class MaintainReverseSshTunnelTask {
     private void initialize() {
         this.actorSystem.scheduler().schedule(
                 Duration.create(0, TimeUnit.SECONDS), // initialDelay
-                Duration.create(InternetConnectionUtil.getSshTimeoutInMilliseconds()/2, TimeUnit.MILLISECONDS), // interval
+                Duration.create(InternetConnectionUtil.getSshTimeoutInMilliseconds()/2, TimeUnit.SECONDS), // interval
                 () -> {
-                    System.out.println("Maintaining rssh");
                     System.out.println(InternetConnectionUtil.getSshTimeoutInMilliseconds()/2);
                     InternetConnectionUtil.maintainRsshSession();
                 },

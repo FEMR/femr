@@ -250,19 +250,16 @@ public final class InternetConnectionUtil {
             ChannelExec testChannel = (ChannelExec) rsshSession.openChannel("exec");
             testChannel.setCommand("true");
             testChannel.connect();
-//            if(logger.isDebugEnabled()) {
-//                logger.debug("session renewed");
-//            }
             testChannel.disconnect();
         } catch (Throwable t) {
             try {
-                System.out.println("doing rebuild");
                 rsshSession = jsch.getSession(sshUser, sshHost, localSshPort);
                 rsshSession.setTimeout(sshTimeoutInMilliseconds);
                 rsshSession.connect();
                 rsshSession.setPortForwardingR(remoteSshPort, sshHost, localSshPort);
             }catch (JSchException e){
-                e.printStackTrace();
+                Logger.error("Failed to rebuild reverse ssh tunnel: ", e.getMessage(), e);
+                return false;
             }
         }
         return true;

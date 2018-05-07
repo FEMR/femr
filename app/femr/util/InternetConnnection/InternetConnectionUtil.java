@@ -75,7 +75,7 @@ public final class InternetConnectionUtil {
     }
 
     private static int configSshTimeoutInMilliseconds(){
-        return ConfigFactory.load().getInt("internetconnection.sshTimeoutInSeconds");
+        return ConfigFactory.load().getInt("internetconnection.sshTimeoutInMilliseconds");
     }
 
     private static Session initConnectedRsshSession(){

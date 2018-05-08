@@ -83,7 +83,7 @@ public final class InternetConnectionUtil {
         try {
             jsch.addIdentity(pathToSshKey);
             jsch.setKnownHosts(pathToSshKnownHosts);
-            Session session = jsch.getSession(sshUser, sshHost, localSshPort);
+            Session session = jsch.getSession(sshUser, sshHost, 22);
             session.setTimeout(sshTimeoutInMilliseconds);
             session.connect();
             session.setPortForwardingR(remoteSshPort, sshHost, localSshPort);

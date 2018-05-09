@@ -2,10 +2,15 @@ package femr.util.InternetConnnection;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import play.Logger;
 import java.io.*;
 import java.net.*;
+
+import com.jcraft.jsch.*;
+import static com.jcraft.jsch.JSch.setConfig;
+
 
 public final class InternetConnectionUtil {
     private static boolean existsConnection = false;
@@ -14,6 +19,14 @@ public final class InternetConnectionUtil {
     private static final int connectionTimeoutInMilliseconds = configConnectionTimeoutInMilliseconds();
     private static final int connectionCheckIntervalInSeconds = configConnectionCheckIntervalInSeconds();
     private static final int sendLocationDataInvervalInSeconds = configSendLocationDataIntervalInSeconds();
+    private static final String sshUser = configSshUser();
+    private static final String sshHost = configSshHost();
+    private static final String pathToSshKey = configPathToSshKey();
+    private static final String pathToSshKnownHosts = configPathToSshKnownHosts();
+    private static final int remoteSshPort = configRemoteSshPort();
+    private static final int localSshPort = configLocalSshPort();
+    private static final int sshTimeoutInMilliseconds = configSshTimeoutInMilliseconds();
+    private static Session rsshSession = initConnectedRsshSession();
 
     private static URL configLocationDataEndpoint(){
         try {
@@ -35,6 +48,50 @@ public final class InternetConnectionUtil {
 
     private static int configSendLocationDataIntervalInSeconds(){
         return ConfigFactory.load().getInt("internetconnection.locationDataSendIntervalInSeconds");
+    }
+
+    private static String configSshUser(){
+        return ConfigFactory.load().getString("internetconnection.sshUser");
+    }
+
+    private static String configSshHost(){
+        return ConfigFactory.load().getString("internetconnection.sshHost");
+    }
+
+    private static String configPathToSshKey(){
+        return ConfigFactory.load().getString("internetconnection.pathToSshKey");
+    }
+
+    private static String configPathToSshKnownHosts(){
+        return ConfigFactory.load().getString("internetconnection.pathToSshKnownHosts");
+    }
+
+    private static int configRemoteSshPort(){
+        return ConfigFactory.load().getInt("internetconnection.remoteSshPort");
+    }
+
+    private static int configLocalSshPort(){
+        return ConfigFactory.load().getInt("internetconnection.localSshPort");
+    }
+
+    private static int configSshTimeoutInMilliseconds(){
+        return ConfigFactory.load().getInt("internetconnection.sshTimeoutInMilliseconds");
+    }
+
+    private static Session initConnectedRsshSession(){
+        JSch jsch = new JSch();
+        try {
+            jsch.addIdentity(pathToSshKey);
+            jsch.setKnownHosts(pathToSshKnownHosts);
+            Session session = jsch.getSession(sshUser, sshHost, 22);
+            session.setTimeout(sshTimeoutInMilliseconds);
+            session.connect();
+            session.setPortForwardingR(remoteSshPort, sshHost, localSshPort);
+            return session;
+        } catch (Exception e){
+            Logger.error("Failed to create initial reverse ssh tunnel: ", e.getMessage(), e);
+        }
+        return null;
     }
 
     private static void setExistsConnection(boolean existsConnection){
@@ -147,6 +204,11 @@ public final class InternetConnectionUtil {
         return sendLocationDataInvervalInSeconds;
     }
 
+    public static int getSshTimeoutInMilliseconds(){
+        return sshTimeoutInMilliseconds;
+    }
+
+
     public static void updateExistsConnection(){
         setExistsConnection(existsConnection());
     }
@@ -181,4 +243,26 @@ public final class InternetConnectionUtil {
         }
         return true;
     }
+
+    public static Boolean maintainRsshSession(){
+        JSch jsch = new JSch();
+        try {
+            ChannelExec testChannel = (ChannelExec) rsshSession.openChannel("exec");
+            testChannel.setCommand("true");
+            testChannel.connect();
+            testChannel.disconnect();
+        } catch (Throwable t) {
+            try {
+                rsshSession = jsch.getSession(sshUser, sshHost, localSshPort);
+                rsshSession.setTimeout(sshTimeoutInMilliseconds);
+                rsshSession.connect();
+                rsshSession.setPortForwardingR(remoteSshPort, sshHost, localSshPort);
+            }catch (JSchException e){
+                Logger.error("Failed to rebuild reverse ssh tunnel: ", e.getMessage(), e);
+                return false;
+            }
+        }
+        return true;
+    }
 }
+

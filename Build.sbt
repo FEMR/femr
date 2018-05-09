@@ -23,7 +23,8 @@ val appDependencies = Seq(
   "com.google.code.gson" % "gson" % "2.3.1",
   "com.itextpdf" % "itextpdf" % "5.5.6",
   "com.itextpdf.tool" % "xmlworker" % "5.5.6",
-  "com.h2database" % "h2" % "1.4.193"
+  "com.h2database" % "h2" % "1.4.193",
+  "com.jcraft" % "jsch" % "0.1.54"
 )
 
 

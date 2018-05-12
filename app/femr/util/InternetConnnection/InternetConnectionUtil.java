@@ -231,7 +231,7 @@ public final class InternetConnectionUtil {
     }
 
     public static Boolean maintainRsshSession() {
-        if (rsshSession != null && !rsshSession.isConnected()) {
+        if (rsshSession == null || !rsshSession.isConnected()) {
             Logger.info("The SSH session has either not been established or it has been broken");
             rsshSession = buildSSHSession();
         } else {

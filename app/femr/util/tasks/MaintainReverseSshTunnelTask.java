@@ -30,7 +30,9 @@ public class MaintainReverseSshTunnelTask {
                 Duration.create(0, TimeUnit.SECONDS), // initialDelay
                 Duration.create(InternetConnectionUtil.getSshTimeoutInMilliseconds()/2, TimeUnit.MILLISECONDS), // interval
                 () -> {
-                    InternetConnectionUtil.maintainRsshSession();
+                    if(InternetConnectionUtil.getExistsConnection()) {
+                        InternetConnectionUtil.maintainRsshSession();
+                    }
                 },
                 this.executionContext
         );

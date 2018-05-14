@@ -242,13 +242,14 @@ public final class InternetConnectionUtil {
     }
 
     private static Session buildSSHSession() {
+        Session session = null;
         try {
             JSch jsch = new JSch();
             jsch.addIdentity(pathToSshKey);
             // jsch.setKnownHosts(pathToSshKnownHosts);
             // command being executed by Jsch to connect is equivalent to:
             // ssh sshUser@sshHost -p remoteSshPort
-            Session session = jsch.getSession(sshUser, sshHost, remoteSshPort);
+            session = jsch.getSession(sshUser, sshHost, remoteSshPort);
             session.setTimeout(sshTimeoutInMilliseconds);
             session.setConfig("StrictHostKeyChecking", "no");
             Logger.info("Attempting connection to " + sshUser + "@" + sshHost + ":" + remoteSshPort + "...");
@@ -261,8 +262,9 @@ public final class InternetConnectionUtil {
             session.setPortForwardingR(remoteSshPortForward, "localhost", localSshPort);
             return session;
         } catch (Exception e) {
+            session.disconnect();
             Logger.error("Exception while trying to establish SSh connection and reverse tunnel", e.getMessage(), e);
+            return null;
         }
-        return null;
     }
 }

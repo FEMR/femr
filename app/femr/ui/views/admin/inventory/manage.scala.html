@@ -84,7 +84,7 @@
                                 <span class="editCurrentQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityCurrent</span>
                                 <input class="editCurrentInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityCurrent" />
                                 <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
-                                <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
+                                <input type="hidden" class="trip_id" value="@viewModel.getMissionTripItem.getId()" />
                                 <button type="button" class="btn btn-xs editCurrentQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
 
                             </td>
@@ -94,7 +94,7 @@
                                 <span class="editTotalQuantity" style="display:inline-block;">@viewModel.getMedications.get(m - 1).getQuantityTotal</span>
                                 <input class="editTotalInput fInput" style="display:none;" type="number" value="@viewModel.getMedications.get(m - 1).getQuantityTotal" />
                                 <input type="hidden" class="medication_id" value="@viewModel.getMedications.get(m-1).getId" />
-                                <input type="hidden" class="trip_id" value="@currentUser.getTripId" />
+                                <input type="hidden" class="trip_id" value="@viewModel.getMissionTripItem.getId()" />
                                 <button type="button" class="btn btn-xs editTotalQuantityBtn pull-right" style="display:inline-block;" value="@viewModel.getMedications.get(m-1).getId"><i class="glyphicon glyphicon-edit"></i></button>
 
                             </td>

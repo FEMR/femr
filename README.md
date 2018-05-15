@@ -24,7 +24,7 @@ Add play framework to your PATH environment variable if you haven't done so alre
 
 #### 1. Edit application.conf accordingly.
 #### 2. Enter the console.
-    activator clean compile dist
+    sbt clean compile test dist
 #### 3. This will generate a script used for executing FEMR.
 
 ### Warnings

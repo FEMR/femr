@@ -144,36 +144,44 @@ var manageInventoryFeature = {
      * AJAX call that gets triggered after a user clicks remove for any medication
      * in the inventory.
      */
-    toggleMedication: function ( btn ){
-
+    toggleMedication: function ( btn ) {
         var editCell = $(btn).parents("td").siblings("td.currentQuantity").first();
 
         var id = $(editCell).find('input.medication_id').val();
         var tripId = $(editCell).find('input.trip_id').val();
 
-        $.ajax({
-
-            url: '/admin/inventory/delete/' + id + "/" + tripId,
-            type: 'POST',
-            data: {},
-            dataType: 'text',
-            success: function () {
-
-                if($(btn).hasClass("btn-danger")){
+        if ($(btn).hasClass("btn-danger")) {
+            $.ajax({
+                url: '/admin/inventory/delete/' + id + "/" + tripId,
+                type: 'POST',
+                data: {},
+                dataType: 'text',
+                success: function () {
                     $(btn).html("Undo");
                     $(btn).removeClass("btn-danger");
                     $(btn).addClass("btn-success");
+                },
+                error: function () {
+                    //don't change button - implies an error
                 }
-                else{
+            });
+        }
+        else {
+            $.ajax({
+                url: '/admin/inventory/readd/' + id + "/" + tripId,
+                type: 'POST',
+                data: {},
+                dataType: 'text',
+                success: function () {
                     $(btn).html("Remove");
                     $(btn).removeClass("btn-success");
                     $(btn).addClass("btn-danger");
+                },
+                error: function () {
+                    //don't change button - implies an error
                 }
-            },
-            error: function () {
-                //don't change button - implies an error
-            }
-        });
+            });
+        }
     }
 };
 

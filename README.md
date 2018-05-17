@@ -2,15 +2,14 @@
 
 [![Build Status](https://concourse.teamfemr.org/api/v1/pipelines/femr/jobs/build-test-package/badge)](https://concourse.teamfemr.org/teams/main/pipelines/femr)
 
-A simple and fast EMR system.
+### Description
+
+fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://teamfemr.org) for more information and a live demo.
 
 ### Community
 1. [Slack](http://teamfemr.org/slack.html)
 2. [JIRA](https://teamfemr.atlassian.net)
-
-### Description
-
-The goal is to become an easy EMR solution for remote clinics who depend on speed and ease of use rather than complex features.
+3. [Team FEMR](https://teamfemr.org)
 
 ### Dependencies
 
@@ -20,7 +19,6 @@ The goal is to become an easy EMR solution for remote clinics who depend on spee
 
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
 
-Add play framework to your PATH environment variable if you haven't done so already. For more information, visit the official [PlayConsole](https://www.playframework.com/documentation/2.3.x/PlayConsole) page.
 
 #### 1. Edit application.conf accordingly.
 #### 2. Enter the console.
@@ -29,8 +27,9 @@ Add play framework to your PATH environment variable if you haven't done so alre
 
 ### Warnings
 
-* This application is not HIPAA compliant (... yet).
-* This application is not meant to diagnose, treat, cure or prevent disease.
+* fEMR is not HIPAA compliant (... yet).
+* fEMR is not meant to diagnose, treat, cure or prevent disease.
+* fEMR may attempt to establish a secure remote connection when internet access becomes available. This behavior is configurable and turned off by default.
 
 ### Questions?
 

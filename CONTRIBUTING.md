@@ -7,14 +7,14 @@
 # Installation and Configuration using IntelliJ IDEA:
 
 ### Required downloads
-1. [MySQL 5.6](http://www.mysql.com/)
+1. [MySQL 5.7](http://www.mysql.com/)
 2. [Scala Build Tool](http://www.scala-sbt.org/)
 3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 4. [IntelliJ IDEA Ultimate](http://www.jetbrains.com/idea/)
 5. [Git](http://git-scm.com/)
 
 ### Installation and Configuration
-1. make sure java and play environment variables are set
+1. make sure java and sbt environment variables are set
 
 2. fork the repository to your GitHub account
 
@@ -23,9 +23,9 @@
     git clone https://github.com/yourusername/femr.git
     ```
 
-4. clean and compile the project
+4. clean, compile, and test the project
     ```bash
-    sbt clean compile
+    sbt clean compile test
     ```
 
 ### Setting up IntelliJ IDEA
@@ -40,7 +40,7 @@
 9. If asked to select modules/data, select fEMR(root module) and fEMR-build.
 10. Create a file named application.dev.conf in the conf folder, copy and paste the information from application.example.conf in it. Change the information to match your database, username, and password.
 11. Create a database in mySQL with the same name as the database in the connection string inside of application.dev.conf
-12. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables:
+12. Under Run, select Edit configurations. Create a new Play 2.0 application and add the following environment variables using your absolute filepath to the file:
      [config.file // /absolute/location/to/conf/application.dev.conf]
      [user.dir // /absolute/location/to/femr]
 13. Run

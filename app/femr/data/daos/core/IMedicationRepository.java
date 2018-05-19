@@ -88,13 +88,6 @@ public interface IMedicationRepository {
     List<? extends IConceptMedicationUnit> retrieveAllConceptMedicationUnits();
 
     /**
-     * Returns all available ways concept prescription administration methods. i.e. "BID", "q4h", etc.. and their
-     * modifier rules
-     * @return List of concept prescription administrations from db
-     */
-    List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations();
-
-    /**
      *  Create new medication in the database
      * @param tripId
      * @return

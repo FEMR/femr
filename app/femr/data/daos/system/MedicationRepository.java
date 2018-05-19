@@ -285,26 +285,6 @@ public class MedicationRepository implements IMedicationRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations() {
-
-        List<? extends IConceptPrescriptionAdministration> conceptPrescriptionAdministrations;
-        try{
-
-            conceptPrescriptionAdministrations = Ebean.find(ConceptPrescriptionAdministration.class).findList();
-        } catch (Exception ex) {
-
-            Logger.error("MedicationRepository-retrieveAllConceptPrescriptionAdministrations", ex.getMessage());
-            throw ex;
-        }
-
-        return conceptPrescriptionAdministrations;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<? extends IMedication> retrieveAllMedicationByTripId(Integer tripId){
 
         List<? extends IMedication> response = null;

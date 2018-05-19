@@ -47,6 +47,7 @@ import java.util.Map;
 public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
+    private final IPrescriptionRepository prescriptionRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
@@ -55,6 +56,7 @@ public class MedicationService implements IMedicationService {
 
     @Inject
     public MedicationService(IMedicationRepository medicationRepository,
+                             IPrescriptionRepository prescriptionRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
@@ -62,6 +64,7 @@ public class MedicationService implements IMedicationService {
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
+        this.prescriptionRepository = prescriptionRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
@@ -429,7 +432,7 @@ public class MedicationService implements IMedicationService {
         ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
         try {
             // Retrieve a list of all medicationAdministrations from the database
-            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = medicationRepository.retrieveAllConceptPrescriptionAdministrations();
+            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = prescriptionRepository.retrieveAllConceptPrescriptionAdministrations();
 
             // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();

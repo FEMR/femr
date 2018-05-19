@@ -73,6 +73,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPhotoRepository.class).to(PhotoRepository.class);
         bind(IUserRepository.class).to(UserRepository.class);
+        bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);

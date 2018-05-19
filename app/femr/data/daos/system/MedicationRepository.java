@@ -1,4 +1,5 @@
 package femr.data.daos.system;
+import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
@@ -242,6 +243,63 @@ public class MedicationRepository implements IMedicationRepository {
 
         return medication;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IConceptMedicationForm> retrieveAllConceptMedicationForms() {
+
+        List<? extends IConceptMedicationForm> conceptMedicationForms;
+        try{
+
+            conceptMedicationForms = Ebean.find(ConceptMedicationForm.class).findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptMedicationForms", ex.getMessage());
+            throw ex;
+        }
+
+        return conceptMedicationForms;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<? extends IConceptMedicationUnit> retrieveAllConceptMedicationUnits() {
+
+        List<? extends IConceptMedicationUnit> conceptMedicationUnits;
+        try{
+
+            conceptMedicationUnits = Ebean.find(ConceptMedicationUnit.class).findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptMedicationUnits", ex.getMessage());
+            throw ex;
+        }
+
+        return conceptMedicationUnits;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations() {
+
+        List<? extends IConceptPrescriptionAdministration> conceptPrescriptionAdministrations;
+        try{
+
+            conceptPrescriptionAdministrations = Ebean.find(ConceptPrescriptionAdministration.class).findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptPrescriptionAdministrations", ex.getMessage());
+            throw ex;
+        }
+
+        return conceptPrescriptionAdministrations;
+    }
+
 
     /**
      * {@inheritDoc}

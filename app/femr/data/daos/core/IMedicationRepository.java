@@ -76,6 +76,25 @@ public interface IMedicationRepository {
     IMedication createNewMedication(String medicationName, List<IMedicationGenericStrength> medicationGenericStrengths, IConceptMedicationForm conceptMedicationForm);
 
     /**
+     * Returns all available concept medication forms. i.e. "B/S", "inj", "caps", etc..
+     * @return a list of concept medication fros from db
+     */
+    List<? extends IConceptMedicationForm> retrieveAllConceptMedicationForms();
+
+    /**
+     * Returns all available concept medication units. i.e. "g/dL", "milligram", "ounces", etc..
+     * @return List of concept medication units from db
+     */
+    List<? extends IConceptMedicationUnit> retrieveAllConceptMedicationUnits();
+
+    /**
+     * Returns all available ways concept prescription administration methods. i.e. "BID", "q4h", etc.. and their
+     * modifier rules
+     * @return List of concept prescription administrations from db
+     */
+    List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations();
+
+    /**
      *  Create new medication in the database
      * @param tripId
      * @return

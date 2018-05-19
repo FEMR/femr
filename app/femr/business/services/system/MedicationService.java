@@ -35,9 +35,6 @@ import femr.data.daos.IRepository;
 import femr.data.daos.core.*;
 import femr.data.models.core.*;
 import femr.data.models.mysql.*;
-import femr.data.models.mysql.concepts.ConceptMedicationForm;
-import femr.data.models.mysql.concepts.ConceptMedicationUnit;
-import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -50,9 +47,6 @@ import java.util.Map;
 public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
-    private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
-    private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
-    private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
     private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
@@ -61,9 +55,6 @@ public class MedicationService implements IMedicationService {
 
     @Inject
     public MedicationService(IMedicationRepository medicationRepository,
-                             IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
-                             IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
-                             IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
                              IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
@@ -71,9 +62,6 @@ public class MedicationService implements IMedicationService {
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.conceptMedicationFormRepository = conceptMedicationFormRepository;
-        this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
-        this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
         this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
@@ -422,7 +410,7 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IConceptMedicationForm> conceptMedicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
+            List<? extends IConceptMedicationForm> conceptMedicationForms = medicationRepository.retrieveAllConceptMedicationForms();
             List<String> availableForms = new ArrayList<>();
             for (IConceptMedicationForm mf : conceptMedicationForms) {
                 availableForms.add(mf.getName());
@@ -441,7 +429,7 @@ public class MedicationService implements IMedicationService {
         ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
         try {
             // Retrieve a list of all medicationAdministrations from the database
-            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = conceptPrescriptionAdministrationRepository.findAll(ConceptPrescriptionAdministration.class);
+            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = medicationRepository.retrieveAllConceptPrescriptionAdministrations();
 
             // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
@@ -463,7 +451,7 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationUnits() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IConceptMedicationUnit> conceptMedicationUnits = conceptMedicationUnitRepository.findAll(ConceptMedicationUnit.class);
+            List<? extends IConceptMedicationUnit> conceptMedicationUnits = medicationRepository.retrieveAllConceptMedicationUnits();
             List<String> availableUnits = new ArrayList<>();
             for (IConceptMedicationUnit mmu : conceptMedicationUnits) {
                 availableUnits.add(mmu.getName());

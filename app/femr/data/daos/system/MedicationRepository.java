@@ -1,4 +1,6 @@
 package femr.data.daos.system;
+
+import femr.data.models.mysql.concepts.ConceptMedication;
 import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
@@ -241,6 +243,92 @@ public class MedicationRepository implements IMedicationRepository {
         }
 
         return medication;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IMedication> retrieveAllConceptMedications() {
+
+        ExpressionList<ConceptMedication> conceptMedicationExpressionList = QueryProvider.getConceptMedicationQuery()
+                .where()
+                .eq("isDeleted", false);
+
+        List<? extends IMedication> allMedications;
+
+        try {
+
+            allMedications = conceptMedicationExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptMedications", ex.getMessage(), ex);
+            throw ex;
+        }
+
+        return allMedications;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedication retrieveConceptMedicationById(int id) {
+
+        ExpressionList<ConceptMedication> conceptMedicationExpressionList = QueryProvider.getConceptMedicationQuery()
+                .where()
+                .eq("isDeleted", false)
+                .eq("id", id);
+
+        IMedication medication;
+
+        try {
+
+            medication = conceptMedicationExpressionList.findOne();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveConceptMedicationById", ex.getMessage(), ex);
+            throw ex;
+        }
+
+        return medication;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IConceptMedicationForm> retrieveAllConceptMedicationForms() {
+
+        List<? extends IConceptMedicationForm> conceptMedicationForms;
+        try{
+
+            conceptMedicationForms = Ebean.find(ConceptMedicationForm.class).findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptMedicationForms", ex.getMessage());
+            throw ex;
+        }
+
+        return conceptMedicationForms;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<? extends IConceptMedicationUnit> retrieveAllConceptMedicationUnits() {
+
+        List<? extends IConceptMedicationUnit> conceptMedicationUnits;
+        try{
+
+            conceptMedicationUnits = Ebean.find(ConceptMedicationUnit.class).findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptMedicationUnits", ex.getMessage());
+            throw ex;
+        }
+
+        return conceptMedicationUnits;
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.List;
 public class MockItemModelMapper implements IItemModelMapper{
 
     public boolean createPatientItemWasCalled = false;
+    public boolean createPrescriptionItemWasCalled = false;
 
     @Override
     public CityItem createCityItem(String cityName, String countryName) {
@@ -24,7 +25,9 @@ public class MockItemModelMapper implements IItemModelMapper{
 
     @Override
     public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
-        return null;
+        MedicationItem medicationItem = new MedicationItem();
+        medicationItem.setId(medication.getId());
+        return medicationItem;
     }
 
     @Override
@@ -78,7 +81,14 @@ public class MockItemModelMapper implements IItemModelMapper{
 
     @Override
     public PrescriptionItem createPrescriptionItem(int id, String name, String firstName, String lastName, IConceptPrescriptionAdministration conceptPrescriptionAdministration, Integer amount, Boolean isCounseled, MedicationItem medicationItem) {
-        return null;
+        createPrescriptionItemWasCalled = true;
+        PrescriptionItem prescriptionItem = new PrescriptionItem();
+
+        prescriptionItem.setMedicationID(id);
+        prescriptionItem.setAmount(amount);
+        prescriptionItem.setAdministrationID(conceptPrescriptionAdministration.getId());
+
+        return prescriptionItem;
     }
 
     @Override

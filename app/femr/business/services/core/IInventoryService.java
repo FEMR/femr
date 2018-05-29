@@ -110,6 +110,17 @@ public interface IInventoryService {
     ServiceResponse<MedicationItem> reAddInventoryMedication(int medicationId, int tripId);
 
     /**
+     * Toggles the deletion state of a medication in a given trip inventory.
+     * The medication must at some point must have been added to the trip at the time
+     * this method is called.
+     *
+     * @param medicationId
+     * @param tripId
+     * @return a medication item that contains quantity information,
+     */
+    ServiceResponse<MedicationItem> toggleDeletionStateOfInventoryMedication(int medicationId, int tripId);
+
+    /**
      * Subtracts quantity from the current quantity when someone dispenses medication.
      * Subtracts amount dispensed from the current quantity of a medication when someone dispenses a prescription. This
      * will also make sure inventory exists for the medication in a trip before trying to subtract the quantity.

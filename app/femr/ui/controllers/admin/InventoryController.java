@@ -384,7 +384,7 @@ public class InventoryController extends Controller {
      * @return Result of soft-deletion
      */
     public Result ajaxDelete(int medicationID, int tripId) {
-        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.toggleDeletionStateOfInventoryMedication(medicationID, tripId);
 
         if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();

@@ -271,6 +271,34 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
+    /**
+     *{@inheritDoc}
+     */
+    public ServiceResponse<MedicationItem> toggleDeletionStateOfInventoryMedication(int medicationId, int tripId){
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
+
+        try {
+            //This should exist already, so no need to query for unique.
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+            if (medicationInventory.getIsDeleted() != null){
+                setDeletionStateOfInventoryMedication(medicationId, tripId, false);
+            } else {
+                setDeletionStateOfInventoryMedication(medicationId, tripId, true);
+            }
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
+            response.setResponseObject(medicationItem);
+        } catch (Exception ex) {
+
+            Logger.error("InventoryService-toggleDeletionStateOfInventoryMedication error while toggling deletion state of inventory medication", ex.getStackTrace(), ex);
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
 
     /**
      * {@inheritDoc}

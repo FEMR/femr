@@ -2,6 +2,8 @@ package femr.data.daos.core;
 
 import femr.data.models.core.IConceptPrescriptionAdministration;
 import femr.data.models.core.IPatientPrescription;
+import femr.data.models.core.IPatientPrescriptionReplacement;
+import femr.data.models.core.IPatientPrescriptionReplacementReason;
 
 import java.util.List;
 
@@ -18,6 +20,16 @@ public interface IPrescriptionRepository {
      * @return a new prescription
      */
     IPatientPrescription createPrescription(Integer amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId);
+
+    /**
+     * Identify replaced prescriptions and their reason
+     * @param prescriptionReplacements a list of prescription replacements, not null
+     *
+     * This method could also be simplified to do replacements individually
+     *
+     * @return List of prescription replacements
+     */
+    List<? extends IPatientPrescriptionReplacement> createPrescriptionReplacements(List<? extends IPatientPrescriptionReplacement> prescriptionReplacements);
 
     /**
      * Returns all available ways concept prescription administration methods. i.e. "BID", "q4h", etc.. and their
@@ -37,6 +49,17 @@ public interface IPrescriptionRepository {
      * @return a list of dispensed prescriptions
      */
     List<? extends IPatientPrescription> retrieveAllDispensedPrescriptionsByEncounterId(int encounterId);
+
+    /**
+     * Retrieve the reason for replacing a prescription - there are only 3 reasons someone can do this:
+     * 1) "physician edit" : editing a prescription as it's being prescribed by a physician
+     * 2) "pharmacist replacement": replacing a prescription by a pharmacist
+     * 3) "encounter edit": editing a prescription after the encounter has been closed
+     *
+     * @param name the reason you need, not null
+     * @return the reason
+     */
+    IPatientPrescriptionReplacementReason retrieveReplacementReasonByName(String name);
 
     /**
      * Retrieves all unreplaced prescriptions by encounter ID.

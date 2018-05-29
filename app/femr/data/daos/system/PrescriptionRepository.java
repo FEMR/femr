@@ -6,7 +6,10 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.models.core.IConceptPrescriptionAdministration;
 import femr.data.models.core.IPatientPrescription;
+import femr.data.models.core.IPatientPrescriptionReplacement;
+import femr.data.models.core.IPatientPrescriptionReplacementReason;
 import femr.data.models.mysql.PatientPrescription;
+import femr.data.models.mysql.PatientPrescriptionReplacementReason;
 import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 import io.ebean.Ebean;
 import io.ebean.ExpressionList;
@@ -54,6 +57,23 @@ public class PrescriptionRepository implements IPrescriptionRepository {
      * {@inheritDoc}
      */
     @Override
+    public List<? extends IPatientPrescriptionReplacement> createPrescriptionReplacements(List<? extends IPatientPrescriptionReplacement> prescriptionReplacements) {
+
+        try {
+            Ebean.saveAll(prescriptionReplacements);
+
+        } catch (Exception ex) {
+
+            Logger.error("PrescriptionRepository-createPrescriptionReplacements", ex.getMessage(), ex);
+            throw ex;
+        }
+        return prescriptionReplacements;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations() {
 
         List<? extends IConceptPrescriptionAdministration> conceptPrescriptionAdministrations;
@@ -92,6 +112,24 @@ public class PrescriptionRepository implements IPrescriptionRepository {
         return patientPrescriptions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPatientPrescriptionReplacementReason retrieveReplacementReasonByName(String name) {
+        IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason;
+        try {
+            ExpressionList<PatientPrescriptionReplacementReason> replacementReasonExpressionList = QueryProvider.getPatientPrescriptionReasonQuery()
+                    .where()
+                    .eq("name", name);
+            patientPrescriptionReplacementReason = replacementReasonExpressionList.findOne();
+        } catch (Exception ex) {
+            Logger.error("PrescriptionRepository-retrieveReplacementReasonByName", ex.getMessage());
+            throw ex;
+        }
+
+        return patientPrescriptionReplacementReason;
+    }
     /**
      * {@inheritDoc}
      */

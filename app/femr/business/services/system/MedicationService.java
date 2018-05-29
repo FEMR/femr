@@ -18,12 +18,10 @@
 */
 package femr.business.services.system;
 
-import io.ebean.*;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -31,10 +29,8 @@ import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.MedicationItem;
 import femr.common.models.PrescriptionItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.*;
 import femr.data.models.core.*;
-import femr.data.models.mysql.*;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -48,23 +44,17 @@ public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
     private final IPrescriptionRepository prescriptionRepository;
-    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
-    private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public MedicationService(IMedicationRepository medicationRepository,
                              IPrescriptionRepository prescriptionRepository,
-                             IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
-                             IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
                              IDataModelMapper dataModelMapper,
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
         this.prescriptionRepository = prescriptionRepository;
-        this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
-        this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -172,10 +162,7 @@ public class MedicationService implements IMedicationService {
         List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
 
         //get the reason for replacing
-        ExpressionList<PatientPrescriptionReplacementReason> replacementReasonExpressionList = QueryProvider.getPatientPrescriptionReasonQuery()
-                .where()
-                .eq("name", "pharmacist replacement");
-        IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = patientPrescriptionReplacementReasonRepository.findOne(replacementReasonExpressionList);
+        IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = prescriptionRepository.retrieveReplacementReasonByName("pharmacist replacement");
 
         //iterate over each prescription and its replacement
         prescriptionPairs.forEach((newId, oldId) -> {
@@ -210,7 +197,7 @@ public class MedicationService implements IMedicationService {
 
         try {
 
-            List<? extends IPatientPrescriptionReplacement> replacements = patientPrescriptionReplacementRepository.createAll(patientPrescriptionReplacements);
+            List<? extends IPatientPrescriptionReplacement> replacements = prescriptionRepository.createPrescriptionReplacements(patientPrescriptionReplacements);
             for (IPatientPrescriptionReplacement prescriptionReplacement : replacements) {
 
                 prescriptionItems.add(itemModelMapper.createPrescriptionItem(

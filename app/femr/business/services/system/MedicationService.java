@@ -342,22 +342,6 @@ public class MedicationService implements IMedicationService {
         return response;
     }
 
-    public ServiceResponse<MedicationItem> deleteMedication(int medicationID) {
-        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-
-        // Get the medication Item by it's ID
-        IMedication medication;
-
-        try {
-            // Find one medication (should only be 1 with the ID) from the database
-            medication = medicationRepository.deleteMedication(medicationID, true);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-            return response;
-        }
-
-        return response;
-    }
     /**
      * {@inheritDoc}
      */

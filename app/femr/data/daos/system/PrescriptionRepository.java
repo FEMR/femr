@@ -12,6 +12,7 @@ import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import play.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrescriptionRepository implements IPrescriptionRepository {
@@ -66,6 +67,52 @@ public class PrescriptionRepository implements IPrescriptionRepository {
         }
 
         return conceptPrescriptionAdministrations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IPatientPrescription> retrieveAllDispensedPrescriptionsByEncounterId(int encounterId) {
+        List<? extends IPatientPrescription> patientPrescriptions;
+        try {
+            ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
+                    .fetch("patientEncounter")
+                    .where()
+                    .isNull("patientEncounter.isDeleted")
+                    .eq("encounter_id", encounterId)
+                    .ne("user_id_pharmacy", null);
+            patientPrescriptions = query.findList();
+        } catch (Exception ex) {
+
+            Logger.error("PrescriptionRepository-retrieveAllDispensedPrescriptionsByEncounterId", ex.getMessage());
+            throw ex;
+        }
+
+        return patientPrescriptions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IPatientPrescription> retrieveUnreplacedPrescriptionsByEncounterId(int encounterId) {
+        List<? extends IPatientPrescription> patientPrescriptions;
+        try {
+            ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
+                    .fetch("medication.medicationInventory" )
+                    .fetch("patientEncounter")
+                    .where()
+                    .isNull("patientEncounter.isDeleted")
+                    .eq("encounter_id", encounterId);
+            patientPrescriptions = query.findList();
+        } catch (Exception ex) {
+
+            Logger.error("PrescriptionRepository-retrieveUnreplacedPrescriptionsByEncounterId", ex.getMessage());
+            throw ex;
+        }
+
+        return patientPrescriptions;
     }
 
     /**

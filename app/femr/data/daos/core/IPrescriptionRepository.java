@@ -27,6 +27,27 @@ public interface IPrescriptionRepository {
     List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations();
 
     /**
+     * Retrieves all dispensed prescriptions for a particular encounter ID. This is achieved by eliminating results
+     * that have the user_id_pharmacy column not null
+     *
+     * This method can probably be reduced to "retrieve all prescriptions by encounter ID" and let the service
+     * layer take care of the rest, but that's for another time
+     *
+     * @param encounterId id of the encounter
+     * @return a list of dispensed prescriptions
+     */
+    List<? extends IPatientPrescription> retrieveAllDispensedPrescriptionsByEncounterId(int encounterId);
+
+    /**
+     * Retrieves all unreplaced prescriptions by encounter ID.
+     *
+     * This method can likely also be simplified as a more generic "retrieve all prescriptions by encounter ID"
+     * @param encounterId id of the encounter, not null
+     * @return a list of unreplaced prescriptions, not null
+     */
+    List<? extends IPatientPrescription> retrieveUnreplacedPrescriptionsByEncounterId(int encounterId);
+
+    /**
      * Retrieve a prescription by its ID
      * @param prescriptionId id of the prescription, not null
      * @return the prescription if it exists, may be null

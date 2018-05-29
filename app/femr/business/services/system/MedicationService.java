@@ -48,7 +48,6 @@ public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
     private final IPrescriptionRepository prescriptionRepository;
-    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
     private final IDataModelMapper dataModelMapper;
@@ -57,7 +56,6 @@ public class MedicationService implements IMedicationService {
     @Inject
     public MedicationService(IMedicationRepository medicationRepository,
                              IPrescriptionRepository prescriptionRepository,
-                             IRepository<IPatientPrescription> patientPrescriptionRepository,
                              IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                              IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
                              IDataModelMapper dataModelMapper,
@@ -65,7 +63,6 @@ public class MedicationService implements IMedicationService {
 
         this.medicationRepository = medicationRepository;
         this.prescriptionRepository = prescriptionRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
         this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
         this.dataModelMapper = dataModelMapper;
@@ -183,17 +180,9 @@ public class MedicationService implements IMedicationService {
         //iterate over each prescription and its replacement
         prescriptionPairs.forEach((newId, oldId) -> {
 
-            ExpressionList<PatientPrescription> newPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("id", newId);
-
-            ExpressionList<PatientPrescription> replacedPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("id", oldId);
-
             try {
-                IPatientPrescription newPrescription = patientPrescriptionRepository.findOne(newPrescriptionExpressionList);
-                IPatientPrescription replacedPrescription = patientPrescriptionRepository.findOne(replacedPrescriptionExpressionList);
+                IPatientPrescription newPrescription = prescriptionRepository.retrievePrescriptionById(newId);
+                IPatientPrescription replacedPrescription = prescriptionRepository.retrievePrescriptionById(oldId);
 
                 if (newPrescription == null) {
 

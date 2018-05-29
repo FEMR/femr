@@ -18,8 +18,8 @@
 */
 package femr.business.services.system;
 
+import femr.data.daos.core.IPrescriptionRepository;
 import io.ebean.ExpressionList;
-import io.ebean.FetchConfig;
 import io.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -51,13 +51,12 @@ public class SearchService implements ISearchService {
     private final IRepository<IConceptDiagnosis> diagnosisRepository;
     private final IRepository<IMissionTrip> missionTripRepository;
     private final IPatientRepository patientRepository;
+    private final IPrescriptionRepository prescriptionRepository;
     private final IEncounterRepository patientEncounterRepository;
     private final IRepository<IPatientEncounterVital> patientEncounterVitalRepository;
-    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
     private final IItemModelMapper itemModelMapper;
     private final IInventoryService inventoryService;
-    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
     private final IRepository<IMissionCity> cityRepository;
 
     @Inject
@@ -66,10 +65,9 @@ public class SearchService implements ISearchService {
                          IPatientRepository patientRepository,
                          IEncounterRepository patientEncounterRepository,
                          IRepository<IPatientEncounterVital> patientEncounterVitalRepository,
-                         IRepository<IPatientPrescription> patientPrescriptionRepository,
+                         IPrescriptionRepository prescriptionRepository,
                          IRepository<ISystemSetting> systemSettingRepository,
                          IInventoryService inventoryService,
-                         IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
                          IRepository<IMissionCity> cityRepository,
                          @Named("identified") IItemModelMapper itemModelMapper) {
 
@@ -78,11 +76,10 @@ public class SearchService implements ISearchService {
         this.patientRepository = patientRepository;
         this.patientEncounterRepository = patientEncounterRepository;
         this.patientEncounterVitalRepository = patientEncounterVitalRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
+        this.prescriptionRepository = prescriptionRepository;
         this.systemSettingRepository = systemSettingRepository;
         this.itemModelMapper = itemModelMapper;
         this.inventoryService = inventoryService;
-        this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
         this.cityRepository = cityRepository;
     }
 
@@ -323,15 +320,9 @@ public class SearchService implements ISearchService {
     public ServiceResponse<List<PrescriptionItem>> retrieveUnreplacedPrescriptionItems(int encounterId, Integer tripId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
-        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
-                .fetch("medication.medicationInventory" )
-                .fetch("patientEncounter")
-                .where()
-                .isNull("patientEncounter.isDeleted")
-                .eq("encounter_id", encounterId);
         try {
 
-            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+            List<? extends IPatientPrescription> patientPrescriptions = prescriptionRepository.retrieveUnreplacedPrescriptionsByEncounterId(encounterId);
 
             List<PrescriptionItem> prescriptionItems = new ArrayList<>();
 
@@ -404,15 +395,10 @@ public class SearchService implements ISearchService {
     public ServiceResponse<List<PrescriptionItem>> retrieveDispensedPrescriptionItems(int encounterId) {
         ServiceResponse<List<PrescriptionItem>> response = new ServiceResponse<>();
 
-        ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
-                .fetch("patientEncounter")
-                .where()
-                .isNull("patientEncounter.isDeleted")
-                .eq("encounter_id", encounterId)
-                .ne("user_id_pharmacy", null);
+
 
         try {
-            List<? extends IPatientPrescription> patientPrescriptions = patientPrescriptionRepository.find(query);
+            List<? extends IPatientPrescription> patientPrescriptions = prescriptionRepository.retrieveAllDispensedPrescriptionsByEncounterId(encounterId);
 
 
             List<PrescriptionItem> prescriptionItems = patientPrescriptions.stream()

@@ -91,7 +91,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});
         bind(new TypeLiteral<IRepository<IPatientEncounterVital>>() {}).to(new TypeLiteral<Repository<IPatientEncounterVital>>() {});
-        bind(new TypeLiteral<IRepository<IPatientPrescription>>() {}).to(new TypeLiteral<Repository<IPatientPrescription>>() {});
         bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacement>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacement>>() {});
         bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacementReason>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacementReason>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});

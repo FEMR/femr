@@ -344,16 +344,7 @@ public class MedicationService implements IMedicationService {
 
             IMedication medication = medicationRepository.createNewMedication(medicationName);
 
-            IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
-                    medication.getId(),
-                    administrationId,
-                    userId,
-                    encounterId,
-                    null,
-                    false);
-
-            patientPrescription = patientPrescriptionRepository.create(patientPrescription);
+            IPatientPrescription patientPrescription = prescriptionRepository.createPrescription(amount, medication.getId(), administrationId, userId, encounterId);
 
             MedicationItem medicationItem = itemModelMapper.createMedicationItem(patientPrescription.getMedication(), null, null, null, null, null);
             PrescriptionItem prescriptionItem = itemModelMapper.createPrescriptionItem(

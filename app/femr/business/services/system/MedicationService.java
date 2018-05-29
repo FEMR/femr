@@ -260,13 +260,9 @@ public class MedicationService implements IMedicationService {
 
         prescriptionsToDispense.forEach((prescriptionId, isCounseled) -> {
 
-            ExpressionList<PatientPrescription> prescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("id", prescriptionId);
-
             try {
 
-                IPatientPrescription prescription = patientPrescriptionRepository.findOne(prescriptionExpressionList);
+                IPatientPrescription prescription = prescriptionRepository.retrievePrescriptionById(prescriptionId);
                 prescription.setDateDispensed(dateTime);
                 prescription.setCounseled(isCounseled);
                 prescription = patientPrescriptionRepository.update(prescription);
@@ -305,16 +301,7 @@ public class MedicationService implements IMedicationService {
             administrationId = null;
 
         try {
-            IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
-                    medicationId,
-                    administrationId,
-                    userId,
-                    encounterId,
-                    null,
-                    false);
-
-            patientPrescription = patientPrescriptionRepository.create(patientPrescription);
+            IPatientPrescription patientPrescription = prescriptionRepository.createPrescription(amount, medicationId, administrationId, userId, encounterId);
 
 
             MedicationItem medicationItem = itemModelMapper.createMedicationItem(patientPrescription.getMedication(), null, null, null, null, null);

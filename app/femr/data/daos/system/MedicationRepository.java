@@ -1,5 +1,5 @@
 package femr.data.daos.system;
-import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
+
 import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import io.ebean.Query;

@@ -32,4 +32,13 @@ public interface IPrescriptionRepository {
      * @return the prescription if it exists, may be null
      */
     IPatientPrescription retrievePrescriptionById(int prescriptionId);
+
+    /**
+     * Updates a patient prescription. The patientPrescription object should have an ID.
+     * Typically used to dispense a medication or show that the patient was counseled for it.
+     *
+     * @param patientPrescription patient prescription object with a valid ID, not null
+     * @return the updated patient prescription object, may be null
+     */
+    IPatientPrescription updatePrescription(IPatientPrescription patientPrescription);
 }

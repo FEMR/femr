@@ -26,6 +26,33 @@ public class PrescriptionRepository implements IPrescriptionRepository {
      * {@inheritDoc}
      */
     @Override
+    public IPatientPrescription createPrescription(Integer amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId) {
+
+        IPatientPrescription patientPrescription;
+
+        try {
+            patientPrescription = dataModelMapper.createPatientPrescription(
+                    amount,
+                    medicationId,
+                    medicationAdministrationId,
+                    userId,
+                    encounterId,
+                    null,
+                    false);
+
+            Ebean.save(patientPrescription);
+        } catch (Exception ex) {
+            Logger.error("PrescriptionRepository-createPrescription", ex.getMessage(), ex);
+            throw ex;
+        }
+
+        return patientPrescription;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IConceptPrescriptionAdministration> retrieveAllConceptPrescriptionAdministrations() {
 
         List<? extends IConceptPrescriptionAdministration> conceptPrescriptionAdministrations;
@@ -63,27 +90,18 @@ public class PrescriptionRepository implements IPrescriptionRepository {
         return patientPrescription;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IPatientPrescription createPrescription(Integer amount, int medicationId, Integer medicationAdministrationId, int userId, int encounterId) {
+    public IPatientPrescription updatePrescription(IPatientPrescription patientPrescription) {
 
-        IPatientPrescription patientPrescription;
+        if (patientPrescription == null)
+            return null;
 
         try {
-            patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
-                    medicationId,
-                    medicationAdministrationId,
-                    userId,
-                    encounterId,
-                    null,
-                    false);
 
             Ebean.save(patientPrescription);
         } catch (Exception ex) {
-            Logger.error("PrescriptionRepository-createPrescription", ex.getMessage(), ex);
+
+            Logger.error("PrescriptionRepository-updatePrescription", ex.getMessage(), ex);
             throw ex;
         }
 

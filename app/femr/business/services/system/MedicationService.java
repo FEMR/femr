@@ -265,7 +265,7 @@ public class MedicationService implements IMedicationService {
                 IPatientPrescription prescription = prescriptionRepository.retrievePrescriptionById(prescriptionId);
                 prescription.setDateDispensed(dateTime);
                 prescription.setCounseled(isCounseled);
-                prescription = patientPrescriptionRepository.update(prescription);
+                prescription = prescriptionRepository.updatePrescription(prescription);
 
 
 
@@ -380,9 +380,6 @@ public class MedicationService implements IMedicationService {
 
         // Get the medication Item by it's ID
         IMedication medication;
-        ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("id", medicationID);
 
         try {
             // Find one medication (should only be 1 with the ID) from the database

@@ -49,3 +49,4 @@ val main = (project in file(".")).enablePlugins(PlayJava, PlayEbean).settings(
   doc in Compile := target.map(_ / "none").value
 )
 
+javaOptions in Test += "-Dconfig.file=conf/application.dev.conf"

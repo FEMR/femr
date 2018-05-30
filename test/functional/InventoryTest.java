@@ -14,6 +14,7 @@ import play.inject.guice.GuiceApplicationBuilder;
 
 import java.io.File;
 import java.util.Map;
+import java.util.HashMap;
 
 import play.db.evolutions.*;
 
@@ -87,9 +88,9 @@ public class InventoryTest{
 ////                                "logStatements", true
 ////                        )
 //            );
-            Database d = Databases.inMemoryDatabase("femr",
-                    ImmutableMap.of("Mode", "MYSQL"),
-                    ImmutableMap.of("logStatements", true));
+//            Database d = Databases.inMemoryDatabase("femr",
+//                    ImmutableMap.of("Mode", "MYSQL"),
+//                    ImmutableMap.of("logStatements", true));
 
             try {
                 //#apply-evolutions-custom-path
@@ -97,14 +98,17 @@ public class InventoryTest{
 //                        Evolutions.fromClassLoader(
 //                                getClass().getClassLoader(), "testdatabase/")
 //                );
+                Map<String, String> optionMap = new HashMap<String, String>();
+                optionMap.put("MODE", "MYSQL");
+//                optionMap.put("log")
                 application = fakeApplication(
-                        d
-//                        Databases.inMemoryDatabase();
+//                        d
+                        Helpers.inMemoryDatabase("femr", optionMap)
                 );
                 Helpers.start(application);
                 //#apply-evolutions-custom-path
             } finally {
-                d.shutdown();
+//                d.shutdown();
             }
 
 

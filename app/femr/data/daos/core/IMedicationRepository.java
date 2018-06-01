@@ -82,6 +82,20 @@ public interface IMedicationRepository {
     List<? extends IConceptMedicationForm> retrieveAllConceptMedicationForms();
 
     /**
+     * Returns all available concept medications that aren't deleted
+     * @return List of concept medications from db
+     */
+    List<? extends IMedication> retrieveAllConceptMedications();
+
+    /**
+     * Retrieves a concept medication by its id if it hasn't been deleted
+     *
+     * @param id id of the concept medication, not null
+     * @return the concept medication
+     */
+    IMedication retrieveConceptMedicationById(int id);
+
+    /**
      * Returns all available concept medication units. i.e. "g/dL", "milligram", "ounces", etc..
      * @return List of concept medication units from db
      */

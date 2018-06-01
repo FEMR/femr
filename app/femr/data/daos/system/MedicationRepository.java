@@ -1,5 +1,6 @@
 package femr.data.daos.system;
 
+import femr.data.models.mysql.concepts.ConceptMedication;
 import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
@@ -238,6 +239,55 @@ public class MedicationRepository implements IMedicationRepository {
 
             Logger.error("Attempted and failed to execute createNewMedication() in MedicationRepository. Stack trace to follow.");
             ex.printStackTrace();
+            throw ex;
+        }
+
+        return medication;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IMedication> retrieveAllConceptMedications() {
+
+        ExpressionList<ConceptMedication> conceptMedicationExpressionList = QueryProvider.getConceptMedicationQuery()
+                .where()
+                .eq("isDeleted", false);
+
+        List<? extends IMedication> allMedications;
+
+        try {
+
+            allMedications = conceptMedicationExpressionList.findList();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveAllConceptMedications", ex.getMessage(), ex);
+            throw ex;
+        }
+
+        return allMedications;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IMedication retrieveConceptMedicationById(int id) {
+
+        ExpressionList<ConceptMedication> conceptMedicationExpressionList = QueryProvider.getConceptMedicationQuery()
+                .where()
+                .eq("isDeleted", false)
+                .eq("id", id);
+
+        IMedication medication;
+
+        try {
+
+            medication = conceptMedicationExpressionList.findOne();
+        } catch (Exception ex) {
+
+            Logger.error("MedicationRepository-retrieveConceptMedicationById", ex.getMessage(), ex);
             throw ex;
         }
 

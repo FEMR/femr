@@ -102,5 +102,10 @@ public class DataLayerModule extends AbstractModule {
         // Research
         bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});
         bind(new TypeLiteral<IRepository<IResearchEncounterVital>>() {}).to(new TypeLiteral<Repository<IResearchEncounterVital>>() {});
+
+        //Generic repositories that are required by the database seeder
+        bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<Repository<IConceptMedicationForm>>() {});
+        bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<Repository<IConceptMedicationUnit>>() {});
+        bind(new TypeLiteral<IRepository<IConceptPrescriptionAdministration>>() {}).to(new TypeLiteral<Repository<IConceptPrescriptionAdministration>>() {});
     }
 }

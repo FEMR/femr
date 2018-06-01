@@ -71,6 +71,16 @@ public class MockMedicationRepository implements IMedicationRepository {
     }
 
     @Override
+    public List<? extends IMedication> retrieveAllConceptMedications() {
+        return null;
+    }
+
+    @Override
+    public IMedication retrieveConceptMedicationById(int id) {
+        return null;
+    }
+
+    @Override
     public List<? extends IConceptMedicationUnit> retrieveAllConceptMedicationUnits() {
         return null;
     }

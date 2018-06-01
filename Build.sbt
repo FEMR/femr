@@ -24,7 +24,10 @@ val appDependencies = Seq(
   "com.itextpdf" % "itextpdf" % "5.5.6",
   "com.itextpdf.tool" % "xmlworker" % "5.5.6",
   "com.h2database" % "h2" % "1.4.193",
-  "com.jcraft" % "jsch" % "0.1.54"
+  "com.jcraft" % "jsch" % "0.1.54",
+  "org.seleniumhq.selenium" % "selenium-java" % "3.9.1",
+//  "org.fluentium" % "fluentlenium-junit" % "3.5.0",
+  "org.fluentlenium" % "fluentlenium-core" % "3.5.2"
 )
 
 

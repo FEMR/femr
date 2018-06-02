@@ -6,7 +6,9 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 
 resolvers += "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
 
-resolvers += "Fluentium Repository" at "https://mvnrepository.com/artifact/org.fluentlenium/fluentlenium-core"
+resolvers += "Fluentium-Core Repository" at "https://mvnrepository.com/artifact/org.fluentlenium/fluentlenium-core"
+
+resolvers += "Fluentium-FluentTest junit adapter" at "https://mvnrepository.com/artifact/org.fluentlenium/fluentlenium-junit"
 
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.12")

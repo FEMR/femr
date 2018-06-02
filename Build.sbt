@@ -27,7 +27,9 @@ val appDependencies = Seq(
   "com.jcraft" % "jsch" % "0.1.54",
   "org.seleniumhq.selenium" % "selenium-java" % "3.9.1",
 //  "org.fluentium" % "fluentlenium-junit" % "3.5.0",
-  "org.fluentlenium" % "fluentlenium-core" % "3.5.2"
+  "org.fluentlenium" % "fluentlenium-core" % "3.5.2",
+//  "org.fluentlenium" % "fluentlenium-adapter" % "3.5.2",
+  "org.fluentlenium" % "fluentlenium-junit" % "3.5.2"
 )
 
 

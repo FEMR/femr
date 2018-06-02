@@ -29,6 +29,7 @@ import play.db.Database;
 import play.api.db.Databases;
 import play.api.*;
 import play.db.evolutions.Evolutions;
+import play.test.WithBrowser;
 import static play.test.Helpers.*;
 
 import com.typesafe.config.Config;
@@ -39,10 +40,23 @@ import com.google.inject.AbstractModule;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
+import org.fluentlenium.adapter.junit.FluentTest;
+import org.fluentlenium.core.annotation.Page;
+import org.fluentlenium.core.hook.wait.Wait;
+import org.fluentlenium.core.annotation.PageUrl;
+import org.fluentlenium.core.domain.FluentWebElement;
+
+
+
+//@PageUrl("http://localhost:9000/")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class InventoryTest{
+public class InventoryTest/* extends FluentTest*/{
         @Inject Application application;
+//        private static String femrURLS String = "http://127.0.0.1:9000/";
+//        private WebDriver driver;
         private static Boolean setupIsDone = false;
         private static Boolean sequentialTestHasFailed = false;
         private static Boolean lastTestIsDone = false;
@@ -72,8 +86,18 @@ public class InventoryTest{
         @Test
         public void a_createAdminUserAndSignInAsNewAdmin() {
             failIfOtherTestsFailed();
-
-            System.out.println("[\033[42m  \033[0m] Yay, Setup ran! ");
+            running(testServer(), HTMLUNIT, browser -> {
+                browser.goTo("/");
+//                assertEquals("Welcome to Play!", browser.$("#title").text());
+//                browser.$("a").click();
+//                assertEquals("login", browser.url());
+            });
+//            goTo(femrURLString);
+//            try {
+//                Thread.sleep(2000);
+//            } catch(Exception e){}
+//
+//            System.out.println("[\033[42m  \033[0m] Yay, Setup ran! ");
         }
 
         @Test

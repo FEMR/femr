@@ -29,9 +29,18 @@ val appDependencies = Seq(
 //  "org.fluentium" % "fluentlenium-junit" % "3.5.0",
   "org.fluentlenium" % "fluentlenium-core" % "3.5.2",
 //  "org.fluentlenium" % "fluentlenium-adapter" % "3.5.2",
-  "org.fluentlenium" % "fluentlenium-junit" % "3.5.2"
-)
+  "org.fluentlenium" % "fluentlenium-junit" % "3.5.2",
+  "javax.xml.bind" % "jaxb-api" % "2.1"
+//  "com.h2database" % "h2" % "1.4.197"
 
+)
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+
+//initialize := {
+//  val _ = initialize.value
+//  if (sys.props("java.specification.version") != "1.8")
+//    sys.error("Java 8 is required for this project.")
+//}
 
 val main = (project in file(".")).enablePlugins(PlayJava, PlayEbean).settings(
 

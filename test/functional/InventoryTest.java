@@ -3,61 +3,34 @@ package functional;
 import com.google.inject.Inject;
 
 //import jdk.nashorn.internal.ir.annotations.Immutable;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import forhumanconvenience.ForHumanConvenience;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runners.MethodSorters;
 import org.junit.FixMethodOrder;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
 
 import play.Application;
-import play.Environment;
-import play.inject.guice.GuiceApplicationBuilder;
 
-import java.sql.Connection;
 import java.util.Map;
 import java.util.HashMap;
-
-import play.db.evolutions.*;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import play.test.*;
-import play.Mode;
-import play.Configuration;
 //import play.db.*;
-import play.db.Database;
-import play.api.db.Databases;
-import play.api.*;
-import play.db.evolutions.Evolutions;
-import play.test.WithBrowser;
 import static play.test.Helpers.*;
-
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-
-import com.google.inject.Module;
-import com.google.inject.AbstractModule;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import org.fluentlenium.adapter.junit.FluentTest;
-import org.fluentlenium.core.annotation.Page;
-import org.fluentlenium.core.hook.wait.Wait;
-import org.fluentlenium.core.annotation.PageUrl;
 import org.fluentlenium.core.domain.FluentWebElement;
 import static org.fluentlenium.core.filter.FilterConstructor.*;
-
 
 /**
  * This is a set of functional tests for Admin panel functionality.
@@ -96,18 +69,29 @@ public class InventoryTest/* extends FluentTest*/{
                 assertTrue(false);
             }
         }
-        private void failSequentialTest(){
+        private void failSequentialTest(Function someTest, Boolean isSequential){
+            try{
+                someTest.apply(new Object());
+            } catch (Throwable t){
+            }
 
         }
         private void failIndependentTest(){}
 
+        private void testWrapper(){
+
+        }
+
+
         @Before
         public void setup() {
             if(!setupIsDone){
+                ForHumanConvenience.playBeforeAllTestStartSound();
 //                Class.forName(jdbcDriver);
                 try {
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=root&password=terminalbatterycar");
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=?&password=?");
                     Statement s = conn.createStatement();
+                    s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
                     s.executeUpdate("CREATE DATABASE IF NOT EXISTS femr_test");
                 }
                 catch(Exception e){
@@ -193,9 +177,11 @@ public class InventoryTest/* extends FluentTest*/{
 
                 //Hit add city button and add 3 new cities
                 browser.$("a", withText().contains("Manage Cities")).click();
+                System.out.println("MANAGE CITY");
 
                 for(int i = 0; i < 3; i++){
                     browser.$("input", withName("newCity")).fill().with("testCity" + (i+1));
+                    System.out.println("MANAGE CITY NAME");
                     browser.$("select[name='newCityCountry']").$("option", withText("Afghanistan")).click();
                     browser.$("button[type='submit']").click();
                 }
@@ -245,6 +231,9 @@ public class InventoryTest/* extends FluentTest*/{
                     browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is already added.
                     browser.$("button[type='submit']", withText("Remove")).click();
 
+                    try{
+                        Thread.sleep(1000);
+                    } catch (Exception e){}
                     //Check to see that it removed the test user. There's only the header row if there are 0 users.
                     if(browser.$("#usersTripTable tr").size() != 1) {
                         //throw some exception
@@ -260,6 +249,7 @@ public class InventoryTest/* extends FluentTest*/{
                     browser.$("a", withText().contains("Trips")).click();//go back to manage trips page.
                     System.out.println("Did " + i);
                 }
+                browser.$("a[href*='logout']").click();
                 System.out.println("DONE WITH ADD TRIPS");
 
             });
@@ -268,15 +258,177 @@ public class InventoryTest/* extends FluentTest*/{
         }
 
         @Test
-        public void c_populateAllThreeInventoriesWithCustomMedications(){
+        public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames(){
+            running(testServer(), new ChromeDriver(), browser ->{
+                //Get login page
+                browser.goTo("/");
+
+                //Log back in as test administrator
+                browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
+                browser.$("input[name='password']").fill().with(TEST_ADMIN_PASSWORD);
+                browser.$("input[type='submit']").click();
+
+                //Hit admin panel button at top of page
+                browser.$("a", withText("Admin")).click();
+
+                //Hit User button to get user menu
+                browser.$("a", withText().contains("Inventory")).click();
+
+                System.out.println("in inventory");
+
+                //get select options for each of the three trips. We don't need loops for this - loops are so 1960.
+                for(int i = 0; i < 3; i++){
+                    browser.$("#selectTripInventory option").get(i).click();
+                    browser.$("button", withText().contains("Select")).click();
+
+                    System.out.println("TRIP");
+
+                    browser.$("a", withText().contains("Existing Medication")).click();
+                    System.out.println("EXISTING");
+
+                    //Add medications
+                    FluentWebElement existingMedicationInputTextbox = browser.$("input[placeholder*='Search medicine:']").get(0);
+                    existingMedicationInputTextbox.fill().with("pepto bismol");//type something in to get the li's to pop up.
+                    browser.$("li", withText().contains("Pepto Bismol 262 mg bismuth subsalicylate (tab chew)")).click();
+
+                    existingMedicationInputTextbox.fill().with("advil");
+                    browser.$("li", withText().contains("Advil 200 mg ibuprofen (tabs)")).click();
+
+                    existingMedicationInputTextbox.fill().with("proventil");
+                    browser.$("li", withText().contains("Proventil 90 mcg albuterol (MDI)")).click();
+
+                    //submit the meds
+                    browser.$("#submitMedicationButton").click();
+
+                    System.out.println("TRIPMEDS ADDED");
+
+                    //check that the meds were actually put there. just see if med is there, fluentium will throw exception if they're not there.
+                    browser.$("td", withText().contains("Pepto Bismol 262 mg bismuth subsalicylate (tab chew)"));
+                    browser.$("td", withText().contains("Advil 200 mg ibuprofen (tabs)"));
+                    browser.$("td", withText().contains("Proventil 90 mcg albuterol (MDI)"));
+                    browser.$("td", withText("1"));
+                    browser.$("td", withText("2"));
+                    browser.$("td", withText("3"));
+
+                    System.out.println("MEDSTHERE");
+                }
+
+//                ForHumanConvenience.playTestFailSound();
+//                                try{
+//                    Thread.sleep(1000000000);
+//                } catch(Exception e){
+//
+//                }
+                browser.$("a[href*='logout']").click();
+
+            });
+
+        }
+
+        @Test
+        public void d_populateInventoryWithCustomMedications(){
+            running(testServer(), new ChromeDriver(), browser -> {
+                //Get login page
+                browser.goTo("/");
+
+                //Log back in as test administrator
+                browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
+                browser.$("input[name='password']").fill().with(TEST_ADMIN_PASSWORD);
+                browser.$("input[type='submit']").click();
+
+                //Hit admin panel button at top of page
+                browser.$("a", withText("Admin")).click();
+
+                //Hit User button to get user menu
+                browser.$("a", withText().contains("Inventory")).click();
+                for(int i = 0; i < 3; i++){
+                    browser.$("#selectTripInventory option").get(i).click();
+                    browser.$("button", withText().contains("Select")).click();
+
+                    System.out.println("TRIP");
+
+                    browser.$("a", withText().contains("Custom Medication")).click();
+                    System.out.println("CUSTOM");
+
+                    //only make one medication
+                    browser.$("#medicationName").fill().with("testCustomMedName");
+                    browser.$("#addNewIngredient").click();
+                    browser.$("input[name*='medicationIngredient[]']").fill().with("testGeneric1", "testGeneric2");//this does it for two ingredients
+                    browser.$("input[name*='medicationStrength[]']").fill().with("40", "60");
+                    browser.$("select[name*='medicationUnit[]'] option", withText("mg")).click();
+                    browser.$("input[name*='medicationQuantity']").fill().with("2");
+                    browser.$("select[name*='medicationForm'] option", withText("caps")).click();
+
+                    browser.$("#submitMedicationButton").click();
+
+                    //check that the meds were actually put there. just see if med is there, fluentium will throw exception if they're not there.
+                    browser.$("td", withText().contains("4"));
+                    browser.$(".editCurrentQuantity", withText().contains("2")); //should be the only thing with quantity two
+
+
+                    System.out.println("MEDSTHERE");
+                }
+
+                browser.$("a[href*='logout']").click();
+
+            });
+
+        }
+//
+        @Test
+        public void e_RemoveReaddButtonOnAllInventoriesExistingMedications(){
+            running(testServer(), new ChromeDriver(), browser->{
+                //Get login page
+                browser.goTo("/");
+
+                //Log back in as test administrator
+                browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
+                browser.$("input[name='password']").fill().with(TEST_ADMIN_PASSWORD);
+                browser.$("input[type='submit']").click();
+
+                //Hit admin panel button at top of page
+                browser.$("a", withText("Admin")).click();
+
+                //Hit User button to get user menu
+                browser.$("a", withText().contains("Inventory")).click();
+
+                for(int i = 0; i < 3; i++) {
+                    browser.$("#selectTripInventory option").get(i).click();
+                    browser.$("button", withText().contains("Select")).click();
+
+                    //remove all meds
+                    browser.$("button", withText("Remove")).click();
+
+                    //readd all meds
+                    browser.$("button", withText("Undo")).click();
+
+                    System.out.println("B4 REFRESH");
+                    //refresh page
+                    browser.goTo(browser.url());
+                    System.out.println("REFRESHED");
+                }
+
+
+
+                //Check it's all still there, and that the medications are actually readded, not just duplicates
+                browser.$("td", withText().contains("Pepto Bismol 262 mg bismuth subsalicylate (tab chew)"));
+                browser.$("td", withText().contains("Advil 200 mg ibuprofen (tabs)"));
+                browser.$("td", withText().contains("Proventil 90 mcg albuterol (MDI)"));
+                browser.$("td", withText().contains("testCustomMedName 40 mg testGeneric1 / 60 mg testGeneric2 (B/S)"));
+                browser.$("td", withText("1"));
+                browser.$("td", withText("2"));
+                browser.$("td", withText("3"));
+                browser.$("td", withText("4"));
+
+//                ForHumanConvenience.playAfterAllTestSuccessSound();
+//                try{ Thread.sleep(1000000000); } catch(Exception e){}
+
+                browser.$("a[href*='logout']").click();
+
+            });
 
             lastTestIsDone=Boolean.valueOf(true);
         }
-//
-//        @Test
-//        public void d_RemoveReaddButtonOnAllInventoriesMedications(){
-//
-//        }
 //
 //        @Test
 //        public void e_RemoveThenManuallyReaddAllExistingInventoriesMedications(){
@@ -291,14 +443,17 @@ public class InventoryTest/* extends FluentTest*/{
 
         @After
         public void teardown() {
-            System.out.println("In Teardown");
-            if(lastTestIsDone) {
+            if(lastTestIsDone || sequentialTestHasFailed) {
+                ForHumanConvenience.playAfterAllTestSuccessSound();
+                System.out.println("In Teardown");
                 try {
-                    //tear it all down and hope it doesn't take the test with it
-                    Helpers.stop(application); //This is throwing nullptr for some reason, but it's at least caught. When process dies, so will this.
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/femr_test?user=root&password=terminalbatterycar");
+                    ForHumanConvenience.playBeforeAllTestStartSound();
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/femr_test?user=?&password=?");
                     Statement s = conn.createStatement();
                     s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
+                    //tear it all down and hope it doesn't take the test with it
+                    Helpers.stop(application); //This is throwing nullptr for some reason, but it's at least caught. When process dies, so will this.
+
                 } catch(Exception e){
                     e.printStackTrace();
                 }

@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 
 //import jdk.nashorn.internal.ir.annotations.Immutable;
 import forhumanconvenience.ForHumanConvenience;
+import org.fluentlenium.core.FluentDriver;
+import org.fluentlenium.core.action.FillSelect;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.Select;
 import play.Application;
 
 import java.util.Map;
@@ -33,20 +38,33 @@ import org.fluentlenium.core.domain.FluentWebElement;
 import static org.fluentlenium.core.filter.FilterConstructor.*;
 
 /**
+ * What is this?
  * This is a set of functional tests for Admin panel functionality.
  * This does not check all possible cases, or for invalid inputs,
  * but rather is meant to test that what given proper usage, what is supposed
  * to work actually works.
  *
+ * What you should be aware of if you are developing tests:
  * If the UI is modified, this probably needs to have some lines changed.
  * The reason being is that this uses Selenium-based testing, so
  * the way it actually progresses the tests is by clicking the buttons,
  * and filling form inputs, which are located by name, type, id, class, etc.
  *
+ * Note, fluentium is built on top of selenium. You can take a FluentWebElement
+ * and convert it down to a selenium WebElement, where there's a little less abstraction.
+ * This is needed for inputs of type date.
+ *
  * If tests are failing, the only errors one is likely to get from this set
  * of tests are ones along the lines of "Selenium can't find element X".
  * They will almost always be related to UI elements, even if the problem is
- * actually on the backend
+ * actually on the backend.
+ *
+ * If you are adding tests, I recommend using ChromeDriver or other webdriver with a GUI
+ * so that you can see your tests in action. The following line is also helpful to stop
+ * execution so you can look at the browser and page elements.
+ * try{Thread.sleep(10000000);}catch(Exception e){}
+ *
+ *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InventoryTest/* extends FluentTest*/{
@@ -89,7 +107,7 @@ public class InventoryTest/* extends FluentTest*/{
                 ForHumanConvenience.playBeforeAllTestStartSound();
 //                Class.forName(jdbcDriver);
                 try {
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=?&password=?");
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=root&password=potatoSlim1Otto");
                     Statement s = conn.createStatement();
                     s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
                     s.executeUpdate("CREATE DATABASE IF NOT EXISTS femr_test");
@@ -110,7 +128,7 @@ public class InventoryTest/* extends FluentTest*/{
         public void a_createAdminUserAndSignInAsNewAdmin() {
             failIfOtherTestsFailed();
             //Use Chromedriver, because if a test ever fails, you'd see it happen if you were watching
-            running(testServer(), new ChromeDriver(), browser -> {
+            running(testServer(), new HtmlUnitDriver(true), browser -> {
                 //Sign in as default admin
                 browser.goTo("/");
                 browser.$("input[name='email']").fill().with("admin");
@@ -141,9 +159,12 @@ public class InventoryTest/* extends FluentTest*/{
 
                 //Log out and then log it as newly created test admin user, check that it worked, then log out again. End test.
                 browser.$("a[href*='logout']").click();
+                System.out.println("Logged Out");
                 browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
                 browser.$("input[name='password']").fill().with(TEST_ADMIN_PASSWORD);
+                System.out.println("Found buttons");
                 browser.$("input[type='submit']").click();
+                System.out.println("Logged In Again");
 
 //                try{
 //                    Thread.sleep(1000000000);
@@ -152,14 +173,17 @@ public class InventoryTest/* extends FluentTest*/{
 //                }
 
                 browser.$("a", withText("Admin")).click(); //test for login by seeing if we can get admin panel. Not sure if click is needed, but you can't click something that isn't there.
+                System.out.println("ADMIN BUTTON FOUND");
                 browser.$("a[href*='logout']").click();
+                browser.$("LOGGED IN FINAL 1");
+
             });
         }
 
         @Test
         public void b_createTripsAndAssignSelfToAllTrips(){
 
-            running(testServer(), new ChromeDriver(), browser -> {
+            running(testServer(), new HtmlUnitDriver(true), browser -> {
                 //Get login page
                 browser.goTo("/");
 
@@ -190,9 +214,9 @@ public class InventoryTest/* extends FluentTest*/{
                 browser.$("a", withText().contains("Manage Teams")).click();
 
                 for(int i = 0; i < 3; i++){
-                    browser.$("input", withName("newTeamName")).fill().with("testTeamName" + (i+1));
-                    browser.$("input", withName("newTeamLocation")).fill().with("testTeamOrigin" + (i+1));
-                    browser.$("input", withName("newTeamDescription")).fill().with("testTeamOrigin" + (i+1));
+                    browser.$("input[name='newTeamName']").fill().with("testTeamName" + (i+1));
+                    browser.$("input[name='newTeamLocation']").fill().with("testTeamOrigin" + (i+1));
+                    browser.$("input[name='newTeamDescription']").fill().with("testTeamDescription" + (i+1));
                     browser.$("button[type='submit']").click();
                 }
                 System.out.println("MADE ALL TEAMS");
@@ -201,36 +225,95 @@ public class InventoryTest/* extends FluentTest*/{
                 browser.$("a", withText().contains("Manage Trips")).click();
                 System.out.println("Manage trips clicked");
                 for(int i = 0; i < 3; i++){
-                    browser.$("select[name='newTripTeamName']").$("option", withText("testTeamName" + (i+1))).click();
-                    System.out.println("new tripteamname");
-                    browser.$("select[name='newTripCity']").$("option", withText("testCity" + (i+1))).click();
-                    System.out.println("new tripCity");
 
+
+//                    browser.$("select[name='newTripTeamName']")/*.fillSelect().withText("testTeamName" + (i+1));//*/.$("option", withText("testTeamName" + (i+1))).click();
+                    browser.$("select[name='newTripTeamName']").fillSelect().withText("testTeamName"+ (i+1));
+//                    browser.$("select[name='newTripCity']")/*fillSelect().withText("testCity" + (i+1));*/.$("option", withText("testCity" + (i+1))).click();
+                    browser.$("select[name='newTripCity']").fillSelect().withText("testCity" + (i+1));
+//                    browser.$("select[name='newTripTeamName'] option").get(4+i).click();//fillSelect().withText("testTeamName" + (i+1));
+//                    System.out.println("S1: " + browser.$("select[name='newTripTeamName'] option").get(4+i).text());
+//                    System.out.println("OPTION2");
+//                    browser.$("select[name='newTripCity'] option").get(3+i).click();//.forEach(x -> System.out.println(x.text()));
+//                    browser.$("select[name='newTripCity']").fillSelect().withText("testCity" + (i+1));
+//                    System.out.println("OPTION1");
+
+//                    browser.$("select[name='newTripCity'] ").stream().forEach(x -> System.out.println(x.text()));
+//                    browser.$("select[name='newTripTeamName'] option").get(4+i).click();
+//                    browser.$("select[name='newTripCity'] option").get(3+i).click();
                     System.out.println("city and name");
 
+
                     browser.$("input[value*='Afghanistan']");//Trip country updates automatically. Check to find element with value Ukraine. Throws expection if it can't be found, meaning that input didn't update.
-                    System.out.println("countrycheck");
+//                    System.out.println(browser.$("input[value*='Afghanistan']").get(0).attribute("value"));
 
-                    browser.executeScript("document.getElementsByName('newTripStartDate')[0].value='201" + i + "-04-01'");//Date inputs are finicky, so just use JS to set their input.
-                    browser.executeScript("document.getElementsByName('newTripEndDate')[0].value='201" + i + "-05-01'");
+//                    String s;
+
+//                    System.out.println(browser.$("input", withName("newTripStartDate")).size());
+                    //Date inputs are finicky, and only take input as selenium Webelements as opposed to being FuentWebElements.
+                    //Only alternative is to use JS, but you can't do that if you want to use HTMLUNIT driver
+
+//                    browser.$("input[name='newTripStartDate']").toElements().get(0).click();
+//                    browser.$("input[name='newTripStartDate']").fill().with("0401201"+i);
+                    browser.executeScript("document.getElementsByName('newTripStartDate')[0].value='201"+ i + "-04-01'");
+                    browser.executeScript("document.getElementsByName('newTripEndDate')[0].value='201"+ i + "-05-01'");
+
+//                    System.out.println(browser.$("input[name='newTripStartDate']").get(0).attribute("value"));
+//                    System.out.println(browser.$("input[name='newTripStartDate']").get(0).attribute("value"));
+//                    browser.$("input[name='newTripEndDate']").fill().with("0401201"+i);
+//                    browser.$("input[name='newTripEndDate']").toElements().get(0).sendKeys("0501201"+i);
+//                    System.out.println(browser.$("input", withName("newTripEndDate")).get(0).attribute("value"));
                     System.out.println("dates inputted");
-                    browser.$("form[action='/admin/trips']").submit();
-                    System.out.println("form" + i + "submitted");
-                }
 
+                    System.out.println("ALL SELECT:");
+                    browser.$("select").stream().forEach(x -> System.out.println(new Select(x.getElement()).getFirstSelectedOption().getText()));
+//                    browser.$("select").stream().forEach(x -> System.out.println(x.attribute("name")));
+                    System.out.println("ALL INPUT:");
+                    browser.$("input").stream().forEach(x -> System.out.println(x.attribute("value")));
+                    browser.$("input").stream().forEach(x -> System.out.println(x.attribute("name")));
+//                    browser.$("input").stream().forEach(x -> System.out.println(x.attribute("name")));
+
+
+//                    browser.$("form").get(0).submit();
+                    browser.$("button", withText().contains("Submit")).click();
+//                    System.out.println("form" + i + "submitted");
+                    System.out.print("ERR: ");
+                    try{browser.$("p", withText().contains("missing")); System.out.println("YES " + i);} catch (Exception e){System.out.println("NO");}
+//                    System.out.println(browser.url());
+//                    browser.goTo(browser.url());
+                }
+//                try{
+//                        Thread.sleep(100000000);
+//                    } catch (Exception e){}
                 //Assign self to all trips
                 for(int i = 0; i < 3; i++){
-                    browser.$("form").get(i+1).click(); //The edit button form action will bind to numbers starting at 1. the first form adds trips. skip it.
+//                    try{Thread.sleep(10000000);}catch(Exception e){}
+//                    System.out.println(browser.$("form").toElements().get(0).getAttribute("action"));
+                    browser.$("button", withText().contains("Edit")).get(i).click(); //The edit button form action will bind to numbers starting at 1. the first form adds trips. skip it.
+                    System.out.println(browser.url());
                     browser.$("input[placeholder*='Add users here']").fill().with("TestAdminFirstName TestAdminLastName");
-                    browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
+                    System.out.println("1");
+//                    try{
+//                        Thread.sleep(100000000);
+//                    } catch (Exception e){}
+                    browser.$("option", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
+//                    browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
+
+                    System.out.println("2");
                     browser.$("button[type='submit']", withText("Add")).click();
+                    System.out.println("3");
 
                     browser.$("td", withText("TestAdminFirstName"));//Check to see that it added the test admin user. Throws exception if it's not in the table.
+                    System.out.println("4");
 
                     browser.$("input[placeholder*='Remove users here']").fill().with("TestAdminFirstName TestAdminLastName");
-                    browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is already added.
-                    browser.$("button[type='submit']", withText("Remove")).click();
+                    browser.$("option", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
+//                    browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
 
+                    System.out.println("5");
+//                    browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is already added.
+                    browser.$("button[type='submit']", withText("Remove")).click();
+                    System.out.println("6");
                     try{
                         Thread.sleep(1000);
                     } catch (Exception e){}
@@ -241,9 +324,11 @@ public class InventoryTest/* extends FluentTest*/{
                     }
 
                     browser.$("input[placeholder*='Add users here']").fill().with("TestAdminFirstName TestAdminLastName");
-                    browser.$("li", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
+                    System.out.println(7);
+                    browser.$("option", withText("TestAdminFirstName TestAdminLastName")).click();//relies on the UI not having an li for the user who is not yet added.
+                    System.out.println(8);
                     browser.$("button[type='submit']", withText("Add")).click();
-
+                    System.out.println(9);
                     browser.$("td", withText("TestAdminFirstName"));//Check to see that it re-added the test admin user. Throws exception if it's not in the table.
 
                     browser.$("a", withText().contains("Trips")).click();//go back to manage trips page.
@@ -254,19 +339,21 @@ public class InventoryTest/* extends FluentTest*/{
 
             });
 
-
+//            lastTestIsDone = true;
         }
-
+//
         @Test
         public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames(){
-            running(testServer(), new ChromeDriver(), browser ->{
+            running(testServer(), new HtmlUnitDriver(true), browser ->{
                 //Get login page
                 browser.goTo("/");
+                System.out.println("in c0");
 
                 //Log back in as test administrator
                 browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
                 browser.$("input[name='password']").fill().with(TEST_ADMIN_PASSWORD);
                 browser.$("input[type='submit']").click();
+                System.out.println("in c1");
 
                 //Hit admin panel button at top of page
                 browser.$("a", withText("Admin")).click();
@@ -322,12 +409,14 @@ public class InventoryTest/* extends FluentTest*/{
                 browser.$("a[href*='logout']").click();
 
             });
+            System.out.println("DONE WITH CHECK MEDS");
 
+//            lastTestIsDone=true;
         }
-
+//
         @Test
         public void d_populateInventoryWithCustomMedications(){
-            running(testServer(), new ChromeDriver(), browser -> {
+            running(testServer(), new HtmlUnitDriver(true), browser -> {
                 //Get login page
                 browser.goTo("/");
 
@@ -374,10 +463,10 @@ public class InventoryTest/* extends FluentTest*/{
             });
 
         }
-//
+//////
         @Test
         public void e_RemoveReaddButtonOnAllInventoriesExistingMedications(){
-            running(testServer(), new ChromeDriver(), browser->{
+            running(testServer(), new HtmlUnitDriver(true), browser->{
                 //Get login page
                 browser.goTo("/");
 
@@ -429,7 +518,7 @@ public class InventoryTest/* extends FluentTest*/{
 
             lastTestIsDone=Boolean.valueOf(true);
         }
-//
+////
 //        @Test
 //        public void e_RemoveThenManuallyReaddAllExistingInventoriesMedications(){
 //
@@ -443,11 +532,12 @@ public class InventoryTest/* extends FluentTest*/{
 
         @After
         public void teardown() {
+            //th
             if(lastTestIsDone || sequentialTestHasFailed) {
                 ForHumanConvenience.playAfterAllTestSuccessSound();
                 System.out.println("In Teardown");
                 try {
-                    ForHumanConvenience.playBeforeAllTestStartSound();
+//                    ForHumanConvenience.playBeforeAllTestStartSound();
                     Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/femr_test?user=?&password=?");
                     Statement s = conn.createStatement();
                     s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
@@ -457,6 +547,9 @@ public class InventoryTest/* extends FluentTest*/{
                 } catch(Exception e){
                     e.printStackTrace();
                 }
+            } else{
+                ForHumanConvenience.playTestFailSound();
             }
+
         }
 }

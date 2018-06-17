@@ -59,7 +59,8 @@ val main = (project in file(".")).enablePlugins(PlayJava, PlayEbean).settings(
         newArg = if (ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
       } yield newArg
   },
-  sbt.Keys.fork in Test := false,
+  javaOptions in Test += "-Dconfig.file=conf/application.test.conf",
+  sbt.Keys.fork in Test := true,
   doc in Compile := target.map(_ / "none").value
 )
 

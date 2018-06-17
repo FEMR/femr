@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 
 //import jdk.nashorn.internal.ir.annotations.Immutable;
 import forhumanconvenience.ForHumanConvenience;
+import io.ebean.Ebean;
+import io.ebean.Transaction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +24,9 @@ import java.util.HashMap;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import play.Mode;
+import play.db.Database;
+import play.inject.guice.GuiceApplicationBuilder;
 import play.test.*;
 //import play.db.*;
 import static play.test.Helpers.*;
@@ -50,7 +55,7 @@ import static org.fluentlenium.core.filter.FilterConstructor.*;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InventoryTest/* extends FluentTest*/{
-        @Inject Application application;
+
         private static Boolean setupIsDone = false;
         private static Boolean sequentialTestHasFailed = false;
         private static Boolean lastTestIsDone = false;
@@ -58,6 +63,23 @@ public class InventoryTest/* extends FluentTest*/{
         private static final String TEST_ADMIN_USERNAME = "test_admin_user@example.org";
         //password requirements as of 2.4.0: >= 8 chars long, >= 1 special char, >= 1 number, >= 1 uppercase, >= 1 lowercase
         private static String TEST_ADMIN_PASSWORD = "Test_Admin_User_Password1";
+        Application application;
+
+
+        public InventoryTest() {
+
+            // Sets the location of the chrome driver
+            System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+
+            // Build an application in Test mode
+            // conf/application.test.conf is loaded by default (defined in build.sbt)
+            this.application = new GuiceApplicationBuilder()
+                    .in(Mode.TEST)
+                    .build();
+
+            Helpers.start(this.application);
+        }
+
         private void failIfOtherTestsFailed() {
             //Get calling function - this should be the test
             StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
@@ -83,25 +105,38 @@ public class InventoryTest/* extends FluentTest*/{
         }
 
 
+
         @Before
         public void setup() {
             if(!setupIsDone){
+
+
+
                 ForHumanConvenience.playBeforeAllTestStartSound();
 //                Class.forName(jdbcDriver);
                 try {
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=?&password=?");
+                    Transaction txn = Ebean.beginTransaction();
+                    Connection conn = txn.getConnection();
                     Statement s = conn.createStatement();
                     s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
                     s.executeUpdate("CREATE DATABASE IF NOT EXISTS femr_test");
+                    Ebean.commitTransaction();
+                    Ebean.endTransaction();
+                    // Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=root&password=8Mary2BOO89&useSSL=false");
+                    // Statement s = conn.createStatement();
+                    // s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
+                    // s.executeUpdate("CREATE DATABASE IF NOT EXISTS femr_test");
+
                 }
                 catch(Exception e){
                     e.printStackTrace();
                     System.exit(1);
                 }
-                Map<String, String> h2OptionMap = new HashMap<String, String>();
-                h2OptionMap.put("MODE", "MYSQL");
-                application = fakeApplication(Helpers.inMemoryDatabase("femr", h2OptionMap));
-                Helpers.start(application);
+                //Map<String, String> h2OptionMap = new HashMap<String, String>();
+                //h2OptionMap.put("MODE", "MYSQL");
+                //application = fakeApplication(Helpers.inMemoryDatabase("femr", h2OptionMap));
+
+                // Helpers.start(application);
                 setupIsDone = true;
             }
         }
@@ -110,6 +145,7 @@ public class InventoryTest/* extends FluentTest*/{
         public void a_createAdminUserAndSignInAsNewAdmin() {
             failIfOtherTestsFailed();
             //Use Chromedriver, because if a test ever fails, you'd see it happen if you were watching
+
             running(testServer(), new ChromeDriver(), browser -> {
                 //Sign in as default admin
                 browser.goTo("/");
@@ -448,9 +484,15 @@ public class InventoryTest/* extends FluentTest*/{
                 System.out.println("In Teardown");
                 try {
                     ForHumanConvenience.playBeforeAllTestStartSound();
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/femr_test?user=?&password=?");
-                    Statement s = conn.createStatement();
-                    s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
+                   // Transaction txn = Ebean.beginTransaction();
+                   // Connection conn = txn.getConnection();
+                   // Statement s = conn.createStatement();
+                   // s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
+                   // Ebean.commitTransaction();
+                   // Ebean.endTransaction();
+                  //  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/femr_test?user=root&password=8Mary2BOO89&useSSL=false");
+                  //  Statement s = conn.createStatement();
+                  //  s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
                     //tear it all down and hope it doesn't take the test with it
                     Helpers.stop(application); //This is throwing nullptr for some reason, but it's at least caught. When process dies, so will this.
 

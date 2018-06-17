@@ -30,7 +30,9 @@ val appDependencies = Seq(
   "org.fluentlenium" % "fluentlenium-core" % "3.5.2",
 //  "org.fluentlenium" % "fluentlenium-adapter" % "3.5.2",
   "org.fluentlenium" % "fluentlenium-junit" % "3.5.2",
-  "javax.xml.bind" % "jaxb-api" % "2.1"
+  "javax.xml.bind" % "jaxb-api" % "2.1",
+  "org.testcontainers" % "testcontainers" % "1.8.0",
+  "org.testcontainers" % "mysql" % "1.8.0"
 //  "com.h2database" % "h2" % "1.4.197"
 
 )
@@ -59,7 +61,8 @@ val main = (project in file(".")).enablePlugins(PlayJava, PlayEbean).settings(
         newArg = if (ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
       } yield newArg
   },
-  sbt.Keys.fork in Test := false,
+  javaOptions in Test += "-Dconfig.file=conf/application.test.conf",
+  sbt.Keys.fork in Test := true,
   doc in Compile := target.map(_ / "none").value
 )
 

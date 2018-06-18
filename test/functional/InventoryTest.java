@@ -1,26 +1,24 @@
 package functional;
 
-//import jdk.nashorn.internal.ir.annotations.Immutable;
 import forhumanconvenience.ForHumanConvenience;
-        import org.junit.*;
+import org.junit.*;
 import org.junit.runners.MethodSorters;
-
 import static org.junit.Assert.*;
 
-        import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.support.ui.Select;
-import play.Application;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import org.fluentlenium.core.domain.FluentWebElement;
+import static org.fluentlenium.core.filter.FilterConstructor.*;
+
+import play.Application;
 import play.Mode;
-        import play.inject.guice.GuiceApplicationBuilder;
+import play.api.Configuration;
+import play.inject.guice.GuiceApplicationBuilder;
 import play.test.*;
-//import play.db.*;
 import static play.test.Helpers.*;
 
-import org.openqa.selenium.WebDriver;
-
-        import org.fluentlenium.core.domain.FluentWebElement;
-import static org.fluentlenium.core.filter.FilterConstructor.*;
+import javax.inject.*;
 
 /**
  * What is this?
@@ -51,23 +49,35 @@ import static org.fluentlenium.core.filter.FilterConstructor.*;
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class InventoryTest/* extends FluentTest*/{
+public class InventoryTest {
 
-        private static Boolean setupIsDone = false;
-        private static Boolean sequentialTestHasFailed = false;
-        private static WebDriver driver;
-        private static final String TEST_ADMIN_USERNAME = "test_admin_user@example.org";
-        private static String TEST_ADMIN_PASSWORD = "Test_Admin_User_Password1"; //password requirements as of 2.4.0: >= 8 chars long, >= 1 special char, >= 1 number, >= 1 uppercase, >= 1 lowercase
+    /**
+     * Test User Related Fields
+     */
+    @Inject
+    private static Configuration config;
+//    private static final String TEST_ADMIN_USERNAME = "test_admin_user@example.org";
+//    private static String TEST_ADMIN_PASSWORD = "Test_Admin_User_Password1";
+//    private static final String[] TEST_CITIES = {
+//            "TestCity1",
+//            "TestCity2",
+//            "TestCity3"
+//    };
 
-    static Application application;
+    /**
+     * Test-Boilerplate related fields
+     */
+    private static Application application;
+    private static Boolean noSequentialTestHasFailed;
+
+
 
         @BeforeClass
         public static void ultimateSetup(){
             application = new GuiceApplicationBuilder()
                     .in(Mode.TEST)
                     .build();
-
-            driver = new HtmlUnitDriver(true);
+            noSequentialTestHasFailed = Boolean.TRUE;
         }
 
         @AfterClass
@@ -83,9 +93,14 @@ public class InventoryTest/* extends FluentTest*/{
 
         private void sequentialTestWrapper(java.util.function.Consumer<TestBrowser> singleTestBlock){
             try{
-                running(testServer(), new HtmlUnitDriver(true), singleTestBlock);
+                if(noSequentialTestHasFailed){
+                    running(testServer(), new HtmlUnitDriver(true), singleTestBlock);
+                } else {
+                    throw new Exception("Previous Sequential Test has failed. This test cannot run.");
+                }
             } catch(Exception e){
                 e.printStackTrace();
+                noSequentialTestHasFailed = Boolean.FALSE;
             }
         }
 
@@ -123,7 +138,6 @@ public class InventoryTest/* extends FluentTest*/{
 
             browser.$("a", withText("Admin")).click(); //test for login by seeing if we can get admin panel. Not sure if click is needed, but you can't click something that isn't there.
             browser.$("a[href*='logout']").click();
-            browser.$("LOGGED IN FINAL 1");
         }
 
         private static void __private__createTripsAndAssignSelfToAllTrips(TestBrowser browser){
@@ -176,7 +190,7 @@ public class InventoryTest/* extends FluentTest*/{
                 browser.executeScript("document.getElementsByName('newTripEndDate')[0].value='201" + i + "-05-01'");
 
                 browser.$("button", withText().contains("Submit")).click();
-                
+
             }
 
             //Assign self to all trips
@@ -349,41 +363,6 @@ public class InventoryTest/* extends FluentTest*/{
 //                try{ Thread.sleep(1000000000); } catch(Exception e){}
 
             browser.$("a[href*='logout']").click();
-        }
-
-        @Before
-        public void setup() {
-            if(!setupIsDone){
-
-
-
-                ForHumanConvenience.playBeforeAllTestStartSound();
-//                Class.forName(jdbcDriver);
-                try {
-                    // Transaction txn = Ebean.beginTransaction();
-                    // Connection conn = txn.getConnection();
-                    // Statement s = conn.createStatement();
-                    // s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
-                    // s.executeUpdate("CREATE DATABASE IF NOT EXISTS femr_test");
-                    // Ebean.commitTransaction();
-                    // Ebean.endTransaction();
-                    // Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/?user=root&password=8Mary2BOO89&useSSL=false");
-                    // Statement s = conn.createStatement();
-                    // s.executeUpdate("DROP DATABASE IF EXISTS femr_test");
-                    // s.executeUpdate("CREATE DATABASE IF NOT EXISTS femr_test");
-
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-                //Map<String, String> h2OptionMap = new HashMap<String, String>();
-                //h2OptionMap.put("MODE", "MYSQL");
-                //application = fakeApplication(Helpers.inMemoryDatabase("femr", h2OptionMap));
-
-                // Helpers.start(application);
-                setupIsDone = true;
-            }
         }
 
         @Test

@@ -17,9 +17,11 @@ import play.Mode;
 import play.api.Configuration;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.test.*;
+//import play.Logger;
 import static play.test.Helpers.*;
 
 import javax.inject.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -69,13 +71,13 @@ public class InventoryTest {
     private static final List<String> TEST_CITIES = ConfigFactory.load().getStringList("test.functional.inventorytest.testCities");
     private static final List<String> TEST_COUNTRIES = ConfigFactory.load().getStringList("test.functional.inventorytest.testCountries");
     private static final List<String> TEST_TEAM_NAMES = ConfigFactory.load().getStringList("test.functional.inventorytest.testTeamNames");
-    private static final List<String> TEST_TEAM_LOCATIONS = ConfigFactory.load().getStringList("test.functional.inventorytest.testTeamLocationsCountries");
+    private static final List<String> TEST_TEAM_LOCATIONS = ConfigFactory.load().getStringList("test.functional.inventorytest.testTeamLocations");
     private static final List<String> TEST_TEAM_DESCRIPTIONS = ConfigFactory.load().getStringList("test.functional.inventorytest.testTeamDescriptions");
     private static final List<String> TEST_TRIP_START_DATES = ConfigFactory.load().getStringList("test.functional.inventorytest.testTripStartDates");
     private static final List<String> TEST_TRIP_END_DATES = ConfigFactory.load().getStringList("test.functional.inventorytest.testTripEndDates");
     private static final List<String> TEST_EXISTING_MEDICATIONS = ConfigFactory.load().getStringList("test.functional.inventorytest.existingMedications");
     private static final String TEST_CUSTOM_MEDICATION_BRAND_NAME = ConfigFactory.load().getString("test.functional.inventorytest.customMedicationBrandName");
-    private static final String TEST_CUSTOM_MEDICATION_UNIT = ConfigFactory.load().getString("test.functional.inventorytest.customMedicationUnit");
+    private static final List<String> TEST_CUSTOM_MEDICATION_UNITS = ConfigFactory.load().getStringList("test.functional.inventorytest.customMedicationUnits");
     private static final String TEST_CUSTOM_MEDICATION_FORM = ConfigFactory.load().getString("test.functional.inventorytest.customMedicationForm");
     private static final String TEST_CUSTOM_MEDICATION_INITIAL_QUANTITY = ConfigFactory.load().getString("test.functional.inventorytest.customMedicationInitialQuantity");
     private static final List<String> TEST_CUSTOM_MEDICATION_INGREDIENTS = ConfigFactory.load().getStringList("test.functional.inventorytest.customMedicationIngredients");
@@ -94,6 +96,8 @@ public class InventoryTest {
 
         @BeforeClass
         public static void ultimateSetup(){
+            if(enableAudioNotifications) ForHumanConvenience.playBeforeAllTestStartSound();
+            if(enableVisualNotifications)/* TODO */;
             application = new GuiceApplicationBuilder()
                     .in(Mode.TEST)
                     .build();
@@ -102,6 +106,9 @@ public class InventoryTest {
 
         @AfterClass
         public static void ultimateTeardown(){
+            if(enableAudioNotifications && noSequentialTestHasFailed) ForHumanConvenience.playAfterAllTestSuccessSound();
+            else if(enableAudioNotifications && !noSequentialTestHasFailed) ForHumanConvenience.playAfterAllTestFailSound();
+
             Helpers.stop(application);
         }
 
@@ -109,22 +116,40 @@ public class InventoryTest {
         public void singleTestSetup(){}
 
         @After
-        public void singleTestTeardown(){}
+        public void singleTestTeardown(){
+            if(enableAudioNotifications) ForHumanConvenience.playSingleTestEndSound();
+        }
 
-        private void sequentialTestWrapper(java.util.function.Consumer<TestBrowser> singleTestBlock){
+        private void sequentialTestWrapper(java.util.function.Consumer<TestBrowser> singleTestBlock) throws Exception{
+
             try{
                 if(noSequentialTestHasFailed){
                     running(testServer(), new HtmlUnitDriver(true), singleTestBlock);
                 } else {
-                    throw new Exception("Previous Sequential Test has failed. This test cannot run.");
+                    String callingTest = Thread.currentThread().getStackTrace()[2].getMethodName();
+                    //Set bold text then reset formatting
+                    System.out.println("\033[1m" +
+                            "[Test Failed] Previous Sequential Test has failed. " +
+                            "Test \'" + callingTest + "\' cannot run.\033[0m");
                 }
             } catch(Exception e){
-                e.printStackTrace();
+                //red backbround, bold, white text. This is to make this somewhat easier to find on the terminal.
+                String callingTest = Thread.currentThread().getStackTrace()[2].getMethodName();
+                System.out.println("\033[41m\033[1m\033[37m");
+                System.out.println("[Test Failed] " + callingTest);
+                System.out.println("[Exception Message]\n" + e.getMessage());
+                System.out.println("[Stacktrace]");
+                Arrays.asList(e.getStackTrace()).stream().forEach(x -> System.out.println(x.toString()));
+                System.out.println("\n\033[0m\n");
                 noSequentialTestHasFailed = Boolean.FALSE;
+
+                //throw, but do not catch exception so that JUNIT sees that the test actually failed.
+                throw new Exception("Failed Test: " + callingTest);
             }
         }
 
         private static void __private__createAdminUserAndSignInAsNewAdmin(TestBrowser browser){
+            //Get login page
             browser.goTo("/");
             browser.$("input[name='email']").fill().with("admin");
             browser.$("input[name='password']").fill().with("admin");
@@ -330,7 +355,8 @@ public class InventoryTest {
                         TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(0),
                         TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(1)
                 );
-                browser.$("select[name*='medicationUnit[]'] option", withText(TEST_CUSTOM_MEDICATION_UNIT)).click();
+                browser.$("select[name*='medicationUnit[]'] option", withText(TEST_CUSTOM_MEDICATION_UNITS.get(0))).get(0).click();
+                browser.$("select[name*='medicationUnit[]'] option", withText(TEST_CUSTOM_MEDICATION_UNITS.get(1))).get(1).click();
                 browser.$("input[name*='medicationQuantity']").fill().with(TEST_CUSTOM_MEDICATION_INITIAL_QUANTITY);
                 browser.$("select[name*='medicationForm'] option", withText(TEST_CUSTOM_MEDICATION_FORM)).click();
 
@@ -381,40 +407,51 @@ public class InventoryTest {
             browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(1)));
             browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(2)));
             browser.$("td", withText().contains(
-                    "testCustomMedName 40 mg testGeneric1 / 60 mg testGeneric2 (B/S)"));
+                    String.join(" ",
+                            new String[]{
+                                    TEST_CUSTOM_MEDICATION_BRAND_NAME,
+                                    TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(0),
+                                    TEST_CUSTOM_MEDICATION_UNITS.get(0),
+                                    TEST_CUSTOM_MEDICATION_INGREDIENTS.get(0),
+                                    "/",
+                                    TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(1),
+                                    TEST_CUSTOM_MEDICATION_UNITS.get(1),
+                                    TEST_CUSTOM_MEDICATION_INGREDIENTS.get(1),
+                                    TEST_CUSTOM_MEDICATION_FORM
+                            }
+                    )
+                )
+            );
             browser.$("td", withText("1"));
             browser.$("td", withText("2"));
             browser.$("td", withText("3"));
             browser.$("td", withText("4"));
 
-//                ForHumanConvenience.playAfterAllTestSuccessSound();
-//                try{ Thread.sleep(1000000000); } catch(Exception e){}
-
             browser.$("a[href*='logout']").click();
         }
 
         @Test
-        public void a_createAdminUserAndSignInAsNewAdmin() {
+        public void a_createAdminUserAndSignInAsNewAdmin() throws Throwable {
             sequentialTestWrapper(InventoryTest::__private__createAdminUserAndSignInAsNewAdmin);
         }
 
         @Test
-        public void b_createTripsAndAssignSelfToAllTrips(){
+        public void b_createTripsAndAssignSelfToAllTrips() throws Throwable{
             sequentialTestWrapper(InventoryTest::__private__createTripsAndAssignSelfToAllTrips);
         }
 
         @Test
-        public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames(){
+        public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames() throws Throwable{
             sequentialTestWrapper(InventoryTest::__private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames);
         }
 
         @Test
-        public void d_populateInventoryWithCustomMedications(){
+        public void d_populateInventoryWithCustomMedications() throws Throwable{
             sequentialTestWrapper(InventoryTest::__private__populateInventoryWithCustomMedications);
         }
 
         @Test
-        public void e_RemoveReaddButtonOnAllInventoriesExistingMedications(){
+        public void e_RemoveReaddButtonOnAllInventoriesExistingMedications() throws Throwable{
             sequentialTestWrapper(InventoryTest::__private__RemoveReaddButtonOnAllInventoriesExistingMedications);
         }
 

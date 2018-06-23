@@ -3,6 +3,7 @@ package forhumanconvenience;
 import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
+import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +18,7 @@ import java.net.URL;
  */
 
 /**
- * CLASS USE CASE:
+ * CLASS USE CASE/MOTIVATION:
  * Running tests with `sbt clean compile test` takes about 5 minutes or so.
  * This class is here to provide methods to play sound clips for you to know
  * when your tests actually start, when they fail, and when they end with success.
@@ -25,11 +26,13 @@ import java.net.URL;
  */
 public class ForHumanConvenience {
     //Sounds will not play if these are not absolute (fully qualified) filepaths.
-    private static final String successSoundUrlStr = "file://" + new File(".").getAbsolutePath() + "/test/forhumanconvenience/forhumanconvenienceassets/150879__nenadsimic__jazzy-chords.wav";
-    private static final String failSoundUrlStr = "file://" + new File(".").getAbsolutePath()+ "/test/forhumanconvenience/forhumanconvenienceassets/327738__distillerystudio__error-01.wav";
-    private static final String startSoundUrlStr = "file://" + new File(".").getAbsolutePath() + "/test/forhumanconvenience/forhumanconvenienceassets/432308__nicog__lose-bass.wav";
+    private static final String AFTER_ALL_TESTS_SUCCESS_SOUND_URL_STR = "file://" + new File(".").getAbsolutePath() + "/test/forhumanconvenience/forhumanconvenienceassets/150879__nenadsimic__jazzy-chords.wav";
+    private static final String SINGLE_TEST_FINISHED_SOUND_URL_STR = "file://" + new File(".").getAbsolutePath()+ "/test/forhumanconvenience/forhumanconvenienceassets/327738__distillerystudio__error-01.wav";
+    private static final String BEFORE_ALL_TESTS_START_SOUND_URL_STR = "file://" + new File(".").getAbsolutePath() + "/test/forhumanconvenience/forhumanconvenienceassets/432308__nicog__lose-bass.wav";
+    private static final String SINGLE_TEST_SUCCESS = "";
 
-    JFrame statusVisualAidFrame;
+    private static JFrame statusVisualAidFrame;
+    private static Boolean jframeIsInitialized;
 
     private static void playSound(String soundfileUrlStr){
         try{
@@ -43,17 +46,27 @@ public class ForHumanConvenience {
         try{Thread.sleep(3000);} catch (Exception e){};
     }
 
-    public static void playBeforeAllTestStartSound(){ playSound(startSoundUrlStr); }
+    public static void playAfterAllTestFailSound() {}
 
-    public static void playTestFailSound(){ playSound(failSoundUrlStr); }
+    public static void playBeforeAllTestStartSound(){ playSound(BEFORE_ALL_TESTS_START_SOUND_URL_STR); }
 
-    public static void playAfterAllTestSuccessSound(){ playSound(successSoundUrlStr); }
+    public static void playSingleTestEndSound(){ playSound(SINGLE_TEST_FINISHED_SOUND_URL_STR); }
+
+    public static void playAfterAllTestSuccessSound(){ playSound(AFTER_ALL_TESTS_SUCCESS_SOUND_URL_STR); }
 
     public static void showRunningVisualAid(){
 
     }
-
-    public static void showSuccessVisualAid(){}
-    public static void showFailVisualAid(){}
+    public static void initJframe(String windowName){
+        statusVisualAidFrame = new JFrame(windowName);
+        statusVisualAidFrame.setSize(200, 200);
+        statusVisualAidFrame.getContentPane().setBackground(Color.GREEN);
+        statusVisualAidFrame.setVisible(true);
+        jframeIsInitialized = Boolean.TRUE;
+    }
+    
+    public static void showFailVisualAid(){
+        statusVisualAidFrame.getContentPane().setBackground(Color.RED);
+    }
 
 }

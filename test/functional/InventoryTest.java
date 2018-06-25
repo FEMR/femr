@@ -2,10 +2,12 @@ package functional;
 
 import com.typesafe.config.ConfigFactory;
 import forhumanconvenience.ForHumanConvenience;
+import javafx.scene.text.TextBoundsType;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 import static org.junit.Assert.*;
 
+import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
@@ -97,7 +99,7 @@ public class InventoryTest {
         @BeforeClass
         public static void ultimateSetup(){
             if(enableAudioNotifications) ForHumanConvenience.playBeforeAllTestStartSound();
-            if(enableVisualNotifications)/* TODO */;
+            if(enableVisualNotifications) ForHumanConvenience.initJframe("InventoryTest Status");
             application = new GuiceApplicationBuilder()
                     .in(Mode.TEST)
                     .build();
@@ -106,8 +108,12 @@ public class InventoryTest {
 
         @AfterClass
         public static void ultimateTeardown(){
+            if(enableVisualNotifications) ForHumanConvenience.showTestFinished();
+
             if(enableAudioNotifications && noSequentialTestHasFailed) ForHumanConvenience.playAfterAllTestSuccessSound();
             else if(enableAudioNotifications && !noSequentialTestHasFailed) ForHumanConvenience.playAfterAllTestFailSound();
+
+
 
             Helpers.stop(application);
         }
@@ -142,6 +148,8 @@ public class InventoryTest {
                 Arrays.asList(e.getStackTrace()).stream().forEach(x -> System.out.println(x.toString()));
                 System.out.println("\n\033[0m\n");
                 noSequentialTestHasFailed = Boolean.FALSE;
+
+                if(enableVisualNotifications) ForHumanConvenience.showFailVisualAid();
 
                 //throw, but do not catch exception so that JUNIT sees that the test actually failed.
                 throw new Exception("Failed Test: " + callingTest);
@@ -430,6 +438,21 @@ public class InventoryTest {
             browser.$("a[href*='logout']").click();
         }
 
+        private static void __private__RemoveAllExistingInventoriesMedications(TestBrowser browser){}
+
+        private static void __private__ManuallyReaddExistingMedicationsAllThreeInventories(TestBrowser browser){}
+
+        private static void __private__RemoveCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){}
+
+        private static void __private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){}
+
+        private static void __private__SetMedicationQuantitiesToFiveEachAllThreeInventories(TestBrowser browser){}
+
+        private static void __private__TurnOnAllAdminConfigOptions(TestBrowser browser){}
+
+        private static void __private__CreateTestPatientThroughTriage(TestBrowser browser){}
+
+
         @Test
         public void a_createAdminUserAndSignInAsNewAdmin() throws Throwable {
             sequentialTestWrapper(InventoryTest::__private__createAdminUserAndSignInAsNewAdmin);
@@ -446,19 +469,60 @@ public class InventoryTest {
         }
 
         @Test
-        public void d_populateInventoryWithCustomMedications() throws Throwable{
+        public void d_populateAllThreeInventoriesWithCustomMedications() throws Throwable{
             sequentialTestWrapper(InventoryTest::__private__populateInventoryWithCustomMedications);
         }
 
         @Test
-        public void e_RemoveReaddButtonOnAllInventoriesExistingMedications() throws Throwable{
+        public void e_RemoveReaddButtonOnAllThreeInventoriesExistingMedications() throws Throwable{
             sequentialTestWrapper(InventoryTest::__private__RemoveReaddButtonOnAllInventoriesExistingMedications);
         }
 
-//        @Test
-//        public void e_RemoveThenManuallyReaddAllExistingInventoriesMedications(){
-//
-//        }
+        @Test
+        public void f_RemoveAllExistingMedicationsAllThreeInventories() throws Throwable{
+
+        }
+
+        @Test
+        public void g_ManuallyReaddExistingMedicationsAllThreeInventories() throws Throwable{
+
+        }
+
+        @Test
+        public void h_RemoveCustomMedicationInventoriesAllThreeInventories() throws Throwable{
+
+        }
+
+        @Test
+        public void i_ManuallyReaddCustomMedicationInventoriesAllThreeInventories() throws Throwable{
+
+        }
+
+        @Test
+        public void j_SetMedicationQuantitiesToFiveEachAllThreeInventories() throws Throwable {
+
+        }
+
+        @Test
+        public void k_TurnOnAllAdminConfigOptions() throws Throwable{
+
+        }
+
+        @Test
+        public void l_TurnOffAllAdminConfigOptions() throws Throwable{
+
+        }
+
+        @Test
+        public void m_CreateTestPatientThroughTriage() throws Throwable{
+
+        }
+
+        @Test
+        public void n_PrescribeAllFourMedsThrough() throws Throwable{
+
+        }
+
 //
 //        @Test
 //        public void f_RemoveThenManuallyReaddAllCustomInventoriesMedications(){

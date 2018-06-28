@@ -3,15 +3,19 @@ package functional;
 import com.typesafe.config.ConfigFactory;
 import forhumanconvenience.ForHumanConvenience;
 import javafx.scene.text.TextBoundsType;
+import org.apache.xpath.operations.Bool;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
+
+import static org.fluentlenium.core.filter.MatcherConstructor.regex;
 import static org.junit.Assert.*;
 
-import org.omg.PortableServer.THREAD_POLICY_ID;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import org.fluentlenium.core.domain.FluentWebElement;
+import org.fluentlenium.core.domain.*;
+import org.fluentlenium.core.filter.AttributeFilter;
 import static org.fluentlenium.core.filter.FilterConstructor.*;
 
 import play.Application;
@@ -85,7 +89,7 @@ public class InventoryTest {
     private static final List<String> TEST_CUSTOM_MEDICATION_INGREDIENTS = ConfigFactory.load().getStringList("test.functional.inventorytest.customMedicationIngredients");
     private static final List<String> TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS = ConfigFactory.load().getStringList("test.functional.inventorytest.customMedicationIngredientsStrengths");
 
-    /*
+    /**
      * Test-Boilerplate related fields
      */
     private static Application application;
@@ -95,7 +99,9 @@ public class InventoryTest {
     private static final Boolean enableVisualNotifications = ConfigFactory.load().getBoolean("test.functional.inventorytest.enableVisualNotifications");
 
 
-
+    /**
+     * JUNIT Bolerplate Methods
+     */
         @BeforeClass
         public static void ultimateSetup(){
             if(enableAudioNotifications) ForHumanConvenience.playBeforeAllTestStartSound();
@@ -125,7 +131,6 @@ public class InventoryTest {
         public void singleTestTeardown(){
             if(enableAudioNotifications) ForHumanConvenience.playSingleTestEndSound();
         }
-
         private void sequentialTestWrapper(java.util.function.Consumer<TestBrowser> singleTestBlock) throws Exception{
 
             try{
@@ -406,49 +411,135 @@ public class InventoryTest {
 
                 //refresh page
                 browser.goTo(browser.url());
+
+                //Check it's all still there, and that the medications are actually readded, not just duplicates
+                browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(0)));
+                browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(1)));
+                browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(2)));
+                browser.$("td", withText().contains(
+                        String.join(" ",
+                                new String[]{
+                                        TEST_CUSTOM_MEDICATION_BRAND_NAME,
+                                        TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(0),
+                                        TEST_CUSTOM_MEDICATION_UNITS.get(0),
+                                        TEST_CUSTOM_MEDICATION_INGREDIENTS.get(0),
+                                        "/",
+                                        TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(1),
+                                        TEST_CUSTOM_MEDICATION_UNITS.get(1),
+                                        TEST_CUSTOM_MEDICATION_INGREDIENTS.get(1),
+                                        TEST_CUSTOM_MEDICATION_FORM
+                                }
+                        )
+                        )
+                );
+                browser.$("td", withText("1"));
+                browser.$("td", withText("2"));
+                browser.$("td", withText("3"));
+                browser.$("td", withText("4"));
             }
-
-
-
-            //Check it's all still there, and that the medications are actually readded, not just duplicates
-            browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(0)));
-            browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(1)));
-            browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(2)));
-            browser.$("td", withText().contains(
-                    String.join(" ",
-                            new String[]{
-                                    TEST_CUSTOM_MEDICATION_BRAND_NAME,
-                                    TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(0),
-                                    TEST_CUSTOM_MEDICATION_UNITS.get(0),
-                                    TEST_CUSTOM_MEDICATION_INGREDIENTS.get(0),
-                                    "/",
-                                    TEST_CUSTOM_MEDICATION_INGREDIENTS_STRENGTHS.get(1),
-                                    TEST_CUSTOM_MEDICATION_UNITS.get(1),
-                                    TEST_CUSTOM_MEDICATION_INGREDIENTS.get(1),
-                                    TEST_CUSTOM_MEDICATION_FORM
-                            }
-                    )
-                )
-            );
-            browser.$("td", withText("1"));
-            browser.$("td", withText("2"));
-            browser.$("td", withText("3"));
-            browser.$("td", withText("4"));
 
             browser.$("a[href*='logout']").click();
         }
 
-        private static void __private__RemoveAllExistingInventoriesMedications(TestBrowser browser){}
+        private static void __private__RemoveAllExistingMedicationsAllThreeInventories(TestBrowser browser){
+            //Get login page
+            browser.goTo("/");
 
-        private static void __private__ManuallyReaddExistingMedicationsAllThreeInventories(TestBrowser browser){}
+            //Log back in as test administrator
+            browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
+            browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
+            browser.$("input[type='submit']").click();
 
-        private static void __private__RemoveCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){}
+            //Hit admin panel button at top of page
+            browser.$("a", withText("Admin")).click();
 
-        private static void __private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){}
+            //Hit User button to get user menu
+            browser.$("a", withText().contains("Inventory")).click();
+
+            for(int i = 0; i < 3; i++) {
+                browser.$("#selectTripInventory option").get(i).click();
+                browser.$("button", withText().contains("Select")).click();
+
+                List<FluentWebElement> existingMedicationRows = browser.$("tr",
+                        withPredicate(elem -> {
+                            return elem.$("td", withText().contains(regex("1|2|3"))).present();
+                        })
+                );
+                existingMedicationRows.stream().forEach(
+                        row -> row.$("button", withText("Remove")).click()
+                );
+
+                //refresh page
+                browser.goTo(browser.url());
+
+                //Check that the medications actually were removed
+                assertFalse("Existing med with medication id 1 on trip " + (i+1) + " should not be present.",
+                        browser.$("td", withText("1")).present());
+                assertFalse("Existing med with medication id 2 on trip " + (i+1) + " should not be present.",
+                        browser.$("td", withText("2")).present());
+                assertFalse("Existing med with medication id 3 on trip " + (i+1) + " should not be present.",
+                        browser.$("td", withText("3")).present());
+
+            }
+
+            browser.$("a[href*='logout']").click();
+        }
+
+        private static void __private__ManuallyReaddExistingMedicationsAllThreeInventories(TestBrowser browser){
+            __private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames(browser);
+        }
+
+        private static void __private__RemoveCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){
+            //Get login page
+            browser.goTo("/");
+
+            //Log back in as test administrator
+            browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
+            browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
+            browser.$("input[type='submit']").click();
+
+            //Hit admin panel button at top of page
+            browser.$("a", withText("Admin")).click();
+
+            //Hit User button to get user menu
+            browser.$("a", withText().contains("Inventory")).click();
+
+            for(int i = 0; i < 3; i++) {
+                browser.$("#selectTripInventory option").get(i).click();
+                browser.$("button", withText().contains("Select")).click();
+
+                List<FluentWebElement> existingMedicationRows = browser.$("tr",
+                        withPredicate(elem -> {
+                            return elem.$("td", withText().contains(regex("4"))).present();
+                        })
+                );
+                existingMedicationRows.stream().forEach(
+                        row -> row.$("button", withText("Remove")).click()
+                );
+
+                //refresh page
+                browser.goTo(browser.url());
+
+                //Check that the medications actually were removed
+                assertFalse("Custom med with medication id 4 on trip " + (i+1) + " should not be present.",
+                        browser.$("td", withText("4")).present());
+
+            }
+
+            browser.$("a[href*='logout']").click();
+        }
+
+        private static void __private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){
+            __private__populateInventoryWithCustomMedications(browser);
+        }
 
         private static void __private__SetMedicationQuantitiesToFiveEachAllThreeInventories(TestBrowser browser){}
 
+        //Does Not Test that the settings actually activate, just that actually setting them does not break
         private static void __private__TurnOnAllAdminConfigOptions(TestBrowser browser){}
+
+        //Does Not Test that the settings actually deactivate, just that unsetting them does not break
+        private static void __private__TurnOffAllAdminConfigOptions(TestBrowser browser){}
 
         private static void __private__CreateTestPatientThroughTriage(TestBrowser browser){}
 
@@ -480,22 +571,22 @@ public class InventoryTest {
 
         @Test
         public void f_RemoveAllExistingMedicationsAllThreeInventories() throws Throwable{
-
+            sequentialTestWrapper(InventoryTest::__private__RemoveAllExistingMedicationsAllThreeInventories);
         }
 
         @Test
         public void g_ManuallyReaddExistingMedicationsAllThreeInventories() throws Throwable{
-
+            sequentialTestWrapper(InventoryTest::__private__ManuallyReaddExistingMedicationsAllThreeInventories);
         }
 
         @Test
         public void h_RemoveCustomMedicationInventoriesAllThreeInventories() throws Throwable{
-
+            sequentialTestWrapper(InventoryTest::__private__RemoveCustomMedicationInventoriesAllThreeInventories);
         }
 
         @Test
         public void i_ManuallyReaddCustomMedicationInventoriesAllThreeInventories() throws Throwable{
-
+            sequentialTestWrapper(InventoryTest::__private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories);
         }
 
         @Test

@@ -26,15 +26,11 @@ val appDependencies = Seq(
   "com.h2database" % "h2" % "1.4.193",
   "com.jcraft" % "jsch" % "0.1.54",
   "org.seleniumhq.selenium" % "selenium-java" % "3.9.1",
-//  "org.fluentium" % "fluentlenium-junit" % "3.5.0",
   "org.fluentlenium" % "fluentlenium-core" % "3.5.2",
-//  "org.fluentlenium" % "fluentlenium-adapter" % "3.5.2",
   "org.fluentlenium" % "fluentlenium-junit" % "3.5.2",
   "javax.xml.bind" % "jaxb-api" % "2.1",
   "org.testcontainers" % "testcontainers" % "1.8.0",
   "org.testcontainers" % "mysql" % "1.8.0"
-//  "com.h2database" % "h2" % "1.4.197"
-
 )
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 

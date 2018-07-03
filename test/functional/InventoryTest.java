@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import org.fluentlenium.core.domain.*;
@@ -26,6 +27,8 @@ import static play.test.Helpers.*;
 import javax.inject.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * What is this?
@@ -42,7 +45,7 @@ import java.util.List;
  *
  * Note, fluentium is built on top of selenium. You can take a FluentWebElement
  * and convert it down to a selenium WebElement, where there's a little less abstraction.
- * This is needed for inputs of type date.
+ * This is needed for inputs of type date, but using JS to set those is recommended.
  *
  * If tests are failing, the only errors one is likely to get from this set
  * of tests are ones along the lines of "Selenium can't find element X".
@@ -51,7 +54,9 @@ import java.util.List;
  *
  * If you are adding tests, I recommend using ChromeDriver or other webdriver with a GUI
  * so that you can see your tests in action. This also means that you have to have Chrome
- * installed in the default place on your OS.
+ * installed in the default place on your OS. If you are using Chromedriver, then be
+ * careful not to scroll/click in the browser during tests. Clicks are done by selenium in
+ * a "point on screen (ex 300,200) where element is" not "send-signal to element" type of way.
  *
  * The following line is also helpful to stop
  * execution so you can look at the browser and page elements.
@@ -64,8 +69,8 @@ public class InventoryTest {
     /**
      * Test User Related Fields.
      */
-//    @Inject
-
+    private static final String DEFAULT_ADMIN_USERNAME = ConfigFactory.load().getString("default.admin.username");
+    private static final String DEFAULT_ADMIN_PASSWORD = ConfigFactory.load().getString("default.admin.password");
     private static final String TEST_ADMIN_USERNAME = ConfigFactory.load().getString("test.functional.inventorytest.adminUsername");
     private static final String TEST_ADMIN_INITIAL_PASSWORD = ConfigFactory.load().getString("test.functional.inventorytest.initialAdminPassword");
     private static final String TEST_ADMIN_FIRST_NAME = ConfigFactory.load().getString("test.functional.inventorytest.adminFirstName");
@@ -119,8 +124,8 @@ public class InventoryTest {
         Helpers.stop(application);
 
         if(noSequentialTestHasFailed){
-            System.out.println("\033[42m\033[1m(b^_^)b");
-            System.out.println("Inventory Looks Good.\033[0m");
+            System.out.println("");
+            System.out.print("\033[42m\033[1m| (b^_^)b | Inventory Looks Good.\n\033[0m");
         }
     }
 
@@ -136,7 +141,7 @@ public class InventoryTest {
 
         try{
             if(noSequentialTestHasFailed){
-                running(testServer(), new HtmlUnitDriver(true), singleTestBlock);
+                running(testServer(),  new ChromeDriver()/*new HtmlUnitDriver(true)*/, singleTestBlock);
             } else {
                 String callingTest = Thread.currentThread().getStackTrace()[2].getMethodName();
                 //Set bold text then reset formatting
@@ -145,8 +150,11 @@ public class InventoryTest {
                         "Test \'" + callingTest + "\' cannot run.\033[0m");
             }
         } catch(Exception e){
+
             //red backbround, bold, white text. This is to make this somewhat easier to find on the terminal.
             String callingTest = Thread.currentThread().getStackTrace()[2].getMethodName();
+            int lineOfExceptionOrigin = Thread.currentThread().getStackTrace()[2].getLineNumber();
+            String classOfExceptionOrigin = Thread.currentThread().getStackTrace()[2].getClassName();
             System.out.println("\033[41m\033[1m\033[37m");
             System.out.println("[Test Failed] " + callingTest);
             System.out.println("[Exception Message]\n" + e.getMessage());
@@ -162,12 +170,26 @@ public class InventoryTest {
         }
     }
 
+    private static java.util.function.Consumer<TestBrowser> wrapLoginAndLogout(
+                                                                               java.util.function.Consumer<TestBrowser> singleTestBlock,
+                                                                               String username,
+                                                                               String password){
+
+        return (java.util.function.Consumer<TestBrowser>) (TestBrowser browser) -> {
+                //Log back in as test administrator
+                browser.goTo("/");
+                browser.$("input[name='email']").fill().with(username);
+                browser.$("input[name='password']").fill().with(password);
+                browser.$("input[type='submit']").click();
+
+                singleTestBlock.accept(browser); //run singleTestBlock
+
+                browser.$("a[href*='logout']").click();
+        };
+
+    }
+
     private static void __private__createAdminUserAndSignInAsNewAdmin(TestBrowser browser){
-        //Get login page
-        browser.goTo("/");
-        browser.$("input[name='email']").fill().with("admin");
-        browser.$("input[name='password']").fill().with("admin");
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page
         browser.$("a", withText("Admin")).click();
@@ -196,16 +218,10 @@ public class InventoryTest {
         browser.$("input[type='submit']").click();
 
         browser.$("a", withText("Admin")).click(); //test for login by seeing if we can get admin panel. Not sure if click is needed, but you can't click something that isn't there.
-        browser.$("a[href*='logout']").click();
+
     }
 
     private static void __private__createTripsAndAssignSelfToAllTrips(TestBrowser browser){
-        browser.goTo("/");
-
-        //Log back in as test administrator
-        browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
-        browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page, and go to inventory page, which should show a redirect page to manage trips
         browser.$("a", withText("Admin")).click();
@@ -242,8 +258,8 @@ public class InventoryTest {
 
             browser.$("input[value*='Afghanistan']");//Trip country updates automatically. Check to find element with value Ukraine. Throws expection if it can't be found, meaning that input didn't update.
 
-            //Date inputs are finicky, and only take input as selenium Webelements as opposed to being FuentWebElements.
-            //Only alternative is to use JS, but you can't do that if you want to use HTMLUNIT driver
+            //Date inputs are finicky, and only take input as selenium Webelements as opposed to being FluentWebElements.
+            //Cut to the chase and just set them with JS
             browser.executeScript("document.getElementsByName('newTripStartDate')[0].value='" + TEST_TRIP_START_DATES.get(i) +"'");
             browser.executeScript("document.getElementsByName('newTripEndDate')[0].value='" + TEST_TRIP_END_DATES.get(i) +"'");
 
@@ -256,14 +272,14 @@ public class InventoryTest {
             browser.$("button", withText().contains("Edit")).get(i).click(); //The edit button form action will bind to numbers starting at 1. the first form adds trips. skip it.
 
             browser.$("input[placeholder*='Add users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
-            browser.$("option", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
+            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
 
             browser.$("button[type='submit']", withText("Add")).click();
 
             browser.$("td", withText(TEST_ADMIN_FIRST_NAME));//Check to see that it added the test admin user. Throws exception if it's not in the table.
 
             browser.$("input[placeholder*='Remove users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
-            browser.$("option", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
+            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
 
             browser.$("button[type='submit']", withText("Remove")).click();
             try{
@@ -277,23 +293,16 @@ public class InventoryTest {
             }
 
             browser.$("input[placeholder*='Add users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
-            browser.$("option", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
+            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
             browser.$("button[type='submit']", withText("Add")).click();
             browser.$("td", withText(TEST_ADMIN_FIRST_NAME));//Check to see that it re-added the test admin user. Throws exception if it's not in the table.
 
             browser.$("a", withText().contains("Trips")).click();//go back to manage trips page.
         }
-        browser.$("a[href*='logout']").click();
+
     }
 
     private static void __private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames(TestBrowser browser){
-        //Get login page
-        browser.goTo("/");
-
-        //Log back in as test administrator
-        browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
-        browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page
         browser.$("a", withText("Admin")).click();
@@ -327,23 +336,14 @@ public class InventoryTest {
             browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(0)));
             browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(1)));
             browser.$("td", withText().contains(TEST_EXISTING_MEDICATIONS.get(2)));
-            browser.$("td", withText("1"));
-            browser.$("td", withText("2"));
-            browser.$("td", withText("3"));
+            browser.$("td .sorting_1", withText("1"));
+            browser.$("td .sorting_1", withText("2"));
+            browser.$("td .sorting_1", withText("3"));
         }
-
-        browser.$("a[href*='logout']").click();
 
     }
 
     private static void __private__populateInventoryWithCustomMedications(TestBrowser browser){
-        //Get login page
-        browser.goTo("/");
-
-        //Log back in as test administrator
-        browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
-        browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page
         browser.$("a", withText("Admin")).click();
@@ -374,21 +374,17 @@ public class InventoryTest {
             browser.$("#submitMedicationButton").click();
 
             //check that the meds were actually put there. just see if med is there, fluentium will throw exception if they're not there.
-            browser.$("td", withText().contains("4")); // medication id of custom med
+            browser.$("td .sorting_1", withText("4")); // medication id of custom med
             browser.$(".editCurrentQuantity", withText().contains("2")); //should be the only thing with quantity two
+
+            assertFalse("Custom Med readded with new ID (seperate medication).",
+                    browser.$(".sorting_1", withText().contains(regex("5"))).present()
+            );
         }
 
-        browser.$("a[href*='logout']").click();
     }
 
     private static void __private__RemoveReaddButtonOnAllInventoriesExistingMedications(TestBrowser browser){
-        //Get login page
-        browser.goTo("/");
-
-        //Log back in as test administrator
-        browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
-        browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page
         browser.$("a", withText("Admin")).click();
@@ -428,23 +424,15 @@ public class InventoryTest {
                     })
                     )
             );
-            browser.$("td", withText("1"));
-            browser.$("td", withText("2"));
-            browser.$("td", withText("3"));
-            browser.$("td", withText("4"));
+            browser.$("td .sorting_1", withText("1"));
+            browser.$("td .sorting_1", withText("2"));
+            browser.$("td .sorting_1", withText("3"));
+            browser.$("td .sorting_1", withText("4"));
         }
 
-        browser.$("a[href*='logout']").click();
     }
 
     private static void __private__RemoveAllExistingMedicationsAllThreeInventories(TestBrowser browser){
-        //Get login page
-        browser.goTo("/");
-
-        //Log back in as test administrator
-        browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
-        browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page
         browser.$("a", withText("Admin")).click();
@@ -456,10 +444,14 @@ public class InventoryTest {
             browser.$("#selectTripInventory option").get(i).click();
             browser.$("button", withText().contains("Select")).click();
 
-            List<FluentWebElement> existingMedicationRows = browser.$("tr",
-                    withPredicate(elem -> {
-                        return elem.$("td", withText().contains(regex("1|2|3"))).present(); })
+            System.out.println("B");
+
+            List<FluentWebElement> existingMedicationRows = browser.$("#inventoryTable tr",
+                    withPredicate( tr -> {
+                        return tr.$(".sorting_1", withTextContent().contains(regex("1|2|3"))).present();
+                    })
             );
+
             existingMedicationRows.stream().forEach(
                     row -> row.$("button", withText("Remove")).click()
             );
@@ -469,14 +461,13 @@ public class InventoryTest {
 
             //Check that the medications actually were removed
             assertFalse("Existing med with medication id 1 on trip " + (i+1) + " should not be present.",
-                    browser.$("td", withText("1")).present());
+                    browser.$("td .sorting_1", withText("1")).present());
             assertFalse("Existing med with medication id 2 on trip " + (i+1) + " should not be present.",
-                    browser.$("td", withText("2")).present());
+                    browser.$("td .sorting_1", withText("2")).present());
             assertFalse("Existing med with medication id 3 on trip " + (i+1) + " should not be present.",
-                    browser.$("td", withText("3")).present());
+                    browser.$("td .sorting_1", withText("3")).present());
         }
 
-        browser.$("a[href*='logout']").click();
     }
 
     private static void __private__ManuallyReaddExistingMedicationsAllThreeInventories(TestBrowser browser){
@@ -484,13 +475,6 @@ public class InventoryTest {
     }
 
     private static void __private__RemoveCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){
-        //Get login page
-        browser.goTo("/");
-
-        //Log back in as test administrator
-        browser.$("input[name='email']").fill().with(TEST_ADMIN_USERNAME);
-        browser.$("input[name='password']").fill().with(TEST_ADMIN_INITIAL_PASSWORD);
-        browser.$("input[type='submit']").click();
 
         //Hit admin panel button at top of page
         browser.$("a", withText("Admin")).click();
@@ -504,7 +488,7 @@ public class InventoryTest {
 
             List<FluentWebElement> existingMedicationRows = browser.$("tr",
                     withPredicate(elem -> {
-                        return elem.$("td", withText().contains(regex("4"))).present();
+                        return elem.$(".sorting_1", withText().contains(regex("4"))).present();
                     })
             );
             existingMedicationRows.stream().forEach(
@@ -516,20 +500,53 @@ public class InventoryTest {
 
             //Check that the medications actually were removed
             assertFalse("Custom med with medication id 4 on trip " + (i+1) + " should not be present.",
-                    browser.$("td", withText("4")).present());
+                    browser.$(".sorting_1", withText().contains(regex("4"))).present());
         }
 
-        browser.$("a[href*='logout']").click();
     }
 
     private static void __private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories(TestBrowser browser){
         __private__populateInventoryWithCustomMedications(browser);
     }
 
-    private static void __private__SetMedicationQuantitiesToFiveEachAllThreeInventories(TestBrowser browser){}
+    private static void __private__SetMedicationQuantitiesToFiveEachAllThreeInventories(TestBrowser browser){
+
+        browser.$("a", withText("Admin")).click();
+
+        //Hit User button to get user menu
+        browser.$("a", withText().contains("Inventory")).click();
+
+        for(int i = 0; i < 3; i++) {
+            browser.$("#selectTripInventory option").get(i).click();
+            browser.$("button", withText().contains("Select")).click();
+
+            //click buttons to be able to edit, then edit initial medication quantity
+            browser.$(".totalQuantity button").click();
+            browser.$(".totalQuantity input[type='number']").fill().with("5");
+
+            //click buttons to be able to edit, then edit current medication quantity
+            browser.$(".currentQuantity button").click();
+            browser.$(".currentQuantity input[type='number']").fill().with("5");
+
+            //refresh page , then check to make sure that inventory quantities set actually hit the DB
+            browser.goTo(browser.url());
+
+            //loop four times to make sure all the meds we put in are still there
+            List<FluentWebElement> initialQuantityTds = browser.$(".totalQuantity");
+            List<FluentWebElement> currentQuantityTds = browser.$(".currentQuantity");
+            for(int j = 0; j < 4; j++){
+                initialQuantityTds.get(j).$("span", withText("4"));
+                currentQuantityTds.get(j).$("span", withText("4"));
+            }
+
+        }
+
+    }
 
     //Does Not Test that the settings actually activate, just that actually setting them does not break
-    private static void __private__TurnOnAllAdminConfigOptions(TestBrowser browser){}
+    private static void __private__TurnOnAllAdminConfigOptions(TestBrowser browser){
+
+    }
 
     //Does Not Test that the settings actually deactivate, just that unsetting them does not break
     private static void __private__TurnOffAllAdminConfigOptions(TestBrowser browser){}
@@ -539,52 +556,102 @@ public class InventoryTest {
 
     @Test
     public void a_createAdminUserAndSignInAsNewAdmin() throws Throwable {
-        sequentialTestWrapper(InventoryTest::__private__createAdminUserAndSignInAsNewAdmin);
+        sequentialTestWrapper(
+                wrapLoginAndLogout(InventoryTest::__private__createAdminUserAndSignInAsNewAdmin,
+                        DEFAULT_ADMIN_USERNAME,
+                        DEFAULT_ADMIN_PASSWORD
+                )
+        );
     }
 
     @Test
     public void b_createTripsAndAssignSelfToAllTrips() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__createTripsAndAssignSelfToAllTrips);
+        sequentialTestWrapper(
+                wrapLoginAndLogout(InventoryTest::__private__createTripsAndAssignSelfToAllTrips,
+                        TEST_ADMIN_USERNAME,
+                        TEST_ADMIN_INITIAL_PASSWORD
+                )
+        );
     }
 
     @Test
     public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames);
+        sequentialTestWrapper(
+                wrapLoginAndLogout(
+                        InventoryTest::__private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames,
+                        TEST_ADMIN_USERNAME,
+                        TEST_ADMIN_INITIAL_PASSWORD
+                )
+        );
     }
 
     @Test
     public void d_populateAllThreeInventoriesWithCustomMedications() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__populateInventoryWithCustomMedications);
+        sequentialTestWrapper(
+                wrapLoginAndLogout(InventoryTest::__private__populateInventoryWithCustomMedications,
+                        TEST_ADMIN_USERNAME,
+                        TEST_ADMIN_INITIAL_PASSWORD
+                )
+        );
     }
-
-    @Test
-    public void e_RemoveReaddButtonOnAllThreeInventoriesExistingMedications() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__RemoveReaddButtonOnAllInventoriesExistingMedications);
-    }
-
-    @Test
-    public void f_RemoveAllExistingMedicationsAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__RemoveAllExistingMedicationsAllThreeInventories);
-    }
-
-    @Test
-    public void g_ManuallyReaddExistingMedicationsAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__ManuallyReaddExistingMedicationsAllThreeInventories);
-    }
-
-    @Test
-    public void h_RemoveCustomMedicationInventoriesAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__RemoveCustomMedicationInventoriesAllThreeInventories);
-    }
-
-    @Test
-    public void i_ManuallyReaddCustomMedicationInventoriesAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(InventoryTest::__private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories);
-    }
+//
+//    @Test
+//    public void e_RemoveReaddButtonOnAllThreeInventoriesExistingMedications() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__RemoveReaddButtonOnAllInventoriesExistingMedications,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void f_RemoveAllExistingMedicationsAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__RemoveAllExistingMedicationsAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void g_ManuallyReaddExistingMedicationsAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__ManuallyReaddExistingMedicationsAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void h_RemoveCustomMedicationInventoriesAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__RemoveCustomMedicationInventoriesAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD)
+//        );
+//    }
+//
+//    @Test
+//    public void i_ManuallyReaddCustomMedicationInventoriesAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
 
     @Test
     public void j_SetMedicationQuantitiesToFiveEachAllThreeInventories() throws Throwable {
-
+        sequentialTestWrapper(
+                wrapLoginAndLogout(InventoryTest::__private__SetMedicationQuantitiesToFiveEachAllThreeInventories,
+                        TEST_ADMIN_USERNAME,
+                        TEST_ADMIN_INITIAL_PASSWORD
+                )
+        );
     }
 
     @Test

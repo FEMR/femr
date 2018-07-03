@@ -92,7 +92,6 @@ public class DatabaseSeeder {
     }
 
     private void seed() {
-        System.out.println("In DatabaseSeeder");
         seedMissionTripInformation();
         seedSystemSettings();
         seedSystemSettingsDescriptions();

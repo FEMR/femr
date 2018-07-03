@@ -545,11 +545,43 @@ public class InventoryTest {
 
     //Does Not Test that the settings actually activate, just that actually setting them does not break
     private static void __private__TurnOnAllAdminConfigOptions(TestBrowser browser){
+        browser.$("a", withText("Admin")).click();
+
+        //Hit User button to get config menu
+        browser.$("a", withText().contains("Configure")).click();
+
+        browser.$("input[type='checkbox']:not([checked='checked'])").click();
+
+        browser.$("input[value='Save']").click();
+
+        //hitting save redirects you off the page, so go back to config
+        browser.$("a", withText().contains("Configure")).click();
+
+        assertTrue("No admin panel config option check boxes should be checked, but >=1 of them are.",
+                browser.$("input[type='checkbox']:not([checked='checked'])").size() == 0
+        );
 
     }
 
     //Does Not Test that the settings actually deactivate, just that unsetting them does not break
-    private static void __private__TurnOffAllAdminConfigOptions(TestBrowser browser){}
+    private static void __private__TurnOffAllAdminConfigOptions(TestBrowser browser){
+        browser.$("a", withText("Admin")).click();
+
+        //Hit User button to get user menu
+        browser.$("a", withText().contains("Configure")).click();
+
+        browser.$("input[type='checkbox'][checked='checked']").click();
+
+        browser.$("input[value='Save']").click();
+
+        //hitting save redirects you off the page, so go back to config
+        browser.$("a", withText().contains("Configure")).click();
+
+        assertTrue("All admin panel config option check boxes should all be checked, but they are not.",
+                browser.$("input[type='checkbox'][checked='checked']").size() == 0
+        );
+
+    }
 
     private static void __private__CreateTestPatientThroughTriage(TestBrowser browser){}
 
@@ -564,90 +596,100 @@ public class InventoryTest {
         );
     }
 
-    @Test
-    public void b_createTripsAndAssignSelfToAllTrips() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__createTripsAndAssignSelfToAllTrips,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
+//    @Test
+//    public void b_createTripsAndAssignSelfToAllTrips() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__createTripsAndAssignSelfToAllTrips,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(
+//                        InventoryTest::__private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void d_populateAllThreeInventoriesWithCustomMedications() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__populateInventoryWithCustomMedications,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void e_RemoveReaddButtonOnAllThreeInventoriesExistingMedications() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__RemoveReaddButtonOnAllInventoriesExistingMedications,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void f_RemoveAllExistingMedicationsAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__RemoveAllExistingMedicationsAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void g_ManuallyReaddExistingMedicationsAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__ManuallyReaddExistingMedicationsAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void h_RemoveCustomMedicationInventoriesAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__RemoveCustomMedicationInventoriesAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD)
+//        );
+//    }
+//
+//    @Test
+//    public void i_ManuallyReaddCustomMedicationInventoriesAllThreeInventories() throws Throwable{
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
+//
+//    @Test
+//    public void j_SetMedicationQuantitiesToFiveEachAllThreeInventories() throws Throwable {
+//        sequentialTestWrapper(
+//                wrapLoginAndLogout(InventoryTest::__private__SetMedicationQuantitiesToFiveEachAllThreeInventories,
+//                        TEST_ADMIN_USERNAME,
+//                        TEST_ADMIN_INITIAL_PASSWORD
+//                )
+//        );
+//    }
 
     @Test
-    public void c_populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames() throws Throwable{
+    public void l_TurnOffAllAdminConfigOptions() throws Throwable{
         sequentialTestWrapper(
-                wrapLoginAndLogout(
-                        InventoryTest::__private__populateAllThreeInventoriesWithExistingMedicationsThatHaveBrandNames,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
-
-    @Test
-    public void d_populateAllThreeInventoriesWithCustomMedications() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__populateInventoryWithCustomMedications,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
-
-    @Test
-    public void e_RemoveReaddButtonOnAllThreeInventoriesExistingMedications() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__RemoveReaddButtonOnAllInventoriesExistingMedications,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
-
-    @Test
-    public void f_RemoveAllExistingMedicationsAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__RemoveAllExistingMedicationsAllThreeInventories,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
-
-    @Test
-    public void g_ManuallyReaddExistingMedicationsAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__ManuallyReaddExistingMedicationsAllThreeInventories,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
-
-    @Test
-    public void h_RemoveCustomMedicationInventoriesAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__RemoveCustomMedicationInventoriesAllThreeInventories,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD)
-        );
-    }
-
-    @Test
-    public void i_ManuallyReaddCustomMedicationInventoriesAllThreeInventories() throws Throwable{
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__ManuallyReaddCustomMedicationInventoriesAllThreeInventories,
-                        TEST_ADMIN_USERNAME,
-                        TEST_ADMIN_INITIAL_PASSWORD
-                )
-        );
-    }
-
-    @Test
-    public void j_SetMedicationQuantitiesToFiveEachAllThreeInventories() throws Throwable {
-        sequentialTestWrapper(
-                wrapLoginAndLogout(InventoryTest::__private__SetMedicationQuantitiesToFiveEachAllThreeInventories,
+                wrapLoginAndLogout(InventoryTest::__private__TurnOnAllAdminConfigOptions,
                         TEST_ADMIN_USERNAME,
                         TEST_ADMIN_INITIAL_PASSWORD
                 )
@@ -656,21 +698,24 @@ public class InventoryTest {
 
     @Test
     public void k_TurnOnAllAdminConfigOptions() throws Throwable{
+        sequentialTestWrapper(
+                wrapLoginAndLogout(InventoryTest::__private__TurnOffAllAdminConfigOptions,
+                        TEST_ADMIN_USERNAME,
+                        TEST_ADMIN_INITIAL_PASSWORD
+                )
+        );
     }
 
-    @Test
-    public void l_TurnOffAllAdminConfigOptions() throws Throwable{
 
-    }
 
-    @Test
-    public void m_CreateTestPatientThroughTriage() throws Throwable{
-
-    }
-
-    @Test
-    public void n_PrescribeAllFourMedsThrough() throws Throwable{
-
-    }
+//    @Test
+//    public void m_CreateTestPatientThroughTriage() throws Throwable{
+//
+//    }
+//
+//    @Test
+//    public void n_PrescribeAllFourMedsThrough() throws Throwable{
+//
+//    }
 
 }

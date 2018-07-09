@@ -1,5 +1,6 @@
 package functional;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.typesafe.config.ConfigFactory;
 import forhumanconvenience.ForHumanConvenience;
 import org.junit.*;
@@ -141,7 +142,10 @@ public class InventoryTest {
 
         try{
             if(noSequentialTestHasFailed){
-                running(testServer(), new HtmlUnitDriver(true), singleTestBlock);
+                //run htmlunit driver with JS enabled
+                //new HtmlUnitDriver(BrowserVersion.CHROME, true)
+                //new ChromeDriver()
+                running(testServer(), new ChromeDriver(), singleTestBlock);
             } else {
                 String callingTest = Thread.currentThread().getStackTrace()[2].getMethodName();
                 //Set bold text then reset formatting
@@ -223,25 +227,28 @@ public class InventoryTest {
 
     private static void __private__createTripsAndAssignSelfToAllTrips(TestBrowser browser){
 
+        System.out.println("IN TEST B");
         //Hit admin panel button at top of page, and go to inventory page, which should show a redirect page to manage trips
         browser.$("a", withText("Admin")).click();
         browser.$("a", withText().contains("Inventory")).click();
-
+        System.out.println("IN TEST B2");
         //User is not added to any trips, and no trips exist yet, so hit the button on inventory page to create trips.
         browser.$("a", withText().contains("Manage Trip Users")).click();
 
         //Hit add city button and add 3 new cities
         browser.$("a", withText().contains("Manage Cities")).click();
 
+        System.out.println("IN MANAGE CITIES");
         for(int i = 0; i < 3; i++){
             browser.$("input", withName("newCity")).fill().with(TEST_CITIES.get(i));
             browser.$("select[name='newCityCountry']").$("option", withText(TEST_COUNTRIES.get(i))).click();
             browser.$("button[type='submit']").click();
         }
 
+
         //Hit Manage teams button and add 3 new teams
         browser.$("a", withText().contains("Manage Teams")).click();
-
+        System.out.println("IN MANAGE TEAMS");
         for(int i = 0; i < 3; i++){
             browser.$("input[name='newTeamName']").fill().with(TEST_TEAM_NAMES.get(i));
             browser.$("input[name='newTeamLocation']").fill().with(TEST_TEAM_LOCATIONS.get(i));
@@ -251,6 +258,7 @@ public class InventoryTest {
 
         //Hit Manage trip button, add 3 new trips, each with the teams and cities given before
         browser.$("a", withText().contains("Manage Trips")).click();
+        System.out.println("IN MANAGE TRIPS");
         for(int i = 0; i < 3; i++) {
 
             browser.$("select[name='newTripTeamName']").fillSelect().withText(TEST_TEAM_NAMES.get(i));
@@ -267,21 +275,33 @@ public class InventoryTest {
 
         }
 
+        System.out.println("AFTER TRIP CREATION");
+
         //Assign self to all trips
         for(int i = 0; i < 3; i++){
             browser.$("button", withText().contains("Edit")).get(i).click(); //The edit button form action will bind to numbers starting at 1. the first form adds trips. skip it.
+            System.out.println("IN ADD USER TO TRIP");
 
-            browser.$("input[placeholder*='Add users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
-            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
-
+//            browser.$("input[placeholder*='Add users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
+//            System.out.println("AAAAA");
+            browser.$("option", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();
+            //In theory, the only li not in the nav is in these lists. This is a weird workaround
+//            browser.$("li")
+            try{Thread.sleep(1000);}catch(Exception e){}
+//            browser.$(".select2-results__option select2-results__option--highlighted").click();
+            System.out.println("BBBBB");
+//            browser.$("select").get(0).fillSelect().withIndex(0);//relies on the UI only having one user at this point
+            System.out.println("Got User");
             browser.$("button[type='submit']", withText("Add")).click();
-
+            System.out.println("Added User");
             browser.$("td", withText(TEST_ADMIN_FIRST_NAME));//Check to see that it added the test admin user. Throws exception if it's not in the table.
-
-            browser.$("input[placeholder*='Remove users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
-            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
-
+            System.out.println("Check User");
+//            browser.$("input[placeholder*='Remove users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
+            browser.$("option", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();
+//            browser.$("li"/*withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)*/).click();
+            System.out.println("got user for remove User");
             browser.$("button[type='submit']", withText("Remove")).click();
+            System.out.println("remove");
             try{
                 Thread.sleep(1000);
             } catch (Exception e){}
@@ -292,12 +312,17 @@ public class InventoryTest {
                 assertTrue("User was not removed on trip " + (i+1) + ".",false);
             }
 
-            browser.$("input[placeholder*='Add users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
-            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
+            System.out.println("check2");
+
+//            browser.$("input[placeholder*='Add users here']").fill().with(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME);
+            browser.$("option", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();
+//            browser.$("li"/*, withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)*/).click();
+//            browser.$("li", withText(TEST_ADMIN_FIRST_NAME + " " + TEST_ADMIN_LAST_NAME)).click();//relies on the UI not having an li for the user who is not yet added.
             browser.$("button[type='submit']", withText("Add")).click();
             browser.$("td", withText(TEST_ADMIN_FIRST_NAME));//Check to see that it re-added the test admin user. Throws exception if it's not in the table.
 
             browser.$("a", withText().contains("Trips")).click();//go back to manage trips page.
+            System.out.println("back to trips page");
         }
 
     }
@@ -370,16 +395,19 @@ public class InventoryTest {
             browser.$("select[name*='medicationUnit[]'] option", withText(TEST_CUSTOM_MEDICATION_UNITS.get(1))).get(1).click();
             browser.$("input[name*='medicationQuantity']").fill().with(TEST_CUSTOM_MEDICATION_INITIAL_QUANTITY);
             browser.$("select[name*='medicationForm'] option", withText(TEST_CUSTOM_MEDICATION_FORM)).click();
-
             browser.$("#submitMedicationButton").click();
 
             //check that the meds were actually put there. just see if med is there, fluentium will throw exception if they're not there.
-            browser.$("td .sorting_1", withText("4")); // medication id of custom med
+            assertTrue("Custom med should have been added with medication id 4, but was not;",
+                    browser.$("td .sorting_1", withText("4")).present()); // medication id of custom med
+            browser.$(".editCurrentQuantity", withText().contains("2")); //should be the only thing with quantity two
             browser.$(".editCurrentQuantity", withText().contains("2")); //should be the only thing with quantity two
 
             assertFalse("Custom Med readded with new ID (seperate medication).",
                     browser.$(".sorting_1", withText().contains(regex("5"))).present()
             );
+            try{Thread.sleep(10000000);}catch(Exception e){}
+
         }
 
     }
@@ -424,11 +452,19 @@ public class InventoryTest {
                     })
                     )
             );
-            browser.$("td .sorting_1", withText("1"));
-            browser.$("td .sorting_1", withText("2"));
-            browser.$("td .sorting_1", withText("3"));
-            browser.$("td .sorting_1", withText("4"));
+            assertTrue("Existing Med with medication id 1 should exist, but does not",
+                    browser.$("td .sorting_1", withText("1")).present());
+            assertTrue("Custom Med with medication id 2 should exist, but does not",
+                    browser.$("td .sorting_1", withText("2")).present());
+            assertTrue("Existing Med with medication id 3 should exist, but does not",
+                    browser.$("td .sorting_1", withText("3")).present());
+            assertTrue("Custom Med with medication id 1 should exist, but does not",
+                    browser.$("td .sorting_1", withText("4")).present());
+//            browser.$("td .sorting_1", withText("4"));
         }
+
+        try{Thread.sleep(10000000);}catch(Exception e){}
+
 
     }
 

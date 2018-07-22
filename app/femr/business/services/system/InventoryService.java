@@ -18,23 +18,19 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
 import femr.common.models.InventoryExportItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
+import femr.data.daos.core.IMedicationRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
-import femr.data.models.mysql.MedicationInventory;
 import femr.util.calculations.dateUtils;
 import org.joda.time.DateTime;
-import femr.data.models.mysql.Medication;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
 import com.google.gson.Gson;
@@ -44,21 +40,18 @@ import java.util.*;
 
 public class InventoryService implements IInventoryService {
 
-    private final IRepository<IMedication> medicationRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
+    private final IMedicationRepository medicationRepository;
     private final IUserRepository userRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public InventoryService(IRepository<IMedication> medicationRepository,
-                            IRepository<IMedicationInventory> medicationInventoryRepository,
+    public InventoryService(IMedicationRepository medicationRepository,
                             IUserRepository userRepository,
                             IDataModelMapper dataModelMapper,
                             @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
         this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
@@ -71,14 +64,9 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<List<MedicationItem>> retrieveMedicationInventorysByTripId(int tripId) {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
 
-        //Querying based on the trip id.  Each trip will have its own inventory.
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("missionTrip.id", tripId);
-
         List<? extends IMedicationInventory> medicationsInventory;
         try {
-            medicationsInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
+            medicationsInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, true);
         } catch (Exception ex) {
             response.addError("exception", ex.getMessage());
             return response;
@@ -117,17 +105,12 @@ public class InventoryService implements IInventoryService {
     public ServiceResponse<MedicationItem> retrieveMedicationInventoryByMedicationIdAndTripId(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("missionTrip.id", tripId)
-                .eq("medication.id", medicationId);
+        try {
 
-        try{
-
-            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
+            IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
             MedicationItem medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
             response.setResponseObject(medicationItem);
-        } catch (Exception ex){
+        } catch (Exception ex) {
 
             Logger.error("Attempted and failed to execute retrieveMedicationInventoryByMedicationIdAndTripId(" + medicationId + "," + tripId + ") in InventoryService. Stack trace to follow.");
             ex.printStackTrace();
@@ -145,26 +128,13 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
-
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
 
-            medicationInventory = medicationInventoryExpressionList.findUnique();
-            if (medicationInventory == null) {
-                //it doesn't yet exist, create a new one
-                medicationInventory = dataModelMapper.createMedicationInventory(quantityTotal, quantityTotal, medicationId, tripId);
-                medicationInventory = medicationInventoryRepository.create(medicationInventory);
-            } else {
-
-
-                medicationInventory.setQuantityInitial(quantityTotal);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            }
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+            medicationInventory.setQuantityInitial(quantityTotal);
+            medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null, null, null);
 
             response.setResponseObject(medicationItem);
@@ -176,6 +146,30 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
+    /**
+     * @{inheritDoc}
+     */
+    @Override
+    public ServiceResponse<Boolean> existsInventoryMedicationInTrip(int medicationId, int tripId){
+        ServiceResponse<Boolean> response = new ServiceResponse<>();
+        IMedicationInventory medicationInventory;
+
+        boolean existsInTrip = false;
+        try{
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+            if(medicationInventory != null){
+                response.setResponseObject(new Boolean(true));
+            } else {
+                response.setResponseObject(new Boolean(false));
+            }
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+
+    }
+
 
     /**
     *{@inheritDoc}
@@ -185,18 +179,15 @@ public class InventoryService implements IInventoryService {
 
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
             //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
             medicationInventory.setQuantityCurrent(newQuantity);
-
-            medicationInventory = medicationInventoryRepository.update(medicationInventory);
+            medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
             medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), null, null, null);
+
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -210,29 +201,76 @@ public class InventoryService implements IInventoryService {
      *{@inheritDoc}
      **/
     @Override
-    public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
+    public ServiceResponse<MedicationItem> createMedicationInventory(int medicationId, int tripId){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where() .eq("medication.id", medicationId)
-                .eq("missionTrip.id", tripId);
+
         IMedicationInventory medicationInventory;
         MedicationItem medicationItem;
         try {
-            //This should exist already, so no need to query for unique.
-            medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            //Checks to see if medication was already deleted, then user wanted to undo delete
-            if(medicationInventory.getIsDeleted() != null)
-                medicationInventory.setIsDeleted(null);
-            else
-                medicationInventory.setIsDeleted(DateTime.now());
-            medicationInventory = medicationInventoryRepository.update(medicationInventory);
-            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
+
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+
+            if (medicationInventory == null){
+                //If the medication is not in the inventory, then create it.
+                //Assume new inventory medications have 0 current quantity and 0 total quantity.
+                medicationInventory = dataModelMapper.createMedicationInventory(0, 0, medicationId, tripId);
+                medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
+            }
+
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), medicationInventory.getQuantityInitial(), medicationInventory.getQuantityCurrent(), null, null, null);
             response.setResponseObject(medicationItem);
         } catch (Exception ex) {
+
             response.addError("", ex.getMessage());
         }
 
         return response;
     }
+
+
+    /**
+     *{@inheritDoc}
+     **/
+    @Override
+    public ServiceResponse<MedicationItem> reAddInventoryMedication(int medicationId, int tripId){
+        return setDeletionStateOfInventoryMedication(medicationId, tripId, false);
+    }
+    
+    /**
+     *{@inheritDoc}
+     **/
+    @Override
+    public ServiceResponse<MedicationItem> deleteInventoryMedication(int medicationId, int tripId){
+        return setDeletionStateOfInventoryMedication(medicationId, tripId, true);
+    }
+
+    private ServiceResponse<MedicationItem> setDeletionStateOfInventoryMedication(int medicationId, int tripId, boolean stateToSetTo){
+        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
+
+        IMedicationInventory medicationInventory;
+        MedicationItem medicationItem;
+        try {
+            //This should exist already, so no need to query for unique.
+            medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
+            //Soft-delete of the medication from the formulary, then update the backend to reflect the change.
+            if (stateToSetTo == true) {
+                medicationInventory.setIsDeleted(DateTime.now());
+            } else {
+                medicationInventory.setIsDeleted(null);
+            }
+            medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
+            medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(),  medicationInventory.getQuantityCurrent(), medicationInventory.getQuantityInitial(), medicationInventory.getIsDeleted(), null, null);
+            response.setResponseObject(medicationItem);
+
+        } catch (Exception ex) {
+
+            Logger.error("InventoryService-setDeletionStateOfInventoryMedication error while delete state of inventory medication", ex.getStackTrace(), ex);
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -243,31 +281,24 @@ public class InventoryService implements IInventoryService {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
         MedicationItem medicationItem = null;
 
-        ExpressionList<Medication> medicationExpressionList = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("id", medicationId);
-        ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
-                .where()
-                .eq("medication_id", medicationId)
-                .eq("mission_trip_id", tripId);
-
         try {
 
+            IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(medicationId, tripId);
 
-            IMedication medication = medicationRepository.findOne(medicationExpressionList);
-            IMedicationInventory medicationInventory = medicationInventoryRepository.findOne(medicationInventoryExpressionList);
-            int currentQuantity = 0;
-            int totalQuantity = 0;
+            if (medicationInventory != null && medicationInventory.getMedication() != null) {
 
-            if (medicationInventory != null) {
+                int currentQuantity = 0;
+                int totalQuantity = 0;
 
                 medicationInventory.setQuantityCurrent(medicationInventory.getQuantityCurrent() - quantityToSubtract);
-                medicationInventory = medicationInventoryRepository.update(medicationInventory);
+                medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
                 currentQuantity = medicationInventory.getQuantityCurrent();
                 totalQuantity = medicationInventory.getQuantityInitial();
-            }
 
-            medicationItem = itemModelMapper.createMedicationItem(medication, currentQuantity, totalQuantity, null, null, null);
+                medicationItem = itemModelMapper.createMedicationItem(medicationInventory.getMedication(), currentQuantity, totalQuantity, null, null, null);
+            } else {
+                Logger.error("InventoryService-subtractFromQuantityCurrent", "tried to search for medication inventory but got null", "medicationId: " + medicationId + "tripId: " + tripId);
+            }
         } catch (Exception ex) {
 
             response.addError("", ex.getMessage());
@@ -280,12 +311,7 @@ public class InventoryService implements IInventoryService {
     @Override
     public ServiceResponse<String> exportCSV(int tripId) {
 
-      // We want the inventory from the current trip that has not been deleted
-      // Which is the same as from the table on the inventory page
-      ExpressionList<MedicationInventory> medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery().where()
-              .eq("missionTrip.id", tripId).eq("isDeleted", null);
-
-      List<? extends IMedicationInventory> medicationInventory = medicationInventoryRepository.find(medicationInventoryExpressionList);
+      List<? extends IMedicationInventory> medicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
 
       // Convert result of query to a list to export
       List<InventoryExportItem> inventoryExport = new ArrayList<>();

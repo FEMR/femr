@@ -19,13 +19,24 @@
 package femr.util.dependencyinjection.modules;
 
 import com.google.inject.AbstractModule;
+import com.typesafe.config.ConfigFactory;
 import femr.util.encryptions.BCryptPasswordEncryptor;
 import femr.util.encryptions.IPasswordEncryptor;
+import femr.util.tasks.CheckInternetConnectionTask;
+import femr.util.tasks.MaintainReverseSshTunnelTask;
+import femr.util.tasks.SendLocationDataTask;
 
 public class UtilitiesModule extends AbstractModule {
 
     @Override
     protected void configure() {
         bind(IPasswordEncryptor.class).to(BCryptPasswordEncryptor.class);
+
+        //Enable internet connection asychronous tasks if directed by application.conf
+        if(ConfigFactory.load().getBoolean("internetconnection.enableInternetConnectivityFunctionality")){
+            bind(CheckInternetConnectionTask.class).asEagerSingleton();
+            bind(SendLocationDataTask.class).asEagerSingleton();
+            bind(MaintainReverseSshTunnelTask.class).asEagerSingleton();
+        }
     }
 }

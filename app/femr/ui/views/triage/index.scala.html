@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.triage.IndexViewModelGet, assets: AssetsFinder)
 
 @import femr.common.models.CityItem
 @import femr.ui.views.html.layouts.main
@@ -11,22 +11,23 @@
 
 
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/touchit-1.0.0.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.jWindowCrop.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triage.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/touchit-1.0.0.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery.jWindowCrop.js")"></script>
+        @*<script type="text/javascript" src="@assets.path("js/triage/triage.js")"></script>*@
+        <script type="text/javascript" src="@assets.path("js/triage/triage.js")"></script>
 
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/exif.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/megapix-image.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/triage/triageClientValidation.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/shared/vitalClientValidation.js")"></script>
-            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/handlebars.min.js")"></script>
-            <script type="text/javascript" src="@routes.Assets.versioned("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/exif.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/megapix-image.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/triage/triageClientValidation.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
+            <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
+            <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
     }
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/triage.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/datepicker.css")">
+        <link rel="stylesheet" href="@assets.path("css/triage.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/datepicker.css")">
     }
-@main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage")) {
+@main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage"), assets = assets) {
 
     <div id="triageContentWrap">
         @if(viewModel.isSearchError) {

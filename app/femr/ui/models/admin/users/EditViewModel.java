@@ -18,15 +18,17 @@
 */
 package femr.ui.models.admin.users;
 
-import femr.common.models.MissionItem;
 import femr.common.models.MissionTripItem;
 import femr.util.stringhelpers.StringUtils;
+import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class EditViewModel {
+@Constraints.Validate
+public class EditViewModel implements Constraints.Validatable<List<ValidationError>> {
     private Integer userId;
     private String firstName;
     private String lastName;
@@ -38,7 +40,10 @@ public class EditViewModel {
     private List<String> roles;
     private List<MissionTripItem> missionTripItems;
 
+    @Override
     public List<ValidationError> validate(){
+        Pattern hasLowercase = Pattern.compile("[a-z]");    // Aditya Nerella
+
         Pattern hasUppercase = Pattern.compile("[A-Z]");
         Pattern hasNumber = Pattern.compile("\\d");
         List<ValidationError> errors = new ArrayList<>();
@@ -53,10 +58,14 @@ public class EditViewModel {
         // then they want to actually change the password, if it is 0, the old password will still remain
         if(newPassword.length() > 0)
         {
-            if(newPassword.length() < 6 || !hasUppercase.matcher(newPassword).find()
-                    || !hasNumber.matcher(newPassword).find())      //AJ Saclayan Password Constraints
-                errors.add(new ValidationError("newPassword",
-                        "password must have at least 6 characters with at least one upper case letter and number"));
+            if (newPassword.length() < 8)
+                errors.add(new ValidationError("newPassword", "password must be at least 8 characters long"));
+            if (!hasUppercase.matcher(newPassword).find())
+                errors.add(new ValidationError("newPassword", "password must have at least one uppercase character"));
+            if (!hasNumber.matcher(newPassword).find())
+                errors.add(new ValidationError("newPassword", "password must have at least one number"));
+            if (!hasLowercase.matcher(newPassword).find()) //AJ Saclayan & Aditya Nerella Password Constraints
+                errors.add(new ValidationError("newPassword", "password must have at least one lowercase character"));
         }
         
         if (roles == null || roles.size() < 1)

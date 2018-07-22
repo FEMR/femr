@@ -18,9 +18,9 @@
 */
 package femr.data.daos;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.Ebean;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class Repository<T> implements IRepository<T> {
 
     @Override
     public T findOne(ExpressionList<? extends T> query) {
-        T entity = query.findUnique();
+        T entity = query.findOne();
         return entity;
     }
 

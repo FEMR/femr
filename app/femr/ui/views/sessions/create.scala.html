@@ -1,11 +1,11 @@
-@(createForm: Form[femr.ui.models.sessions.CreateViewModel], errorMsg: Integer)
+@(createForm: Form[femr.ui.models.sessions.CreateViewModel], errorMsg: Integer, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.SessionsController
     @styles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/login.css")">
+        <link rel="stylesheet" href="@assets.path("css/login.css")">
     }
-@main("Login", styles = styles) {
+@main("Login", styles = styles, assets = assets) {
     @if(errorMsg.equals(1)){
         <div id="errormsg" style="color:red">
                 <h1>Login Attempt Failed! Try again.</h1>
@@ -22,7 +22,7 @@
             }
             <input type="password" name="password" placeholder="Password" />
             <input type="submit" value="Log in" />
-            <img src="@routes.Assets.versioned("img/logo_color_sm.png")" />
+            <img src="@assets.path("img/logo_color_sm.png")" />
         </div>
     }
 }

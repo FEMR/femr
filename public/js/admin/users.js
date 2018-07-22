@@ -97,30 +97,28 @@ var createUsers = {
         // Adding password constraint!
         var passwordErrors = "";
         var password = $.trim(document.forms["createForm"]["password"].value);
-        createUsers.elements.passwordTextBox.next(".errors").text(passwordVerify);
-        if(password.length < 6){
-           pass = false;
-        }
-        var re = /[A-Z]/;
-        if(!re.test(password)){
-           pass = false;
-        }
+        createUsers.elements.password.next(".errors").text(passwordVerify);
 
-        re = /[0-9]/;
-        if ($.trim(document.forms["createForm"]["password"].value) === "") {
+        if (password  === "") {
             passwordErrors = "please assign this user a password";
             pass = false;
         }
-        else if(!re.test(password)) {
-            pass = false;
+        else{
+            if(password.length < 8){
+                pass = false;
+            }
+            var re = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%\^&*()_\-+=|\\\"\':;?\/\{\}\[\]<>,\.~` \t]{8,}/;
+            if(!re.test(password)) {
+                pass = false;
+            }
         }
 
         if(pass === false)
         {
-            if (passwordErrors != "")
+            if (passwordErrors !== "")
                 createUsers.elements.password.next (".errors").text(passwordErrors);
             else
-                createUsers.elements.password.next(".errors").text("password must have at least 6 characters with at least one upper case letter and number");
+                createUsers.elements.password.next(".errors").text("password must have at least one uppercase, one lowercase, one digit and 8 characters long.");
         }
         else{
             createUsers.elements.password.next(".errors").text("");
@@ -159,33 +157,40 @@ var editUsers = {
         passwordTextBox: $('#newPassword')
     },
     /**
-     * Validates the roles for edit users page
+     * Validates the password for edit user page
      */
-    validateRolesAndPassword: function () {
+    validatePassword: function () {
         var pass = true;
         //validate passwords
         var newPassword = $.trim(document.forms["createForm"]["newPassword"].value);
         var newPasswordVerify = $.trim(document.forms["createForm"]["newPasswordVerify"].value);
         if (newPassword !== "") {
-            if (newPassword != newPasswordVerify){
+            if (newPassword != newPasswordVerify) {
                 editUsers.elements.passwordTextBox.next(".errors").text("passwords do not match");
                 pass = false;
-            }else{
+            } else {
                 editUsers.elements.passwordTextBox.next(".errors").text("");
             }
         } else {
             editUsers.elements.passwordTextBox.next(".errors").text("");
         }
+        return pass;
+    },
+    /**
+     * Validates the roles for edit user page
+     */
+    validateRoles: function () {
+        var role = true;
         //validate roles
         if (typeof document.forms["createForm"].elements["roles[]"] === 'undefined') {
-            pass = false;
+            role = false;
         }
-        if (pass === false) {
+        if (role === false) {
             createAndEditUsers.elements.roles.find(".errors").text("select at least one role");
         } else {
             createAndEditUsers.elements.roles.find(".errors").text("");
         }
-        return pass;
+        return role;
     },
     bindRoleDropDownClick: function () {
         $('.roleListItem').click(function () {
@@ -216,9 +221,10 @@ var editUsers = {
     },
     bindSubmitButton: function () {
         $('#editUserSubmitBtn').click(function () {
-            var roleValidation = editUsers.validateRolesAndPassword();
+            var roleValidation = editUsers.validateRoles();
+            var passwordValidation = editUsers.validatePassword();
             var elementValidation = createAndEditUsers.validateElements();
-            return roleValidation && elementValidation;
+            return roleValidation && passwordValidation && elementValidation;
         });
     }
 };

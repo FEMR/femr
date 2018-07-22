@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.history.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem])
+@(currentUser: femr.common.dtos.CurrentUser, searchError: java.lang.Boolean, viewModel: femr.ui.models.history.IndexPatientViewModelGet, patientEncounters: List[_ <: femr.common.models.PatientEncounterItem], assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.views.html.partials.search
@@ -12,13 +12,13 @@
 @roles = @{currentUser.getRoles().map(r => r.getId())}
 
 @additionalStyles = {
-    <link rel="stylesheet" href="@routes.Assets.versioned("css/history.css")">
+    <link rel="stylesheet" href="@assets.path("css/history.css")">
 }
 @additionalScripts = {
-    <script type="text/javascript" src="@routes.Assets.versioned("js/history/history.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/history/history.js")"></script>
 }
 
-@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history")) {
+@main("History", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("history"), assets = assets) {
     @if(viewModel.getPatientItems.size > 1) {
         <div class="encounterInfoWrap backgroundForWrap">
             <div class="row well well-sm">

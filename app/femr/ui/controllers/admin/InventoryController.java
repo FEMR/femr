@@ -19,6 +19,7 @@
 package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -45,6 +46,7 @@ import java.util.Date;
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
 public class InventoryController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IConceptService conceptService;
     private final IInventoryService inventoryService;
@@ -53,13 +55,15 @@ public class InventoryController extends Controller {
     private final ISessionService sessionService;
 
     @Inject
-    public InventoryController(FormFactory formFactory,
+    public InventoryController(AssetsFinder assetsFinder,
+                               FormFactory formFactory,
                                IConceptService conceptService,
                                IInventoryService inventoryService,
                                IMedicationService medicationService,
                                IMissionTripService missionTripService,
                                ISessionService sessionService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.conceptService = conceptService;
         this.inventoryService = inventoryService;
@@ -124,7 +128,7 @@ public class InventoryController extends Controller {
             viewModel.setMissionTripList(new ArrayList<>());
         }
 
-        return ok(manage.render(currentUser, viewModel));
+        return ok(manage.render(currentUser, viewModel, assetsFinder));
     }
 
     /**
@@ -173,7 +177,7 @@ public class InventoryController extends Controller {
             viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
         }
 
-        return ok(custom.render(currentUser, viewModel));
+        return ok(custom.render(currentUser, viewModel, assetsFinder));
     }
 
     /**
@@ -212,6 +216,7 @@ public class InventoryController extends Controller {
         // strength/unit/ingredients (active ingredietns) are involved
         // *denominator field not taken into consideration - always false
         if (inventoryViewModelPost.getMedicationStrength().get(0) != null) {
+
             for (int genericIndex = 0; genericIndex < inventoryViewModelPost.getMedicationStrength().size(); genericIndex++) {
 
                 if (inventoryViewModelPost.getMedicationIngredient().get(genericIndex) != null &&
@@ -226,6 +231,8 @@ public class InventoryController extends Controller {
                     );
                 }
             }
+
+            //Creates the medication
             ServiceResponse<MedicationItem> createMedicationServiceResponse = medicationService.createMedication(
                     inventoryViewModelPost.getMedicationName(),
                     inventoryViewModelPost.getMedicationForm(),
@@ -236,12 +243,30 @@ public class InventoryController extends Controller {
 
                 return internalServerError();
             }
-            ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(
-                    createMedicationServiceResponse.getResponseObject().getId(),
-                    tripId,
-                    inventoryViewModelPost.getMedicationQuantity());
 
-            if (setQuantityServiceResponse.hasErrors()){
+            int medicationId = createMedicationServiceResponse.getResponseObject().getId();
+            int quantity = inventoryViewModelPost.getMedicationQuantity();
+
+            ServiceResponse<MedicationItem> createMedicationInventoryServiceResponse;
+            ServiceResponse<Boolean> doesInventoryExistInTrip = inventoryService.existsInventoryMedicationInTrip(medicationId, tripId);
+            if (doesInventoryExistInTrip.hasErrors()){
+                throw new RuntimeException();
+            }
+            //Creates an inventory for the Medication
+            if (doesInventoryExistInTrip.getResponseObject()){
+                createMedicationInventoryServiceResponse = inventoryService.reAddInventoryMedication(medicationId, tripId);
+            } else {
+                createMedicationInventoryServiceResponse = inventoryService.createMedicationInventory(medicationId, tripId);
+            }
+            //sets initial total quantity
+            ServiceResponse<MedicationItem> setQuantityTotalServiceResponse =
+                    inventoryService.setQuantityTotal(medicationId, tripId, quantity);
+            //sets initial current quanitty
+            ServiceResponse<MedicationItem> setQuantityCurrentServiceResponse =
+                    inventoryService.setQuantityCurrent(medicationId, tripId, quantity);
+
+
+            if (createMedicationInventoryServiceResponse.hasErrors() || setQuantityTotalServiceResponse.hasErrors()) {
 
                 return internalServerError();
             }
@@ -278,7 +303,7 @@ public class InventoryController extends Controller {
             viewModel.setMissionTripItem(missionTripServiceResponse.getResponseObject());
         }
 
-        return ok(existing.render(currentUser, viewModel));
+        return ok(existing.render(currentUser, viewModel, assetsFinder));
     }
 
     /**
@@ -318,10 +343,18 @@ public class InventoryController extends Controller {
                     if (medicationItemServiceResponse.hasErrors()) {
 
                         return internalServerError();
-                    }else{
+                    } else {
 
-                        ServiceResponse<MedicationItem> setQuantityServiceResponse = inventoryService.setQuantityTotal(medicationItemServiceResponse.getResponseObject().getId(), tripId, 0);
-                        if (setQuantityServiceResponse.hasErrors()){
+                        //Check to see if the medication has ever been added to the trip inventory.
+                        // If so, set it's soft deletion state to being 'undeleted'. Otherwise, create the inventory medication.
+                        ServiceResponse<MedicationItem> createOrReAddInventoryResponse = null;
+                        if(inventoryService.existsInventoryMedicationInTrip(medicationItemServiceResponse.getResponseObject().getId(),tripId).getResponseObject()){
+                            createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        } else {
+                            createOrReAddInventoryResponse = inventoryService.createMedicationInventory(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                        }
+
+                        if (createOrReAddInventoryResponse.hasErrors()) {
 
                             return internalServerError();
                         }
@@ -353,8 +386,30 @@ public class InventoryController extends Controller {
       return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
-    public Result ajaxDelete(int medicationID, int tripId) {
-        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationID, tripId);
+    /**
+     * Called when a user hits the remove button to remove a medication from the trip formulary.
+     * @param medicationID
+     * @param tripId
+     * @return Result of soft-deletion
+     */
+    public Result ajaxDelete(int medicationId, int tripId) {
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.deleteInventoryMedication(medicationId, tripId);
+
+        if (inventoryServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        return ok("true");
+    }
+
+    /**
+     * Called when a user hits the undo button to readd a medication from the trip formulary.
+     *
+     * @param medicationId
+     * @param tripId
+     * @return Result of readding (undo-ing soft deletion)
+     */
+    public Result ajaxReadd(int medicationId, int tripId){
+        ServiceResponse<MedicationItem> inventoryServiceResponse = inventoryService.reAddInventoryMedication(medicationId, tripId);
 
         if (inventoryServiceResponse.hasErrors()) {
             throw new RuntimeException();

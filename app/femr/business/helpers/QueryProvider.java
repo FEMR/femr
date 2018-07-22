@@ -19,8 +19,8 @@
 package femr.business.helpers;
 
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.Query;
+import io.ebean.Ebean;
+import io.ebean.Query;
 import femr.data.models.mysql.*;
 import femr.data.models.mysql.concepts.ConceptMedication;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;

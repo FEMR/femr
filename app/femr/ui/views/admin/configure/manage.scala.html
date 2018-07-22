@@ -1,13 +1,15 @@
-@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.configure.IndexViewModelGet)
+@(currentUser: femr.common.dtos.CurrentUser,
+        viewModel: femr.ui.models.admin.configure.IndexViewModelGet,
+        assets: AssetsFinder)
 
 @import femr.ui.controllers.admin.routes.ConfigureController
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/configure.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
     }
 
-@admin("Configure", currentUser, styles = additionalStyles) {
+@admin("Configure", currentUser, styles = additionalStyles, assets = assets) {
     @helper.form(action = ConfigureController.managePost()) {
         <table id="configurationTable">
             <tr>

@@ -19,12 +19,14 @@
 package femr.ui.models.admin.inventory;
 
 import femr.util.stringhelpers.StringUtils;
+import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomViewModelPost {
+@Constraints.Validate
+public class CustomViewModelPost implements Constraints.Validatable<List<ValidationError>> {
 
     private Integer medicationQuantity;
     private String medicationForm;
@@ -33,8 +35,8 @@ public class CustomViewModelPost {
     private List<String> medicationUnit;
     private List<String> medicationIngredient;
 
-
-    public List<ValidationError> validate(){
+    @Override
+    public List<ValidationError> validate() {
 
         List<ValidationError> errors = new ArrayList<>();
 

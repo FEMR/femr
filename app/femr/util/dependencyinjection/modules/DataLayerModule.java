@@ -73,6 +73,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPatientRepository.class).to(PatientRepository.class);
         bind(IPhotoRepository.class).to(PhotoRepository.class);
         bind(IUserRepository.class).to(UserRepository.class);
+        bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
@@ -80,13 +81,6 @@ public class DataLayerModule extends AbstractModule {
         //Generic repositories (being phased out in place of non generic)
         bind(new TypeLiteral<IRepository<IChiefComplaint>>() {}).to(new TypeLiteral<Repository<IChiefComplaint>>() {});
         bind(new TypeLiteral<IRepository<IConceptDiagnosis>>() {}).to(new TypeLiteral<Repository<IConceptDiagnosis>>() {});
-        bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationGenericStrength>>() {}).to(new TypeLiteral<Repository<IMedicationGenericStrength>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<Repository<IMedicationGeneric>>() {});
-        bind(new TypeLiteral<IRepository<IConceptPrescriptionAdministration>>() {}).to(new TypeLiteral<Repository<IConceptPrescriptionAdministration>>() {});
-        bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<Repository<IConceptMedicationForm>>() {});
-        bind(new TypeLiteral<IRepository<IMedicationInventory>>() {}).to(new TypeLiteral<Repository<IMedicationInventory>>() {});
-        bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<Repository<IConceptMedicationUnit>>() {});
         bind(new TypeLiteral<IRepository<IMissionCity>>() {}).to(new TypeLiteral<Repository<IMissionCity>>() {});
         bind(new TypeLiteral<IRepository<IMissionCountry>>() {}).to(new TypeLiteral<Repository<IMissionCountry>>() {});
         bind(new TypeLiteral<IRepository<IMissionTeam>>() {}).to(new TypeLiteral<Repository<IMissionTeam>>() {});
@@ -94,9 +88,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IPatientEncounterPhoto>>() {}).to(new TypeLiteral<Repository<IPatientEncounterPhoto>>() {});
         bind(new TypeLiteral<IRepository<IPatientEncounterTabField>>(){}).to(new TypeLiteral<Repository<IPatientEncounterTabField>>(){});
         bind(new TypeLiteral<IRepository<IPatientEncounterVital>>() {}).to(new TypeLiteral<Repository<IPatientEncounterVital>>() {});
-        bind(new TypeLiteral<IRepository<IPatientPrescription>>() {}).to(new TypeLiteral<Repository<IPatientPrescription>>() {});
-        bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacement>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacement>>() {});
-        bind(new TypeLiteral<IRepository<IPatientPrescriptionReplacementReason>>() {}).to(new TypeLiteral<Repository<IPatientPrescriptionReplacementReason>>() {});
         bind(new TypeLiteral<IRepository<ISystemSetting>>() {}).to(new TypeLiteral<Repository<ISystemSetting>>(){});
         bind(new TypeLiteral<IRepository<ITab>>(){}).to(new TypeLiteral<Repository<ITab>>(){});
         bind(new TypeLiteral<IRepository<ITabField>>(){}).to(new TypeLiteral<Repository<ITabField>>(){});
@@ -108,5 +99,13 @@ public class DataLayerModule extends AbstractModule {
         // Research
         bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});
         bind(new TypeLiteral<IRepository<IResearchEncounterVital>>() {}).to(new TypeLiteral<Repository<IResearchEncounterVital>>() {});
+
+        //Generic repositories that are required by the database seeder
+        bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<Repository<IConceptMedicationForm>>() {});
+        bind(new TypeLiteral<IRepository<IConceptMedicationUnit>>() {}).to(new TypeLiteral<Repository<IConceptMedicationUnit>>() {});
+        bind(new TypeLiteral<IRepository<IConceptPrescriptionAdministration>>() {}).to(new TypeLiteral<Repository<IConceptPrescriptionAdministration>>() {});
+        bind(new TypeLiteral<IRepository<IMedication>>() {}).to(new TypeLiteral<Repository<IMedication>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationGeneric>>() {}).to(new TypeLiteral<Repository<IMedicationGeneric>>() {});
+        bind(new TypeLiteral<IRepository<IMedicationGenericStrength>>() {}).to(new TypeLiteral<Repository<IMedicationGenericStrength>>() {});
     }
 }

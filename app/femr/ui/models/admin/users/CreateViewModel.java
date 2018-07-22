@@ -19,11 +19,14 @@
 package femr.ui.models.admin.users;
 
 import femr.util.stringhelpers.StringUtils;
+import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;     //Aditya Nerella
 
-public class CreateViewModel {
+@Constraints.Validate
+public class CreateViewModel implements Constraints.Validatable<List<ValidationError>> {
     private Integer userId;
     private String firstName;
     private String lastName;
@@ -39,8 +42,12 @@ public class CreateViewModel {
     private Integer CreatedBy; //Sam Zanni
     private String DateCreated; //Sam Zanni
 
+    @Override
     public List<ValidationError> validate(){
         List<ValidationError> errors = new ArrayList<>();
+
+        Pattern PassReqs = Pattern.compile("(?=.*\\d)(?=.*[A-Z])(?=.*[a-z]).{8,}");    //Aditya Nerella
+
         if (StringUtils.isNullOrWhiteSpace(firstName))
             errors.add(new ValidationError("firstName", "first name is a required field"));
         if (StringUtils.isNullOrWhiteSpace(email))
@@ -48,11 +55,19 @@ public class CreateViewModel {
         if (StringUtils.isNullOrWhiteSpace(password))
             errors.add(new ValidationError("password", "password is a required field"));
         // added for FEMR-159
+
+        if (!PassReqs.matcher(password).find()){ 
+            errors.add(new ValidationError("password", "password must have at least one Uppercase, one lowercase, one digit and 8 characters long."));
+        }
+
         if (!password.equals(passwordVerify)) {
             errors.add(new ValidationError("password", "passwords do not match"));
          }
         if (roles == null || roles.size() < 1)
             errors.add(new ValidationError("roles", "a user needs at least one role"));
+
+        if(password.length() < 8)
+            errors.add(new ValidationError("password", "The password must contain at least 8 characters"));
 
         return errors.isEmpty() ? null : errors;
     }

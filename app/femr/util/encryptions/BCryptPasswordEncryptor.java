@@ -20,14 +20,14 @@ package femr.util.encryptions;
 
 import com.google.inject.Inject;
 import org.mindrot.jbcrypt.BCrypt;
-import play.Configuration;
+import com.typesafe.config.Config;
 
 public class BCryptPasswordEncryptor implements IPasswordEncryptor {
 
-    private final Configuration configuration;
+    private final Config configuration;
 
     @Inject
-    public BCryptPasswordEncryptor(Configuration configuration){
+    public BCryptPasswordEncryptor(Config configuration){
 
         this.configuration = configuration;
     }

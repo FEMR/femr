@@ -18,12 +18,10 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.*;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IMedicationService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
@@ -31,13 +29,8 @@ import femr.common.models.MedicationAdministrationItem;
 import femr.common.models.MedicationItem;
 import femr.common.models.PrescriptionItem;
 import femr.data.IDataModelMapper;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.*;
 import femr.data.models.core.*;
-import femr.data.models.mysql.*;
-import femr.data.models.mysql.concepts.ConceptMedicationForm;
-import femr.data.models.mysql.concepts.ConceptMedicationUnit;
-import femr.data.models.mysql.concepts.ConceptPrescriptionAdministration;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -50,36 +43,18 @@ import java.util.Map;
 public class MedicationService implements IMedicationService {
 
     private final IMedicationRepository medicationRepository;
-    private final IRepository<IConceptMedicationForm> conceptMedicationFormRepository;
-    private final IRepository<IMedicationInventory> medicationInventoryRepository;
-    private final IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository;
-    private final IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository;
-    private final IRepository<IPatientPrescription> patientPrescriptionRepository;
-    private final IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository;
-    private final IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository;
+    private final IPrescriptionRepository prescriptionRepository;
     private final IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
     public MedicationService(IMedicationRepository medicationRepository,
-                             IRepository<IConceptPrescriptionAdministration> conceptPrescriptionAdministrationRepository,
-                             IRepository<IConceptMedicationForm> conceptMedicationFormRepository,
-                             IRepository<IMedicationInventory> medicationInventoryRepository,
-                             IRepository<IConceptMedicationUnit> conceptMedicationUnitRepository,
-                             IRepository<IPatientPrescription> patientPrescriptionRepository,
-                             IRepository<IPatientPrescriptionReplacement> patientPrescriptionReplacementRepository,
-                             IRepository<IPatientPrescriptionReplacementReason> patientPrescriptionReplacementReasonRepository,
+                             IPrescriptionRepository prescriptionRepository,
                              IDataModelMapper dataModelMapper,
                              @Named("identified") IItemModelMapper itemModelMapper) {
 
         this.medicationRepository = medicationRepository;
-        this.conceptMedicationFormRepository = conceptMedicationFormRepository;
-        this.medicationInventoryRepository = medicationInventoryRepository;
-        this.conceptMedicationUnitRepository = conceptMedicationUnitRepository;
-        this.conceptPrescriptionAdministrationRepository = conceptPrescriptionAdministrationRepository;
-        this.patientPrescriptionRepository = patientPrescriptionRepository;
-        this.patientPrescriptionReplacementRepository = patientPrescriptionReplacementRepository;
-        this.patientPrescriptionReplacementReasonRepository = patientPrescriptionReplacementReasonRepository;
+        this.prescriptionRepository = prescriptionRepository;
         this.dataModelMapper = dataModelMapper;
         this.itemModelMapper = itemModelMapper;
     }
@@ -187,25 +162,14 @@ public class MedicationService implements IMedicationService {
         List<IPatientPrescriptionReplacement> patientPrescriptionReplacements = new ArrayList<>();
 
         //get the reason for replacing
-        ExpressionList<PatientPrescriptionReplacementReason> replacementReasonExpressionList = QueryProvider.getPatientPrescriptionReasonQuery()
-                .where()
-                .eq("name", "pharmacist replacement");
-        IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = patientPrescriptionReplacementReasonRepository.findOne(replacementReasonExpressionList);
+        IPatientPrescriptionReplacementReason patientPrescriptionReplacementReason = prescriptionRepository.retrieveReplacementReasonByName("pharmacist replacement");
 
         //iterate over each prescription and its replacement
         prescriptionPairs.forEach((newId, oldId) -> {
 
-            ExpressionList<PatientPrescription> newPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("id", newId);
-
-            ExpressionList<PatientPrescription> replacedPrescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("id", oldId);
-
             try {
-                IPatientPrescription newPrescription = patientPrescriptionRepository.findOne(newPrescriptionExpressionList);
-                IPatientPrescription replacedPrescription = patientPrescriptionRepository.findOne(replacedPrescriptionExpressionList);
+                IPatientPrescription newPrescription = prescriptionRepository.retrievePrescriptionById(newId);
+                IPatientPrescription replacedPrescription = prescriptionRepository.retrievePrescriptionById(oldId);
 
                 if (newPrescription == null) {
 
@@ -233,7 +197,7 @@ public class MedicationService implements IMedicationService {
 
         try {
 
-            List<? extends IPatientPrescriptionReplacement> replacements = patientPrescriptionReplacementRepository.createAll(patientPrescriptionReplacements);
+            List<? extends IPatientPrescriptionReplacement> replacements = prescriptionRepository.createPrescriptionReplacements(patientPrescriptionReplacements);
             for (IPatientPrescriptionReplacement prescriptionReplacement : replacements) {
 
                 prescriptionItems.add(itemModelMapper.createPrescriptionItem(
@@ -272,16 +236,12 @@ public class MedicationService implements IMedicationService {
 
         prescriptionsToDispense.forEach((prescriptionId, isCounseled) -> {
 
-            ExpressionList<PatientPrescription> prescriptionExpressionList = QueryProvider.getPatientPrescriptionQuery()
-                    .where()
-                    .eq("id", prescriptionId);
-
             try {
 
-                IPatientPrescription prescription = patientPrescriptionRepository.findOne(prescriptionExpressionList);
+                IPatientPrescription prescription = prescriptionRepository.retrievePrescriptionById(prescriptionId);
                 prescription.setDateDispensed(dateTime);
                 prescription.setCounseled(isCounseled);
-                prescription = patientPrescriptionRepository.update(prescription);
+                prescription = prescriptionRepository.updatePrescription(prescription);
 
 
 
@@ -317,16 +277,7 @@ public class MedicationService implements IMedicationService {
             administrationId = null;
 
         try {
-            IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
-                    medicationId,
-                    administrationId,
-                    userId,
-                    encounterId,
-                    null,
-                    false);
-
-            patientPrescription = patientPrescriptionRepository.create(patientPrescription);
+            IPatientPrescription patientPrescription = prescriptionRepository.createPrescription(amount, medicationId, administrationId, userId, encounterId);
 
 
             MedicationItem medicationItem = itemModelMapper.createMedicationItem(patientPrescription.getMedication(), null, null, null, null, null);
@@ -369,16 +320,7 @@ public class MedicationService implements IMedicationService {
 
             IMedication medication = medicationRepository.createNewMedication(medicationName);
 
-            IPatientPrescription patientPrescription = dataModelMapper.createPatientPrescription(
-                    amount,
-                    medication.getId(),
-                    administrationId,
-                    userId,
-                    encounterId,
-                    null,
-                    false);
-
-            patientPrescription = patientPrescriptionRepository.create(patientPrescription);
+            IPatientPrescription patientPrescription = prescriptionRepository.createPrescription(amount, medication.getId(), administrationId, userId, encounterId);
 
             MedicationItem medicationItem = itemModelMapper.createMedicationItem(patientPrescription.getMedication(), null, null, null, null, null);
             PrescriptionItem prescriptionItem = itemModelMapper.createPrescriptionItem(
@@ -400,32 +342,13 @@ public class MedicationService implements IMedicationService {
         return response;
     }
 
-    public ServiceResponse<MedicationItem> deleteMedication(int medicationID) {
-        ServiceResponse<MedicationItem> response = new ServiceResponse<>();
-
-        // Get the medication Item by it's ID
-        IMedication medication;
-        ExpressionList<Medication> medicationQuery = QueryProvider.getMedicationQuery()
-                .where()
-                .eq("id", medicationID);
-
-        try {
-            // Find one medication (should only be 1 with the ID) from the database
-            medication = medicationRepository.deleteMedication(medicationID, true);
-        } catch (Exception ex) {
-            response.addError("exception", ex.getMessage());
-            return response;
-        }
-
-        return response;
-    }
     /**
      * {@inheritDoc}
      */
     public ServiceResponse<List<String>> retrieveAvailableMedicationForms() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IConceptMedicationForm> conceptMedicationForms = conceptMedicationFormRepository.findAll(ConceptMedicationForm.class);
+            List<? extends IConceptMedicationForm> conceptMedicationForms = medicationRepository.retrieveAllConceptMedicationForms();
             List<String> availableForms = new ArrayList<>();
             for (IConceptMedicationForm mf : conceptMedicationForms) {
                 availableForms.add(mf.getName());
@@ -444,7 +367,7 @@ public class MedicationService implements IMedicationService {
         ServiceResponse<List<MedicationAdministrationItem>> response = new ServiceResponse<>();
         try {
             // Retrieve a list of all medicationAdministrations from the database
-            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = conceptPrescriptionAdministrationRepository.findAll(ConceptPrescriptionAdministration.class);
+            List<? extends IConceptPrescriptionAdministration> medicationAdministrations = prescriptionRepository.retrieveAllConceptPrescriptionAdministrations();
 
             // Creates a list of MedicationAdministratItems (UI Model) to be passed back to the controller/view
             List<MedicationAdministrationItem> availableAdministrations = new ArrayList<>();
@@ -466,7 +389,7 @@ public class MedicationService implements IMedicationService {
     public ServiceResponse<List<String>> retrieveAvailableMedicationUnits() {
         ServiceResponse<List<String>> response = new ServiceResponse<>();
         try {
-            List<? extends IConceptMedicationUnit> conceptMedicationUnits = conceptMedicationUnitRepository.findAll(ConceptMedicationUnit.class);
+            List<? extends IConceptMedicationUnit> conceptMedicationUnits = medicationRepository.retrieveAllConceptMedicationUnits();
             List<String> availableUnits = new ArrayList<>();
             for (IConceptMedicationUnit mmu : conceptMedicationUnits) {
                 availableUnits.add(mmu.getName());

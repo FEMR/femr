@@ -18,31 +18,28 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
+import femr.data.daos.core.IMedicationRepository;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IConceptService;
 import femr.common.IItemModelMapper;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
-import femr.data.daos.IRepository;
 import femr.data.models.core.IMedication;
-import femr.data.models.mysql.concepts.ConceptMedication;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConceptService implements IConceptService {
 
-    private final IRepository<IMedication> conceptMedicationRepository;
+    private final IMedicationRepository medicationRepository;
     private final IItemModelMapper itemModelMapper;
 
     @Inject
-    public ConceptService(IRepository<IMedication> conceptMedicationRepository,
+    public ConceptService(IMedicationRepository medicationRepository,
                           @Named("identified") IItemModelMapper itemModelMapper) {
 
-        this.conceptMedicationRepository = conceptMedicationRepository;
+        this.medicationRepository = medicationRepository;
         this.itemModelMapper = itemModelMapper;
     }
 
@@ -55,14 +52,10 @@ public class ConceptService implements IConceptService {
         ServiceResponse<List<MedicationItem>> response = new ServiceResponse<>();
         List<MedicationItem> medicationConcepts = new ArrayList<>();
 
-        ExpressionList<ConceptMedication> conceptMedicationExpressionList = QueryProvider.getConceptMedicationQuery()
-                .where()
-                .eq("isDeleted", false);
-
         try {
 
 
-            List<? extends IMedication> allMedications = conceptMedicationRepository.find(conceptMedicationExpressionList);
+            List<? extends IMedication> allMedications = medicationRepository.retrieveAllConceptMedications();
 
             for (IMedication m : allMedications) {
                 medicationConcepts.add(itemModelMapper.createMedicationItem(m, null, null, null, null, null));
@@ -88,14 +81,9 @@ public class ConceptService implements IConceptService {
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
         MedicationItem medicationConcept;
 
-        ExpressionList<ConceptMedication> conceptMedicationExpressionList = QueryProvider.getConceptMedicationQuery()
-                .where()
-                .eq("isDeleted", false)
-                .eq("id", conceptMedicationID);
-
         try{
 
-            IMedication medication = conceptMedicationRepository.findOne(conceptMedicationExpressionList);
+            IMedication medication = medicationRepository.retrieveConceptMedicationById(conceptMedicationID);
 
             medicationConcept = itemModelMapper.createMedicationItem(medication, null, null, null, null, null);
 

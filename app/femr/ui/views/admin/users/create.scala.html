@@ -1,4 +1,8 @@
-@(currentUser: femr.common.dtos.CurrentUser, form: play.data.Form[femr.ui.models.admin.users.CreateViewModel], messages: java.util.List[_ <: java.lang.String], availableRoles: java.util.List[_ <: java.lang.String])
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.admin.users.CreateViewModel],
+        messages: java.util.List[_ <: java.lang.String],
+        availableRoles: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder)
 
 @import views.html.helper.FieldConstructor
 @import femr.ui.views.html.partials.admin.inputFieldConstructor
@@ -9,10 +13,10 @@
     }
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/users.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/users.css")">
     }
     @additionalScripts = {
-        <script type="text/javascript" src="@routes.Assets.versioned("js/admin/users.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
     }
     @additionalMessages = {
     @for(message <- messages) {
@@ -20,7 +24,7 @@
     }
     }
 
-@admin("Add User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages) {
+@admin("Add User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
     <div id="createWrap">
     @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal", 'name -> "createForm") {
 

@@ -18,8 +18,8 @@
 */
 package femr.data.daos;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 
 import java.util.List;
 

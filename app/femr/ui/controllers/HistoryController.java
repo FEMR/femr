@@ -19,6 +19,7 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
@@ -49,6 +50,7 @@ import java.util.Map;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class HistoryController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IEncounterService encounterService;
     private final ISessionService sessionService;
@@ -58,7 +60,8 @@ public class HistoryController extends Controller {
     private final IVitalService vitalService;
 
     @Inject
-    public HistoryController(FormFactory formFactory,
+    public HistoryController(AssetsFinder assetsFinder,
+                             FormFactory formFactory,
                              IEncounterService encounterService,
                              ISessionService sessionService,
                              ISearchService searchService,
@@ -66,6 +69,7 @@ public class HistoryController extends Controller {
                              IPhotoService photoService,
                              IVitalService vitalService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -121,7 +125,7 @@ public class HistoryController extends Controller {
         viewModel.setPatientEncounterItems(patientEncounterItems);
 
 
-        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems));
+        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems, assetsFinder));
     }
 
     /**
@@ -249,7 +253,7 @@ public class HistoryController extends Controller {
 
         indexEncounterPharmacyViewModel.setPrescriptions(prescriptionItemServiceResponse.getResponseObject());
 
-        return ok(indexEncounter.render(currentUser, indexEncounterViewModel, indexEncounterMedicalViewModel, indexEncounterPharmacyViewModel));
+        return ok(indexEncounter.render(currentUser, indexEncounterViewModel, indexEncounterMedicalViewModel, indexEncounterPharmacyViewModel, assetsFinder));
     }
 
     /**

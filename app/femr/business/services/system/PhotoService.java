@@ -18,7 +18,7 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.Ebean;
 import com.google.inject.name.Named;
 import femr.business.helpers.LogicDoer;
 import femr.business.services.core.IPhotoService;

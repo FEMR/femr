@@ -19,6 +19,7 @@
 package femr.common.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,12 @@ public class ResearchResultSetItem {
         dataRangeHigh = -1 * Float.MAX_VALUE;
         dataRangeLow = Float.MAX_VALUE;
         average = 0;
+        dataType = "";
+        unitOfMeasurement = "";
 
+        dataset = new ArrayList<>();
+        primaryValueMap = new HashMap<>();
+        secondaryValueMap = new HashMap<>();
     }
 
     public float getAverage() {

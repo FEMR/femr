@@ -35,7 +35,8 @@ public interface IConfigureService {
     /**
      * Update more than one system setting.
      *
-     * @param systemSettings a list of active system setting names. system settings that don't exist in this list are assumed to be inactive
+     * @param systemSettings a list of active system setting names. system settings that don't exist in this list are assumed to be inactive.
+     *                       null if all system settings are to be set to "off"
      * @return a list of system settings after the update.
      */
     ServiceResponse<List<? extends ISystemSetting>> updateSystemSettings(List<String> systemSettings);

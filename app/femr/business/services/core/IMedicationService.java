@@ -92,14 +92,6 @@ public interface IMedicationService {
     ServiceResponse<MedicationItem> createMedication(String name, String form, List<MedicationItem.ActiveIngredient> activeIngredients);
 
     /**
-     * Deletes/marks deleted a medication by it's ID
-     *
-     * @param medicationID The ID of the medication
-     * @return
-     */
-    ServiceResponse<MedicationItem> deleteMedication(int medicationID);
-
-    /**
      * Retrieve a list of all available Administrations for medication
      *
      * @return a service response that contains a list of available Administrations that are available

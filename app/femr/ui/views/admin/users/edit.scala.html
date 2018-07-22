@@ -1,4 +1,8 @@
-@(currentUser: femr.common.dtos.CurrentUser, form: play.data.Form[femr.ui.models.admin.users.EditViewModel], availableRoles: java.util.List[_ <: java.lang.String], messages: java.util.List[_ <: java.lang.String])
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.admin.users.EditViewModel],
+        availableRoles: java.util.List[_ <: java.lang.String],
+        messages: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder)
 
 @import femr.common.models.MissionTripItem
 @import views.html.helper.options
@@ -12,12 +16,12 @@
         FieldConstructor(inputFieldConstructor.f)
     }
     @additionalStyles = {
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.dataTables.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.versioned("css/admin/users.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/users.css")">
     }
     @additionalScripts = {
-        <script type = "text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.dataTables.min.js")"></script>
-        <script type="text/javascript" src="@routes.Assets.versioned("js/admin/users.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
     }
     @additionalMessages = {
     @for(message <- messages) {
@@ -25,10 +29,10 @@
     }
     }
 
-@admin("Edit User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages) {
+@admin("Edit User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
     <div class="container">
-    @helper.form(action = UsersController.editPost(Integer.parseInt(form("userId").value())), 'name -> "createForm") {
-        <input type="hidden" value="@form("userId").value()" name="userId"/>
+    @helper.form(action = UsersController.editPost(Integer.parseInt(form("userId").getValue.get())), 'name -> "createForm") {
+        <input type="hidden" value="@form("userId").getValue.get()" name="userId"/>
 
 
         <div class="editWrapBoth" id="editWrapLeft">
@@ -55,7 +59,7 @@
             )
 
             <label>Password Reset?*</label>
-            @if(form("passwordReset").value == "true") {
+            @if(form("passwordReset").getValue != null && form("passwordReset").getValue.get() == "true") {
                 <input type="checkbox" name="passwordReset" checked="checked"/>
             } else {
                 <input type="checkbox" name="passwordReset"/>
@@ -89,9 +93,9 @@
                 <tbody>
                     @helper.repeat(form("missionTripItems"), min = 0) { trip =>
                         <tr>
-                            <td>@form(trip.name.toString + ".teamName").value</td>
-                            <td>@form(trip.name.toString + ".tripCountry").value</td>
-                            <td>@form(trip.name.toString + ".friendlyTripStartDate").value</td>
+                            <td>@if(form(trip.name.toString + ".teamName").getValue != null){ @form(trip.name.toString + ".teamName").getValue.get()}</td>
+                            <td>@if(form(trip.name.toString + ".tripCountry").getValue != null){ @form(trip.name.toString + ".tripCountry").getValue.get()}</td>
+                            <td>@if(form(trip.name.toString + ".friendlyTripStartDate").getValue != null){ @form(trip.name.toString + ".friendlyTripStartDate").getValue.get()}</td>
                         </tr>
 
                     }

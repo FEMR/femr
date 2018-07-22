@@ -1,12 +1,12 @@
-@(currentUser: femr.common.dtos.CurrentUser = null)
+@(currentUser: femr.common.dtos.CurrentUser = null, assets: AssetsFinder)
 
 @import femr.ui.views.html.partials
 <div class="navigation">
     <div class="container">
     @if(currentUser != null) {
-        @partials.authenticated(currentUser)
+        @partials.authenticated(currentUser, assets)
     } else {
-        @partials.anonymous()
+        @partials.anonymous(assets)
     }
     </div>
 </div>

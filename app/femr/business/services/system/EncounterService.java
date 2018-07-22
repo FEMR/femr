@@ -18,8 +18,8 @@
 */
 package femr.business.services.system;
 
-import com.avaje.ebean.ExpressionList;
-import com.avaje.ebean.Query;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.helpers.QueryProvider;
@@ -442,6 +442,42 @@ public class EncounterService implements IEncounterService {
 
         return response;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ServiceResponse<List<NoteItem>> retrieveNoteItems(int encounterId) {
+        ServiceResponse<List<NoteItem>> response = new ServiceResponse<>();
+        List<NoteItem> noteItems = new ArrayList<>();
+        Query<PatientEncounterTabField> query = QueryProvider.getPatientEncounterTabFieldQuery()
+                .fetch("tabField")
+                .where()
+                .isNull("IsDeleted")
+                .eq("patient_encounter_id", encounterId)
+                .eq("tabField.name", "pharmacy_note")
+                .order()
+                .desc("date_taken");
+
+        try {
+            List<? extends IPatientEncounterTabField> patientEncounterTreatmentFields = patientEncounterTabFieldRepository.find(query);
+            if (patientEncounterTreatmentFields == null) {
+                response.addError("", "bad query");
+            } else {
+                if(!patientEncounterTreatmentFields.isEmpty())
+                {
+                    IPatientEncounterTabField petf = patientEncounterTreatmentFields.get(0); // get newest note; 4get the rest
+                    noteItems.add(itemModelMapper.createNoteItem(petf.getTabFieldValue(), petf.getDateTaken(), userRepository.retrieveUserById(petf.getUserId()).getLastName() + ", " + userRepository.retrieveUserById(petf.getUserId()).getFirstName()));
+                }
+                response.setResponseObject(noteItems);
+            }
+        } catch (Exception ex) {
+            response.addError("", "error");
+        }
+
+        return response;
+    }
+
 
     /**
      * {@inheritDoc}

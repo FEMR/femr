@@ -201,3 +201,16 @@ input[style] {
     font-size: 8px;
     padding-left: 5px;
 }
+
+.pastNotes{
+    font-style: italic;
+    font-size: 13px;
+}
+
+.noteTable{
+    width: 100%;
+}
+
+table.noteTable td, th, tr {
+    border: 1px solid black;
+}

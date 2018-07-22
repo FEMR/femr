@@ -3,6 +3,7 @@ package femr.ui.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -27,6 +28,7 @@ import java.util.Map;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class TriageController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IEncounterService encounterService;
     private final IPatientService patientService;
@@ -36,7 +38,8 @@ public class TriageController extends Controller {
     private final IVitalService vitalService;
 
     @Inject
-    public TriageController(FormFactory formFactory,
+    public TriageController(AssetsFinder assetsFinder,
+                            FormFactory formFactory,
                             IEncounterService encounterService,
                             ISessionService sessionService,
                             ISearchService searchService,
@@ -44,6 +47,7 @@ public class TriageController extends Controller {
                             IPhotoService photoService,
                             IVitalService vitalService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.encounterService = encounterService;
         this.sessionService = sessionService;
@@ -85,7 +89,7 @@ public class TriageController extends Controller {
         viewModelGet.setSettings(settingItemServiceResponse.getResponseObject());
         viewModelGet.setPossibleAgeClassifications(patientAgeClassificationsResponse.getResponseObject());
 
-        return ok(index.render(currentUser, viewModelGet));
+        return ok(index.render(currentUser, viewModelGet, assetsFinder));
     }
 
     /*
@@ -142,7 +146,7 @@ public class TriageController extends Controller {
             viewModelGet.setLinkToMedical(false);
         }
 
-        return ok(index.render(currentUser, viewModelGet));
+        return ok(index.render(currentUser, viewModelGet, assetsFinder));
     }
 
     /*

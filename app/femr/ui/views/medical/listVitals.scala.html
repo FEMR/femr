@@ -1,4 +1,4 @@
-@(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap, viewModel: femr.ui.models.medical.EditViewModelGet)
+@(vitalMap: femr.util.DataStructure.Mapping.VitalMultiMap, viewModel: femr.ui.models.medical.EditViewModelGet, assets: AssetsFinder)
 
 @import femr.ui.views.html.partials.helpers.outputHeightOrNA
 @import femr.ui.views.html.partials.helpers.outputWeightOrNA
@@ -8,12 +8,12 @@
 @*IMPORTANT: The layout defined here is tightly coupled with the javascript logic used to
 keep track of the most recent vitals for a patient (see listVitals.js and medical.js*@
 
-<link rel="stylesheet" href="@routes.Assets.versioned("css/libraries/jquery.tablescroll.css")">
-<link rel="stylesheet" href="@routes.Assets.versioned("css/medical/listVitals.css")">
+<link rel="stylesheet" href="@assets.path("css/libraries/jquery.tablescroll.css")">
+<link rel="stylesheet" href="@assets.path("css/medical/listVitals.css")">
 
-<script>window.jQuery || document.write ( '<script type="text/javascript" src="   @routes.Assets.versioned("js/libraries/jquery-main-min.js") "><\/script>')</script>
-<script type="text/javascript" src="@routes.Assets.versioned("js/libraries/jquery.tablescroll.js")"></script>
-<script type="text/javascript" src="@routes.Assets.versioned("js/medical/listVitals.js")"></script>
+<script>window.jQuery || document.write ( '<script type="text/javascript" src="   @assets.path("js/libraries/jquery-2.2.4.min.js") "><\/script>')</script>
+<script type="text/javascript" src="@assets.path("js/libraries/jquery.tablescroll.js")"></script>
+<script type="text/javascript" src="@assets.path("js/medical/listVitals.js")"></script>
 
 <table id="vitalTable" cellspacing="0">
     <thead></thead>

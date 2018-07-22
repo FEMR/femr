@@ -1,3 +1,17 @@
+//The following code disables using enter key on any form fields of input types text.
+//This code below is also found in triage.js, medical.js, and pharmacy.js
+window.addEventListener('keydown',function(e){
+    if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){
+        if(e.target.nodeName=='INPUT' && (e.target.type=='text' || e.target.type=='number'
+            || e.target.type=='checkbox'|| e.target.type=='tel' || e.target.type=='date'
+            || e.target.type=='radio'))
+        {
+            e.preventDefault();
+            return false;
+        }
+    }
+},true);
+
 var patientPhotoFeature = {
 
     config: {

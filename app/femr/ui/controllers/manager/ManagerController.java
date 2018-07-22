@@ -1,6 +1,7 @@
 package femr.ui.controllers.manager;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -24,16 +25,19 @@ import java.util.List;
 @AllowedRoles({Roles.MANAGER})
 public class ManagerController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final ISessionService sessionService;
     private final IEncounterService encounterService;
     private final IMissionTripService missionTripService;
 
 
     @Inject
-    public ManagerController(ISessionService sessionService,
+    public ManagerController(AssetsFinder assetsFinder,
+                             ISessionService sessionService,
                              IEncounterService encounterService,
                              IMissionTripService missionTripService) {
 
+        this.assetsFinder = assetsFinder;
         this.sessionService = sessionService;
         this.encounterService = encounterService;
         this.missionTripService = missionTripService;
@@ -47,7 +51,7 @@ public class ManagerController extends Controller {
         //if the user is not assigned to a trip renders outpage, with message to user
         if (currentUser.getTripId() == null) {
 
-            return ok(index.render(currentUser, viewModel));
+            return ok(index.render(currentUser, viewModel, assetsFinder));
         }
 
         //Get the list of patient encounters that were created today, for the current trip and set them in the viewmodel
@@ -75,7 +79,7 @@ public class ManagerController extends Controller {
         //Get the current day to show the user what day the patients are being displayed for
         viewModel.setUserFriendlyDate(dateUtils.getFriendlyInternationalDate(DateTime.now().toDate()));
 
-        return ok(index.render(currentUser, viewModel));
+        return ok(index.render(currentUser, viewModel, assetsFinder));
 
     }
 

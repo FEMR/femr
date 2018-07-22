@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser)
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.FeedbackController
@@ -6,10 +6,10 @@
 
   @additionalScripts = {}
   @additionalStyles = {
-      <link rel="stylesheet" href="@routes.Assets.versioned("css/feedback.css")">
+      <link rel="stylesheet" href="@assets.path("css/feedback.css")">
   }
 
-@main("Feedback", currentUser, styles = additionalStyles, scripts = additionalScripts) {
+@main("Feedback", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
       <div class="ifContainer">
 

@@ -23,6 +23,7 @@ GET         /admin/inventory/existing/:tripId                  @femr.ui.controll
 POST        /admin/inventory/existing/:tripId                  @femr.ui.controllers.admin.InventoryController.existingPost(tripId: Integer)
 GET         /admin/inventory/export/:tripId                    @femr.ui.controllers.admin.InventoryController.exportGet(tripId: Integer)
 POST        /admin/inventory/delete/:id/:tripId                @femr.ui.controllers.admin.InventoryController.ajaxDelete(id: Integer, tripId: Integer)
+POST        /admin/inventory/readd/:id/:tripId                 @femr.ui.controllers.admin.InventoryController.ajaxReadd(id: Integer, tripId: Integer)
 POST        /admin/inventory/editCurrent/:id/:tripId           @femr.ui.controllers.admin.InventoryController.ajaxEditCurrent(id: Integer, tripId: Integer)
 POST        /admin/inventory/editTotal/:id/:tripId             @femr.ui.controllers.admin.InventoryController.ajaxEditTotal(id: Integer, tripId: Integer)
 GET         /admin/configure                                   @femr.ui.controllers.admin.ConfigureController.manageGet()
@@ -92,8 +93,8 @@ GET         /reference                                         @femr.ui.controll
 #Home
 GET         /                                                  @femr.ui.controllers.HomeController.index()
 
-# Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                                      controllers.Assets.versioned(path="/public", file: Asset)
+# Map static resources without global state
+GET         /assets/*file                                       controllers.Assets.versioned(file)
 
 #Feedback
 GET         /feedback                                           @femr.ui.controllers.FeedbackController.indexGet()

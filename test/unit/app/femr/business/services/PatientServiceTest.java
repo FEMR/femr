@@ -19,8 +19,6 @@ import femr.business.services.core.IPatientService;
 import femr.business.services.system.PatientService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.PatientItem;
-import femr.data.daos.IRepository;
-import femr.data.models.core.IPatientEncounter;
 import mock.femr.data.MockDataModelMapper;
 import mock.femr.data.daos.MockPatientRepository;
 import org.junit.After;

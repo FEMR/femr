@@ -1,6 +1,7 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
@@ -23,13 +24,15 @@ import java.util.regex.Pattern;
 
 public class SessionsController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final ISessionService sessionsService;
     private final IUserService userService;
 
     @Inject
-    public SessionsController(FormFactory formFactory, ISessionService sessionsService, IUserService userService) {
+    public SessionsController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionsService, IUserService userService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.sessionsService = sessionsService;
         this.userService = userService;
@@ -44,7 +47,7 @@ public class SessionsController extends Controller {
             return redirect(routes.HomeController.index());
         }
 
-        return ok(create.render(createViewModelForm, 0));
+        return ok(create.render(createViewModelForm, 0, assetsFinder));
     }
 
     public Result createPost() {
@@ -54,7 +57,7 @@ public class SessionsController extends Controller {
         ServiceResponse<CurrentUser> response = sessionsService.createSession(viewModel.getEmail(), viewModel.getPassword(), request().remoteAddress());
 
         if (response.hasErrors()) {
-            return ok(create.render(createViewModelForm.bindFromRequest(), 1));
+            return ok(create.render(createViewModelForm.bindFromRequest(), 1, assetsFinder));
         }else{
             IUser user = userService.retrieveById(response.getResponseObject().getId());
             user.setLastLogin(dateUtils.getCurrentDateTime());
@@ -67,7 +70,7 @@ public class SessionsController extends Controller {
             DateTime stop = new DateTime(DateTime.now());
             int daysBetween = Days.daysBetween(start, stop).getDays();
 
-            if(daysBetween > 60){
+            if(daysBetween > 90){
                 user.setPasswordReset(true);
             }
 
@@ -84,7 +87,7 @@ public class SessionsController extends Controller {
 
         final Form<CreateViewModel> createViewModelForm = formFactory.form(CreateViewModel.class);
 
-        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>()));
+        return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, new ArrayList<String>(), assetsFinder));
     }
 
     public Result editPasswordPost(){
@@ -95,6 +98,8 @@ public class SessionsController extends Controller {
         IUser user = userService.retrieveById(currentUser.getId());
         Boolean isNewPassword = false;
 
+        Pattern hasLowercase = Pattern.compile("[a-z]");
+
         Pattern hasUppercase = Pattern.compile("[A-Z]");
         Pattern hasNumber = Pattern.compile("\\d");
         ArrayList<String> messages = new ArrayList<>();
@@ -102,12 +107,16 @@ public class SessionsController extends Controller {
             messages.add("password is a required field");
         else
         {
-            if(viewModel.getNewPassword().length() < 6)        //AJ Saclayan Password Constraints
-                messages.add("password is less than 6 characters");
+            if(viewModel.getNewPassword().length() < 8)        //AJ Saclayan Password Constraints
+                messages.add("password is less than 8 characters");
+            if(!hasLowercase.matcher(viewModel.getNewPassword()).find())
+                messages.add("password must have a lowercase character");
             if (!hasUppercase.matcher(viewModel.getNewPassword()).find())
-                    messages.add("password must have an uppercase");
+                    messages.add("password must have an uppercase character");
+
             if (!hasNumber.matcher(viewModel.getNewPassword()).find())
                     messages.add("password must have a number");
+
             if(!viewModel.getNewPassword().equals(viewModel.getNewPasswordVerify()))
                 messages.add("passwords do not match");
             //check if new password is equal to the old password
@@ -118,7 +127,7 @@ public class SessionsController extends Controller {
         }
 
         if(!messages.isEmpty())
-            return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages));
+            return ok(editPassword.render(user.getFirstName(), user.getLastName(), createViewModelForm, messages, assetsFinder));
         else
         {
             user.setPassword(viewModel.getNewPassword());

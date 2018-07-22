@@ -1,6 +1,7 @@
 package femr.ui.controllers;
 
 import com.google.inject.Inject;
+import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
@@ -26,6 +27,7 @@ import java.util.Map;
 @AllowedRoles({Roles.PHYSICIAN, Roles.PHARMACIST, Roles.NURSE})
 public class PharmaciesController extends Controller {
 
+    private final AssetsFinder assetsFinder;
     private final FormFactory formFactory;
     private final IEncounterService encounterService;
     private final IMedicationService medicationService;
@@ -34,13 +36,15 @@ public class PharmaciesController extends Controller {
     private final IInventoryService inventoryService;
 
     @Inject
-    public PharmaciesController(FormFactory formFactory,
+    public PharmaciesController(AssetsFinder assetsFinder,
+                                FormFactory formFactory,
                                 IEncounterService encounterService,
                                 IMedicationService medicationService,
                                 ISessionService sessionService,
                                 ISearchService searchService,
                                 IInventoryService inventoryService) {
 
+        this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.encounterService = encounterService;
         this.medicationService = medicationService;
@@ -51,7 +55,7 @@ public class PharmaciesController extends Controller {
 
     public Result indexGet() {
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
-        return ok(index.render(currentUserSession, null, 0));
+        return ok(index.render(currentUserSession, null, 0, assetsFinder));
     }
 
     /**
@@ -65,20 +69,20 @@ public class PharmaciesController extends Controller {
         String queryString_id = request().body().asFormUrlEncoded().get("id")[0];
         ServiceResponse<Integer> idQueryStringResponse = searchService.parseIdFromQueryString(queryString_id);
         if (idQueryStringResponse.hasErrors()) {
-            return ok(index.render(currentUserSession, idQueryStringResponse.getErrors().get(""), 0));
+            return ok(index.render(currentUserSession, idQueryStringResponse.getErrors().get(""), 0, assetsFinder));
         }
         Integer patientId = idQueryStringResponse.getResponseObject();
 
         //get the patient's encounter
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
         if (patientEncounterItemServiceResponse.hasErrors()) {
-            return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0));
+            return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0, assetsFinder));
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
         //check for encounter closed
         if (patientEncounterItem.getIsClosed()) {
-            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
+            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
         }
 
         //ensure prescriptions exist for that patient
@@ -87,7 +91,7 @@ public class PharmaciesController extends Controller {
             throw new RuntimeException();
 
         } else if (prescriptionItemsResponse.getResponseObject().size() < 1) {
-            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
+            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
         }
 
         return redirect(routes.PharmaciesController.editGet(patientId));
@@ -110,7 +114,7 @@ public class PharmaciesController extends Controller {
         ServiceResponse<PatientItem> patientItemServiceResponse = searchService.retrievePatientItemByPatientId(patientId);
         if (patientItemServiceResponse.hasErrors()) {
             message = patientItemServiceResponse.getErrors().get("");
-            return ok(index.render(currentUserSession, message, 0));
+            return ok(index.render(currentUserSession, message, 0, assetsFinder));
         }
         PatientItem patient = patientItemServiceResponse.getResponseObject();
         viewModelGet.setPatient(patient);
@@ -119,12 +123,12 @@ public class PharmaciesController extends Controller {
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patient.getId());
         if (patientEncounterItemServiceResponse.hasErrors()) {
             message = patientEncounterItemServiceResponse.getErrors().get("");
-            return ok(index.render(currentUserSession, message, 0));
+            return ok(index.render(currentUserSession, message, 0, assetsFinder));
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
         //check for encounter closed
         if (patientEncounterItem.getIsClosed()) {
-            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0));
+            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
         }
         viewModelGet.setPatientEncounterItem(patientEncounterItem);
 
@@ -134,7 +138,7 @@ public class PharmaciesController extends Controller {
         if (prescriptionItemServiceResponse.hasErrors()) {
             throw new RuntimeException();
         } else if (prescriptionItemServiceResponse.getResponseObject().size() < 1) {
-            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0));
+            return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
         }
         viewModelGet.setPrescriptions(prescriptionItemServiceResponse.getResponseObject());
 
@@ -159,7 +163,17 @@ public class PharmaciesController extends Controller {
             }
         }
 
-        return ok(edit.render(currentUserSession, viewModelGet, false));
+        //find patient notes, they do not have to exist.
+        ServiceResponse<List<NoteItem>> noteItemServiceResponse = encounterService.retrieveNoteItems(patientEncounterItem.getId());
+        if (noteItemServiceResponse.hasErrors()) {
+            throw new RuntimeException();
+        } else {
+            if (noteItemServiceResponse.getResponseObject().size() > 0) {
+                viewModelGet.setNotes(noteItemServiceResponse.getResponseObject());
+            }
+        }
+
+        return ok(edit.render(currentUserSession, viewModelGet, false, assetsFinder));
     }
 
     public Result editPost(int id) {
@@ -286,6 +300,6 @@ public class PharmaciesController extends Controller {
                 patientItem.getId() +
                 ") was saved successfully.";
 
-        return ok(index.render(currentUserSession, message, 0));
+        return ok(index.render(currentUserSession, message, 0, assetsFinder));
     }
 }

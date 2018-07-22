@@ -7,12 +7,13 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 resolvers += "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.12")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "3.1.0")
+// Ebean ORM
+addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "4.1.0")
 
 //versioning and compression
-addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.0.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.3")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.2")
 

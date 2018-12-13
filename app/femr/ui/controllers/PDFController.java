@@ -334,17 +334,17 @@ public class PDFController extends Controller {
         table.addCell(getVitalMapCell("Blood Pressure: ", "bloodPressure", vitalMap));
         table.addCell(getVitalMapCell("Temperature (°F):", "temperature", vitalMap));
         table.addCell(getVitalMapCell("Temperature (°C):", "temperatureCelsius", vitalMap));
-        table.completeRow();
+//        table.completeRow();
 
         table.addCell(getVitalMapCell("Glucose:", "glucose", vitalMap));
         table.addCell(getVitalMapCell("Height (Imperial):", "heightImperial", vitalMap));
         table.addCell(getVitalMapCell("Height (Metric):", "heightMetric", vitalMap));
-        table.completeRow();
+//        table.completeRow();
 
         table.addCell(getVitalMapCell("Heart Rate: ", "heartRate", vitalMap));
         table.addCell(getVitalMapCell("Weight (lbs):", "weight", vitalMap));
         table.addCell(getVitalMapCell("Weight (kg):", "weightKgs", vitalMap));
-        table.completeRow();
+//        table.completeRow();
 
         table.addCell(getVitalMapCell("Respiration Rate:", "respiratoryRate", vitalMap));
         table.addCell(getVitalMapCell("Oxygen Saturation:", "oxygenSaturation", vitalMap));
@@ -353,7 +353,7 @@ public class PDFController extends Controller {
         PdfPCell cell = new PdfPCell(table.getDefaultCell());
         cell.setPaddingTop(2);
         table.addCell(getVitalMapCell("Weeks Pregnant:", "weeksPregnant", vitalMap));
-        table.completeRow();
+//        table.completeRow();
 
         return table;
     }
@@ -425,17 +425,13 @@ public class PDFController extends Controller {
         }
 
         // AJ Saclayan Dispensed Table
-        Paragraph prescriptionsTitle = new Paragraph("Dispensed Prescription(s):", getTitleFont());
         PdfPCell prescriptionCell = new PdfPCell(table.getDefaultCell());
 
-        prescriptionCell.setPaddingRight(10);
-        prescriptionCell.addElement(prescriptionsTitle);
-        prescriptionCell.setColspan(3);
-        table.addCell(prescriptionCell);
-        table.completeRow();
         if(!prescriptionItems.isEmpty()) {
+            //If there are prescriptions use the default formatting for prescriptions
+            PdfPCell individualPrescriptionCell;
             //Create Dispensed Table.
-            PdfPCell cell;
+
             /*Paragraph originalMedsTitle = new Paragraph("Original", getTitleFont());
             cell = new PdfPCell(originalMedsTitle);
 
@@ -448,6 +444,13 @@ public class PDFController extends Controller {
 
             table.completeRow();*/
 
+            Paragraph prescriptionsTitle = new Paragraph("Dispensed Prescription(s):", getTitleFont());
+
+            prescriptionCell.setPaddingRight(10);
+            prescriptionCell.addElement(prescriptionsTitle);
+            prescriptionCell.setColspan(3);
+            table.addCell(prescriptionCell);
+
             for (PrescriptionItem prescription : prescriptionItems) {
                 String medicationForm = prescription.getMedicationForm();
 
@@ -457,35 +460,51 @@ public class PDFController extends Controller {
                     medicationForm = medicationForm.trim();
                 }
 
-                cell = new HtmlCell();
+                individualPrescriptionCell = new HtmlCell();
                 if (prescription.getReplacementMedicationName() != null) {
-                    cell.addElement(new Paragraph("Prescription #" + prescription.getId() + " - REPLACED", getValueFont()));
-                    cell.addElement(new Paragraph(prescription.printFullPrescriptionName(), getValueFontStrikethrough()));
+                    individualPrescriptionCell.addElement(new Paragraph("Prescription #" + prescription.getId() + " - REPLACED", getValueFont()));
+                    individualPrescriptionCell.addElement(new Paragraph(prescription.printFullPrescriptionName(), getValueFontStrikethrough()));
 
-                    cell.addElement(
+                    individualPrescriptionCell.addElement(
                             new Paragraph(
                             "This prescription was replaced by prescription #" + prescription.getReplacementId(),
                             getValueFont())
                     );
                 } else {
-                    cell.addElement(new Paragraph("Prescription #" + prescription.getId(), getValueFont()));
-                    cell.addElement(new Paragraph(prescription.printFullPrescriptionName()));
+                    individualPrescriptionCell.addElement(new Paragraph("Prescription #" + prescription.getId(), getValueFont()));
+                    individualPrescriptionCell.addElement(new Paragraph(prescription.printFullPrescriptionName()));
                 }
 
-                cell.setColspan(2);
-                cell.setPadding(5);
-                table.addCell(cell);
-                table.completeRow();
+                individualPrescriptionCell.setColspan(2);
+                individualPrescriptionCell.setPadding(5);
+                table.addCell(individualPrescriptionCell);
+
             }
+        } else {
+            //If there are no prescriptions, display the title and N/A on the same line
+            prescriptionCell.addElement(getStyledPhrase("Dispensed Prescription(s): ", "N/A"));
         }
+        //Add Prescriptions cell to the table
+        table.addCell(prescriptionCell);
+        table.completeRow();
+
         // Get Problems
-        Paragraph problemsTitle = new Paragraph("Problem(s):", getTitleFont());
         PdfPCell problemsCell = new PdfPCell(table.getDefaultCell());
-        problemsCell.addElement(problemsTitle);
-        for (ProblemItem problem : problemItems) {
-            Paragraph probText = new Paragraph(" - "+problem.getName(), getValueFont());
-            problemsCell.addElement(probText);
+        if(!problemItems.isEmpty()){
+
+            //If there are problemItems, then use the default title element with other elements
+            Paragraph problemsTitle = new Paragraph("Problem(s):", getTitleFont());
+            problemsCell.addElement(problemsTitle);
+
+            for (ProblemItem problem : problemItems) {
+                Paragraph probText = new Paragraph(" - "+problem.getName(), getValueFont());
+                problemsCell.addElement(probText);
+            }
+        } else {
+            //If no problems, display the Problems section title and N/A on the same line as a styled Phrase
+            problemsCell.addElement(getStyledPhrase("Problem(s): ", "N/A"));
         }
+        //Add the problems section cell to the Assessment section.
         table.addCell(problemsCell);
 
         table.completeRow();
@@ -690,35 +709,59 @@ public class PDFController extends Controller {
         Paragraph title = new Paragraph(titleString, getTitleFont());
         cell.addElement(title);
 
-        // For each vital value in the map add a new Paragraph element
-        for (int dateIndex = 1; dateIndex <= vitalMap.getDateListChronological().size(); dateIndex++) {
+        System.out.println("VitalCell - " + titleString);
 
-            String value;
-            if( key.equals("bloodPressure") ){
+        if(!vitalMap.getDateListChronological().isEmpty()){
+            // For each vital value in the map, if there are any add a new Paragraph element
+            for (int dateIndex = 1; dateIndex <= vitalMap.getDateListChronological().size(); dateIndex++) {
 
-                value = outputStringOrNA(vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1)));
-                value += '/' + outputStringOrNA(vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1)));
-            }
-            else if( key.equals("heightImperial")){
-                value = outputHeightImperialOrNA(
-                            Double.valueOf(vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))).intValue(),
-                            Double.valueOf(vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))).intValue()
-                        );
-            }
-            else if( key.equals(("heightMetric"))){
-                value = outputHeightMetricOrNA(
-                        Double.valueOf(vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1))).intValue(),
-                        Double.valueOf(vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1))).intValue()
-                );
-            }
-            else {
-                value = outputStringOrNA(vitalMap.get(key, vitalMap.getDate(dateIndex - 1)));
-            }
-            Paragraph p = new Paragraph(value);
-            cell.addElement(p);
+                String value;
+                if( key.equals("bloodPressure") ){
+
+                    value = outputStringOrNA(vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1)));
+                    value += '/' + outputStringOrNA(vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1)));
+                }
+                else if( key.equals("heightImperial")){
+                    //vitalMap.get could be null, causing nullpointer exception in all these casts. Check for this.
+                    Integer feet;
+                    Integer inches;
+                    try{
+                        feet = Double.valueOf(vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))).intValue();
+                        inches = Double.valueOf(vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))).intValue();
+                    } catch(Exception e){
+                        feet = null;
+                        inches = null;
+                    }
+                    value = outputHeightImperialOrNA(feet, inches);
+
+                }
+                else if( key.equals(("heightMetric"))){
+                    //vitalMap.get could be null, causing nullpointer exception in all these casts. Check for this.
+                    Integer meters;
+                    Integer cm;
+                    try{
+                        meters = Double.valueOf(vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1))).intValue();
+                        cm =  Double.valueOf(vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1))).intValue();
+                    } catch (Exception e){
+                        meters = null;
+                        cm = null;
+                    }
+
+                    value = outputHeightMetricOrNA(meters, cm);
+                }
+                else {
+                    value = outputStringOrNA(vitalMap.get(key, vitalMap.getDate(dateIndex - 1)));
+                }
+                System.out.println("VAL: " + value);
+                Paragraph p = new Paragraph(outputStringOrNA(value));
+                cell.addElement(p);
 
 
+            }
+        } else {
+            cell.addElement(new Paragraph("N/A"));
         }
+
 
         return cell;
     }

@@ -753,8 +753,7 @@ public class PDFController extends Controller {
                 //Since there could be multiple vital measurements in a day (seen in triage then in medical),
                 //multiple numbers will pop up. Tack the time onto them to at least given them a chronological order.
                 String date = vitalMap.getDateListChronological().get(dateIndex-1);
-                String time = date.substring(date.length() - 8, date.length());
-                Paragraph p = new Paragraph(outputStringOrNA(value) + " at " + time);
+                Paragraph p = new Paragraph(outputStringOrNA(value) + " at " + date);
                 cell.addElement(p);
 
 

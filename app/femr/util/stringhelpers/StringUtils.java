@@ -149,13 +149,14 @@ public class StringUtils {
     }
 
     /**
-     * Checks if a valid Height exists
+     * Checks if a valid Height exists, and returns a string with the height info formatted as imperial if it exists.
+     * e.g. 1'2" when height exists. N/A when it does not
      *
      * @param feet feet in the height
      * @param inches inches in the height
      * @return returns "N/A" if feet and inches are null or a blank string for either if they are null
      */
-    public static String outputHeightOrNA(Integer feet, Integer inches) {
+    public static String outputHeightImperialOrNA(Integer feet, Integer inches) {
         if (feet == null && inches == null) {
             return "N/A";
         } else {
@@ -165,6 +166,29 @@ public class StringUtils {
             }
             if (inches != null) {
                 output += inches + "\"";
+            }
+            return output;
+        }
+    }
+
+    /**
+     * Checks if a valid Height exists, and returns a string with the height info formatted as metric if it exists.
+     * e.g. 1m2cm when height exists. N/A when it does not.
+     *
+     * @param meters meters in the height
+     * @param centimeters centimeters in the height
+     * @return returns "N/A" if meters and inches are null or a blank string for either if they are null
+     */
+    public static String outputHeightMetricOrNA(Integer meters, Integer centimeters) {
+        if (meters == null && meters == null) {
+            return "N/A";
+        } else {
+            String output = "";
+            if (meters != null) {
+                output += meters + "m";
+            }
+            if (centimeters != null) {
+                output += centimeters + "cm";
             }
             return output;
         }

@@ -19,7 +19,6 @@
 package femr.ui.controllers;
 
 import com.itextpdf.tool.xml.html.pdfelement.HtmlCell;
-import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.models.*;
 import femr.data.models.mysql.*;
@@ -143,14 +142,14 @@ public class PDFController extends Controller {
             // Add Encounter Info Table
             document.add(createEncounterInfoTable(patientEncounter));
 
+            // Add HPI and Chief Complaints Table
+            document.add(getHPIAndChiefComplaintTable(tabFieldMultiMap));
+
             // Add Vitals Table
             document.add(createVitalsTable(patientEncounter, patientVitals));
 
             // Add Assessments Table
             document.add(getAssessments(tabFieldMultiMap, prescriptions, problems));
-
-            // Add Chief Complaints Table
-            document.add(getChiefComplaintsTable(tabFieldMultiMap));
 
             document.close();
             docWriter.close();
@@ -216,27 +215,15 @@ public class PDFController extends Controller {
         table.addCell(getStyledPhrase("Name: ", patientItem.getFirstName() + " " + patientItem.getLastName()));
         table.addCell(getStyledPhrase("DOB: ", outputStringOrNA(patientItem.getFriendlyDateOfBirth())));
         table.addCell(getStyledPhrase("Age: ", outputStringOrNA((patientItem.getAge()))));
+        table.completeRow();
 
         // Row 2
         table.addCell(getStyledPhrase("Sex: ", outputStringOrNA(patientItem.getSex())));
-
-        //[FEMR-113] Contributed by Robert Massicotte during the CEN5035 course at FSU
-        int patientHeightFeet = patientItem.getHeightFeet();
-        int patientHeightInches = patientItem.getHeightInches();
-        if (patientHeightFeet == 0 && patientHeightInches == 0) {
-            // display null height as N/A
-            table.addCell(getStyledPhrase("Height: ", "N/A"));
-        } else {
-            // otherwise, display normally (e.g. 5'8")
-            table.addCell(getStyledPhrase("Height: ", outputHeightOrNA(patientHeightFeet, patientHeightInches)));
-        }
-
-        table.addCell(getStyledPhrase("Weight: ", outputFloatOrNA(patientItem.getWeight()) + " lbs"));
+        table.addCell(getStyledPhrase("City: ", outputStringOrNA(patientItem.getCity())));
+        table.addCell(getStyledPhrase("Address: ", outputStringOrNA(patientItem.getAddress())));
         table.completeRow();
 
         // Row 3
-        table.addCell(getStyledPhrase("City: ", outputStringOrNA(patientItem.getCity())));
-        table.addCell(getStyledPhrase("Address: ", outputStringOrNA(patientItem.getAddress())));
         table.addCell(getStyledPhrase("Phone Number: ", outputStringOrNA(patientItem.getPhoneNumber())));
         table.completeRow();
 
@@ -345,17 +332,27 @@ public class PDFController extends Controller {
         table.addCell(getDefaultHeaderCell("Patient Vitals", 3));
 
         table.addCell(getVitalMapCell("Blood Pressure: ", "bloodPressure", vitalMap));
-        table.addCell(getVitalMapCell("Temperature:", "temperature", vitalMap));
-        table.addCell(getVitalMapCell("Glucose:", "glucose", vitalMap));
+        table.addCell(getVitalMapCell("Temperature (°F):", "temperature", vitalMap));
+        table.addCell(getVitalMapCell("Temperature (°C):", "temperatureCelsius", vitalMap));
+        table.completeRow();
 
-        table.addCell(getVitalMapCell("Heart Rate: ", "bloodPressure", vitalMap));
+        table.addCell(getVitalMapCell("Glucose:", "glucose", vitalMap));
+        table.addCell(getVitalMapCell("Height (Imperial):", "heightImperial", vitalMap));
+        table.addCell(getVitalMapCell("Height (Metric):", "heightMetric", vitalMap));
+        table.completeRow();
+
+        table.addCell(getVitalMapCell("Heart Rate: ", "heartRate", vitalMap));
+        table.addCell(getVitalMapCell("Weight (lbs):", "weight", vitalMap));
+        table.addCell(getVitalMapCell("Weight (kg):", "weightKgs", vitalMap));
+        table.completeRow();
+
         table.addCell(getVitalMapCell("Respiration Rate:", "respiratoryRate", vitalMap));
         table.addCell(getVitalMapCell("Oxygen Saturation:", "oxygenSaturation", vitalMap));
 
-		//Sam Zanni
+        //Sam Zanni
         PdfPCell cell = new PdfPCell(table.getDefaultCell());
         cell.setPaddingTop(2);
-		table.addCell(getVitalMapCell("Weeks Pregnant:", "weeksPregnant", vitalMap));
+        table.addCell(getVitalMapCell("Weeks Pregnant:", "weeksPregnant", vitalMap));
         table.completeRow();
 
         return table;
@@ -501,22 +498,22 @@ public class PDFController extends Controller {
      * @param tabFieldMultiMap multimap of the encounter's tab fields
      * @return PdfPTable the itext table to add to the document
      */
-    private PdfPTable getChiefComplaintsTable(TabFieldMultiMap tabFieldMultiMap){
+    private PdfPTable getHPIAndChiefComplaintTable(TabFieldMultiMap tabFieldMultiMap){
 
         PdfPTable table = getDefaultTable(2);
 
-        PdfPCell header = getDefaultHeaderCell("Chief Complaints", 2);
+        PdfPCell header = getDefaultHeaderCell("HPI & Chief Complaint", 2);
         table.addCell(header);
 
         if (tabFieldMultiMap.getChiefComplaintList().isEmpty()) {
             // Add treatment fields for null chief complaint
-            addChiefComplaintSectionToTable(table, null, tabFieldMultiMap);
+            addHPIAndChiefComplaintSectionToTable(table, null, tabFieldMultiMap);
         }
         else {
             // Add treatment fields for all chief complaints
             for (String chiefComplaint : tabFieldMultiMap.getChiefComplaintList()) {
 
-                addChiefComplaintSectionToTable(table, chiefComplaint, tabFieldMultiMap);
+                addHPIAndChiefComplaintSectionToTable(table, chiefComplaint, tabFieldMultiMap);
             }
         }
 
@@ -530,7 +527,7 @@ public class PDFController extends Controller {
      * @param chiefComplaint the chief complaint as a string or null
      * @param tabFieldMultiMap multimap of the encounter's tab fields
      */
-    private void addChiefComplaintSectionToTable(PdfPTable table, String chiefComplaint, TabFieldMultiMap tabFieldMultiMap){
+    private void addHPIAndChiefComplaintSectionToTable(PdfPTable table, String chiefComplaint, TabFieldMultiMap tabFieldMultiMap){
 
         PdfPCell cellCC = new PdfPCell(table.getDefaultCell());
         cellCC.addElement(getStyledPhrase("Chief Complaint: ", outputStringOrNA(chiefComplaint)));
@@ -587,7 +584,7 @@ public class PDFController extends Controller {
         cellNarrative.setColspan(2);
         table.addCell(cellNarrative);
 
-        // add an empty row to add spacing between chief complaints
+        // add an empty row to add spacing between HPI and chief complaints section.
         table.addCell(" ");
         table.completeRow();
     }
@@ -702,11 +699,25 @@ public class PDFController extends Controller {
                 value = outputStringOrNA(vitalMap.get("bloodPressureSystolic", vitalMap.getDate(dateIndex - 1)));
                 value += '/' + outputStringOrNA(vitalMap.get("bloodPressureDiastolic", vitalMap.getDate(dateIndex - 1)));
             }
+            else if( key.equals("heightImperial")){
+                value = outputHeightImperialOrNA(
+                            Double.valueOf(vitalMap.get("heightFeet", vitalMap.getDate(dateIndex - 1))).intValue(),
+                            Double.valueOf(vitalMap.get("heightInches", vitalMap.getDate(dateIndex - 1))).intValue()
+                        );
+            }
+            else if( key.equals(("heightMetric"))){
+                value = outputHeightMetricOrNA(
+                        Double.valueOf(vitalMap.get("heightMeters", vitalMap.getDate(dateIndex - 1))).intValue(),
+                        Double.valueOf(vitalMap.get("heightCm", vitalMap.getDate(dateIndex - 1))).intValue()
+                );
+            }
             else {
                 value = outputStringOrNA(vitalMap.get(key, vitalMap.getDate(dateIndex - 1)));
             }
             Paragraph p = new Paragraph(value);
             cell.addElement(p);
+
+
         }
 
         return cell;

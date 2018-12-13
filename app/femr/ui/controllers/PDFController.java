@@ -709,8 +709,6 @@ public class PDFController extends Controller {
         Paragraph title = new Paragraph(titleString, getTitleFont());
         cell.addElement(title);
 
-        System.out.println("VitalCell - " + titleString);
-
         if(!vitalMap.getDateListChronological().isEmpty()){
             // For each vital value in the map, if there are any add a new Paragraph element
             for (int dateIndex = 1; dateIndex <= vitalMap.getDateListChronological().size(); dateIndex++) {
@@ -752,7 +750,6 @@ public class PDFController extends Controller {
                 else {
                     value = outputStringOrNA(vitalMap.get(key, vitalMap.getDate(dateIndex - 1)));
                 }
-                System.out.println("VAL: " + value);
                 Paragraph p = new Paragraph(outputStringOrNA(value));
                 cell.addElement(p);
 

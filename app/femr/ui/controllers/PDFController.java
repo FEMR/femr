@@ -750,9 +750,14 @@ public class PDFController extends Controller {
                 else {
                     value = outputStringOrNA(vitalMap.get(key, vitalMap.getDate(dateIndex - 1)));
                 }
+
                 //Since there could be multiple vital measurements in a day (seen in triage then in medical),
                 //multiple numbers will pop up. Tack the time onto them to at least given them a chronological order.
+                //Note that the dates in getDateListChronological are in the form YYYY-MM-DD HH:mm:ss where the hours
+                //are on a 24 hour system. To remove the seconds from the timestamp, remove the last three characters
+                //of the date string (the ':ss')
                 String date = vitalMap.getDateListChronological().get(dateIndex-1);
+                date = date.substring(0, date.length()-3);
                 Paragraph p = new Paragraph(outputStringOrNA(value) + " at " + date);
                 cell.addElement(p);
 

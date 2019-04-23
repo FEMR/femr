@@ -972,6 +972,12 @@ public class DatabaseSeeder {
                 tabFieldType.setName("number");
                 tabFieldTypesToAdd.add(tabFieldType);
             }
+            if (!containTabFieldType(tabFieldTypes, "yes/no")) {
+
+                tabFieldType = new TabFieldType();
+                tabFieldType.setName("yes/no");
+                tabFieldTypesToAdd.add(tabFieldType);
+            }
 
             tabFieldTypeRepository.createAll(tabFieldTypesToAdd);
         }

@@ -277,3 +277,45 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
 }
 
 
+/* Questionnaire styles */
+
+#questionnaireControl .customFieldWrap{
+    margin-bottom: 20px;
+}
+
+#questionnaireControl .customWrap label{
+
+    width: 100%;
+}
+
+#questionnaireControl .fInput{
+
+    clear: both;
+    width: 90%;
+    max-width: 300px;
+    margin-left: 20px;
+}
+
+#questionnaireControl label.radio-wrap{
+    width: auto;
+    padding: 0 20px;
+}
+
+@media(max-width: 767px){
+    #questionnaireControl label.radio-wrap{
+        display: block;
+        clear: both;
+        padding: 5px 0;
+    }
+
+    #questionnaireControl .radio-responses br{
+
+        display: none;
+    }
+}
+
+#questionnaireControl .radio-wrap .rInput{
+
+    width: auto;
+    margin-right: 5px;
+}

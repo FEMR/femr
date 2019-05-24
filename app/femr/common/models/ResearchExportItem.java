@@ -18,6 +18,7 @@
 */
 package femr.common.models;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,8 +27,10 @@ import java.util.UUID;
 public class ResearchExportItem {
 
     private UUID patientId;
+    private String patientCity;
     private String gender;
     private Integer age;
+    private Date birthDate;
     private Boolean isPregnant;
     private Integer weeksPregnant;
     private String dayOfVisit;
@@ -37,8 +40,8 @@ public class ResearchExportItem {
     private List<String> dispensedMedications;
     private Map<String, Float> vitalMap;
     private Map<String, String> tabFieldMap;
-    private String trip_team;
-    private String trip_country;
+    private String tripTeam;
+    private String tripCountry;
 
     public UUID getPatientId() {
         return patientId;
@@ -46,6 +49,14 @@ public class ResearchExportItem {
 
     public void setPatientId(UUID patientId) {
         this.patientId = patientId;
+    }
+
+    public String getPatientCity() {
+        return patientCity;
+    }
+
+    public void setPatientCity(String patientCity) {
+        this.patientCity = patientCity;
     }
 
     public String getGender() {
@@ -62,6 +73,14 @@ public class ResearchExportItem {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Boolean getIsPregnant() {
@@ -136,19 +155,19 @@ public class ResearchExportItem {
         this.tripId = tripId;
     }
 
-    public String getTrip_team() {
-        return trip_team;
+    public String getTripTeam() {
+        return tripTeam;
     }
 
-    public void setTrip_team(String trip_team) {
-        this.trip_team = trip_team;
+    public void setTripTeam(String tripTeam) {
+        this.tripTeam = tripTeam;
     }
 
-    public String getTrip_country() {
-        return trip_country;
+    public String getTripCountry() {
+        return tripCountry;
     }
 
-    public void setTrip_country(String trip_country) {
-        this.trip_country = trip_country;
+    public void setTripCountry(String tripCountry) {
+        this.tripCountry = tripCountry;
     }
 }

@@ -201,6 +201,8 @@ public class ResearchService implements IResearchService {
 
         // Patient Id
         exportitem.setPatientId(patientId);
+        exportitem.setPatientCity(patient.getCity());
+        exportitem.setBirthDate(patient.getAge());
 
         // Age
         Integer age = (int)Math.floor(dateUtils.getAgeAsOfDateFloat(patient.getAge(), encounter.getDateOfTriageVisit()));
@@ -208,6 +210,7 @@ public class ResearchService implements IResearchService {
 
         // Gender
         String gender = StringUtils.outputStringOrNA(patient.getSex());
+        if(gender.equalsIgnoreCase("n/a")) gender = "Not Available";
         exportitem.setGender(gender);
 
         // Pregnancy Status
@@ -272,7 +275,7 @@ public class ResearchService implements IResearchService {
         exportitem.setVitalMap(vitals);
 
         //month and year of the encounter
-        exportitem.setDayOfVisit(dateUtils.getFriendlyInternationalDateTime(encounter.getDateOfTriageVisit()));
+        exportitem.setDayOfVisit(dateUtils.convertTimeToString(encounter.getDateOfTriageVisit()));
 
         //mission trip id of the encounter
         if (encounter.getMissionTrip() == null)
@@ -280,8 +283,8 @@ public class ResearchService implements IResearchService {
         else{
             exportitem.setTripId(encounter.getMissionTrip().getId());
             if (encounter.getMissionTrip().getMissionTeam() != null){
-                exportitem.setTrip_team(encounter.getMissionTrip().getMissionTeam().getName());
-                exportitem.setTrip_country(encounter.getMissionTrip().getMissionCity().getMissionCountry().getName());
+                exportitem.setTripTeam(encounter.getMissionTrip().getMissionTeam().getName());
+                exportitem.setTripCountry(encounter.getMissionTrip().getMissionCity().getMissionCountry().getName());
             }
 
         }

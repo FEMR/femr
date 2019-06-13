@@ -18,6 +18,7 @@
 */
 package femr.business.services.system;
 
+import femr.util.export.CsvFileBuilder;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
 import com.google.gson.Gson;
@@ -185,7 +186,7 @@ public class ResearchService implements IResearchService {
 
         }
 
-        File eFile = createCsvFile(researchExportItemsForCSVExport);
+        File eFile = CsvFileBuilder.createCsvFile(researchExportItemsForCSVExport);
 
         response.setResponseObject(eFile);
 
@@ -234,21 +235,14 @@ public class ResearchService implements IResearchService {
         exportitem.setChiefComplaints(chiefComplaints);
 
         // Prescriptions - Prescribed and Dispensed
-        List<String> prescribed = new ArrayList<>();
         List<String> dispensed = new ArrayList<>();
         if( encounter.getPatientPrescriptions() != null ) {
             for (IPatientPrescription p : encounter.getPatientPrescriptions()) {
 
-                if( p.getDateDispensed() != null ){
-
-                    dispensed.add(p.getMedication().getName());
-                }
-
-                prescribed.add(p.getMedication().getName());
+                dispensed.add(p.getMedication().getName());
             }
         }
         exportitem.setDispensedMedications(dispensed);
-        exportitem.setPrescribedMedications(prescribed);
 
         // Tab Fields
         ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
@@ -266,9 +260,8 @@ public class ResearchService implements IResearchService {
         exportitem.setTabFieldMap(tabFields);
 
         // Vitals
-        Map<Integer, ResearchEncounterVital> vitalMap = encounter.getEncounterVitals();
         Map<String, Float> vitals = new HashMap<>();
-        for( ResearchEncounterVital vital : vitalMap.values() ){
+        for( ResearchEncounterVital vital : encounter.getEncounterVitals() ){
 
             vitals.put(vital.getVital().getName(), vital.getVitalValue());
         }
@@ -397,66 +390,11 @@ public class ResearchService implements IResearchService {
             researchExportItemsForCSVExport.add(item);
         }
 
-        File eFile = createCsvFile(researchExportItemsForCSVExport);
+        File eFile = CsvFileBuilder.createCsvFile(researchExportItemsForCSVExport);
 
         response.setResponseObject(eFile);
 
         return response;
-    }
-
-    /**
-     * Creates a csv file from a list of ResearchExportItems
-     *
-     * @param encounters the encounters to be in the file
-     * @return a csv formatted file of the encounters
-     */
-    private File createCsvFile( List<ResearchExportItem> encounters ){
-
-        // Make File and get path
-        String csvFilePath = LogicDoer.getCsvFilePath();
-        //Ensure folder exists, if not, create it
-        File f = new File(csvFilePath);
-        if (!f.exists())
-            f.mkdirs();
-
-        // trailing slash is included in path
-        //CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
-        SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
-        String timestamp = format.format(new Date());
-        String csvFileName = csvFilePath+"export-"+timestamp+".csv";
-        File eFile = new File(csvFileName);
-        boolean fileCreated = false;
-        if(!eFile.exists()) {
-            try {
-                fileCreated = eFile.createNewFile();
-            }
-            catch( IOException e ){
-
-                e.printStackTrace();
-            }
-        }
-
-        if( fileCreated ) {
-
-            Gson gson = new Gson();
-            JsonParser gsonParser = new JsonParser();
-            String jsonString = gson.toJson(encounters);
-
-            GsonFlattener parser = new GsonFlattener();
-            CSVWriterGson writer = new CSVWriterGson();
-
-            try {
-
-                List<Map<String, String>> flatJson = parser.parse(gsonParser.parse(jsonString).getAsJsonArray());
-                writer.writeAsCSV(flatJson, csvFileName);
-
-            } catch (FileNotFoundException e) {
-
-                e.printStackTrace();
-            }
-        }
-
-        return eFile;
     }
 
     /**

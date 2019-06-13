@@ -32,6 +32,7 @@ public class ResearchEncounterVital implements IResearchEncounterVital {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
+
     @Column(name = "user_id", nullable = false)
     private int userId;
 
@@ -39,15 +40,13 @@ public class ResearchEncounterVital implements IResearchEncounterVital {
     @JoinColumn(name = "patient_encounter_id")
     private ResearchEncounter patientEncounter;
 
-    @Column(name = "vital_id", nullable = false)
-    private int vitalId;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "vital_id", nullable = false)
     private Vital vital;
 
     @Column(name = "vital_value", nullable = false)
     private float vitalValue;
+
     @Column(name = "date_taken", nullable = false)
     private String dateTaken;
 
@@ -84,16 +83,6 @@ public class ResearchEncounterVital implements IResearchEncounterVital {
     @Override
     public void setVital(IVital vital) {
         this.vital = (Vital) vital;
-    }
-
-    @Override
-    public int getVitalId() {
-        return vitalId;
-    }
-
-    @Override
-    public void setVitalId(int vitalId) {
-        this.vitalId = vitalId;
     }
 
     @Override

@@ -18,10 +18,9 @@
 */
 package femr.common.models;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import femr.util.stringhelpers.StringUtils;
+
+import java.util.*;
 
 //One ResearchExportItem per line in the research CSV export
 public class ResearchExportItem {
@@ -35,11 +34,10 @@ public class ResearchExportItem {
     private Integer weeksPregnant;
     private String dayOfVisit;
     private Integer tripId;
-    private List<String> chiefComplaints;
-    private List<String> prescribedMedications;
-    private List<String> dispensedMedications;
-    private Map<String, Float> vitalMap;
-    private Map<String, String> tabFieldMap;
+    private List<String> chiefComplaints = new ArrayList<>();
+    private List<String> dispensedMedications = new ArrayList<>();
+    private Map<String, Float> vitalMap = new HashMap<>();
+    private Map<String, String> tabFieldMap = new HashMap<>();
     private String tripTeam;
     private String tripCountry;
 
@@ -64,6 +62,9 @@ public class ResearchExportItem {
     }
 
     public void setGender(String gender) {
+
+        if(StringUtils.isNullOrWhiteSpace(gender)) gender = "Not Available";
+
         this.gender = gender;
     }
 
@@ -105,14 +106,6 @@ public class ResearchExportItem {
 
     public void setChiefComplaints(List<String> chiefComplaints) {
         this.chiefComplaints = chiefComplaints;
-    }
-
-    public List<String> getPrescribedMedications() {
-        return prescribedMedications;
-    }
-
-    public void setPrescribedMedications(List<String> prescribedMedications) {
-        this.prescribedMedications = prescribedMedications;
     }
 
     public List<String> getDispensedMedications() {
@@ -170,4 +163,5 @@ public class ResearchExportItem {
     public void setTripCountry(String tripCountry) {
         this.tripCountry = tripCountry;
     }
+
 }

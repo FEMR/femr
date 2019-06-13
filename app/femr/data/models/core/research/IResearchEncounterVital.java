@@ -32,10 +32,6 @@ public interface IResearchEncounterVital {
 
     void setPatientEncounter(ResearchEncounter patientEncounterId);
 
-    int getVitalId();
-
-    void setVitalId(int vitalId);
-
     IVital getVital();
     void setVital(IVital vital);
 

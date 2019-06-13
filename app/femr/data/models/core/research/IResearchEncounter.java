@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IResearchEncounter {
 
@@ -38,8 +39,8 @@ public interface IResearchEncounter {
 
     void setChiefComplaints(List<IChiefComplaint> chiefComplaints);
 
-    public Map<Integer, ResearchEncounterVital> getEncounterVitals();
-    public void setEncounterVitals(Map<Integer, ResearchEncounterVital> encounterVitals);
+    public List<ResearchEncounterVital> getEncounterVitals();
+    public void setEncounterVitals(List<ResearchEncounterVital> encounterVitals);
 
     public List<PatientPrescription> getPatientPrescriptions();
     public void setPatientPrescriptions(List<PatientPrescription> patientPrescriptions);
@@ -76,4 +77,7 @@ public interface IResearchEncounter {
 
     void setMissionTrip(IMissionTrip missionTrip);
 
+    public DateTime getIsDeleted();
+
+    public void setIsDeleted(DateTime isDeleted);
 }

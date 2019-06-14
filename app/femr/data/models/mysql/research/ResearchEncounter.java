@@ -45,27 +45,32 @@ public class ResearchEncounter implements IResearchEncounter {
     @Column(name = "date_of_triage_visit", nullable = false)
     private DateTime dateOfTriageVisit;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "patientEncounter")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patientEncounter")
     private List<ChiefComplaint> chiefComplaints = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patientEncounter")
-    private List<ResearchEncounterVital> encounterVitals = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "patient_encounter_id")
+    private List<PatientEncounterVital> encounterVitals = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "patientEncounter")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patientEncounter")
     private List<PatientPrescription> patientPrescriptions = new ArrayList<>();
 
-    @Column(name = "date_of_medical_visit", nullable = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "patient_encounter_id")
+    private List<PatientEncounterTabField> tabFields = new ArrayList<>();
+
+    @Column(name = "date_of_medical_visit")
     private DateTime dateOfMedicalVisit;
 
-    @Column(name = "date_of_pharmacy_visit", nullable = true)
+    @Column(name = "date_of_pharmacy_visit")
     private DateTime dateOfPharmacyVisit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id_medical", nullable = true)
+    @JoinColumn(name = "user_id_medical")
     private User doctor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id_pharmacy", nullable = true)
+    @JoinColumn(name = "user_id_pharmacy")
     private User pharmacist;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -110,14 +115,23 @@ public class ResearchEncounter implements IResearchEncounter {
         }
     }
 
+    @Override
+    public List<PatientEncounterTabField> getTabFields() {
+        return tabFields;
+    }
 
     @Override
-    public List<ResearchEncounterVital> getEncounterVitals() {
+    public void setTabFields(List<PatientEncounterTabField> tabFields) {
+        this.tabFields = tabFields;
+    }
+
+    @Override
+    public List<PatientEncounterVital> getEncounterVitals() {
         return encounterVitals;
     }
 
     @Override
-    public void setEncounterVitals(List<ResearchEncounterVital> encounterVitals) {
+    public void setEncounterVitals(List<PatientEncounterVital> encounterVitals) {
         this.encounterVitals = encounterVitals;
     }
 

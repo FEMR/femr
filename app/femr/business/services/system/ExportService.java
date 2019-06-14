@@ -1,16 +1,29 @@
+/*
+     fEMR - fast Electronic Medical Records
+     Copyright (C) 2014  Team fEMR
+
+     fEMR is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     fEMR is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with fEMR.  If not, see <http://www.gnu.org/licenses/>. If
+     you have any questions, contact <info@teamfemr.org>.
+*/
 package femr.business.services.system;
 
-import femr.business.helpers.QueryProvider;
 import femr.business.services.core.IExportService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchExportItem;
-import femr.data.daos.IRepository;
 import femr.data.daos.core.IResearchRepository;
-import femr.data.models.core.*;
-import femr.data.models.mysql.PatientEncounterTabField;
 import femr.util.calculations.dateUtils;
 import femr.util.export.CsvFileBuilder;
-import io.ebean.ExpressionList;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -20,12 +33,10 @@ import java.util.stream.Collectors;
 public class ExportService implements IExportService {
 
     private final IResearchRepository researchEncounterRepository;
-    private final IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository;
 
     @Inject
-    public ExportService(IResearchRepository researchEncounterRepository, IRepository<IPatientEncounterTabField> patientEncounterTabFieldRepository) {
+    public ExportService(IResearchRepository researchEncounterRepository) {
         this.researchEncounterRepository = researchEncounterRepository;
-        this.patientEncounterTabFieldRepository = patientEncounterTabFieldRepository;
     }
 
     @Override
@@ -35,6 +46,7 @@ public class ExportService implements IExportService {
 
         // As new patients are encountered, generate a UUID to represent them in the export file
         Map<Integer, UUID> patientIdMap = new HashMap<>();
+
         List<ResearchExportItem> exportItems = this.researchEncounterRepository
                 .findAllEncountersForTripIds(tripIds)
                 .stream()
@@ -65,12 +77,12 @@ public class ExportService implements IExportService {
                         .filter(p -> p.getDateDispensed() != null)
                         .forEach(p -> item.getDispensedMedications().add(p.getMedication().getName()));
 
-                    // TODO - move this to a repository or include via ebean
-                    ExpressionList<PatientEncounterTabField> patientEncounterTabFieldExpressionList = QueryProvider.getPatientEncounterTabFieldQuery()
-                            .where()
-                            .eq("patient_encounter_id", encounter.getId());
-                    patientEncounterTabFieldRepository.find(patientEncounterTabFieldExpressionList)
-                        .forEach(tf -> item.getTabFieldMap().put(tf.getTabField().getName(), tf.getTabFieldValue()));
+                    encounter.getTabFields()
+                        .forEach(tf -> {
+                            // init to an empty list if not present
+                            item.getTabFieldMap().putIfAbsent(tf.getTabField().getName(), new ArrayList<>());
+                            item.getTabFieldMap().get(tf.getTabField().getName()).add(tf.getTabFieldValue());
+                        });
 
                     encounter.getEncounterVitals()
                         .forEach(v -> {
@@ -81,10 +93,6 @@ public class ExportService implements IExportService {
 
                 })
                 .collect(Collectors.toList());
-
-        // TODO
-        // make sure multiple problem fields make it into the export
-        // only used dispensed medications for now - prescribed and not dispensed is too much
 
         File exportedCsv = CsvFileBuilder.createCsvFile(exportItems);
         response.setResponseObject(exportedCsv);

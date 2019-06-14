@@ -37,7 +37,7 @@ public class ResearchExportItem {
     private List<String> chiefComplaints = new ArrayList<>();
     private List<String> dispensedMedications = new ArrayList<>();
     private Map<String, Float> vitalMap = new HashMap<>();
-    private Map<String, String> tabFieldMap = new HashMap<>();
+    private Map<String, List<String>> tabFieldMap = new HashMap<>();
     private String tripTeam;
     private String tripCountry;
 
@@ -124,11 +124,11 @@ public class ResearchExportItem {
         this.vitalMap = vitalMap;
     }
 
-    public Map<String, String> getTabFieldMap() {
+    public Map<String, List<String>> getTabFieldMap() {
         return tabFieldMap;
     }
 
-    public void setTabFieldMap(Map<String, String> tabFieldMap) {
+    public void setTabFieldMap(Map<String, List<String>> tabFieldMap) {
         this.tabFieldMap = tabFieldMap;
     }
 

@@ -24,6 +24,7 @@ import femr.common.models.ResearchExportItem;
 import femr.data.daos.core.IResearchRepository;
 import femr.util.calculations.dateUtils;
 import femr.util.export.CsvFileBuilder;
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -57,7 +58,7 @@ public class ExportService implements IExportService {
                     item.setPatientId(patientIdMap.get(encounter.getPatient().getId()));
                     item.setPatientCity(encounter.getPatient().getCity());
                     item.setGender(encounter.getPatient().getSex());
-                    item.setBirthDate(encounter.getPatient().getAge());
+                    item.setBirthDate(dateUtils.convertTimeToDateString(new DateTime(encounter.getPatient().getAge())));
                     item.setDayOfVisit(dateUtils.convertTimeToDateString(encounter.getDateOfTriageVisit()));
 
                     // We should be able to assume a Mission Trip exists here since we are querying by tripIds

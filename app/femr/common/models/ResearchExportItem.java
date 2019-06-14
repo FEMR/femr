@@ -29,7 +29,7 @@ public class ResearchExportItem {
     private String patientCity;
     private String gender;
     private Integer age;
-    private Date birthDate;
+    private String birthDate;
     private Boolean isPregnant;
     private Integer weeksPregnant;
     private String dayOfVisit;
@@ -76,11 +76,11 @@ public class ResearchExportItem {
         this.age = age;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 

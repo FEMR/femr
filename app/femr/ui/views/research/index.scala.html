@@ -30,7 +30,7 @@
 
         <div class="row dropdown">
             <div class="col-sm-3 col-md-2 sidebar">
-                @helper.form(action = ResearchController.exportPost, 'id -> "graph-options") {
+                @helper.form(action = ResearchController.indexGet(), 'id -> "graph-options") {
                     <div id="filter-errors">
 
                     </div>
@@ -187,9 +187,9 @@
                             <input id="clear-button" class="clear fButton pull-left" type="button" value="Clear" />
                             <input id="submit-button" class="submit fButton pull-right" type="submit" value="Apply" />
                         </li>
-                        <li class="export">
-                            <input id="export-button" class="export fButton" type="button" value="Export Data"/>
-                        </li>
+@*                        <li class="export">*@
+@*                            <input id="export-button" class="export fButton" type="button" value="Export Data"/>*@
+@*                        </li>*@
                     </ul>
                 }
 

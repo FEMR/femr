@@ -117,25 +117,6 @@ public class ResearchService implements IResearchService {
 
         String startDateString = filters.getStartDate();
         String endDateString = filters.getEndDate();
-        Date startDateObj;
-        Date endDateObj;
-        SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        try {
-
-            // Set Start Date to start of day
-            String startParseDate = startDateString + " 00:00:00";
-            startDateObj = sqlFormat.parse(startParseDate);
-
-            // Set End Date to end of day
-            String parseEndDate = endDateString + " 23:59:59";
-            endDateObj = sqlFormat.parse(parseEndDate);
-        }
-        catch(ParseException e){
-
-            startDateObj = null;
-            endDateObj = null;
-        }
 
         // Build Query based on Filters
         Query<ResearchEncounter> researchEncounterQuery = QueryProvider.getResearchEncounterQuery();
@@ -155,23 +136,44 @@ public class ResearchService implements IResearchService {
 
         ExpressionList<ResearchEncounter> researchEncounterExpressionList = researchEncounterQuery.where();
 
-        // filter by date - can have only start, or only end date
-        if( startDateObj != null ) {
-            researchEncounterExpressionList.gt("dateOfTriageVisit", sqlFormat.format(startDateObj));
+        if ( filters.getMissionTripId() != null && filters.getMissionTripId() != -1) {
+
+            researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId()); //Andrew Trip Filter
         }
-        if( endDateObj != null ) {
-            researchEncounterExpressionList.lt("dateOfTriageVisit", sqlFormat.format(endDateObj));
+        else {
+
+            Date startDateObj;
+            Date endDateObj;
+            SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+
+                // Set Start Date to start of day
+                String startParseDate = startDateString + " 00:00:00";
+                startDateObj = sqlFormat.parse(startParseDate);
+
+                // Set End Date to end of day
+                String parseEndDate = endDateString + " 23:59:59";
+                endDateObj = sqlFormat.parse(parseEndDate);
+            }
+            catch(ParseException e){
+
+                startDateObj = null;
+                endDateObj = null;
+            }
+
+            // filter by date - can have only start, or only end date
+            if( startDateObj != null ) {
+                researchEncounterExpressionList.gt("dateOfTriageVisit", sqlFormat.format(startDateObj));
+            }
+            if( endDateObj != null ) {
+                researchEncounterExpressionList.lt("dateOfTriageVisit", sqlFormat.format(endDateObj));
+            }
         }
 
         // filtering by medication if the name is set
         if( filters.getMedicationName() != null && filters.getMedicationName().length() > 0 ){
 
             researchEncounterExpressionList.like("patientPrescriptions.medication.name", "%" + filters.getMedicationName() + "%");
-        }
-
-        if ( filters.getMissionTripId() != null) {
-
-            researchEncounterExpressionList.eq("missionTrip.id",filters.getMissionTripId()); //Andrew Trip Filter
         }
 
         // if the filters exist - use them in the query

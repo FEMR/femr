@@ -42,7 +42,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -115,27 +114,6 @@ public class ResearchController extends Controller {
         Gson gson = new Gson();
         String jsonString = gson.toJson(graphModel);
         return ok(jsonString);
-    }
-
-    /**
-     * Called when a user wants to export the data to a CSV file.
-     */
-    public Result exportPost() {
-
-        final Form<FilterViewModel> FilterViewModelForm = formFactory.form(FilterViewModel.class);
-        FilterViewModel filterViewModel = FilterViewModelForm.bindFromRequest().get();
-
-        ResearchFilterItem filterItem = createResearchFilterItem(filterViewModel);
-
-        // This does weird stuff and isn't reliable.
-        //ServiceResponse<File> exportServiceResponse = researchService.retrieveCsvExportFile(filterItem);
-        ServiceResponse<File> exportServiceResponse = researchService.exportPatientsByTrip(filterItem.getMissionTripId());
-
-        File csvFile = exportServiceResponse.getResponseObject();
-
-        response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
-
-        return ok(csvFile).as("application/x-download");
     }
 
     /**

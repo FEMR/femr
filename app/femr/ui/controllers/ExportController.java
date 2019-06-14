@@ -24,12 +24,13 @@ import femr.common.dtos.ServiceResponse;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
+import femr.ui.models.export.FilterViewModel;
+import play.data.Form;
+import play.data.FormFactory;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import static play.mvc.Controller.response;
 import static play.mvc.Results.ok;
@@ -38,29 +39,28 @@ import static play.mvc.Results.ok;
 @AllowedRoles({Roles.RESEARCHER})
 public class ExportController {
 
+    private final FormFactory formFactory;
     private IExportService exportService;
 
     /**
+     * @param formFactory
      * @param exportService {@link IExportService}
      */
     @Inject
-    public ExportController(IExportService exportService) {
+    public ExportController(FormFactory formFactory, IExportService exportService) {
+        this.formFactory = formFactory;
         this.exportService = exportService;
     }
-
 
     /**
      * Trigger an export of all encounters
      */
     public Result exportAllGet() {
 
-        // TODO -- get form request
-        List<Integer> tripIds = new ArrayList<>();
-        tripIds.add(3);
-        tripIds.add(5);
-        tripIds.add(6);
+        final Form<FilterViewModel> filterViewModelForm = formFactory.form(FilterViewModel.class);
+        FilterViewModel viewModel = filterViewModelForm.bindFromRequest().get();
 
-        ServiceResponse<File> filterServiceResponse = exportService.exportAllEncounters(tripIds);
+        ServiceResponse<File> filterServiceResponse = exportService.exportAllEncounters(viewModel.getMissionTripIds());
         File csvFile = filterServiceResponse.getResponseObject();
         response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
 

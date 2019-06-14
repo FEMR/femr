@@ -58,7 +58,7 @@ public class ExportService implements IExportService {
                     item.setPatientCity(encounter.getPatient().getCity());
                     item.setGender(encounter.getPatient().getSex());
                     item.setBirthDate(encounter.getPatient().getAge());
-                    item.setDayOfVisit(dateUtils.convertTimeToString(encounter.getDateOfTriageVisit()));
+                    item.setDayOfVisit(dateUtils.convertTimeToDateString(encounter.getDateOfTriageVisit()));
 
                     // We should be able to assume a Mission Trip exists here since we are querying by tripIds
                     item.setTripId(encounter.getMissionTrip().getId());

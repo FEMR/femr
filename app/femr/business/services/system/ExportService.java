@@ -51,9 +51,14 @@ public class ExportService implements IExportService {
         List<ResearchExportItem> exportItems = this.researchEncounterRepository
                 .findAllEncountersForTripIds(tripIds)
                 .stream()
+                .filter(encounter ->
+                        !encounter.getPatient().getFirstName().matches("(?i:.*test.*)")
+                        && !encounter.getPatient().getLastName().matches("(?i:.*test.*)")
+                        && !encounter.getPatient().getCity().matches("(?i:.*test.*)"))
                 .peek(encounter -> patientIdMap.putIfAbsent(encounter.getPatient().getId(), UUID.randomUUID()))
                 .map(encounter -> {
 
+                    // TODO - use a builder here?
                     ResearchExportItem item = new ResearchExportItem();
                     item.setPatientId(patientIdMap.get(encounter.getPatient().getId()));
                     item.setPatientCity(encounter.getPatient().getCity());

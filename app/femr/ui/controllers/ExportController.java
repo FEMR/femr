@@ -60,6 +60,8 @@ public class ExportController {
         final Form<FilterViewModel> filterViewModelForm = formFactory.form(FilterViewModel.class);
         FilterViewModel viewModel = filterViewModelForm.bindFromRequest().get();
 
+        // TODO - validate that there are trip ids or date range is present
+
         ServiceResponse<File> filterServiceResponse = exportService.exportAllEncounters(viewModel.getMissionTripIds());
         File csvFile = filterServiceResponse.getResponseObject();
         response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());

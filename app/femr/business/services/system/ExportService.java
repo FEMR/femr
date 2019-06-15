@@ -43,8 +43,6 @@ public class ExportService implements IExportService {
     @Override
     public ServiceResponse<File> exportAllEncounters(Collection<Integer> tripIds){
 
-        ServiceResponse<File> response = new ServiceResponse<>();
-
         // As new patients are encountered, generate a UUID to represent them in the export file
         Map<Integer, UUID> patientIdMap = new HashMap<>();
 
@@ -63,8 +61,11 @@ public class ExportService implements IExportService {
                     item.setPatientId(patientIdMap.get(encounter.getPatient().getId()));
                     item.setPatientCity(encounter.getPatient().getCity());
                     item.setGender(encounter.getPatient().getSex());
-                    item.setBirthDate(dateUtils.convertTimeToDateString(new DateTime(encounter.getPatient().getAge())));
                     item.setDayOfVisit(dateUtils.convertTimeToDateString(encounter.getDateOfTriageVisit()));
+
+                    if(encounter.getPatient().getAge() != null) {
+                        item.setBirthDate(dateUtils.convertTimeToDateString(new DateTime(encounter.getPatient().getAge())));
+                    }
 
                     // We should be able to assume a Mission Trip exists here since we are querying by tripIds
                     item.setTripId(encounter.getMissionTrip().getId());
@@ -100,6 +101,7 @@ public class ExportService implements IExportService {
                 })
                 .collect(Collectors.toList());
 
+        ServiceResponse<File> response = new ServiceResponse<>();
         File exportedCsv = CsvFileBuilder.createCsvFile(exportItems);
         response.setResponseObject(exportedCsv);
 

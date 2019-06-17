@@ -40,6 +40,8 @@ public class ResearchExportItem {
     private Map<String, List<String>> tabFieldMap = new HashMap<>();
     private String tripTeam;
     private String tripCountry;
+    private String tripStart;
+    private String tripEnd;
 
     public UUID getPatientId() {
         return patientId;
@@ -164,4 +166,19 @@ public class ResearchExportItem {
         this.tripCountry = tripCountry;
     }
 
+    public String getTripStart() {
+        return tripStart;
+    }
+
+    public void setTripStart(String tripStart) {
+        this.tripStart = tripStart;
+    }
+
+    public String getTripEnd() {
+        return tripEnd;
+    }
+
+    public void setTripEnd(String tripEnd) {
+        this.tripEnd = tripEnd;
+    }
 }

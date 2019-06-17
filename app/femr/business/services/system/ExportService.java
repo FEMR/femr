@@ -24,6 +24,7 @@ import femr.common.models.ResearchExportItem;
 import femr.data.daos.core.IResearchRepository;
 import femr.util.calculations.dateUtils;
 import femr.util.export.CsvFileBuilder;
+import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
@@ -71,6 +72,10 @@ public class ExportService implements IExportService {
                     item.setTripId(encounter.getMissionTrip().getId());
                     item.setTripTeam(encounter.getMissionTrip().getMissionTeam().getName());
                     item.setTripCountry(encounter.getMissionTrip().getMissionCity().getMissionCountry().getName());
+                    item.setTripStart(
+                            dateUtils.convertTimeToDateString(new DateTime(encounter.getMissionTrip().getStartDate())));
+                    item.setTripEnd(
+                            dateUtils.convertTimeToDateString(new DateTime(encounter.getMissionTrip().getEndDate())));
 
                     Integer age = (int) Math.floor(dateUtils.getAgeAsOfDateFloat(encounter.getPatient().getAge(), encounter.getDateOfTriageVisit()));
                     item.setAge(age);

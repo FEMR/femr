@@ -22,9 +22,9 @@ import femr.business.services.core.IExportService;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.ResearchExportItem;
 import femr.data.daos.core.IResearchRepository;
+import femr.data.models.core.ITabField;
 import femr.util.calculations.dateUtils;
 import femr.util.export.CsvFileBuilder;
-import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
@@ -89,11 +89,13 @@ public class ExportService implements IExportService {
                         .filter(p -> p.getDateDispensed() != null)
                         .forEach(p -> item.getDispensedMedications().add(p.getMedication().getName()));
 
+                    // make sure all possible tab fields are present in export item
                     encounter.getTabFields()
                         .forEach(tf -> {
                             // init to an empty list if not present
-                            item.getTabFieldMap().putIfAbsent(tf.getTabField().getName(), new ArrayList<>());
-                            item.getTabFieldMap().get(tf.getTabField().getName()).add(tf.getTabFieldValue());
+                            String tabFieldKey = getTabFieldKey(tf.getTabField());
+                            item.getTabFieldMap().putIfAbsent(tabFieldKey, new ArrayList<>());
+                            item.getTabFieldMap().get(tabFieldKey).add(tf.getTabFieldValue());
                         });
 
                     encounter.getEncounterVitals()
@@ -111,6 +113,19 @@ public class ExportService implements IExportService {
         response.setResponseObject(exportedCsv);
 
         return response;
+    }
+
+    private String getTabFieldKey(ITabField tf) {
+
+        // TODO -
+        // Hack fix for LSU Questionnaire - the wording of the questions is unclear if they aren't in the correct order
+        if(tf.getTab().getId() < 7) return tf.getName();
+
+        return ""
+            .concat(tf.getOrder() != null ? tf.getOrder() + ". " : "")
+            .concat(tf.getName())
+            // commas in the tab field keys breaks the csv export utility
+            .replace(",", "");
     }
 
 }

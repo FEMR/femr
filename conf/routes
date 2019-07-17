@@ -81,7 +81,7 @@ POST        /medical/deleteProblem/:patientId/:problem         @femr.ui.controll
 GET         /research                                          @femr.ui.controllers.ResearchController.indexGet()
 POST        /research                                          @femr.ui.controllers.ResearchController.indexPost()
 #Export
-GET        /export                                            @femr.ui.controllers.ExportController.exportAllGet()
+GET        /export                                            @femr.ui.controllers.ExportController.indexGet()
 #Pdf
 GET         /pdf/encounter/:encounterId                        @femr.ui.controllers.PDFController.index(encounterId : Integer)
 #Sessions

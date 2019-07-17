@@ -1,0 +1,23 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, viewModel:femr.ui.models.export.FilterViewModel)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.ExportController
+@import scala.collection.JavaConversions._
+@import helper._
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/export.css")">
+}
+@additionalScripts = {
+    <script type="text/javascript" src="@assets.path("js/export/export.js")"></script>
+}
+
+@main("Export", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    <h2 class="text-center">Export Records</h2>
+    <div id="exportContentWrap" class="backgroundForWrap">
+
+        put export form here
+
+    </div>
+}

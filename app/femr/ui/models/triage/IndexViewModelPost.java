@@ -248,8 +248,6 @@ public class IndexViewModelPost {
         return isDiabetesScreenPerformed;
     }
 
-    // Osman
-
     public Integer getSmoker() {return smoker;}
     public void setSmoker(Integer smoker){this.smoker = smoker;}
 

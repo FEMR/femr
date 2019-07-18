@@ -155,8 +155,8 @@ public class TriageController extends Controller {
     */
     public Result indexPost(int id) {
 
-        final Form<IndexViewModelPost> IndexViewModelForm = formFactory.form(IndexViewModelPost.class);
-        IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
+        final Form<IndexViewModelPost> IndexViewModelForm = formFactory.form(IndexViewModelPost.class).bindFromRequest();
+        IndexViewModelPost viewModel = IndexViewModelForm.get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
         //create a new patient

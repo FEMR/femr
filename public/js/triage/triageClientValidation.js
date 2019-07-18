@@ -83,10 +83,12 @@ var triageFieldValidator = {
                     break;
             }
             if (ageGroupYearMatch){
+                $("#conflictingAgeMessage").hide();
                 $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
                 // $('#ageClassificationWrap').css('border', 'none');
             }
             else {
+                $("#conflictingAgeMessage").show();
                 $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
                 // $('#ageClassificationWrap').css('border', '1px solid red');
                 triageFieldValidator.isValid = false;

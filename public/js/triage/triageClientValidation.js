@@ -10,6 +10,10 @@ var triageFieldValidator = {
             $(patientInformation.firstName).parent(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
+        else{
+            $(patientInformation.firstName).parent(".generalInfoInput").removeClass("has-errors");
+        }
+
         //validate Last Name
         if (!$.trim(patientInformation.lastName.val())) {
             patientInformation.lastName.attr("placeholder", "Required Input");
@@ -17,6 +21,10 @@ var triageFieldValidator = {
             $(patientInformation.lastName).parent(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
+        else{
+            $(patientInformation.lastName).parent(".generalInfoInput").removeClass("has-errors");
+        }
+
         //validate City
         if (!$.trim(patientInformation.city.val())) {
             patientInformation.city.attr("placeholder", "Required Input");
@@ -24,6 +32,10 @@ var triageFieldValidator = {
             // patientInformation.city.css('border-color', 'red');
             triageFieldValidator.isValid = false;
         }
+        else{
+            $(patientInformation.city).parents(".generalInfoInput").removeClass("has-errors");
+        }
+
         //Validate Age
         if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
             //nothing has been filled out

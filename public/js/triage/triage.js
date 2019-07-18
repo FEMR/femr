@@ -537,10 +537,16 @@ $(document).ready(function () {
     //gen info and vitals shit
     $('#femaleBtn').change(function () {
         $('#weeksPregnant').attr('disabled', false);
+
+        // remove any errors
+        $(this).parents(".generalInfoInput").removeClass("has-errors");
     });
     $('#maleBtn').change(function () {
         $('#weeksPregnant').val('');
         $('#weeksPregnant').attr('disabled', true);
+
+        // remove any errors
+        $(this).parents(".generalInfoInput").removeClass("has-errors");
     });
     $('#noDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("false");
@@ -839,68 +845,23 @@ window.setInterval(function () {
     }
 
 }, 500);
-$(document).ready(function(){
-    $('#bloodPressureSystolic').change(function(){
-        var patient = triageFields.patientVitals;
 
-        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
-            patient.bloodPressureTitle.css('color', 'red');
-            patient.bloodPressureTitle.css('fontSize', '20px');
-        }
-        else {
-            patient.bloodPressureTitle.css('color', 'black');
-            patient.bloodPressureTitle.css('fontSize', '14px');
-        }
+$("#heightInches").change(function(){
+    var isMetric = ($("#vitalsUnits").val() === "metric");
 
-    });
-});
-$(document).ready(function(){
-    $('#bloodPressureDiastolic').change(function(){
-        var patient = triageFields.patientVitals;
+    var heightFeet = parseFloat(triageFields.patientVitals.heightFeet.val()) || 0;
+    var heightInches = parseFloat(triageFields.patientVitals.heightInches.val()) || 0;
 
-        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
-            patient.bloodPressureTitle.css('color', 'red');
-            patient.bloodPressureTitle.css('fontSize', '20px');
+    var unitValue = isMetric ? 100 : 12;
 
-        }
-        else {
-            patient.bloodPressureTitle.css('color', 'black');
-            patient.bloodPressureTitle.css('fontSize', '14px');
-        }
+    // if inches > 12 or 100 add to feet
+    if( heightInches > unitValue ){
+        heightFeet += Math.floor(heightInches/unitValue);
+        heightInches = heightInches % unitValue;
+    }
 
-    });
-});
-
-$(document).ready(function(){
-    $('#bloodPressureSystolic').change(function(){
-        var patient = triageFields.patientVitals;
-
-        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
-            patient.bloodPressureTitle.css('color', 'red');
-            patient.bloodPressureTitle.css('fontSize', '20px');
-        }
-        else {
-            patient.bloodPressureTitle.css('color', 'black');
-            patient.bloodPressureTitle.css('fontSize', '14px');
-        }
-
-    });
-});
-$(document).ready(function(){
-    $('#bloodPressureDiastolic').change(function(){
-        var patient = triageFields.patientVitals;
-
-        if((parseInt(patient.bloodPressureSystolic.val())>139)||(parseInt(patient.bloodPressureDiastolic.val())>89)) {
-            patient.bloodPressureTitle.css('color', 'red');
-            patient.bloodPressureTitle.css('fontSize', '20px');
-
-        }
-        else {
-            patient.bloodPressureTitle.css('color', 'black');
-            patient.bloodPressureTitle.css('fontSize', '14px');
-        }
-
-    });
+    $(triageFields.patientVitals.heightFeet).val(heightFeet || "");
+    $(triageFields.patientVitals.heightInches).val(heightInches || "");
 });
 
 

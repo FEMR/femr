@@ -6,41 +6,54 @@ var triageFieldValidator = {
         //validate First Name
         if (!$.trim(patientInformation.firstName.val())) {
             patientInformation.firstName.attr("placeholder", "Required Input");
-            patientInformation.firstName.css('border-color', 'red');
+            $(patientInformation.firstName).parent(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
+        else{
+            $(patientInformation.firstName).parent(".generalInfoInput").removeClass("has-errors");
+        }
+
         //validate Last Name
         if (!$.trim(patientInformation.lastName.val())) {
             patientInformation.lastName.attr("placeholder", "Required Input");
-            patientInformation.lastName.css('border-color', 'red');
+            $(patientInformation.lastName).parent(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
+        else{
+            $(patientInformation.lastName).parent(".generalInfoInput").removeClass("has-errors");
+        }
+
         //validate City
         if (!$.trim(patientInformation.city.val())) {
             patientInformation.city.attr("placeholder", "Required Input");
-            patientInformation.city.css('border-color', 'red');
+            $(patientInformation.city).parents(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
+        else{
+            $(patientInformation.city).parents(".generalInfoInput").removeClass("has-errors");
+        }
+
         //Validate Age
-        if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
+        if ( (patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
+            (patientInformation.years.val().length > 0 && !integerCheck(patientInformation.years.val()))
+        ){
+            $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
+            triageFieldValidator.isValid = false;
+        }
+        else if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
             //nothing has been filled out
-            $('#ageClassificationWrap').css('border', '1px solid red');
+            $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
 
         } else if ((patientInformation.months.val() || patientInformation.years.val()) && patientInformation.ageClassification.filter(':checked').val()) {
-            var months;
-            if(!patientInformation.months.val()){
-                months = "0";
-            }else{
-               months =  patientInformation.months.val();
+            // This checks that the patients age is in the correct range (if chosen), months is irrelevant in this calculation
+            // - the UI does something kinda wonky with a revisiting patient: the #months hidden field is total months of age, not the months since the last bday,
+            //      fixing this could cause other bugs, so eliminating months instead
+            //      - see femr.common.models.PatientItem::monthsOld
+            var totalAge = 0.0;
+            if(patientInformation.years.val()){
+                totalAge = parseFloat(patientInformation.years.val());
             }
-            var years;
-            if(!patientInformation.years.val()){
-                years = "0";
-            }else{
-                years = patientInformation.years.val();
-            }
-            var totalAge = parseFloat(years) + (parseFloat(months) / 12);
             var ageGroupYearMatch = true;
 
             switch (patientInformation.ageClassification.filter(':checked').val()){
@@ -71,16 +84,37 @@ var triageFieldValidator = {
                     break;
             }
             if (ageGroupYearMatch){
-                $('#ageClassificationWrap').css('border', 'none');
+                $("#conflictingAgeMessage").hide();
+                $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
             }
             else {
-                $('#ageClassificationWrap').css('border', '1px solid red');
+                $("#conflictingAgeMessage").show();
+                $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
                 triageFieldValidator.isValid = false;
             }
         }
         else{
             //something has been filled out
-            $('#ageClassificationWrap').css('border', 'none');
+            $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
+        }
+
+        // check for future birthdate
+        if(patientInformation.age.val()){
+            var birthDate = new Date(patientInformation.age.val());
+            var today = new Date();
+
+            var years = patientInformation.years.val();
+
+            if(birthDate > today || years > 120){
+                $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
+                triageFieldValidator.isValid = false;
+            }
+        }
+
+        // validate gender
+        if (!$(patientInformation.sex).is(":checked")) {
+            $(patientInformation.sex).parents(".generalInfoInput").addClass("has-errors");
+            triageFieldValidator.isValid = false;
         }
 
     },

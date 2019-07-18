@@ -42,3 +42,5 @@ credentials.yml
 util/PhotoMigration$Photo.class
 util/PhotoMigration.class
 
+#development database
+docker-compose.yml

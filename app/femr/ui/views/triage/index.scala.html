@@ -39,7 +39,7 @@
         }
         <h2 class="text-center">Check In - Triage</h2>
 
-        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
                 <input class="hidden" type="text" id="patientId" value="@viewModel.getPatient.getId" />
@@ -63,6 +63,9 @@
 
                 <div id="ageClassificationWrap">
                     <label>Age<span class="red bold">*</span></label>
+
+                    <label id="conflictingAgeMessage" class="error-message" style="display: none">Birth Date and Age group are conflicting</label>
+
                     @inputAge("Age", "Years", "years", "Months", "months", if(viewModel != null) viewModel.getPatient else null)
                     <span class="orSpan">OR</span>
                     @inputDate("Birth Date", "age", if(viewModel != null) viewModel.getPatient.getBirth else null)
@@ -204,10 +207,10 @@
                             <div class="doubleVital">
                                 @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
                                     <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Meters" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" max="99" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Centimeters" name="@viewModel.getVitalNames.get(5).getName"/>
                                 } else {
                                     <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(4).getName" placeholder="Feet" name="@viewModel.getVitalNames.get(4).getName"/>
-                                    <input type="number" step="number" min="0" max="11" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
+                                    <input type="number" step="number" min="0" class="fInput" id="@viewModel.getVitalNames.get(5).getName" placeholder="Inches" name="@viewModel.getVitalNames.get(5).getName"/>
                                 }
                             </div>
                         </div>

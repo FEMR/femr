@@ -23,3 +23,23 @@ input {
     background: none;
     border: none;
 }
+
+#newVitalsDialog label{
+    margin-bottom: 3px;
+}
+
+#newVitalsDialog .has-errors label{
+    color: red;
+}
+
+#newVitalsDialog .has-errors label.range-message{
+    padding-left: 10px;
+    font-size: 0.85em;
+    margin: 2px 0;
+    clear: both;
+}
+
+#newVitalsDialog .has-errors input,
+#newVitalsDialog .has-errors select{
+    border-color: red;
+}

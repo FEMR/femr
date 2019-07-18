@@ -30,7 +30,6 @@ import java.util.List;
  */
 public interface IResearchService {
 
-
     /**
      * Take filters and build matching data for graph.
      *
@@ -39,14 +38,4 @@ public interface IResearchService {
      * and/or errors if they exist.
      */
      ServiceResponse<ResearchResultSetItem> retrieveGraphData(ResearchFilterItem filterItem);
-
-     ServiceResponse<File> retrieveCsvExportFile(ResearchFilterItem filters);
-
-     /**
-     *
-     *
-     * @param tripId Mission trip id to export
-     * @return a csn vile of the encounters for the passed in trip id
-     */
-     ServiceResponse<File> exportPatientsByTrip(Integer tripId);
 }

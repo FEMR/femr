@@ -26,7 +26,6 @@ import femr.data.models.core.*;
 import femr.data.daos.IRepository;
 import femr.data.daos.Repository;
 import femr.data.models.core.research.IResearchEncounter;
-import femr.data.models.core.research.IResearchEncounterVital;
 import femr.util.dependencyinjection.providers.*;
 
 public class DataLayerModule extends AbstractModule {
@@ -74,6 +73,7 @@ public class DataLayerModule extends AbstractModule {
         bind(IPhotoRepository.class).to(PhotoRepository.class);
         bind(IUserRepository.class).to(UserRepository.class);
         bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
+        bind(IResearchRepository.class).to(ResearchRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);
@@ -98,7 +98,6 @@ public class DataLayerModule extends AbstractModule {
         bind(new TypeLiteral<IRepository<IFeedback>>(){}).to(new TypeLiteral<Repository<IFeedback>>(){});
         // Research
         bind(new TypeLiteral<IRepository<IResearchEncounter>>() {}).to(new TypeLiteral<Repository<IResearchEncounter>>() {});
-        bind(new TypeLiteral<IRepository<IResearchEncounterVital>>() {}).to(new TypeLiteral<Repository<IResearchEncounterVital>>() {});
 
         //Generic repositories that are required by the database seeder
         bind(new TypeLiteral<IRepository<IConceptMedicationForm>>() {}).to(new TypeLiteral<Repository<IConceptMedicationForm>>() {});

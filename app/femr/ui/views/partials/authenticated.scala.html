@@ -9,7 +9,7 @@
 @import femr.ui.controllers.manager.routes.ManagerController
 @import femr.ui.controllers.superuser.routes.SuperuserController
 @import femr.ui.controllers.admin.routes.AdminController
-@import femr.ui.controllers.routes.ResearchController
+@import femr.ui.controllers.routes.ExportController
 @import femr.ui.controllers.routes.ReferenceController
 <div class="navigationLogo">
     <a href="@HomeController.index()">
@@ -36,7 +36,7 @@
             <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
         }
         @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
-            <li><a href="@ResearchController.indexGet()">Research</a></li>
+            <li><a href="@ExportController.indexGet()">Export</a></li>
         }
         @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
             <li><a href="@ManagerController.indexGet()">Manager</a></li>

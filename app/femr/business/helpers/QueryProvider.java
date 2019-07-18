@@ -18,7 +18,6 @@
 */
 package femr.business.helpers;
 
-
 import io.ebean.Ebean;
 import io.ebean.Query;
 import femr.data.models.mysql.*;
@@ -26,7 +25,6 @@ import femr.data.models.mysql.concepts.ConceptMedication;
 import femr.data.models.mysql.concepts.ConceptMedicationForm;
 import femr.data.models.mysql.concepts.ConceptMedicationUnit;
 import femr.data.models.mysql.research.ResearchEncounter;
-import femr.data.models.mysql.research.ResearchEncounterVital;
 
 /**
  * Responsible for providing all queries
@@ -155,7 +153,4 @@ public class QueryProvider {
         return Ebean.find(ResearchEncounter.class);
     }
 
-    public static Query<ResearchEncounterVital> getResearchEncounterVitalQuery() {
-        return Ebean.find(ResearchEncounterVital.class);
-    }
 }

@@ -18,27 +18,30 @@
 */
 package femr.common.models;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import femr.util.stringhelpers.StringUtils;
+
+import java.util.*;
 
 //One ResearchExportItem per line in the research CSV export
 public class ResearchExportItem {
 
     private UUID patientId;
+    private String patientCity;
     private String gender;
     private Integer age;
+    private String birthDate;
     private Boolean isPregnant;
     private Integer weeksPregnant;
     private String dayOfVisit;
     private Integer tripId;
-    private List<String> chiefComplaints;
-    private List<String> prescribedMedications;
-    private List<String> dispensedMedications;
-    private Map<String, Float> vitalMap;
-    private Map<String, String> tabFieldMap;
-    private String trip_team;
-    private String trip_country;
+    private List<String> chiefComplaints = new ArrayList<>();
+    private List<String> dispensedMedications = new ArrayList<>();
+    private Map<String, Float> vitalMap = new HashMap<>();
+    private Map<String, List<String>> tabFieldMap = new HashMap<>();
+    private String tripTeam;
+    private String tripCountry;
+    private String tripStart;
+    private String tripEnd;
 
     public UUID getPatientId() {
         return patientId;
@@ -48,11 +51,22 @@ public class ResearchExportItem {
         this.patientId = patientId;
     }
 
+    public String getPatientCity() {
+        return patientCity;
+    }
+
+    public void setPatientCity(String patientCity) {
+        this.patientCity = patientCity;
+    }
+
     public String getGender() {
         return gender;
     }
 
     public void setGender(String gender) {
+
+        if(StringUtils.isNullOrWhiteSpace(gender)) gender = "Not Available";
+
         this.gender = gender;
     }
 
@@ -62,6 +76,14 @@ public class ResearchExportItem {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
     public Boolean getIsPregnant() {
@@ -88,14 +110,6 @@ public class ResearchExportItem {
         this.chiefComplaints = chiefComplaints;
     }
 
-    public List<String> getPrescribedMedications() {
-        return prescribedMedications;
-    }
-
-    public void setPrescribedMedications(List<String> prescribedMedications) {
-        this.prescribedMedications = prescribedMedications;
-    }
-
     public List<String> getDispensedMedications() {
         return dispensedMedications;
     }
@@ -112,11 +126,11 @@ public class ResearchExportItem {
         this.vitalMap = vitalMap;
     }
 
-    public Map<String, String> getTabFieldMap() {
+    public Map<String, List<String>> getTabFieldMap() {
         return tabFieldMap;
     }
 
-    public void setTabFieldMap(Map<String, String> tabFieldMap) {
+    public void setTabFieldMap(Map<String, List<String>> tabFieldMap) {
         this.tabFieldMap = tabFieldMap;
     }
 
@@ -136,19 +150,35 @@ public class ResearchExportItem {
         this.tripId = tripId;
     }
 
-    public String getTrip_team() {
-        return trip_team;
+    public String getTripTeam() {
+        return tripTeam;
     }
 
-    public void setTrip_team(String trip_team) {
-        this.trip_team = trip_team;
+    public void setTripTeam(String tripTeam) {
+        this.tripTeam = tripTeam;
     }
 
-    public String getTrip_country() {
-        return trip_country;
+    public String getTripCountry() {
+        return tripCountry;
     }
 
-    public void setTrip_country(String trip_country) {
-        this.trip_country = trip_country;
+    public void setTripCountry(String tripCountry) {
+        this.tripCountry = tripCountry;
+    }
+
+    public String getTripStart() {
+        return tripStart;
+    }
+
+    public void setTripStart(String tripStart) {
+        this.tripStart = tripStart;
+    }
+
+    public String getTripEnd() {
+        return tripEnd;
+    }
+
+    public void setTripEnd(String tripEnd) {
+        this.tripEnd = tripEnd;
     }
 }

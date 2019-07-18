@@ -56,6 +56,18 @@ public class dateUtils {
         return dt;
     }
 
+    /**
+     * Returns a string in the format "yyyy/MM/dd"
+     * *
+     * @param timeStamp an unformated DateTime
+     * @return the time as a string
+     */
+    public static String convertTimeToDateString(DateTime timeStamp){
+        DateTimeFormatter dateFormat = DateTimeFormat
+                .forPattern("yyyy/MM/dd");
+        return dateFormat.print(timeStamp).toString();
+    }
+
     public static String getCurrentDateTimeString(){
         DateTimeFormatter dateFormat = DateTimeFormat
                 .forPattern("yyyy/MM/dd HH:mm:ss");

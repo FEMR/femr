@@ -129,6 +129,15 @@
     overflow: hidden;
 }
 
+.triage-form .has-errors label{
+    color: red;
+}
+
+.triage-form .has-errors input,
+.triage-form .has-errors select{
+    border-color: red;
+}
+
 .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"] {
     float: right;
     margin-right: 120px;

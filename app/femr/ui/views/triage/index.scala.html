@@ -39,7 +39,7 @@
         }
         <h2 class="text-center">Check In - Triage</h2>
 
-        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal", 'enctype -> "multipart/form-data") {
+        @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
                 <input class="hidden" type="text" id="patientId" value="@viewModel.getPatient.getId" />

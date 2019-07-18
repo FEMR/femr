@@ -385,6 +385,7 @@ var triageFields = {
 
     patientInformation: {
         firstName: $('#firstName'),
+        firstName: $('#firstName'),
         lastName: $('#lastName'),
         phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient
@@ -537,10 +538,16 @@ $(document).ready(function () {
     //gen info and vitals shit
     $('#femaleBtn').change(function () {
         $('#weeksPregnant').attr('disabled', false);
+
+        // remove any errors
+        $(this).parents(".generalInfoInput").removeClass("has-errors");
     });
     $('#maleBtn').change(function () {
         $('#weeksPregnant').val('');
         $('#weeksPregnant').attr('disabled', true);
+
+        // remove any errors
+        $(this).parents(".generalInfoInput").removeClass("has-errors");
     });
     $('#noDiabetesScreen').click(function(){
         $('input[name=isDiabetesScreenPerformed]').val("false");

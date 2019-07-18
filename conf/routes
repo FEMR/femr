@@ -82,6 +82,7 @@ GET         /research                                          @femr.ui.controll
 POST        /research                                          @femr.ui.controllers.ResearchController.indexPost()
 #Export
 GET        /export                                            @femr.ui.controllers.ExportController.indexGet()
+POST        /export                                            @femr.ui.controllers.ExportController.indexPost()
 #Pdf
 GET         /pdf/encounter/:encounterId                        @femr.ui.controllers.PDFController.index(encounterId : Integer)
 #Sessions

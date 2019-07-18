@@ -21,13 +21,16 @@ package femr.ui.controllers;
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.IExportService;
+import femr.business.services.core.IMissionTripService;
 import femr.business.services.core.ISessionService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MissionItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
-import femr.ui.models.export.FilterViewModel;
+import femr.ui.models.export.FilterFormViewModel;
+import femr.ui.models.export.ExportViewModel;
 import femr.ui.views.html.export.index;
 import play.data.Form;
 import play.data.FormFactory;
@@ -35,8 +38,10 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.io.File;
+import java.util.List;
 
 import static play.mvc.Controller.response;
+import static play.mvc.Results.badRequest;
 import static play.mvc.Results.ok;
 
 @Security.Authenticated(FEMRAuthenticated.class)
@@ -47,18 +52,21 @@ public class ExportController {
     private final FormFactory formFactory;
     private ISessionService sessionService;
     private IExportService exportService;
+    private IMissionTripService missionTripService;
 
     /**
      * @param assetsFinder
      * @param formFactory
      * @param exportService {@link IExportService}
+     * @param missionTripService {@link IMissionTripService}
      */
     @Inject
-    public ExportController(AssetsFinder assetsFinder, ISessionService sessionService, FormFactory formFactory, IExportService exportService) {
+    public ExportController(AssetsFinder assetsFinder, ISessionService sessionService, FormFactory formFactory, IExportService exportService, IMissionTripService missionTripService) {
         this.assetsFinder = assetsFinder;
         this.sessionService = sessionService;
         this.formFactory = formFactory;
         this.exportService = exportService;
+        this.missionTripService = missionTripService;
     }
 
     /**
@@ -67,25 +75,40 @@ public class ExportController {
     public Result indexGet() {
 
         CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+        ExportViewModel viewModel = new ExportViewModel();
 
-        final Form<FilterViewModel> filterViewModelForm = formFactory.form(FilterViewModel.class);
-        FilterViewModel viewModel = filterViewModelForm.bindFromRequest().get();
+        final Form<FilterFormViewModel> filterViewModelForm = formFactory.form(FilterFormViewModel.class);
 
-        // TODO - validate that there are trip ids or date range is present
+        ServiceResponse<List<MissionItem>> missionTripsResponse = this.missionTripService.retrieveAllTripInformation();
+        if (missionTripsResponse.hasErrors())
+            throw new RuntimeException();
+        viewModel.setAllMissionItems(missionTripsResponse.getResponseObject());
 
-        // Do Export
-        if(viewModel.getMissionTripIds().size() > 0) {
+        return ok(index.render(currentUserSession, assetsFinder, viewModel, filterViewModelForm));
+    }
 
-            ServiceResponse<File> filterServiceResponse = exportService.exportAllEncounters(viewModel.getMissionTripIds());
-            File csvFile = filterServiceResponse.getResponseObject();
-            response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
+    public Result indexPost(){
 
-            return ok(csvFile).as("application/x-download");
+        final Form<FilterFormViewModel> filterViewModelForm = formFactory.form(FilterFormViewModel.class).bindFromRequest();
+
+        if(filterViewModelForm.hasErrors()){
+
+            CurrentUser currentUserSession = sessionService.retrieveCurrentUserSession();
+            ExportViewModel viewModel = new ExportViewModel();
+
+            ServiceResponse<List<MissionItem>> missionTripsResponse = this.missionTripService.retrieveAllTripInformation();
+            if (missionTripsResponse.hasErrors())
+                throw new RuntimeException();
+            viewModel.setAllMissionItems(missionTripsResponse.getResponseObject());
+
+            return badRequest(index.render(currentUserSession, assetsFinder, viewModel, filterViewModelForm));
         }
-        // show form
-        else {
 
-            return ok(index.render(currentUserSession, assetsFinder, viewModel));
-        }
+        FilterFormViewModel filterModel = filterViewModelForm.get();
+        ServiceResponse<File> filterServiceResponse = exportService.exportAllEncounters(filterModel.getMissionTripIds());
+        File csvFile = filterServiceResponse.getResponseObject();
+        response().setHeader("Content-disposition", "attachment; filename=" + csvFile.getName());
+
+        return ok(csvFile).as("application/x-download");
     }
 }

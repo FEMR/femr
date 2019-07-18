@@ -1,4 +1,4 @@
-@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, viewModel:femr.ui.models.export.FilterViewModel)
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder, viewModel:femr.ui.models.export.ExportViewModel, filterForm: Form[femr.ui.models.export.FilterFormViewModel])
 
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.routes.ExportController
@@ -15,9 +15,42 @@
 @main("Export", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
 
     <h2 class="text-center">Export Records</h2>
-    <div id="exportContentWrap" class="backgroundForWrap">
 
-        put export form here
+    <div id="exportContentWrap" class="container col-xs-12">
+
+        <div class="container col-xs-12 backgroundForWrap">
+        @helper.form(action = ExportController.indexPost(), 'id -> "export-form") {
+
+            <div class="form-group checkbox-group">
+
+                <h4>Select Trips to Export</h4>
+                <p>The exported data will be de-identified and will include most encounter fields.</p>
+                <p class="text-info"><strong>Note:</strong> Patients will have a randomly generated Id that will link patients within this specific export, but will change with each export</p>
+
+                @if(filterForm("missionTripIds").hasErrors){
+                    <p class="text-danger">Please select a trip to export</p>
+                }
+
+                <div class="checkbox select-all">
+                    <label>
+                        <input type="checkbox"> All Trips
+                    </label>
+                </div>
+                @for(missionItem <- viewModel.getAllMissionItems){
+                    @for(missionTrip <- missionItem.getMissionTrips){
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="missionTripIds[]" value="@missionTrip.getId()"> @missionTrip.getFriendlyTripTitle
+                        </label>
+                    </div>
+                    }
+                }
+            </div>
+
+            <button id="submit-button" type="submit" class="btn btn-primary">Export to CSV</button>
+        }
+        </div>
+
 
     </div>
 }

@@ -847,5 +847,23 @@ window.setInterval(function () {
 
 }, 500);
 
+$("#heightInches").change(function(){
+    var isMetric = ($("#vitalsUnits").val() === "metric");
+
+    var heightFeet = parseFloat(triageFields.patientVitals.heightFeet.val()) || 0;
+    var heightInches = parseFloat(triageFields.patientVitals.heightInches.val()) || 0;
+
+    var unitValue = isMetric ? 100 : 12;
+
+    // if inches > 12 or 100 add to feet
+    if( heightInches > unitValue ){
+        heightFeet += Math.floor(heightInches/unitValue);
+        heightInches = heightInches % unitValue;
+    }
+
+    $(triageFields.patientVitals.heightFeet).val(heightFeet || "");
+    $(triageFields.patientVitals.heightInches).val(heightInches || "");
+});
+
 
 

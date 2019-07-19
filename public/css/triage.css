@@ -144,6 +144,13 @@
     color: red;
 }
 
+.triage-form .has-errors label.range-message{
+    padding-left: 10px;
+    font-size: 0.85em;
+    margin: 2px 0;
+    clear: both;
+}
+
 .triage-form .has-errors input,
 .triage-form .has-errors select{
     border-color: red;

@@ -102,7 +102,6 @@ var triageFieldValidator = {
 
         // validate gender
         if (!$(patientInformation.sex).is(":checked")) {
-            console.log("No Sex");
             $(patientInformation.sex).parents(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }

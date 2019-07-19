@@ -1,34 +1,31 @@
 $(document).ready(function () {
+
+    var patientVitals = {
+        //this object is sent to the vital validator which uses
+        //the names of these fields (these fields are from the newVitals prompt)
+        respiratoryRate: $('#newRespiratoryRate'),
+        bloodPressureSystolic: $('#newSystolic'),
+        bloodPressureDiastolic: $('#newDiastolic'),
+        heartRate: $('#newHeartRate'),
+        oxygenSaturation: $('#newOxygen'),
+        temperature: $('#newTemperature'),
+        weight: $('#newWeight'),
+        heightFeet: $('#newHeightFeet'),
+        heightInches: $('#newHeightInches'),
+        glucose: $('#newGlucose'),
+        weeksPregnant: $('#weeksPreg'),
+        smoker: $('#newSmoker'),
+        diabetic: $('#newDiabetic'),
+        alcohol: $('#newAlcohol')
+    };
+
     $('#cancelVitalsBtn').click(function () {
         closeDialog("newVitalsDialog");
     });
 
     $('#saveVitalsBtn').on('click', function () {
 
-
         var newVitals = {};
-
-        var patientVitals = {
-            //this object is sent to the vital validator which uses
-            //the names of these fields (these fields are from the newVitals prompt)
-            respiratoryRate: $('#newRespiratoryRate'),
-            bloodPressureSystolic: $('#newSystolic'),
-            bloodPressureDiastolic: $('#newDiastolic'),
-            heartRate: $('#newHeartRate'),
-            oxygenSaturation: $('#newOxygen'),
-            temperature: $('#newTemperature'),
-            weight: $('#newWeight'),
-            heightFeet: $('#newHeightFeet'),
-            heightInches: $('#newHeightInches'),
-            glucose: $('#newGlucose'),
-            weeksPregnant: $('#weeksPreg'),
-            smoker: $('#newSmoker'),
-            diabetic: $('#newDiabetic'),
-            alcohol: $('#newAlcohol')
-
-
-
-        };
 
         var isValid = vitalClientValidator(patientVitals);
 
@@ -103,11 +100,31 @@ $(document).ready(function () {
             });
         }
     });
+
+
+    $("#newHeightInches").change(function(){
+        var isMetric = ($("#vitalsUnits").val() === "metric");
+
+        var heightFeet = parseFloat(patientVitals.heightFeet.val()) || 0;
+        var heightInches = parseFloat(patientVitals.heightInches.val()) || 0;
+
+        var unitValue = isMetric ? 100 : 12;
+
+        // if inches > 12 or 100 add to feet
+        if( heightInches > unitValue ){
+            heightFeet += Math.floor(heightInches/unitValue);
+            heightInches = heightInches % unitValue;
+        }
+
+        $(patientVitals.heightFeet).val(heightFeet || "");
+        $(patientVitals.heightInches).val(heightInches || "");
+    });
 });
 
 function closeDialog(name) {
     $('#' + name).dialog("close");
 }
+
 
 
 

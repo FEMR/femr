@@ -38,7 +38,6 @@ var vitalClientValidator = function (vitalElements) {
     }
     //Temperature
     if (vitalIsInvalid("temperature", vitalElements.temperature.val(), isMetric)) {
-        console.log("temp is invalid:" + vitalElements.temperature.val());
         $(vitalElements.temperature).parent(".vitalWrap").addClass("has-errors");
         $(vitalElements.temperature).before(getRangeMessage("temperature", isMetric));
         isValid = false;

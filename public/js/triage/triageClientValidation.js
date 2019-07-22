@@ -6,7 +6,6 @@ var triageFieldValidator = {
         //validate First Name
         if (!$.trim(patientInformation.firstName.val())) {
             patientInformation.firstName.attr("placeholder", "Required Input");
-            // patientInformation.firstName.css('border-color', 'red');
             $(patientInformation.firstName).parent(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
@@ -17,7 +16,6 @@ var triageFieldValidator = {
         //validate Last Name
         if (!$.trim(patientInformation.lastName.val())) {
             patientInformation.lastName.attr("placeholder", "Required Input");
-            // patientInformation.lastName.css('border-color', 'red');
             $(patientInformation.lastName).parent(".generalInfoInput").addClass("has-errors");
             triageFieldValidator.isValid = false;
         }
@@ -29,7 +27,6 @@ var triageFieldValidator = {
         if (!$.trim(patientInformation.city.val())) {
             patientInformation.city.attr("placeholder", "Required Input");
             $(patientInformation.city).parents(".generalInfoInput").addClass("has-errors");
-            // patientInformation.city.css('border-color', 'red');
             triageFieldValidator.isValid = false;
         }
         else{
@@ -37,18 +34,15 @@ var triageFieldValidator = {
         }
 
         //Validate Age
-        // !patientInformation.months.val() && !patientInformation.years.val()
         if ( (patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
             (patientInformation.years.val().length > 0 && !integerCheck(patientInformation.years.val()))
         ){
             $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
-            // $('#ageClassificationWrap').css('border', '1px solid red');
             triageFieldValidator.isValid = false;
         }
         else if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
             //nothing has been filled out
             $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
-            // $('#ageClassificationWrap').css('border', '1px solid red');
             triageFieldValidator.isValid = false;
 
         } else if ((patientInformation.months.val() || patientInformation.years.val()) && patientInformation.ageClassification.filter(':checked').val()) {
@@ -92,19 +86,16 @@ var triageFieldValidator = {
             if (ageGroupYearMatch){
                 $("#conflictingAgeMessage").hide();
                 $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
-                // $('#ageClassificationWrap').css('border', 'none');
             }
             else {
                 $("#conflictingAgeMessage").show();
                 $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
-                // $('#ageClassificationWrap').css('border', '1px solid red');
                 triageFieldValidator.isValid = false;
             }
         }
         else{
             //something has been filled out
             $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
-            // $('#ageClassificationWrap').css('border', 'none');
         }
 
         // validate gender

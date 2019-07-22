@@ -98,6 +98,18 @@ var triageFieldValidator = {
             $('#ageClassificationWrap').children(".generalInfoInput").removeClass("has-errors");
         }
 
+        // check for future birthdate
+        if(patientInformation.age.val()){
+            console.log(patientInformation.age.val());
+            var birthDate = new Date(patientInformation.age.val());
+            var today = new Date();
+
+            if(birthDate > today){
+                $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
+                triageFieldValidator.isValid = false;
+            }
+        }
+
         // validate gender
         if (!$(patientInformation.sex).is(":checked")) {
             $(patientInformation.sex).parents(".generalInfoInput").addClass("has-errors");

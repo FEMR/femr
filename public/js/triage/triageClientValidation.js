@@ -37,7 +37,15 @@ var triageFieldValidator = {
         }
 
         //Validate Age
-        if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
+        // !patientInformation.months.val() && !patientInformation.years.val()
+        if ( (patientInformation.months.val().length > 0 && !integerCheck(patientInformation.months.val())) ||
+            (patientInformation.years.val().length > 0 && !integerCheck(patientInformation.years.val()))
+        ){
+            $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
+            // $('#ageClassificationWrap').css('border', '1px solid red');
+            triageFieldValidator.isValid = false;
+        }
+        else if (!patientInformation.age.val() && !patientInformation.ageClassification.filter(':checked').val() && !patientInformation.months.val() && !patientInformation.years.val() && !$('#readOnlyBirthDate').val() && !$('#readOnlyAge').val()) {
             //nothing has been filled out
             $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
             // $('#ageClassificationWrap').css('border', '1px solid red');

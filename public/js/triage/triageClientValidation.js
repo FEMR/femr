@@ -44,15 +44,14 @@ var triageFieldValidator = {
             triageFieldValidator.isValid = false;
 
         } else if ((patientInformation.months.val() || patientInformation.years.val()) && patientInformation.ageClassification.filter(':checked').val()) {
-            var months = 0.0;
-            if(patientInformation.months.val()){
-               months =  parseFloat(patientInformation.months.val());
-            }
-            var years = 0.0;
+            // This checks that the patients age is in the correct range (if chosen), months is irrelevant in this calculation
+            // - the UI does something kinda wonky with a revisiting patient: the #months hidden field is total months of age, not the months since the last bday,
+            //      fixing this could cause other bugs, so eliminating months instead
+            //      - see femr.common.models.PatientItem::monthsOld
+            var totalAge = 0.0;
             if(patientInformation.years.val()){
-                years = parseFloat(patientInformation.years.val());
+                totalAge = parseFloat(patientInformation.years.val());
             }
-            var totalAge = years + (months / 12);
             var ageGroupYearMatch = true;
 
             switch (patientInformation.ageClassification.filter(':checked').val()){

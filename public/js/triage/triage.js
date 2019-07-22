@@ -385,7 +385,6 @@ var triageFields = {
 
     patientInformation: {
         firstName: $('#firstName'),
-        firstName: $('#firstName'),
         lastName: $('#lastName'),
         phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient

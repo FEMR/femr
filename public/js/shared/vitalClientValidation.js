@@ -89,7 +89,7 @@ function getRangeMessage(index, isMetric, customMessage){
 
     var message = document.createElement("label");
     message.setAttribute("class", "range-message");
-    var text = customMessage || document.createTextNode("Must be between " + min + " and " + max);
+    var text = customMessage || document.createTextNode("Must be between " + min + " and " + max + " and max 2 decimal places");
     message.append(text);
     return message;
 
@@ -103,7 +103,7 @@ function vitalIsInvalid(index, value, isMetric){
     value = $.trim(value);
 
     // is not blank and is non-numeric OR is out of range
-    return (value.length > 0 && !integerCheck(value)) || (integerCheck(value) && (value < min || value > max));
+    return (value.length > 0 && !decimalCheck(value)) || (decimalCheck(value) && (value < min || value > max));
 }
 
 var vitalFieldRanges = {

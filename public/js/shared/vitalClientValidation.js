@@ -110,7 +110,7 @@ var vitalFieldRanges = {
     respiratoryRate: {
         // breaths per minute
         imperial: {
-            min: 0,
+            min: 6,
             max: 60
         }
     },
@@ -129,39 +129,39 @@ var vitalFieldRanges = {
     heartRate: {
         // beats per minute
         imperial: {
-            min: 0,
+            min: 4,
             max: 350
         }
     },
     oxygenSaturation: {
         // %
         imperial: {
-            min: 0,
+            min: 70,
             max: 100
         }
     },
     temperature: {
         // Fahrenheit
         imperial: {
-            min: 75,
-            max: 120
+            min: 90,
+            max: 110
         },
         // Celcius
         metric: {
-            min: 24,
-            max: 49
+            min: 32,
+            max: 43
         }
     },
     weight: {
         // lbs
         imperial: {
-            min: 0,
-            max: 1500
+            min: 4,
+            max: 1000
         },
         // kg
         metric: {
-            min: 0,
-            max: 680
+            min: 2,
+            max: 455
         }
     },
     height: {
@@ -180,12 +180,12 @@ var vitalFieldRanges = {
         // mg/dL
         imperial: {
             min: 0,
-            max: 350
+            max: 700
         }
     },
     weeksPregnant: {
         imperial: {
-            min: 0,
+            min: 1,
             max: 45
         }
     }

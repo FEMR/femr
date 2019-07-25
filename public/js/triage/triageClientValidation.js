@@ -100,11 +100,12 @@ var triageFieldValidator = {
 
         // check for future birthdate
         if(patientInformation.age.val()){
-            console.log(patientInformation.age.val());
             var birthDate = new Date(patientInformation.age.val());
             var today = new Date();
 
-            if(birthDate > today){
+            var years = patientInformation.years.val();
+
+            if(birthDate > today || years > 120){
                 $('#ageClassificationWrap').children(".generalInfoInput").addClass("has-errors");
                 triageFieldValidator.isValid = false;
             }

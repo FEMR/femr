@@ -10,11 +10,3 @@ phases:
   build:
     commands:
       - sbt clean compile dist
-  post_build:
-    commands:
-      - unzip $CODEBUILD_SRC_DIR/target/universal/femr-*.zip -d $CODEBUILD_SRC_DIR
-      - cp -R $CODEBUILD_SRC_DIR_DistFolder/dist/* $CODEBUILD_SRC_DIR/femr-*
-      - cd $CODEBUILD_SRC_DIR/femr-* && mkdir -p Upload/CSV
-artifacts:
-  files:
-    - femr-*/**/*

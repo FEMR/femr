@@ -384,6 +384,8 @@ public class TriageController extends Controller {
 
         } else {
             if (StringUtils.isNotNullOrWhiteSpace(chiefComplaint)) {
+                chiefComplaint = chiefComplaint.replaceAll("\n", ",");
+                chiefComplaint = chiefComplaint.replaceAll("\r", "*");
                 chiefComplaints.add(chiefComplaint);
             }
         }

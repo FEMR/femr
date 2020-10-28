@@ -4,9 +4,9 @@
 # except for .gitignore
 !.gitignore
 
-!conf/application.conf
-!conf/application.*.conf
-!conf/application.example.conf
+conf/application.conf
+conf/application.*.conf
+conf/application.example.conf
 
 femr-dev.sh
 

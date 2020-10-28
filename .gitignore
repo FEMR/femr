@@ -1,0 +1,46 @@
+# Extracted from https://github.com/ulrich/macaron-factory/blob/master/.gitignore
+# Ignore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore
+
+!conf/application.conf
+conf/application.*.conf
+!conf/application.example.conf
+
+femr-dev.sh
+
+# Ignore Play! working directory #
+db
+eclipse
+lib
+log
+logs
+modules
+!app/**/**/**/modules
+!test/**/**/**/modules
+precompiled
+project/project
+project/target
+target
+tmp
+test-result
+server.pid
+*.iml
+*.eml
+Upload
+dist
+
+# Ignore OS specific Files #
+.DS_Store
+Thumbs.db
+
+#Concourse creds
+credentials.yml
+
+#PhotoMigration utility
+util/PhotoMigration$Photo.class
+util/PhotoMigration.class
+
+#development database
+docker-compose.yml

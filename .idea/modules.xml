@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/femr.iml" filepath="$PROJECT_DIR$/.idea/modules/femr.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/femr-build.iml" filepath="$PROJECT_DIR$/.idea/modules/femr-build.iml" />
-    </modules>
-  </component>
-</project>

@@ -2,6 +2,7 @@
 [debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\application.conf,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\application.conf)
 [debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\application.dev.conf,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\application.dev.conf)
 [debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\application.example.conf,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\application.example.conf)
+[debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\demo.conf,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\demo.conf)
 [debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\evolutions,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\evolutions)
 [debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\prod-logger.xml,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\prod-logger.xml)
 [debug] 	(C:\Users\Noel\Documents\csc402\lemur-femr\femr\conf\routes,C:\Users\Noel\Documents\csc402\lemur-femr\femr\target\scala-2.11\classes\routes)

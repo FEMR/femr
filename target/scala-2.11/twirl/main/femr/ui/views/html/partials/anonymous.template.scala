@@ -34,7 +34,9 @@ object anonymous extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.
 Seq[Any](format.raw/*1.24*/("""
 """),format.raw/*3.1*/("""
 """),format.raw/*4.1*/("""<div class="navigationLogo">
-      <img src=""""),_display_(/*5.18*/assets/*5.24*/.path("img/logo_color_wordless_sm.png")),format.raw/*5.63*/("""" />
+  <a href=""""),_display_(/*5.13*/HomeController/*5.27*/.index()),format.raw/*5.35*/("""">
+      <img src=""""),_display_(/*6.18*/assets/*6.24*/.path("img/logo_color_wordless_sm.png")),format.raw/*6.63*/("""" />
+  </a>
 </div>"""))
       }
     }
@@ -51,11 +53,11 @@ Seq[Any](format.raw/*1.24*/("""
 
               /*
                   -- GENERATED --
-                  DATE: Tue Oct 27 21:59:18 PDT 2020
+                  DATE: Tue Oct 27 23:13:32 PDT 2020
                   SOURCE: C:/Users/Noel/Documents/csc402/lemur-femr/femr/app/femr/ui/views/partials/anonymous.scala.html
-                  HASH: 84b7952dbbccbd56a3a977d577e98e7f66c2b46e
-                  MATRIX: 975->1|1070->26|1148->23|1176->76|1204->78|1277->125|1291->131|1350->170
-                  LINES: 28->1|31->2|34->1|35->3|36->4|37->5|37->5|37->5
+                  HASH: aff52c3985008c7a02a3bf5671f718547133a043
+                  MATRIX: 975->1|1070->26|1148->23|1176->76|1204->78|1272->120|1294->134|1322->142|1369->163|1383->169|1442->208
+                  LINES: 28->1|31->2|34->1|35->3|36->4|37->5|37->5|37->5|38->6|38->6|38->6
                   -- GENERATED --
               */
           

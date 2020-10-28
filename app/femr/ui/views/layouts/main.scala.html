@@ -1,0 +1,46 @@
+@(title: String, currentUser: femr.common.dtos.CurrentUser = null,
+        styles: Html = Html(""), scripts: Html = Html(""),
+        outsideContainerTop: Html = Html(""),
+        outsideContainerBottom: Html = Html(""),
+        search: Html = Html(""),
+        assets: AssetsFinder)(content: Html)
+
+@import femr.ui.views.html.partials.footer
+@import femr.ui.views.html.partials.header
+
+<!DOCTYPE html>
+<html class="no-js" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <title>@title | fEMR - The free EMR</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <link rel="shortcut icon" type="image/png" href="@assets.path("img/favicon.png")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/bootstrap.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/femr.css")"/>
+        @styles
+        <script type="text/javascript" src="@assets.path("js/libraries/modernizr-2.6.2.min.js")"></script>
+    </head>
+    <body>
+        @header(currentUser, assets)
+
+        @outsideContainerTop
+
+        <div class="container">
+            @search
+
+            @content
+
+            @footer()
+        </div>
+
+        @outsideContainerBottom
+
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery-2.2.4.min.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/bootstrap.min.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/shared/femr.js")"></script>
+        @scripts
+    </body>
+</html>

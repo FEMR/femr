@@ -1,0 +1,26 @@
+@(missionTripItem: femr.common.models.MissionTripItem)
+
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.admin.routes.TripController
+
+@if(missionTripItem == null) {
+    <div class="alert warning">
+
+        <h3>Your account is not assigned to a trip</h3>
+
+        <p>In order to manage your formulary, you must be assigned to a trip. Please assign yourself to a trip before using the inventory feature.</p>
+
+        <a class="fButton" href="@TripController.manageGet">Manage Trip Users &raquo;</a>
+    </div>
+
+} else {
+    <div id="inventoryOptionsWrap">
+        <a href="@InventoryController.existingGet(missionTripItem.getId)" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
+            Existing Medication</a>
+        <a href="@InventoryController.customGet(missionTripItem.getId)" class="fButton fOtherButton fAdminButton medicationBtn"><span class="glyphicon glyphicon-plus-sign"></span>
+            Custom Medication</a>
+    </div>
+
+    <p>You are viewing the formulary for <b>@missionTripItem.getFriendlyTripTitle</b></p>
+}
+

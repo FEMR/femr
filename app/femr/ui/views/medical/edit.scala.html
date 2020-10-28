@@ -1,0 +1,180 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        vitals: femr.util.DataStructure.Mapping.VitalMultiMap,
+        viewModel: femr.ui.models.medical.EditViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.controllers.routes.HistoryController
+@import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.search
+@import femr.ui.views.html.partials.medical.tabs._
+@import femr.ui.views.html.partials.patientOverview
+@import femr.ui.views.html.medical.listVitals
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/medical/medical.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.tablescroll.css")">
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
+    }
+    @additionalScripts = {
+
+        <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/medical/medical.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/medical/medicalClientValidation.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery.tablescroll.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
+    }
+
+@main("Medical", currentUser, scripts = additionalScripts, styles = additionalStyles, search = search("medical"), assets = assets) {
+    <input type="hidden" value="@viewModel.getPatientItem.getId" id="patientId"/>
+
+    <div id="medicalContentWrap">
+
+        @*Careful with the pagename passed into patientOverview() - it impacts what is displayed*@
+        @patientOverview(viewModel.getPatientItem, viewModel.getPatientEncounterItem, viewModel.getSettings, "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId)
+
+
+        <div id="mainWrap" class="backgroundForWrap">
+            <div id="vitalsWrap">
+                <!-- Alaa Serhan - Referenced in vitalClientValidation.js for validationg height inputs -->
+                @if(viewModel.getSettings.isMetric) {
+                    <input type="hidden" id="vitalsUnits" value="metric" />
+                } else {
+                    <input type="hidden" id="vitalUnits" value="imp" />
+                }
+                <div id="vitalsPartial">
+                        <!-- Repalaced when user clicks save in record new vitals dialog -->
+                    @listVitals(vitals, viewModel, assets)
+                </div>
+
+                <button type="button" id="newVitalsBtn" class="fButton fOtherButton">Record New Vitals</button>
+
+                <div id="newVitalsDialog" title="Record New Vitals">
+                    <div id="newVitalsPartial">
+                        @*load partial view for editing a user via admin.js*@
+                    </div>
+                </div>
+            </div>
+
+            <div id="inputWrap">
+                @helper.form(action = MedicalController.editPost(int2Integer(viewModel.getPatientItem.getId)), 'enctype -> "multipart/form-data") {
+                    <div class="tabWrap">
+                        <ul id="medicalTabs" class="tabrow">
+                            <li id="hpi">HPI</li>
+                            <li id="treatment">Treatment</li>
+                            @if(viewModel.getSettings.isPmhTab) {
+                                <li id="pmh">PMH</li>
+                            }
+                            @if(viewModel.getSettings.isPhotoTab) {
+                                <li id="photos">Photos</li>
+                            }
+                            @*Generate the custom tabs*@
+                            @for(tab <- viewModel.getTabItems) {
+                                @if(tab.isCustom) {
+                                    <li id="@tab.getName.toLowerCase">@tab.getName</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+
+                    <div id="tabContentWrap">
+                        @hpiTab(viewModel.getTabItemByName("hpi"), viewModel.getSettings.isConsolidateHPI, viewModel.getChiefComplaints)
+
+                        @treatmentTab(viewModel.getTabItemByName("treatment"), viewModel.getPrescriptionItems, viewModel.getMedicationAdministrationItems, viewModel.getProblemItems)
+
+                        @if(viewModel.getSettings.isPmhTab) {
+                            @pmhTab(viewModel.getTabItemByName("pmh"))
+                        }
+
+                        @if(viewModel.getSettings.isPhotoTab) {
+                            @photoTab(viewModel.getPhotos)
+                        }
+
+                        @for(tab <- viewModel.getTabItems) {
+                            @* Move the div wrapper into dynamicTab*@
+                            @if(tab.isCustom){
+                                <div class="controlWrap hidden" id="@tab.getName.toLowerCase()Control">
+                                @dynamicTab(tab)
+                                </div>
+                            }
+                        }
+
+                        <div class="historySubmitWrap">
+                            <button type="submit" id="medicalSubmitBtn" class="fButton fRedButton fSubmitButton pull-right">
+                                Submit Patient</button>
+                            }
+
+                            <a href="@{HistoryController.indexPatientGet(
+                                Integer.toString(viewModel.getPatientItem.getId)).url}" class="fButton fOtherButton pull-left" target="_blank">Patient History</a>
+                            <a href="@{PharmaciesController.editGet(viewModel.getPatientItem.getId).url}" class="fButton fOtherButton pull-left" target="_blank">View in Pharmacy</a>
+                        </div>
+
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<div id="portraitTemplate">
+    <div class="col-xs-12 col-sm-6 col-md-4" hidden="true">
+        <div class="thumbnail">
+            <img src="">
+            <div class="caption">
+                <div class="form-group">
+                    <p name="photoDescription" ></p>
+                    <div class="btn-group">
+                        <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med">
+                            <span class="glyphicon glyphicon-edit"></span> Edit Description
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med">
+                            <span class="glyphicon glyphicon-trash"></span> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!-- Data elements for server-side logic -->
+        <div name="dataList" hidden="true">
+                <!-- Signals that user has requested to delete this photo from the database / server -->
+            <input hidden="true" type="checkbox" name="deleteRequested" checked="false" value="false" />
+                <!-- Signals that the user has updated a description -->
+            <input hidden="true" type="checkbox" name="hasUpdatedDesc" checked="false" value="false" />
+                <!-- Place holder for new images -->
+            <input hidden="true" type="file" name="patientPhoto" />
+                <!-- text for POST -->
+            <input hidden="true" type="text" name="imageDescText" value="" />
+                <!-- photo Id -->
+            <input hidden="true" type="text" name="photoId" value="" />
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalNewImage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">New photo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="thumbnail">
+                        <img id="modalImg" src="" />
+                    </div>
+                    <label for="modalTextEntry" class="control-label">Description:</label>
+                    <textarea rows="8" id="modalTextEntry" name="modalTextEntryName" class="form-control input-med" ></textarea>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modalCancelPortrait" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="modalSavePortrait" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

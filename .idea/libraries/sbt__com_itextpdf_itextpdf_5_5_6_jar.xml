@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: com.itextpdf:itextpdf:5.5.6:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.itextpdf/itextpdf/jars/itextpdf-5.5.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.itextpdf/itextpdf/srcs/itextpdf-5.5.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

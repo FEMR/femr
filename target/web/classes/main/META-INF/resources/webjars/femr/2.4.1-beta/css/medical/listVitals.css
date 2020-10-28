@@ -1,0 +1,11 @@
+#vitalTable{
+    font-size: 18px;
+}
+#vitalTable th,td,tr{
+    border: 1px solid #ccc;
+}
+@media (max-width: 769px){
+    #vitalTable{
+        font-size: 14px;
+    }
+}

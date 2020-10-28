@@ -1,0 +1,7 @@
+@(isDeactivate: java.lang.Boolean, id: java.lang.Integer)
+
+@if(isDeactivate) {
+    <button type="button" class="btn btn-danger toggleBtn" data-id="@id">Deactivate</button>
+} else {
+    <button type="button" class="btn btn-success toggleBtn" data-id="@id">Activate</button>
+}

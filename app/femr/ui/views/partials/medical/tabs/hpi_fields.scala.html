@@ -1,0 +1,109 @@
+@(hpiTab: femr.common.models.TabItem, isConsolidated: java.lang.Boolean, chiefComplaint: java.lang.String)
+
+@import femr.ui.views.html.partials.medical.severityDropDown;
+
+@* Hide the div if multiple chief complaints *@
+<div class="hpiWraps hidden">
+
+@if(!isConsolidated) {
+    <div class="leftHPI">
+
+        <div class="staticField">
+            <label for="onset">Onset</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "onset")) { onset =>
+                <input name="tabFieldItems[@onset.getIndex].name" type="text" class="hidden" value="onset"/>
+                <input name="tabFieldItems[@onset.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@onset.getIndex].value" type="text" class="fInput" value="@onset.getValue" />
+            }
+
+
+        </div>
+
+        <div class="staticField">
+            <label for="radiation">Radiation</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "radiation")) { radiation =>
+                <input name="tabFieldItems[@radiation.getIndex].name" type="text" class="hidden" value="radiation"/>
+                <input name="tabFieldItems[@radiation.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@radiation.getIndex].value" type="text" class="fInput" value="@radiation.getValue" />
+            }
+        </div>
+
+    </div>
+
+    <div class="rightHPI">
+        <div class="staticField">
+            <label for="quality">Quality</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "quality")) { quality =>
+                <input name="tabFieldItems[@quality.getIndex].name" type="text" class="hidden" value="quality"/>
+                <input name="tabFieldItems[@quality.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@quality.getIndex].value" type="text" class="fInput" value="@quality.getValue" />
+            }
+        </div>
+
+        @* Severity *@
+        <div class="staticField">
+        @severityDropDown(chiefComplaint, hpiTab.getTabFieldItemByName(chiefComplaint, "severity"))
+        </div>
+
+
+    </div>
+    <div class="bottomHPI">
+
+        <div class="staticField">
+            <label for="provokes">Provokes</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "provokes")) { provokes =>
+                <input name="tabFieldItems[@provokes.getIndex].name" type="text" class="hidden" value="provokes"/>
+                <input name="tabFieldItems[@provokes.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@provokes.getIndex].value" type="text" class="fInput" value="@provokes.getValue" />
+            }
+        </div>
+
+        <div class="staticField">
+            <label for="palliates">Palliates</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "palliates")) { palliates =>
+                <input name="tabFieldItems[@palliates.getIndex].name" type="text" class="hidden" value="palliates"/>
+                <input name="tabFieldItems[@palliates.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@palliates.getIndex].value" type="text" class="fInput" value="@palliates.getValue" />
+            }
+        </div>
+
+        <div class="staticField">
+            <label for="timeOfDay">Time Of Day</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "timeOfDay")) { timeOfDay =>
+                <input name="tabFieldItems[@timeOfDay.getIndex].name" type="text" class="hidden" value="timeOfDay"/>
+                <input name="tabFieldItems[@timeOfDay.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@timeOfDay.getIndex].value" type="text" class="fInput" value="@timeOfDay.getValue" />
+            }
+        </div>
+
+        <div class="staticField">
+            <label for="narrative">Narrative</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "narrative")) { narrative =>
+                <input name="tabFieldItems[@narrative.getIndex].name" type="text" class="hidden" value="narrative"/>
+                <input name="tabFieldItems[@narrative.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <input name="tabFieldItems[@narrative.getIndex].value" type="text" class="fInput" value="@narrative.getValue" />
+            }
+        </div>
+
+        <div class="staticField">
+            @* Physical Examination *@
+            <label for="physicalExamination">Physical Examination</label>
+            @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "physicalExamination")) { physicalExamination =>
+                <input name="tabFieldItems[@physicalExamination.getIndex].name" type="text" class="hidden" value="physicalExamination"/>
+                <input name="tabFieldItems[@physicalExamination.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+                <textarea rows="3" name="tabFieldItems[@physicalExamination.getIndex].value" class="form-control input-sm">@physicalExamination.getValue</textarea>
+            }
+        </div>
+    </div>
+
+} else {
+    <div class="staticField">
+        <label for="narrative">Narrative</label>
+        @defining(hpiTab.getTabFieldItemByName(chiefComplaint, "narrative")) { narrative =>
+            <input name="tabFieldItems[@narrative.getIndex].name" type="text" class="hidden" value="narrative"/>
+            <input name="tabFieldItems[@narrative.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+            <textarea name="tabFieldItems[@narrative.getIndex].value" class="fNarrativeTextArea" >@narrative.getValue</textarea>
+        }
+    </div>
+}
+</div>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.eclipse.jetty.websocket/websocket-client/jars/websocket-client-9.4.5.v20170502.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.eclipse.jetty.websocket/websocket-client/srcs/websocket-client-9.4.5.v20170502-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

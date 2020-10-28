@@ -1,0 +1,93 @@
+#passwordsWrap {
+    overflow: hidden;
+    min-width: 350px;
+}
+
+#passwordsWrap div {
+    overflow: hidden;
+    padding: 10px 0px 10px 0px;
+}
+
+#passwordsWrap input {
+    float: right;
+}
+
+#passwordsWrap label {
+    margin-top: 5px;
+    text-align: right;
+    display: inline-block;
+}
+
+.form-signin {
+    max-width: 500px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+/*New login*/
+#login img {
+    margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#login {
+    width: 400px;
+    margin: 0px auto;
+
+    /*background:#f0f0f0;*/
+    padding: 6% 4%;
+}
+@media (max-width: 410px){
+    #login{
+        width: auto;
+    }
+    #login img{
+        width: 100%;
+    }
+}
+@media (max-width: 305px){
+    #login h1{
+        font-size: 26px;
+    }
+
+}
+#login input:focus{
+    outline: 0;
+    border: 1px solid rgb(198, 0, 0);
+    box-shadow: 0 0 3px rgb(250, 0, 0);
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    background: #fff;
+    margin-bottom: 4%;
+    padding: 4%;
+    border: 1px solid #ccc;
+    font-size: 95%;
+    color: #555;
+}
+.fInputChangePassword{
+    padding: 2% !important;
+    width: 50% !important;
+    float: left !important;
+}
+.labelChangePassword{
+    float: left;
+}
+
+input[type="submit"] {
+    width: 100%;
+    background: rgb(198, 0, 0);
+    border: 0;
+    padding: 4%;
+    font-size: 100%;
+    color: #fff;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background: #f90000;
+}

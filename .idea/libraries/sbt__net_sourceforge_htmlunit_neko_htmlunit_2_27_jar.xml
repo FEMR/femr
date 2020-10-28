@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: net.sourceforge.htmlunit:neko-htmlunit:2.27:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.htmlunit/neko-htmlunit/jars/neko-htmlunit-2.27.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.htmlunit/neko-htmlunit/srcs/neko-htmlunit-2.27-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

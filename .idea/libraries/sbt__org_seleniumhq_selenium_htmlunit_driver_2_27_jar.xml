@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: org.seleniumhq.selenium:htmlunit-driver:2.27:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.seleniumhq.selenium/htmlunit-driver/jars/htmlunit-driver-2.27.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.seleniumhq.selenium/htmlunit-driver/srcs/htmlunit-driver-2.27-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

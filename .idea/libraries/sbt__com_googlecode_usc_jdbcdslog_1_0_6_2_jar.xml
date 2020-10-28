@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: com.googlecode.usc:jdbcdslog:1.0.6.2:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.googlecode.usc/jdbcdslog/jars/jdbcdslog-1.0.6.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.googlecode.usc/jdbcdslog/srcs/jdbcdslog-1.0.6.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

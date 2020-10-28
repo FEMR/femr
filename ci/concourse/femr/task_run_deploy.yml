@@ -1,0 +1,13 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: kevinzurek/femr, tag: "latest"}
+
+inputs:
+- name: s3-config
+- name: git-femr-app
+
+run:
+  path: git-femr-app/ci/femr/task_run_deploy.sh

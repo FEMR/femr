@@ -1,0 +1,103 @@
+
+/*User table*/
+#userTable{
+    border: 1px solid #ddd;
+    width: 100%;
+}
+#userTable ul{
+    list-style-type: none;
+}
+#userTable th{
+    border: 1px solid #ddd;
+    font-size: 14px;
+    text-align: center;
+    padding: 5px;
+}
+#userTable td{
+    padding: 5px;
+    border: 1px solid #ddd;
+    font-size: 11px;
+}
+#userTable ul{
+    padding: 0;
+}
+.badge:hover{
+    cursor: pointer;
+}
+
+/*User form response*/
+.createUserError {
+    color: rgb(198, 0, 0);
+}
+.adminMessage{
+    color: #577A3A;
+    font-weight: bold;
+}
+.fieldWrap{
+    margin-bottom: 15px;
+}
+.fieldWrap input{
+    width: 50% !important;
+}
+
+
+
+/*Edit user*/
+
+#userTripTable th,td{
+    padding: 10px;
+}
+#userTripTable thead, tbody{
+    border-bottom: 1px solid black;
+}
+#editWrapLeft{
+    width: 65%;
+    float: left;
+    padding: 5px;
+}
+#editWrapRight{
+    width: 35%;
+    float: left;
+    padding: 5px;
+}
+.editWrapBoth label{
+    font-size: 18px;
+}
+.editWrapBoth input[type=text], .editWrapBoth input[type=password]{
+    width: 100% !important;
+}
+label[for=newPassword], label[for=newPasswordVerify]{
+    display: none;
+}
+
+label[for=passwordVerify]{
+    display: none;
+}
+
+
+#userInfoWrap input[type=checkbox]{
+    padding: 10px;
+    margin-left: 15px;
+}
+.editWrapBoth p{
+    font-size: 10px;
+}
+.editWrapBoth .fieldWrap{
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+#newPassword_field, #newPasswordVerify_field{
+    margin: 0;
+    padding: 0;
+}
+
+
+@media (max-width: 665px) {
+    #addUserSubmitBtn{
+        float: left !important;
+    }
+}
+
+
+

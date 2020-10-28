@@ -1,0 +1,67 @@
+@(value: java.lang.String, name: java.lang.String, size: java.lang.String, order: java.lang.Integer, tipe: java.lang.String, placeholder: java.lang.String, isReadOnly: Boolean, index: Integer)
+
+@if(size.toLowerCase == "medium") {
+    <label for="@name">@name</label>
+    <input name="tabFieldItems[@index].name" class="hidden" type="text" value="@name"/>
+    @if(tipe.toLowerCase == "yes/no") {
+        @if(name == "If no vaccinations, why not?"){
+            <div class="radio-responses">
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="Cost" class="rInput" @if(isReadOnly) {readonly} @if(value == "cost") {checked}/>
+                    Cost
+                </label>
+                <br />
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="No transport" class="rInput" @if(isReadOnly) {readonly} @if(value == "No transport") {checked}/>
+                    No transport
+                </label>
+                <br />
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="Distrust health care providers" class="rInput" @if(isReadOnly) {readonly} @if(value == "Distrust health care providers") {checked}/>
+                    Distrust health care providers
+                </label>
+                <br />
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="Did not know how" class="rInput" @if(isReadOnly) {readonly} @if(value == "Did not know how") {checked}/>
+                    Did not know how
+                </label>
+                <br />
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="Did not need it" class="rInput" @if(isReadOnly) {readonly} @if(value == "Did not need it") {checked}/>
+                    Did not need it
+                </label>
+                <br />
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="Other" class="rInput" @if(isReadOnly) {readonly} @if(value == "Other") {checked}/>
+                    Other
+                </label>
+            </div>
+        } else {
+            <div class="radio-responses">
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="yes" class="rInput" @if(isReadOnly) {readonly} @if(value == "yes") {checked}/>
+                    Yes
+                </label>
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="no" class="rInput" @if(isReadOnly) {readonly} @if(value == "no") {checked}/>
+                    No
+                </label>
+                <label class="radio-wrap">
+                    <input name="tabFieldItems[@index].value" type="radio" value="not applicable" class="rInput" @if(isReadOnly) {readonly} @if(value == "not applicable") {checked}/>
+                    Not Applicable
+                </label>
+            </div>
+        }
+    } else {
+        <input name="tabFieldItems[@index].value" type="text" placeholder="@placeholder" class="fInput customField" value="@value"@if(isReadOnly){readonly}/>
+    }
+    <br/>
+} else {
+    @if(size.toLowerCase == "large") {
+        <label for="@name">@name</label>
+        <input type="text" class="hidden" name="tabFieldItems[@index].name" value="@name"/>
+        <textarea name="tabFieldItems[@index].value" class="fTextArea customField" placeholder="@placeholder"@if(isReadOnly){readonly} >@value</textarea>
+
+        <br/>
+    }
+}

@@ -1,0 +1,11 @@
+language: scala
+scala:
+   - 2.11.7
+script: sbt clean compile
+jdk:
+   - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer

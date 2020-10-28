@@ -7,7 +7,7 @@
 		revision="2.4.1-beta"
 		conf="default"
 		confs="default"
-		date="20201027203343"/>
+		date="20201027230826"/>
 	<dependencies>
 		<module organisation="com.typesafe.sbt" name="sbt-gzip">
 			<revision name="1.0.2" status="release" pubdate="20170823231220" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://github.com/sbt/sbt-gzip" extra-scalaVersion="2.10" extra-sbtVersion="0.13" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="122">
@@ -707,25 +707,25 @@
 			</revision>
 		</module>
 		<module organisation="jfree" name="jfreechart">
-			<revision name="1.0.8a" status="release" pubdate="20080102124337" resolver="public" artresolver="public" homepage="http://www.jfree.org/jfreechart/" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="82">
+			<revision name="1.0.8a" status="release" pubdate="20080102124337" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.jfree.org/jfreechart/" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="82">
 				<license name="GNU Lesser General Public Licence" url="http://www.gnu.org/licenses/lgpl.txt"/>
-				<metadata-artifact status="successful" details="" size="2724" time="81" location="C:\Users\Noel\.ivy2\cache\jfree\jfreechart\ivy-1.0.8a.xml" searched="true" original-local-location="C:\Users\Noel\.ivy2\cache\jfree\jfreechart\ivy-1.0.8a.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/jfree/jfreechart/1.0.8a/jfreechart-1.0.8a.pom"/>
+				<metadata-artifact status="no" details="" size="3211" time="0" location="C:\Users\Noel\.ivy2\cache\jfree\jfreechart\ivy-1.0.8a.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/jfree/jfreechart/1.0.8a/jfreechart-1.0.8a.pom"/>
 				<caller organisation="org.uncommons.maths" name="uncommons-maths" conf="default, compile, runtime, master" rev="1.0.8a" rev-constraint-default="1.0.8a" rev-constraint-dynamic="1.0.8a" callerrev="1.2.2a"/>
 				<artifacts>
-					<artifact name="jfreechart" type="jar" ext="jar" status="successful" details="" size="1289842" time="173" location="C:\Users\Noel\.ivy2\cache\jfree\jfreechart\jars\jfreechart-1.0.8a.jar">
+					<artifact name="jfreechart" type="jar" ext="jar" status="no" details="" size="1289842" time="0" location="C:\Users\Noel\.ivy2\cache\jfree\jfreechart\jars\jfreechart-1.0.8a.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/jfree/jfreechart/1.0.8a/jfreechart-1.0.8a.jar"/>
 					</artifact>
 				</artifacts>
 			</revision>
 		</module>
 		<module organisation="jfree" name="jcommon">
-			<revision name="1.0.12" status="release" pubdate="20071115200725" resolver="public" artresolver="public" homepage="http://www.jfree.org/jcommon/" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="81">
+			<revision name="1.0.12" status="release" pubdate="20071115200725" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.jfree.org/jcommon/" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="81">
 				<license name="GNU Lesser General Public Licence" url="http://www.gnu.org/licenses/lgpl.txt"/>
-				<metadata-artifact status="successful" details="" size="2280" time="89" location="C:\Users\Noel\.ivy2\cache\jfree\jcommon\ivy-1.0.12.xml" searched="true" original-local-location="C:\Users\Noel\.ivy2\cache\jfree\jcommon\ivy-1.0.12.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/jfree/jcommon/1.0.12/jcommon-1.0.12.pom"/>
+				<metadata-artifact status="no" details="" size="2899" time="0" location="C:\Users\Noel\.ivy2\cache\jfree\jcommon\ivy-1.0.12.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/jfree/jcommon/1.0.12/jcommon-1.0.12.pom"/>
 				<caller organisation="jfree" name="jfreechart" conf="compile, runtime" rev="1.0.12" rev-constraint-default="1.0.12" rev-constraint-dynamic="1.0.12" callerrev="1.0.8a"/>
 				<caller organisation="org.uncommons.maths" name="uncommons-maths" conf="default, compile, runtime, master" rev="1.0.12" rev-constraint-default="1.0.12" rev-constraint-dynamic="1.0.12" callerrev="1.2.2a"/>
 				<artifacts>
-					<artifact name="jcommon" type="jar" ext="jar" status="successful" details="" size="309245" time="127" location="C:\Users\Noel\.ivy2\cache\jfree\jcommon\jars\jcommon-1.0.12.jar">
+					<artifact name="jcommon" type="jar" ext="jar" status="no" details="" size="309245" time="0" location="C:\Users\Noel\.ivy2\cache\jfree\jcommon\jars\jcommon-1.0.12.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/jfree/jcommon/1.0.12/jcommon-1.0.12.jar"/>
 					</artifact>
 				</artifacts>
@@ -1152,7 +1152,7 @@
 				<caller organisation="org.scalamacros" name="quasiquotes_2.10" conf="compile, runtime" rev="2.10.4" rev-constraint-default="2.10.4" rev-constraint-dynamic="2.10.4" callerrev="2.0.1"/>
 				<caller organisation="org.scala-sbt" name="task-system" conf="compile" rev="2.10.6" rev-constraint-default="2.10.6" rev-constraint-dynamic="2.10.6" callerrev="0.13.15"/>
 				<artifacts>
-					<artifact name="scala-library" type="jar" ext="jar" status="successful" details="" size="7132588" time="666" location="C:\Users\Noel\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.7.jar">
+					<artifact name="scala-library" type="jar" ext="jar" status="no" details="" size="7132588" time="0" location="C:\Users\Noel\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.10.7.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.10.7/scala-library-2.10.7.jar"/>
 					</artifact>
 				</artifacts>

@@ -4,7 +4,7 @@
 		module="femr$sbt_2.10"
 		revision="2.4.1-beta"
 		status="integration"
-		publication="20201027203343"
+		publication="20201027230826"
 	/>
 	<configurations>
 		<conf name="default" visibility="public"/>

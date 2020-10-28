@@ -4,7 +4,7 @@
 		module="femr-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20201027203229"
+		publication="20201027230816"
 		e:sbtVersion="0.13" e:scalaVersion="2.10"
 	>
 		<description>

@@ -1572,7 +1572,7 @@ public class ResearchService implements IResearchService {
             Map<Float, String> resultMap = new HashMap<>();
             resultMap.put(0.0f, "Male");
             resultMap.put(1.0f, "Female");
-            resultMap.put(2.0f, "Missing");
+            resultMap.put(2.0f, "N/A");
             resultSet.setPrimaryValueMap(resultMap);
 
             float gender = 2.0f;

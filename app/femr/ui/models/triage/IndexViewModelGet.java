@@ -34,7 +34,7 @@ public class IndexViewModelGet {
     //search info
     private boolean searchError = false;
     //vital names
-    private List<VitalItem> vitalNames;
+    private Map<String,VitalItem> vitalNames;
     //system settings
     private SettingItem settings;
     //all possible options for age classification
@@ -67,11 +67,11 @@ public class IndexViewModelGet {
         this.patient = patient;
     }
 
-    public List<VitalItem> getVitalNames() {
-        return vitalNames;
+    public String getVitalName(String key) {
+        return vitalNames.get(key).getName();
     }
 
-    public void setVitalNames(List<VitalItem> vitalNames) {
+    public void setVitalNames(Map<String,VitalItem> vitalNames) {
         this.vitalNames = vitalNames;
     }
 

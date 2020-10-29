@@ -207,7 +207,7 @@ public class ResearchService implements IResearchService {
         exportitem.setAge(age);
 
         // Gender
-        String gender = StringUtils.outputStringOrNA(patient.getSex());
+        String gender = StringUtils.outputGenderOrMissing(patient.getSex());
         exportitem.setGender(gender);
 
         // Pregnancy Status
@@ -1572,7 +1572,7 @@ public class ResearchService implements IResearchService {
             Map<Float, String> resultMap = new HashMap<>();
             resultMap.put(0.0f, "Male");
             resultMap.put(1.0f, "Female");
-            resultMap.put(2.0f, "N/A");
+            resultMap.put(2.0f, "Missing");
             resultSet.setPrimaryValueMap(resultMap);
 
             float gender = 2.0f;

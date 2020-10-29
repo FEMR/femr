@@ -65,7 +65,7 @@ mysql> GRANT ALL PRIVILEGES ON femr.* TO 'user_name'@'localhost';
 ### 4. Clone the fEMR project
 Simply cd into the directory where you want the project to be then clone the fEMR repo:
 ```bash
-git clone git https://github.com/FEMR/femr.git
+git clone https://github.com/FEMR/femr.git
 ```
 
 ### 5. IntelliJ setup

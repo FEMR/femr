@@ -68,7 +68,12 @@ public class IndexViewModelGet {
     }
 
     public String getVitalName(String key) {
-        return vitalNames.get(key).getName();
+        System.out.println(key);
+        System.out.println(vitalNames);
+        String str = vitalNames.get(key).getName();
+          if (str == null)
+              System.out.println("hi");
+        return str;
     }
 
     public void setVitalNames(Map<String,VitalItem> vitalNames) {

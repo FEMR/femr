@@ -32,7 +32,7 @@ public class Patient implements IPatient {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-    @Column(name = "gloablly_unique_id", unique = true, nullable = false)
+    @Column(name = "globally_unique_id", unique = true, nullable = false)
     private int globallyUniqueID;
     @Column(name = "user_id", unique = false, nullable = false)
     private int userId;

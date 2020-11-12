@@ -19,15 +19,19 @@
 package mock.femr.data;
 
 import com.google.inject.Inject;
+import femr.common.models.UserItem;
 import femr.data.IDataModelMapper;
 import femr.data.models.core.*;
+import mock.femr.data.models.MockMedicationInventory;
 import mock.femr.data.models.MockPatient;
+import mock.femr.data.models.MockUser;
 import org.joda.time.DateTime;
 import java.util.Date;
 import java.util.List;
 
 public class MockDataModelMapper implements IDataModelMapper{
-
+    public boolean createMedicationInventoryWasCalled = false;
+    public boolean createUserWasCalled = false;
 
 
     @Inject
@@ -68,7 +72,9 @@ public class MockDataModelMapper implements IDataModelMapper{
 
     @Override
     public IMedicationInventory createMedicationInventory(int quantityCurrent, int quantityTotal, int medicationId, int missionTripId) {
-        return null;
+        createMedicationInventoryWasCalled = true;
+        MockMedicationInventory mockMedicationInventory = new MockMedicationInventory();
+        return mockMedicationInventory;
     }
 
     @Override
@@ -145,7 +151,11 @@ public class MockDataModelMapper implements IDataModelMapper{
 
     @Override
     public IUser createUser(String firstName, String lastName, String email, DateTime date, String notes, String password, boolean isDeleted, boolean isPasswordReset, List<? extends IRole> roles, int userId) {
-        return null;
+        createUserWasCalled = true;
+        IUser user = new MockUser();
+        user.setFirstName(user.getFirstName());
+        user.setLastName(user.getLastName());
+        return user;
     }
 
     @Override

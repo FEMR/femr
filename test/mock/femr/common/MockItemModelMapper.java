@@ -12,6 +12,7 @@ public class MockItemModelMapper implements IItemModelMapper{
 
     public boolean createPatientItemWasCalled = false;
     public boolean createPrescriptionItemWasCalled = false;
+    public boolean createUserItemWasCalled = false;
 
     @Override
     public CityItem createCityItem(String cityName, String countryName) {
@@ -27,6 +28,7 @@ public class MockItemModelMapper implements IItemModelMapper{
     public MedicationItem createMedicationItem(IMedication medication, Integer quantityCurrent, Integer quantityTotal, DateTime isDeleted, String timeAdded, String createdBy) {
         MedicationItem medicationItem = new MedicationItem();
         medicationItem.setId(medication.getId());
+        medicationItem.setName(medication.getName());
         return medicationItem;
     }
 
@@ -138,7 +140,12 @@ public class MockItemModelMapper implements IItemModelMapper{
 
     @Override
     public UserItem createUserItem(IUser user) {
-        return null;
+        createUserItemWasCalled = true;
+        UserItem userItem = new UserItem();
+        userItem.setId(user.getId());
+        userItem.setFirstName(user.getFirstName());
+        userItem.setLastName(user.getLastName());
+        return userItem;
     }
 
     @Override

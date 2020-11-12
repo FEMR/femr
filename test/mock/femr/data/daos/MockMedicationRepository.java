@@ -10,6 +10,8 @@ public class MockMedicationRepository implements IMedicationRepository {
 
     public boolean deleteMedicationWasCalled = false;
 
+    public boolean retrieveMedicationInventoriesByTripIdWasCalled = false;
+
     public IMedication mockMedication;
 
     public MockMedicationRepository() {
@@ -29,6 +31,7 @@ public class MockMedicationRepository implements IMedicationRepository {
 
     @Override
     public IMedicationInventory retrieveMedicationInventoryByMedicationIdAndTripId(int medicationId, int tripId) {
+        retrieveMedicationInventoriesByTripIdWasCalled = true;
         return null;
     }
 
@@ -92,6 +95,6 @@ public class MockMedicationRepository implements IMedicationRepository {
 
     @Override
     public IMedicationInventory saveMedicationInventory(IMedicationInventory medicationInventory) {
-        return null;
+        return medicationInventory;
     }
 }

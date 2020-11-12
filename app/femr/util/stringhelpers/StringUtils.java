@@ -137,6 +137,17 @@ public class StringUtils {
     }
 
     /**
+     * Checks if a gender of a patient is empty
+     *
+     * @param str gender to check
+     * @return returns the gender of the patient "Missing" if str is null or empty.
+     */
+    public static String outputGenderOrMissing(String str) {
+        if (StringUtils.isNullOrWhiteSpace(str)) return "Missing";
+        else return str;
+    }
+
+    /**
      * Checks if a Integer is null
      *
      * @param value Integer to check

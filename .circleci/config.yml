@@ -40,6 +40,6 @@ jobs:
     docker:
       - image: openjdk:8
     steps:
-      - sbt/unit-test
+      - run: sbt "testOnly  $(circleci tests split --split-by=timings --timings-type=classname test-full-class-names.log | tr '\n' ' ') -- -u ./test-results/junit"
     store_test_results:
       path: test-results

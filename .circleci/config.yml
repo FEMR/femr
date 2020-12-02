@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/samplescala
+    working_directory: ~/lemur-femr
     docker:
       - image: openjdk:8
         auth:

@@ -211,6 +211,30 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
+    public IPatient retrievePatientByGuid(Integer guid) {
+
+        IPatient response = null;
+        try {
+
+            ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                    .where()
+                    .eq("globally_unique_id", guid)
+                    .isNull("isDeleted");
+
+            response = query.findOne();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrievePatientByGuid", ex.getMessage(), "id: " + guid);
+            throw ex;
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IPatient> retrievePatientsByPhoneNumber(String phoneNumber) {
 
         List<? extends IPatient> response = null;

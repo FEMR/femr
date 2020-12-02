@@ -206,7 +206,16 @@ public class Patient implements IPatient {
     public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
 
     public void createGUID() {
-        this.globallyUniqueID = this.id;
+        int hash = 17;
+        hash = hash * 37 + this.firstName.hashCode();
+        hash = hash * 37 + this.lastName.hashCode();
+        hash = hash * 37 + this.city.hashCode();
+
+        if (this.phoneNumber != null) {
+            hash = hash * 37 + this.phoneNumber.hashCode();
+        }
+
+        this.globallyUniqueID = hash;
     }
 
 }

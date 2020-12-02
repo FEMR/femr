@@ -65,6 +65,13 @@ public interface IPatientRepository {
     IPatient retrievePatientById(Integer id);
 
     /**
+     *   Retrieve patient that is not deleted
+     *   @param  guid of the patient
+     *   @return the patient with the given ID or NULL if no patients are found
+    */
+    IPatient retrievePatientByGuid(Integer guid);
+
+    /**
      *  Retrieve list of patients with the given first AND last name. Will also
      *  try to match firstName to all available first names & last names
      *

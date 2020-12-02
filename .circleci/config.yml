@@ -35,7 +35,9 @@ jobs:
             - "~/.ivy2/cache"
             - "~/.sbt"
             - "~/.m2"
-    test:
-      executor: docker-default
-      steps:
-        - sbt/unit-test
+ test:
+  executor: docker-default
+  steps:
+    - sbt/unit-test
+  store_test_results:
+    path: test-results

@@ -32,6 +32,8 @@ public class Patient implements IPatient {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;
+    @Column(name = "globally_unique_id", unique = true, nullable = false)
+    private int globallyUniqueID;
     @Column(name = "user_id", unique = false, nullable = false)
     private int userId;
     @Column(name = "first_name", nullable = false)
@@ -65,6 +67,12 @@ public class Patient implements IPatient {
     public int getId() {
         return id;
     }
+
+    @Override
+    public int getGloballyUniqueID() { return globallyUniqueID; }
+
+    @Override
+    public void setGloballyUniqueID(int globallyUniqueID) { this.globallyUniqueID = globallyUniqueID; }
 
     @Override
     public int getUserId() {
@@ -196,5 +204,9 @@ public class Patient implements IPatient {
 
     @Override
     public void setReasonDeleted(String reason) { this.reasonDeleted = reason; }
+
+    public void createGUID() {
+        this.globallyUniqueID = this.id;
+    }
 
 }

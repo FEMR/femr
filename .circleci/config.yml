@@ -40,7 +40,9 @@ jobs:
     docker:
       - image: openjdk:8
     steps:
-      - run: sbt "testOnly  $(circleci tests split --split-by=timings --timings-type=classname test-full-class-names.log | tr '\n' ' ') -- -u ./test-results/junit"
+      - run:
+          command: bundle exec cucumber -f pretty -f junit -o ~/test-results/cucumber/cucumber.xml
+          when: always
     store_test_results:
       path: test-results
       

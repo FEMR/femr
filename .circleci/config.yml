@@ -36,7 +36,9 @@ jobs:
             - "~/.sbt"
             - "~/.m2"
   test:
-    executor: docker-default
+    working_directory: ~/lemur-femr/femr/test
+    docker:
+      - image: openjdk:8
     steps:
       - sbt/unit-test
     store_test_results:

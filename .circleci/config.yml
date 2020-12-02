@@ -1,4 +1,15 @@
 version: 2
+commands:
+  install_gems:
+    description: "install dependencies"
+    steps:
+      - run: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
+  cucumber:
+    description: "Run cucumber"
+    steps:
+      - run:
+          command: bundle exec cucumber
+          when: always
 jobs:
   build:
     working_directory: ~/lemur-femr
@@ -40,9 +51,8 @@ jobs:
     docker:
       - image: openjdk:8
     steps:
-      - run:
-          command: bundle exec cucumber -f pretty -f junit -o ~/test-results/cucumber/cucumber.xml
-          when: always
+      - checkout
+      - cucumber
     store_test_results:
       path: test-results
       

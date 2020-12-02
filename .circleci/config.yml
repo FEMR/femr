@@ -40,9 +40,11 @@ jobs:
     docker:
       - image: openjdk:8
     steps:
-      - run echo 'this is a test' >> $BASH_ENV
-    store_test_results:
-      path: test-results
+      - run: echo 'this is a test' >> $BASH_ENV
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: reports/junit
       
 workflows:
   version: 2

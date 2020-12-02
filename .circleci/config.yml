@@ -1,9 +1,44 @@
-version: 2.1
-
-orbs:
-  maven: circleci/maven@0.0.12
-
-workflows:
-  maven_test:
-    jobs:
-      - maven/test # checkout, build, test, and upload test results
+version: 2
+jobs:
+  build:
+    working_directory: ~/samplescala
+    docker:
+      - image: openjdk:8
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    environment:
+      SBT_VERSION: 1.0.4
+    steps:
+      - run: echo 'export ARTIFACT_BUILD=$CIRCLE_PROJECT_REPONAME-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
+      - run:
+          name: Get sbt binary
+          command: |
+                    apt update && apt install -y curl
+                    curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
+                    dpkg -i sbt-$SBT_VERSION.deb
+                    rm sbt-$SBT_VERSION.deb
+                    apt-get update
+                    apt-get install -y python-pip git
+                    pip install awscli
+                    apt-get clean && apt-get autoclean
+      - checkout
+      - restore_cache:
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: sbt-cache
+      - run:
+          name: Compile samplescala dist package
+          command: cat /dev/null | sbt clean update dist
+      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+          path: target/universal/samplescala.zip
+          destination: samplescala
+      - save_cache:
+          key: sbt-cache
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"
+      - deploy:
+          command: |
+              mv target/universal/samplescala.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+              aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://samplescala.blogs/builds/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}

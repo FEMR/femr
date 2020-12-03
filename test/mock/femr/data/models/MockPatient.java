@@ -15,6 +15,7 @@ import java.util.List;
 public class MockPatient implements IPatient {
 
     private int id = 0;
+    private int globallyUniqueID = 0;
     private int userId = 0;
     private String firstName = "firstName";
     private String lastName = "lastName";
@@ -40,6 +41,12 @@ public class MockPatient implements IPatient {
 
         this.id = id;
     }
+
+    @Override
+    public int getGloballyUniqueID() { return globallyUniqueID; }
+
+    @Override
+    public void setGloballyUniqueID(int globallyUniqueID) { this.globallyUniqueID = globallyUniqueID; }
 
     @Override
     public int getUserId() {
@@ -182,5 +189,14 @@ public class MockPatient implements IPatient {
     public void setReasonDeleted(String reason) {
 
         this.reasonDeleted = reason;
+    }
+
+    public void createGUID() {
+        int hash = 17;
+        hash = hash * 37 + this.firstName.hashCode();
+        hash = hash * 37 + this.lastName.hashCode();
+        hash = hash * 37 + this.city.hashCode();
+
+        this.globallyUniqueID = hash;
     }
 }

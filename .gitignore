@@ -4,7 +4,7 @@
 # except for .gitignore
 !.gitignore
 
-!conf/application.conf
+conf/application.conf
 conf/application.*.conf
 !conf/application.example.conf
 

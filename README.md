@@ -11,16 +11,6 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 2. [JIRA](https://teamfemr.atlassian.net)
 3. [Team FEMR](https://teamfemr.org)
 
-### Dependencies
-
-* [Play Framework](http://www.playframework.com/)
-
-# Community:
-
-### Communication
-1. [Slack](http://teamfemr.org/slack.html)
-2. [JIRA](https://teamfemr.atlassian.net)
-
 # Installation and Configuration using IntelliJ IDEA:
 
 ### Required downloads

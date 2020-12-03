@@ -62,7 +62,7 @@ jobs:
           name: run tests
           command: sbt test < /dev/null
       - store_test_results:
-          path: ~/lemur-femr/femr
+          path: ~/lemur-femr/test
       - save_cache:
           key: sbt-cache
           paths:

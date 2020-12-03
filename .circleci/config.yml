@@ -60,7 +60,7 @@ jobs:
           key: sbt-cache
       - run:
           name: run tests
-          command: cat /dev/null | sbt test
+          command: sbt test < /dev/null
       - store_test_results:
           path: test-results
       - store_artifacts:

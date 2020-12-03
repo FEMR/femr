@@ -108,3 +108,7 @@ config.file |    .../femr/conf/application.dev.conf
 
 Once those variables are setup, you should be able to run the project.
 
+
+### 5. Continuous Integration
+Our continuous integration data can be found here: 
+[this link](https://app.circleci.com/pipelines/github/CPSECapstone/lemur-femr)

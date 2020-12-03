@@ -19,6 +19,7 @@ public class MockPatientRepository implements IPatientRepository{
     public boolean retrievePatientByIdWasCalled = false;
     public boolean retrievePatientsByNameWasCalled = false;
     public boolean retrievePatientsByPhoneNumberWasCalled = false;
+    public boolean retrievePatientByGuidWasCalled = false;
     public boolean savePatientWasCalled = false;
 
     public IPatient mockPatient;
@@ -106,5 +107,13 @@ public class MockPatientRepository implements IPatientRepository{
         savePatientWasCalled = true;
 
         return patient;
+    }
+
+    @Override
+    public IPatient retrievePatientByGuid(Integer guid) {
+        retrievePatientByGuidWasCalled = true;
+        if (guid == 0)
+            mockPatient = null;
+        return mockPatient;
     }
 }

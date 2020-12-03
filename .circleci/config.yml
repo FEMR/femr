@@ -36,7 +36,7 @@ jobs:
             - "~/.sbt"
             - "~/.m2"
   test:
-    working_directory: ~/lemur-femr/femr/test/unit
+    working_directory: ~/lemur-femr
     docker:
       - image: openjdk:8
     environment:
@@ -58,9 +58,6 @@ jobs:
       - restore_cache:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: sbt-cache
-      - run:
-          name: Compile lemur dist package
-          command: cat /dev/null | sbt clean update dist
       - run:
           name: run tests
           command: sbt test

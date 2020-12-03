@@ -59,13 +59,21 @@ jobs:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: sbt-cache
       - run:
+          name: Compile lemur dist package
+          command: cat /dev/null | sbt clean update dist
+      - run:
           name: run tests
           command: sbt test
       - store_test_results:
           path: test-results
       - store_artifacts:
           path: reports/junit
-      
+      - save_cache:
+          key: sbt-cache
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"
 workflows:
   version: 2
   build_and_test:

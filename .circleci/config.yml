@@ -39,6 +39,8 @@ jobs:
     working_directory: ~/lemur-femr/femr/test
     docker:
       - image: openjdk:8
+    environment:
+      SBT_VERSION: 1.0.4
     steps:
       - run: echo 'this is a test' >> $BASH_ENV
       - run: sbt test

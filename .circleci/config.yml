@@ -36,7 +36,7 @@ jobs:
             - "~/.sbt"
             - "~/.m2"
   test:
-    working_directory: ~/lemur-femr/femr/test
+    working_directory: ~/lemur-femr/femr/test/unit
     docker:
       - image: openjdk:8
     environment:

@@ -41,6 +41,7 @@ jobs:
       - image: openjdk:8
     steps:
       - run: echo 'this is a test' >> $BASH_ENV
+      - run: sbt test
       - store_test_results:
           path: test-results
       - store_artifacts:

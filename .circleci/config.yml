@@ -61,8 +61,14 @@ jobs:
       - run:
           name: run tests
           command: sbt test < /dev/null
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/results
+            bundle exec cucumber --format junit --out ~/cucumber/junit.xml
+          when: always
       - store_test_results:
-          path: ~/lemur-femr/test
+          path: ~/results
       - save_cache:
           key: sbt-cache
           paths:

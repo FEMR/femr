@@ -43,7 +43,7 @@ jobs:
       SBT_VERSION: 1.0.4
     steps:
       - run: echo 'this is a test' >> $BASH_ENV
-      - run: sbt test
+      - run: cat /dev/null | sbt test
       - store_test_results:
           path: test-results
       - store_artifacts:

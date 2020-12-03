@@ -24,7 +24,7 @@ jobs:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: sbt-cache
       - run:
-          name: Compile samplescala dist package
+          name: Compile lemur dist package
           command: cat /dev/null | sbt clean update dist
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
           path: target/universal/lemurfemr.zip
@@ -54,9 +54,10 @@ jobs:
                     apt-get install -y python-pip git
                     pip install awscli
                     apt-get clean && apt-get autoclean
-      - run:
-          name: Compile samplescala dist package
-          command: cat /dev/null | sbt clean update dist
+      - checkout
+      - restore_cache:
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: sbt-cache
       - run:
           name: run tests
           command: sbt test

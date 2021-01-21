@@ -28,15 +28,11 @@ object anonymous extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.
   def apply/*1.2*/(assets: AssetsFinder):play.twirl.api.HtmlFormat.Appendable = {
     _display_ {
       {
-/*2.2*/import femr.ui.controllers.routes.HomeController
 
 
-Seq[Any](format.raw/*3.1*/("""
-"""),format.raw/*4.1*/("""<div class="navigationLogo">
-  <a href=""""),_display_(/*5.13*/HomeController/*5.27*/.index()),format.raw/*5.35*/("""">
-      <img src=""""),_display_(/*6.18*/assets/*6.24*/.path("img/logo_color_wordless_sm.png")),format.raw/*6.63*/("""" />
-  </a>
-
+Seq[Any](format.raw/*2.1*/("""
+"""),format.raw/*3.1*/("""<div class="navigationLogo">
+      <img src=""""),_display_(/*4.18*/assets/*4.24*/.path("img/logo_color_wordless_sm.png")),format.raw/*4.63*/("""" />
 </div>"""))
       }
     }
@@ -53,11 +49,11 @@ Seq[Any](format.raw/*3.1*/("""
 
               /*
                   -- GENERATED --
-                  DATE: Wed Jan 20 18:29:28 PST 2021
+                  DATE: Wed Jan 20 19:05:22 PST 2021
                   SOURCE: /Users/noel/Desktop/CPE/femr/femr/app/femr/ui/views/partials/anonymous.scala.html
-                  HASH: 8acbf504bbf8c5ecf5b13ea5f7735bb1773a723a
-                  MATRIX: 975->1|1070->25|1147->74|1174->75|1241->116|1263->130|1291->138|1337->158|1351->164|1410->203
-                  LINES: 28->1|31->2|34->3|35->4|36->5|36->5|36->5|37->6|37->6|37->6
+                  HASH: 0804b3d1344480d9ccc513478a2456b3c6234790
+                  MATRIX: 975->1|1091->24|1118->25|1190->71|1204->77|1263->116
+                  LINES: 28->1|33->2|34->3|35->4|35->4|35->4
                   -- GENERATED --
               */
           

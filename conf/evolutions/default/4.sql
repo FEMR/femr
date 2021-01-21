@@ -2,6 +2,7 @@
 
 CREATE TABLE `patients` (
   `id` INT NOT NULL AUTO_INCREMENT ,
+  `globally_unique_id` INT NOT NULL UNIQUE,
   `first_name` VARCHAR(255) NOT NULL ,
   `last_name` VARCHAR(255) NOT NULL ,
   `age` INT NOT NULL ,

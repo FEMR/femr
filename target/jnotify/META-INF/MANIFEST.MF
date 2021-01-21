@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: jnotify
+Repackage-Project: https://github.com/playframework/jnotify
+Implementation-Version: 0.94-play-2
+Specification-Vendor: com.lightbend.play
+Specification-Title: jnotify
+Implementation-Vendor-Id: com.lightbend.play
+Specification-Version: 0.94-play-2
+Implementation-URL: https://github.com/playframework/jnotify
+Implementation-Vendor: com.lightbend.play
+

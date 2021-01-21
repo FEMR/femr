@@ -1,0 +1,396 @@
+/* General Page styles */
+
+#triageContentWrap {
+    overflow: hidden;
+}
+
+#triageContentWrap > p {
+    color: red;
+    text-align: center;
+    font-weight: bold
+}
+
+#ageClassificationWrap{
+    padding-left: 5px;
+    margin-bottom: 10px;
+}
+.orSpan{
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+}
+
+.sectionBackground {
+    min-height: 638px;
+    padding: 5px;
+}
+
+#genInfoWrap {
+    float: left;
+    width: 40%;
+    padding: 5px;
+}
+
+#vitalsWrap {
+    float: left;
+    width: 60%;
+    padding: 5px;
+}
+
+#leftVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#rightVitalsWrap {
+    width: 50%;
+    float: left;
+}
+
+#vitalContainer {
+    overflow: hidden;
+}
+
+#chiefComplaintWrap {
+    margin-top: 20px;
+}
+
+#addChiefComplaint {
+    padding: 2px 10px 2px 10px;
+    font-size: 20px;
+}
+
+.removeChiefComplaint {
+    padding: 2px 8px 2px 2px;
+    font-size: 12px;
+    margin-right: 10px;
+
+}
+
+#addChiefComplaint, .removeChiefComplaint:hover {
+    cursor: default;
+}
+
+#newChiefComplaintInput {
+
+    margin-bottom: 10px;
+}
+
+#chiefComplaintList {
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+#chiefComplaintList li {
+    margin-bottom: 20px;
+}
+
+.vitalWrap {
+    /*padding: 5px 15px 5px 0px;*/
+    overflow: hidden;
+}
+
+.vitalWrap label {
+    margin-top: 3px;
+    display: block;
+}
+
+.vitalWrap input {
+    float: left;
+    margin-right: 40px;
+    /*display: inline-block;*/
+    box-sizing: border-box;
+}
+
+#bloodPressureSystolic {
+    /*margin-bottom: 10px;*/
+}
+
+#pregnancyBtn {
+    margin-top: -6px;
+    width: 100px;
+}
+
+.doubleVital {
+    overflow: hidden;
+}
+
+.doubleVital input {
+    margin-bottom: 1px;
+}
+
+#chiefComplaint {
+    width: 100%;
+}
+
+.generalInfoInput {
+    padding: 5px;
+    overflow: hidden;
+}
+
+.triage-form .error-message{
+    display: block;
+    color: red;
+    text-align: center;
+    border: 1px solid red;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #f7dddd;
+    margin: 0 auto;
+}
+
+.triage-form .has-errors label{
+    color: red;
+}
+
+.triage-form .has-errors label.range-message{
+    padding-left: 10px;
+    font-size: 0.85em;
+    margin: 2px 0;
+    clear: both;
+}
+
+.triage-form .has-errors input,
+.triage-form .has-errors select{
+    border-color: red;
+}
+
+.generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"] {
+    float: right;
+    margin-right: 120px;
+    width: 180px;
+}
+.generalInfoInput select{
+    width: 180px;
+    margin-right: 120px;
+    float: right;
+}
+.generalInfoInput input[type="radio"]{
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+}
+#classificationRadioWrap{
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+#classificationRadioWrap label{
+    padding-left: 15px;
+    text-indent: -15px;
+}
+#classificationRadioWrap span{
+    font-size: 10px;
+}
+
+  .submitResetWrap {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+.historyInput {
+    overflow: hidden;
+}
+
+/* Photo stuff */
+#photoInputFormDiv {
+    width: 100%;
+    overflow: hidden;
+}
+
+#photoInput {
+    width: inherit;
+}
+
+/* General info stuff */
+#genderBtns {
+    float: right;
+    margin-right: 120px;
+    width: 175px;
+}
+
+/*Triage Page*/
+.stackedInput {
+    margin-top: 15px !important;
+}
+
+.textAreaLabel {
+    margin-top: 25px !important;
+}
+
+
+
+.medicalHistoryLineDivide {
+    background: #000000;
+    clear: both;
+    float: none;
+    width: 100%;
+    height: 1px;
+    margin: 0 0 2px;
+    border: none;
+}
+
+#photoInput {
+    float: left !important;
+}
+
+/* Shrinking of General Info section */
+@media (max-width: 1199px) {
+    #genderBtns {
+        margin-right: 0px;
+    }
+
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select {
+        margin-right: 0px;
+    }
+
+    .vitalWrap input {
+        width: 75%;
+        float: right;
+    }
+}
+
+@media (max-width: 991px) {
+    .sectionBackground {
+        padding: 0px;
+    }
+
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select {
+        width: 175px;
+    }
+}
+
+@media (max-width: 735px) {
+    #genderBtns {
+        float: left;
+    }
+
+    #photoInput {
+        width: 100%;
+    }
+
+    .generalInfoInput label {
+        /*float: left;*/
+        display: block;
+    }
+
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select {
+        float: left;
+        display: block;
+    }
+
+    #ageClassificationWrap{
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 620px) {
+    .orSpan{
+        display: inline;
+    }
+    #classificationRadioWrap{
+        text-align: left;
+    }
+    #vitalsWrap {
+        width: 100%;
+    }
+
+    #genInfoWrap {
+        width: 100%;
+    }
+
+    .vitalWrap input {
+        float: none;
+        width: 100%;
+    }
+
+    #weeksPregnant {
+        margin: 0;
+    }
+}
+
+@media (max-width: 495px) {
+    #classificationRadioWrap{
+        text-align: center;
+    }
+    #genInfoWrap{
+        text-align: center;
+    }
+    #genderBtns{
+        float: none;
+    }
+    .generalInfoInput input[type="text"], input[type="tel"], .generalInfoInput input[type="date"], .generalInfoInput select{
+        float: none;
+        display: inline;
+
+    }
+    #genInfoWrap input {
+        float: none;
+    }
+    #vitalsWrap h2{
+        text-align: center;
+    }
+    .fInput {
+
+        width: 100%;
+    }
+
+}
+
+
+/*AJ Saclayan*/
+
+#citySearchContainer {
+    padding: 5px !important;
+}
+
+#citySearchContainer.generalInfoInput {
+    overflow: visible !important;
+}
+
+#citySearchContainer .tt-hint{
+    visibility:hidden;
+}
+#citySearchContainer .cityResult {
+    overflow: hidden;
+    border-bottom: 1px solid #9f9f9f;
+    position: relative;
+    display: block;
+    height: 96px;
+    color: #2f2f2f;
+}
+#citySearchContainer .cityResult span{
+
+    color: #2f2f2f;
+}
+#citySearchContainer .cityResult:hover span,
+#citySearchContainer .cityResult.tt-cursor span{
+
+    color: #2f2f2f;
+}
+
+#citySearchContainer .twitter-typeahead {
+   display: inline !important;
+    width: 100%;
+}
+.tt-dropdown-menu{
+    top:25px !important;
+    /*left: 100px !important;*/
+    max-height: 150px !important;
+}
+#citySearchContainer pre{
+    margin-right: 120px !important;
+    width: 100% !important;
+    /*left: 100px !important;*/
+}
+
+.tt-suggestion.tt-cursor{
+    color: black;
+}

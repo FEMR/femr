@@ -1,0 +1,49 @@
+@(patient: femr.common.models.PatientItem, patientEncounter: femr.common.models.PatientEncounterItem,
+        settings: femr.common.models.SettingItem, pageName: java.lang.String)
+
+@import femr.ui.views.html.partials.helpers.outputHeightOrNA
+@import femr.ui.views.html.partials.helpers.outputWeightOrNA
+@import femr.ui.views.html.partials.helpers.outputIntOrNA
+
+<div id="patientOverviewWrap" class="backgroundForWrap">
+
+    <h3>Patient Overview - @pageName</h3>
+
+    @if(patient.getPathToPhoto != null && !patient.getPathToPhoto.isEmpty) {
+        <img src="@patient.getPathToPhoto" height="90" width="90">
+        <div id= "patientOverViewInfoPhoto">
+    } else {
+        <div id= "patientOverViewInfo">
+    }
+
+    <label>Name: </label><span>@patient.getFirstName @patient.getLastName</span>
+    <label for="">Age: </label><span>@patient.getAge</span>
+    <label for="">Sex: </label><span>@patient.getSex</span>
+    <label for="">City: </label><span>@patient.getCity</span>
+    <!-- [FEMR-217] - views/medical/edit.scala.html no longer passes simply "Medical" - now passes "Medical - " + "Patient ID: " + viewModel.getPatientItem.getId -->
+    <!-- broken in commit 23c533c -->
+    <!-- Currently assumes "Medical -" will start pageName argument.  If this changes, updated string in conditional execution -->
+    <!-- Contributed by Jonathan Clow during the CEN5035 course at FSU -->
+    @if(pageName.contains("Medical -")) {
+        <label for="">BMI: </label> <span id="bmi"></span>
+    } else {
+           <label>Height: </label> <span>@outputHeightOrNA(String.valueOf(patient.getHeightFeet), String.valueOf(patient.getHeightInches), settings.isMetric) / @outputHeightOrNA(String.valueOf(patient.getHeightFeetDual), String.valueOf(patient.getHeightInchesDual), !settings.isMetric)</span>
+            <label>Weight: </label> <span>@outputWeightOrNA(String.valueOf(patient.getWeight), settings.isMetric) / @outputWeightOrNA(String.valueOf(patient.getWeightDual), !settings.isMetric)</span>
+
+    }
+
+    @* Weeks Pregnant *@
+
+    <label>Weeks Pregnant: </label> <span>@outputIntOrNA(patient.getWeeksPregnant)</span>
+
+    @* Chief Complaint*@
+    @if(patientEncounter.getChiefComplaints != null && patientEncounter.getChiefComplaints.size > 0 && patientEncounter.getChiefComplaints.get(0) != null && !patientEncounter.getChiefComplaints.get(0).isEmpty) {
+        <label>Complaint: </label> <span>@for(x <- 1 to patientEncounter.getChiefComplaints.size) {
+            @patientEncounter.getChiefComplaints.get(x - 1) @if(x < patientEncounter.getChiefComplaints.size) { | }
+        }</span>
+    } else {
+        <label>Complaint: </label> <span>N/A</span>
+    }
+</div>
+</div>
+</div>

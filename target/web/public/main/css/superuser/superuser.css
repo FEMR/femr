@@ -1,0 +1,64 @@
+#superUserWrap{
+    width: 100%;
+    overflow: hidden;
+}
+.halfPageTables, .halfPageForms{
+    width: 50%;
+    float: left;
+}
+
+#bottomFields{
+    width: 100%;
+    float: left;
+}
+#contentSubmit{
+    float: right;
+    width: 200px;
+}
+table{
+    width: 85%;
+    min-width: 400px;
+    margin: 0 auto;
+}
+table th,td{
+    border: 1px solid black;
+}
+#bottomFields label{
+    display: inline-block;
+    width: 75px;
+    text-align: right;
+}
+
+@media(max-width: 1230px){
+    .halfPageTables{
+        width: 100%;
+    }
+}
+
+
+/*trip tracking*/
+#addTeamWrap, #addTripWrap, #addCityWrap{
+    width: 50%;
+    float: left;
+}
+#addTeamWrap div{
+    width: 100%;
+    float: left;
+}
+#tableWrap{
+    width: 100%;
+    float: left;
+    margin-top: 40px;
+}
+#submitWrap{
+    margin-top: 40px;
+    float: left;
+    width: 100%;
+}
+#addUsersSelect2, #removeUsersSelect2{
+    width: 100%;
+}
+
+#usersTripTable{
+    margin-top: 50px;
+}

@@ -1,0 +1,45 @@
+input {
+    margin-bottom: 1px;
+}
+
+#left {
+    width: 50%;
+    float: left;
+}
+
+#right {
+    width: 50%;
+    float: left;
+}
+
+#theButtons {
+    margin-top: 15px;
+    margin-right: 30px;
+    overflow: auto;
+    float: right;
+}
+
+.ui-widget-header {
+    background: none;
+    border: none;
+}
+
+#newVitalsDialog label{
+    margin-bottom: 3px;
+}
+
+#newVitalsDialog .has-errors label{
+    color: red;
+}
+
+#newVitalsDialog .has-errors label.range-message{
+    padding-left: 10px;
+    font-size: 0.85em;
+    margin: 2px 0;
+    clear: both;
+}
+
+#newVitalsDialog .has-errors input,
+#newVitalsDialog .has-errors select{
+    border-color: red;
+}

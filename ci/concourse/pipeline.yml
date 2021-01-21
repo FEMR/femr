@@ -1,0 +1,44 @@
+---
+resources:
+- name: git-femr-app
+  type: git
+  source:
+    uri: https://github.com/femr/femr.git
+    branch: master
+
+- name: s3-config
+  type: s3
+  source:
+    access_key_id: {{aws_access_key_id}}
+    secret_access_key: {{aws_secret_access_key}}
+    bucket: femr-app
+    versioned_file: femr.zip
+
+jobs:
+- name: build-test-package
+  public: false
+  plan:
+  - get: git-femr-app
+    trigger: true
+  - get: s3-config
+  - task: femr-build-test
+    file: git-femr-app/ci/femr/task_run_build.yml
+  - task: femr-package
+    file: git-femr-app/ci/femr/task_run_package.yml
+  - put: s3-config
+    params: {file: femr-dist/femr.zip}
+- name: deploy
+  public: false
+  plan:
+  - get: s3-config
+    passed: [build-test-package]
+  - get: git-femr-app
+    passed: [build-test-package]
+    trigger: true
+  - task: femr-deploy
+    file: git-femr-app/ci/femr/task_run_deploy.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{aws_access_key_id}}
+      AWS_SECRET_ACCESS_KEY: {{aws_secret_access_key}}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_DEFAULT_OUTPUT: json

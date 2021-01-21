@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="femr"
+		module="femr_2.11"
+		revision="2.4.1-beta"
+		status="integration"
+		publication="20210120181915"
+	>
+		<description>
+		femr
+		</description>
+	</info>
+	<configurations>
+		<conf name="universal" visibility="public" description=""/>
+		<conf name="universal-docs" visibility="public" description=""/>
+		<conf name="universal-src" visibility="public" description=""/>
+		<conf name="compile" visibility="public" description=""/>
+		<conf name="runtime" visibility="public" description="" extends="compile"/>
+		<conf name="test" visibility="public" description="" extends="runtime"/>
+		<conf name="provided" visibility="public" description=""/>
+		<conf name="optional" visibility="public" description=""/>
+		<conf name="windows" visibility="public" description=""/>
+		<conf name="docker" visibility="public" description=""/>
+		<conf name="linux" visibility="public" description=""/>
+		<conf name="rpm" visibility="public" description="" extends="linux"/>
+		<conf name="debian" visibility="public" description="" extends="linux"/>
+		<conf name="compile-internal" visibility="private" description="" extends="compile,optional,provided"/>
+		<conf name="runtime-internal" visibility="private" description="" extends="runtime,optional"/>
+		<conf name="test-internal" visibility="private" description="" extends="test,optional,provided"/>
+		<conf name="plugin" visibility="private" description=""/>
+		<conf name="sources" visibility="public" description=""/>
+		<conf name="docs" visibility="private" description=""/>
+		<conf name="pom" visibility="public" description=""/>
+		<conf name="scala-tool" visibility="private" description=""/>
+	</configurations>
+	<publications>
+		<artifact name="femr_2.11" type="pom" ext="pom" conf="pom"/>
+		<artifact name="femr_2.11" type="jar" ext="jar" conf="compile"/>
+		<artifact name="femr_2.11" type="src" ext="jar" conf="sources" e:classifier="sources"/>
+		<artifact name="femr_2.11" type="doc" ext="jar" conf="docs" e:classifier="javadoc"/>
+	</publications>
+	<dependencies>
+		<dependency org="org.scala-lang" name="scala-compiler" rev="2.11.7" conf="scala-tool->default,optional(default)"/>
+		<dependency org="org.scala-lang" name="scala-library" rev="2.11.7" conf="scala-tool->default,optional(default);compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-enhancer" rev="1.2.2" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="twirl-api_2.11" rev="1.3.14" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-ebean_2.11" rev="4.1.0" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-server_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-test_2.11" rev="2.6.12" conf="test->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-omnidoc_2.11" rev="2.6.12" conf="docs->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-java-forms_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="filters-helpers_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-logback_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-akka-http-server_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-java_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-java-jdbc_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-jdbc-evolutions_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-joda-forms_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.play" name="play-guice_2.11" rev="2.6.12" conf="compile->default(compile)"/>
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.49" conf="compile->default(compile)"/>
+		<dependency org="org.mindrot" name="jbcrypt" rev="0.3m" conf="compile->default(compile)"/>
+		<dependency org="org.apache.commons" name="commons-collections4" rev="4.0" conf="compile->default(compile)"/>
+		<dependency org="org.apache.commons" name="commons-text" rev="1.3" conf="compile->default(compile)"/>
+		<dependency org="com.google.code.gson" name="gson" rev="2.3.1" conf="compile->default(compile)"/>
+		<dependency org="com.itextpdf" name="itextpdf" rev="5.5.6" conf="compile->default(compile)"/>
+		<dependency org="com.itextpdf.tool" name="xmlworker" rev="5.5.6" conf="compile->default(compile)"/>
+		<dependency org="com.h2database" name="h2" rev="1.4.193" conf="compile->default(compile)"/>
+		<dependency org="com.jcraft" name="jsch" rev="0.1.54" conf="compile->default(compile)"/>
+	</dependencies>
+</ivy-module>

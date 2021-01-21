@@ -1,0 +1,232 @@
+
+.newMedicationWrap{
+
+    overflow: hidden;
+    padding: 10px;
+    background-color: #fafafa;
+    border: 1px solid #cfcfcf;
+}
+
+.newMedicationWrap .row{
+
+    margin: 0 0 15px;
+}
+
+.newMedicationWrap .fieldMedication{
+
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.newMedicationWrap .fieldMedication #medicationName{
+
+    width: 370px;
+}
+
+.newMedicationWrap .fieldMedication .medicationIngredient{
+
+    width: 300px;
+}
+
+.newMedicationWrap .fieldMedication:last-child{
+
+    margin-right: 0;
+}
+
+.newMedicationWrap .fieldMedication .fInput,
+.newMedicationWrap .fieldMedication .fOption{
+
+    clear: both;
+    display: block;
+}
+
+.newMedicationWrap .fieldMedication .fOption{
+
+    width: auto;
+}
+
+.newMedicationWrap .ingredients{
+
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cfcfcf;
+}
+
+.newMedicationWrap .ingredientWrap{
+
+    padding-left: 70px;
+    padding-right: 50px;
+    clear: both;
+    position: relative;
+    display: inline-block;
+}
+
+.newMedicationWrap .ingredientWrap .ingredientFields{
+
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.newMedicationWrap .ingredientWrap .ingredientFields:first-child .removeIngredient{
+
+    border-color: #cccccc;
+    color: #cccccc;
+}
+
+.newMedicationWrap #addNewIngredient{
+
+    display: block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: absolute;
+    bottom: 11px;
+    right: 5px;
+}
+
+.newMedicationWrap #addNewIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap .removeIngredient{
+
+    display: inline-block;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+    position: relative;
+}
+
+.newMedicationWrap .removeIngredient:hover{
+
+    text-decoration: none;
+}
+
+.newMedicationWrap #submitMedicationButton{
+
+    float: right;
+}
+
+#tripSelection {
+    padding: 15px;
+}
+
+#inventoryTable{
+
+}
+
+#inventoryTable th{
+
+    background-color: #2f2f2f;
+    color: #ffffff;
+    padding: 5px;
+    text-align: center;
+}
+
+#inventoryTable td{
+
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    padding: 5px 10px;
+    vertical-align: middle;
+}
+
+#inventoryTable td.name{
+
+    width: 30%;
+}
+
+#inventoryTable td.time{
+
+    width: 15%;
+}
+
+#inventoryTable td.created{
+
+    width: 10%;
+}
+
+.alert{
+
+    padding: 15px;
+    border: 1px solid #3f3f3f;
+}
+
+.alert h3{
+
+    margin-top: 10px;
+}
+
+.alert.warning{
+
+    background-color: #FEBABB;
+    border: 1px solid #DD3645;
+}
+
+.alert.warning .fButton{
+
+    margin: 15px 0 5px;
+    background-color: #ffffff;
+    color: #3f3f3f;
+    display: inline-block;
+}
+
+.fExportCSVButton {
+  cursor: not-allowed;
+}
+
+.fExportCSVButton a {
+  padding: 2px 5px 2px 5px;
+  width: 120px;
+}
+
+#currentMedicationHeader {
+  margin-bottom: 5px;
+}
+
+#inventoryOptionsWrap{
+    display: inline-block;
+}
+
+.medicationBtn{
+    width: 225px;
+    margin-bottom: 5px;
+    float: left;
+}
+
+@media only screen  and (max-width : 1200px) {
+
+    .newMedicationWrap .ingredientWrap {
+
+        padding-left: 40px;
+    }
+
+    .newMedicationWrap .fieldMedication .medicationIngredient {
+
+        width: 240px;
+    }
+
+}
+
+@media only screen  and (max-width : 740px) {
+
+    .newMedicationWrap .fieldMedication #medicationName {
+
+        width: 260px;
+    }
+
+    .newMedicationWrap .ingredientWrap {
+        padding-left: 10px;
+    }
+
+    .fInput{
+
+        width: 130px;
+    }
+
+    .newMedicationWrap .ingredientWrap {
+
+        min-width: 590px;
+    }
+}

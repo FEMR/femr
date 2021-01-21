@@ -1,0 +1,21 @@
+@(chiefComplaint: String, severity: femr.common.models.TabFieldItem)
+
+<label for="severity">Severity</label>
+<input name="tabFieldItems[@severity.getIndex].name" type="text" class="hidden" value="severity"/>
+<input name="tabFieldItems[@severity.getIndex].chiefComplaint" type="text" class="hidden" value="@chiefComplaint"/>
+<select name="tabFieldItems[@severity.getIndex].value" id="severityDropDown">
+    <option></option>
+    @for(x <- 1 to 10) {
+        @if(severity.getValue != null && !severity.getValue.isEmpty) {
+            @if(severity.getValue.equals(x.toString)) {
+                <option value="@x" selected="selected">@x</option>
+            } else {
+                <option value="@x">@x</option>
+            }
+
+        } else {
+            <option value="@x">@x</option>
+        }
+    }
+</select>
+

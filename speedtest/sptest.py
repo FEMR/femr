@@ -1,7 +1,9 @@
 import speedtest
-import subprocess
 import psutil
 import time
+
+import tkinter
+from tkinter import messagebox
 
 suffixes = ['b', 'kb', 'mb', 'gb', 'tb', 'pb']
 def humansize(nbytes):
@@ -17,8 +19,8 @@ def convert_to_mbit(value):
 
 def send_stat(value):
 	print ("%0.2f" % convert_to_mbit(value))
-
-def main():
+	
+def bandwidth():
 	old_value = 0  
 	total = 0  
 	i = 0
@@ -36,6 +38,11 @@ def main():
 		
 	average_bandwidth = total/10
 	print("Average bandwidth: %0.2f mb" % convert_to_mbit(average_bandwidth))
+	
+	
+
+def main():
+	bandwidth()
 		
 	st = speedtest.Speedtest()
 
@@ -46,8 +53,20 @@ def main():
 	up = humansize(st.upload())
 	ping = st.results.ping
 
-	out = (f"""Download {down}ps""") + "\n" + (f"""Upload: {up}ps""") + "\n" +(f"""Ping: {ping} ms""")
+	out = (f"""Your current internet speed:""") + "\n\n" + (f"""Download {down}ps""") + "\n" + (f"""Upload: {up}ps""") + "\n" +(f"""Ping: {ping} ms""") + "\n\n" + (f"""Would you like to merge your local data?""")
 
-	subprocess.Popen(['notify-send', '--icon=error', 'RESULTS', out])
+	
+	# This code is to hide the main tkinter window
+	root = tkinter.Tk()
+	root.withdraw()
+	root.option_add('*Dialog.msg.font', 'Helvetica 12')
+	msgbox = tkinter.messagebox.askquestion ('Database merge', out, icon = 'warning')
+
+	if (msgbox == "yes"):
+		# merge data
+		print("yes")
+	else:
+		# dont merge data
+		print("no")
 
 main()

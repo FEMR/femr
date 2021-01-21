@@ -13,16 +13,16 @@ def humansize(nbytes):
 	  i += 1
 	f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
 	return '%s %s' % (f, suffixes[i])
-	
+
 def convert_to_mbit(value):
 	return value/1024./1024.*8
 
 def send_stat(value):
 	print ("%0.2f" % convert_to_mbit(value))
-	
+
 def bandwidth():
-	old_value = 0  
-	total = 0  
+	old_value = 0
+	total = 0
 	i = 0
 	while i <= 10:
 		new_value = psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv
@@ -35,15 +35,15 @@ def bandwidth():
 
 		time.sleep(1)
 		i += 1
-		
+
 	average_bandwidth = total/10
 	print("Average bandwidth: %0.2f mb" % convert_to_mbit(average_bandwidth))
-	
-	
+
+
 
 def main():
 	bandwidth()
-		
+
 	st = speedtest.Speedtest()
 
 	servernames = []
@@ -55,10 +55,11 @@ def main():
 
 	out = (f"""Your current internet speed:""") + "\n\n" + (f"""Download {down}ps""") + "\n" + (f"""Upload: {up}ps""") + "\n" +(f"""Ping: {ping} ms""") + "\n\n" + (f"""Would you like to merge your local data?""")
 
-	
+
 	# This code is to hide the main tkinter window
 	root = tkinter.Tk()
 	root.withdraw()
+
 	root.option_add('*Dialog.msg.font', 'Helvetica 12')
 	msgbox = tkinter.messagebox.askquestion ('Database merge', out, icon = 'warning')
 

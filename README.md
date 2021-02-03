@@ -82,9 +82,10 @@ sudo apt update
 sudo apt install mysql-server
 sudo mysql_secure_installation
 ```
-Start mysql:
+Start mysql with one of the two following commands:
 ```bash
 sudo mysql
+mysql -u USERNAME -p
 ```
 Create a database with the name femr:
 ```bash

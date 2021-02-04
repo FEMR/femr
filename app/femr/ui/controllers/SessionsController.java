@@ -22,6 +22,8 @@ import play.mvc.Result;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import femr.util.InternetConnnection.InternetCheck;
+
 public class SessionsController extends Controller {
 
     private final AssetsFinder assetsFinder;
@@ -77,6 +79,14 @@ public class SessionsController extends Controller {
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }
+
+            // put internet check here
+            if (InternetCheck.NetIsAvailable()) {
+                // We are connected to the internet.
+                // Need to check if kit upgrade is available or
+                // if we need to download SQL evolution files.
+            }
+
         }
 
         return redirect(routes.HomeController.index());

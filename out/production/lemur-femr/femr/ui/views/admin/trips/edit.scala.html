@@ -1,0 +1,78 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.trips.EditViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.admin.routes.TripController
+
+@additionalStyles = {
+
+    <link rel="stylesheet" href="@assets.path("css/libraries/select2.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
+}
+
+@additionalScripts = {
+
+    <script type="text/javascript" src="@assets.path("js/libraries/select2.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+}
+
+@admin("Trips - Manage Trips - Edit Trip", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @defining(viewModel.getTrip) { trip =>
+        <p>Id: @trip.getId</p>
+        <p>Team name: @trip.getTeamName</p>
+        <p>City: @trip.getTripCity</p>
+        <p>Country: @trip.getTripCountry</p>
+        <p>Start Date: @trip.getFriendlyTripStartDate</p>
+        <p>End Date: @trip.getFriendlyTripEndDate</p>
+    }
+
+
+    @helper.form(action = TripController.editPost(viewModel.getTripId)) {
+        <h4>Add users to this trip: </h4>
+        <select id="addUsersSelect2" multiple="multiple" name="newUsersForTrip[]">
+        @defining(viewModel.getAllUsers) { allUsers =>
+            @for(i <- 1 to allUsers.size) {
+                <option value="@allUsers.get(i - 1).getId">@allUsers.get(i - 1).getFirstName @allUsers.get(i - 1).getLastName</option>
+            }
+        }
+        </select>
+        <button type="submit">Add</button>
+
+        <h4>Remove users from this trip:</h4>
+        <select id="removeUsersSelect2" multiple="multiple" name="removeUsersForTrip[]">
+            @defining(viewModel.getUsers) { users =>
+                @for(i <- 1 to users.size) {
+                    <option value="@users.get(i - 1).getId">@users.get(i - 1).getFirstName @users.get(i - 1).getLastName</option>
+                }
+            }
+        </select>
+        <button type="submit">Remove</button>
+    }
+
+
+    <table id="usersTripTable">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>About</th>
+            </tr>
+        </thead>
+        <tbody>
+        @defining(viewModel.getUsers) { users =>
+            @for(i <- 1 to users.size()) {
+                <tr>
+                    <td>@users.get(i - 1).getFirstName</td>
+                    <td>@users.get(i - 1).getLastName</td>
+                    <td>@users.get(i - 1).getEmail</td>
+                    <td>@users.get(i - 1).getNotes</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+
+
+}
+

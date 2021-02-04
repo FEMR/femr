@@ -1,0 +1,61 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+
+@import femr.ui.views.partials.helpers.AuthenticatedPartialHelper
+@import femr.ui.controllers.routes.HomeController
+@import femr.ui.controllers.routes.SessionsController
+@import femr.ui.controllers.routes.TriageController
+@import femr.ui.controllers.routes.MedicalController
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.controllers.manager.routes.ManagerController
+@import femr.ui.controllers.superuser.routes.SuperuserController
+@import femr.ui.controllers.admin.routes.AdminController
+@import femr.ui.controllers.routes.ResearchController
+@import femr.ui.controllers.routes.ReferenceController
+<div class="navigationLogo">
+    <a href="@HomeController.index()">
+        <img src="@assets.path("img/logo_color_wordless_sm.png")" />
+    </a>
+</div>
+
+
+<div class="smallNavigationItemsWrap">
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+</div>
+
+
+
+<div class="navigationItemsWrap">
+    <ul class="navigationItems">
+        @if(AuthenticatedPartialHelper.showMedicalPersonnelMenu(currentUser.getRoles)) {
+            <li><a href="@TriageController.indexGet()">Triage</a></li>
+            <li><a href="@MedicalController.indexGet()">Medical</a></li>
+            <li><a href="@PharmaciesController.indexGet()">Pharmacy</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showResearcherMenu(currentUser.getRoles)) {
+            <li><a href="@ResearchController.indexGet()">Research</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showManagerMenu(currentUser.getRoles)){
+            <li><a href="@ManagerController.indexGet()">Manager</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showAdminMenu(currentUser.getRoles) && !AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+            <li><a href="@AdminController.index()">Admin</a></li>
+        }
+        @if(AuthenticatedPartialHelper.showSuperUserMenu(currentUser.getRoles)) {
+            <li><a href="@SuperuserController.indexGet()">SuperUser</a></li>
+        }
+        <li><a href="@ReferenceController.indexGet()" class="glyphicon glyphicon-list-alt reference" target="_blank"><span>Reference</span></a></li>
+    </ul>
+    <p class="userStatus">
+
+
+        @currentUser.getFirstName @currentUser.getLastName 
+        <a href="@SessionsController.delete()">
+            <span class="glyphicon glyphicon-log-out"></span>
+        </a>
+    </p>
+</div>
+<input type="hidden" value="@currentUser.getTimeout2()" id='h_v' class='h_v'>

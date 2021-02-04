@@ -1,0 +1,39 @@
+@(hpiTab: femr.common.models.TabItem, isConsolidated: java.lang.Boolean, chiefComplaints: List[java.lang.String])
+
+@import femr.ui.views.html.partials.medical.tabs.hpi_fields
+
+
+<div class="controlWrap" id="hpiControl">
+
+    @if(chiefComplaints.size() > 1) {
+        @* Slider for navigating each HPI, only shows up if > 1 chief complaint exists *@
+        <div id="chiefComplaintSliderWrap">
+            @* Left arrow *@
+            <div id="chiefComplaintLeftArrow">
+                <span> < </span>
+            </div>
+
+            @* Complaint list *@
+            @for(chiefComplaint <- chiefComplaints) {
+                <div class="chiefComplaintText hidden">
+                    <span>@chiefComplaint</span>
+                </div>
+            }
+
+            @* Right arrow *@
+            <div id="chiefComplaintRightArrow">
+                <span> > </span>
+            </div>
+        </div>
+    }
+    @* Make an HPI page for each chief complaint *@
+    @if(chiefComplaints.size() == 0) {
+        @hpi_fields(hpiTab, isConsolidated, null)
+    } else {
+        @for(chiefComplaint <- chiefComplaints) {
+            @hpi_fields(hpiTab, isConsolidated, chiefComplaint)
+        }
+    }
+
+
+</div>

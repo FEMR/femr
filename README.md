@@ -145,7 +145,8 @@ user.dir    |    .../femr
 config.file |    .../femr/conf/application.dev.conf
 ```
 
-Once those variables are setup, you should be able to run the project.
+Once those variables are setup, you should be able to run the project. To do so enter ```run``` in the
+sbt shell (the tab should be at the bottom left of the IntelliJ window).
 
 
 ### 6. Continuous Integration

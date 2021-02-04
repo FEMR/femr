@@ -1,0 +1,247 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel:femr.ui.models.research.FilterViewModel, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.ResearchController
+@import scala.collection.JavaConversions._
+@import helper._
+
+
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/research.css")">
+    }
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/research/d3.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/d3.tip.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/saveSvgAsPng.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/filter-menu.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/bar-graph.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/pie-graph.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/line-graph.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/scatter-plot.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/stacked-bar.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/grouped-bar.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/table-chart.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/research/research.js")"></script>
+    }
+
+@main("Research", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+        <div class="row dropdown">
+            <div class="col-sm-3 col-md-2 sidebar">
+                @helper.form(action = ResearchController.exportPost, 'id -> "graph-options") {
+                    <div id="filter-errors">
+
+                    </div>
+                    <ul class="nav nav-sidebar">
+                        <li id="gdata1-menu" class="menu-item">
+                            <a class="opt-link">Primary Dataset</a>
+                            <span class="val"></span>
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <ul class="submenu">
+                                <li class="title">Demographics</li>
+                                <li><a data-dname1="age" href="#">Age</a></li>
+                                <li><a data-dname1="gender" href="#">Gender</a></li>
+                                <li><a data-dname1="height" href="#">Height</a></li>
+                                <li><a data-dname1="weight" href="#">Weight</a></li>
+                                <li><a data-dname1="pregnancyStatus" href="#">Pregnancy Status</a></li>
+                                <li><a data-dname1="pregnancyTime" href="#">Weeks Pregnant</a></li>
+                               <li class="title">Medication</li>
+                                <li><a data-dname1="prescribedMeds" href="#">Prescribed Medications</a></li>
+                                <li><a data-dname1="dispensedMeds" href="#">Dispensed Medications</a></li>
+                                <li class="title">Vitals</li>
+                                <li><a data-dname1="temperature" href="#">Temperature</a></li>
+                                <li><a data-dname1="bloodPressureSystolic" href="#">Blood Pressure Systolic</a></li>
+                                <li><a data-dname1="bloodPressureDiastolic" href="#">Blood Pressure Diastolic</a></li>
+                                <li><a data-dname1="heartRate" href="#">Heart Rate</a></li>
+                                <li><a data-dname1="respiratoryRate" href="#">Respirations</a></li>
+                                <li><a data-dname1="oxygenSaturation" href="#">Oxygen Saturation</a></li>
+                                <li><a data-dname1="glucose" href="#">Glucose</a></li>
+                                @*
+                                <li><a class="clear" data-dname2="clear" href="#">Clear <span class="glyphicon glyphicon-remove"></span></a></li>
+                                *@
+                            </ul>
+                        </li>
+                        <li id="gdata2-menu" class="menu-item">
+                            <a class="opt-link">Secondary Dataset</a>
+                            <span class="val"></span>
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <ul class="submenu">
+                                <li><a class="clear" data-dname2="clear" href="#">None</a></li>
+                                <li><a data-dname2="age" href="#">Age</a></li>
+                                <li><a data-dname2="gender" href="#">Gender</a></li>
+                                <li><a data-dname2="pregnancyStatus" href="#">Pregnancy Status</a></li>
+
+                            </ul>
+                            @*
+                            <ul class="submenu">
+                                <li><a class="clear" data-dname2="clear" href="#">None</a></li>
+                                <li class="title">Demographics</li>
+                                <li><a data-dname2="gender" href="#">Gender</a></li>
+                                <li><a data-dname2="height" href="#">Height</a></li>
+                                <li><a data-dname2="weight" href="#">Weight</a></li>
+                                <li><a data-dname2="pregnancyStatus" href="#">Pregnancy Status</a></li>
+                                <li><a data-dname2="pregnancyTime" href="#">Weeks Pregnant</a></li>
+                                <li class="title">Medication</li>
+                                <li><a data-dname2="prescribedMeds" href="#">Prescribed Medications</a></li>
+                                <li><a data-dname2="dispensedMeds" href="#">Dispensed Medications</a></li>
+                                <li class="title">Vitals</li>
+                                <li><a data-dname2="temperature" href="#">Temperature</a></li>
+                                <li><a data-dname2="bloodPressureSystolic" href="#">Blood Pressure Systolic</a></li>
+                                <li><a data-dname2="bloodPressureDiastolic" href="#">Blood Pressure Diastolic</a></li>
+                                <li><a data-dname2="heartRate" href="#">Heart Rate</a></li>
+                                <li><a data-dname2="respiratoryRate" href="#">Respirations</a></li>
+                                <li><a data-dname2="oxygenSaturation" href="#">Oxygen Saturation</a></li>
+                                <li><a data-dname2="glucose" href="#">Glucose</a></li>
+                                @*
+                                <li><a class="clear" data-dname2="clear" href="#">Clear <span class="glyphicon glyphicon-remove"></span></a></li>
+                                * @
+                            </ul>
+                            *@
+                        </li>
+                        <li id="gtype-menu" class="menu-item">
+                            <a class="opt-link">Graph Type</a>
+                            <span class="val"></span>
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <ul class="submenu">
+                                <li><a data-gtype="bar" href="#">Bar Graph</a></li>
+                                <li><a data-gtype="pie" href="#">Pie Graph</a></li>
+                                <li><a data-gtype="line" href="#">Line Graph</a></li>
+                                <li><a data-gtype="scatter" href="#">Scatterplot</a></li>
+                                <li><a data-gtype="stacked-bar" href="#">Stacked Bar Graph</a></li>
+                                <li><a data-gtype="grouped-bar" href="#">Grouped Bar Graph</a></li>
+                                <li><a data-gtype="table" href="#">Table</a></li>
+                            </ul>
+                        </li>
+
+                        <li id="gfilter-menu" class="menu-item">
+                            <a class="opt-link">Filter Date (DD/MM/YYYY)</a>
+                            <span class="val">
+                                <span class="date">
+                                    <span hidden class="start">@viewModel.getStartDate()</span><span hidden class="end">@viewModel.getEndDate()</span>
+                                    <span id="start-up"></span> - <span  id="start-end"></span>
+                                </span>
+                            </span>
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <ul class="submenu">
+                                <li>Start Date
+                                    (DD/MM/YYYY)
+                                    <input type="date" id="startDate" name="startDate" format="dd/MM/yyyy" onchange="mydate1()"  hidden value="@viewModel.getStartDate()" max="@viewModel.getEndDate()" />
+                                    <input type="text" id="ndt"  onclick="mydate()"  format="dd/MM/yyyy" value="@viewModel.getStartDate()"  />
+                                </li>
+                                <li>End Date
+                                    (DD/MM/YYYY)
+                                    <input type="date" id="endDate" name="endDate" format="dd/MM/yyyy" onchange="mydate3()"  hidden value="@viewModel.getEndDate()" max="@viewModel.getEndDate()" />
+                                    <input type="text" id="ndt2"  onclick="mydate2()"  format="dd/MM/yyyy" value="@viewModel.getEndDate()"  />
+                                </li>
+                            </ul>
+                        </li>
+
+
+                        <li class="controls">
+
+                            <input type="hidden" id="primaryDataset" name="primaryDataset" value="" />
+                            <input type="hidden" id="secondaryDataset" name="secondaryDataset" value="" />
+                            <input type="hidden" id="graphType" name="graphType" value="" />
+
+
+                            @*
+                            <span class="medication">
+                                <label>Filter Medication</label>
+                                <input type="text" name="medicationName" id="medicationName" placeholder="Medication Name"/>
+
+                            </span>
+                                *@
+                                <span class="medication">
+                                <label>Filter Trip</label>
+                                    <select id="MissionTripId" name="MissionTripId" class="medication">
+                                        <option selected id="default" value="-1">-- Select Trip --</option> @*Andrew Trip Filter*@
+                                        @for(i <- 1 to viewModel.getMissionTrips.size) {
+                                            @defining(viewModel.getMissionTrips.get(i - 1)) { missionItem =>
+                                                @for(tripIndex <- 1 to missionItem.getMissionTrips.size) {
+                                                    @defining(missionItem.getMissionTrips.get(tripIndex - 1)) { missionTrip =>
+                                                        <option value = "@missionTrip.getId()"> @missionItem.getMissionTrips.get(tripIndex - 1).getFriendlyTripTitle </option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </span>
+
+                            <span class="filter">
+                                <label>Filter Primary Dataset</label>
+                                <input type="text" id="filterRangeStart" name="filterRangeStart" placeholder="Start" value="" /> &ndash;
+                                <input type="text" id="filterRangeEnd" name="filterRangeEnd" placeholder="End" value="" />
+                                <span id="filter-primary-clear" class="glyphicon glyphicon-remove"></span>
+                            </span>
+
+
+
+                            <span class="group">
+                                <label for="groupPrimary"><input type="checkbox" id="groupPrimary" name="groupPrimary" value="1" />Group Primary</label>
+                                <input type="text" name="groupFactor" id="groupFactor" value="10" />
+                            </span>
+                        </li>
+                        <li class="submit">
+                            <input id="clear-button" class="clear fButton pull-left" type="button" value="Clear" />
+                            <input id="submit-button" class="submit fButton pull-right" type="submit" value="Apply" />
+                        </li>
+                        <li class="export">
+                            <input id="export-button" class="export fButton" type="button" value="Export Data"/>
+                        </li>
+                    </ul>
+                }
+
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+                <h1 class="page-header">Research</h1>
+
+                <div class="chart-container">
+
+                    <div class="graph-instructions">
+
+                        <p>To view a graph, from the sidebar on the left:</p>
+                        <ol>
+                            <li>Choose Dataset(s)</li>
+                            <li>Choose a Graph Type</li>
+                            <li>Choose Filters</li>
+                            <li>Click Apply</li>
+                        </ol>
+
+                        <p>To export data, click the "Export Data" button. The exported data will be de-identified and it will have all selected Datasets and Filters applied to it.</p>
+                    </div>
+                    <div class="graph-area">
+                        <div class="graph-header">
+                            <p id="average" class="stat"><strong>Average:</strong> <span class="val"></span></p>
+                            <p id="range" class="stat"><strong>Range:</strong> <span class="val"></span></p>
+                            <p id="totalPatients" class="stat"><strong>Total Patients:</strong> <span class="val"></span></p>
+                            <p id="totalEncounters" class="stat"><strong>Total Encounters:</strong> <span class="val"></span></p>
+
+                            <div class="save-image-cont">
+                                <a id="save-button" class="fButton" href="#">Save As Image</a>
+                                <div class="options">
+                                    <div class="close"><span class="glyphicon glyphicon-remove"></span></div>
+                                    <p>Choose Image Size</p>
+                                    <a href="#" class="image-size-selection" data-imagesize="small">Small<br />700 x 350</a>
+                                    <a href="#" class="image-size-selection" data-imagesize="medium">Medium<br />1000 x 500</a>
+                                    <a href="#" class="image-size-selection" data-imagesize="large">Large<br />1200 x 600</a>
+                                </div>
+                            </div>
+                        </div>
+                        <svg id="legend"></svg>
+                        <svg id="graph" class="chart">
+
+                        </svg>
+                        <img class="loading" src="@assets.path("img/graph-loader.gif")" alt="loading&hellip;" />
+                    </div>
+                </div>
+                <div id="table-container" class="table-responsive">
+
+                </div>
+
+            </div>
+
+        </div>
+}

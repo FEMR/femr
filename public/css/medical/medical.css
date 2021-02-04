@@ -1,0 +1,321 @@
+/*
+background color link:
+http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&density=3&opacity=28
+*/
+
+/* General page styles */
+
+/* Wrapper for general info section and main section*/
+#medicalContentWrap {
+
+}
+
+
+/* Vitals (part of main section) wrapper*/
+
+    #vitalsWrap {
+        float: left;
+        width: 25%;
+        min-height: 670px;   /* should match scroll plugin */
+        padding: 15px 10px 10px 10px;
+    }
+        #vitalsWrap:hover{
+            cursor: default;
+        }
+
+
+    #inputWrap {
+        float: left;
+        width: 75%;
+        padding: 1px;
+    }
+    #newVitalsBtn{
+        width: 100%;
+        margin-top: 10px;
+    }
+
+
+
+#tabContentWrap {
+    float: left;
+    width: 100%;
+    min-height: 550px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.controlWrap {
+    border: solid #b2b2b0;
+    border-width: 0px 1px 1px 1px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.historySubmitWrap{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+/* Buttons */
+.addSubtractBtn {
+    float: left;
+    border: 1px solid #4577d4;
+    background-color: #e1e8f6;
+}
+
+/* Tabs */
+.tabWrap {
+    float: left;
+    width: 100%;
+}
+.tabrow {
+    margin-bottom: 0;
+    text-align: center;
+    list-style: none;
+    padding: 0;
+    line-height: 24px;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: verdana;
+    position: relative;
+}
+.tabrow li {
+    border: 1px solid #AAA;
+    background: #D1D1D1;
+    background: -o-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -ms-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -moz-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: -webkit-linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    background: linear-gradient(top, #ECECEC 50%, #D1D1D1 100%);
+    display: inline-block;
+    position: relative;
+    z-index: 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 #FFF;
+    text-shadow: 0 1px #FFF;
+    margin: 0 -5px;
+    padding: 5px 30px;
+}
+.tabrow li.active {
+    background: url("../../img/paper_greyLightNoise.png") repeat;
+    color: #333;
+    z-index: 2;
+    border-bottom-color: #FFF;
+}
+.tabrow:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid #AAA;
+    z-index: 1;
+}
+.tabrow li:before,
+.tabrow li:after {
+    border: 1px solid #AAA;
+    position: absolute;
+    bottom: -1px;
+    width: 5px;
+    height: 5px;
+    content: " ";
+}
+.tabrow li:before {
+    left: -6px;
+    border-bottom-right-radius: 6px;
+    border-width: 0 1px 1px 0;
+    box-shadow: 2px 2px 0 #D1D1D1;
+}
+.tabrow li:after {
+    right: -6px;
+    border-bottom-left-radius: 6px;
+    border-width: 0 0 1px 1px;
+    box-shadow: -2px 2px 0 #D1D1D1;
+}
+.tabrow li.active:before {
+    box-shadow: 2px 2px 0 #FFF;
+}
+.tabrow li.active:after {
+    box-shadow: -2px 2px 0 #FFF;
+}
+.tabrow li:hover{
+    cursor: default;
+}
+
+/* hpi chief complaint slider wrap */
+#chiefComplaintSliderWrap{
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+
+
+#chiefComplaintLeftArrow span, #chiefComplaintRightArrow span{
+    font-size: 25px;
+}
+#chiefComplaintLeftArrow span, #chiefComplaintRightArrow span:hover{
+    cursor: default;
+}
+
+#chiefComplaintLeftArrow, #chiefComplaintRightArrow, #chiefComplaintText{
+    height: 40px;
+}
+
+.chiefComplaintText{
+    width: 90%;
+    float: left;
+    text-align: center;
+    font-size: 18px;
+    padding-top: 5px;
+}
+.chiefComplaintText span{
+    height: 40px;
+    cursor: default;
+}
+#chiefComplaintLeftArrow{
+    width: 5%;
+    float: left;
+}
+#chiefComplaintRightArrow{
+    width: 5%;
+    float: right;
+}
+
+
+/* HPI TAB */
+.leftHPI{
+    width: 50%;
+    float: left;
+    padding-right: 10px;
+
+}
+
+.rightHPI{
+    width: 50%;
+    float: left;
+    padding-left: 10px;
+}
+.bottomHPI{
+    width: 100%;
+    float: left;
+}
+
+.hpiWraps{
+    overflow: hidden;
+}
+.hpiWraps input{
+    width: 100%;
+}
+.staticField{
+    margin-bottom: 10px;
+}
+#severityDropDown{
+    border: 1px solid #ccc;
+    background-color: white;
+    height: 33px;
+    width: 100%;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+
+
+/* CUSTOM TABS */
+.customWrap{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.customLeft{
+    width: 50%;
+    float: left;
+    padding: 5px;
+}
+.customRight{
+    width: 50%;
+    float: left;
+    padding: 5px;
+}
+.customBottom{
+    width: 100%;
+    float: left;
+    padding: 5px;
+}
+
+
+/* Dynamic shit */
+.customWrap label{
+    display: inline-block;
+    width: 150px;
+    text-align: left;
+}
+.customFieldWrap{
+    margin-bottom: 12px;
+}
+
+@media (max-width: 720px){
+    #vitalsWrap{
+        width: 100%;
+        min-height: 0;
+        border-bottom: 1px solid #b2b2b0;
+    }
+    #inputWrap{
+        width: 100%;
+        margin-top: 15px;
+    }
+    #vitalTable{
+        width: 100% !important;
+    }
+}
+.fNarrativeTextArea{
+    width: 100%;
+    height: 300px;
+}
+
+
+/* Questionnaire styles */
+
+#questionnaireControl .customFieldWrap{
+    margin-bottom: 20px;
+}
+
+#questionnaireControl .customWrap label{
+
+    width: 100%;
+}
+
+#questionnaireControl .fInput{
+
+    clear: both;
+    width: 90%;
+    max-width: 300px;
+    margin-left: 20px;
+}
+
+#questionnaireControl label.radio-wrap{
+    width: auto;
+    padding: 0 20px;
+}
+
+@media(max-width: 767px){
+    #questionnaireControl label.radio-wrap{
+        display: block;
+        clear: both;
+        padding: 5px 0;
+    }
+
+    #questionnaireControl .radio-responses br{
+
+        display: none;
+    }
+}
+
+#questionnaireControl .radio-wrap .rInput{
+
+    width: auto;
+    margin-right: 5px;
+}

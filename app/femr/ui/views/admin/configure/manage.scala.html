@@ -1,0 +1,36 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        viewModel: femr.ui.models.admin.configure.IndexViewModelGet,
+        assets: AssetsFinder)
+
+@import femr.ui.controllers.admin.routes.ConfigureController
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
+    }
+
+@admin("Configure", currentUser, styles = additionalStyles, assets = assets) {
+    @helper.form(action = ConfigureController.managePost()) {
+        <table id="configurationTable">
+            <tr>
+                <th>Feature</th>
+                <th>Description</th>
+                <th>Toggle</th>
+            </tr>
+
+            @for((key, valyew) <- viewModel.getSettings) {
+                <tr>
+                    <td class="name">@key</td>
+                        @defining(viewModel.getDescriptions.get(key)) { description => <td class="description">@description</td>}
+                    <td class="isActive">
+                        <input type="checkbox" name="settings[]" value="@key" @if(valyew) { checked="checked"} />
+                    </td>
+                </tr>
+            }
+
+        </table>
+        
+        <input type="submit" class="fButton" value="Save"/>
+    }
+
+}

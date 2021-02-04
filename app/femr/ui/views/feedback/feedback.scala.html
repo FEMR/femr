@@ -1,0 +1,31 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.FeedbackController
+
+
+  @additionalScripts = {}
+  @additionalStyles = {
+      <link rel="stylesheet" href="@assets.path("css/feedback.css")">
+  }
+
+@main("Feedback", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+      <div class="ifContainer">
+
+        <h1>Give Feedback</h1>
+        <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately.</p>
+
+        <!-- Need form helper here -->
+        @helper.form(action = FeedbackController.indexPost()) {
+
+            <textarea name="feedbackMsg" id="usrFeedback" cols="50" rows="10"></textarea>
+
+
+            <button type="submit" class="fButton fSubmitButton" id="feedbackSubmit">Submit</button>
+        }
+
+          <p id="disclaimer">Your feedback is completely anonymous and will only be used to produce a better fEMR product.</p>
+      </div>
+
+}

@@ -1,0 +1,89 @@
+@(treatmentTab: femr.common.models.TabItem, prescriptions: List[femr.common.models.PrescriptionItem], medicationAdministrationItems: List[femr.common.models.MedicationAdministrationItem], problems: List[femr.common.models.ProblemItem])
+
+@import femr.ui.views.html.partials.medical.tabs.prescriptionRow
+
+<div class="controlWrap hidden" id="treatmentControl">
+    <div class="form-group">
+        <label for="assessment">Assessment</label>
+        @defining(treatmentTab.getTabFieldItemByName(null, "assessment")) { assessment =>
+            <input name="tabFieldItems[@assessment.getIndex].name" type="text" class="hidden" value="assessment"/>
+            <textarea rows="3" name="tabFieldItems[@assessment.getIndex].value" class="form-control input-sm">@assessment.getValue</textarea>
+        }
+        </div>
+
+    <div class="form-group">
+        <label for="problem">Diagnosis</label>
+        <div class="row">
+            <div class="col-xs-10 col-sm-10 col-md-10 problemWrap">
+                @for(problem <- problems) {
+                    <div class="input-group">
+                            <input type="text" class="form-control oldProblems" value="@problem.getName" readonly/>
+
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger deleteProblem" data-problem="@problem.getName"><span class="glyphicon glyphicon-remove"></span></button>
+                        </span>
+                    </div>
+                }
+                <div class="problem">
+                    <input name="problems[0].name" type="text" class="form-control newProblems"/>
+                </div>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <button id="addProblemButton" class="btn addSubtractBtn pull-right" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <button id="subtractProblemButton" class="btn addSubtractBtn pull-right" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-10 col-sm-10 col-md-10 prescriptionWrap">
+                <div class="prescription-grid prescriptionHeader">
+                    <label class="prescription-field prescriptionName" for="prescription">Prescriptions</label>
+                    <label class="prescription-field prescriptionAdministration">Administration</label>
+                    <label class="prescription-field prescriptionAdministrationDays">Days</label>
+                    <label class="prescription-field prescriptionAmount">Amount</label>
+                </div>
+
+                @for(script <- prescriptions) {
+
+                    @prescriptionRow( medicationAdministrationItems, 0, script )
+                }
+
+                <div class="newPrescriptionsContainer">
+                @prescriptionRow( medicationAdministrationItems, 0, null )
+                </div>
+
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2">
+                <div class="row">
+                    <button id="addPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                </div>
+                <div class="row">
+                    <button id="subtractPrescriptionButton" class="btn addSubtractBtn" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="treatment">Procedure/Counseling</label>
+        @defining(treatmentTab.getTabFieldItemByName(null, "procedure_counseling")) { treatment =>
+            <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="procedure_counseling"/>
+            <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm" placeholder="Ex: Suturing, Ultrasound, Splint, etc...">@treatment.getValue</textarea>
+        }
+    </div>
+    <div class="form-group">
+        <label for="treatment">Pharmacy Note</label>
+        @defining(treatmentTab.getTabFieldItemByName(null, "pharmacy_note")) { treatment =>
+            <input name="tabFieldItems[@treatment.getIndex].name" type="text" class="hidden" value="pharmacy_note"/>
+            <textarea rows="3" name="tabFieldItems[@treatment.getIndex].value" class="form-control input-sm" placeholder="Ex: Three times/day for two weeks, etc...">@treatment.getValue</textarea>
+        }
+    </div>
+</div>

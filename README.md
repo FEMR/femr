@@ -62,7 +62,7 @@ OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
 If the correct version of Java isn't shown, run one of the following two commands to switch to JDK 8:
 ```bash
 sudo update-alternatives --config java
-JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 ```
 When prompted, select the JDK 8 alternative.
 

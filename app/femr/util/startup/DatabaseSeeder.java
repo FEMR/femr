@@ -92,7 +92,6 @@ public class DatabaseSeeder {
     }
 
     private void seed() {
-
         seedMissionTripInformation();
         seedSystemSettings();
         seedSystemSettingsDescriptions();

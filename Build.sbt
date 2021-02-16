@@ -24,9 +24,21 @@ val appDependencies = Seq(
   "com.itextpdf" % "itextpdf" % "5.5.6",
   "com.itextpdf.tool" % "xmlworker" % "5.5.6",
   "com.h2database" % "h2" % "1.4.193",
-  "com.jcraft" % "jsch" % "0.1.54"
+  "com.jcraft" % "jsch" % "0.1.54",
+  "org.seleniumhq.selenium" % "selenium-java" % "3.9.1",
+  "org.fluentlenium" % "fluentlenium-core" % "3.5.2",
+  "org.fluentlenium" % "fluentlenium-junit" % "3.5.2",
+  "javax.xml.bind" % "jaxb-api" % "2.1",
+  "org.testcontainers" % "testcontainers" % "1.8.0",
+  "org.testcontainers" % "mysql" % "1.8.0"
 )
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
+//initialize := {
+//  val _ = initialize.value
+//  if (sys.props("java.specification.version") != "1.8")
+//    sys.error("Java 8 is required for this project.")
+//}
 
 val main = (project in file(".")).enablePlugins(PlayJava, PlayEbean).settings(
 
@@ -45,7 +57,8 @@ val main = (project in file(".")).enablePlugins(PlayJava, PlayEbean).settings(
         newArg = if (ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
       } yield newArg
   },
-  sbt.Keys.fork in Test := false,
+  javaOptions in Test += "-Dconfig.file=conf/application.test.conf",
+  sbt.Keys.fork in Test := true,
   doc in Compile := target.map(_ / "none").value
 )
 

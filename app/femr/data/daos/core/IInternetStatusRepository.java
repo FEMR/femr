@@ -5,18 +5,18 @@ import femr.data.models.core.*;
 public interface IInternetStatusRepository {
 
   /**
-   * Retrieve a patient age classification from the database by its name.
+   * Retrieve the internet status.
    *
-   * @return the patient age classification or NULL if not found or if errors occur
+   * @return the internet status flag or NULL if not found or if errors occur
    */
   IInternetStatus retrieveInternetStatus();
 
   /**
-   *  Creates OR Updates a patient. If you send an existing patient, this will update their
-   *  record. (existing = available id)
+   *  Updates the internet status flag whether there is a good enough internet
+   *  connection or not to update
    *
-   *  @param  patient data object to save
-   *  @return the new or updated patient
+   *  @param  status status flag to update to
+   *  @return the new or updated status
    **/
   IInternetStatus updateInternetStatus(IInternetStatus status);
 }

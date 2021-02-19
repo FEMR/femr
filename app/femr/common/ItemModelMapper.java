@@ -21,6 +21,7 @@ package femr.common;
 import femr.business.helpers.LogicDoer;
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.InternetStatus;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -669,5 +670,15 @@ public class ItemModelMapper implements IItemModelMapper {
         );
 
         return medicationAdministrationItem;
+    }
+
+    public InternetStatusItem createInternetStatusItem(IInternetStatus status) {
+        if (status == null)
+            return null;
+
+        InternetStatusItem internetStatusItem = new InternetStatusItem();
+        internetStatusItem.setStatus(status.getStatus());
+
+        return internetStatusItem;
     }
 }

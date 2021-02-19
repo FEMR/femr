@@ -2,10 +2,12 @@ package femr.ui.controllers;
 
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
+import femr.business.services.core.IInternetStatusService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUserService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.InternetStatusItem;
 import femr.data.models.core.IUser;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
@@ -30,14 +32,17 @@ public class SessionsController extends Controller {
     private final FormFactory formFactory;
     private final ISessionService sessionsService;
     private final IUserService userService;
+    private final IInternetStatusService internetStatusService;
 
     @Inject
-    public SessionsController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionsService, IUserService userService) {
+    public SessionsController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionsService, IUserService userService,
+                              IInternetStatusService internetStatusService) {
 
         this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
         this.sessionsService = sessionsService;
         this.userService = userService;
+        this.internetStatusService = internetStatusService;
     }
 
     public Result createGet() {
@@ -85,6 +90,15 @@ public class SessionsController extends Controller {
                 // We are connected to the internet.
                 // Need to check if kit upgrade is available or
                 // if we need to download SQL evolution files.
+                ServiceResponse<InternetStatusItem> updateResponse = internetStatusService.updateInternetStatus(true);
+                if (updateResponse.hasErrors())
+                    throw new RuntimeException();
+            }
+
+            else {
+                ServiceResponse<InternetStatusItem> updateResponse = internetStatusService.updateInternetStatus(false);
+                    if (updateResponse.hasErrors())
+                        throw new RuntimeException();
             }
 
         }

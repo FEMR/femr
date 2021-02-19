@@ -20,6 +20,7 @@ package femr.common;
 
 import femr.common.models.*;
 import femr.data.models.core.*;
+import femr.data.models.mysql.InternetStatus;
 import org.joda.time.DateTime;
 import femr.data.models.mysql.MedicationInventory;
 
@@ -299,4 +300,6 @@ public interface IItemModelMapper {
      * @return a new VitalItem or null if processing fails
      */
     VitalItem createVitalItem(String name, Float value);
+
+    InternetStatusItem createInternetStatusItem(IInternetStatus status);
 }

@@ -33,6 +33,7 @@
                             <th>Gender</th>
                             <th>Age</th>
                             <th>City</th>
+                            <th>Match</th>
                             <th>&nbsp;</th>
                         </tr>
 
@@ -46,8 +47,51 @@
                                     <td class="vert-align">@patient.getSex</td>
                                     <td class="vert-align">@patient.getAge</td>
                                     <td class="vert-align">@patient.getCity</td>
+                                    <td class="vert-align">50%</td>
                                     <td class="vert-align">
-                                        <button type="button" class="selectPageFromRow fButton pull-right">Select</button>
+                                        <button type="button" class="selectPageFromRow fButton">Select</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    @if(viewModel.getRankedPatientItems.size > 1) {
+        <div class="encounterInfoWrap backgroundForWrap">
+            <div class="row well well-sm">
+                <h4 class="text-center">Duplicate Patient Search Results</h4>
+                <div class="panel panel-default">
+                    <table class="table vert-align">
+                        <tr>
+                            <th>Photo</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>City</th>
+                            <th>Match</th>
+                            <th>&nbsp;</th>
+                        </tr>
+
+                        @for(a <- 1 to viewModel.getRankedPatientItems.size) {
+                            @defining(viewModel.getRankedPatientItems.get(a - 1)) { patient =>
+                                <tr>
+                                    <td class="vert-align"><img class="thumbnail searchThumb" src="@patient.getPatientItem.getPathToPhoto" width="90" height="90"/></td>
+                                    <td class="vert-align patientId">@patient.getPatientItem.getId</td>
+                                    <td class="vert-align">@patient.getPatientItem.getFirstName @patient.getPatientItem.getLastName</td>
+                                    <td class="vert-align">@patient.getPatientItem.getPhoneNumber</td>
+                                    <td class="vert-align">@patient.getPatientItem.getSex</td>
+                                    <td class="vert-align">@patient.getPatientItem.getAge</td>
+                                    <td class="vert-align">@patient.getPatientItem.getCity</td>
+                                    <td class="vert-align">@patient.getRank</td>
+                                    <td class="vert-align">
+                                        <button type="button" class="selectPageFromRow fButton">Select</button>
                                     </td>
                                 </tr>
                             }

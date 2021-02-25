@@ -19,6 +19,7 @@
 package femr.business.helpers;
 
 
+import femr.data.models.mysql.RankedPatientMatch;
 import io.ebean.Ebean;
 import io.ebean.Query;
 import femr.data.models.mysql.*;
@@ -79,6 +80,10 @@ public class QueryProvider {
 
     public static Query<Patient> getPatientQuery() {
         return Ebean.find(Patient.class);
+    }
+
+    public static Query<RankedPatientMatch> getRankedPatientMatchQuery() {
+        return Ebean.find(RankedPatientMatch.class);
     }
 
     public static Query<PatientAgeClassification> getPatientAgeClassificationQuery() {

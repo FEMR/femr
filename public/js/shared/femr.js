@@ -274,6 +274,10 @@ function calculateBMIScore(system, weight, height) {
         bmi = Math.round((weight / (height * height)) * 703);
     }
 
+    if(bmi != null && (bmi < 5 || bmi > 150)) {
+        bmi = null;
+    }
+
     return bmi;
 }
 

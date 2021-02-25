@@ -2,9 +2,9 @@
 logLevel := Level.Warn
 
 // The Typesafe repository
-resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+resolvers += "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/"
 
-resolvers += "jBCrypt Repository" at "http://repo1.maven.org/maven2/org/"
+resolvers += "jBCrypt Repository" at "https://repo1.maven.org/maven2/org/"
 
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.12")

@@ -136,6 +136,22 @@ public class DatabaseSeeder {
             vital.setDeleted(false);
             vitalRepository.create(vital);
         }
+        if (vitals != null && !containVital(vitals, "cholesterol")) {
+            vital = new Vital();
+            vital.setName("cholesterol");
+            vital.setData_type("int");
+            vital.setUnitOfMeasurement("True/False");
+            vital.setDeleted(false);
+            vitalRepository.create(vital);
+        }
+        if (vitals != null && !containVital(vitals, "hypertension")) {
+            vital = new Vital();
+            vital.setName("hypertension");
+            vital.setData_type("int");
+            vital.setUnitOfMeasurement("True/False");
+            vital.setDeleted(false);
+            vitalRepository.create(vital);
+        }
     }
     
     private void seedDiagnosis() {

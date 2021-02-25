@@ -37,7 +37,7 @@
 
     border: none;
     padding: 10px;
-    color: #eeeeee;
+    color: #d2c9ba;
     border-bottom: 1px solid #6f6f6f;
 }
 
@@ -510,7 +510,7 @@
     font-weight: bold;
     padding: 12px;
     background: rgba(0, 0, 0, 0.8);
-    color: #eeeeee;
+    color: #d2c9ba;
     border-radius: 2px;
 }
 

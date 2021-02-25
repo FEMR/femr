@@ -33,6 +33,8 @@ public class UpdateVitalsModel {
     private Integer smoker;
     private Integer diabetic;
     private Integer alcohol;
+    private Integer cholesterol;
+    private Integer hypertension;
 
     public Float getBloodPressureSystolic() {
         return bloodPressureSystolic;
@@ -130,4 +132,10 @@ public class UpdateVitalsModel {
 
     public Integer getAlcohol() {return alcohol;}
     public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
+
+    public Integer getCholesterol() {return cholesterol;}
+    public void setCholesterol(Integer cholesterol){this.cholesterol = cholesterol;}
+
+    public Integer getHypertension() {return hypertension;}
+    public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
 }

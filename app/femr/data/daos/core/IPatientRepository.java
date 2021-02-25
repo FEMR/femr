@@ -1,5 +1,6 @@
 package femr.data.daos.core;
 
+import femr.data.models.mysql.RankedPatientMatch;
 import femr.data.models.core.*;
 
 import java.util.List;
@@ -73,6 +74,8 @@ public interface IPatientRepository {
      *  @return the patient with the given name
      **/
     List<? extends IPatient> retrievePatientsByName(String firstName, String lastName);
+
+    List<? extends IRankedPatientMatch> retrievePatientMatchesFromTriageFields(String firstName, String lastName, String phone, String addr, String gender, Long age, String city);
 
     /**
      *  Retrieve list of patients with the given first AND last name. Will also

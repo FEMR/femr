@@ -105,6 +105,8 @@ public class SearchService implements ISearchService {
             Integer smoker = null;
             Integer diabetic = null;
             Integer alcohol = null;
+            Integer cholesterol = null;
+            Integer hypertension = null;
             String ageClassification = null;
             if (patientEncounters.size() > 0){
 
@@ -116,6 +118,8 @@ public class SearchService implements ISearchService {
                 smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, recentEncounter.getId());
                 diabetic = QueryHelper.findPatientDiabetic(patientEncounterVitalRepository, recentEncounter.getId());
                 alcohol = QueryHelper.findPatientAlcohol(patientEncounterVitalRepository, recentEncounter.getId());
+                cholesterol = QueryHelper.findPatientCholesterol(patientEncounterVitalRepository, recentEncounter.getId());
+                hypertension = QueryHelper.findPatientHypertension(patientEncounterVitalRepository, recentEncounter.getId());
 
                 if (recentEncounter.getPatientAgeClassification() != null){
                     ageClassification = recentEncounter.getPatientAgeClassification().getName();
@@ -151,7 +155,9 @@ public class SearchService implements ISearchService {
                     ageClassification,
                     smoker,
                     diabetic,
-                    alcohol
+                    alcohol,
+                    cholesterol,
+                    hypertension
 
             );
 
@@ -198,6 +204,8 @@ public class SearchService implements ISearchService {
             Integer smoker = QueryHelper.findPatientSmoker(patientEncounterVitalRepository, patientEncounter.getId());
             Integer diabetic = QueryHelper.findPatientDiabetic(patientEncounterVitalRepository, patientEncounter.getId());
             Integer alcohol = QueryHelper.findPatientAlcohol(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer cholesterol = QueryHelper.findPatientCholesterol(patientEncounterVitalRepository, patientEncounter.getId());
+            Integer hypertension = QueryHelper.findPatientHypertension(patientEncounterVitalRepository, patientEncounter.getId());
 
             String ageClassification = null;
             if (patientEncounter.getPatientAgeClassification() != null){
@@ -229,7 +237,9 @@ public class SearchService implements ISearchService {
                     ageClassification,
                     smoker,
                     diabetic,
-                    alcohol
+                    alcohol,
+                    cholesterol,
+                    hypertension
             );
 
             // If metric setting enabled convert response patientItem to metric
@@ -558,10 +568,96 @@ public class SearchService implements ISearchService {
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null
                 ));
             }
             response.setResponseObject(patientItems);
+        } catch (Exception ex) {
+            response.addError("", ex.getMessage());
+        }
+
+        return response;
+    }
+
+    //Search for potential matching patients using all triage fields
+    public ServiceResponse<List<RankedPatientItem>> retrievePatientsFromTriageSearch(String first, String last, String phone, String addr, String gender, Long age, String city) {
+        ServiceResponse<List<RankedPatientItem>> response = new ServiceResponse<>();
+
+        try {
+            List<? extends IRankedPatientMatch> rankedPatients = patientRepository.retrievePatientMatchesFromTriageFields(first, last, phone, addr, gender, age, city);
+            List<RankedPatientItem> rankedPatientItems = new ArrayList<>();
+
+            for (IRankedPatientMatch r : rankedPatients) {
+                String pathToPhoto = null;
+                Integer photoId = null;
+                if (r.getPatient().getPhoto() != null) {
+                    pathToPhoto = r.getPatient().getPhoto().getFilePath();
+                    photoId = r.getPatient().getPhoto().getId();
+                }
+
+                PatientItem patientItem = itemModelMapper.createPatientItem(
+                        r.getPatient().getId(),
+                        r.getPatient().getFirstName(),
+                        r.getPatient().getLastName(),
+                        r.getPatient().getPhoneNumber(),
+                        r.getPatient().getCity(),
+                        r.getPatient().getAddress(),
+                        r.getPatient().getUserId(),
+                        r.getPatient().getAge(),
+                        r.getPatient().getSex(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        pathToPhoto,
+                        photoId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                RankedPatientItem rankedPatientItem = new RankedPatientItem(patientItem, r.getRank());
+                rankedPatientItems.add(rankedPatientItem);
+            }
+            response.setResponseObject(rankedPatientItems);
+
+//            List<PatientItem> patientItems = new ArrayList<>();
+//            for (Patient patient : patientList) {
+//                String pathToPhoto = null;
+//                Integer photoId = null;
+//                if (patient.getPhoto() != null) {
+//                    pathToPhoto = patient.getPhoto().getFilePath();
+//                    photoId = patient.getPhoto().getId();
+//                }
+//                patientItems.add(itemModelMapper.createPatientItem(
+//                        patient.getId(),
+//                        patient.getFirstName(),
+//                        patient.getLastName(),
+//                        patient.getPhoneNumber(),
+//                        patient.getCity(),
+//                        patient.getAddress(),
+//                        patient.getUserId(),
+//                        patient.getAge(),
+//                        patient.getSex(),
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        pathToPhoto,
+//                        photoId,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null
+//                ));
+//            }
+//            response.setResponseObject(patientItems);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -665,6 +761,8 @@ public class SearchService implements ISearchService {
                         null,
                         pathToPhoto,
                         photoId,
+                        null,
+                        null,
                         null,
                         null,
                         null,

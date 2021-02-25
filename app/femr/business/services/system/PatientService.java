@@ -121,6 +121,8 @@ public class PatientService implements IPatientService {
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null);
                 //Osman
 
@@ -179,6 +181,8 @@ public class PatientService implements IPatientService {
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null);
 
                 response.setResponseObject(patientItem);
@@ -232,6 +236,8 @@ public class PatientService implements IPatientService {
                         null,
                         photoPath,
                         photoId,
+                        null,
+                        null,
                         null,
                         null,
                         null,
@@ -296,6 +302,8 @@ public class PatientService implements IPatientService {
                         null,
                         null,
                         null,
+                        null,
+                        null,
                         null);
                 //Osman
                 response.setResponseObject(patientItem);
@@ -345,6 +353,8 @@ public class PatientService implements IPatientService {
                             null,
                             photoPath,
                             photoId,
+                            null,
+                            null,
                             null,
                             null,
                             null,

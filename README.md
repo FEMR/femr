@@ -15,15 +15,21 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 
 * [Play Framework](http://www.playframework.com/)
 
+### CI
+This repo uses Github Actions workflows for continuous integration, which can be found under the Actions tab in Github (https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch.
+
 ### Installation and Deployment
 
-For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
+For detailed instructions regarding installation and deployment, please follow the directions in the following link.   
+* [Installation Instructions](https://docs.google.com/document/d/1CLDNAvnc_doWw2OGKpXw11MguEUsex2o14ifo-qf5jA/edit?usp=sharing)
 
-
-#### 1. Edit application.conf accordingly.
-#### 2. Enter the console.
-    sbt clean compile test dist
-#### 3. This will generate a script used for executing FEMR.
+Prerequisites: Have MySQL, MySQLWorkbench, and IntelliJ IDEA Ultimate installed on a local machine.  
+#### 1. Download Scala and Play Framework plugins.
+#### 2. Make a new file in the conf folder named application.dev.conf containing database information (see link for more details).
+#### 3. Create a new schema "femr_db" in SQL Workbench.
+#### 4. Add a Play2 App Configuration on IntelliJ with 2 environment variables: user.dir and config.file.
+#### 5. Click the sbt refresh button.
+#### 6. Run the configuration on IntelliJ.
 
 ### Warnings
 

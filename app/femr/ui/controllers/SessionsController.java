@@ -85,22 +85,19 @@ public class SessionsController extends Controller {
                 return editPasswordGet(user);
             }
 
+            boolean flag = false;
             // put internet check here
+            // will only check when logging in
             if (InternetCheck.NetIsAvailable()) {
                 // We are connected to the internet.
                 // Need to check if kit upgrade is available or
                 // if we need to download SQL evolution files.
-                ServiceResponse<InternetStatusItem> updateResponse = internetStatusService.updateInternetStatus(true);
-                if (updateResponse.hasErrors())
-                    throw new RuntimeException();
+                flag = true;
             }
 
-            else {
-                ServiceResponse<InternetStatusItem> updateResponse = internetStatusService.updateInternetStatus(false);
-                    if (updateResponse.hasErrors())
-                        throw new RuntimeException();
-            }
-
+            ServiceResponse<InternetStatusItem> updateResponse = internetStatusService.updateInternetStatus(flag);
+            if (updateResponse.hasErrors())
+                throw new RuntimeException();
         }
 
         return redirect(routes.HomeController.index());

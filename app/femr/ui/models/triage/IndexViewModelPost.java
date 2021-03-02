@@ -50,7 +50,8 @@ public class IndexViewModelPost {
     private Integer smoker;
     private Integer diabetic;
     private Integer alcohol;
-
+    private Integer cholesterol;
+    private Integer hypertension;
     //multiple chief complaints if they exist
     private String chiefComplaintsJSON;
 
@@ -256,6 +257,12 @@ public class IndexViewModelPost {
 
     public Integer getAlcohol() {return alcohol;}
     public void setAlcohol(Integer alcohol){this.alcohol = alcohol;}
+
+    public Integer getCholesterol() {return cholesterol;}
+    public void setCholesterol(Integer cholesterol){this.cholesterol = cholesterol;}
+
+    public Integer getHypertension() {return hypertension;}
+    public void setHypertension(Integer hypertension){this.hypertension = hypertension;}
 
     public void setIsDiabetesScreenPerformed(String isDiabetesScreenPerformed) {
         this.isDiabetesScreenPerformed = isDiabetesScreenPerformed;

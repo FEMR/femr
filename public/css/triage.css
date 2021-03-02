@@ -36,6 +36,9 @@
     float: left;
     width: 60%;
     padding: 5px;
+    position: absolute;
+    height: 100%;
+    display: inline-block;
 }
 
 #leftVitalsWrap {
@@ -129,6 +132,11 @@
     overflow: hidden;
 }
 
+.triage-form {
+    position: relative;
+    overflow: hidden;
+}
+
 .triage-form .error-message{
     display: block;
     color: red;
@@ -211,7 +219,6 @@
 
 /* General info stuff */
 #genderBtns {
-    float: right;
     margin-right: 120px;
     width: 175px;
 }
@@ -300,6 +307,8 @@
     }
     #vitalsWrap {
         width: 100%;
+        position: static;
+        display: block;
     }
 
     #genInfoWrap {
@@ -313,6 +322,11 @@
 
     #weeksPregnant {
         margin: 0;
+    }
+
+    .triage-form {
+        position: static;
+        overflow: initial;
     }
 }
 
@@ -377,7 +391,7 @@
 }
 
 #citySearchContainer .twitter-typeahead {
-   display: inline !important;
+    display: inline !important;
     width: 100%;
 }
 .tt-dropdown-menu{

@@ -109,9 +109,60 @@ public class HistoryController extends Controller {
         for (PatientItem patientItem : patientItems)
             patientItem.setPathToPhoto(routes.PhotoController.GetPatientPhoto(patientItem.getId(), true).toString());
         viewModel.setPatientItems(patientItems);
+        viewModel.setRankedPatientItems(new ArrayList<>());
         viewModel.setPatientItem(patientItems.get(0));
 
         ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.retrievePatientEncounterItemsByPatientId(patientItems.get(0).getId());
+        if (patientEncountersServiceResponse.hasErrors()) {
+
+
+            throw new RuntimeException();
+        }
+        List<PatientEncounterItem> patientEncounterItems = patientEncountersServiceResponse.getResponseObject();
+        if (patientEncounterItems == null || patientEncounterItems.size() < 1) {
+            //return ok(showError.render(currentUser));
+            //return an error near the search box
+        }
+        viewModel.setPatientEncounterItems(patientEncounterItems);
+
+
+        return ok(indexPatient.render(currentUser, error, viewModel, patientEncounterItems, assetsFinder));
+    }
+
+    /**
+     * Render the page for viewing a patient with potential ranked patient matches from triage search (a patient can have multiple encounters)
+     *
+     */
+    public Result indexPatientGetWithRankedMatches(String first, String last, String phone, String addr, Long age, String gender, String city) {
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+        boolean error = false;
+
+
+        IndexPatientViewModelGet viewModel = new IndexPatientViewModelGet();
+
+        //how do we show more than one?
+//        query = query.replace("-", " ");
+        ServiceResponse<List<RankedPatientItem>> patientResponse = searchService.retrievePatientsFromTriageSearch(first, last, phone, addr, gender, age, city);
+//        ServiceResponse<List<PatientItem>> patientResponse = searchService.retrievePatientsFromQueryString(query);
+        if (patientResponse.hasErrors()) {
+            throw new RuntimeException();
+        }
+        List<RankedPatientItem> rankedPatientItems = patientResponse.getResponseObject();
+
+
+        if (rankedPatientItems == null || rankedPatientItems.size() < 1) {
+//            return ok(showError.render(currentUser));
+            //return an error near the search box
+        }
+
+        //too much logic - move patient photo finding up to the service layer
+        for (RankedPatientItem r : rankedPatientItems)
+            r.getPatientItem().setPathToPhoto(routes.PhotoController.GetPatientPhoto(r.getPatientItem().getId(), true).toString());
+        viewModel.setRankedPatientItems(rankedPatientItems);
+        viewModel.setPatientItems(new ArrayList<>());
+        viewModel.setPatientItem(rankedPatientItems.get(0).getPatientItem());
+
+        ServiceResponse<List<PatientEncounterItem>> patientEncountersServiceResponse = searchService.retrievePatientEncounterItemsByPatientId(rankedPatientItems.get(0).getPatientItem().getId());
         if (patientEncountersServiceResponse.hasErrors()) {
 
 

@@ -43,7 +43,7 @@ public class MockItemModelMapper implements IItemModelMapper{
     @Override
     public PatientItem createPatientItem(int id, String firstName, String lastName, String phoneNumber, String city, String address,
                                          int userId, Date age, String sex, Integer weeksPregnant, Integer heightFeet, Integer heightInches,
-                                         Float weight, String pathToPatientPhoto, Integer photoId, String ageClassification, Integer smoker, Integer diabetic, Integer alcohol) {
+                                         Float weight, String pathToPatientPhoto, Integer photoId, String ageClassification, Integer smoker, Integer diabetic, Integer alcohol, Integer cholesterol, Integer hypertension) {
 
 
         //don't really need a mock patient item yet

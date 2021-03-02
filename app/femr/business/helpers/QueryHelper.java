@@ -139,6 +139,36 @@ public class QueryHelper {
         return alcohol;
     }
 
+    public static Integer findPatientCholesterol(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
+        Integer cholesterol = null;
+        Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", "cholesterol")
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query1);
+        if (patientEncounterVitals.size() > 0) {
+            cholesterol = Math.round(patientEncounterVitals.get(0).getVitalValue());
+        }
+        return cholesterol;
+    }
+
+    public static Integer findPatientHypertension(IRepository<IPatientEncounterVital> patientEncounterVitalRepository, int encounterId){
+        Integer hypertension = null;
+        Query<PatientEncounterVital> query1 = QueryProvider.getPatientEncounterVitalQuery()
+                .fetch("vital")
+                .where()
+                .eq("patient_encounter_id", encounterId)
+                .eq("vital.name", "hypertension")
+                .order().desc("date_taken");
+        List<? extends IPatientEncounterVital> patientEncounterVitals = patientEncounterVitalRepository.find(query1);
+        if (patientEncounterVitals.size() > 0) {
+            hypertension = Math.round(patientEncounterVitals.get(0).getVitalValue());
+        }
+        return hypertension;
+    }
+
 
     /**
      * AJ Saclayan

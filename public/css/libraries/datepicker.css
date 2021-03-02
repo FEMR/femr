@@ -114,7 +114,7 @@
   background-color: transparent;
 }
 .datepicker table tr td.day:hover {
-  background: #eeeeee;
+  background: #d2c9ba;
   cursor: pointer;
 }
 .datepicker table tr td.old,
@@ -187,7 +187,7 @@
 .datepicker table tr td.range:hover,
 .datepicker table tr td.range.disabled,
 .datepicker table tr td.range.disabled:hover {
-  background: #eeeeee;
+  background: #d2c9ba;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
@@ -359,7 +359,7 @@
   border-radius: 4px;
 }
 .datepicker table tr td span:hover {
-  background: #eeeeee;
+  background: #d2c9ba;
 }
 .datepicker table tr td span.disabled,
 .datepicker table tr td span.disabled:hover {
@@ -431,7 +431,7 @@
 }
 .datepicker thead tr:first-child th:hover,
 .datepicker tfoot tr th:hover {
-  background: #eeeeee;
+  background: #d2c9ba;
 }
 .datepicker .cw {
   font-size: 10px;
@@ -473,7 +473,7 @@
   text-align: center;
   text-shadow: 0 1px 0 #ffffff;
   vertical-align: middle;
-  background-color: #eeeeee;
+  background-color: #d2c9ba;
   border: 1px solid #ccc;
   margin-left: -5px;
   margin-right: -5px;

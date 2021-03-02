@@ -306,6 +306,7 @@ var diabeticScreeningFeature = {
         //because they are stupid
         triageFields.patientInformation.firstName.prop('readonly', true);
         triageFields.patientInformation.lastName.prop('readonly', true);
+        triageFields.patientInformation.address.prop('readonly', true);
         triageFields.patientInformation.phoneNumber.prop('readonly', true);
         triageFields.patientInformation.age.prop('readonly', true);
         triageFields.patientInformation.years.prop('readonly', true);
@@ -386,6 +387,7 @@ var triageFields = {
     patientInformation: {
         firstName: $('#firstName'),
         lastName: $('#lastName'),
+        address: $('#address'),
         phoneNumber: $('#phoneNumber'),
         age: $('#age'),//doesn't work for an existing patient
         years: $('#years'),
@@ -657,7 +659,8 @@ $(document).ready(function () {
                 $(diabetesDialog).removeClass('hidden');
                 diabeticScreeningFeature.readonlyEverything();
             } else {
-                checkIfDuplicatePatient();
+                //checkIfDuplicatePatient();
+                checkIfDuplicatePatientMatch();
             }
             pass = !isDiabeticScreeningPromptNecessary;
         }
@@ -672,18 +675,57 @@ $(document).ready(function () {
         checkIfDuplicatePatient();
     });
 
-    function checkIfDuplicatePatient() {
+    function checkIfDuplicatePatientMatch() {
         var patientInfo = triageFields.patientInformation;
-        var query = patientInfo.firstName.val() + " " + patientInfo.lastName.val();
-        var url = "/search/check/" + query;
+        var first = patientInfo.firstName.val();
+        var last = patientInfo.lastName.val();
+        var phone = patientInfo.phoneNumber.val();
+        var addr = patientInfo.address.val();
+        //age col in patients table stores a bday, using age var to keep consistent naming conventions, passing date as long to router
+        var age = birthdayAgeAutoCalculateFeature.calculateBirthdayFromAge().valueOf();
+        var gender = patientInfo.sex.val();
+        var city = patientInfo.city.val();
+        var ageClassification = $("[name=ageClassification]:checked").val();
+
+        var url = "/search/dupPatient/findMatch";
         var patientId = $("#patientId").val();
 
-        $.getJSON(url, function (result) {
+        var queryParams;
+        if(ageClassification != null) {
+            queryParams = {
+                first: first,
+                last: last,
+                phone: phone,
+                addr: addr,
+                gender: gender,
+                city: city
+            }
+        } else {
+            queryParams = {
+                first: first,
+                last: last,
+                phone: phone,
+                addr: addr,
+                age: age,
+                gender: gender,
+                city: city
+            }
+        }
+
+
+        $.getJSON(url, queryParams,function (result) {
             if (result === true) {
                 if(!(patientId > 0)) {
-                    if (confirm("A patient with this name already exists in the database. Would you like to view the matching patient information?")) {
-                        var duplicatePatientUrl = "/history/patient/" + patientInfo.firstName.val() + "-" + patientInfo.lastName.val();
-                        window.location.replace(duplicatePatientUrl);
+                    if (confirm("A patient with similar information already exists in the database. Would you like to view the matching patients?")) {
+                        var patientMatchesUrl;
+                        if(ageClassification != null) {
+                            patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
+                                + "&phone=" + phone + "&addr=" + addr + "&gender=" + gender + "&city=" + city;
+                        } else {
+                            patientMatchesUrl = "/history/patient/withMatches/p?first=" + first + "&last=" + last
+                                + "&phone=" + phone + "&addr=" + addr + "&age=" + age + "&gender=" + gender + "&city=" + city;
+                        }
+                        window.location.replace(patientMatchesUrl);
                     }
                 }
             }

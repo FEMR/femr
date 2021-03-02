@@ -20,12 +20,16 @@ package femr.ui.models.history;
 
 import femr.common.models.PatientEncounterItem;
 import femr.common.models.PatientItem;
+import femr.common.models.RankedPatientItem;
+
 import java.util.List;
 
 public class IndexPatientViewModelGet {
     //used to show a list of alternative patients that also
     //match the users search criteria
     private List<PatientItem> patientItems;
+    private List<RankedPatientItem> rankedPatientItems;
+
     //used for the patient that is being shown no matter what
     private PatientItem patientItem;
     //patient encounters available for the patient
@@ -34,9 +38,16 @@ public class IndexPatientViewModelGet {
     public List<PatientItem> getPatientItems() {
         return patientItems;
     }
+    public List<RankedPatientItem> getRankedPatientItems() {
+        return rankedPatientItems;
+    }
 
     public void setPatientItems(List<PatientItem> patientItems) {
         this.patientItems = patientItems;
+    }
+
+    public void setRankedPatientItems(List<RankedPatientItem> rankedPatientItems) {
+        this.rankedPatientItems = rankedPatientItems;
     }
 
     public PatientItem getPatientItem() {

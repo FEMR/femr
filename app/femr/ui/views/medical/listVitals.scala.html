@@ -148,5 +148,17 @@ keep track of the most recent vitals for a patient (see listVitals.js and medica
                 <td> @outputYesOrNA(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))</td>
             }
         </tr>
+        <tr id="cholesterol">
+            <th>Cholesterol</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td> @outputYesOrNA(vitalMap.get("cholesterol", vitalMap.getDate(dateIndex - 1)))</td>
+            }
+        </tr>
+        <tr id="hypertension">
+            <th>Hypertension</th>
+            @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                <td> @outputYesOrNA(vitalMap.get("hypertension", vitalMap.getDate(dateIndex - 1)))</td>
+            }
+        </tr>
     </tbody>
 </table>

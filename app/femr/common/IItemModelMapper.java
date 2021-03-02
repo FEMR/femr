@@ -97,6 +97,8 @@ public interface IItemModelMapper {
      * @param smoker             does the patient smoke or not, may be null
      * @param diabetic           is the patient diabetic or not, may be null
      * @param alcohol            does the patient drink alcohol or not, may be null
+     * @param cholesterol        does the patient have high cholesterol or not, may be null
+     * @param hypertension       does the patient have hypertension or not, may be null
      * @return a new PatientItem or null if processing fails, may be null
      */
     PatientItem createPatientItem(int id,
@@ -117,7 +119,9 @@ public interface IItemModelMapper {
                                   String ageClassification,
                                   Integer smoker,
                                   Integer diabetic,
-                                  Integer alcohol);
+                                  Integer alcohol,
+                                  Integer cholesterol,
+                                  Integer hypertension);
 
     /**
      * Generate and provide an instance of PatientEncounterItem

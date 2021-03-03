@@ -40,7 +40,6 @@
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-                <input class="hidden" type="text" id="patientId" value="@viewModel.getPatient.getId" />
 
                 <h2>General Info</h2>
 
@@ -57,10 +56,6 @@
                     @if(viewModel.getPatient.getCity == null) {
                         <input type = "text" class="citySearch fInput" name="city" id="city" required>
                     } else {
-                        <input type = "text" class="citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
-                        }
-
-                </div>
                         <input type = "text" class = "citySearch fInput" name="city" id="city" value="@viewModel.getPatient.getCity"readonly>
                         }
                 </div>
@@ -312,4 +307,4 @@
             </div>
 
         </div>
-}
+}}

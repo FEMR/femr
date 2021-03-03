@@ -50,7 +50,9 @@ hr {
 #nameOrIdSearchForm {
     border: 1px solid black;
     width: 200px;
-    margin-top: 10px;
+    margin: auto;
+    display: flex;
+    margin-top: 20px;
 }
 
 

@@ -295,7 +295,15 @@ public class TriageController extends Controller {
         if(viewModel.getAlcohol() != null){
             newVitals.put("alcohol", viewModel.getAlcohol().floatValue());
         }
-		
+
+        if(viewModel.getCholesterol() != null){
+            newVitals.put("cholesterol", viewModel.getCholesterol().floatValue());
+        }
+
+        if(viewModel.getHypertension() != null){
+            newVitals.put("hypertension", viewModel.getHypertension().floatValue());
+        }
+
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();

@@ -99,7 +99,7 @@ http://api.thumbr.it/whitenoise-361x370.png?background=#d4d3ccff&noise=626262&de
     padding: 5px 30px;
 }
 .tabrow li.active {
-    background: url("../../img/paper_greyLightNoise.png") repeat;
+    background-color: #EEEEEE;
     color: #333;
     z-index: 2;
     border-bottom-color: #FFF;

@@ -15,7 +15,10 @@ import java.util.List;
 public class MockPatient implements IPatient {
 
     private int id = 0;
+<<<<<<< HEAD
     private int globallyUniqueID = 0;
+=======
+>>>>>>> a394fce4be7f8d26ee8fab6f2d69f5a9fafbf33e
     private int userId = 0;
     private String firstName = "firstName";
     private String lastName = "lastName";
@@ -43,12 +46,15 @@ public class MockPatient implements IPatient {
     }
 
     @Override
+<<<<<<< HEAD
     public int getGloballyUniqueID() { return globallyUniqueID; }
 
     @Override
     public void setGloballyUniqueID(int globallyUniqueID) { this.globallyUniqueID = globallyUniqueID; }
 
     @Override
+=======
+>>>>>>> a394fce4be7f8d26ee8fab6f2d69f5a9fafbf33e
     public int getUserId() {
         return userId;
     }
@@ -190,6 +196,7 @@ public class MockPatient implements IPatient {
 
         this.reasonDeleted = reason;
     }
+<<<<<<< HEAD
 
     public void createGUID() {
         int hash = 17;
@@ -199,4 +206,6 @@ public class MockPatient implements IPatient {
 
         this.globallyUniqueID = hash;
     }
+=======
+>>>>>>> a394fce4be7f8d26ee8fab6f2d69f5a9fafbf33e
 }

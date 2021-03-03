@@ -1,5 +1,6 @@
 package femr.data.daos.core;
 
+import femr.data.models.mysql.RankedPatientMatch;
 import femr.data.models.core.*;
 
 import java.util.List;
@@ -65,8 +66,6 @@ public interface IPatientRepository {
     IPatient retrievePatientById(Integer id);
 
     /**
-<<<<<<< HEAD
-=======
      *   Retrieve patient that is not deleted
      *   @param  guid of the patient
      *   @return the patient with the given ID or NULL if no patients are found
@@ -74,7 +73,6 @@ public interface IPatientRepository {
     IPatient retrievePatientByGuid(Integer guid);
 
     /**
->>>>>>> 015d8706b7fa7d0e733776eda9182a612c8d1963
      *  Retrieve list of patients with the given first AND last name. Will also
      *  try to match firstName to all available first names & last names
      *
@@ -83,6 +81,8 @@ public interface IPatientRepository {
      *  @return the patient with the given name
      **/
     List<? extends IPatient> retrievePatientsByName(String firstName, String lastName);
+
+    List<? extends IRankedPatientMatch> retrievePatientMatchesFromTriageFields(String firstName, String lastName, String phone, String addr, String gender, Long age, String city);
 
     /**
      *  Retrieve list of patients with the given first AND last name. Will also

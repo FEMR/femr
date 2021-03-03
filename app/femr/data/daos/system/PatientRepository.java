@@ -4,6 +4,8 @@ import io.ebean.Ebean;
 import io.ebean.Expr;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
+import femr.data.models.mysql.RankedPatientMatch;
+import io.ebean.*;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import femr.business.helpers.QueryProvider;
@@ -15,6 +17,10 @@ import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
 import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PatientRepository implements IPatientRepository {
@@ -22,7 +28,7 @@ public class PatientRepository implements IPatientRepository {
     private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
 
     @Inject
-    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider){
+    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider) {
 
         this.patientAgeClassificationProvider = patientAgeClassificationProvider;
     }
@@ -31,7 +37,7 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder){
+    public IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder) {
 
         if (StringUtils.isNullOrWhiteSpace(name) || StringUtils.isNullOrWhiteSpace(description)) {
 
@@ -60,7 +66,7 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(){
+    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications() {
 
         List<? extends IPatientAgeClassification> response = null;
         try {
@@ -85,7 +91,7 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted){
+    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted) {
 
         List<? extends IPatientAgeClassification> response = null;
         try {
@@ -240,7 +246,7 @@ public class PatientRepository implements IPatientRepository {
         List<? extends IPatient> response = null;
         try {
             Query<Patient> query;
-            if(StringUtils.isNotNullOrWhiteSpace(phoneNumber)) {
+            if (StringUtils.isNotNullOrWhiteSpace(phoneNumber)) {
                 query = QueryProvider.getPatientQuery()
                         .where()
                         .eq("phone_number", phoneNumber)
@@ -250,8 +256,70 @@ public class PatientRepository implements IPatientRepository {
                 response = query.findList();
             }
         } catch (Exception ex) {
-
             Logger.error("PatientRepository-retrievePatientByPhoneNumber", ex.getMessage(), "phone number: " + phoneNumber);
+            throw ex;
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<? extends IRankedPatientMatch> retrievePatientMatchesFromTriageFields(String firstName, String lastName, String phone, String addr, String gender, Long age, String city) {
+
+        List<? extends IRankedPatientMatch> response = null;
+        try {
+
+            Query<? extends IRankedPatientMatch> query = QueryProvider.getRankedPatientMatchQuery();
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String ageString = "";
+            if (age != null) {
+                ageString = dateFormat.format(new Date(age));
+            }
+
+
+            String sql
+                    = "select id, user_id, first_name, last_name, phone_number, age, sex, address, city, isDeleted, deleted_by_user_id, reason_deleted, (" +
+                    (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then 40 else 0 end + " : "") +
+                    "case when last_name = \"" + lastName + "\" then 15 else 0 end + " +
+                    "case when first_name = \"" + firstName + "\" then 10 else 0 end + " +
+                    "case when dm_last_name = dm(\"" + lastName + "\") then 10 else 0 end + " +
+                    "case when dm_first_name = dm(\"" + firstName + "\") then 10 else 0 end + " +
+                    (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then 15 else 0 end + " : "") +
+                    (age != null ? "case when age != null and age = \"" + ageString + "\" then 10 else 0 end + " : "") +
+                    "case when sex = \"" + gender + "\" then 10 else 0 end + " +
+                    "case when city like \"" + city + "\" then 10 else 0 end) " +
+                    "as priority " +
+                    "from patients having priority >= 30 and isDeleted is null order by priority desc limit 15";
+
+            RawSql rawSql = RawSqlBuilder
+                    .parse(sql)
+                    .columnMapping("id", "patient.id")
+                    .columnMapping("user_id", "patient.userId")
+                    .columnMapping("first_name", "patient.firstName")
+                    .columnMapping("last_name", "patient.lastName")
+                    .columnMapping("phone_number", "patient.phoneNumber")
+                    .columnMapping("age", "patient.age")
+                    .columnMapping("sex", "patient.sex")
+                    .columnMapping("address", "patient.address")
+                    .columnMapping("city", "patient.city")
+                    .columnMapping("isDeleted", "patient.isDeleted")
+                    .columnMapping("deleted_by_user_id", "patient.deletedByUserId")
+                    .columnMapping("reason_deleted", "patient.reasonDeleted")
+                    .columnMapping("priority", "rank")
+                    .create();
+
+            query.setRawSql(rawSql);
+
+            response = query.findList();
+
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrievePatientMatchesFromTriageFields", ex.getMessage());
+            throw ex;
         }
 
         return response;
@@ -325,3 +393,4 @@ public class PatientRepository implements IPatientRepository {
         return patient;
     }
 }
+

@@ -50,9 +50,12 @@ POST        /history/encounter/updateField/:id                 @femr.ui.controll
 GET         /history/encounter/listTabFieldHistory/:id         @femr.ui.controllers.HistoryController.listTabFieldHistoryGet(id: Integer)
 POST        /history/encounter/delete/:id                      @femr.ui.controllers.TriageController.deleteEncounterPost(id: Integer,encounterId: Integer)
 GET         /history/patient/:query                            @femr.ui.controllers.HistoryController.indexPatientGet(query: String)
+
+GET         /history/patient/withMatches/p                     @femr.ui.controllers.HistoryController.indexPatientGetWithRankedMatches(first: String, last: String, phone: String ?= null, addr: String ?= null, age: java.lang.Long ?= null, gender: String, city: String)
 #Search
 GET         /search/:page                                      @femr.ui.controllers.SearchController.handleSearch(page: String)
 GET         /search/check/:query                               @femr.ui.controllers.SearchController.doesPatientExist(query: String)
+GET         /search/dupPatient/findMatch         @femr.ui.controllers.SearchController.doesPatientExistForSearch(first: String, last: String, phone: String ?= null, addr: String ?= null, age: java.lang.Long ?= null, gender: String, city: String)
 GET         /search/typeahead/patients                         @femr.ui.controllers.SearchController.typeaheadPatientsJSONGet()
 # AJ Saclayan!  Adding in typeahead
 GET         /search/typeahead/cities                           @femr.ui.controllers.SearchController.typeaheadCitiesJSONGet()

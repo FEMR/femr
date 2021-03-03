@@ -37,7 +37,7 @@
 
 body {
     padding-top: 50px;
-    background: url("../img/paper_greyNoise.png") repeat;
+    background-color: #aaa296;
     /* Removed because of the insane amount of time required to load (especially on networks where the connection speed is iffy */
     /*font-family: dejavu;*/
     font-family: sans-serif;
@@ -52,8 +52,12 @@ hr {
     width: 200px;
     margin-top: 10px;
 }
+
+
 #nameOrIdSearchForm:focus, .fButtonSearch:focus{
+    display: flex;
     outline: 0;
+    margin-top: 20px;
     border: 1px solid rgb(198, 0, 0);
     box-shadow: 0 0 3px rgb(250, 0, 0);
 }
@@ -98,6 +102,7 @@ hr {
 
 /* THE fEMR button heirarchy*/
 .fButton{
+    margin-top: 10px;
     border-radius: 4px;
     border: 1px solid #3f3f3d;
     padding: 5px 12px;
@@ -188,7 +193,7 @@ a.fRedButton:hover{
 /* THE fEMR textarea */
 .fTextArea {
     width: 100%;
-    height: 75px;
+    height: 85px;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -204,14 +209,15 @@ a.fRedButton:hover{
 /* THE fEMR input(text)! */
 .fInput {
     border-radius: 5px;
+    display: block;
     height: 33px;
     width: 175px;
     border: 1px solid #ccc;
     padding: 5px 10px 5px 10px;
     background-color: white;
     color: #555;
-
 }
+
 
 .fInput:focus {
     box-shadow: 0 0 5px #3f3f3d
@@ -328,7 +334,7 @@ float: right;
 /* fEMR's background with border */
 .backgroundForWrap {
     border-radius: 10px;
-    background: url("../img/paper_greyLightNoise.png") repeat;
+    background-color: #e9e6e6;
     border: 3px solid #3f3f3d;
 }
 
@@ -339,7 +345,7 @@ float: right;
     right: 0;
     left: 0;
     position: fixed;
-    min-height: 50px;
+    min-height: 60px;
     background: black;
     margin-bottom: 20px;
 }
@@ -363,8 +369,7 @@ float: right;
 .navigationLogo img {
     display: block;
     margin-right: auto;
-    margin-top: 11px;
-
+    margin-top: 17px;
 }
 
 .navigationItemsWrap {
@@ -468,7 +473,8 @@ float: right;
     display: block;
     padding-right: 15px;
     padding-left: 15px;
-    padding-top: 14px;
+    padding-top: 18px;
+    font-size: 16px;
 }
 
 .navigationItems a:hover {
@@ -485,9 +491,10 @@ float: right;
 .userStatus {
     float: right;
     color: grey;
-    margin: 14px 0 14px 0;
+    margin: 18px 0 14px 0;
     width: 25%;
     text-align: right;
+    font-size: 16px;
 }
 
 .reference{

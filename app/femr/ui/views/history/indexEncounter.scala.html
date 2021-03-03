@@ -152,6 +152,20 @@
                                         @outputYesOrNA(vitalMap.get("alcohol", vitalMap.getDate(dateIndex - 1)))
                                     }       </span>
                             </p>
+
+                            <p><span class="infoLabel">Cholesterol:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                        @outputYesOrNA(vitalMap.get("cholesterol", vitalMap.getDate(dateIndex - 1)))
+                                    }       </span>
+                            </p>
+
+                            <p><span class="infoLabel">Hypertension:</span>
+                                @for(dateIndex <- 1 to vitalMap.getDateListChronological.size) {
+                                    <span>
+                                        @outputYesOrNA(vitalMap.get("hypertension", vitalMap.getDate(dateIndex - 1)))
+                                    }       </span>
+                            </p>
                         }
 
                         </div>

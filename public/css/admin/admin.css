@@ -60,7 +60,7 @@
     text-decoration: none;
 }
 #admin-right-panel{
-    background: url("../../img/paper_greyLightNoise.png") repeat;
+    background-color: #e9e6e6;
     border: 3px solid #3f3f3d;
     border-radius: 10px;
     min-height: 600px;

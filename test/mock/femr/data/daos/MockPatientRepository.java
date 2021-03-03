@@ -3,8 +3,9 @@ package mock.femr.data.daos;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientAgeClassification;
-import femr.util.stringhelpers.StringUtils;
 import mock.femr.data.models.MockPatient;
+import femr.data.models.core.IRankedPatientMatch;
+import mock.femr.data.models.MockRankedPatientMatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +24,24 @@ public class MockPatientRepository implements IPatientRepository{
     public boolean savePatientWasCalled = false;
 
     public IPatient mockPatient;
+    public IRankedPatientMatch mockRankedPatientMatch;
+    private List<? extends IRankedPatientMatch> mockRankedPatientMatches;
     private List<? extends IPatient> mockPatients;
 
     public MockPatientRepository(){
 
         this.mockPatient = new MockPatient();
+        this.mockRankedPatientMatch = new MockRankedPatientMatch();
 
         List<MockPatient> tempList = new ArrayList<>();
         tempList.add(new MockPatient());
         tempList.add(new MockPatient());
 
+        List<MockRankedPatientMatch> mockRankedPatientMatchList = new ArrayList<>();
+        mockRankedPatientMatchList.add(new MockRankedPatientMatch());
+
         this.mockPatients = tempList;
+        this.mockRankedPatientMatches = mockRankedPatientMatchList;
     }
 
     @Override
@@ -95,6 +103,11 @@ public class MockPatientRepository implements IPatientRepository{
     }
 
     @Override
+    public List<? extends IRankedPatientMatch> retrievePatientMatchesFromTriageFields(String firstName, String lastName, String phone, String addr, String gender, Long age, String city) {
+        return mockRankedPatientMatches;
+    }
+
+    @Override
     public List<? extends IPatient> retrievePatientsByPhoneNumber(String phoneNumber) {
 
         retrievePatientsByPhoneNumberWasCalled = true;
@@ -108,7 +121,6 @@ public class MockPatientRepository implements IPatientRepository{
 
         return patient;
     }
-
 
     @Override
     public IPatient retrievePatientByGuid(Integer guid) {

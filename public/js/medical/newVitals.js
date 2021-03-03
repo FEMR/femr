@@ -16,7 +16,9 @@ $(document).ready(function () {
         weeksPregnant: $('#weeksPreg'),
         smoker: $('#newSmoker'),
         diabetic: $('#newDiabetic'),
-        alcohol: $('#newAlcohol')
+        alcohol: $('#newAlcohol'),
+        cholesterol: $('#newCholesterol'),
+        hypertension: $('#newHypertension')
     };
 
     $('#cancelVitalsBtn').click(function () {
@@ -78,10 +80,13 @@ $(document).ready(function () {
             var checkSmoker = document.getElementById("newSmoker").checked;
             var checkDiabetic = document.getElementById("newDiabetic").checked;
             var checkAlcohol = document.getElementById("newAlcohol").checked;
+            var checkCholesterol = document.getElementById("newCholesterol").checked;
+            var checkHypertension = document.getElementById("newHypertension").checked;
 
             newVitals.smoker = checkSmoker === true ? "1" : null;
             newVitals.diabetic = checkDiabetic === true ? "1" : null;
-            newVitals.alcohol = checkAlcohol === true ? "1" : null;
+            newVitals.cholesterol = checkCholesterol === true ? "1" : null;
+            newVitals.hypertension = checkHypertension === true ? "1" : null;
 
             $.ajax({
                 url: '/medical/updateVitals/' + $("#patientId").val(),

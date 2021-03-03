@@ -178,7 +178,9 @@ public class ItemModelMapper implements IItemModelMapper {
                                                 String ageClassification,
                                                 Integer smoker,
                                                 Integer diabetic,
-                                                Integer alcohol) {
+                                                Integer alcohol,
+                                                Integer cholesterol,
+                                                Integer hypertension) {
         // Osman above
         if (StringUtils.isNullOrWhiteSpace(firstName) ||
                 StringUtils.isNullOrWhiteSpace(lastName) ||
@@ -241,6 +243,12 @@ public class ItemModelMapper implements IItemModelMapper {
         if (alcohol != null)
             patientItem.setAlcohol(alcohol);
 
+        if (cholesterol != null)
+            patientItem.setCholesterol(cholesterol);
+
+        if (hypertension != null)
+            patientItem.setHypertension(hypertension);
+
         return patientItem;
     }
 
@@ -273,6 +281,8 @@ public class ItemModelMapper implements IItemModelMapper {
                 patientEncounter.getPatient().getUserId(),
                 patientEncounter.getPatient().getAge(),
                 patientEncounter.getPatient().getSex(),
+                null,
+                null,
                 null,
                 null,
                 null,

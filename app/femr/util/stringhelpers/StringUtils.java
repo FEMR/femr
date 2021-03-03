@@ -137,8 +137,6 @@ public class StringUtils {
     }
 
     /**
-<<<<<<< HEAD
-=======
      * Checks if a gender of a patient is empty
      *
      * @param str gender to check
@@ -150,7 +148,6 @@ public class StringUtils {
     }
 
     /**
->>>>>>> 015d8706b7fa7d0e733776eda9182a612c8d1963
      * Checks if a Integer is null
      *
      * @param value Integer to check

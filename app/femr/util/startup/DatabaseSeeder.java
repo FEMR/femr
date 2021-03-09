@@ -47,6 +47,9 @@ public class DatabaseSeeder {
     private final IRepository<IMissionCity> missionCityRepository;
     private final IRepository<IMissionTeam> missionTeamRepository;
     private final IRepository<ISystemSetting> systemSettingRepository;
+    private final IRepository<INetworkStatus> networkStatusRepository;
+    private final IRepository<IKitStatus> kitStatusRepository;
+    private final IRepository<IDatabaseStatus> databaseStatusRepository;
     private final IRepository<ITabField> tabFieldRepository;
     private final IRepository<ITabFieldSize> tabFieldSizeRepository;
     private final IRepository<ITabFieldType> tabFieldTypeRepository;
@@ -64,6 +67,9 @@ public class DatabaseSeeder {
                           IRepository<IMissionCity> missionCityRepository,
                           IRepository<IMissionTeam> missionTeamRepository,
                           IRepository<ISystemSetting> systemSettingRepository,
+                          IRepository<INetworkStatus> networkStatusRepository,
+                          IRepository<IKitStatus> kitStatusRepository,
+                          IRepository<IDatabaseStatus> databaseStatusRepository,
                           IRepository<ITabField> tabFieldRepository,
                           IRepository<ITabFieldSize> tabFieldSizeRepository,
                           IRepository<ITabFieldType> tabFieldTypeRepository,
@@ -79,6 +85,9 @@ public class DatabaseSeeder {
         this.passwordEncryptor = passwordEncryptor;
         this.diagnosisRepository = diagnosisRepository;
         this.systemSettingRepository = systemSettingRepository;
+        this.networkStatusRepository = networkStatusRepository;
+        this.kitStatusRepository = kitStatusRepository;
+        this.databaseStatusRepository = databaseStatusRepository;
         this.tabFieldRepository = tabFieldRepository;
         this.tabFieldSizeRepository = tabFieldSizeRepository;
         this.tabFieldTypeRepository = tabFieldTypeRepository;
@@ -94,6 +103,9 @@ public class DatabaseSeeder {
     private void seed() {
 
         seedMissionTripInformation();
+        seedNetworkStatus();
+        seedKitStatus();
+        seedDatabaseStatus();
         seedSystemSettings();
         seedSystemSettingsDescriptions();
         seedAdminUser();
@@ -106,6 +118,85 @@ public class DatabaseSeeder {
         seedUserRoles();
         seedVitals();
     }
+
+    private void seedDatabaseStatus() {
+        //TODO Feather to set initial values
+        List<? extends IDatabaseStatus> databaseStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);
+        DatabaseStatus databaseStatus;
+        if (databaseStatuses != null && !containDatabaseStatus(databaseStatuses, "Last Backup")) {
+            databaseStatus = new DatabaseStatus();
+            databaseStatus.setName("Last Backup");
+            databaseStatus.setValue("2021.02.17");
+            databaseStatusRepository.create(databaseStatus);
+        }
+    }
+
+    private void seedKitStatus() {
+        //TODO Lemur to set initial values
+        List<? extends IKitStatus> kitStatuses = kitStatusRepository.findAll(KitStatus.class);
+        KitStatus kitStatus;
+        if (kitStatuses != null && !containKitStatus(kitStatuses, "Status")) {
+            kitStatus = new KitStatus();
+            kitStatus.setName("Status");
+            kitStatus.setValue("Currently Online");
+            kitStatusRepository.create(kitStatus);
+        }
+        if (kitStatuses != null && !containKitStatus(kitStatuses, "Version")) {
+            kitStatus = new KitStatus();
+            kitStatus.setName("Version");
+            kitStatus.setValue("1.0.0");
+            kitStatusRepository.create(kitStatus);
+        }
+        if (kitStatuses != null && !containKitStatus(kitStatuses, "Last Update")) {
+            kitStatus = new KitStatus();
+            kitStatus.setName("Last Update");
+            kitStatus.setValue("2021.02.17");
+            kitStatusRepository.create(kitStatus);
+        }
+        if (kitStatuses != null && !containKitStatus(kitStatuses, "Type")) {
+            kitStatus = new KitStatus();
+            kitStatus.setName("Type");
+            kitStatus.setValue("Docker Container");
+            kitStatusRepository.create(kitStatus);
+        }
+    }
+
+    private void seedNetworkStatus() {
+        //TODO Lemur to set initial values
+        List<? extends INetworkStatus> networkStatuses = networkStatusRepository.findAll(NetworkStatus.class);
+        NetworkStatus networkStatus;
+        if (networkStatuses != null && !containNetworkStatus(networkStatuses, "Status")) {
+            networkStatus = new NetworkStatus();
+            networkStatus.setName("Status");
+            networkStatus.setValue("Connection Stable");
+            networkStatusRepository.create(networkStatus);
+        }
+        if (networkStatuses != null && !containNetworkStatus(networkStatuses, "Download")) {
+            networkStatus = new NetworkStatus();
+            networkStatus.setName("Download");
+            networkStatus.setValue("10 Mbps");
+            networkStatusRepository.create(networkStatus);
+        }
+        if (networkStatuses != null && !containNetworkStatus(networkStatuses, "Upload")) {
+            networkStatus = new NetworkStatus();
+            networkStatus.setName("Upload");
+            networkStatus.setValue("1 Mbps");
+            networkStatusRepository.create(networkStatus);
+        }
+        if (networkStatuses != null && !containNetworkStatus(networkStatuses, "Ping")) {
+            networkStatus = new NetworkStatus();
+            networkStatus.setName("Ping");
+            networkStatus.setValue("76 ms");
+            networkStatusRepository.create(networkStatus);
+        }
+        if (networkStatuses != null && !containNetworkStatus(networkStatuses, "Last Available")) {
+            networkStatus = new NetworkStatus();
+            networkStatus.setName("Last Available");
+            networkStatus.setValue("2021.02.17");
+            networkStatusRepository.create(networkStatus);
+        }
+    }
+
 
     private void seedVitals() {
 
@@ -1067,6 +1158,33 @@ public class DatabaseSeeder {
     private static boolean containSetting(List<? extends ISystemSetting> systemSettings, String setting) {
         for (ISystemSetting ss : systemSettings) {
             if (ss.getName().equals(setting)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containNetworkStatus(List<? extends INetworkStatus> networkStatuses, String name) {
+        for (INetworkStatus ns : networkStatuses) {
+            if (ns.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containKitStatus(List<? extends IKitStatus> kitStatuses, String name) {
+        for (IKitStatus ks : kitStatuses) {
+            if (ks.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containDatabaseStatus(List<? extends IDatabaseStatus> databaseStatuses, String name) {
+        for (IDatabaseStatus ds : databaseStatuses) {
+            if (ds.getName().equals(name)) {
                 return true;
             }
         }

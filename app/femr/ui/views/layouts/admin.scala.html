@@ -9,6 +9,7 @@
 @import femr.ui.views.html.layouts.main
 @import femr.ui.controllers.admin.routes.UsersController
 @import femr.ui.controllers.admin.routes.ConfigureController
+ @import femr.ui.controllers.admin.routes.UpdatesController
 @import femr.ui.controllers.admin.routes.InventoryController
 @import femr.ui.controllers.superuser.routes.SuperuserController
 @import femr.ui.controllers.superuser.routes.TabController
@@ -42,6 +43,9 @@
             }
             <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-user"></span>
                 Users</a>
+
+            <a href="@UpdatesController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-refresh"></span>
+                Updates</a>
         </div>
         <div id="admin-right-panel">
             <div id="title">

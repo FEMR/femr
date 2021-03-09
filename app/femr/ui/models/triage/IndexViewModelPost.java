@@ -50,6 +50,7 @@ public class IndexViewModelPost {
     private Integer smoker;
     private Integer diabetic;
     private Integer alcohol;
+
     private Integer cholesterol;
     private Integer hypertension;
     //multiple chief complaints if they exist

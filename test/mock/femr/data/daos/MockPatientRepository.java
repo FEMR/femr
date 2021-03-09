@@ -3,8 +3,8 @@ package mock.femr.data.daos;
 import femr.data.daos.core.IPatientRepository;
 import femr.data.models.core.IPatient;
 import femr.data.models.core.IPatientAgeClassification;
-import femr.data.models.core.IRankedPatientMatch;
 import mock.femr.data.models.MockPatient;
+import femr.data.models.core.IRankedPatientMatch;
 import mock.femr.data.models.MockRankedPatientMatch;
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ public class MockPatientRepository implements IPatientRepository{
     public boolean retrievePatientByIdWasCalled = false;
     public boolean retrievePatientsByNameWasCalled = false;
     public boolean retrievePatientsByPhoneNumberWasCalled = false;
+    public boolean retrievePatientByGuidWasCalled = false;
     public boolean savePatientWasCalled = false;
 
     public IPatient mockPatient;
@@ -119,5 +120,13 @@ public class MockPatientRepository implements IPatientRepository{
         savePatientWasCalled = true;
 
         return patient;
+    }
+
+    @Override
+    public IPatient retrievePatientByGuid(Integer guid) {
+        retrievePatientByGuidWasCalled = true;
+        if (guid == 0)
+            mockPatient = null;
+        return mockPatient;
     }
 }

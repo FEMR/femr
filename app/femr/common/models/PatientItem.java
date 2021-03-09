@@ -22,6 +22,7 @@ import java.util.Date;
 
 public class PatientItem {
     private int Id;
+    private int globallyUniqueId;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -67,6 +68,10 @@ public class PatientItem {
     public void setId(int id) {
         Id = id;
     }
+
+    public int getGloballyUniqueId() { return globallyUniqueId; }
+
+    public void setGloballyUniqueId(int globallyUniqueId) { this.globallyUniqueId = globallyUniqueId; }
 
     public String getFirstName() {
         return firstName;

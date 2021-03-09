@@ -34,7 +34,6 @@
             <p>That patient could not be found.</p>
         }
         @if(viewModel.isLinkToMedical()){
-
             <p class="newEncounterWrap"> Patient has an open encounter <a class="btn btn-danger" href="/medical/edit/@viewModel.getPatient().getId()" target="blank">Go To Medical</a></p>
         }
         <h2 class="text-center">Check In - Triage</h2>
@@ -42,7 +41,7 @@
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
 
-              <h2>General Info</h2>
+                <h2>General Info</h2>
 
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
@@ -83,7 +82,6 @@
                 <br>
                 @inputGender(viewModel)
                 <br>
-
 
                 <div class="generalInfoInput">
 
@@ -128,7 +126,7 @@
                 <div id="vitalContainer">
 
                     <div id="leftVitalsWrap">
-                            <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
+                        <!-- Alaa Serhan - Referenced in triage.js for calculating proper BMI
                             as well as in vitalClientValidation.js for validating height inputs -->
                         @if(viewModel.getSettings.isMetric) {
                             <input type="hidden" id="vitalsUnits" value="metric" />
@@ -175,6 +173,7 @@
 
 
                         </div>
+
                             <!--Osman-->
                         <br/>
 
@@ -269,6 +268,7 @@
                             Chief Complaint
                         </label>
                     </div>
+
 @*                    <input type="text" class="hidden" name="chiefComplaintsJSON"/>*@
 
                     <textarea class="fTextArea" id="chiefComplaint" name="chiefComplaint"></textarea>
@@ -279,6 +279,7 @@
                     }
 
                 </div>
+
 
 @*                <div class="submitResetWrap hidden">*@
 @*                    <h3>Did you screen this patient for Diabetes?</h3>*@
@@ -306,5 +307,4 @@
             </div>
 
         </div>
-}
-}
+}}

@@ -1,5 +1,9 @@
 package femr.data.daos.system;
 
+import io.ebean.Ebean;
+import io.ebean.Expr;
+import io.ebean.ExpressionList;
+import io.ebean.Query;
 import femr.data.models.mysql.RankedPatientMatch;
 import io.ebean.*;
 import com.google.inject.Inject;
@@ -12,6 +16,7 @@ import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
+import java.util.ArrayList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ public class PatientRepository implements IPatientRepository {
     private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
 
     @Inject
-    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider){
+    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider) {
 
         this.patientAgeClassificationProvider = patientAgeClassificationProvider;
     }
@@ -32,7 +37,7 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder){
+    public IPatientAgeClassification createPatientAgeClassification(String name, String description, int sortOrder) {
 
         if (StringUtils.isNullOrWhiteSpace(name) || StringUtils.isNullOrWhiteSpace(description)) {
 
@@ -61,7 +66,7 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(){
+    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications() {
 
         List<? extends IPatientAgeClassification> response = null;
         try {
@@ -86,7 +91,7 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted){
+    public List<? extends IPatientAgeClassification> retrieveAllPatientAgeClassifications(boolean isDeleted) {
 
         List<? extends IPatientAgeClassification> response = null;
         try {
@@ -212,12 +217,36 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
+    public IPatient retrievePatientByGuid(Integer guid) {
+
+        IPatient response = null;
+        try {
+
+            ExpressionList<Patient> query = QueryProvider.getPatientQuery()
+                    .where()
+                    .eq("globally_unique_id", guid)
+                    .isNull("isDeleted");
+
+            response = query.findOne();
+        } catch (Exception ex) {
+
+            Logger.error("PatientRepository-retrievePatientByGuid", ex.getMessage(), "id: " + guid);
+            throw ex;
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<? extends IPatient> retrievePatientsByPhoneNumber(String phoneNumber) {
 
         List<? extends IPatient> response = null;
         try {
             Query<Patient> query;
-            if(StringUtils.isNotNullOrWhiteSpace(phoneNumber)) {
+            if (StringUtils.isNotNullOrWhiteSpace(phoneNumber)) {
                 query = QueryProvider.getPatientQuery()
                         .where()
                         .eq("phone_number", phoneNumber)
@@ -227,8 +256,8 @@ public class PatientRepository implements IPatientRepository {
                 response = query.findList();
             }
         } catch (Exception ex) {
-
             Logger.error("PatientRepository-retrievePatientByPhoneNumber", ex.getMessage(), "phone number: " + phoneNumber);
+            throw ex;
         }
 
         return response;
@@ -247,20 +276,20 @@ public class PatientRepository implements IPatientRepository {
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String ageString = "";
-            if(age != null) {
+            if (age != null) {
                 ageString = dateFormat.format(new Date(age));
             }
 
 
             String sql
                     = "select id, user_id, first_name, last_name, phone_number, age, sex, address, city, isDeleted, deleted_by_user_id, reason_deleted, (" +
-                    (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then 40 else 0 end + ": "") +
-                    "case when last_name = \"" + lastName +"\" then 15 else 0 end + " +
-                    "case when first_name = \"" + firstName +"\" then 10 else 0 end + " +
-                    "case when dm_last_name = dm(\"" + lastName +"\") then 10 else 0 end + " +
-                    "case when dm_first_name = dm(\"" + firstName +"\") then 10 else 0 end + " +
-                    (addr != null && !addr.equals("") ? "case when address = \"" + addr +"\" then 15 else 0 end + ": "") +
-                    (age != null ? "case when age != null and age = \"" + ageString + "\" then 10 else 0 end + ": "") +
+                    (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then 40 else 0 end + " : "") +
+                    "case when last_name = \"" + lastName + "\" then 15 else 0 end + " +
+                    "case when first_name = \"" + firstName + "\" then 10 else 0 end + " +
+                    "case when dm_last_name = dm(\"" + lastName + "\") then 10 else 0 end + " +
+                    "case when dm_first_name = dm(\"" + firstName + "\") then 10 else 0 end + " +
+                    (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then 15 else 0 end + " : "") +
+                    (age != null ? "case when age != null and age = \"" + ageString + "\" then 10 else 0 end + " : "") +
                     "case when sex = \"" + gender + "\" then 10 else 0 end + " +
                     "case when city like \"" + city + "\" then 10 else 0 end) " +
                     "as priority " +
@@ -295,7 +324,6 @@ public class PatientRepository implements IPatientRepository {
 
         return response;
     }
-
 
     /**
      * {@inheritDoc}
@@ -365,3 +393,4 @@ public class PatientRepository implements IPatientRepository {
         return patient;
     }
 }
+

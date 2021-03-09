@@ -110,7 +110,6 @@ public interface ISearchService {
 
     ServiceResponse<List<RankedPatientItem>> retrievePatientsFromTriageSearch(String first, String last, String phone, String addr, String gender, Long age, String city);
 
-
     /**
      * Get all current system setting values, only works for one right now.
      * Will need to be expanded later

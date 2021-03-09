@@ -303,7 +303,7 @@ public class TriageController extends Controller {
         if(viewModel.getHypertension() != null){
             newVitals.put("hypertension", viewModel.getHypertension().floatValue());
         }
-		
+
         ServiceResponse<List<VitalItem>> vitalServiceResponse = vitalService.createPatientEncounterVitalItems(newVitals, currentUser.getId(), patientEncounterItem.getId());
         if (vitalServiceResponse.hasErrors()) {
             throw new RuntimeException();

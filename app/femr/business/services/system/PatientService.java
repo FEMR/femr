@@ -121,6 +121,7 @@ public class PatientService implements IPatientService {
                         null,
                         null,
                         null,
+
                         null,
                         null,
                         null);
@@ -334,6 +335,13 @@ public class PatientService implements IPatientService {
                     patient.getBirth(), patient.getSex(), patient.getAddress(), patient.getCity(), patient.getPhotoId());
             newPatient = patientRepository.savePatient(newPatient);
 
+            Integer guid = newPatient.getGloballyUniqueID();
+            try {
+                newPatient = patientRepository.savePatient(newPatient);
+            }
+            catch(io.ebean.DuplicateKeyException ex) {
+                newPatient = patientRepository.retrievePatientByGuid(guid);
+            }
             String photoPath = getPatientPhotoPathOrNull(newPatient);
             Integer photoId = getPatientPhotoIdOrNull(newPatient);
 

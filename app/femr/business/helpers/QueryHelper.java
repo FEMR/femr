@@ -169,7 +169,6 @@ public class QueryHelper {
         return hypertension;
     }
 
-
     /**
      * AJ Saclayan
      * Finds all cities*

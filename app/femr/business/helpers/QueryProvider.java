@@ -18,7 +18,6 @@
 */
 package femr.business.helpers;
 
-
 import femr.data.models.mysql.RankedPatientMatch;
 import io.ebean.Ebean;
 import io.ebean.Query;

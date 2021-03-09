@@ -306,6 +306,7 @@ var diabeticScreeningFeature = {
         //because they are stupid
         triageFields.patientInformation.firstName.prop('readonly', true);
         triageFields.patientInformation.lastName.prop('readonly', true);
+
         triageFields.patientInformation.address.prop('readonly', true);
         triageFields.patientInformation.phoneNumber.prop('readonly', true);
         triageFields.patientInformation.age.prop('readonly', true);

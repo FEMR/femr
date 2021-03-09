@@ -207,7 +207,7 @@ public class ResearchService implements IResearchService {
         exportitem.setAge(age);
 
         // Gender
-        String gender = StringUtils.outputStringOrNA(patient.getSex());
+        String gender = StringUtils.outputGenderOrMissing(patient.getSex());
         exportitem.setGender(gender);
 
         // Pregnancy Status

@@ -54,6 +54,8 @@ hr {
     display: flex;
     margin-top: 20px;
 }
+
+
 #nameOrIdSearchForm:focus, .fButtonSearch:focus{
     display: flex;
     outline: 0;
@@ -370,7 +372,6 @@ float: right;
     display: block;
     margin-right: auto;
     margin-top: 17px;
-
 }
 
 .navigationItemsWrap {

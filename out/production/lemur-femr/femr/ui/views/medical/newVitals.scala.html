@@ -1,0 +1,95 @@
+@(viewModel: femr.ui.models.medical.EditViewModelGet, assets: AssetsFinder)
+
+<link rel="stylesheet" href="@assets.path("css/medical/newVitals.css")" xmlns="http://www.w3.org/1999/xhtml">
+<script type="text/javascript" src="@assets.path("js/medical/newVitals.js")"></script>
+<script type="text/javascript" src="@assets.path("js/shared/vitalClientValidation.js")"></script>
+<div id="vitalContainer">
+
+    <div id="left">
+        <div class="vitalWrap">
+            <label>BP</label>
+            <br/>
+            <input type="number" class="fInput" id="newSystolic" placeholder="systolic"/>
+            <input type="number" class="fInput" id="newDiastolic" placeholder="diastolic"/>
+        </div>
+        <div class="vitalWrap">
+            <label>HR</label>
+            <br/>
+            <input type="number" class="fInput" id="newHeartRate" placeholder="bpm"/>
+        </div>
+        <div class="vitalWrap">
+            <label>T</label>
+            <br/>
+            @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
+                <input type="number" class="fInput" id="newTemperature" placeholder="C"/>
+            } else {
+                <input type="number" class="fInput" id="newTemperature" placeholder="F"/>
+            }
+        </div>
+        <div class="vitalWrap">
+            <label>RR</label>
+            <br/>
+            <input type="number" class="fInput" id="newRespiratoryRate" placeholder="bpm"/>
+        </div>
+        <label class="btn btn-default" for="newSmoker">Smoking
+        <input type="checkbox" class="fButton" id="newSmoker" name="smoker" value="1" />
+        </label>
+
+        <br/>
+        <label class="btn btn-default" for="newDiabetic">Diabetes
+        <input type="checkbox" class="fButton" id="newDiabetic" name="diabetic" value="1" />
+        </label>
+        <br>
+        <label class="btn btn-default" for="newAlcohol">Alcohol
+        <input type="checkbox" class="fButton" id="newAlcohol" name="alcohol" value="1" />
+        </label>
+        <br/>
+
+    </div>
+    <div id="right">
+        <div class="vitalWrap">
+            <label>Gluc</label>
+            <br/>
+            <input type="number" class="fInput" id="newGlucose" placeholder="mg/dl"/>
+        </div>
+        <div class="vitalWrap">
+            <label>SpO2</label>
+            <br/>
+            <input type="number" class="fInput" id="newOxygen" placeholder="%"/>
+        </div>
+        <div class="vitalWrap">
+            <label>Ht</label>
+            <br/>
+            @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
+                <input type="number" class="fInput" id="newHeightFeet" placeholder="m"/>
+                <input type="number" class="fInput" id="newHeightInches" placeholder="cm"/>
+            } else {
+                <input type="number" class="fInput" id="newHeightFeet" placeholder="ft"/>
+                <input type="number" class="fInput" id="newHeightInches" placeholder="in"/>
+            }
+        </div>
+        <div class="vitalWrap">
+            <label>Wt</label>
+            <br/>
+            @if(viewModel.getSettings.isMetric) { <!---  Alaa Serhan -->
+                <input type="number" class="fInput" id="newWeight" placeholder="kgs"/>
+            } else {
+                <input type="number" class="fInput" id="newWeight" placeholder="lbs"/>
+            }
+        </div>
+        <div class="vitalWrap">
+            <label>WP</label> <!--- Sam Zanni -->
+            <br/>
+            <input type="number" class="fInput" id="weeksPreg" placeholder="weeks"/>
+        </div>
+    </div>
+    <div id="theButtons">
+        <button type="button" id="saveVitalsBtn" class="fButton">Save</button>
+        <button type="button" id="cancelVitalsBtn" class="fButton">Cancel</button>
+    </div>
+
+</div>
+
+
+
+

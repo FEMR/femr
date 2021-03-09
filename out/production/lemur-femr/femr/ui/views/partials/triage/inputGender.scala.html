@@ -1,0 +1,18 @@
+@(viewModel: femr.ui.models.triage.IndexViewModelGet)
+@import femr.ui.views.html.partials.triage.inputButton
+    @inputBlock = {
+        <div class="generalInfoInput">
+            <label>Gender <span class="red bold">*</span></label>
+            <div class="btn-group" id="genderBtns" data-toggle="buttons">
+                @inputButton("Male", "sex", "maleBtn",
+                    if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true,
+                    if(viewModel != null) viewModel.getPatient.getSex == "Male" else false,
+                    "Male")
+                @inputButton("Female", "sex", "femaleBtn",
+                    if(viewModel != null) viewModel.getPatient.getSex == "" || viewModel.getPatient.getSex == null else true,
+                    if(viewModel != null) viewModel.getPatient.getSex == "Female" else false,
+                    "Female")
+            </div>
+        </div>
+    }
+@inputBlock

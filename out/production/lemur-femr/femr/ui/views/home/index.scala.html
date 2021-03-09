@@ -1,0 +1,45 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.main
+
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/libraries/handlebars.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+
+        <script>
+                if (window.location.search.indexOf('feedback=received') > -1) {
+                    $('#feedbackResponse').css({"display":"block"});
+                    setTimeout(function () {
+                        $('#feedbackResponse').show().delay(2000).fadeOut('fast');
+                    }, 2000);
+                }
+
+        </script>
+
+    }
+
+
+  @top = {
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Welcome to fEMR 2.4.1-beta, @currentUser.getFirstName!</h2>
+          <div id="feedbackResponse">Your feedback has been received.</div>
+        @*<p>This is a placeholder landing page. As more features are developed, this page will change over time.</p>*@
+        <p>Please select a tab at the top to get started!</p>
+
+        <p>or</p>
+        <p>Search Below:</p>
+        <div id="patientSearchContainer">
+            <input  type="text" class="patientSearch fInput typeahead loading" id="patientSearch" name="patientSearch" placeholder="Loading&hellip;" disabled="disabled"/>
+        </div>
+      </div>
+    </div>
+  }
+
+@main("Home", currentUser, outsideContainerTop = top, scripts = additionalScripts, assets = assets) {
+  @*<ul>
+  @for(role <- currentUser.getRoles) {
+    <li>@role.getName</li>
+  }
+  </ul> *@
+}

@@ -1,0 +1,118 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        viewModel: femr.ui.models.superuser.ContentViewModelGet,
+        assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.superuser.routes.TabController
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
+    }
+
+@admin("Add Fields", currentUser, styles = additionalStyles, assets = assets) {
+    <h1>Adding content to @viewModel.getName</h1>
+    <div id="superUserWrap">
+        <div class="halfPageTables">
+
+            <h3>Current Fields</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Order</th>
+                        <th>Placeholder</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                @for(f <- 1 to viewModel.getCurrentCustomFieldItemList.size) {
+                    @defining(viewModel.getCurrentCustomFieldItemList.get(f - 1)) { currentField =>
+                        <tr>
+                            <td>@currentField.getName</td>
+                            <td>@currentField.getType</td>
+                            <td>@currentField.getSize</td>
+                            <td>@currentField.getOrder</td>
+                            <td>@currentField.getPlaceholder</td>
+                        </tr>
+                    }
+
+                }
+
+                </tbody>
+            </table>
+        </div>
+        <div class="halfPageTables">
+            <h3>Deleted Fields</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field Label</th>
+                        <th>Field Type</th>
+                        <th>Field Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                @for(f <- 1 to viewModel.getRemovedCustomFieldItemList.size) {
+                    @defining(viewModel.getRemovedCustomFieldItemList.get(f - 1)) { removedField =>
+                        <tr>
+                            <td>@removedField.getName</td>
+                            <td>@removedField.getType</td>
+                            <td>@removedField.getSize</td>
+                        </tr>
+                    }
+                }
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <div id="bottomFields">
+    @helper.form(action = TabController.fieldsPost(viewModel.getName)) {
+        <div class="halfPageForms">
+            <h4>Add/Edit Field</h4>
+            <label for="addName">Name:</label>
+            <input type="text" class="fInput" name="addName" placeholder="Label"/>
+            <br/>
+            <label for="addType">Type:</label>
+            @*<input type="text" class="fInput" name="addType" placeholder="Type"/>*@
+            <select name="addType" class="fOption">
+            @for(t <- 1 to viewModel.getCustomFieldTypes.size) {
+                <option value="@viewModel.getCustomFieldTypes.get(t - 1)">@viewModel.getCustomFieldTypes.get(t - 1)</option>
+            }
+            </select>
+
+            <br/>
+            <label for="addSize">Size:</label>
+            @*<input type="text" class="fInput" name="addSize" placeholder="Size"/>*@
+            <select name="addSize" class="fOption">
+            @for(s <- 1 to viewModel.getCustomFieldSizes.size) {
+                <option value="@viewModel.getCustomFieldSizes.get(s - 1)">@viewModel.getCustomFieldSizes.get(s - 1)</option>
+            }
+            </select>
+            <br/>
+            <label for="addOrder">Order:</label>
+            <input type="number" class="fInput" name="addOrder" placeholder="Order"/>
+            <br/>
+            <label for="addPlaceholder">Placeholder:</label>
+            <input type="text" class="fInput" name="addPlaceholder" placeholder="Placeholder"/>
+        </div>
+        <div class="halfPageForms">
+            <h4>Toggle Field</h4>
+            <p>Activate or Deactivate a field by name</p>
+            <label for="toggleName">Name</label>
+            <input type="text" class="fInput" name="toggleName"/>
+            <br/>
+
+        </div>
+
+    </div>
+    <button type="submit" class="fButton" id="contentSubmit">Submit</button>
+}
+
+}

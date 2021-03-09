@@ -1,0 +1,92 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.admin.users.CreateViewModel],
+        messages: java.util.List[_ <: java.lang.String],
+        availableRoles: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder)
+
+@import views.html.helper.FieldConstructor
+@import femr.ui.views.html.partials.admin.inputFieldConstructor
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.admin.routes.UsersController
+    @implicitField = @{
+        FieldConstructor(inputFieldConstructor.f)
+    }
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/admin/users.css")">
+    }
+    @additionalScripts = {
+        <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+    }
+    @additionalMessages = {
+    @for(message <- messages) {
+        <p class="adminMessage">@message</p>
+    }
+    }
+
+@admin("Add User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
+    <div id="createWrap">
+    @helper.form(action = UsersController.createPost(), 'class -> "form-horizontal", 'name -> "createForm") {
+
+        @helper.inputText(form("email"),
+            'class -> "fInput",
+            'placeholder -> "Email Address",
+            '_label -> "Email Address",
+            '_isRequired -> true
+        )
+
+        @helper.inputPassword(form("password"),
+            'class -> "fInput",
+            'placeholder -> "Password",
+            '_label -> "Password",
+            '_isRequired -> true
+        )
+<!-- added for FEMR-159 added by Vivek-->
+
+        @helper.inputPassword(form("passwordVerify"),
+            'class -> "fInput",
+            'placeholder -> "Verify Password",
+            '_label -> null,
+            'type -> "password"
+        )
+
+        @helper.inputText(form("firstName"),
+            'class -> "fInput",
+            'placeholder -> "First Name",
+            '_label -> "First Name",
+            '_isRequired -> true
+        )
+
+        @helper.inputText(form("lastName"),
+            'class -> "fInput",
+            'placeholder -> "Last Name",
+            '_label -> "Last Name",
+            '_isRequired -> false
+        )
+
+        @helper.inputText(form("notes"),
+            'class -> "fInput",
+            'placeholder -> "About User",
+            '_label -> "About User",
+            '_isRequired -> false
+        )
+
+        <div id="roleWrap">
+            <label for="roles">Roles<span id="roles" class="red bold">*</span></label>
+            <span class="errors"></span>
+            @for(error <- form("roles").errors) {
+                <p class="createUserError"> @error.message</p>
+            }
+
+            <br/>
+            @for(role <- availableRoles) {
+                <label class="btn btn-default">
+                    <input type="checkbox" name="roles[]" value="@role"> @role
+                </label>
+                <br/>
+            }
+        </div>
+    </div>
+    <button class="fButton fSubmitButton" id="addUserSubmitBtn" type="submit">Submit</button>
+}
+}

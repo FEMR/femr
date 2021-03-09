@@ -1,0 +1,35 @@
+@(pmhTab: femr.common.models.TabItem)
+
+<div class="controlWrap hidden" id="pmhControl">
+    <div class="form-group">
+        <label for="medicalSurgicalHistory">Medical/Surgical History</label>
+        @defining(pmhTab.getTabFieldItemByName(null, "medicalSurgicalHistory")) { medicalSurgicalHistory =>
+            <input type="text" class="hidden" name="tabFieldItems[@medicalSurgicalHistory.getIndex].name" value="medicalSurgicalHistory"/>
+            <textarea name="tabFieldItems[@medicalSurgicalHistory.getIndex].value" class="form-control input-sm" >@medicalSurgicalHistory.getValue</textarea>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="socialHistory">Social History</label>
+        @defining(pmhTab.getTabFieldItemByName(null, "socialHistory")) { socialHistory =>
+            <input type="text" class="hidden" name="tabFieldItems[@socialHistory.getIndex].name" value="socialHistory"/>
+            <textarea name="tabFieldItems[@socialHistory.getIndex].value" class="form-control input-sm" >@socialHistory.getValue</textarea>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="currentMedication">Current Medications</label>
+        @defining(pmhTab.getTabFieldItemByName(null, "currentMedication")) { currentMedication =>
+            <input type="text" class="hidden" name="tabFieldItems[@currentMedication.getIndex].name" value="currentMedication"/>
+            <textarea name="tabFieldItems[@currentMedication.getIndex].value" class="form-control input-sm">@currentMedication.getValue</textarea>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="familyHistory">Family History</label>
+        @defining(pmhTab.getTabFieldItemByName(null, "familyHistory")) { familyHistory =>
+            <input type="text" class="hidden" name="tabFieldItems[@familyHistory.getIndex].name" value="familyHistory"/>
+            <textarea name="tabFieldItems[@familyHistory.getIndex].value" class="form-control input-sm">@familyHistory.getValue</textarea>
+        }
+    </div>
+</div>

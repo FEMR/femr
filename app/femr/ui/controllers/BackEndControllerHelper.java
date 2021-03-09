@@ -3,10 +3,7 @@ package femr.ui.controllers;
 import java.io.IOException;
 
 public class BackEndControllerHelper {
-
-  public BackEndControllerHelper(){}
-
-  public void executePythonScript(String absPath) {
+  public static void executePythonScript(String absPath) {
     try {
       ProcessBuilder pb = new ProcessBuilder("python", absPath);
       pb.start();

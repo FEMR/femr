@@ -1,0 +1,97 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.superuser.TabsViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.superuser.routes.TabController
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
+}
+
+@admin("Tabs", currentUser, styles = additionalStyles, assets = assets) {
+    <h1>Tabs</h1>
+    <p>Do not put spaces in Tab Names.</p>
+    <div id="superUserWrap">
+        <div class="halfPageTables">
+            <h3>Current Custom Medical Tabs:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Left Size</th>
+                        <th>Right Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(x <- 1 to viewModel.getCurrentTabs.size) {
+                    <tr>
+
+                    @defining(viewModel.getCurrentTabs.get(x - 1)) { currentTab =>
+                        <td><a href="/superuser/tabs/@currentTab.getName">@currentTab.getName</a></td>
+                        <td>@currentTab.getLeftColumnSize</td>
+                        <td>@currentTab.getRightColumnSize</td>
+                    }
+                    </tr>
+                }
+
+                </tbody>
+            </table>
+        </div>
+        <div class="halfPageTables">
+            <h3>Deleted Custom Medical Tabs:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Left Size</th>
+                        <th>Right Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                @for(x <- 1 to viewModel.getDeletedTabs.size) {
+                    <tr>
+
+                    @defining(viewModel.getDeletedTabs.get(x - 1)) { deletedTab =>
+                        <td><a href="/superuser/tabs/@deletedTab.getName">@deletedTab.getName</a></td>
+                        <td>@deletedTab.getLeftColumnSize</td>
+                        <td>@deletedTab.getRightColumnSize</td>
+
+                    }
+
+                    </tr>
+                }
+
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="bottomFields">
+    @helper.form(action = TabController.managePost()) {
+        <div class="halfPageForms">
+            <h4>Add Tab:</h4>
+            <label for="addTabName">Name</label>
+            <input type="text" class="fInput" name="addTabName"/>
+            <br/>
+            <label for="addTabLeft">Left Tab</label>
+            <input type="number" class="fInput" name="addTabLeft"/>
+            <br/>
+            <label for="addTabRight">Right Tab</label>
+            <input type="number" class="fInput" name="addTabRight"/>
+        </div>
+        <div class="halfPageForms">
+            <h4>Toggle Tab:</h4>
+            <input type="text" class="fInput" name="deleteTab"/>
+            <br/>
+
+        </div>
+
+    </div>
+    <button type="submit" class="fButton" id="contentSubmit">Submit</button>
+
+
+}
+
+}

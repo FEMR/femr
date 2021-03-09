@@ -1,0 +1,151 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        form: play.data.Form[femr.ui.models.admin.users.EditViewModel],
+        availableRoles: java.util.List[_ <: java.lang.String],
+        messages: java.util.List[_ <: java.lang.String],
+        assets: AssetsFinder)
+
+@import femr.common.models.MissionTripItem
+@import views.html.helper.options
+@import views.html.helper.select
+@import views.html.helper.FieldConstructor
+@import femr.ui.views.html.partials.admin.inputFieldConstructor
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.controllers.admin.routes.UsersController
+
+    @implicitField = @{
+        FieldConstructor(inputFieldConstructor.f)
+    }
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/users.css")">
+    }
+    @additionalScripts = {
+        <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+        <script type="text/javascript" src="@assets.path("js/admin/users.js")"></script>
+    }
+    @additionalMessages = {
+    @for(message <- messages) {
+        <p class="adminMessage">@message</p>
+    }
+    }
+
+@admin("Edit User", currentUser, styles = additionalStyles, scripts = additionalScripts, message = additionalMessages, assets = assets) {
+    <div class="container">
+    @helper.form(action = UsersController.editPost(Integer.parseInt(form("userId").getValue.get())), 'name -> "createForm") {
+        <input type="hidden" value="@form("userId").getValue.get()" name="userId"/>
+
+
+        <div class="editWrapBoth" id="editWrapLeft">
+
+            @helper.inputText(form("email"),
+                'class -> "fInput",
+                '_label -> "Email Address",
+                'readonly -> "readonly"
+            )
+
+            @helper.inputText(form("firstName"),
+                'class -> "fInput",
+                '_label -> "First Name"
+            )
+
+            @helper.inputText(form("lastName"),
+                'class -> "fInput",
+                '_label -> "Last Name"
+            )
+
+            @helper.inputText(form("notes"),
+                'class -> "fInput",
+                '_label -> "About"
+            )
+
+            <label>Password Reset?*</label>
+            @if(form("passwordReset").getValue != null && form("passwordReset").getValue.get() == "true") {
+                <input type="checkbox" name="passwordReset" checked="checked"/>
+            } else {
+                <input type="checkbox" name="passwordReset"/>
+            }
+            <p>*When checked, the user will be prompted to change their password on next login.</p>
+
+            <label>Change User Password**</label>
+            <p>**Changes the user's password when filled out. Proceed with caution.</p>
+            @helper.inputText(form("newPassword"),
+                'class -> "fInput",
+                'placeholder -> "New Password",
+                'type -> "password",
+                '_label -> null
+            )
+            @helper.inputText(form("newPasswordVerify"),
+                'class -> "fInput",
+                'placeholder -> "Verify New Password",
+                'type -> "password",
+                '_label -> null
+            )
+            <label>Trips</label>
+            <p>Trips that this user has attended. Allows the user to view inventory related to that trip.</p>
+            <table id="userTripTable">
+                <thead>
+                    <tr>
+                        <th>Organization</th>
+                        <th>Country</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @helper.repeat(form("missionTripItems"), min = 0) { trip =>
+                        <tr>
+                            <td>@if(form(trip.name.toString + ".teamName").getValue != null){ @form(trip.name.toString + ".teamName").getValue.get()}</td>
+                            <td>@if(form(trip.name.toString + ".tripCountry").getValue != null){ @form(trip.name.toString + ".tripCountry").getValue.get()}</td>
+                            <td>@if(form(trip.name.toString + ".friendlyTripStartDate").getValue != null){ @form(trip.name.toString + ".friendlyTripStartDate").getValue.get()}</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="editWrapBoth" id="editWrapRight">
+            <div id="roleWrap">
+                <label>Roles</label>
+                <span class="errors"></span>
+
+
+                <div class="btn-group width-100">
+                    @for(error <- form("roles").errors) {
+                        <p class="createUserError"> @error.message</p>
+                    }
+                    <button type="button" class="btn btn-default dropdown-toggle width-100" data-toggle="dropdown">
+                        Add Role <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu width-100" role="menu">
+                    @for(role <- 1 to availableRoles.size()) {
+                        <li class="roleListItem"><a>@availableRoles.get(role - 1)</a></li>
+                    }
+                    </ul>
+                </div>
+
+
+                <ul class="list-group" id="currentRoles">
+
+                @helper.repeat(form("roles"), min = 1) { role =>
+                    <li class="list-group-item" value="@role.value">
+                        <span class="badge roleBadge">X</span>
+                        @role.value
+                            <!-- stores hidden value for POST -->
+                        <input type="text" class="hidden" name="roles[]" value="@role.value"/>
+                    </li>
+                }
+
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="btn-group pull-right">
+        <button type="submit" class="btn btn-default" id="editUserSubmitBtn">Save</button>
+        <a class="btn btn-default" id="cancelBtn" href="/admin/users">Cancel</a>
+    </div>
+
+}
+
+}

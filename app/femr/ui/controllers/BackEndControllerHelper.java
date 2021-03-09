@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class BackEndControllerHelper {
-  public void executePythonScript(String absPath) {
+  public static void executePythonScript(String absPath) {
     try {
       ProcessBuilder pb = new ProcessBuilder("python", absPath);
       Process p = pb.start();

@@ -36,6 +36,7 @@ GET         /admin/trips/teams                                 @femr.ui.controll
 POST        /admin/trips/teams                                 @femr.ui.controllers.admin.TripController.teamsPost()
 GET         /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesGet()
 POST        /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesPost()
+POST        /admin/updateDb                                    @femr.ui.controllers.admin.DatabaseController.downloadPost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
 #Manager
 GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet()

@@ -1,0 +1,83 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.trips.TripViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.views.html.partials.admin.trips.tripsMenu
+@import femr.ui.controllers.admin.routes.TripController
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/superuser/superuser.css")">
+}
+
+@additionalScripts = {
+    <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/superuser/superuser.js")"></script>
+}
+
+@admin("Trips - Manage Teams", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @tripsMenu()
+
+    @for(messageIndex <- 1 to viewModel.getMessages.size){
+        <p>@viewModel.getMessages.get(messageIndex - 1)</p>
+    }
+
+    @helper.form(action = TripController.teamsPost()) {
+
+        <div id="addTeamWrap">
+            <h1>Add Team:</h1>
+            <div>
+                <label>Team Name<span class="red bold">*</span>:
+                    <input class="fInput" type="text" name="newTeamName"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Team Location:
+                    <input class="fInput" type="text" name="newTeamLocation"/>
+                </label>
+            </div>
+
+            <div>
+                <label>Team Description:
+                    <input class="fInput" type="text" name="newTeamDescription"/>
+                </label>
+            </div>
+
+
+        </div>
+
+
+        <div id="submitWrap">
+            <button type="submit" class="fButton">Submit</button>
+        </div>
+    }
+
+    <div id="tableWrap">
+
+        <table id="teamTable">
+            <thead>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Description</th>
+                    <th>Origin</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(teamIndex <- 1 to viewModel.getMissionItems.size()) {
+                @defining(viewModel.getMissionItems.get(teamIndex - 1)) { item =>
+
+                    <tr>
+                        <td>@item.getTeamName</td>
+                        <td>@item.getTeamDescription</td>
+                        <td>@item.getTeamLocation</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+
+
+    </div>
+
+}

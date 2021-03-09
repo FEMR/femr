@@ -145,4 +145,9 @@ public class MockItemModelMapper implements IItemModelMapper{
     public VitalItem createVitalItem(String name, Float value) {
         return null;
     }
+
+    @Override
+    public InternetStatusItem createInternetStatusItem(IInternetStatus status) {
+        return null;
+    }
 }

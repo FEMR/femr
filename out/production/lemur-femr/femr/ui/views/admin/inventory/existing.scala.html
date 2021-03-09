@@ -1,0 +1,54 @@
+@(currentUser: femr.common.dtos.CurrentUser, viewModel: femr.ui.models.admin.inventory.ExistingViewModelGet, assets: AssetsFinder)
+
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.views.html.layouts.admin
+@import femr.ui.views.html.partials.admin.inventory.inventoryMenu
+
+@additionalStyles = {
+
+    <link rel="stylesheet" href="@assets.path("css/libraries/select2.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/libraries/jquery.dataTables.min.css")">
+    <link rel="stylesheet" href="@assets.path("css/admin/inventory.css")">
+}
+@additionalScripts = {
+
+    <script type="text/javascript" src="@assets.path("js/libraries/select2.min.js")"></script>
+    <script type = "text/javascript" src="@assets.path("js/libraries/jquery.dataTables.min.js")"></script>
+    <script type="text/javascript" src="@assets.path("js/libraries/typeahead.bundle.min.js")"></script>
+    <script type = "text/javascript" src="@assets.path("js/admin/inventory.js")"></script>
+}
+
+@admin("Inventory - Add Existing Medication", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets) {
+
+    @inventoryMenu(viewModel.getMissionTripItem)
+
+    @if(currentUser.getTripId == null) {
+        <fieldset disabled="disabled">
+        }
+
+    @helper.form(action = InventoryController.existingPost(viewModel.getMissionTripItem.getId)) {
+
+        <h3>Add Existing Medicine To Formulary:</h3>
+        <ul>
+            <li>Add medication(s) from fEMR's concept dictionary below</li>
+            <li>Adjust current/initial quantity in the Formulary after adding</li>
+        </ul>
+        <div class="newMedicationWrap">
+            <select id="addConceptMedicineSelect2" multiple="multiple" name="newConceptMedicationsForInventory[]">
+            @defining(viewModel.getConceptMedications) { conceptMeds =>
+                @for(i <- 1 to conceptMeds.size) {
+                    <option value="@conceptMeds.get(i - 1).getId">@conceptMeds.get(i - 1).getFullName</option>
+                }
+            }
+            </select>
+
+            <div class="row">
+                <button class="fButton" id="submitMedicationButton">Submit</button>
+            </div>
+        </div>
+
+        @if(currentUser.getTripId == null) {
+            </fieldset>
+        }
+    }
+}

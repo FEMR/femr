@@ -1,0 +1,58 @@
+ @(title: String,
+        currentUser: femr.common.dtos.CurrentUser,
+        styles: Html = Html(""),
+        scripts: Html = Html(""),
+        message: Html = Html(""),
+        outsideContainerTop: Html = Html(""),
+        outsideContainerBottom: Html = Html(""), assets: AssetsFinder)(content: Html)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.admin.routes.UsersController
+@import femr.ui.controllers.admin.routes.ConfigureController
+@import femr.ui.controllers.admin.routes.InventoryController
+@import femr.ui.controllers.superuser.routes.SuperuserController
+@import femr.ui.controllers.superuser.routes.TabController
+@import femr.ui.controllers.admin.routes.TripController
+
+        @* Add scripts to script variable, how? *@
+    @adminScripts = {
+        <script type = "text/javascript" src="@assets.path("js/admin/admin.js")"></script>
+        <script type = "text/javascript" src="@assets.path("js/libraries/jquery-ui.min.js")"></script>
+        @scripts
+    }
+    @adminStyles = {
+        <link rel="stylesheet" href="@assets.path("css/libraries/jquery-ui.min.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/admin.css")">
+        @styles
+    }
+
+@main(title, currentUser, adminStyles, adminScripts, assets = assets) {
+    <div id="admin-panels">
+        <div id="admin-left-panel">
+            <a href="@ConfigureController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-cog"></span>
+                Configure</a>
+            <a href="@InventoryController.manageGet(0)" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-briefcase"></span>
+                Inventory</a>
+            <a href="@TripController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-globe"></span>
+                Trips</a>
+            @if(currentUser.getEmail == "superuser"){
+                <a href="@TabController.manageGet()" class="fButton userBtns fOtherButton fAdminButton fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-wrench"></span>
+                    Tabs</a>
+
+            }
+            <a href="@UsersController.manageGet()" class="fButton fOtherButton fAdminButton userBtns fAdminButtonLeftTextAlign"><span class="glyphicon glyphicon-user"></span>
+                Users</a>
+        </div>
+        <div id="admin-right-panel">
+            <div id="title">
+                <h2>@title</h2>
+            </div>
+            @message
+            <div id="adminContent">
+            @content
+            </div>
+
+        </div>
+    </div>
+
+}

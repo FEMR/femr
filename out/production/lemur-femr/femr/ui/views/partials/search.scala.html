@@ -1,0 +1,40 @@
+@(page: String)
+
+@import femr.ui.controllers.routes.SearchController
+
+<div id="searchContainer">
+
+    @page.toLowerCase match {
+        case "triage" => {
+            @helper.form(action = SearchController.handleSearch("triage")) {
+                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+            }
+        }
+        case "history" => {
+            @helper.form(action = SearchController.handleSearch("history")) {
+                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+            }
+        }
+        case "medical" => {
+            @helper.form(action = SearchController.handleSearch("medical")) {
+                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+            }
+        }
+        case "pharmacy" => {
+            @helper.form(action = SearchController.handleSearch("pharmacy")) {
+                <input type="text" class="fInput" id = "nameOrIdSearchForm" placeholder="ID, Name, or Phone #" name="patientSearchQuery"/>
+                <button type="submit" id="searchBtn" class="fButton fRedButton fGlobalSearchButton">Search</button>
+            }
+        }
+        case _ => {
+
+        }
+    }
+    @* Medical also needs an exception. so does pharmacy. History controller should only be
+    for duplicate patients. How to structure this?!*@
+
+
+</div>

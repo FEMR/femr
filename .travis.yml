@@ -1,7 +1,12 @@
 language: scala
 scala:
    - 2.11.7
-script: sbt clean compile
+env:
+   - PLAY_VERSION=2.1-RC2 # Latest 2.1.x
+before_script:
+  - wget http://download.playframework.org/releases/play-${PLAY_VERSION}.zip
+  - unzip -q play-${PLAY_VERSION}.zip
+script: sbt clean compile test
 jdk:
    - oraclejdk8
 

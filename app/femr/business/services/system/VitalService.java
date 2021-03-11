@@ -40,6 +40,7 @@ import femr.util.calculations.LocaleUnitConverter;
 import femr.util.calculations.dateUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,14 +115,14 @@ public class VitalService implements IVitalService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<VitalItem>> retrieveAllVitalItems() {
-        ServiceResponse<List<VitalItem>> response = new ServiceResponse<>();
+    public ServiceResponse<Map<String,VitalItem>> retrieveAllVitalItems() {
+        ServiceResponse<Map<String,VitalItem>> response = new ServiceResponse<>();
 
         try {
             List<? extends IVital> vitals = vitalRepository.findAll(Vital.class);
-            List<VitalItem> vitalItems = new ArrayList<>();
+            Map<String,VitalItem> vitalItems = new HashMap<>();
             for (IVital v : vitals) {
-                vitalItems.add(itemModelMapper.createVitalItem(v.getName(), null));
+                vitalItems.put(v.getName(),itemModelMapper.createVitalItem(v.getName(), null));
             }
             response.setResponseObject(vitalItems);
         } catch (Exception ex) {

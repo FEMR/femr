@@ -10,11 +10,6 @@ import java.util.List;
 public class MockUser implements IUser {
 
     private int id = -1;
-    private String firstName = "test_firstName";
-    private String lastName = "test_lastName";
-    private String password = "test_password";
-
-
     @Override
     public int getId() {
         return id;
@@ -25,7 +20,7 @@ public class MockUser implements IUser {
     }
     @Override
     public String getFirstName() {
-        return this.firstName;
+        return null;
     }
 
     @Override
@@ -35,7 +30,7 @@ public class MockUser implements IUser {
 
     @Override
     public String getLastName() {
-        return this.lastName;
+        return null;
     }
 
     @Override
@@ -55,11 +50,12 @@ public class MockUser implements IUser {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return null;
     }
 
     @Override
     public void setPassword(String password) {
+
     }
 
     @Override

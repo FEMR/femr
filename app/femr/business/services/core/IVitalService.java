@@ -55,7 +55,7 @@ public interface IVitalService {
      * @return a service response that contains a list of VitalItems with no values
      * and/or errors if they exist.
      */
-    ServiceResponse<Map<String,VitalItem>> retrieveAllVitalItems();
+    ServiceResponse<List<VitalItem>> retrieveAllVitalItems();
 
     /**
      * Retrieve a map of vitals where the key is the date as well as the name

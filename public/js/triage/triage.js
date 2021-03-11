@@ -419,31 +419,6 @@ var triageFields = {
     }
 };
 
-var ageClassificationAutoCalculateFeature = {
-    classSelection: function(patientAge) {
-        switch (patientAge != null){
-            case (patientAge <= 1):
-                document.getElementById("infant").checked = true;
-                break;
-            case (patientAge <= 12):
-                document.getElementById("child").checked = true;
-                break;
-            case (patientAge <= 17):
-                document.getElementById("teen").checked = true;
-                break;
-            case (patientAge <= 64):
-                document.getElementById("adult").checked = true;
-                break;
-            case (patientAge <= 200):
-                document.getElementById("elder").checked = true;
-                break;
-            default:
-                break;
-        }
-        return;
-    }
-}
-
 var birthdayAgeAutoCalculateFeature = {
 
     ageChangeCheck: function () {
@@ -600,7 +575,6 @@ $(document).ready(function () {
                 }
                 $('#years').val(Math.floor(ageMonths / 12));
                 $('#months').val(ageMonths % 12);
-                ageClassificationAutoCalculateFeature.classSelection(Math.floor(ageMonths / 12));
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');
@@ -624,7 +598,6 @@ $(document).ready(function () {
             var nan = randomString(birthDate);
             if (nan === false) {
                 $('#age').val(birthString);
-                ageClassificationAutoCalculateFeature.classSelection($('#years').val());
                 $('#years').css('border', '');
                 $('#months').css('border', '');
                 $('#age').css('border', '');

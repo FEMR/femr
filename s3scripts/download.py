@@ -47,16 +47,20 @@ def download_files(prefix, local, bucket, client):
         dest_pathname = os.path.join(local, d)
         if not os.path.exists(os.path.dirname(dest_pathname)):
             os.makedirs(os.path.dirname(dest_pathname))
+            os.makedirs(os.path.dirname(dest_pathname))
 
     # download files into appropriate directories
     for k in keys:
         dest_pathname = os.path.join(local, k)
         if not os.path.exists(os.path.dirname(dest_pathname)):
             os.makedirs(os.path.dirname(dest_pathname))
-        client.download_file(bucket, k, dest_pathname)
+        try:
+            client.download_file(bucket, k, dest_pathname)
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == 'DataNotFoundError':
+                print("No such object exists in the bucket: ", k)
 
-
-if __name__ == "__main__":
+def main():
     try:
         # can make this prefix more meaningful depending on s3 bucket organization
         PREFIX = ''
@@ -68,3 +72,6 @@ if __name__ == "__main__":
            print("The object does not exist.")
        else:
            raise
+
+if __name__ == "__main__":
+    main()

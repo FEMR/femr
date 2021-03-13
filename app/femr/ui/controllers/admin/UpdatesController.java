@@ -103,7 +103,7 @@ public class UpdatesController extends Controller {
         this.messages = new ArrayList<>();
 
         if (databaseStatusesResponse.hasErrors()) {
-            Logger.error("UpdatesController-databasePost()","Failed to update statuses");
+            Logger.error("UpdatesController-databasePost()","Failed to database backup statuses");
             throw new RuntimeException();
         }
         else

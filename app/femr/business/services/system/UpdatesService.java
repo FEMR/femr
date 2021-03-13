@@ -105,8 +105,8 @@ public class UpdatesService implements IUpdatesService {
     public ServiceResponse<List<? extends IDatabaseStatus>> retrieveDatabaseStatuses() {
         ServiceResponse<List<? extends IDatabaseStatus>> response = new ServiceResponse<>();
         try {
-            List<? extends IDatabaseStatus> kitStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);
-            response.setResponseObject(kitStatuses);
+            List<? extends IDatabaseStatus> databaseStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);
+            response.setResponseObject(databaseStatuses);
 
         } catch (Exception ex) {
             response.addError("", ex.getMessage());

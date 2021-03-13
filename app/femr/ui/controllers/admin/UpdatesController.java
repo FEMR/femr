@@ -70,6 +70,7 @@ public class UpdatesController extends Controller {
 
         ServiceResponse<List<? extends INetworkStatus>> networkStatusesResponse = updatesService.retrieveNetworkStatuses();
         if (networkStatusesResponse.hasErrors()) {
+            Logger.error("UpdatesController-manageGet()","Failed to get network statuses");
             throw new RuntimeException();
         }
         for (INetworkStatus ns : networkStatusesResponse.getResponseObject()) {
@@ -78,6 +79,7 @@ public class UpdatesController extends Controller {
 
         ServiceResponse<List<? extends IKitStatus>> kitStatusesResponse = updatesService.retrieveKitStatuses();
         if (kitStatusesResponse.hasErrors()) {
+            Logger.error("UpdatesController-manageGet()","Failed to get kit statuses");
             throw new RuntimeException();
         }
         for (IKitStatus ks : kitStatusesResponse.getResponseObject()) {
@@ -86,6 +88,7 @@ public class UpdatesController extends Controller {
 
         ServiceResponse<List<? extends IDatabaseStatus>> databaseStatusResponse = updatesService.retrieveDatabaseStatuses();
         if (databaseStatusResponse.hasErrors()) {
+            Logger.error("UpdatesController-manageGet()","Failed to get database backup statuses");
             throw new RuntimeException();
         }
         for (IDatabaseStatus ds : databaseStatusResponse.getResponseObject()) {
@@ -103,7 +106,7 @@ public class UpdatesController extends Controller {
         this.messages = new ArrayList<>();
 
         if (databaseStatusesResponse.hasErrors()) {
-            Logger.error("UpdatesController-databasePost()","Failed to database backup statuses");
+            Logger.error("UpdatesController-databasePost()","Failed to get database backup statuses");
             throw new RuntimeException();
         }
         else

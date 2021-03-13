@@ -128,30 +128,6 @@ public class UpdatesService implements IUpdatesService {
         databaseStatus.setValue(updated_date);
         databaseStatusRepository.update(databaseStatus);
 
-        /*List<? extends ISystemSetting> allSystemSettings = systemSettingRepository.findAll(SystemSetting.class);
-
-        try {
-            if(systemSettings == null){
-                //If systemSettings is null, that means that all settings buttons were unchecked.
-                for (ISystemSetting ss: allSystemSettings){
-                    ss.setActive(false);
-                    systemSettingRepository.update(ss);
-                }
-            } else {
-                for (ISystemSetting ss : allSystemSettings) {
-                    if (systemSettings.contains(ss.getName())) {
-                        ss.setActive(true);
-                        systemSettingRepository.update(ss);
-                    } else {
-                        ss.setActive(false);
-                        systemSettingRepository.update(ss);
-                    }
-                }
-                response.setResponseObject(allSystemSettings);
-            }
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }*/
         return response;
     }
 

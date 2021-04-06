@@ -13,6 +13,10 @@ public class InternetStatusService implements IInternetStatusService {
   private final IInternetStatusRepository internetStatusRepository;
   private final IItemModelMapper itemModelMapper;
 
+  /**
+   *
+   * Need to Inject this method to the dependencies so that we can interface with this service elsewhere
+   */
   @Inject
   public InternetStatusService(IInternetStatusRepository internetStatusRepository,
                         @Named("identified") IItemModelMapper itemModelMapper) {
@@ -29,13 +33,11 @@ public class InternetStatusService implements IInternetStatusService {
     ServiceResponse<InternetStatusItem>  response = new ServiceResponse<>();
 
     try {
-
       IInternetStatus status = internetStatusRepository.retrieveInternetStatus();
       InternetStatusItem internetStatusItem;
       internetStatusItem = itemModelMapper.createInternetStatusItem(status);
       response.setResponseObject(internetStatusItem);
     } catch (Exception ex) {
-
       Logger.error("InternetStatusService-retrieveInternetStatus", ex);
       response.addError("", ex.getMessage());
     }
@@ -52,9 +54,9 @@ public class InternetStatusService implements IInternetStatusService {
       internetStatus = internetStatusRepository.updateInternetStatus(internetStatus);
       response.setResponseObject(itemModelMapper.createInternetStatusItem(internetStatus));
     } catch (Exception ex) {
+      Logger.error("InternetStatusService-retrieveInternetStatus", ex);
       response.addError("", ex.getMessage());
     }
     return response;
   }
-
 }

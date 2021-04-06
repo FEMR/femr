@@ -32,7 +32,7 @@ hs_err_pid*
 conf/application.conf
 conf/application.*.conf
 conf/application.example.conf
-
+app/femr/util/backup/femrtest.pem
 femr-dev.sh
 
 # Ignore Play! working directory #

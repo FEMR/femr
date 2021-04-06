@@ -70,6 +70,8 @@ public class DataLayerModule extends AbstractModule {
         bind(IUser.class).toProvider(UserProvider.class);
         bind(IVital.class).toProvider(VitalProvider.class);
 
+        bind(IInternetStatus.class).toProvider(InternetStatusProvider.class);
+
         //Non generic repositories
         bind(IEncounterRepository.class).to(EncounterRepository.class);
         bind(IMedicationRepository.class).to(MedicationRepository.class);
@@ -77,6 +79,8 @@ public class DataLayerModule extends AbstractModule {
         bind(IPhotoRepository.class).to(PhotoRepository.class);
         bind(IUserRepository.class).to(UserRepository.class);
         bind(IPrescriptionRepository.class).to(PrescriptionRepository.class);
+
+        bind(IInternetStatusRepository.class).to(InternetStatusRepository.class);
 
         // Research
         bind(IResearchEncounter.class).toProvider(ResearchEncounterProvider.class);

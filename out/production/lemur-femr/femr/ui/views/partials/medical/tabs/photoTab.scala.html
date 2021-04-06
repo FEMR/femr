@@ -1,0 +1,49 @@
+@(photos: List[femr.common.models.PhotoItem])
+
+<div class="controlWrap hidden" id="photosControl">
+    <div class="form-group">
+        <label for="btnAddPhoto" class="control-label">Add Photo:</label>
+        <div id="photoInputContainer">
+            <input type="file" class="form-control" onchange="imageInputChange ( this )" placeholder="Choose Image" />
+        </div>
+    </div>
+    <div id="patientImageList" class="row">
+    @for(photoRec <- photos) {
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <img src="@photoRec.getImageUrl">
+                <div class="caption">
+                    <div class="form-group">
+                        <p name="photoDescription" >@photoRec.getImageDesc</p>
+                        <div class="btn-group">
+                            <button id="btnEditText" type="button" onclick="portraitEdit ( this )" class="btn btn-default btn-med">
+                                <span class="glyphicon glyphicon-edit"></span> Edit Description
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnDeletePhoto" type="button" onclick="portraitDelete ( this )" class="btn btn-danger btn-med">
+                                <span class="glyphicon glyphicon-trash"></span> Delete
+                            </button>
+                        </div>
+                        <p>@photoRec.getImageDate</p>
+                    </div>
+                </div>
+            </div>
+                <!-- Data elements for server-side logic -->
+            <div name="dataList" hidden="true">
+                    <!-- Signals that user has requested to delete this photo from the database / server -->
+                <input hidden="true" type="checkbox" name="deleteRequested" checked="false" value="false" />
+                    <!-- Signals that the user has updated a description -->
+                <input hidden="true" type="checkbox" name="hasUpdatedDesc" checked="false" value="false" />
+                    <!-- Place holder for new images -->
+                <input hidden="true" type="file" name="patientPhoto" />
+                    <!-- text for POST -->
+                <input hidden="true" type="text" name="imageDescText" value="@photoRec.getImageDesc" />
+                    <!-- photo Id -->
+                <input hidden="true" type="text" name="photoId" value="@photoRec.getId.toString" />
+            </div>
+        </div>
+    }
+
+    </div>
+</div>

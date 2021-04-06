@@ -1,0 +1,23 @@
+@(currentUser: femr.common.dtos.CurrentUser, assets: AssetsFinder)
+
+@import femr.ui.views.html.layouts.main
+@import femr.ui.controllers.routes.ReferenceController
+
+@additionalStyles = {
+    <link rel="stylesheet" href="@assets.path("css/reference.css")">
+}
+@additionalScripts = {
+
+}
+
+@main("Reference", currentUser, styles = additionalStyles, scripts = additionalScripts, assets = assets ) {
+
+
+    <div class="referenceContentWrap">
+
+        <img src="@assets.path("img/reference/pt-chart-ros.png")"  />
+        <img src="@assets.path("img/reference/cass-physical.png")" class="physical" />
+
+    </div>
+
+}

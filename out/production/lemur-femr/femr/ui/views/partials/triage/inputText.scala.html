@@ -1,0 +1,18 @@
+@(name: String, forInput: String, required: Boolean, value: Object, tipe: String)
+    @inputBlock = {
+
+        <div class="generalInfoInput">
+            @if(required == true) {
+                <label for="@forInput">@name <span class="red bold">*</span></label>
+            } else {
+                <label for="@forInput">@name</label>
+            }
+
+            @if(value == null) {
+                <input type="@tipe" class="fInput" id="@forInput" name="@forInput" placeholder="@name">
+            } else {
+                <input type="@tipe" class="fInput" id="@forInput" name="@forInput" value="@value" readonly/>
+            }
+        </div>
+    }
+@inputBlock

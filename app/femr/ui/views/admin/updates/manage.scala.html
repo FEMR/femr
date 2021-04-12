@@ -1,0 +1,84 @@
+@(currentUser: femr.common.dtos.CurrentUser,
+        viewModel: femr.ui.models.admin.updates.IndexViewModelGet,
+        assets: AssetsFinder,
+        messages: java.util.List[_ <: java.lang.String])
+
+@import femr.ui.controllers.admin.routes.UpdatesController
+@import femr.ui.views.html.layouts.admin
+
+    @additionalStyles = {
+        <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
+    }
+    @additionalMessages = {
+        @for(message <- messages) {
+        <p class="adminMessage">@message</p>
+        }
+    }
+
+@admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
+        <div style="float:right">
+            <h2>Database Status</h2>
+
+            <table>
+                @for((key,valyew) <- viewModel.getDatabaseStatus) {
+                    <tr>
+                        <td>@key:</td>
+                        <td>@valyew</td>
+                    </tr>
+                }
+                @helper.form(action = UpdatesController.databasePost()) {
+                    <tr>
+                        <td>Create Backup:</td>
+                        <td>
+                            <input type="submit" class="fButton" value="Back Up Now"/>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+
+        <div>
+            <h2>Network Status</h2>
+
+            <table id="networkstatus">
+                @for((key,valyew) <- viewModel.getNetworkStatus) {
+                    <tr>
+                        <td>@key:</td>
+                        <td>@valyew</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+        <div style="float:right">
+            <h2>Available Updates</h2>
+            <table>
+                <tr>
+                    @if(viewModel.isUpdateAvailable) {
+                        @helper.form(action = UpdatesController.kitUpdatePost()) {
+                            <td>Kit Update: Available</td><td>
+                            <input type="submit" class="fButton" value="Update"/></td>
+                        }
+                    } else {<td>Kit Update: Already up to date</td>}
+                </tr>
+
+            </table>
+
+        </div>
+
+
+        <div>
+            <h2>fEMR Kit Status</h2>
+
+            <table id="kitstatus">
+                @for((key2,valyew2) <- viewModel.getKitStatus) {
+                    <tr>
+                        <td>@key2:</td>
+                        <td>@valyew2</td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+}

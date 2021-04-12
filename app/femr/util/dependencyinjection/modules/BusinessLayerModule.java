@@ -31,6 +31,7 @@ public class BusinessLayerModule extends AbstractModule {
         //Business Service Injection
         bind(IConceptService.class).to(ConceptService.class);
         bind(IConfigureService.class).to(ConfigureService.class);
+        bind(IUpdatesService.class).to(UpdatesService.class);
         bind(ITabService.class).to(TabService.class);
         bind(IEncounterService.class).to(EncounterService.class);
         bind(IInventoryService.class).to(InventoryService.class);

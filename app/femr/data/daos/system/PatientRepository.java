@@ -289,7 +289,11 @@ public class PatientRepository implements IPatientRepository {
                     "case when dm_last_name = dm(\"" + lastName + "\") then 10 else 0 end + " +
                     "case when dm_first_name = dm(\"" + firstName + "\") then 10 else 0 end + " +
                     (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then 15 else 0 end + " : "") +
-                    (age != null ? "case when age != null and age = \"" + ageString + "\" then 10 else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 5.0 then 5 else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 2.0 then 5 else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 5.0 then -5 else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 10.0 then -5 else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 15.0 then -10 else 0 end + " : "") +
                     "case when sex = \"" + gender + "\" then 10 else 0 end + " +
                     "case when city like \"" + city + "\" then 10 else 0 end) " +
                     "as priority " +

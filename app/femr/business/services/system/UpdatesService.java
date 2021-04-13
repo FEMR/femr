@@ -99,15 +99,14 @@ public class UpdatesService implements IUpdatesService {
         ServiceResponse<List<? extends IKitStatus>> response = new ServiceResponse<>();
         try {
             BackEndControllerHelper.executePythonScript("s3scripts/download.py");
+            String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
+            IKitStatus kitStatusDate = retrieveKitStatuses().getResponseObject().get(2);
+            kitStatusDate.setValue(updatedDate);
+            kitStatusRepository.update(kitStatusDate);
         } catch (Exception e) {
             response.addError("Kit update", e.toString());
             e.printStackTrace();
         }
-
-        String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
-        IKitStatus kitStatusDate = retrieveKitStatuses().getResponseObject().get(2);
-        kitStatusDate.setValue(updatedDate);
-        kitStatusRepository.update(kitStatusDate);
 
         return response;
     }

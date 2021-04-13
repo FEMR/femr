@@ -137,16 +137,15 @@ public class UpdatesService implements IUpdatesService {
         String[] cmd = new String[]{"/bin/bash", "femr.sh"};
         try {
             Process pr = Runtime.getRuntime().exec(cmd, null, new File("/Users/yashsatyavarpu/Documents/super-femr/app/femr/util/backup"));
+            String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
+            DatabaseStatus databaseStatus = new DatabaseStatus();
+            databaseStatus.setName("Last Backup");
+            databaseStatus.setValue(updated_date);
+            databaseStatusRepository.update(databaseStatus);
         } catch (IOException e) {
             response.addError("Database update", e.toString());
             e.printStackTrace();
         }
-        String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
-        DatabaseStatus databaseStatus = new DatabaseStatus();
-        databaseStatus.setName("Last Backup");
-        databaseStatus.setValue(updated_date);
-        databaseStatusRepository.update(databaseStatus);
-
         return response;
     }
 

@@ -28,6 +28,7 @@ import femr.data.models.core.IDatabaseStatus;
 import femr.data.models.mysql.KitStatus;
 import femr.data.models.mysql.NetworkStatus;
 import femr.data.models.mysql.DatabaseStatus;
+import femr.ui.controllers.BackEndControllerHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +97,18 @@ public class UpdatesService implements IUpdatesService {
     @Override
     public ServiceResponse<List<? extends IKitStatus>> updateKitStatuses() {
         ServiceResponse<List<? extends IKitStatus>> response = new ServiceResponse<>();
-        //TODO: Lemur Team update the database with the right values
+        try {
+            BackEndControllerHelper.executePythonScript("s3scripts/download.py");
+        } catch (Exception e) {
+            response.addError("Kit update", e.toString());
+            e.printStackTrace();
+        }
+
+        String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
+        IKitStatus kitStatusDate = retrieveKitStatuses().getResponseObject().get(2);
+        kitStatusDate.setValue(updatedDate);
+        kitStatusRepository.update(kitStatusDate);
+
         return response;
     }
 

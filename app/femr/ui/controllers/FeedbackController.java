@@ -56,11 +56,12 @@ public class FeedbackController extends Controller {
         IndexViewModelPost viewModel = IndexViewModelForm.bindFromRequest().get();
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
 
-        userService.createFeedback(viewModel.getFeedbackMsg());
+        if(!viewModel.getFeedbackMsg().equals("")){
+            userService.createFeedback(viewModel.getFeedbackMsg());
+            return redirect("/?feedback=received");
+        }
 
-
-        return redirect("/?feedback=received");
-
+        return redirect("/feedback");
     }
 
 

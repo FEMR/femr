@@ -29,6 +29,8 @@ import femr.data.models.mysql.KitStatus;
 import femr.data.models.mysql.NetworkStatus;
 import femr.data.models.mysql.DatabaseStatus;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class UpdatesService implements IUpdatesService {
@@ -105,8 +107,8 @@ public class UpdatesService implements IUpdatesService {
     public ServiceResponse<List<? extends IDatabaseStatus>> retrieveDatabaseStatuses() {
         ServiceResponse<List<? extends IDatabaseStatus>> response = new ServiceResponse<>();
         try {
-            List<? extends IDatabaseStatus> kitStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);
-            response.setResponseObject(kitStatuses);
+            List<? extends IDatabaseStatus> databaseStatuses = databaseStatusRepository.findAll(DatabaseStatus.class);
+            response.setResponseObject(databaseStatuses);
 
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
@@ -120,38 +122,20 @@ public class UpdatesService implements IUpdatesService {
     @Override
     public ServiceResponse<List<? extends IDatabaseStatus>> updateDatabaseStatuses() {
         ServiceResponse<List<? extends IDatabaseStatus>> response = new ServiceResponse<>();
-        //TODO: Feather Team backup database ---> run script to see if it successsfully return if it succeeds or not
-
+        //TODO: Do some more robust error checking
+        String[] cmd = new String[]{"/bin/bash", "femr.sh"};
+        try {
+            Process pr = Runtime.getRuntime().exec(cmd, null, new File("/Users/yashsatyavarpu/Documents/super-femr/app/femr/util/backup"));
+        } catch (IOException e) {
+            response.addError("Database update", e.toString());
+            e.printStackTrace();
+        }
         String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
         DatabaseStatus databaseStatus = new DatabaseStatus();
         databaseStatus.setName("Last Backup");
         databaseStatus.setValue(updated_date);
         databaseStatusRepository.update(databaseStatus);
 
-        /*List<? extends ISystemSetting> allSystemSettings = systemSettingRepository.findAll(SystemSetting.class);
-
-        try {
-            if(systemSettings == null){
-                //If systemSettings is null, that means that all settings buttons were unchecked.
-                for (ISystemSetting ss: allSystemSettings){
-                    ss.setActive(false);
-                    systemSettingRepository.update(ss);
-                }
-            } else {
-                for (ISystemSetting ss : allSystemSettings) {
-                    if (systemSettings.contains(ss.getName())) {
-                        ss.setActive(true);
-                        systemSettingRepository.update(ss);
-                    } else {
-                        ss.setActive(false);
-                        systemSettingRepository.update(ss);
-                    }
-                }
-                response.setResponseObject(allSystemSettings);
-            }
-        } catch (Exception ex) {
-            response.addError("", ex.getMessage());
-        }*/
         return response;
     }
 

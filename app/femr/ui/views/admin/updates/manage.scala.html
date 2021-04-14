@@ -30,7 +30,7 @@
                     <tr>
                         <td>Create Backup:</td>
                         <td>
-                            <input type="submit" class="fButton" value="Back Up Now"/>
+                            <input type="submit" class="updateButton" value="Back Up Now"/>
                         </td>
                     </tr>
                 }
@@ -58,7 +58,7 @@
                     @if(viewModel.isUpdateAvailable) {
                         @helper.form(action = UpdatesController.kitUpdatePost()) {
                             <td>Kit Update: Available</td><td>
-                            <input type="submit" class="fButton" value="Update"/></td>
+                            <input type="submit" class="updateButton" value="Update"/></td>
                         }
                     } else {<td>Kit Update: Already up to date</td>}
                 </tr>

@@ -28,6 +28,7 @@ import femr.data.models.core.IDatabaseStatus;
 import femr.data.models.core.IKitStatus;
 import femr.data.models.core.INetworkStatus;
 import femr.data.models.mysql.Roles;
+import femr.ui.controllers.BackEndControllerHelper;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.updates.IndexViewModelGet;
@@ -119,8 +120,16 @@ public class UpdatesController extends Controller {
 
         // TODO just run the script here
         // TODO need to check errors
+        ServiceResponse<List<? extends IKitStatus>> kitStatusesResponse = updatesService.updateKitStatuses();
 
-        messages.add("The kit was successfully updated.");
+        if (kitStatusesResponse.hasErrors()) {
+            Logger.error("UpdatesController-kitUpdatePost()","Failed to update statuses");
+            throw new RuntimeException();
+        }
+
+        else {
+            messages.add("The kit was successfully backed up.");
+        }
 
         return manageGet();
     }

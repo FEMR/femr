@@ -4,11 +4,15 @@ import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.IInternetStatusService;
 import femr.business.services.core.ISessionService;
+import femr.business.services.core.IUpdatesService;
 import femr.business.services.core.IUserService;
+import femr.business.services.system.UpdatesService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.InternetStatusItem;
+import femr.data.models.core.INetworkStatus;
 import femr.data.models.core.IUser;
+import femr.data.models.mysql.NetworkStatus;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
@@ -22,6 +26,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import femr.util.InternetConnnection.InternetCheck;
@@ -32,11 +37,11 @@ public class SessionsController extends Controller {
     private final FormFactory formFactory;
     private final ISessionService sessionsService;
     private final IUserService userService;
-    private final IInternetStatusService internetStatusService;
+    private final IUpdatesService internetStatusService;
 
     @Inject
     public SessionsController(AssetsFinder assetsFinder, FormFactory formFactory, ISessionService sessionsService, IUserService userService,
-                              IInternetStatusService internetStatusService) {
+                              IUpdatesService internetStatusService) {
 
         this.assetsFinder = assetsFinder;
         this.formFactory = formFactory;
@@ -85,19 +90,11 @@ public class SessionsController extends Controller {
                 return editPasswordGet(user);
             }
 
-            boolean flag = false;
-            // put internet check here
-            // will only check when logging in
-            if (InternetCheck.NetIsAvailable()) {
-                // We are connected to the internet.
-                // Need to check if kit upgrade is available or
-                // if we need to download SQL evolution files.
-                flag = true;
-            }
 
-            ServiceResponse<InternetStatusItem> updateResponse = internetStatusService.updateInternetStatus(flag);
-            if (updateResponse.hasErrors())
-                throw new RuntimeException();
+            //ServiceResponse<List<? extends INetworkStatus>>
+                    //updateResponse = internetStatusService.updateNetworkStatuses();
+            //if (updateResponse.hasErrors())
+                //throw new RuntimeException();
         }
 
         return redirect(routes.HomeController.index());

@@ -28,9 +28,12 @@ import femr.data.models.core.IDatabaseStatus;
 import femr.data.models.mysql.KitStatus;
 import femr.data.models.mysql.NetworkStatus;
 import femr.data.models.mysql.DatabaseStatus;
+import femr.ui.controllers.BackEndControllerHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.UnresolvedPermission;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdatesService implements IUpdatesService {
@@ -68,9 +71,49 @@ public class UpdatesService implements IUpdatesService {
      * {@inheritDoc}
      */
     @Override
-    public ServiceResponse<List<? extends INetworkStatus>> updateNetworkStatuses() {
+    public  ServiceResponse<List<? extends INetworkStatus>> updateNetworkStatuses() {
         ServiceResponse<List<? extends INetworkStatus>> response = new ServiceResponse<>();
-        //TODO: Lemur Team update the database with the right values
+        ArrayList<String> data = new ArrayList<>();
+        try {
+            data = BackEndControllerHelper.executeSpeedTestScript("speedtest/sptest.py");
+            System.out.println(data);
+            //Update Status
+            Float Ping = Float.parseFloat(data.get(2));
+            String updatedStatus = "Connection stable";
+            if(Ping <= 0){
+                updatedStatus = "Connection unavailable";
+            }
+            INetworkStatus status = retrieveNetworkStatuses().getResponseObject().get(0);
+            status.setValue(updatedStatus);
+            networkStatusRepository.update(status);
+
+            //Update Download
+            String updatedDownload = data.get(0);
+            INetworkStatus download = retrieveNetworkStatuses().getResponseObject().get(1);
+            download.setValue(updatedDownload);
+            networkStatusRepository.update(download);
+
+            //Update Upload
+            String updatedUpload = data.get(1);
+            INetworkStatus upload = retrieveNetworkStatuses().getResponseObject().get(2);
+            upload.setValue(updatedUpload);
+            networkStatusRepository.update(upload);
+
+            //Update Ping
+            String updatedPing = data.get(2);
+            INetworkStatus ping = retrieveNetworkStatuses().getResponseObject().get(3);
+            ping.setValue(updatedPing);
+            networkStatusRepository.update(ping);
+
+            //Update Date
+            String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
+            INetworkStatus date = retrieveNetworkStatuses().getResponseObject().get(4);
+            date.setValue(updatedDate);
+            networkStatusRepository.update(date);
+        } catch (Exception e) {
+            response.addError("Network status", e.toString());
+        }
+
         return response;
     }
 
@@ -96,7 +139,17 @@ public class UpdatesService implements IUpdatesService {
     @Override
     public ServiceResponse<List<? extends IKitStatus>> updateKitStatuses() {
         ServiceResponse<List<? extends IKitStatus>> response = new ServiceResponse<>();
-        //TODO: Lemur Team update the database with the right values
+        try {
+            BackEndControllerHelper.executePythonScript("s3scripts/download.py");
+            String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
+            IKitStatus kitStatusDate = retrieveKitStatuses().getResponseObject().get(2);
+            kitStatusDate.setValue(updatedDate);
+            kitStatusRepository.update(kitStatusDate);
+        } catch (Exception e) {
+            response.addError("Kit update", e.toString());
+            e.printStackTrace();
+        }
+
         return response;
     }
 
@@ -126,16 +179,15 @@ public class UpdatesService implements IUpdatesService {
         String[] cmd = new String[]{"/bin/bash", "femr.sh"};
         try {
             Process pr = Runtime.getRuntime().exec(cmd, null, new File("/Users/yashsatyavarpu/Documents/super-femr/app/femr/util/backup"));
+            String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
+            DatabaseStatus databaseStatus = new DatabaseStatus();
+            databaseStatus.setName("Last Backup");
+            databaseStatus.setValue(updated_date);
+            databaseStatusRepository.update(databaseStatus);
         } catch (IOException e) {
             response.addError("Database update", e.toString());
             e.printStackTrace();
         }
-        String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
-        DatabaseStatus databaseStatus = new DatabaseStatus();
-        databaseStatus.setName("Last Backup");
-        databaseStatus.setValue(updated_date);
-        databaseStatusRepository.update(databaseStatus);
-
         return response;
     }
 

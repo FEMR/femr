@@ -37,7 +37,6 @@ def bandwidth(numSeconds):
 	return average_bandwidth
 
 def main():
-	#band = bandwidth(5)
 
 	try:
 		st = speedtest.Speedtest()

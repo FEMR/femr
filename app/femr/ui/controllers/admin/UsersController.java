@@ -112,9 +112,13 @@ public class UsersController extends Controller {
         }
         List<String> messages = new ArrayList<>();
 
+        if (form.field("email").getValue().isPresent() &&
+                !form.field("email").getValue().get().matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
+            messages.add("Invalid Email");
+            return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
+        }
 
         if (form.hasErrors()) {
-
             return badRequest(create.render(currentUser, form, messages, roleServiceResponse.getResponseObject(), assetsFinder));
         } else {
             CreateViewModel viewModel = form.bindFromRequest().get();

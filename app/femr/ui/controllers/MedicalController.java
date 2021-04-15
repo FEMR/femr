@@ -91,25 +91,31 @@ public class MedicalController extends Controller {
 
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0, assetsFinder));
         }
-        PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
-        //check for encounter closed
-        if (patientEncounterItem.getIsClosed()) {
+        try {
+            // NOTE: NullPointerException raised on next line when a valid non-existing patient Id is searched for
+            PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
-            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
-        }
+            //check for encounter closed
+            if (patientEncounterItem.getIsClosed()) {
 
-        //check if the doc has already seen the patient today
-        ServiceResponse<UserItem> userItemServiceResponse = encounterService.retrievePhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
-        if (userItemServiceResponse.hasErrors()) {
-
-            throw new RuntimeException();
-        } else {
-
-            if (userItemServiceResponse.getResponseObject() != null) {
-
-                return ok(index.render(currentUserSession, "That patient has already been seen today. Would you like to edit their encounter?", patientId, assetsFinder));
+                return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
             }
+
+            //check if the doc has already seen the patient today
+            ServiceResponse<UserItem> userItemServiceResponse = encounterService.retrievePhysicianThatCheckedInPatientToMedical(patientEncounterItem.getId());
+            if (userItemServiceResponse.hasErrors()) {
+
+                throw new RuntimeException();
+            } else {
+
+                if (userItemServiceResponse.getResponseObject() != null) {
+
+                    return ok(index.render(currentUserSession, "That patient has already been seen today. Would you like to edit their encounter?", patientId, assetsFinder));
+                }
+            }
+        } catch (NullPointerException e) {
+            return ok(index.render(currentUserSession, "No record found for that patient", 0, assetsFinder));
         }
 
         return redirect(routes.MedicalController.editGet(patientId));

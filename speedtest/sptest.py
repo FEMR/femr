@@ -53,6 +53,6 @@ def main():
 		print(out)
 
 	except speedtest.ConfigRetrievalError:
-		print(0)
+		print(f"""{0}\n{0}\n{0}""")
 
 main()

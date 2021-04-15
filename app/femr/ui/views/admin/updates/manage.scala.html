@@ -7,7 +7,7 @@
 @import femr.ui.views.html.layouts.admin
 
     @additionalStyles = {
-        <link rel="stylesheet" href="@assets.path("css/admin/updates.css")">
+        <link rel="stylesheet" href="@assets.path("css/admin/configure.css")">
     }
     @additionalMessages = {
         @for(message <- messages) {
@@ -16,8 +16,8 @@
     }
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
-        <div class="right">
-            <h2>Database Status  __________</h2>
+        <div style="float:right">
+            <h2>Database Status</h2>
 
             <table>
                 @for((key,valyew) <- viewModel.getDatabaseStatus) {
@@ -30,7 +30,7 @@
                     <tr>
                         <td>Create Backup:</td>
                         <td>
-                            <input type="submit" class="updateButton" value="Back Up Now"/>
+                            <input type="submit" class="fButton" value="Back Up Now"/>
                         </td>
                     </tr>
                 }
@@ -38,8 +38,8 @@
         </div>
 
 
-        <div class ="left">
-            <h2>Network Status __________</h2>
+        <div>
+            <h2>Network Status</h2>
 
             <table id="networkstatus">
                 @for((key,valyew) <- viewModel.getNetworkStatus) {
@@ -51,14 +51,14 @@
             </table>
         </div>
 
-        <div class= "rightBelow">
-            <h2>Available Updates __________</h2>
+        <div style="float:right">
+            <h2>Available Updates</h2>
             <table>
                 <tr>
                     @if(viewModel.isUpdateAvailable) {
                         @helper.form(action = UpdatesController.kitUpdatePost()) {
                             <td>Kit Update: Available</td><td>
-                            <input type="submit" class="updateButton" value="Update"/></td>
+                            <input type="submit" class="fButton" value="Update"/></td>
                         }
                     } else {<td>Kit Update: Already up to date</td>}
                 </tr>
@@ -68,8 +68,8 @@
         </div>
 
 
-        <div class = "left">
-            <h2>fEMR Kit Status __________</h2>
+        <div>
+            <h2>fEMR Kit Status</h2>
 
             <table id="kitstatus">
                 @for((key2,valyew2) <- viewModel.getKitStatus) {

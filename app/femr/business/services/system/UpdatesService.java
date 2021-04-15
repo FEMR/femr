@@ -99,15 +99,14 @@ public class UpdatesService implements IUpdatesService {
         ServiceResponse<List<? extends IKitStatus>> response = new ServiceResponse<>();
         try {
             BackEndControllerHelper.executePythonScript("s3scripts/download.py");
+            String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
+            IKitStatus kitStatusDate = retrieveKitStatuses().getResponseObject().get(2);
+            kitStatusDate.setValue(updatedDate);
+            kitStatusRepository.update(kitStatusDate);
         } catch (Exception e) {
             response.addError("Kit update", e.toString());
             e.printStackTrace();
         }
-
-        String updatedDate = java.time.LocalDate.now().toString().replace("-", ".");
-        IKitStatus kitStatusDate = retrieveKitStatuses().getResponseObject().get(2);
-        kitStatusDate.setValue(updatedDate);
-        kitStatusRepository.update(kitStatusDate);
 
         return response;
     }
@@ -138,16 +137,15 @@ public class UpdatesService implements IUpdatesService {
         String[] cmd = new String[]{"/bin/bash", "femr.sh"};
         try {
             Process pr = Runtime.getRuntime().exec(cmd, null, new File("/Users/yashsatyavarpu/Documents/super-femr/app/femr/util/backup"));
+            String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
+            DatabaseStatus databaseStatus = new DatabaseStatus();
+            databaseStatus.setName("Last Backup");
+            databaseStatus.setValue(updated_date);
+            databaseStatusRepository.update(databaseStatus);
         } catch (IOException e) {
             response.addError("Database update", e.toString());
             e.printStackTrace();
         }
-        String updated_date = java.time.LocalDate.now().toString().replace("-", ".");
-        DatabaseStatus databaseStatus = new DatabaseStatus();
-        databaseStatus.setName("Last Backup");
-        databaseStatus.setValue(updated_date);
-        databaseStatusRepository.update(databaseStatus);
-
         return response;
     }
 

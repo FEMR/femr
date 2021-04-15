@@ -88,20 +88,20 @@ public class UpdatesService implements IUpdatesService {
             networkStatusRepository.update(status);
 
             //Update Download
-            String updatedDownload = data.get(1);
+            String updatedDownload = data.get(0);
             INetworkStatus download = retrieveNetworkStatuses().getResponseObject().get(1);
             download.setValue(updatedDownload);
             networkStatusRepository.update(download);
 
             //Update Upload
-            String updatedUpload = data.get(2);
-            INetworkStatus upload = retrieveNetworkStatuses().getResponseObject().get(1);
+            String updatedUpload = data.get(1);
+            INetworkStatus upload = retrieveNetworkStatuses().getResponseObject().get(2);
             upload.setValue(updatedUpload);
             networkStatusRepository.update(upload);
 
             //Update Ping
-            String updatedPing = data.get(3);
-            INetworkStatus ping = retrieveNetworkStatuses().getResponseObject().get(1);
+            String updatedPing = data.get(2);
+            INetworkStatus ping = retrieveNetworkStatuses().getResponseObject().get(3);
             ping.setValue(updatedPing);
             networkStatusRepository.update(ping);
 

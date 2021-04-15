@@ -91,10 +91,10 @@ public class SessionsController extends Controller {
             }
 
 
-            ServiceResponse<List<? extends INetworkStatus>>
-                    updateResponse = internetStatusService.updateNetworkStatuses();
-            if (updateResponse.hasErrors())
-                throw new RuntimeException();
+            //ServiceResponse<List<? extends INetworkStatus>>
+                    //updateResponse = internetStatusService.updateNetworkStatuses();
+            //if (updateResponse.hasErrors())
+                //throw new RuntimeException();
         }
 
         return redirect(routes.HomeController.index());

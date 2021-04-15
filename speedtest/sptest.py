@@ -25,7 +25,6 @@ def bandwidth(numSeconds):
 		new_value = psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv
 
 		if old_value:
-			#send_stat(new_value - old_value)
 			total += (new_value - old_value)
 
 		old_value = new_value
@@ -34,31 +33,26 @@ def bandwidth(numSeconds):
 		i += 1
 
 	average_bandwidth = total/numSeconds
-	#print("Average bandwidth: %0.2f mb" % convert_to_mbit(average_bandwidth))
 
 	return average_bandwidth
 
 def main():
 	band = bandwidth(5)
 
-	st = speedtest.Speedtest()
+	try:
+		st = speedtest.Speedtest()
 
-	servernames = []
-	st.get_servers(servernames)
+		servernames = []
+		st.get_servers(servernames)
 
-	#down = humansize(st.download())
-	down = st.download()
-	#up = humansize(st.upload())
-	up = st.upload()
-	ping = st.results.ping
+		down = st.download()
+		up = st.upload()
+		ping = st.results.ping
 
-	out = (f"""{band}\n{down}\n{up}\n{ping}""")
-	'''
-		out = (f"""Your current internet speed:""") + \
-			"\n\n" + (f"""Download {humansize(down)}ps""") + \
-			"\n" + (f"""Upload: {humansize(up)}ps""") + \
-			"\n" + (f"""Ping: {ping} ms""")
-	'''
-	print(out)
+		out = (f"""{band}\n{down}\n{up}\n{ping}""")
+		print(out)
+
+	except speedtest.ConfigRetrievalError:
+		print(0)
 
 main()

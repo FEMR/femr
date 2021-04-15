@@ -37,7 +37,7 @@ def bandwidth(numSeconds):
 	return average_bandwidth
 
 def main():
-	band = bandwidth(5)
+	#band = bandwidth(5)
 
 	try:
 		st = speedtest.Speedtest()
@@ -49,7 +49,7 @@ def main():
 		up = st.upload()
 		ping = st.results.ping
 
-		out = (f"""{band}\n{down}\n{up}\n{ping}""")
+		out = (f"""{down}\n{up}\n{ping}""")
 		print(out)
 
 	except speedtest.ConfigRetrievalError:

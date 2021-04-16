@@ -124,8 +124,10 @@ public class UpdatesService implements IUpdatesService {
         ServiceResponse<List<? extends IDatabaseStatus>> response = new ServiceResponse<>();
         //TODO: Do some more robust error checking
         String[] cmd = new String[]{"/bin/bash", "femr.sh"};
+        String workingDir = System.getProperty("user.dir");
+        File dir = new File(workingDir, "app/femr/util/backup");
         try {
-            Process pr = Runtime.getRuntime().exec(cmd, null, new File("/Users/yashsatyavarpu/Documents/super-femr/app/femr/util/backup"));
+            Process pr = Runtime.getRuntime().exec(cmd, null, dir);
         } catch (Exception e) {
             response.addError("Database update", e.toString());
             e.printStackTrace();

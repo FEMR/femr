@@ -80,6 +80,10 @@ public class PharmaciesController extends Controller {
         }
         PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
+        if (patientEncounterItem == null) {
+            return ok(index.render(currentUserSession, "That patient does not exist.", 0, assetsFinder));
+        }
+
         //check for encounter closed
         if (patientEncounterItem.getIsClosed()) {
             return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));

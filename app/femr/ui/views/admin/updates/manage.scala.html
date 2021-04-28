@@ -42,6 +42,13 @@
             <h2>Network Status</h2>
 
             <table id="networkstatus">
+                <tr>
+                    @helper.form(action = UpdatesController.refreshInternetStatus()) {
+                    <td>
+                        <input type="submit" class="fButton" value="Refresh Internet Status"/>
+                    </td>
+                    }
+                </tr>
                 @for((key,valyew) <- viewModel.getNetworkStatus) {
                     <tr>
                         <td>@key:</td>

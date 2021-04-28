@@ -20,6 +20,7 @@ package femr.ui.controllers.admin;
 
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
+import femr.business.services.core.IInternetStatusService;
 import femr.business.services.core.ISessionService;
 import femr.business.services.core.IUpdatesService;
 import femr.common.dtos.CurrentUser;
@@ -50,6 +51,7 @@ public class UpdatesController extends Controller {
     private final FormFactory formFactory;
     private ISessionService sessionService;
     private IUpdatesService updatesService;
+
     private List<String> messages;
 
     @Inject
@@ -66,6 +68,7 @@ public class UpdatesController extends Controller {
     }
 
     public Result manageGet() {
+        System.out.println("HERE in manageGet");
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         IndexViewModelGet indexViewModel = new IndexViewModelGet();
 
@@ -129,6 +132,17 @@ public class UpdatesController extends Controller {
 
         else {
             messages.add("The kit was successfully backed up.");
+        }
+
+        return manageGet();
+    }
+    public Result refreshInternetStatus() {
+        System.out.println("before internet GET");
+        ServiceResponse<List<? extends INetworkStatus>> updateResponse = updatesService.updateNetworkStatuses();
+        if (updateResponse.hasErrors()) {
+            System.out.println("internet check error raised");
+            System.out.println(updateResponse.getErrors());
+            throw new RuntimeException();
         }
 
         return manageGet();

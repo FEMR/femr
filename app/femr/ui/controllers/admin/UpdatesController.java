@@ -68,7 +68,6 @@ public class UpdatesController extends Controller {
     }
 
     public Result manageGet() {
-        System.out.println("HERE in manageGet");
         CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
         IndexViewModelGet indexViewModel = new IndexViewModelGet();
 
@@ -137,11 +136,9 @@ public class UpdatesController extends Controller {
         return manageGet();
     }
     public Result refreshInternetStatus() {
-        System.out.println("before internet GET");
         ServiceResponse<List<? extends INetworkStatus>> updateResponse = updatesService.updateNetworkStatuses();
         if (updateResponse.hasErrors()) {
-            System.out.println("internet check error raised");
-            System.out.println(updateResponse.getErrors());
+            System.out.println("Update Response Error: " + updateResponse.getErrors());
             throw new RuntimeException();
         }
 

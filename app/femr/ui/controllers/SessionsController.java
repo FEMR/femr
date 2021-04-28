@@ -16,6 +16,7 @@ import femr.data.models.mysql.NetworkStatus;
 import femr.ui.models.sessions.CreateViewModel;
 import femr.ui.views.html.sessions.create;
 import femr.ui.views.html.sessions.editPassword;
+import femr.util.ThreadHelper;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.StringUtils;
 import org.joda.time.DateTime;
@@ -89,12 +90,15 @@ public class SessionsController extends Controller {
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }
-
-
-            //ServiceResponse<List<? extends INetworkStatus>>
-                    //updateResponse = internetStatusService.updateNetworkStatuses();
-            //if (updateResponse.hasErrors())
-                //throw new RuntimeException();
+            /*
+            ThreadHelper threadHelper = new ThreadHelper(internetStatusService);
+            Thread t = new Thread(threadHelper);
+            t.start();
+            */
+            ServiceResponse<List<? extends INetworkStatus>>
+                    updateResponse = internetStatusService.updateNetworkStatuses();
+            if (updateResponse.hasErrors())
+                throw new RuntimeException();
         }
 
         return redirect(routes.HomeController.index());

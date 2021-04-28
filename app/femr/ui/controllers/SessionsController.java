@@ -90,15 +90,10 @@ public class SessionsController extends Controller {
             if (user.getPasswordReset() == true){
                 return editPasswordGet(user);
             }
-            /*
+
             ThreadHelper threadHelper = new ThreadHelper(internetStatusService);
             Thread t = new Thread(threadHelper);
             t.start();
-            */
-            ServiceResponse<List<? extends INetworkStatus>>
-                    updateResponse = internetStatusService.updateNetworkStatuses();
-            if (updateResponse.hasErrors())
-                throw new RuntimeException();
         }
 
         return redirect(routes.HomeController.index());

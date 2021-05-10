@@ -26,6 +26,7 @@
 @additionalStyles = {
     <link rel="stylesheet" href="@assets.path("css/triage.css")">
     <link rel="stylesheet" href="@assets.path("css/libraries/datepicker.css")">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage"), assets = assets) {
 
@@ -178,8 +179,13 @@
                         <br/>
 
                         <div class="vitalWrap">
-                            <label>History of:</label>
+                            <label>History of:
+                            <b href="#" data-toggle="tooltip" data-placement="top" title="Does the patient have, or have had, any of the following?">
+                                <i class="fa fa-question-circle"></i></b>
+                            </label>
                         </div>
+
+
 
                         <label class="btn btn-default"> Diabetes
                             <input type="checkbox" step="any" class="fButton" id="diabetic" name="diabetic" value="1">

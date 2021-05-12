@@ -76,7 +76,6 @@ public class UpdatesService implements IUpdatesService {
         ArrayList<String> data = new ArrayList<>();
         try {
             data = BackEndControllerHelper.executeSpeedTestScript("speedtest/sptest.py");
-            System.out.println(data);
             //Update Status
             Float Ping = Float.parseFloat(data.get(2));
             String updatedStatus = "Connection stable";

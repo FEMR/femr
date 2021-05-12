@@ -43,27 +43,30 @@
             <h2>Network Status</h2>
 
             <table id="networkstatus">
-                @if(downloadSpeed > 5) {
-                    <img src=@assets.path("networkIcons/good_connection_icon.png") width="50" height="50"/>
-                } else if(downloadSpeed > 2 && downloadSpeed < 5) {
-                    <img src=@assets.path("networkIcons/okay_connection_icon.png") width="50" height="50"/>
-                } else {
-                    <img src=@assets.path("networkIcons/poor_connection_icon.png") width="50" height="50"/>
-                }
-                <tr>
+                <div>
+                    <div>
                     @helper.form(action = UpdatesController.refreshInternetStatus()) {
-                    <td>
-                        <input type="submit" class="fButton" value="Refresh Internet Status"/>
-                    </td>
+                        <td>
+                            <input type="submit" class="fButton" value="Refresh Internet Status"/>
+                        </td>
                     }
-                </tr>
+                    </div>
+                    <div>
+                        @if(downloadSpeed > 5) {
+                            <img src=@assets.path("networkIcons/good_connection_icon.png") width="75" height="75"/>
+                        } else if(downloadSpeed > 2 && downloadSpeed < 5) {
+                            <img src=@assets.path("networkIcons/okay_connection_icon.png") width="75" height="75"/>
+                        } else {
+                            <img src=@assets.path("networkIcons/poor_connection_icon.png") width="75" height="75"/>
+                        }
+                    </div>
+                </div>
                 @for((key,valyew) <- viewModel.getNetworkStatus) {
                     <tr>
                         <td>@key:</td>
                         <td>@valyew</td>
                     </tr>
                 }
-
             </table>
         </div>
 

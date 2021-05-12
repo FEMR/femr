@@ -14,6 +14,7 @@
         <p class="adminMessage">@message</p>
         }
     }
+    @downloadSpeed = @{viewModel.getNetworkStatus.get("Download").substring(0, viewModel.getNetworkStatus.get("Download").indexOf(".")).toInt}
 
 @admin("Updates", currentUser, styles = additionalStyles, assets = assets, message = additionalMessages) {
         <div style="float:right">
@@ -42,6 +43,13 @@
             <h2>Network Status</h2>
 
             <table id="networkstatus">
+                @if(downloadSpeed > 5) {
+                    <img src=@assets.path("networkIcons/good_connection_icon.png") width="50" height="50"/>
+                } else if(downloadSpeed > 2 && downloadSpeed < 5) {
+                    <img src=@assets.path("networkIcons/okay_connection_icon.png") width="50" height="50"/>
+                } else {
+                    <img src=@assets.path("networkIcons/poor_connection_icon.png") width="50" height="50"/>
+                }
                 <tr>
                     @helper.form(action = UpdatesController.refreshInternetStatus()) {
                     <td>
@@ -55,6 +63,7 @@
                         <td>@valyew</td>
                     </tr>
                 }
+
             </table>
         </div>
 

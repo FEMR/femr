@@ -266,6 +266,46 @@ public class PatientRepository implements IPatientRepository {
         return response;
     }
 
+    private RawSql retrievePatientInfo(String firstName, String lastName, String phone, String addr, String gender, Long age, String city, String ageString) {
+
+        String sql
+                = "select id, user_id, first_name, last_name, phone_number, age, sex, address, city, isDeleted, deleted_by_user_id, reason_deleted, (" +
+                (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then " + config.getInt("phone") + " else 0 end + " : "") +
+                "case when last_name = \"" + lastName + "\" then " + config.getInt("lastName") + " else 0 end + " +
+                "case when first_name = \"" + firstName + "\" then " + config.getInt("firstName") + " else 0 end + " +
+                "case when dm_last_name = dm(\"" + lastName + "\") then " + config.getInt("dmLastName") + " else 0 end + " +
+                "case when dm_first_name = dm(\"" + firstName + "\") then " + config.getInt("dmFirstName") + " else 0 end + " +
+                (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then " + config.getInt("address") + " else 0 end + " : "") +
+                (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 5.0 then " + config.getInt("ageWithin5Y") + " else 0 end + " : "") +
+                (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 2.0 then " + config.getInt("ageWithin2Y") + " else 0 end + " : "") +
+                (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 5.0 then " + config.getInt("ageGreaterThan5Y") + " else 0 end + " : "") +
+                (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 10.0 then " + config.getInt("ageGreaterThan10Y") + " else 0 end + " : "") +
+                (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 15.0 then " + config.getInt("ageGreaterThan15Y") + " else 0 end + " : "") +
+                "case when sex = \"" + gender + "\" then " + config.getInt("sex") + " else 0 end + " +
+                "case when city like \"" + city + "\" then " + config.getInt("city") + " else 0 end) " +
+                "as priority " +
+                "from patients having priority >= 30 and isDeleted is null order by priority desc limit 15";
+
+        RawSql rawSql = RawSqlBuilder
+                .parse(sql)
+                .columnMapping("id", "patient.id")
+                .columnMapping("user_id", "patient.userId")
+                .columnMapping("first_name", "patient.firstName")
+                .columnMapping("last_name", "patient.lastName")
+                .columnMapping("phone_number", "patient.phoneNumber")
+                .columnMapping("age", "patient.age")
+                .columnMapping("sex", "patient.sex")
+                .columnMapping("address", "patient.address")
+                .columnMapping("city", "patient.city")
+                .columnMapping("isDeleted", "patient.isDeleted")
+                .columnMapping("deleted_by_user_id", "patient.deletedByUserId")
+                .columnMapping("reason_deleted", "patient.reasonDeleted")
+                .columnMapping("priority", "rank")
+                .create();
+
+        return rawSql;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -282,45 +322,8 @@ public class PatientRepository implements IPatientRepository {
             if (age != null) {
                 ageString = dateFormat.format(new Date(age));
             }
-
-
-            String sql
-                    = "select id, user_id, first_name, last_name, phone_number, age, sex, address, city, isDeleted, deleted_by_user_id, reason_deleted, (" +
-                    (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then " + config.getInt("phone") + " else 0 end + " : "") +
-                    "case when last_name = \"" + lastName + "\" then " + config.getInt("lastName") + " else 0 end + " +
-                    "case when first_name = \"" + firstName + "\" then " + config.getInt("firstName") + " else 0 end + " +
-                    "case when dm_last_name = dm(\"" + lastName + "\") then " + config.getInt("dmLastName") + " else 0 end + " +
-                    "case when dm_first_name = dm(\"" + firstName + "\") then " + config.getInt("dmFirstName") + " else 0 end + " +
-                    (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then " + config.getInt("address") + " else 0 end + " : "") +
-                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 5.0 then " + config.getInt("ageWithin5Y") + " else 0 end + " : "") +
-                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 2.0 then " + config.getInt("ageWithin2Y") + " else 0 end + " : "") +
-                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 5.0 then " + config.getInt("ageGreaterThan5Y") + " else 0 end + " : "") +
-                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 10.0 then " + config.getInt("ageGreaterThan10Y") + " else 0 end + " : "") +
-                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 15.0 then " + config.getInt("ageGreaterThan15Y") + " else 0 end + " : "") +
-                    "case when sex = \"" + gender + "\" then " + config.getInt("sex") + " else 0 end + " +
-                    "case when city like \"" + city + "\" then " + config.getInt("city") + " else 0 end) " +
-                    "as priority " +
-                    "from patients having priority >= 30 and isDeleted is null order by priority desc limit 15";
-
-            RawSql rawSql = RawSqlBuilder
-                    .parse(sql)
-                    .columnMapping("id", "patient.id")
-                    .columnMapping("user_id", "patient.userId")
-                    .columnMapping("first_name", "patient.firstName")
-                    .columnMapping("last_name", "patient.lastName")
-                    .columnMapping("phone_number", "patient.phoneNumber")
-                    .columnMapping("age", "patient.age")
-                    .columnMapping("sex", "patient.sex")
-                    .columnMapping("address", "patient.address")
-                    .columnMapping("city", "patient.city")
-                    .columnMapping("isDeleted", "patient.isDeleted")
-                    .columnMapping("deleted_by_user_id", "patient.deletedByUserId")
-                    .columnMapping("reason_deleted", "patient.reasonDeleted")
-                    .columnMapping("priority", "rank")
-                    .create();
-
+            RawSql rawSql = retrievePatientInfo(firstName, lastName, phone, addr, gender, age, city, ageString);
             query.setRawSql(rawSql);
-
             response = query.findList();
 
         } catch (Exception ex) {

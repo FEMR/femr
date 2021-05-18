@@ -17,6 +17,7 @@ public class ThreadHelper implements Runnable {
     public void run() {
         ServiceResponse<List<? extends INetworkStatus>>
             updateResponse = internetStatusService.updateNetworkStatuses();
+
         // if (updateResponse.hasErrors()) throw new RuntimeException();
     }
 }

@@ -27,13 +27,11 @@ public class BackEndControllerHelper  {
       Process p = pb.start();
       BufferedReader bfr = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-      System.out.println("--- Starting Python script now ---");
       String line = "";
       while ((line = bfr.readLine()) != null) {
         System.out.println("Python Output: " + line);
         speedInfo.add(line);
       }
-      System.out.println("--- Finished Python script ---");
 
     } catch (NullPointerException e) {
       System.out.println("The python script does not exist or could not be opened.");

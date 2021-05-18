@@ -1,6 +1,9 @@
 #!/bin/sh
 # Stop femr app by killing java all java processes
-killall -9 java
+#killall -9 java
+
+# Stop femr app by killing first PID shown
+kill $(ps aux | grep java | grep -v 'grep' | awk 'NR==1{print $2}')
 
 # stop mysql
 sudo launchctl unload -F /Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist

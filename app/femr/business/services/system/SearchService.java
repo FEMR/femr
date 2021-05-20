@@ -560,10 +560,13 @@ public class SearchService implements ISearchService {
                 //see if it is a number
                 if(isNumeric(words[0])) {
                     phoneNumber = words[0];
-                    id = Integer.parseInt(words[0]);
+                    if(words[0].length() < 10) {
+                        id = Integer.parseInt(words[0]);
+                    }
+                } else {
+                    firstName = words[0];
                 }
             } catch (NumberFormatException ex) {
-                //see if it it a string
                 firstName = words[0];
             }
         } else if (words.length == 2) {

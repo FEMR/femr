@@ -41,6 +41,16 @@ Prerequisites: Have MySQL, MySQLWorkbench, and IntelliJ IDEA Ultimate installed 
 #### 5. Click the sbt refresh button.
 #### 6. Run the configuration on IntelliJ.
 
+### Setting up weekly backup reminder
+
+* It is very important for the administrator to backup local data to the remote database.
+* A cronjob can be set up before a kit is deployed to automatically display a message once a week.
+
+1. In the command line, type crontab -e
+2. A text editor should appear.
+3. Add the following line to this file: 0 11 * * 5 <path to fEMR project home directory>/util/WeeklyReminder.sh
+4. This will display a reminder pop up at 11:00AM every Friday.
+
 ### Warnings
 
 * fEMR is not HIPAA compliant (... yet).

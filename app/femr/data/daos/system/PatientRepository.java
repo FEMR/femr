@@ -1,9 +1,5 @@
 package femr.data.daos.system;
 
-import io.ebean.Ebean;
-import io.ebean.Expr;
-import io.ebean.ExpressionList;
-import io.ebean.Query;
 import femr.data.models.mysql.RankedPatientMatch;
 import io.ebean.*;
 import com.google.inject.Inject;
@@ -16,7 +12,6 @@ import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
-import java.util.ArrayList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -210,30 +205,6 @@ public class PatientRepository implements IPatientRepository {
         } catch (Exception ex) {
 
             Logger.error("PatientRepository-retrievePatientById", ex.getMessage(), "id: " + id);
-            throw ex;
-        }
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IPatient retrievePatientByGuid(Integer guid) {
-
-        IPatient response = null;
-        try {
-
-            ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("globally_unique_id", guid)
-                    .isNull("isDeleted");
-
-            response = query.findOne();
-        } catch (Exception ex) {
-
-            Logger.error("PatientRepository-retrievePatientByGuid", ex.getMessage(), "id: " + guid);
             throw ex;
         }
 

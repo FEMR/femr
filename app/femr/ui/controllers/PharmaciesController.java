@@ -75,22 +75,30 @@ public class PharmaciesController extends Controller {
 
         //get the patient's encounter
         ServiceResponse<PatientEncounterItem> patientEncounterItemServiceResponse = searchService.retrieveRecentPatientEncounterItemByPatientId(patientId);
+        System.out.println("here");
         if (patientEncounterItemServiceResponse.hasErrors()) {
             return ok(index.render(currentUserSession, patientEncounterItemServiceResponse.getErrors().get(""), 0, assetsFinder));
         }
-        PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
-        //check for encounter closed
-        if (patientEncounterItem.getIsClosed()) {
-            return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
-        }
+        try {
+            // NOTE: Execution Exception occurs on next line when valid integers are entered in Pharmacy Search
+            PatientEncounterItem patientEncounterItem = patientEncounterItemServiceResponse.getResponseObject();
 
-        //ensure prescriptions exist for that patient
-        ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId(), currentUserSession.getTripId());
-        if (prescriptionItemsResponse.hasErrors()) {
-            throw new RuntimeException();
+            //check for encounter closed
+            if (patientEncounterItem.getIsClosed()) {
+                return ok(index.render(currentUserSession, "That patient's encounter has been closed.", 0, assetsFinder));
+            }
 
-        } else if (prescriptionItemsResponse.getResponseObject().size() < 1) {
+            //ensure prescriptions exist for that patient
+            ServiceResponse<List<PrescriptionItem>> prescriptionItemsResponse = searchService.retrieveUnreplacedPrescriptionItems(patientEncounterItem.getId(), currentUserSession.getTripId());
+            if (prescriptionItemsResponse.hasErrors()) {
+                throw new RuntimeException();
+
+            } else if (prescriptionItemsResponse.getResponseObject().size() < 1) {
+                return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
+            }
+        } catch (NullPointerException e) {
+            // source of NullPointerException currently unknown. Temp fix: display no prescriptions found message.
             return ok(index.render(currentUserSession, "No prescriptions found for that patient", 0, assetsFinder));
         }
 

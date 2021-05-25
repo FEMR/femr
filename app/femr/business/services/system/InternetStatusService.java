@@ -54,7 +54,7 @@ public class InternetStatusService implements IInternetStatusService {
       internetStatus = internetStatusRepository.updateInternetStatus(internetStatus);
       response.setResponseObject(itemModelMapper.createInternetStatusItem(internetStatus));
     } catch (Exception ex) {
-      Logger.error("InternetStatusService-retrieveInternetStatus", ex);
+      Logger.error("InternetStatusService-updateInternetStatus", ex);
       response.addError("", ex.getMessage());
     }
     return response;

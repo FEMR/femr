@@ -14,12 +14,12 @@
       <div class="ifContainer">
 
         <h1>Give Feedback</h1>
-        <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately.</p>
+        <p class="welcomeMessage">Thanks for choosing to give feedback to fEMR. Please be honest and as thorough as possible to make sure we are able to understand and implement your feedback appropriately. The maximum number of characters allowed per feedback submission is 10000.</p>
 
         <!-- Need form helper here -->
         @helper.form(action = FeedbackController.indexPost()) {
 
-            <textarea name="feedbackMsg" id="usrFeedback" cols="50" rows="10"></textarea>
+            <textarea name="feedbackMsg" id="usrFeedback" cols="50" rows="10" maxlength="10000"></textarea>
 
 
             <button type="submit" class="fButton fSubmitButton" id="feedbackSubmit">Submit</button>

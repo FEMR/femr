@@ -28,10 +28,6 @@ public interface IPatient {
 
     int getId();
 
-    int getGloballyUniqueID();
-
-    void setGloballyUniqueID(int globallyUniqueID);
-
     int getUserId();
 
     void setUserId(int userId);
@@ -86,6 +82,4 @@ public interface IPatient {
 
     void setReasonDeleted(String reason) ;
 
-    void createGUID();
-    
 }

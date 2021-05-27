@@ -1,9 +1,5 @@
 package femr.data.daos.system;
 
-import io.ebean.Ebean;
-import io.ebean.Expr;
-import io.ebean.ExpressionList;
-import io.ebean.Query;
 import femr.data.models.mysql.RankedPatientMatch;
 import io.ebean.*;
 import com.google.inject.Inject;
@@ -16,21 +12,23 @@ import femr.data.models.mysql.PatientAgeClassification;
 import femr.util.stringhelpers.StringUtils;
 import play.Logger;
 
-import java.util.ArrayList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.typesafe.config.Config;
 
 public class PatientRepository implements IPatientRepository {
 
     private final Provider<IPatientAgeClassification> patientAgeClassificationProvider;
+    private final Config config;
 
     @Inject
-    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider) {
+    public PatientRepository(Provider<IPatientAgeClassification> patientAgeClassificationProvider, Config config) {
 
         this.patientAgeClassificationProvider = patientAgeClassificationProvider;
+        this.config = config;
     }
 
     /**
@@ -217,30 +215,6 @@ public class PatientRepository implements IPatientRepository {
      * {@inheritDoc}
      */
     @Override
-    public IPatient retrievePatientByGuid(Integer guid) {
-
-        IPatient response = null;
-        try {
-
-            ExpressionList<Patient> query = QueryProvider.getPatientQuery()
-                    .where()
-                    .eq("globally_unique_id", guid)
-                    .isNull("isDeleted");
-
-            response = query.findOne();
-        } catch (Exception ex) {
-
-            Logger.error("PatientRepository-retrievePatientByGuid", ex.getMessage(), "id: " + guid);
-            throw ex;
-        }
-
-        return response;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<? extends IPatient> retrievePatientsByPhoneNumber(String phoneNumber) {
 
         List<? extends IPatient> response = null;
@@ -283,15 +257,19 @@ public class PatientRepository implements IPatientRepository {
 
             String sql
                     = "select id, user_id, first_name, last_name, phone_number, age, sex, address, city, isDeleted, deleted_by_user_id, reason_deleted, (" +
-                    (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then 40 else 0 end + " : "") +
-                    "case when last_name = \"" + lastName + "\" then 15 else 0 end + " +
-                    "case when first_name = \"" + firstName + "\" then 10 else 0 end + " +
-                    "case when dm_last_name = dm(\"" + lastName + "\") then 10 else 0 end + " +
-                    "case when dm_first_name = dm(\"" + firstName + "\") then 10 else 0 end + " +
-                    (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then 15 else 0 end + " : "") +
-                    (age != null ? "case when age != null and age = \"" + ageString + "\" then 10 else 0 end + " : "") +
-                    "case when sex = \"" + gender + "\" then 10 else 0 end + " +
-                    "case when city like \"" + city + "\" then 10 else 0 end) " +
+                    (phone != null && !phone.equals("") ? "case when phone_number = " + phone + " then " + config.getInt("phone") + " else 0 end + " : "") +
+                    "case when last_name = \"" + lastName + "\" then " + config.getInt("lastName") + " else 0 end + " +
+                    "case when first_name = \"" + firstName + "\" then " + config.getInt("firstName") + " else 0 end + " +
+                    "case when dm_last_name = dm(\"" + lastName + "\") then " + config.getInt("dmLastName") + " else 0 end + " +
+                    "case when dm_first_name = dm(\"" + firstName + "\") then " + config.getInt("dmFirstName") + " else 0 end + " +
+                    (addr != null && !addr.equals("") ? "case when address = \"" + addr + "\" then " + config.getInt("address") + " else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 5.0 then " + config.getInt("ageWithin5Y") + " else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) <= 2.0 then " + config.getInt("ageWithin2Y") + " else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 5.0 then " + config.getInt("ageGreaterThan5Y") + " else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 10.0 then " + config.getInt("ageGreaterThan10Y") + " else 0 end + " : "") +
+                    (age != null ? "case when age != null and abs(datediff(age, \"" + ageString + "\") / 365) > 15.0 then " + config.getInt("ageGreaterThan15Y") + " else 0 end + " : "") +
+                    "case when sex = \"" + gender + "\" then " + config.getInt("sex") + " else 0 end + " +
+                    "case when city like \"" + city + "\" then " + config.getInt("city") + " else 0 end) " +
                     "as priority " +
                     "from patients having priority >= 30 and isDeleted is null order by priority desc limit 15";
 

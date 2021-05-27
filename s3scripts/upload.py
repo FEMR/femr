@@ -54,7 +54,7 @@ def upload(path):
                 raise
 
 def walk_error_handler(exception_instance):
-    print("Error: Provided Directory cannot be uploaded)
+    print("Error: Provided Directory cannot be uploaded")
     raise NotADirectoryError("No such directory exists.")
 
 def main():

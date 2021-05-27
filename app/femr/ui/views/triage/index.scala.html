@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="@assets.path("css/triage.css")">
     <link rel="stylesheet" href="@assets.path("css/libraries/datepicker.css")">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 }
 @main("Triage", currentUser, styles = additionalStyles, scripts = additionalScripts, search = search("triage"), assets = assets) {
 
@@ -41,9 +42,11 @@
 
         @helper.form(action = TriageController.indexPost(viewModel.getPatient.getId), 'class -> "form-horizontal triage-form", 'enctype -> "multipart/form-data") {
             <div id="genInfoWrap" class="sectionBackground backgroundForWrap">
-
-                <h2>General Info</h2>
-
+                    <h2>General Info
+                        <b title="Complete form with patient demographics as instructed. Any box with an asterix (*) is required. Shared contact information would be if two patients have a household phone or email that they share, for example.">
+                            <i class="fa fa-question-circle " style="font-size: 0.5em;"></i>
+                        </b>
+                    </h2>
                 @inputText("First Name", "firstName", true, if(viewModel != null) viewModel.getPatient.getFirstName else null, "text")
                 <br>
                 @inputText("Last Name", "lastName", true, if(viewModel != null) viewModel.getPatient.getLastName else null, "text")
@@ -180,8 +183,6 @@
 
                         <div class="vitalWrap">
                             <label>History of:
-                            <b href="#" data-toggle="tooltip" data-placement="top" title="Does the patient have, or have had, any of the following?">
-                                <i class="fa fa-question-circle"></i></b>
                             </label>
                         </div>
 

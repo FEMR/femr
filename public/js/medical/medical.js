@@ -64,19 +64,19 @@ var prescriptionFeature = {
     },
     medicationTypeaheadMatcher: function(strs) {
         return function findMatches(q, cb) {
-            var substrRegex = new RegExp(q, 'i'); //Regex used to determine if a string contains substring 'q'
-            var matches = []; //Array to be populated with matches
+            const options = {
+                includeScore: true,
+                keys: ['name']
+            }
 
-            //Iterate through medication and find matches
-            $.each(strs.medication, function (i, med) {
-                if (substrRegex.test(med.name)) {
-                    med.value = med.name;
-                    matches.push(
-                        med
-                    );
-                }
+            const fuse = new Fuse(strs.medication, options)
+            const searchResults = fuse.search(q);
+            const displayResults = searchResults.map(obj => {
+                var item = obj.item;
+                item.value = item.name;
+                return item;
             });
-            cb(matches);
+            cb(displayResults);
         };
     },
     // Only adds typeahead to the last prescription row

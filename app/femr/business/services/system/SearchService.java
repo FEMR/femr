@@ -471,6 +471,69 @@ public class SearchService implements ISearchService {
         return response;
     }
 
+
+    public ServiceResponse<List<PatientItem>> createPatientItems(List<? extends IPatient> patients, ServiceResponse<List<PatientItem>> response) {
+        List<PatientItem> patientItems = new ArrayList<>();
+        for (IPatient patient : patients) {
+            String pathToPhoto = null;
+            Integer photoId = null;
+            if (patient.getPhoto() != null) {
+                pathToPhoto = patient.getPhoto().getFilePath();
+                photoId = patient.getPhoto().getId();
+            }
+            patientItems.add(itemModelMapper.createPatientItem(
+                    patient.getId(),
+                    patient.getFirstName(),
+                    patient.getLastName(),
+                    patient.getPhoneNumber(),
+                    patient.getCity(),
+                    patient.getAddress(),
+                    patient.getUserId(),
+                    patient.getAge(),
+                    patient.getSex(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    pathToPhoto,
+                    photoId,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            ));
+        }
+        response.setResponseObject(patientItems);
+    return response;
+
+}
+
+    public List<? extends IPatient> getPatientQueryResults(Integer id, String firstName, String lastName, String phoneNumber) {
+        List<? extends IPatient> patients;
+        if (id != null || phoneNumber != null) {
+
+            List<IPatient> iPatients = new ArrayList<>();
+            if (id != null) {
+                //if we have an id, that is all we need, this is the most ideal scenario
+                IPatient patient = patientRepository.retrievePatientById(id);
+                iPatients.add(patient);
+            }
+
+            // if we did not find a patient by id above
+            if (iPatients.size() > 0) {
+                patients = iPatients;
+            } else {
+                patients = patientRepository.retrievePatientsByPhoneNumber(phoneNumber);
+            }
+
+        } else {
+            patients = patientRepository.retrievePatientsByName(firstName, lastName);
+        }
+        return patients;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -497,10 +560,13 @@ public class SearchService implements ISearchService {
                 //see if it is a number
                 if(isNumeric(words[0])) {
                     phoneNumber = words[0];
-                    id = Integer.parseInt(words[0]);
+                    if(words[0].length() < 10) {
+                        id = Integer.parseInt(words[0]);
+                    }
+                } else {
+                    firstName = words[0];
                 }
             } catch (NumberFormatException ex) {
-                //see if it it a string
                 firstName = words[0];
             }
         } else if (words.length == 2) {
@@ -514,66 +580,8 @@ public class SearchService implements ISearchService {
         List<? extends IPatient> patients;
 
         try {
-            //Build the Query
-            //TODO: filter these by the current country of the team
-            if (id != null || phoneNumber != null) {
-
-                List<IPatient> iPatients = new ArrayList<>();
-                if(id != null) {
-
-                    //if we have an id, that is all we need.
-                    //this is the most ideal scenario
-                    IPatient patient = patientRepository.retrievePatientById(id);
-                    iPatients.add(patient);
-                }
-
-                // if we found a patient by id above
-                if ( iPatients.size() > 0 ) {
-                    patients = iPatients;
-                } else {
-                    patients = patientRepository.retrievePatientsByPhoneNumber(phoneNumber);
-                }
-
-            } else {
-                patients = patientRepository.retrievePatientsByName(firstName, lastName);
-            }
-
-            //Execute the query
-
-            List<PatientItem> patientItems = new ArrayList<>();
-            for (IPatient patient : patients) {
-                //patientItems.add(DomainMapper.createPatientItem(p, null, null, null, null));
-                String pathToPhoto = null;
-                Integer photoId = null;
-                if (patient.getPhoto() != null) {
-                    pathToPhoto = patient.getPhoto().getFilePath();
-                    photoId = patient.getPhoto().getId();
-                }
-                patientItems.add(itemModelMapper.createPatientItem(
-                        patient.getId(),
-                        patient.getFirstName(),
-                        patient.getLastName(),
-                        patient.getPhoneNumber(),
-                        patient.getCity(),
-                        patient.getAddress(),
-                        patient.getUserId(),
-                        patient.getAge(),
-                        patient.getSex(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        pathToPhoto,
-                        photoId,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                ));
-            }
-            response.setResponseObject(patientItems);
+            patients = getPatientQueryResults(id, firstName, lastName, phoneNumber);
+            createPatientItems(patients, response);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }
@@ -624,40 +632,6 @@ public class SearchService implements ISearchService {
                 rankedPatientItems.add(rankedPatientItem);
             }
             response.setResponseObject(rankedPatientItems);
-
-//            List<PatientItem> patientItems = new ArrayList<>();
-//            for (Patient patient : patientList) {
-//                String pathToPhoto = null;
-//                Integer photoId = null;
-//                if (patient.getPhoto() != null) {
-//                    pathToPhoto = patient.getPhoto().getFilePath();
-//                    photoId = patient.getPhoto().getId();
-//                }
-//                patientItems.add(itemModelMapper.createPatientItem(
-//                        patient.getId(),
-//                        patient.getFirstName(),
-//                        patient.getLastName(),
-//                        patient.getPhoneNumber(),
-//                        patient.getCity(),
-//                        patient.getAddress(),
-//                        patient.getUserId(),
-//                        patient.getAge(),
-//                        patient.getSex(),
-//                        null,
-//                        null,
-//                        null,
-//                        null,
-//                        pathToPhoto,
-//                        photoId,
-//                        null,
-//                        null,
-//                        null,
-//                        null,
-//                        null,
-//                        null
-//                ));
-//            }
-//            response.setResponseObject(patientItems);
         } catch (Exception ex) {
             response.addError("", ex.getMessage());
         }

@@ -19,7 +19,7 @@
         <!-- Need form helper here -->
         @helper.form(action = FeedbackController.indexPost()) {
 
-            <textarea name="feedbackMsg" id="usrFeedback" cols="50" rows="10" maxlength="10000"></textarea>
+            <textarea name="feedbackMsg" id="usrFeedback" cols="50" rows="10" maxlength="10000" required></textarea>
 
 
             <button type="submit" class="fButton fSubmitButton" id="feedbackSubmit">Submit</button>

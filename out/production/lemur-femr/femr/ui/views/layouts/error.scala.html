@@ -1,0 +1,23 @@
+@(styles: Html = Html(""), scripts: Html = Html(""), errorContent: Html = Html(""), assets: AssetsFinder)
+
+<!DOCTYPE html>
+<html class="no-js" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <title>fEMR - Error</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <link rel="shortcut icon" type="image/png" href="@assets.path("img/favicon.png")">
+        <link rel="stylesheet" href="@assets.path("css/femr.css")"/>
+        @styles
+        <script type="text/javascript" src="@assets.path("js/libraries/modernizr-2.6.2.min.js")"></script>
+    </head>
+    <body>
+
+        @errorContent
+
+
+    <script type="text/javascript" src="@assets.path("js/libraries/jquery-2.2.4.min.js")"></script>
+        @scripts
+    </body>
+</html>

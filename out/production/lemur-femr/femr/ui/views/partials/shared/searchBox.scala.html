@@ -1,0 +1,26 @@
+@(page: java.lang.String, patientId: java.lang.Integer, message: java.lang.String)
+
+<div class="searchWrap">
+    <h2>@page Search</h2>
+    @if(patientId > 0) {
+
+        <label for="id" class="hidden">Patient ID</label>
+        <input type="number" class="fButtonSearch" id="id" name="id" value="@patientId" readonly/>
+
+
+        <p>@message</p>
+
+            <a href="/medical/edit/@patientId" class="fButton fOtherButton fYesButton">Yes</a>
+            <a href="/medical" class="fButton fOtherButton fNoButton">No</a>
+
+
+    } else {
+
+        <label for="id" class="hidden">Patient ID</label>
+        <input type="number" class="fButtonSearch" id="id" name="id" placeholder="Patient ID">
+
+        <p>@message</p>
+        @*idSearch used to validate id via client*@
+        <button type="submit" class="idSearch fButton fRedButton fLandingSearchButton">Search</button>
+    }
+</div>

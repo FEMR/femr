@@ -1,0 +1,14 @@
+@(currentUser: femr.common.dtos.CurrentUser, message: java.lang.String, patientId: java.lang.Integer, assets: AssetsFinder)
+
+@import femr.ui.controllers.routes.PharmaciesController
+@import femr.ui.views.html.layouts.main
+@import femr.ui.views.html.partials.shared._
+
+
+@main("Pharmacy", currentUser, assets = assets) {
+    <div class="container">
+    @helper.form(action = PharmaciesController.indexPost()) {
+        @searchBox("Pharmacy", patientId, message)
+    }
+    </div>
+}

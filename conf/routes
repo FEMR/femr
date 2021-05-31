@@ -31,6 +31,7 @@ POST        /admin/configure                                   @femr.ui.controll
 GET         /admin/updates                                     @femr.ui.controllers.admin.UpdatesController.manageGet()
 POST        /admin/updates/database                            @femr.ui.controllers.admin.UpdatesController.databasePost()
 POST        /admin/updates/kit                                 @femr.ui.controllers.admin.UpdatesController.kitUpdatePost()
+GET         /admin/updates/internet                            @femr.ui.controllers.admin.UpdatesController.refreshInternetStatus()
 GET         /admin/trips                                       @femr.ui.controllers.admin.TripController.manageGet()
 POST        /admin/trips                                       @femr.ui.controllers.admin.TripController.managePost()
 GET         /admin/trips/edit/:id                              @femr.ui.controllers.admin.TripController.editGet(id: Integer)
@@ -39,6 +40,7 @@ GET         /admin/trips/teams                                 @femr.ui.controll
 POST        /admin/trips/teams                                 @femr.ui.controllers.admin.TripController.teamsPost()
 GET         /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesGet()
 POST        /admin/trips/cities                                @femr.ui.controllers.admin.TripController.citiesPost()
+POST        /admin/updateDb                                    @femr.ui.controllers.admin.DatabaseController.downloadPost()
 GET         /admin                                             @femr.ui.controllers.admin.AdminController.index()
 #Manager
 GET         /manager                                           @femr.ui.controllers.manager.ManagerController.indexGet()

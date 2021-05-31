@@ -162,4 +162,8 @@ public class QueryProvider {
     public static Query<ResearchEncounterVital> getResearchEncounterVitalQuery() {
         return Ebean.find(ResearchEncounterVital.class);
     }
+
+    public static Query<InternetStatus> getInternetStatusQuery() {
+        return Ebean.find(InternetStatus.class);
+    }
 }

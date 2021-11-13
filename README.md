@@ -1,7 +1,9 @@
 # FEMR - Fast Electronic Medical Records
 
 ![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiMVBXNWNSMnZsYkgxb05IYS9rclF4eE9QcVdZT1JBNWI1V3RucFd1cXd4ZVEzTzZ5ZWREaEJJRXRDbExyY243eG05VVV4cWVkQXlMelN1bnkxY2dHUUlZPSIsIml2UGFyYW1ldGVyU3BlYyI6IjlCTnI2U0hvU00yNjROQnQiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
+
 ![Scala CI](https://github.com/FEMR/femr/actions/workflows/scala.yml/badge.svg)
+
 ### Description
 
 fEMR is a fast EMR solution for remote clinics who depend on speed and ease of use rather than complex features. Check out [Team fEMR's website](https://teamfemr.org) for more information and a live demo.
@@ -15,31 +17,11 @@ fEMR is a fast EMR solution for remote clinics who depend on speed and ease of u
 
 * [Play Framework](http://www.playframework.com/)
 
-### Installation and Deployment
-
+### Contributing
 For more information on contributing, please see the CONTRIBUTING.md file. For details regarding installation and deployment, continue reading.
-
-
-#### 1. Edit application.conf accordingly.
-#### 2. Enter the console.
-    sbt clean compile test dist
-#### 3. This will generate a script used for executing FEMR.
 
 ### CI
 This repo uses Github Actions workflows for continuous integration, which can be found under the Actions tab in Github (https://github.com/CPSECapstone/zzs-femr/actions?query=workflow%3A%22Scala+CI%22). The Scala CI workflow runs 'sbt test' whenever code is pushed or a pull request is made to the main branch.
-
-### Installation and Deployment
-
-For detailed instructions regarding installation and deployment, please follow the directions in the following link.   
-* [Installation Instructions](https://docs.google.com/document/d/1CLDNAvnc_doWw2OGKpXw11MguEUsex2o14ifo-qf5jA/edit?usp=sharing)
-
-Prerequisites: Have MySQL, MySQLWorkbench, and IntelliJ IDEA Ultimate installed on a local machine.  
-#### 1. Download Scala and Play Framework plugins.
-#### 2. Make a new file in the conf folder named application.dev.conf containing database information (see link for more details).
-#### 3. Create a new schema "femr_db" in SQL Workbench.
-#### 4. Add a Play2 App Configuration on IntelliJ with 2 environment variables: user.dir and config.file.
-#### 5. Click the sbt refresh button.
-#### 6. Run the configuration on IntelliJ.
 
 ### Setting up weekly backup reminder
 
@@ -61,118 +43,142 @@ Prerequisites: Have MySQL, MySQLWorkbench, and IntelliJ IDEA Ultimate installed 
 
 Email: kevin.zurek@teamfemr.org
 
-# Setting up the project with IntelliJ
+## Running the application using Docker
+1. Make sure you have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
+2. Clone the [FEMR/femr](https://github.com/FEMR/femr) repo: `git clone https://github.com/FEMR/femr.git`
+3. Checkout the [super-femr](https://github.com/FEMR/femr/tree/super-femr) branch: `git checkout super-femr`.
+4. Cd into the femr directory: `cd femr`    
+5. Run `docker-compose up` to start the app.
+6. If step 5 successfully finishes, then the app will be available at http://localhost:9000/
+    
+# Setting up the project with IntelliJ on macOS
 
-### Required downloads
-1. [MySQL 5.7](http://www.mysql.com/)
-2. [Scala Build Tool](http://www.scala-sbt.org/)
-3. [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-4. [IntelliJ IDEA Ultimate](http://www.jetbrains.com/idea/)
-5. [Git](http://git-scm.com/)
+### Step 1: Download and Install the following Software and Dependencies 
+- [IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/)
+- [MySQL Server](https://dev.mysql.com/downloads/mysql/)
+- [MySQL Workbench](https://dev.mysql.com/downloads/workbench/)
+- [Java JDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+- [Git](http://git-scm.com/)
 
+### Step 2: Clone the repo and checkout super-femr branch
+- `git clone https://github.com/FEMR/femr.git`
+- `git checkout super-femr`
 
-### 1. Configure Java JDK 1.8
-Download JDK 1.8 using [this link](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-or use the following command: 
-```bash
-sudo apt-get update
-sudo apt-get install openjdk-8-jdk
-java -version
+### Step 3: Setting up the DB 
+1. Open the MySQL Workbench.
+2. Select the db icon to create a new schema and call it `femr_db`.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/mysqlworkbench1.png?raw=true)
+
+</details>
+
+3. Under the Administration tab, select `User and Priviliges`. Then `Add account` and add `Login name` and `Password` of your preference. Save the login and password because you will need it in the later steps. 
+     - For this example, the username is `testing` and password is `password`.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/mysqlworkbench2.png?raw=true)
+
+</details>
+
+4. Then go to the `Schema Privileges` tab, select `Add Entry...` for the user you created in the previous step, and select the `femr_db` schema.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/mysqlworkbench3.png?raw=true)
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/mysqlworkbench4.png?raw=true)
+
+</details>
+
+5. Give all of the rights, except the `GRANT OPTION`. 
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/mysqlworkbench5.png?raw=true)
+
+</details>
+
+### Step 4: Configuring IntelliJ
+
+1. Open IntelliJ IDEA Ultimate. Then open the `femr` project with `super-femr` branch checked out.
+
+2. In IntelliJ IDEA Ultimate and go to `Preferences` -> `Plugins` -> click `Marketplace` -> Then download `Scala` and `Play Framework`. Then restart the IDE.
+
+3. Inside `femr/conf` folder, create a new file named  `application.dev.conf`. 
+4. Copy the following settings inside and save it. Note that `db.default.username` and `db.default.password` values must match the account and password from the Step 3.3. For this example, my username is `testing` and password is `password`.
+
 ```
-You should see the following version:
-```bash
-openjdk version "1.8.0_265"
-OpenJDK Runtime Environment (build 1.8.0_265-8u265-b01-0ubuntu2~20.04-b01)
-OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
-```
-If the correct version of Java isn't shown, run one of the following two commands to switch to JDK 8:
-```bash
-sudo update-alternatives --config java
-export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-```
-When prompted, select the JDK 8 alternative.
-
-### 2. Setup and install SBT
-Download Scala Build Tool using [this link](http://www.scala-sbt.org/) or with the following command:
-```bash
-echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo apt-key add
-sudo apt-get update
-sudo apt-get install sbt
-```
-SBT runs within the JVM so whichever Java version is set to your ```JAVA_HOME``` path will be used.
-
-### 3. MySQL database setup
-Install and configure MySQL using [this link](http://www.mysql.com/) or with the following command:
-```bash
-sudo apt update
-sudo apt install mysql-server
-sudo mysql_secure_installation
-```
-Start mysql with one of the two following commands:
-```bash
-sudo mysql
-mysql -u USERNAME -p
-```
-Create a database with the name femr:
-```bash
-mysql> CREATE DATABASE femr;
-```
-Create a user for the database (you will use this later to login to the fEMR app):
-```bash
-mysql> CREATE USER 'user_name'@'localhost' IDENTIFIED BY 'user_password';
-```
-Grant access to the mysql database to that user:
-```bash
-mysql> GRANT ALL PRIVILEGES ON femr.* TO 'user_name'@'localhost';
-```
-
-### 4. Clone the fEMR project
-Simply cd into the directory where you want the project to be then clone the fEMR repo:
-```bash
-git clone https://github.com/FEMR/femr.git
-```
-
-### 5. IntelliJ setup
-Install the Scala plugin for IntelliJ.
-
-With IntelliJ open on the welcome screen, press control+shift+a or cmd+shift+a to bring up the quick search bar.
-Type `new project from existing sources` and click: `import project from existing sources`
-
-Select the folder where your fEMR project is located.s
-
-In the project settings, select auto-import and choose your JDK. It should be Java version 1.8. Click finish.
-
-Create a file named `application.dev.conf` inside `/femr/conf` and copy and paste the information from `application.example.conf`
-into it. 
-
-Change two lines in `application.dev.conf` to match up with your MySQL database user you created:
-```java
-db.default.username="user_name"
-db.default.password="user_password"
+include "application.conf"
+settings.researchOnly=0
+db.default.url="jdbc:mysql://127.0.0.1:3306/femr_db?characterEncoding=UTF-8"
+db.default.username="testing"
+db.default.password="password"
+photos.defaultProfilePhoto="./public/img/defaultProfile.png"
+csv.path="./Upload/CSV"
 ```
 
-In `application.conf` change four lines to match up with your MySQL database user you created:
-```java
-default.admin.username="user_name"
-default.admin.password="user_password"
+5. Go to `Run` -> `Edit Configurations` -> click on the `+` sign -> `Play 2 App`.
 
-db.default.username="user_name"
-db.default.password="user_password
-```
+<details> <summary> screenshot </summary>
 
-If you have IntelliJ Ultimate, you're done! You can run the project. If not we need to do a bit more configuration.
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij5.png?raw=true)
 
-Edit your project configuration. Add two new environment variables:
-```bash
-Name        |    Value
---------------------------
-user.dir    |    .../femr
-config.file |    .../femr/conf/application.dev.conf
-```
+</details>
 
-Once those variables are setup, you should be able to run the project. To do so enter ```run``` in the
-sbt shell (the tab should be at the bottom left of the IntelliJ window).
+6. Then, click on `Edit Environment Variables` -> add the following two environment variables: `user.dir` and `config.file` (make sure to change the value based on where the two are stored on your local machine). Then click apply and ok.
+    - `config.file` is the path for application.dev.conf.
+    - `user.dir` is the path for the project.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij6.png?raw=true)
+
+</details>
+
+
+7. Go to `File` -> `Project structure` -> Under the `Project` tab -> Select `Project SDK` and set it to 1.8. 
+    - You can download 1.8 directly from IntelliJ. If so, choose 1.8 Amazon Correto.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij7.png?raw=true)
+
+</details>
+
+8. Change the language level to 8.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij8.png?raw=true)
+
+</details>
+
+9. On the rightmost side of IntelliJ, if there is a vertical line containing sbt. Click on the sbt tab and then click the refresh symbol.
+      - If there isn’t sbt on the right, remove the .idea folder from the root directory of the project. In the command line, traverse to the root directory and do: rm -r .idea. Then redo step 2 and then continue. If still does not work try removing the project and recloning it again. 
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij9.png?raw=true)
+
+</details>
+
+10. After that runs, click on the Play button to run the configuration. If everything was set up correctly, the website should open up on another window. Select “Apply this script now”.
+
+<details> <summary> screenshot </summary>
+
+![Image](https://github.com/kylene-phillips/femr-installation/blob/gh-pages/images/intellij10.png?raw=true)
+
+</details>
+
+### Troubleshooting
+1. Try deleting the .idea folder and rerunning sbt 
+2. Confirm you have the absolute path in your environment variables
+3. Try to re-apply the plugins Scala and Play Framework
+4. Otherwise, try cloning the femr github and going through the steps once more.
+5. Try invalidating Intellij IDEA cache.
 
 ### [EULA and Privacy Policy](https://github.com/FEMR/femr/blob/master/LICENSE)
 

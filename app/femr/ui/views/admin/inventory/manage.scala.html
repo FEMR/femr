@@ -54,6 +54,7 @@
                 @if( currentUser.getTripId() == null ){
                     <span class="fExportCSVButton pull-right disabled">
                         <a class="btn fButton fOtherButton disabled" href="#">Export as CSV</a>
+                    </span>
                         } else {
                     <span class="fExportCSVButton pull-right">
                         <a class="btn fButton fOtherButton" href="@{InventoryController.exportGet(viewModel.getMissionTripItem.getId).url}">Export as CSV</a>
@@ -63,13 +64,18 @@
             <div class="col-xs-3">
                 @if( currentUser.getTripId() == null ){
                     <span class="fImportCSVButton pull-right disabled">
-                        <a class="btn fButton fOtherButton disabled" href="#">Import CSV</a>
+                        <a class="btn fImportButton fImportOtherButton disabled" href="#">Import CSV</a>
+                    </span>
                         } else {
-                    <span class="fImportCSVButton">
-                        <form action="@{InventoryController.importCSV(viewModel.getMissionTripItem.getId).url}" method="post" enctype="multipart/form-data">
-                            <input type="file" id="myFile" name="filename" accept=".csv">
-                            <input type="submit">
-                        </form>
+                    <span class="fExportCSVButton pull-right">
+                        <label class="btn fImportButton fImportOtherButton">
+                            <form action="@{InventoryController.importCSV(viewModel.getMissionTripItem.getId).url}" method="post" enctype="multipart/form-data">
+                            <i class="fExportCSVButton pull-right"></i>Import CSV<input type="file" style="display: none;" name="filename" accept=".csv" onchange="this.form.submit()">
+                            </form>
+                        </label>
+@*                        <form action="@{InventoryController.importCSV(viewModel.getMissionTripItem.getId).url}" method="post" enctype="multipart/form-data">*@
+@*                            <input type="file" id="myFile" name="filename" accept=".csv" onchange="this.form.submit()">*@
+@*                        </form>*@
                         }
             </span>
             </div>

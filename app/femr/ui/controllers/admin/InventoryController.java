@@ -23,13 +23,15 @@ import controllers.AssetsFinder;
 import femr.business.services.core.*;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
+import femr.common.models.MedicationItem;
 import femr.common.models.MissionTripItem;
 import femr.data.models.mysql.Roles;
 import femr.ui.helpers.security.AllowedRoles;
 import femr.ui.helpers.security.FEMRAuthenticated;
 import femr.ui.models.admin.inventory.*;
-import femr.common.models.MedicationItem;
-import femr.ui.views.html.admin.inventory.*;
+import femr.ui.views.html.admin.inventory.custom;
+import femr.ui.views.html.admin.inventory.existing;
+import femr.ui.views.html.admin.inventory.manage;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
@@ -38,10 +40,10 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Security.Authenticated(FEMRAuthenticated.class)
 @AllowedRoles({Roles.ADMINISTRATOR, Roles.SUPERUSER})
@@ -141,7 +143,6 @@ public class InventoryController extends Controller {
 
         final Form<ManageViewModelPost> manageViewModelForm = formFactory.form(ManageViewModelPost.class);
         ManageViewModelPost viewModel = manageViewModelForm.bindFromRequest().get();
-
         return redirect("/admin/inventory/" + viewModel.getSelectedTrip());
     }
     /**
@@ -257,7 +258,7 @@ public class InventoryController extends Controller {
             if (doesInventoryExistInTrip.getResponseObject()){
                 createMedicationInventoryServiceResponse = inventoryService.reAddInventoryMedication(medicationId, tripId);
             } else {
-                createMedicationInventoryServiceResponse = inventoryService.createMedicationInventory(medicationId, tripId);
+                createMedicationInventoryServiceResponse = inventoryService.createOrUpdateMedicationInventory(medicationId, tripId,0,0,null,null);
             }
             //sets initial total quantity
             ServiceResponse<MedicationItem> setQuantityTotalServiceResponse =
@@ -352,7 +353,7 @@ public class InventoryController extends Controller {
                         if(inventoryService.existsInventoryMedicationInTrip(medicationItemServiceResponse.getResponseObject().getId(),tripId).getResponseObject()){
                             createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
                         } else {
-                            createOrReAddInventoryResponse = inventoryService.createMedicationInventory(medicationItemServiceResponse.getResponseObject().getId(), tripId);
+                            createOrReAddInventoryResponse = inventoryService.createOrUpdateMedicationInventory(medicationItemServiceResponse.getResponseObject().getId(), tripId,0,0,null,null);
                         }
 
                         if (createOrReAddInventoryResponse.hasErrors()) {
@@ -398,16 +399,19 @@ public class InventoryController extends Controller {
         Http.MultipartFormData formData = request().body().asMultipartFormData();
 
         // ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
+        Http.MultipartFormData.FilePart uploadedFile = (Http.MultipartFormData.FilePart) formData.getFiles().get(0);
+
+        inventoryService.importCSV(tripId,uploadedFile.getFile());
 
         if (formData != null)
-            return ok(formData.toString());
+            return redirect("/admin/inventory/"+tripId);
         else
-            return ok("false");
+            return internalServerError();
     }
 
     /**
      * Called when a user hits the remove button to remove a medication from the trip formulary.
-     * @param medicationID
+     * @param medicationId
      * @param tripId
      * @return Result of soft-deletion
      */

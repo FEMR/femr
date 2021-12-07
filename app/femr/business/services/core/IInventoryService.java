@@ -89,7 +89,7 @@ public interface IInventoryService {
      * @param tripId id of the trip that will contain or contains the medication.
      * @return a medication item that contains quantity information.
      */
-    ServiceResponse<MedicationItem> createMedicationInventory(int medicationId, int tripId);
+    ServiceResponse<MedicationItem> createOrUpdateMedicationInventory(int medicationId, int tripId,int quantityCurrent,int quantityInitial,String timeAdded,String createdBy);
 
     /**
      * Deletes (soft-deletes) inventory medication by medication/tripId.
@@ -129,5 +129,7 @@ public interface IInventoryService {
      * @return a string containing the inventory for the trip in CSV form
      */
     ServiceResponse<String> exportCSV(int tripId);
+
+    void importCSV(int tripId, Object file );
 
 }

@@ -183,12 +183,23 @@
 
 .fImportCSVButton {
     cursor: not-allowed;
+    /*border: 15px solid #ccc;*/
 }
 
-.fImporttCSVButton a {
+.fImportCSVButton a {
     padding: 2px 5px 2px 5px;
     width: 120px;
+    /*border: 1px solid #ccc;*/
 }
+/*input[type="file"] {*/
+/*    display: none;*/
+/*}*/
+/*.ImportCSVButton{*/
+/*    border: 1px solid #ccc;*/
+/*    display: inline-block;*/
+/*    padding: 6px 12px;*/
+/*    cursor: pointer;*/
+/*}*/
 
 #currentMedicationHeader {
   margin-bottom: 5px;

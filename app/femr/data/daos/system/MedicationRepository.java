@@ -82,7 +82,6 @@ public class MedicationRepository implements IMedicationRepository {
 
         IMedicationInventory medicationInventory = null;
         try {
-
             ExpressionList<MedicationInventory> medicationInventoryExpressionList;
             medicationInventoryExpressionList = QueryProvider.getMedicationInventoryQuery()
                     .where()
@@ -90,6 +89,9 @@ public class MedicationRepository implements IMedicationRepository {
                     .eq("medication.id", medicationId);
 
             medicationInventory = medicationInventoryExpressionList.findOne();
+//            System.out.println(medicationInventory.getMedication().getName());
+//            System.out.println(medicationInventory.getMedication().getName());
+
         } catch(Exception ex) {
             Logger.error("MedicationRepository-retrieveMedicationInventoryByMedicationIdAndTripId", ex.getMessage(), "medicationId: " + medicationId + "tripId: " + tripId);
             throw ex;
@@ -367,6 +369,7 @@ public class MedicationRepository implements IMedicationRepository {
         try {
 
             Ebean.save(medicationInventory);
+//            System.out.println("yess");
         } catch (Exception ex) {
 
             Logger.error("MedicationRepository-saveMedicationInventory", ex.getMessage());

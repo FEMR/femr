@@ -34,6 +34,7 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
@@ -384,6 +385,24 @@ public class InventoryController extends Controller {
       response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
 
       return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
+    }
+
+    /**
+     * Called when a user wants to import some data from a CSV file.
+     * @param tripId import inventory for trip with this ID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return Result of importing
+     */
+    public Result importCSV(int tripId) {
+
+        Http.MultipartFormData formData = request().body().asMultipartFormData();
+
+        // ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
+
+        if (formData != null)
+            return ok(formData.toString());
+        else
+            return ok("false");
     }
 
     /**

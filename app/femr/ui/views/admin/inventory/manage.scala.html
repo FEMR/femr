@@ -60,6 +60,19 @@
                         }
             </span>
             </div>
+            <div class="col-xs-3">
+                @if( currentUser.getTripId() == null ){
+                    <span class="fImportCSVButton pull-right disabled">
+                        <a class="btn fButton fOtherButton disabled" href="#">Import CSV</a>
+                        } else {
+                    <span class="fImportCSVButton">
+                        <form action="@{InventoryController.importCSV(viewModel.getMissionTripItem.getId).url}" method="post" enctype="multipart/form-data">
+                            <input type="file" id="myFile" name="filename" accept=".csv">
+                            <input type="submit">
+                        </form>
+                        }
+            </span>
+            </div>
         </div>
         <div id="currentMedicationsWrap">
             <table id="inventoryTable" class="table">

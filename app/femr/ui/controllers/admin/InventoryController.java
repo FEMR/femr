@@ -268,12 +268,12 @@ public class InventoryController extends Controller {
                     inventoryService.setQuantityCurrent(medicationId, tripId, quantity);
 
 
+
             if (createMedicationInventoryServiceResponse.hasErrors() || setQuantityTotalServiceResponse.hasErrors()) {
 
                 return internalServerError();
             }
         }
-
 
         return redirect("/admin/inventory/"+tripId);
     }
@@ -401,9 +401,9 @@ public class InventoryController extends Controller {
         // ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
         Http.MultipartFormData.FilePart uploadedFile = (Http.MultipartFormData.FilePart) formData.getFiles().get(0);
 
-        inventoryService.importCSV(tripId,uploadedFile.getFile());
+        ServiceResponse<String> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile());
 
-        if (formData != null)
+        if (formData != null && !importServiceResponse.hasErrors())
             return redirect("/admin/inventory/"+tripId);
         else
             return internalServerError();

@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
+import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.InventoryExportItem;
 import femr.common.models.MedicationItem;
@@ -208,7 +209,7 @@ public class InventoryService implements IInventoryService {
      *{@inheritDoc}
      **/
     @Override
-    public ServiceResponse<MedicationItem> createOrUpdateMedicationInventory(int medicationId, int tripId,int quantityCurrent,int quantityInitial,DateTime timeAdded,String createdBy){
+    public ServiceResponse<MedicationItem> createOrUpdateMedicationInventory(int medicationId, int tripId,int quantityCurrent,DateTime timeAdded,String createdBy){
         ServiceResponse<MedicationItem> response = new ServiceResponse<>();
 
         IMedicationInventory medicationInventory;
@@ -221,14 +222,13 @@ public class InventoryService implements IInventoryService {
                 //If the medication is not in the inventory, then create it.
                 //Assume new inventory medications have 0 current quantity and 0 total quantity.
 
-                medicationInventory = dataModelMapper.createMedicationInventory(quantityCurrent, quantityInitial, medicationId, tripId);
+                medicationInventory = dataModelMapper.createMedicationInventory(quantityCurrent, quantityCurrent, medicationId, tripId);
 
             }
 
             else {
 
                 medicationInventory.setQuantityCurrent(medicationInventory.getQuantityCurrent() + quantityCurrent);
-                medicationInventory.setQuantityInitial(medicationInventory.getQuantityInitial() + quantityInitial);
                 medicationInventory.setTimeAdded(timeAdded);
             }
             medicationInventory = medicationRepository.saveMedicationInventory(medicationInventory);
@@ -377,7 +377,7 @@ public class InventoryService implements IInventoryService {
      */
 
     @Override
-    public ServiceResponse<String> importCSV(int tripId, Object file ) {
+    public ServiceResponse<String> importCSV(int tripId, Object file ,CurrentUser currentUser) {
 
         ServiceResponse<String> response = new ServiceResponse<>();
         List<InventoryExportItem> newMedicationInventory=new ArrayList<>();
@@ -385,23 +385,25 @@ public class InventoryService implements IInventoryService {
         try {
         File myObj = (File) file;
         Scanner myReader = new Scanner(myObj);
-        myReader.nextLine();
+        Pattern pattern=Pattern.compile(",");
+        if(myReader.hasNextLine()){
+            String data = myReader.nextLine();
+            String[] items=pattern.split(data);
+            if (!items[0].equals("Medication") || !items[1].equals("Quantity")){
+                response.addError("","CSV file header is not valid ...");
+                return response;
+            }
+        }
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
-            Pattern pattern=Pattern.compile(",");
             String[] items=pattern.split(data);
             String name;
-            if(items[4] == null) {
-                name = "";
-            } else {
-                IUser user = userRepository.retrieveUserById(Integer.parseInt(items[4]));
-                name = user.getLastName() + ", " + user.getFirstName();
-            }
+            name = currentUser.getLastName() + ", " + currentUser.getFirstName();
             boolean medExists = false;
             IMedicationInventory newMedication = null;
             for (IMedicationInventory med : existentMedicationInventory){
                 MedicationItem medHelper = itemModelMapper.createMedicationItem(med.getMedication(), 0, 0, null, null, null);
-                if(medHelper.getFullName().contains(items[1])){
+                if(medHelper.getFullName().contains(items[0])){
                     medExists = true;
                     newMedication = med;
                     break;
@@ -410,42 +412,50 @@ public class InventoryService implements IInventoryService {
                     medExists = false;
                 }
             }
-            ServiceResponse<MedicationItem> inventoryResponse = null;
-            InventoryExportItem finalMed=null;
+            InventoryExportItem finalMed;
 
 
 
             if (medExists == true){
                 //update the drug
-                createOrUpdateMedicationInventory(
+                ServiceResponse<MedicationItem> medicationItemServiceResponse;
+                medicationItemServiceResponse = createOrUpdateMedicationInventory(
                         newMedication.getMedication().getId(),
                         tripId,
-                        Integer.parseInt(items[2]),
-                        Integer.parseInt(items[3]),
-                        Integer.parseInt(items[2])==0 &&
-                                Integer.parseInt(items[3])==0 ?
+                        Integer.parseInt(items[1]),
+                        Integer.parseInt(items[1])==0 ?
                                 newMedication.getTimeAdded() :
                                 DateTime.now(),name);
-                finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
-                        newMedication.getMedication(), newMedication.getQuantityCurrent(), newMedication.getQuantityInitial(), newMedication.getIsDeleted(),
-                        Integer.parseInt(items[2])==0 &&
-                                Integer.parseInt(items[3])==0 ?
-                                newMedication.getTimeAdded().toString() :
-                                DateTime.now().toString(), name));
-
+                if(!medicationItemServiceResponse.hasErrors()) {
+                    finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
+                            newMedication.getMedication(), newMedication.getQuantityCurrent(), newMedication.getQuantityInitial(), newMedication.getIsDeleted(),
+                            Integer.parseInt(items[1]) == 0 ?
+                                    newMedication.getTimeAdded().toString() :
+                                    DateTime.now().toString(), name));
+                }
+                else {
+                    response.addError("", String.valueOf((medicationItemServiceResponse.getErrors().values())));
+                    return response;
+                }
             }
             else {
                 //add the drug
-                IMedication medication = medicationRepository.createNewMedication(items[1]);
-                createOrUpdateMedicationInventory(
+                IMedication medication = medicationRepository.createNewMedication(items[0]);
+                ServiceResponse<MedicationItem> medicationItemServiceResponse;
+                medicationItemServiceResponse = createOrUpdateMedicationInventory(
                         medication.getId(),
                         tripId,
-                        Integer.parseInt(items[2]),
-                        Integer.parseInt(items[3]),
-                        DateTime.now(),name);
-                finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
-                        medication,Integer.parseInt(items[2]), Integer.parseInt(items[3]), null,
-                        DateTime.now().toString(), name));
+                        Integer.parseInt(items[1]),
+                        DateTime.now(), name);
+                if (true) {
+                    finalMed = new InventoryExportItem(itemModelMapper.createMedicationItem(
+                            medication, Integer.parseInt(items[1]), Integer.parseInt(items[1]), null,
+                            DateTime.now().toString(), name));
+                }
+                else {
+                    response.addError("", String.valueOf(medicationItemServiceResponse.getErrors().values()));
+                    return response;
+                }
             }
 
             newMedicationInventory.add(finalMed);
@@ -459,13 +469,7 @@ public class InventoryService implements IInventoryService {
                     MedicationItem medHelper = itemModelMapper.createMedicationItem(med.getMedication(), 0, 0, null, null, null);
                     if (!medHelper.getFullName().equals(newMed.getName())){
                         String name;
-                        if(med.getCreatedBy() == null) {
-                            name = "";
-                        } else {
-                            IUser user = userRepository.retrieveUserById(med.getCreatedBy());
-                            name = user.getLastName() + ", " + user.getFirstName();
-                        }
-
+                        name = currentUser.getLastName() + ", " + currentUser.getFirstName();
                         newMedicationInventoryHelper.add(
                                 new InventoryExportItem(itemModelMapper.createMedicationItem(
                                         med.getMedication(),med.getQuantityCurrent(), med.getQuantityInitial(), med.getIsDeleted(),

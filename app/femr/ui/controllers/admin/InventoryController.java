@@ -258,7 +258,7 @@ public class InventoryController extends Controller {
             if (doesInventoryExistInTrip.getResponseObject()){
                 createMedicationInventoryServiceResponse = inventoryService.reAddInventoryMedication(medicationId, tripId);
             } else {
-                createMedicationInventoryServiceResponse = inventoryService.createOrUpdateMedicationInventory(medicationId, tripId,0,0,null,null);
+                createMedicationInventoryServiceResponse = inventoryService.createOrUpdateMedicationInventory(medicationId, tripId,0,null,null);
             }
             //sets initial total quantity
             ServiceResponse<MedicationItem> setQuantityTotalServiceResponse =
@@ -353,7 +353,7 @@ public class InventoryController extends Controller {
                         if(inventoryService.existsInventoryMedicationInTrip(medicationItemServiceResponse.getResponseObject().getId(),tripId).getResponseObject()){
                             createOrReAddInventoryResponse = inventoryService.reAddInventoryMedication(medicationItemServiceResponse.getResponseObject().getId(), tripId);
                         } else {
-                            createOrReAddInventoryResponse = inventoryService.createOrUpdateMedicationInventory(medicationItemServiceResponse.getResponseObject().getId(), tripId,0,0,null,null);
+                            createOrReAddInventoryResponse = inventoryService.createOrUpdateMedicationInventory(medicationItemServiceResponse.getResponseObject().getId(), tripId,0,null,null);
                         }
 
                         if (createOrReAddInventoryResponse.hasErrors()) {
@@ -401,7 +401,9 @@ public class InventoryController extends Controller {
         // ServiceResponse<String> exportServiceResponse = inventoryService.exportCSV(tripId);
         Http.MultipartFormData.FilePart uploadedFile = (Http.MultipartFormData.FilePart) formData.getFiles().get(0);
 
-        ServiceResponse<String> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile());
+        CurrentUser currentUser = sessionService.retrieveCurrentUserSession();
+
+        ServiceResponse<String> importServiceResponse = inventoryService.importCSV(tripId,uploadedFile.getFile(),currentUser);
 
         if (formData != null && !importServiceResponse.hasErrors())
             return redirect("/admin/inventory/"+tripId);

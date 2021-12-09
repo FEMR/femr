@@ -18,6 +18,7 @@
 */
 package femr.business.services.core;
 
+import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
 import org.joda.time.DateTime;
@@ -90,7 +91,7 @@ public interface IInventoryService {
      * @param tripId id of the trip that will contain or contains the medication.
      * @return a medication item that contains quantity information.
      */
-    ServiceResponse<MedicationItem> createOrUpdateMedicationInventory(int medicationId, int tripId, int quantityCurrent, int quantityInitial, DateTime timeAdded, String createdBy);
+    ServiceResponse<MedicationItem> createOrUpdateMedicationInventory(int medicationId, int tripId, int quantityCurrent, DateTime timeAdded, String createdBy);
 
     /**
      * Deletes (soft-deletes) inventory medication by medication/tripId.
@@ -139,6 +140,6 @@ public interface IInventoryService {
      * @return a string containing the new updated inventory list for the trip
      */
 
-    ServiceResponse<String> importCSV(int tripId, Object file );
+    ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser);
 
 }

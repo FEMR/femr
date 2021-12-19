@@ -166,4 +166,6 @@ public class QueryProvider {
     public static Query<InternetStatus> getInternetStatusQuery() {
         return Ebean.find(InternetStatus.class);
     }
+
+    public static Query<BurnRate> getBurnRateQuery(){return Ebean.find(BurnRate.class);}
 }

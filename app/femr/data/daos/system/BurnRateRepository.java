@@ -67,7 +67,7 @@ public class BurnRateRepository implements IBurnRateRepository {
 
     @Override
     public IBurnRate retrieveBurnRateByMedId(int medid) {
-        ExpressionList<BurnRate> burnRateQuery = QueryProvider.getBurnRateQuery().where().eq("medID", medid);
+        ExpressionList<BurnRate> burnRateQuery = QueryProvider.getBurnRateQuery().where().eq("med_id", medid);
 
         IBurnRate burnRate = null;
         try {

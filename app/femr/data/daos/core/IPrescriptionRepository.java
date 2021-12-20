@@ -85,4 +85,12 @@ public interface IPrescriptionRepository {
      * @return the updated patient prescription object, may be null
      */
     IPatientPrescription updatePrescription(IPatientPrescription patientPrescription);
+
+    /**
+     * Retrieves all  prescriptions by medication ID.
+     *
+     * @param med_id id of the medication, not null
+     * @return a list of  prescriptions, not null
+     */
+    public List<? extends IPatientPrescription> retrieveAllPrescriptionsByMedicationId(int med_id);
 }

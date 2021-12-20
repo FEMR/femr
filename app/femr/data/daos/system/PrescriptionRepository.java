@@ -192,4 +192,25 @@ public class PrescriptionRepository implements IPrescriptionRepository {
 
         return patientPrescription;
     }
+
+    @Override
+    public List<? extends IPatientPrescription> retrieveAllPrescriptionsByMedicationId(int med_id) {
+        List<? extends IPatientPrescription> patientPrescriptions;
+        try {
+            ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
+
+                    .where()
+
+                    .eq("medication_id", med_id);
+
+            patientPrescriptions = query.findList();
+        } catch (Exception ex) {
+
+            Logger.error("PrescriptionRepository-retrieveAllPrescriptionsByMedicationId", ex.getMessage());
+            throw ex;
+        }
+
+        return patientPrescriptions;
+    }
+
 }

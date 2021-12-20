@@ -31,7 +31,7 @@ import femr.data.IDataModelMapper;
 import femr.data.daos.core.IBurnRateRepository;
 import femr.data.daos.core.IMedicationRepository;
 import femr.data.daos.core.IUserRepository;
-import femr.data.daos.system.BurnRateRepository;
+import femr.data.models.core.IBurnRate;
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IMedicationInventory;
 import femr.data.models.core.IUser;

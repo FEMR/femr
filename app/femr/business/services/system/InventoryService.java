@@ -28,8 +28,10 @@ import femr.common.dtos.ServiceResponse;
 import femr.common.models.InventoryExportItem;
 import femr.common.models.MedicationItem;
 import femr.data.IDataModelMapper;
+import femr.data.daos.core.IBurnRateRepository;
 import femr.data.daos.core.IMedicationRepository;
 import femr.data.daos.core.IUserRepository;
+import femr.data.daos.system.BurnRateRepository;
 import femr.data.models.core.IMedication;
 import femr.data.models.core.IMedicationInventory;
 import femr.data.models.core.IUser;
@@ -52,13 +54,16 @@ public class InventoryService implements IInventoryService {
     private final IUserRepository userRepository;
     private IDataModelMapper dataModelMapper;
     private final IItemModelMapper itemModelMapper;
-
+    private final IBurnRateRepository burnRateRepository;
     @Inject
     public InventoryService(IMedicationRepository medicationRepository,
                             IUserRepository userRepository,
                             IDataModelMapper dataModelMapper,
-                            @Named("identified") IItemModelMapper itemModelMapper) {
+                            @Named("identified") IItemModelMapper itemModelMapper,
+                            IBurnRateRepository burnRateRepository
+    ) {
 
+        this.burnRateRepository = burnRateRepository;
         this.medicationRepository = medicationRepository;
         this.userRepository = userRepository;
         this.dataModelMapper = dataModelMapper;

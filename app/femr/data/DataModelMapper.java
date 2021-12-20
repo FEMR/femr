@@ -66,7 +66,7 @@ public class DataModelMapper implements IDataModelMapper{
     private final Provider<IVital> vitalProvider;
     private final Provider<IUser> userProvider;
     private final Provider<ISessionService> sessionServiceProvider;
-
+    private final Provider<IBurnRate> burnRateProvider;
     @Inject
     public DataModelMapper(Provider<IChiefComplaint> chiefComplaintProvider,
                            Provider<IMedication> medicationProvider,
@@ -94,7 +94,8 @@ public class DataModelMapper implements IDataModelMapper{
                            Provider<ITab> tabProvider,
                            Provider<IUser> userProvider,
                            Provider<IVital> vitalProvider,
-                           Provider<ISessionService> sessionServiceProvider
+                           Provider<ISessionService> sessionServiceProvider,
+                           Provider<IBurnRate> burnRateProvider
                            ) {
 
         this.chiefComplaintProvider = chiefComplaintProvider;
@@ -124,6 +125,7 @@ public class DataModelMapper implements IDataModelMapper{
         this.userProvider = userProvider;
         this.vitalProvider = vitalProvider;
         this.sessionServiceProvider = sessionServiceProvider;
+        this.burnRateProvider = burnRateProvider;
     }
 
     /**

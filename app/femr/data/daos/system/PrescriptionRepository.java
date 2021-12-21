@@ -202,7 +202,7 @@ public class PrescriptionRepository implements IPrescriptionRepository {
 
                     .where()
 
-                    .eq("medication_id", med_id).gt("date_dispensed",dateTime);
+                    .eq("medication_id", med_id).gt("date_taken",dateTime);
 
 
             patientPrescriptions = query.findList();

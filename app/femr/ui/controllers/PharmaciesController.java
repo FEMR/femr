@@ -3,6 +3,7 @@ package femr.ui.controllers;
 import com.google.inject.Inject;
 import controllers.AssetsFinder;
 import femr.business.services.core.*;
+import femr.business.services.system.InventoryService;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.*;
@@ -293,6 +294,9 @@ public class PharmaciesController extends Controller {
 
                         throw new RuntimeException();
                     }
+                    // Predicts burn rate for each medication in the new dispensed prescription
+                    // and updates the burn_rates table.
+                    inventoryService.callPredictor(prescriptionItem.getMedicationID());
                 }
             }
 

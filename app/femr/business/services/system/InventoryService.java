@@ -23,10 +23,12 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
+import femr.common.ItemModelMapper;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.InventoryExportItem;
 import femr.common.models.MedicationItem;
+import femr.common.models.ShoppingListExportItem;
 import femr.data.IDataModelMapper;
 import femr.data.daos.core.IBurnRateRepository;
 import femr.data.daos.core.IMedicationRepository;
@@ -377,6 +379,26 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
+    @Override
+    public ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand) {
+
+        List<ShoppingListExportItem> shoppingListExportItems = creatShoppingList(tripId, desiredWeeksOnHand);
+
+        // Convert export shopping list to json
+        Gson gson = new Gson();
+        GsonFlattener parser = new GsonFlattener();
+        List<Map<String, String>> flatJson = parser.parse(gson.toJsonTree(shoppingListExportItems).getAsJsonArray());
+
+        // Convert json to CSV
+        CSVWriterGson writer = new CSVWriterGson();
+        String csvString = writer.getAsCSV(flatJson, ShoppingListExportItem.getFieldOrder());
+
+        ServiceResponse<String> response = new ServiceResponse<>();
+        response.setResponseObject(csvString.toString());
+
+        return response;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -530,6 +552,32 @@ public class InventoryService implements IInventoryService {
         }
 
         return burnRate;
+    }
+
+    @Override
+    public List<ShoppingListExportItem> creatShoppingList(int tripId, int desiredWeeksOnHand) {
+        int desiredDaysOnHand = desiredWeeksOnHand * 7;
+
+        List<? extends IBurnRate> medicationBurnRates = burnRateRepository.retrieveAllBurnRates();
+
+        List<ShoppingListExportItem> shoppingListExportItems = new ArrayList<>();
+        int daysOnHand, quantity;
+        for (IBurnRate burnRate: medicationBurnRates) {
+            IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
+            daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
+            if (daysOnHand < desiredDaysOnHand) {
+                quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);
+                shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(
+                        medicationInventory.getMedication(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                ), quantity));
+            }
+        }
+        return shoppingListExportItems;
     }
     
 }

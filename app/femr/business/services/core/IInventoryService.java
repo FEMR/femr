@@ -21,10 +21,12 @@ package femr.business.services.core;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
+import femr.common.models.ShoppingListExportItem;
 import femr.data.models.core.IBurnRate;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Inventory service is responsible for maintaining and tracking the medication inventory for a team.
@@ -134,6 +136,15 @@ public interface IInventoryService {
     ServiceResponse<String> exportCSV(int tripId);
 
     /**
+     * Returns a string containing CSV data with the shopping list for the provided trip and desired weeks on hand
+     *
+     * @param tripId id of the trip
+     * @param desiredWeeksOnHand number of desired weeks on hand
+     * @return a string containing the shopping list for the provided trip and desired weeks on hand in CSV form
+     */
+    ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand);
+
+    /**
      * Returns a string containing CSV import data with the current inventory for the provided trip
      *
      * @param tripId id of the trip
@@ -144,5 +155,14 @@ public interface IInventoryService {
     ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser);
 
     IBurnRate callPredictor(int medId);
+
+    /**
+     * Returns a list containing shopping list items for the provided trip and desired weeks on hand
+     *
+     * @param tripId id of the trip
+     * @param desiredWeeksOnHand number of desired weeks on hand
+     * @return a list containing shopping list items for the provided trip and desired weeks on hand
+     */
+    List<ShoppingListExportItem> creatShoppingList(int tripId, int desiredWeeksOnHand);
 
 }

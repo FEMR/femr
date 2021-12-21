@@ -296,7 +296,7 @@ public class PharmaciesController extends Controller {
                     }
                     // Predicts burn rate for each medication in the new dispensed prescription
                     // and updates the burn_rates table.
-                    inventoryService.callPredictor(prescriptionItem.getMedicationID());
+                    inventoryService.callPredictor(prescriptionItem.getMedicationID(),currentUserSession.getTripId() );
                 }
             }
 

@@ -154,7 +154,7 @@ public interface IInventoryService {
 
     ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser);
 
-    IBurnRate callPredictor(int medId);
+    IBurnRate callPredictor(int medId,int tripId);
 
     /**
      * Returns a list containing shopping list items for the provided trip and desired weeks on hand

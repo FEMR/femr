@@ -16,5 +16,8 @@ public interface IBurnRate {
     DateTime getCalculatedTime();
     void setCalculatedTime(DateTime time);
 
+    int getTripId();
+    void setTripId(int id);
+
 
 }

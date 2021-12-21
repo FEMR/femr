@@ -21,6 +21,8 @@ public class BurnRate implements IBurnRate {
     private Float burnRate;
     @Column(name = "med_id")
     private int medId;
+    @Column(name = "trip_id")
+    private int tripId;
     @Column(name = "calculated_time")
     private DateTime calculatedTime;
 
@@ -57,5 +59,15 @@ public class BurnRate implements IBurnRate {
     @Override
     public void setCalculatedTime(DateTime time) {
         this.calculatedTime=time;
+    }
+
+    @Override
+    public int getTripId() {
+        return tripId;
+    }
+
+    @Override
+    public void setTripId(int id) {
+        this.tripId=id;
     }
 }

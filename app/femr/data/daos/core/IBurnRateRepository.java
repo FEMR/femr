@@ -11,12 +11,18 @@ import java.util.List;
  */
 public interface IBurnRateRepository {
 
-    IBurnRate createBurnRate (int medID, float burnRate, DateTime calculatedDateTime);
+    IBurnRate createBurnRate (int medID, float burnRate, DateTime calculatedDateTime,int tripId);
 
     IBurnRate updateBurnRate (IBurnRate burnRate);
+    IBurnRate deleteBurnRate (IBurnRate burnRate);
 
     IBurnRate retrieveBurnRateByMedId(int medid);
 
     List<? extends IBurnRate> retrieveAllBurnRates();
+
+    List<? extends IBurnRate> retrieveAllBurnRatesByTripId(int tripId);
+
+    IBurnRate retrieveBurnRateByMedIdAndTripId(int medid,int tripId);
+
 
 }

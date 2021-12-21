@@ -5,9 +5,7 @@ import femr.business.helpers.QueryProvider;
 import femr.data.daos.core.IBurnRateRepository;
 import femr.data.models.core.IBurnRate;
 
-import femr.data.models.core.IUser;
 import femr.data.models.mysql.BurnRate;
-import femr.data.models.mysql.User;
 import io.ebean.Ebean;
 import io.ebean.ExpressionList;
 import io.ebean.Query;
@@ -32,12 +30,13 @@ public class BurnRateRepository implements IBurnRateRepository {
 
 
     @Override
-    public IBurnRate createBurnRate(int medID, float burnRate, DateTime calculatedDateTime) {
+    public IBurnRate createBurnRate(int medID, float burnRate, DateTime calculatedDateTime,int tripId) {
 
         IBurnRate britem = burnRateProvider.get();
         britem.setRate(burnRate);
         britem.setMedId(medID);
         britem.setCalculatedTime(calculatedDateTime);
+        britem.setTripId(tripId);
 
         try {
 
@@ -53,11 +52,24 @@ public class BurnRateRepository implements IBurnRateRepository {
 
     @Override
     public IBurnRate updateBurnRate(IBurnRate burnRate) {
+
         try {
             Ebean.update(burnRate);
         } catch (Exception ex) {
 
             Logger.error("BurnRateRepository-updateBurnRate", ex);
+            throw ex;
+        }
+        return burnRate;
+    }
+    @Override
+    public IBurnRate deleteBurnRate(IBurnRate burnRate) {
+
+        try {
+            Ebean.delete(burnRate);
+        } catch (Exception ex) {
+
+            Logger.error("BurnRateRepository-deleteBurnRate", ex);
             throw ex;
         }
         return burnRate;
@@ -94,5 +106,36 @@ public class BurnRateRepository implements IBurnRateRepository {
             throw ex;
         }
         return burnRates;
+    }
+
+    @Override
+    public List<? extends IBurnRate> retrieveAllBurnRatesByTripId(int tripId) {
+        ExpressionList<BurnRate> burnRateQuery = QueryProvider.getBurnRateQuery().where().eq("trip_id",tripId);
+
+        List<? extends IBurnRate> burnRates;
+        try{
+            burnRates = burnRateQuery.findList();
+        }catch(Exception ex){
+
+            Logger.error("BurnRateRepository-retrieveAllBurnRatesByTripId", ex);
+            throw ex;
+        }
+        return burnRates;
+    }
+
+    @Override
+    public IBurnRate retrieveBurnRateByMedIdAndTripId(int medid, int tripId) {
+        ExpressionList<BurnRate> burnRateQuery = QueryProvider.getBurnRateQuery().where().eq("med_id", medid).eq("trip_id",tripId);
+
+        IBurnRate burnRate = null;
+        try {
+            burnRate = burnRateQuery.findOne();
+        } catch (Exception ex) {
+
+            Logger.error("BurnRateRepository-retrieveBurnRateByMedId", ex);
+            throw ex;
+        }
+
+        return burnRate;
     }
 }

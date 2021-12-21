@@ -515,11 +515,10 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public IBurnRate callPredictor(int medId) {
-        BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedId(medId);
-
+    public IBurnRate callPredictor(int medId,int tripId) {
+        BurnRate burnRate = (BurnRate) burnRateRepository.retrieveBurnRateByMedIdAndTripId(medId,tripId);
         if (burnRate == null)
-            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now());
+            burnRate = (BurnRate) burnRateRepository.createBurnRate(medId, 0f, DateTime.now(),tripId);
 
         // Check Time slot passed
         DateTime currentTime = DateTime.now();
@@ -531,23 +530,19 @@ public class InventoryService implements IInventoryService {
         if (countTS >= 1L) {
 
             // create new burn rate
-            for (int i = 0; i > countTS; i++) {
-
-                DateTime startDT = new DateTime(Long.sum(burnRate.getCalculatedTime().getMillis(), (i * timeSlot)));
-                DateTime endDT = new DateTime(Long.sum(burnRate.getCalculatedTime().getMillis(), (i + 1 * timeSlot)));
+                DateTime startDT = burnRate.getCalculatedTime();
+                DateTime endDT = new DateTime(Long.sum(burnRate.getCalculatedTime().getMillis(), timeSlot));
 
                 List<? extends IPatientPrescription> listPP = prescriptionRepository.retrieveAllPrescriptionsByMedicationId(
                         medId, startDT, endDT);
 
                 int quantity = 0;
                 for (IPatientPrescription pp : listPP) quantity += pp.getAmount();
-
+                if (quantity!=0)
                 burnRate.setRate( (4*burnRate.getRate())/10 + (6*quantity)/10 );
-
-            }
-
             // updating burnrate
-            burnRate.setCalculatedTime(currentTime);
+            DateTime firstOfCurrentDt=new DateTime(Long.sum(startDT.getMillis(),countTS*timeSlot));
+            burnRate.setCalculatedTime(firstOfCurrentDt);
             burnRateRepository.updateBurnRate(burnRate);
         }
 
@@ -583,5 +578,4 @@ public class InventoryService implements IInventoryService {
         }
         return shoppingListExportItems;
     }
-    
 }

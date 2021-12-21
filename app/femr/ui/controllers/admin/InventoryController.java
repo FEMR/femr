@@ -389,10 +389,10 @@ public class InventoryController extends Controller {
     }
 
     /**
-     * Called when a user wants to export the data to a CSV file.
-     * @param tripId export inventory for trip with this ID - defaults to user's current
-     *               trip if they do not select another trip
-     * @return inventory CSV file
+     * Called when a user wants to export shopping list to a CSV file.
+     * @param tripId export inventory for trip with this ID
+     * @param desiredWeeksOnHand number of weeks desired for weeks on hand (entered by user)
+     * @return shopping list CSV file
      */
     public Result exportShoppingListGet(int tripId, int desiredWeeksOnHand) {
 

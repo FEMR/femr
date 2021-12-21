@@ -13,6 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "burn_rates")
 public class BurnRate implements IBurnRate {
+
     @Id
     @Column(name = "id", unique = true, nullable = false)
     private int id;

@@ -195,14 +195,14 @@ public class PrescriptionRepository implements IPrescriptionRepository {
     }
 
     @Override
-    public List<? extends IPatientPrescription> retrieveAllPrescriptionsByMedicationId(int med_id, DateTime dateTime) {
+    public List<? extends IPatientPrescription> retrieveAllPrescriptionsByMedicationId(int med_id, DateTime startDT, DateTime endDT) {
         List<? extends IPatientPrescription> patientPrescriptions;
         try {
             ExpressionList<PatientPrescription> query = QueryProvider.getPatientPrescriptionQuery()
 
                     .where()
 
-                    .eq("medication_id", med_id).gt("date_taken",dateTime);
+                    .eq("medication_id", med_id).gt("date_taken", startDT).lt("date_taken", endDT);
 
 
             patientPrescriptions = query.findList();

@@ -21,6 +21,7 @@ package femr.business.services.core;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.MedicationItem;
+import femr.data.models.core.IBurnRate;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -141,5 +142,7 @@ public interface IInventoryService {
      */
 
     ServiceResponse<String> importCSV(int tripId, Object file, CurrentUser currentUser);
+
+    IBurnRate callPredictor(int medId);
 
 }

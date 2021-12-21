@@ -338,11 +338,7 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public ServiceResponse<String> exportCSV(int tripId) {
-        System.out.println("\n\n\n\n\n");
-        testCallPredictor();
-        System.out.println("\n\n\n\n\n");
         List<? extends IMedicationInventory> medicationInventory = medicationRepository.retrieveMedicationInventoriesByTripId(tripId, false);
-
         // Convert result of query to a list to export
         List<InventoryExportItem> inventoryExport = new ArrayList<>();
         for (IMedicationInventory med : medicationInventory) {
@@ -535,18 +531,5 @@ public class InventoryService implements IInventoryService {
 
         return burnRate;
     }
-
-    public void testCallPredictor() {
-        IPatientPrescription PR1 = prescriptionRepository.createPrescription(100, 90000,0,0,1);
-        IPatientPrescription PR2 = prescriptionRepository.createPrescription(200, 90000,0,0,1);
-        IPatientPrescription PR3 = prescriptionRepository.createPrescription(300, 90000,0,0,1);
-        PR1.setDateTaken(new DateTime(Long.sum(DateTime.now().getMillis(),-7200000L)));
-        PR2.setDateTaken(new DateTime(Long.sum(DateTime.now().getMillis(),-14400000L)));
-        PR3.setDateTaken(new DateTime(Long.sum(DateTime.now().getMillis(),-21600000L)));
-        prescriptionRepository.updatePrescription(PR1);
-        prescriptionRepository.updatePrescription(PR2);
-        prescriptionRepository.updatePrescription(PR3);
-        assert 237.6f == callPredictor(90000).getRate();
-    }
-
+    
 }

@@ -163,6 +163,6 @@ public interface IInventoryService {
      * @param desiredWeeksOnHand number of desired weeks on hand
      * @return a list containing shopping list items for the provided trip and desired weeks on hand
      */
-    List<ShoppingListExportItem> creatShoppingList(int tripId, int desiredWeeksOnHand);
+    List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand);
 
 }

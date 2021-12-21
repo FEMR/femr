@@ -389,6 +389,24 @@ public class InventoryController extends Controller {
     }
 
     /**
+     * Called when a user wants to export the data to a CSV file.
+     * @param tripId export inventory for trip with this ID - defaults to user's current
+     *               trip if they do not select another trip
+     * @return inventory CSV file
+     */
+    public Result exportShoppingListGet(int tripId, int desiredWeeksOnHand) {
+
+        ServiceResponse<String> exportServiceResponse = inventoryService.exportShoppingListCSV(tripId, desiredWeeksOnHand);
+
+        SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
+        String timestamp = format.format(new Date());
+        String csvFileName = "shopping-list-"+timestamp+".csv";
+        response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
+
+        return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
+    }
+
+    /**
      * Called when a user wants to import some data from a CSV file.
      * @param tripId import inventory for trip with this ID - defaults to user's current
      *               trip if they do not select another trip

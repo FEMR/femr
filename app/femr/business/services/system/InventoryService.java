@@ -382,7 +382,7 @@ public class InventoryService implements IInventoryService {
     @Override
     public ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand) {
 
-        List<ShoppingListExportItem> shoppingListExportItems = creatShoppingList(tripId, desiredWeeksOnHand);
+        List<ShoppingListExportItem> shoppingListExportItems = createShoppingList(tripId, desiredWeeksOnHand);
 
         // Convert export shopping list to json
         Gson gson = new Gson();
@@ -555,26 +555,30 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public List<ShoppingListExportItem> creatShoppingList(int tripId, int desiredWeeksOnHand) {
+    public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
         int desiredDaysOnHand = desiredWeeksOnHand * 7;
 
+        // On change
         List<? extends IBurnRate> medicationBurnRates = burnRateRepository.retrieveAllBurnRates();
 
         List<ShoppingListExportItem> shoppingListExportItems = new ArrayList<>();
         int daysOnHand, quantity;
         for (IBurnRate burnRate: medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
-            daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
-            if (daysOnHand < desiredDaysOnHand) {
-                quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);
-                shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(
-                        medicationInventory.getMedication(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                ), quantity));
+            // On change
+            if (medicationInventory != null) {
+                daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
+                if (daysOnHand < desiredDaysOnHand) {
+                    quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);
+                    shoppingListExportItems.add(new ShoppingListExportItem(itemModelMapper.createMedicationItem(
+                            medicationInventory.getMedication(),
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    ), quantity));
+                }
             }
         }
         return shoppingListExportItems;

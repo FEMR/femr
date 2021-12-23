@@ -423,8 +423,6 @@ public class InventoryController extends Controller {
         final Form<ShoppingListViewModelPost> manageViewModelForm = formFactory.form(ShoppingListViewModelPost.class);
         ShoppingListViewModelPost viewModel = manageViewModelForm.bindFromRequest().get();
 
-        System.out.println(viewModel.getWeeksOnHand());
-
         ServiceResponse<String> exportServiceResponse = inventoryService.exportShoppingListCSV(tripId, viewModel.getWeeksOnHand());
 
         if (!exportServiceResponse.hasErrors()) {

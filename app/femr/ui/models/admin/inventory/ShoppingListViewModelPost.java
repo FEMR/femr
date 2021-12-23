@@ -18,15 +18,16 @@
 */
 package femr.ui.models.admin.inventory;
 
-public class ManageViewModelPost {
-    private Integer selectedTrip;
+public class ShoppingListViewModelPost {
 
-    public Integer getSelectedTrip() {
-        return selectedTrip;
+    private Integer weeksOnHand;
+
+    public Integer getWeeksOnHand() {
+        return weeksOnHand;
     }
 
-    public void setSelectedTrip(Integer selectedTrip) {
-        this.selectedTrip = selectedTrip;
+    public void setWeeksOnHand(Integer weeksOnHand) {
+        this.weeksOnHand = weeksOnHand;
     }
 
 

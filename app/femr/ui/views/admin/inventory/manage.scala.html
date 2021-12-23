@@ -24,6 +24,7 @@
 
     @inventoryMenu(viewModel.getMissionTripItem)
 
+
     @if(currentUser.getTripId != null) {
 
     <div id="tripSelection">
@@ -40,7 +41,7 @@
 
     <div id="currentMedication">
         <h3>Current Formulary:</h3>
-        <div class="row" id="currentMedicationHeader">
+        <div class="row" id="currentMedicationHeader" style="height: 175px">
             <div class="col-xs-9">
                 <ul>
                     <li>Add medications using the buttons above</li>
@@ -49,6 +50,22 @@
                     <li>Quantity will be subtracted from the Current Quantity column after being dispensed in Pharmacy</li>
                     <li>Export your inventory data using the "Export as CSV" button to the right</li>
                 </ul>
+            </div>
+
+            <div class="col-xs-3">
+                @if( currentUser.getTripId() == null ){
+                    <span class="fExportCSVButton pull-right disabled">
+                        <a class="btn fButton fOtherButton disabled" href="#">Export Shopping List</a>
+                    </span>
+                } else {
+                    @helper.form(action = InventoryController.exportShoppingListGet(currentUser.getTripId())) {
+                    <span>
+                        <input type="number" class="pull-right" id="weeksOnHandInventory" name="weeksOnHand" value="1" min="0" max="100" step="1">
+                        <label style="margin-left: 40px;">Desired Weeks:</label>
+                        <button class="btn fExportShoppingListButton fExportShoppingListOtherButton pull-right" style="margin-bottom: 20px;" type="submit">Export Shopping List</button>
+                        }
+                }
+            </span>
             </div>
             <div class="col-xs-3">
                 @if( currentUser.getTripId() == null ){
@@ -61,7 +78,7 @@
                         }
             </span>
             </div>
-            <div class="col-xs-3">
+            <div class="col-xs-3 pull-right">
                 @if( currentUser.getTripId() == null ){
                     <span class="fImportCSVButton pull-right disabled">
                         <a class="btn fImportButton fImportOtherButton disabled" href="#">Import CSV</a>
@@ -73,9 +90,6 @@
                             <i class="fExportCSVButton pull-right"></i>Import CSV<input type="file" style="display: none;" name="filename" accept=".csv" onchange="this.form.submit()">
                             </form>
                         </label>
-@*                        <form action="@{InventoryController.importCSV(viewModel.getMissionTripItem.getId).url}" method="post" enctype="multipart/form-data">*@
-@*                            <input type="file" id="myFile" name="filename" accept=".csv" onchange="this.form.submit()">*@
-@*                        </form>*@
                         }
             </span>
             </div>

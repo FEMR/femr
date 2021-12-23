@@ -388,23 +388,7 @@ public class InventoryController extends Controller {
       return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
     }
 
-    /**
-     * Called when a user wants to export shopping list to a CSV file.
-     * @param tripId export inventory for trip with this ID
-     * @param desiredWeeksOnHand number of weeks desired for weeks on hand (entered by user)
-     * @return shopping list CSV file
-     */
-    public Result exportShoppingListGet(int tripId, int desiredWeeksOnHand) {
 
-        ServiceResponse<String> exportServiceResponse = inventoryService.exportShoppingListCSV(tripId, desiredWeeksOnHand);
-
-        SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
-        String timestamp = format.format(new Date());
-        String csvFileName = "shopping-list-"+timestamp+".csv";
-        response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
-
-        return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
-    }
 
     /**
      * Called when a user wants to import some data from a CSV file.
@@ -427,6 +411,34 @@ public class InventoryController extends Controller {
             return redirect("/admin/inventory/"+tripId);
         else
             return internalServerError();
+    }
+
+    /**
+     * Called when a user wants to export shopping list to a CSV file.
+     * @param tripId export inventory for trip with this ID
+     * @return shopping list CSV file
+     */
+    public Result exportShoppingListGet(int tripId) {
+
+        final Form<ShoppingListViewModelPost> manageViewModelForm = formFactory.form(ShoppingListViewModelPost.class);
+        ShoppingListViewModelPost viewModel = manageViewModelForm.bindFromRequest().get();
+
+        System.out.println(viewModel.getWeeksOnHand());
+
+        ServiceResponse<String> exportServiceResponse = inventoryService.exportShoppingListCSV(tripId, viewModel.getWeeksOnHand());
+
+        if (!exportServiceResponse.hasErrors()) {
+
+            SimpleDateFormat format = new SimpleDateFormat("MMddyy-HHmmss");
+            String timestamp = format.format(new Date());
+            String csvFileName = "shopping-list-" + timestamp + ".csv";
+            response().setHeader("Content-disposition", "attachment; filename=" + csvFileName);
+
+            return ok(exportServiceResponse.getResponseObject()).as("application/x-download");
+
+        }
+
+        return internalServerError();
     }
 
     /**

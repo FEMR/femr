@@ -23,6 +23,7 @@ GET         /admin/inventory/existing/:tripId                  @femr.ui.controll
 POST        /admin/inventory/existing/:tripId                  @femr.ui.controllers.admin.InventoryController.existingPost(tripId: Integer)
 GET         /admin/inventory/export/:tripId                    @femr.ui.controllers.admin.InventoryController.exportGet(tripId: Integer)
 POST        /admin/inventory/import/:tripId                    @femr.ui.controllers.admin.InventoryController.importCSV(tripId: Integer)
+GET         /admin/inventory/shoppingList/:tripId                @femr.ui.controllers.admin.InventoryController.exportShoppingListGet(tripId: Integer)
 POST        /admin/inventory/delete/:id/:tripId                @femr.ui.controllers.admin.InventoryController.ajaxDelete(id: Integer, tripId: Integer)
 POST        /admin/inventory/readd/:id/:tripId                 @femr.ui.controllers.admin.InventoryController.ajaxReadd(id: Integer, tripId: Integer)
 POST        /admin/inventory/editCurrent/:id/:tripId           @femr.ui.controllers.admin.InventoryController.ajaxEditCurrent(id: Integer, tripId: Integer)

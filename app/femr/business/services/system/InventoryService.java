@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import femr.business.services.core.IInventoryService;
 import femr.common.IItemModelMapper;
-import femr.common.ItemModelMapper;
 import femr.common.dtos.CurrentUser;
 import femr.common.dtos.ServiceResponse;
 import femr.common.models.InventoryExportItem;
@@ -36,7 +35,6 @@ import femr.data.daos.core.IPrescriptionRepository;
 import femr.data.daos.core.IUserRepository;
 import femr.data.models.core.*;
 import femr.data.models.mysql.BurnRate;
-import femr.data.models.mysql.PatientPrescription;
 import femr.util.calculations.dateUtils;
 import femr.util.stringhelpers.CSVWriterGson;
 import femr.util.stringhelpers.GsonFlattener;
@@ -379,25 +377,7 @@ public class InventoryService implements IInventoryService {
         return response;
     }
 
-    @Override
-    public ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand) {
 
-        List<ShoppingListExportItem> shoppingListExportItems = createShoppingList(tripId, desiredWeeksOnHand);
-
-        // Convert export shopping list to json
-        Gson gson = new Gson();
-        GsonFlattener parser = new GsonFlattener();
-        List<Map<String, String>> flatJson = parser.parse(gson.toJsonTree(shoppingListExportItems).getAsJsonArray());
-
-        // Convert json to CSV
-        CSVWriterGson writer = new CSVWriterGson();
-        String csvString = writer.getAsCSV(flatJson, ShoppingListExportItem.getFieldOrder());
-
-        ServiceResponse<String> response = new ServiceResponse<>();
-        response.setResponseObject(csvString.toString());
-
-        return response;
-    }
 
     /**
      * {@inheritDoc}
@@ -550,18 +530,40 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
+    public ServiceResponse<String> exportShoppingListCSV(int tripId, int desiredWeeksOnHand) {
+
+        List<ShoppingListExportItem> shoppingListExportItems = createShoppingList(tripId, desiredWeeksOnHand);
+
+
+
+        // Convert export shopping list to json
+        Gson gson = new Gson();
+        GsonFlattener parser = new GsonFlattener();
+        List<Map<String, String>> flatJson = parser.parse(gson.toJsonTree(shoppingListExportItems).getAsJsonArray());
+
+        // Convert json to CSV
+        CSVWriterGson writer = new CSVWriterGson();
+        String csvString = writer.getAsCSV(flatJson, ShoppingListExportItem.getFieldOrder());
+
+        ServiceResponse<String> response = new ServiceResponse<>();
+        response.setResponseObject(csvString.toString());
+
+        return response;
+    }
+
+    @Override
     public List<ShoppingListExportItem> createShoppingList(int tripId, int desiredWeeksOnHand) {
         int desiredDaysOnHand = desiredWeeksOnHand * 7;
 
-        // On change
-        List<? extends IBurnRate> medicationBurnRates = burnRateRepository.retrieveAllBurnRates();
+        List<? extends IBurnRate> medicationBurnRates = burnRateRepository.retrieveAllBurnRatesByTripId(tripId);
+
 
         List<ShoppingListExportItem> shoppingListExportItems = new ArrayList<>();
         int daysOnHand, quantity;
         for (IBurnRate burnRate: medicationBurnRates) {
             IMedicationInventory medicationInventory = medicationRepository.retrieveMedicationInventoryByMedicationIdAndTripId(burnRate.getMedId(), tripId);
             // On change
-            if (medicationInventory != null) {
+            if (medicationInventory != null && burnRate.getRate()!=0) {
                 daysOnHand = (int) (medicationInventory.getQuantityCurrent() / burnRate.getRate() + 1);
                 if (daysOnHand < desiredDaysOnHand) {
                     quantity = (desiredDaysOnHand - daysOnHand) * (int) (burnRate.getRate() + 1);

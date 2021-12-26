@@ -503,7 +503,7 @@ public class InventoryService implements IInventoryService {
         return all;
     }
 
-    public Long[] piL(int[] x, Long[] y){
+    public Long[] piL(Long[] x, Long[] y){
         Long[] pi = new Long[x.length];
         for (int i = 0; i<x.length;i++){
             pi[i] = x[i] * y[i];
@@ -511,10 +511,10 @@ public class InventoryService implements IInventoryService {
         return pi;
     }
 
-    public int[] power(int[] arr, int deg){
-        int[] po = new int[arr.length];
+    public Long[] power(int[] arr, int deg){
+        Long[] po = new Long[arr.length];
         for (int i = 0; i<arr.length;i++){
-            po[i] = (int) Math.pow(arr[i],deg + i);
+            po[i] = (long) Math.pow(arr[i],deg + i);
         }
         return po;
     }
@@ -565,9 +565,9 @@ public class InventoryService implements IInventoryService {
             double[][] mY = new double[dim][1];
             for (int i=0; i<dim; i++){
                 for (int j=0; j<dim;i++){
-                    mX[i][j] = sumL(piL(power(arrPP,i),arrTS));
+                    mX[i][j] = sumL(power(arrPP,i)); // Sigma X^ deg+i
                 }
-                mY[i][0] = sumL(piL(power(arrPP,0),arrTS));
+                mY[i][0] = sumL(piL(power(arrPP,0),arrTS)); // Sigma X^i * Y
             }
 
             SimpleMatrix smX = new SimpleMatrix(mX);
